@@ -1,0 +1,18 @@
+server:
+  port: 5999
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    druid:
+      username: HXAMS
+      password: 12345abcde
+      url: jdbc:dm://www.24hbs.com:5236/HXAMS
+      driver-class-name: dm.jdbc.driver.DmDriver
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      test-while-idle: true
+      validation-query: select 1
+logging:
+  config: classpath:log4j2.xml
