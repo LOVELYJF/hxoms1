@@ -158,7 +158,17 @@ public class RoleServiceImpl implements RoleService {
                 grantList.add(orgGrant);
             }
         }
-        orgGrantMapper.insertGrantLeaderTypeInfo(grantList);
+
+        int batch = 100;
+        int size = grantList.size();
+        for (int i = 0; i < size / batch; i++) {
+            int max = (i + 1) * batch;
+            if (max < size) {
+                orgGrantMapper.insertGrantLeaderTypeInfo(grantList.subList(i * batch, max));
+            } else {
+                orgGrantMapper.insertGrantLeaderTypeInfo(grantList.subList(i * batch, size));
+            }
+        }
     }
 
     /**
@@ -203,13 +213,13 @@ public class RoleServiceImpl implements RoleService {
      */
     private void initModule(String orgId) {
         roleMapper.executeCUDSql("delete from cf_org_module where b0111='" + orgId + "'");
-        List<Map<String, Object>> list = roleMapper.executeSelectSql("select ID from cf_module where mu_type!='3' and mu_state='1'");
+        List<Map<String, Object>> list = roleMapper.executeSelectSql("select MU_ID from cf_module where mu_type!='3' and mu_state='1'");
         List<OrgGrant> grantList = new ArrayList<>();
 
         for (Map<String, Object> map : list) {
             OrgGrant orgGrant = new OrgGrant();
             orgGrant.setOrgId(orgId);
-            orgGrant.setCheckId((String) map.get("ID"));
+            orgGrant.setCheckId((String) map.get("MU_ID"));
             orgGrant.setId(UUIDGenerator.getPrimaryKey());
             grantList.add(orgGrant);
         }
