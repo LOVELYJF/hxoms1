@@ -37,9 +37,9 @@ public class JWTUtil {
         //设置用户信息
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getId());
-        claims.put("userName", user.getUserName());
+        claims.put("userCode", user.getUserCode());
         claims.put("password", user.getPassword());
-        claims.put("name", user.getName());
+        claims.put("userName", user.getUserName());
         claims.put("loginDate", System.currentTimeMillis());
         String token = "HX" + encoder.encodeToString(JSONObject.toJSONString(claims).getBytes("UTF-8"));
         return token;
@@ -72,7 +72,7 @@ public class JWTUtil {
             return false;
         }
         User tokenUser = parseToken(token);
-        if (!tokenUser.getUserName().equals(user.getUserName()) || !tokenUser.getPassword().equals(user.getPassword())) {
+        if (!tokenUser.getUserCode().equals(user.getUserCode()) || !tokenUser.getPassword().equals(user.getPassword())) {
             return false;
         }
         return true;

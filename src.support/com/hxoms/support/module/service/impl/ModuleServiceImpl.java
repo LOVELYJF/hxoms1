@@ -56,7 +56,7 @@ public class ModuleServiceImpl implements ModuleService {
         if (valModule != null) {
             throw new DataExistException("该编码已经存在");
         }
-        module.setId(UUIDGenerator.getPrimaryKey());
+        module.setMuId(UUIDGenerator.getPrimaryKey());
         module.setModifyUser(UserInfoUtil.getUserInfo().getId());
         module.setModifyTime(new Date());
         moduleMapper.insertSelective(module);
@@ -72,7 +72,7 @@ public class ModuleServiceImpl implements ModuleService {
             Iterator<Module> iterator = moduleList.iterator();
             while (iterator.hasNext()) {
                 Module next = iterator.next();
-                if (!pId.equals(next.getpId())) {
+                if (!pId.equals(next.getMuPid())) {
                     iterator.remove();
                 }
             }
@@ -90,7 +90,7 @@ public class ModuleServiceImpl implements ModuleService {
         if (module == null) {
             throw new ParameterNullException("参数为空");
         }
-        if (StringUtils.isBlank(module.getId())) {
+        if (StringUtils.isBlank(module.getMuId())) {
             throw new ParameterNullException("id不能为空");
         }
         moduleMapper.updateByPrimaryKeySelective(module);
@@ -136,10 +136,10 @@ public class ModuleServiceImpl implements ModuleService {
         if (moduleList != null && !moduleList.isEmpty()) {
             for (Module module : moduleList) {
                 ModuleTree mt = new ModuleTree();
-                mt.setId(module.getId());
+                mt.setId(module.getMuId());
                 mt.setUrl(module.getUrl());
                 mt.setLabel(module.getMuName());
-                mt.setpId(module.getpId());
+                mt.setpId(module.getMuPid());
                 mt.setIcon(module.getMuIcon());
                 moduleTrees.add(mt);
             }

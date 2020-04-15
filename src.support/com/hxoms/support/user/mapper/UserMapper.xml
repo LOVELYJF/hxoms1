@@ -3,8 +3,8 @@
 <mapper namespace="com.hxoms.support.user.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.hxoms.support.user.entity.User">
         <id column="user_id" jdbcType="VARCHAR" property="id"/>
-        <result column="user_name" jdbcType="VARCHAR" property="name"/>
-        <result column="user_code" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_code" jdbcType="VARCHAR" property="userCode"/>
         <result column="user_type" jdbcType="VARCHAR" property="userType"/>
         <result column="user_state" jdbcType="VARCHAR" property="userState"/>
         <result column="user_photo" jdbcType="VARCHAR" property="userPhoto"/>
@@ -212,17 +212,17 @@
     select
     count(1)
     from cf_user
-    where user_code = #{userName,jdbcType=VARCHAR}
+    where user_code = #{userCode,jdbcType=VARCHAR}
   </select>
 
     <update id="updateUserStateByUserCode" parameterType="com.hxoms.support.user.entity.User">
         update CF_USER
         <set>
-            <if test="userName!=null">
-                USER_CODE = #{userName},
+            <if test="userCode!=null">
+                USER_CODE = #{userCode},
             </if>
             <if test="name!=null">
-                USER_NAME = #{name},
+                USER_NAME = #{userName},
             </if>
             <if test="userType!=null">
                 USER_TYPE = #{userType},
@@ -268,7 +268,7 @@
             </if>
         </set>
         where
-        user_code =#{userName}
+        user_code =#{userCode}
     </update>
     <select id="getSysUserList" parameterType="string" resultMap="BaseResultMap">
         select
@@ -279,15 +279,15 @@
                 and org_id = #{orgId}
             </if>
             <if test='userName != null and userName != ""'>
-                and (name like CONCAT('%',#{userName},'%')
-                or user_name like CONCAT('%',#{userName},'%'))
+                and (user_name like CONCAT('%',#{userName},'%')
+                or user_code like CONCAT('%',#{userName},'%'))
             </if>
         </where>
     </select>
 
     <!--登录验证查询-->
-    <select id="selectPasswordByUsername" resultMap="BaseResultMap">
-        select * from cf_user where user_code =#{username} and user_state ='1'
+    <select id="selectPasswordByUserCode" resultMap="BaseResultMap">
+        select * from cf_user where user_code =#{userCode} and user_state ='1'
     </select>
 
     <!--通过处室id查询用户-->

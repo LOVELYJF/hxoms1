@@ -111,7 +111,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void initRole(String loginName) {
         //初始化所有权限相关表
-        User user = userMapper.selectPasswordByUsername(loginName);
+        User user = userMapper.selectPasswordByUserCode(loginName);
         if (user == null) {
             throw new ParameterNullException("用户不存在");
         }

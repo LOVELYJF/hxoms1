@@ -32,9 +32,9 @@ public class ClientRequestInterceptor implements HandlerInterceptor {
             throw new UserCheckException("身份令牌为空");
         }
         User map = JWTUtil.parseToken(token);
-        String userName = map.getUserName();
-        if (map != null && StringUtils.isNotBlank(userName)) {
-            User user = userMapper.selectPasswordByUsername(userName);
+        String userCode = map.getUserCode();
+        if (map != null && StringUtils.isNotBlank(userCode)) {
+            User user = userMapper.selectPasswordByUserCode(userCode);
             if (user == null) {
                 throw new UserCheckException("用户不存在");
             }
@@ -45,7 +45,7 @@ public class ClientRequestInterceptor implements HandlerInterceptor {
             UserInfo userInfo = new UserInfo();
             userInfo.setId(map.getId());
             userInfo.setUserName(map.getUserName());
-            userInfo.setName(map.getName());
+            userInfo.setName(map.getUserName());
             userInfo.setPassword(map.getPassword());
             return true;
         }

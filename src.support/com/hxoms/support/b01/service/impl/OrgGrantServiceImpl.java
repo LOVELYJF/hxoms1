@@ -63,9 +63,9 @@ public class OrgGrantServiceImpl implements OrgGrantService {
         if (currUserModuleList != null && !currUserModuleList.isEmpty()) {
             for (Module module : currUserModuleList) {
                 Tree tree = new Tree();
-                tree.setId(module.getId());
+                tree.setId(module.getMuId());
                 tree.setLabel(module.getMuName());
-                tree.setpId(module.getpId());
+                tree.setpId(module.getMuPid());
                 treeList.add(tree);
             }
         }

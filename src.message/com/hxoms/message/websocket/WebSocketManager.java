@@ -119,7 +119,7 @@ public class WebSocketManager {
                     List<User> users = userMapper.getSysUserList("", msgUser.getReceiveUserId());
                     for (User user : users
                     ) {
-                        RecordSendLog(msgUser.getMsgId(),user.getId(),user.getName(), content);
+                        RecordSendLog(msgUser.getMsgId(),user.getId(),user.getUserName(), content);
                     }
                 }
             }

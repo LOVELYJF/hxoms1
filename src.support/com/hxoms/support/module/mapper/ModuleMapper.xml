@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.support.module.mapper.ModuleMapper">
     <resultMap id="BaseResultMap" type="com.hxoms.support.module.entity.Module">
-        <id column="mu_id" jdbcType="VARCHAR" property="id"/>
+        <id column="mu_id" jdbcType="VARCHAR" property="muId"/>
         <result column="mu_code" jdbcType="VARCHAR" property="muCode"/>
         <result column="mu_name" jdbcType="VARCHAR" property="muName"/>
         <result column="mu_type" jdbcType="VARCHAR" property="muType"/>
         <result column="mu_desc" jdbcType="VARCHAR" property="muDesc"/>
         <result column="mu_state" jdbcType="VARCHAR" property="muState"/>
         <result column="mu_iconpath" jdbcType="VARCHAR" property="muIcon"/>
-        <result column="mu_pid" jdbcType="VARCHAR" property="pId"/>
+        <result column="mu_pid" jdbcType="VARCHAR" property="muPid"/>
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="assembly" jdbcType="VARCHAR" property="assembly"/>
         <result column="order_index" jdbcType="INTEGER" property="orderIndex"/>
@@ -39,13 +39,13 @@
       modify_user, modify_time,assembly,sys_info)
     values (#{id,jdbcType=VARCHAR}, #{muCode,jdbcType=VARCHAR}, #{muName,jdbcType=VARCHAR},
       #{muType,jdbcType=VARCHAR}, #{muDesc,jdbcType=VARCHAR}, #{muState,jdbcType=VARCHAR},
-      #{muIcon,jdbcType=VARCHAR}, #{pId,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{orderIndex,jdbcType=INTEGER},
+      #{muIcon,jdbcType=VARCHAR}, #{muPid,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{orderIndex,jdbcType=INTEGER},
       #{modifyUser,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},#{assembly,jdbcType=VARCHAR}),'1'
   </insert>
     <insert id="insertSelective" parameterType="com.hxoms.support.module.entity.Module">
         insert into cf_module
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
+            <if test="muId != null">
                 mu_id,
             </if>
             <if test="muCode != null">
@@ -66,7 +66,7 @@
             <if test="muIcon != null">
                 mu_iconpath,
             </if>
-            <if test="pId != null">
+            <if test="muPid != null">
                 mu_pid,
             </if>
             <if test="url != null">
@@ -89,8 +89,8 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
+            <if test="muId != null">
+                #{muId,jdbcType=VARCHAR},
             </if>
             <if test="muCode != null">
                 #{muCode,jdbcType=VARCHAR},
@@ -110,8 +110,8 @@
             <if test="muIcon != null">
                 #{muIcon,jdbcType=VARCHAR},
             </if>
-            <if test="pId != null">
-                #{pId,jdbcType=VARCHAR},
+            <if test="muPid != null">
+                #{muPid,jdbcType=VARCHAR},
             </if>
             <if test="url != null">
                 #{url,jdbcType=VARCHAR},
@@ -154,8 +154,8 @@
             <if test="muIcon != null">
                 mu_iconpath = #{muIcon,jdbcType=VARCHAR},
             </if>
-            <if test="pId != null">
-                mu_pid = #{pId,jdbcType=VARCHAR},
+            <if test="muPid != null">
+                mu_pid = #{muPid,jdbcType=VARCHAR},
             </if>
             <if test="url != null">
                 url = #{url,jdbcType=VARCHAR},
@@ -176,7 +176,7 @@
                 sys_info = '1',
             </if>
         </set>
-        where mu_id = #{id,jdbcType=VARCHAR}
+        where mu_id = #{muId,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.hxoms.support.module.entity.Module">
     update cf_module
@@ -186,14 +186,14 @@
       mu_desc = #{muDesc,jdbcType=VARCHAR},
       mu_state = #{muState,jdbcType=VARCHAR},
       mu_iconpath = #{muIcon,jdbcType=VARCHAR},
-      mu_pid = #{pId,jdbcType=VARCHAR},
+      mu_pid = #{muPid,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
       order_index = #{orderIndex,jdbcType=INTEGER},
       modify_user = #{modifyUser,jdbcType=VARCHAR},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       assembly = #{assembly,jdbcType=VARCHAR},
       sys_info = '1'
-    where mu_id = #{id,jdbcType=VARCHAR}
+    where mu_id = #{muId,jdbcType=VARCHAR}
   </update>
 
     <!--查询模块树-->
@@ -218,9 +218,9 @@
         inner join cf_role_module rm
         on urv.role_id=rm.role_id and urv.user_id=#{userId}
         inner join cf_module m
-        on rm.mu_id=m.id
+        on rm.mu_id=m.mu_id
         inner join cf_org_module om
-        on m.id=om.mu_id
+        on m.mu_id=om.mu_id
         inner join cf_user u
         on om.b0111=u.org_id and u.id=#{userId}
         order by m.order_index
@@ -234,7 +234,7 @@
         ORDER BY order_index
     </select>
     <select id="selectRouterList" resultMap="BaseResultMap">
-        select t.mu_id, t.mu_code, t.mu_name, t.mu_type, t.mu_desc, t.mu_state, t.mu_iconpath, t.MU_PID, t.url, t.order_index,
+        select t.mu_id, t.mu_code, t.mu_name, t.mu_type, t.mu_desc, t.mu_state, t.mu_iconpath, t.mu_pid, t.url, t.order_index,
         t.modify_user, t.modify_time,t.assembly
         from cf_module t where t.url !='' and t.assembly !=''
     </select>

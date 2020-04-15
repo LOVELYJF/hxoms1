@@ -18,7 +18,7 @@ public class Module {
      */
     @IdAnnotation
     @ColumnAnnotation(FieldName = "mu_id",  FieldDescription="模块ID,主键")
-    private String id;
+    private String muId;
 
     /**
      * 模块编码
@@ -60,7 +60,7 @@ public class Module {
      * 模块父ID
      */
     @ColumnAnnotation(FieldName = "mu_pid",  FieldDescription="模块父ID")
-    private String pId;
+    private String muPid;
 
     /**
      * 模块访问地址
@@ -100,41 +100,20 @@ public class Module {
     @ColumnAnnotation(FieldName = "sysInfo",  FieldDescription="系统区分")
     private String sysInfo;
 
-    public Module(String id, String muCode, String muName, String muType, String muDesc, String muState, String muIcon, String pId, String url, String assembly, Integer orderIndex, String modifyUser, Date modifyTime,String sysInfo) {
-        this.id = id;
-        this.muCode = muCode;
-        this.muName = muName;
-        this.muType = muType;
-        this.muDesc = muDesc;
-        this.muState = muState;
-        this.muIcon = muIcon;
-        this.pId = pId;
-        this.url = url;
-        this.assembly = assembly;
-        this.orderIndex = orderIndex;
-        this.modifyUser = modifyUser;
-        this.modifyTime = modifyTime;
-        this.sysInfo = sysInfo;
-    }
-
-    public Module() {
-        super();
-    }
-
     /**
      * 模块ID,主键
      * @return id 模块ID,主键
      */
-    public String getId() {
-        return id;
+    public String getMuId() {
+        return muId;
     }
 
     /**
      * 模块ID,主键
-     * @param id 模块ID,主键
+     * @param muId 模块ID,主键
      */
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setMuId(String muId) {
+        this.muId = muId == null ? null : muId.trim();
     }
 
     /**
@@ -233,20 +212,12 @@ public class Module {
         this.muIcon = muIcon == null ? null : muIcon.trim();
     }
 
-    /**
-     * 模块父ID
-     * @return p_id 模块父ID
-     */
-    public String getpId() {
-        return pId;
+    public String getMuPid() {
+        return muPid;
     }
 
-    /**
-     * 模块父ID
-     * @param pId 模块父ID
-     */
-    public void setpId(String pId) {
-        this.pId = pId == null ? null : pId.trim();
+    public void setMuPid(String muPid) {
+        this.muPid = muPid;
     }
 
     /**

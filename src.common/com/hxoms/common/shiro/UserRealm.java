@@ -29,7 +29,7 @@ public class UserRealm extends AuthorizingRealm {
             throws AuthenticationException {
         String username = (String) authenticationToken.getPrincipal();
         //通过username去数据库中获取密码
-        User user = userMapper.selectPasswordByUsername(username);
+        User user = userMapper.selectPasswordByUserCode(username);
         if (user == null) {
             throw new NullPointerException("该用户不存在");
         } else if (user.getPassword() == null) {

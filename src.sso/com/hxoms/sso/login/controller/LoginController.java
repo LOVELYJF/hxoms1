@@ -41,12 +41,12 @@ public class LoginController {
     @RequestMapping(value = "/login")
     public Result loginCheck(User loginUser) throws Exception {
         Map tokenCacheMap = TokenExpireListener.getTokenCacheMap();
-        String userName = loginUser.getUserName();
+        String userCode= loginUser.getUserCode();
         String passWord = loginUser.getPassword();
-        if (loginUser == null || userName == null || passWord == null) {
+        if (loginUser == null || userCode == null || passWord == null) {
             throw new AlertMessageException("账号密码不能为空");
         }
-        User user = userMapper.selectPasswordByUsername(userName);
+        User user = userMapper.selectPasswordByUserCode(userCode);
         if (user == null) {
             throw new AlertMessageException("用户名不存在");
         }
@@ -57,13 +57,13 @@ public class LoginController {
         if (!UUIDGenerator.MD5.GetMD5Code(passWord).equals(password1)) {
             throw new AlertMessageException("密码不正确");
         }
-        String mins = parameterService.selectPValueByCode(Constants.EXPIRE_TIMES);//前端页面添加定时器
+//        String mins = parameterService.selectPValueByCode(Constants.EXPIRE_TIMES);//前端页面添加定时器
         String token = JWTUtil.createToken(user);//使用工具类创建token
-        PassTask.setPassTaskForCacheMap(token, mins);//放入线程安全map集合
+//        PassTask.setPassTaskForCacheMap(token, mins);//放入线程安全map集合
         //获取当前用户下的模块权限
         Map<String, Object> map = new HashMap<>();
         //List<Module> grantModules = moduleService.selectUserGrantModules(user.getId());
-        map.put("name", user.getName());
+        map.put("name", user.getUserName());
         map.put("userId", user.getId());
         //map.put("modules", grantModules);
         return Result.success().setData(map).setToken(token);
@@ -92,7 +92,7 @@ public class LoginController {
     public Result checkToken() throws Exception {
         String token = DomainObjectUtil.getRequest().getHeader(Constants.TOKEN_KEY);
         User user = JWTUtil.parseToken(token);
-        User user1 = userMapper.selectPasswordByUsername(user.getUserName());
+        User user1 = userMapper.selectPasswordByUserCode(user.getUserCode());
         boolean flag;
         if (user1 == null) {
             throw new UserCheckException("用户不存在");

@@ -27,13 +27,13 @@ public class User {
      * 用户名称
      */
     @ColumnAnnotation(FieldName = "user_name",  FieldDescription="用户名称")
-    private String name;
+    private String userName;
 
     /**
      * 登录名
      */
     @ColumnAnnotation(FieldName = "user_code",  FieldDescription="登录名")
-    private String userName;
+    private String userCode;
 
     /**
      * 用户类型(管理员.普通用户)
@@ -103,26 +103,6 @@ public class User {
     @ColumnAnnotation(FieldName = "modify_time",  FieldDescription="修改时间")
     private Date modifyTime;
 
-    public User(String id, String name, String userName, String userType, String userState, String userPhoto, String userEmail, String userMobile, String password, Integer orderIndex, String orgId, String modifyUser, Date modifyTime) {
-        this.id = id;
-        this.name = name;
-        this.userName = userName;
-        this.userType = userType;
-        this.userState = userState;
-        this.userPhoto = userPhoto;
-        this.userEmail = userEmail;
-        this.userMobile = userMobile;
-        this.password = password;
-        this.orderIndex = orderIndex;
-        this.orgId = orgId;
-        this.modifyUser = modifyUser;
-        this.modifyTime = modifyTime;
-    }
-
-    public User() {
-        super();
-    }
-
     public String getOrgName() {
         return orgName;
     }
@@ -147,36 +127,20 @@ public class User {
         this.id = id == null ? null : id.trim();
     }
 
-    /**
-     * 用户名称
-     * @return name 用户名称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 用户名称
-     * @param name 用户名称
-     */
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    /**
-     * 登录名
-     * @return user_name 登录名
-     */
     public String getUserName() {
         return userName;
     }
 
-    /**
-     * 登录名
-     * @param userName 登录名
-     */
     public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
+        this.userName = userName;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     /**

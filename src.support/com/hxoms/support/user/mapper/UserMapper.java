@@ -19,9 +19,9 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    User selectPasswordByUsername(String username);
+    User selectPasswordByUserCode(String userCode);
 
-    int selectByUserCode(String userName);
+    int selectByUserCode(String userCode);
 
     void updateUserStateByUserCode(User record);
 
