@@ -6,7 +6,7 @@ package com.hxoms.support.errorLog.service.impl;
  */
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -38,17 +38,17 @@ public class CfErrorlogServiceImpl implements CfErrorlogService {
     @Override
     public int deleteByPrimaryKey(String id) {
         if (StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.deleteByPrimaryKey(id);
     }
 
     private void CheckInput(CfErrorlogWithBLOBs record) {
         if (record == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getErrorInfo())) {
-            throw new ParameterNullException("错误消息不能为空");
+            throw new CustomMessageException("错误消息不能为空");
         }
         record.setOccurDate(new Date());
         record.setId(UUIDGenerator.getPrimaryKey());

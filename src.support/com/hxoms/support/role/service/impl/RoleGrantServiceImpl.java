@@ -1,7 +1,6 @@
 package com.hxoms.support.role.service.impl;
 
-import com.hxoms.common.exceptions.DataExistException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.Constants;
@@ -47,7 +46,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public RoleGrant selectGrantModule(String roleId) {
         if (roleId == null) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //所有的使用的模块
         List<Module> currUserModuleList = moduleService.selectCurrGrantModule(UserInfoUtil.getUserInfo().getId());
@@ -73,7 +72,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public RoleGrant selectGrantSystem(String roleId) {
         if (roleId == null) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //获取所有的系统
         List<SystemInfo> list = systemInfoService.selectCurrUserGrantSystemInfo();
@@ -97,11 +96,11 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantModule(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //先删除已授权的模块
         roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_module");
@@ -117,11 +116,11 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantSystem(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //先删除已授权的模块
         roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_system");
@@ -137,15 +136,15 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantLeaderTypeInfo(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         String leaderTypeId = roleGrant.getLeaderTypeId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         if (StringUtils.isBlank(leaderTypeId)) {
-            throw new ParameterNullException("干部类别id为空");
+            throw new CustomMessageException("干部类别id为空");
         }
         //先删除已授权的模块
         roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_leader_info");
@@ -164,11 +163,11 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantOrg(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //先删除已授权的模块
         roleGrantMapper.deleteGrantByTabName(roleId, "cf_roleb01");
@@ -192,11 +191,11 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantLeaderInfo(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
 
         //先删除已授权的模块
@@ -223,11 +222,11 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void insertGrantInfo(RoleGrant roleGrant) {
         if (roleGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String roleId = roleGrant.getRoleId();
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //先删除已授权的模块
         roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_datacolinfo");
@@ -251,7 +250,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public RoleGrant selectGrantLeaderType(String roleId, String leaderTypeId) {
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id不能为空");
+            throw new CustomMessageException("角色id不能为空");
         }
         //当前用户具有的信息集权限
         List<DataTable> currDataTableList = leaderTypeService.selectGrantLeaderTypeInfo(leaderTypeId);
@@ -278,7 +277,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
         //查询干部类别
         List<Tree> leaderTypeList = roleGrantMapper.selectLeaderType(Constants.LEADER_TYPE);
         if (leaderTypeList == null || leaderTypeList.isEmpty()) {
-            throw new DataExistException("字典中干部类别不存在");
+            throw new CustomMessageException("字典中干部类别不存在");
         }
         return leaderTypeList;
     }
@@ -287,7 +286,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public RoleGrant selectGrantOrg(String roleId) {
         if (StringUtils.isBlank(roleId)) {
-            throw new ParameterNullException("角色id不能为空");
+            throw new CustomMessageException("角色id不能为空");
         }
         List<Tree> list = orgService.selectOrgTree();
         List<String> checkList = roleGrantMapper.selectGrantOrg(roleId);
@@ -301,7 +300,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public void copyRoleGrantForOtherRole(String srcRoleId, List<String> list) {
         if (StringUtils.isBlank(srcRoleId)) {
-            throw new ParameterNullException("源角色id不能为空");
+            throw new CustomMessageException("源角色id不能为空");
         }
         if (list == null || list.isEmpty()) {
             return;
@@ -322,12 +321,12 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public List<Map<String, Object>> selectGrantdataInfo(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("角色id不能为空");
+            throw new CustomMessageException("角色id不能为空");
         }
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String orgId = userInfo.getOrgId();
         if (StringUtils.isEmpty(orgId)) {
-            throw new ParameterNullException("用户所属机构为空");
+            throw new CustomMessageException("用户所属机构为空");
         }
         List<Map<String, Object>> list = roleGrantMapper.selectGrantdataInfo(id, orgId);
         return list;
@@ -339,7 +338,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String orgId = userInfo.getOrgId();
         if (StringUtils.isEmpty(orgId)) {
-            throw new ParameterNullException("用户所属机构为空");
+            throw new CustomMessageException("用户所属机构为空");
         }
         return roleGrantMapper.selectGrantListInfo(orgId);
     }
@@ -348,7 +347,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
     @Override
     public List<Map<String, Object>> selectGrantInfo(String id, String tablecode) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("角色id不能为空");
+            throw new CustomMessageException("角色id不能为空");
         }
         List<Map<String, Object>> list = roleGrantMapper.selectGrantInfo(id, tablecode);
         return list;

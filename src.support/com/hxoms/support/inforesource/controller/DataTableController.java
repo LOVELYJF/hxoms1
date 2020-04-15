@@ -1,6 +1,6 @@
 package com.hxoms.support.inforesource.controller;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.inforesource.entity.DataTable;
@@ -156,7 +156,7 @@ public class DataTableController {
         DataTable dataTable = service.selectByTableCode(record.getTabCode());
         if(dataTable!=null)
         {
-            throw new ParameterNullException("该表已经存在！");
+            throw new CustomMessageException("该表已经存在！");
         }
         return Result.success();
     }

@@ -1,9 +1,8 @@
 package com.hxoms.sso.login.controller;
 
-import com.hxoms.common.exceptions.AlertMessageException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.exceptions.UserCheckException;
 import com.hxoms.common.listener.TokenExpireListener;
-import com.hxoms.common.timer.PassTask;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.module.entity.Module;
 import com.hxoms.support.module.service.ModuleService;
@@ -44,18 +43,18 @@ public class LoginController {
         String userCode= loginUser.getUserCode();
         String passWord = loginUser.getPassword();
         if (loginUser == null || userCode == null || passWord == null) {
-            throw new AlertMessageException("账号密码不能为空");
+            throw new CustomMessageException("账号密码不能为空");
         }
         User user = userMapper.selectPasswordByUserCode(userCode);
         if (user == null) {
-            throw new AlertMessageException("用户名不存在");
+            throw new CustomMessageException("用户名不存在");
         }
         String password1 = user.getPassword();
         if (password1 == null) {
-            throw new AlertMessageException("密码不存在");
+            throw new CustomMessageException("密码不存在");
         }
         if (!UUIDGenerator.MD5.GetMD5Code(passWord).equals(password1)) {
-            throw new AlertMessageException("密码不正确");
+            throw new CustomMessageException("密码不正确");
         }
 //        String mins = parameterService.selectPValueByCode(Constants.EXPIRE_TIMES);//前端页面添加定时器
         String token = JWTUtil.createToken(user);//使用工具类创建token

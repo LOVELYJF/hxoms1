@@ -1,6 +1,6 @@
 package com.hxoms.support.combinedQuery.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.combinedQuery.entity.CombinedQuery;
 import com.hxoms.support.combinedQuery.mapper.CombinedQueryMapper;
@@ -49,7 +49,7 @@ public class CombinedQueryServiceImpl implements CombinedQueryService {
     @Override
     public void insertOrUpdateCombinedQuery(CombinedQuery combinedQuery, boolean isInsert) {
         if (combinedQuery == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         //新增
         if (isInsert == true) {

@@ -1,7 +1,7 @@
 package com.hxoms.support.inforesource.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.*;
@@ -40,7 +40,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Override
     public InfoResource selectInfoResourceById(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("内容不能为空");
+            throw new CustomMessageException("内容不能为空");
         }
         return infoResourceMapper.selectInfoResourceById(infoResource);
     }
@@ -55,7 +55,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Transactional
     public void insertInfoResource(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("添加内容不能为空");
+            throw new CustomMessageException("添加内容不能为空");
         }
         selectResourceCode(infoResource);
         ReflectHelpper.setModifyFields(infoResource);
@@ -73,7 +73,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Override
     public void updateInfoResource(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("修改内容不能为空");
+            throw new CustomMessageException("修改内容不能为空");
         }
 
         ReflectHelpper.setModifyFields(infoResource);
@@ -90,20 +90,20 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Transactional
     public void deleteInfoResource(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("删除内容不能为空");
+            throw new CustomMessageException("删除内容不能为空");
         }
         InfoResource info = infoResourceMapper.selectInfoResourceById(infoResource);
         if(info==null)
         {
-            throw new ParameterNullException("该资源目录已经被删除！");
+            throw new CustomMessageException("该资源目录已经被删除！");
         }
         if(info.getResourceType().equals("1"))
         {
-            throw new ParameterNullException("系统资源目录不能被删除！");
+            throw new CustomMessageException("系统资源目录不能被删除！");
         }
         int count = infoResourceMapper.selectCountIdByPid(infoResource);
         if (count > 0) {
-            throw new ParameterNullException("该资源有子节点，无法删除");
+            throw new CustomMessageException("该资源有子节点，无法删除");
         }
 
         DataTableExample example=new DataTableExample();
@@ -115,7 +115,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
         List<DataTable> dataTables = dataTableService.selectByExample(example);
         if(dataTables.size()>0)
         {
-            throw new ParameterNullException("该资源目录下还有表，不能删除！");
+            throw new CustomMessageException("该资源目录下还有表，不能删除！");
         }
 
         //删除信息资源
@@ -130,7 +130,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Override
     public void sortOrderIndex(String[] resourceIds) {
         if (resourceIds == null || resourceIds.length == 0) {
-            throw new ParameterNullException("排序内容不能为空");
+            throw new CustomMessageException("排序内容不能为空");
         }
         for (int i = 0; i < resourceIds.length; i++) {
             InfoResource infoResource = new InfoResource();
@@ -148,7 +148,7 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Override
     public List<InfoResource> selectTableByPid(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("信息资源id不能为空");
+            throw new CustomMessageException("信息资源id不能为空");
         }
         return infoResourceMapper.selectTableByPid(infoResource);
     }
@@ -171,11 +171,11 @@ public class InfoResourceServiceImpl implements InfoResourceService {
     @Override
     public void selectResourceCode(InfoResource infoResource) {
         if (infoResource == null) {
-            throw new ParameterNullException("信息资源编码不能为空");
+            throw new CustomMessageException("信息资源编码不能为空");
         }
         int count = infoResourceMapper.selectResourceCode(infoResource);
         if (count > 0) {
-            throw new ParameterNullException("信息资源编码重复！");
+            throw new CustomMessageException("信息资源编码重复！");
         }
     }
 

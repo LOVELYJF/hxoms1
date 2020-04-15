@@ -195,6 +195,12 @@
                 </includes>
             </resource>
             <resource>
+                <directory>src.*</directory>
+                <includes>
+                    <include>com/hxoms/**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>

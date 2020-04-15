@@ -2,7 +2,7 @@ package com.hxoms.support.user.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(String userId) {
         if (StringUtils.isEmpty(userId)) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {
-            throw new ParameterNullException("当前用户不存在");
+            throw new CustomMessageException("当前用户不存在");
         }
         user.setPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
         userMapper.updateByPrimaryKeySelective(user);
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectByPrimaryKey(String userId) {
         if (StringUtils.isEmpty(userId)) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteByPrimaryKey(String userId) {
         if (StringUtils.isEmpty(userId)){
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         userMapper.deleteByPrimaryKey(userId);
     }
@@ -79,11 +79,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public int selectByUserCode(String userName) {
         if (StringUtils.isEmpty(userName)){
-            throw new ParameterNullException("登录名不能为空");
+            throw new CustomMessageException("登录名不能为空");
         }
         int num = userMapper.selectByUserCode(userName);
         if (num <= 0){
-            throw new ParameterNullException("登录名不存在");
+            throw new CustomMessageException("登录名不存在");
         }
         return num;
     }
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         String userCode = user != null ? user.getUserName() : "";
         String userState = user != null ? user.getUserState() : "";
         if (user == null || StringUtils.isEmpty(userCode) || StringUtils.isEmpty(userState)) {
-            throw new ParameterNullException("登录名或登录状态不能为空");
+            throw new CustomMessageException("登录名或登录状态不能为空");
         }
         userMapper.updateUserStateByUserCode(user);
     }
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectUserByUserGroupId(String userGroupId) {
         if (StringUtils.isEmpty(userGroupId)){
-            throw new ParameterNullException("处室id不能为空");
+            throw new CustomMessageException("处室id不能为空");
         }
         Map<String, Object> param = new HashMap<>();
         param.put("userGroupId", userGroupId);
@@ -132,16 +132,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(String userId, String newPassword) {
         if (StringUilt.stringIsNullOrEmpty(userId)) {
-            throw new ParameterNullException("ID为空");
+            throw new CustomMessageException("ID为空");
         }
         if (StringUilt.stringIsNullOrEmpty(newPassword)) {
-            throw new ParameterNullException("新密码为空");
+            throw new CustomMessageException("新密码为空");
         }
         String selectPassword = userMapper.selectPassword(userId);
         String password = UUIDGenerator.encryptPwd(newPassword);
 
         if (selectPassword.equals(password)){
-            throw new ParameterNullException("不能和原密码相同！");
+            throw new CustomMessageException("不能和原密码相同！");
         }
         userMapper.updatePassword(userId,password);
     }

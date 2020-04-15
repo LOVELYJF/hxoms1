@@ -1,6 +1,6 @@
 package com.hxoms.full.search.utils;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.full.search.entity.PersonInfoIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -43,7 +43,7 @@ public class IndexUtils {
             properties.load(inputStream);
             String property = properties.getProperty("lucene.baseDir");
             if (StringUtils.isBlank(property)) {
-                throw new ParameterNullException("请检查hx-lucene.properties中的配置参数");
+                throw new CustomMessageException("请检查hx-lucene.properties中的配置参数");
             } else {
                 baseDir = property;
             }

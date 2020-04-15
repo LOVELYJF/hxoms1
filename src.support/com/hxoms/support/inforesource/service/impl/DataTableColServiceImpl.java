@@ -1,7 +1,7 @@
 package com.hxoms.support.inforesource.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.inforesource.entity.DataTableCol;
@@ -32,15 +32,15 @@ public class DataTableColServiceImpl implements DataTableColService {
     @Override
     public int deleteByPrimaryKey(String id) {
         if (StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
 
         DataTableCol dataTableCol = mapper.selectByPrimaryKey(id);
         if (dataTableCol == null) {
-            throw new ParameterNullException("该字段已经被删除！");
+            throw new CustomMessageException("该字段已经被删除！");
         }
         if (dataTableCol.getIsSystem().equals("1")) {
-            throw new ParameterNullException("系统字段不能被删除！");
+            throw new CustomMessageException("系统字段不能被删除！");
         }
         int result = mapper.deleteByPrimaryKey(id);
         mapper.dropColumn(dataTableCol);
@@ -187,7 +187,7 @@ public class DataTableColServiceImpl implements DataTableColService {
     @Override
     public void sortCols(String[] ids) {
         if (ids == null || ids.length == 0) {
-            throw new ParameterNullException("排序字段不能为空");
+            throw new CustomMessageException("排序字段不能为空");
         }
         for (int i = 0; i < ids.length; i++) {
             DataTableCol information = new DataTableCol();
@@ -199,21 +199,21 @@ public class DataTableColServiceImpl implements DataTableColService {
 
     private void CheckInput(DataTableCol record) {
         if (record == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getTabCode())) {
-            throw new ParameterNullException("表名不能为空");
+            throw new CustomMessageException("表名不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getColCode())) {
-            throw new ParameterNullException("字段名不能为空");
+            throw new CustomMessageException("字段名不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getColName())) {
-            throw new ParameterNullException("字段中文名不能为空");
+            throw new CustomMessageException("字段中文名不能为空");
         }
 
         int count = mapper.selectColumnName(record);
         if (count > 0) {
-            throw new ParameterNullException(record.getColName() + "列名已存在");
+            throw new CustomMessageException(record.getColName() + "列名已存在");
         }
         if (record.getDataType() == "varchar" && record.getLength1() == 0) {
             record.setLength1(50);

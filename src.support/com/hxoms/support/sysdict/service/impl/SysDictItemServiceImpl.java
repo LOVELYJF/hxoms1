@@ -1,6 +1,6 @@
 package com.hxoms.support.sysdict.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.StringUilt;
@@ -67,21 +67,21 @@ public class SysDictItemServiceImpl implements SysDictItemService {
      **/
     private void CheckInput(SysDictItem sysDictItem){
         if(sysDictItem==null){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(sysDictItem.getItemCode())){
-            throw new ParameterNullException("字典项编码不能为空");
+            throw new CustomMessageException("字典项编码不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(sysDictItem.getItemName())){
-            throw new ParameterNullException("字典项名称不能为空");
+            throw new CustomMessageException("字典项名称不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(sysDictItem.getDictCode())){
-            throw new ParameterNullException("字典不能为空");
+            throw new CustomMessageException("字典不能为空");
         }
         int count=sysDictItemMapper.doubleItemCode(sysDictItem);
         if(count>0)
         {
-            throw new ParameterNullException("字典项编码重复");
+            throw new CustomMessageException("字典项编码重复");
         }
     }
 
@@ -91,7 +91,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public void deleteSysDictItem(SysDictItem sysDictItem) {
         if(sysDictItem==null){
-            throw new ParameterNullException("删除内容不能为空");
+            throw new CustomMessageException("删除内容不能为空");
         }
         //通过id查询code
         SysDictItem item = sysDictItemMapper.selectItemCodeById(sysDictItem.getId());
@@ -119,7 +119,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public void sortByOrderIndex(String ids) {
         if(StringUtils.isBlank(ids)){
-            throw new ParameterNullException("排序参数不能为空");
+            throw new CustomMessageException("排序参数不能为空");
         }
         String[] idArray = ids.split(",");
             sysDictItemMapper.sortByOrderIndex(idArray);
@@ -133,7 +133,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public List<SysDictItem> selectDictItemByPCode(SysDictItem sysDictItem) {
         if(sysDictItem==null){
-            throw new ParameterNullException("编码不能为空");
+            throw new CustomMessageException("编码不能为空");
         }
         return sysDictItemMapper.selectDictItemByPCode(sysDictItem);
     }
@@ -146,7 +146,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public List<Tree> selectItemTree(SysDictItem sysDictItem) {
         if(sysDictItem==null){
-            throw new ParameterNullException("字典不能为空");
+            throw new CustomMessageException("字典不能为空");
         }
         return TreeUtil.listToTreeJson(sysDictItemMapper.selectItemTree(sysDictItem));
     }
@@ -159,7 +159,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public SysDictItem selectItemAllById(String id) {
         if(StringUtils.isBlank(id)){
-            throw new ParameterNullException("字典不能为空");
+            throw new CustomMessageException("字典不能为空");
         }
         return sysDictItemMapper.selectItemAllById(id);
     }
@@ -172,7 +172,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public List<Tree> selectItemByDictCode(String dictCode) {
         if(StringUtils.isBlank(dictCode)){
-            throw new ParameterNullException("字典不能为空");
+            throw new CustomMessageException("字典不能为空");
         }
         return TreeUtil.listToTreeJson(sysDictItemMapper.selectItemByDictCode(dictCode));
     }
@@ -180,7 +180,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public List<Map<String, Object>> getDictInfoByDictCode(String dictCode, String itemCode) {
         if (StringUtils.isEmpty(dictCode)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         Map<String, String> params = new HashMap<String, String>();
         params.put("dict_code", dictCode);

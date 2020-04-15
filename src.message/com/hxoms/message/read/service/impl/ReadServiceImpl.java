@@ -1,6 +1,5 @@
 package com.hxoms.message.read.service.impl;
-
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -36,13 +35,13 @@ public class ReadServiceImpl implements ReadService {
     @Override
     public void readingMark(ReadMarkParam readMarkParam) throws Exception{
         if (readMarkParam.getMsgIds() == null || readMarkParam.getMsgIds().size() == 0){
-            throw new ParameterNullException("请选择需要处理的消息");
+            throw new CustomMessageException("请选择需要处理的消息");
         }
 
         //当前登录用户
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
         //需要操作的数据
         List<Read> readList = new ArrayList<>();
@@ -67,7 +66,7 @@ public class ReadServiceImpl implements ReadService {
         if (readList.size() > 0){
             int readingMark = readMapper.readingMark(readList);
             if (readingMark == 0){
-                throw new ParameterNullException("操作失败");
+                throw new CustomMessageException("操作失败");
             }
         }
     }
@@ -77,7 +76,7 @@ public class ReadServiceImpl implements ReadService {
         //当前登录用户
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
         //参数param
         Map<String, Object> paramMap = new HashMap<>();

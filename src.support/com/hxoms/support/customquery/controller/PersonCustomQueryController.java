@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.controller;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.customquery.entity.paramentity.CustomQueryParam;
 import com.hxoms.support.customquery.service.PersonCustomQueryService;
@@ -60,7 +60,7 @@ public class PersonCustomQueryController {
             os.close();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ParameterNullException("导出失败");
+            throw new CustomMessageException("导出失败");
         }
     }
 }

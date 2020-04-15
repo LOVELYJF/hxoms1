@@ -1,7 +1,6 @@
 package com.hxoms.notice.column.service.impl;
 
-import com.hxoms.common.exceptions.AlertMessageException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -30,7 +29,7 @@ public class NoticeColumnServiceImpl implements NoticeColumnService {
     @Override
     public void inertOrUpdateColumn(NoticeColumn noticeColumn, boolean isInsert) {
         if (noticeColumn == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         noticeColumn.setModifyUser(UserInfoUtil.getUserInfo().getId());
         noticeColumn.setModifyTime(new Date());
@@ -65,7 +64,7 @@ public class NoticeColumnServiceImpl implements NoticeColumnService {
         if (noticeColumns == null || noticeColumns.isEmpty()) {
             noticeColumnMapper.deleteByPrimaryKey(id);
         } else {
-            throw new AlertMessageException("有子节点不能直接删除");
+            throw new CustomMessageException("有子节点不能直接删除");
         }
     }
 

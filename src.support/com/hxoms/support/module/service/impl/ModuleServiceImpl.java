@@ -1,8 +1,6 @@
 package com.hxoms.support.module.service.impl;
 
-import com.hxoms.common.exceptions.AlertMessageException;
-import com.hxoms.common.exceptions.DataExistException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.Constants;
@@ -43,18 +41,18 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public void insertModule(Module module) {
         if (module == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         if (StringUtils.isBlank(module.getMuName())) {
-            throw new ParameterNullException("名称不能为空");
+            throw new CustomMessageException("名称不能为空");
         }
         if (StringUtils.isBlank(module.getMuCode())) {
-            throw new ParameterNullException("编码不能为空");
+            throw new CustomMessageException("编码不能为空");
         }
         //校验编码是否存在
         Module valModule = moduleMapper.selectModuleByCode(module.getMuCode());
         if (valModule != null) {
-            throw new DataExistException("该编码已经存在");
+            throw new CustomMessageException("该编码已经存在");
         }
         module.setMuId(UUIDGenerator.getPrimaryKey());
         module.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -65,7 +63,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public List<Module> selectModulesByPid(String pId) {
         if (pId == null) {
-            throw new ParameterNullException("参数pId不能为空");
+            throw new CustomMessageException("参数pId不能为空");
         }
         List<Module> moduleList = moduleMapper.selectModuleList();
         if (moduleList != null && !moduleList.isEmpty()) {
@@ -88,10 +86,10 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public void updateModule(Module module) {
         if (module == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         if (StringUtils.isBlank(module.getMuId())) {
-            throw new ParameterNullException("id不能为空");
+            throw new CustomMessageException("id不能为空");
         }
         moduleMapper.updateByPrimaryKeySelective(module);
     }
@@ -99,14 +97,14 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public void deleteModuleById(String id) {
         if (id == null) {
-            throw new ParameterNullException("参数id不能为空");
+            throw new CustomMessageException("参数id不能为空");
         }
         //判断是否有子节点
         List<Module> modules = selectModulesByPid(id);
         if (modules == null || modules.isEmpty()) {
             moduleMapper.deleteByPrimaryKey(id);
         } else {
-            throw new AlertMessageException("有子节点，不能删除");
+            throw new CustomMessageException("有子节点，不能删除");
         }
     }
 

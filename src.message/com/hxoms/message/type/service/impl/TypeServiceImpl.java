@@ -1,6 +1,6 @@
 package com.hxoms.message.type.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.message.type.entity.Type;
@@ -36,7 +36,7 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public String insertMsgType(Type type){
         if (StringUtils.isEmpty(type.getName())){
-            throw new ParameterNullException("类型名称不能为空");
+            throw new CustomMessageException("类型名称不能为空");
         }
 
         type.setId(UUIDGenerator.getPrimaryKey());
@@ -51,7 +51,7 @@ public class TypeServiceImpl implements TypeService {
         int insert = typeMapper.insertSelective(type);
 
         if (insert != 1){
-            throw new ParameterNullException("插入失败");
+            throw new CustomMessageException("插入失败");
         }
         return type.getId();
     }
@@ -65,13 +65,13 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public void updateMsgType(Type type){
         if (StringUtils.isEmpty(type.getName())){
-            throw new ParameterNullException("类型名称不能为空");
+            throw new CustomMessageException("类型名称不能为空");
         }
 
         int insert = typeMapper.updateByPrimaryKeySelective(type);
 
         if (insert != 1){
-            throw new ParameterNullException("修改失败");
+            throw new CustomMessageException("修改失败");
         }
     }
 
@@ -94,13 +94,13 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public Type selectMsgTypeByKey(@Param(value="id") String id){
         if (StringUtils.isEmpty(id)){
-            throw new ParameterNullException("消息ID不能为空");
+            throw new CustomMessageException("消息ID不能为空");
         }
 
         Type type = typeMapper.selectByPrimaryKey(id);
 
         if (ObjectUtils.isEmpty(type)){
-            throw new ParameterNullException("信息传入错误");
+            throw new CustomMessageException("信息传入错误");
         }
         return type;
     }
@@ -114,16 +114,16 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public void deleteMsgType(String id){
         if (StringUtils.isEmpty(id)){
-            throw new ParameterNullException("消息ID不能为空");
+            throw new CustomMessageException("消息ID不能为空");
         }
         //分类列表
         List<TypeCustom> typeCustomsLists = typeMapper.getTypeLists(id);
         if (typeCustomsLists != null && typeCustomsLists.size() > 0){
-            throw new ParameterNullException("存在子节点不能删除");
+            throw new CustomMessageException("存在子节点不能删除");
         }
         //删除当前节点
         if (typeMapper.deleteByPrimaryKey(id) < 1){
-            throw new ParameterNullException("删除失败");
+            throw new CustomMessageException("删除失败");
         }
     }
 

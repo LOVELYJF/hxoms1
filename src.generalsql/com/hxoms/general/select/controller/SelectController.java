@@ -2,9 +2,9 @@ package com.hxoms.general.select.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.inforesource.entity.DataTableCol;
 import com.hxoms.support.inforesource.mapper.DataTableColMapper;
@@ -41,7 +41,7 @@ public class SelectController {
 
         if (StringUilt.stringIsNullOrEmpty(tableCode) ||
                 StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String sql = "select * from " + tableCode + " where id='" + id + "'";
         SqlVo sqlVo = SqlVo.getInstance(sql);
@@ -143,7 +143,7 @@ public class SelectController {
     public Result delete(String tableCode, String id) {
         if (StringUilt.stringIsNullOrEmpty(tableCode) ||
                 StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
 
         SqlVo sql=SqlVo.getInstance("delete from "+tableCode+" where id='"+id+"'");
@@ -162,10 +162,10 @@ public class SelectController {
     public Result selectOneByPrimaryKey(String tableCode, String id, String primaryKeyCode) {
         if (StringUilt.stringIsNullOrEmpty(tableCode) ||
                 StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUtils.isEmpty(primaryKeyCode)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         String sql = "select * from " + tableCode + " where "+ primaryKeyCode + " = '" + id + "'";
         SqlVo sqlVo = SqlVo.getInstance(sql);
@@ -184,7 +184,7 @@ public class SelectController {
     public Result insertByPrimaryKey(String tableCode, String json, String primaryKeyCode) {
         CheckInput(tableCode, json);
         if (StringUtils.isEmpty(primaryKeyCode)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         List<DataTableCol> cols = dataTableColMapper.selectByTabCode(tableCode);
         JSONObject data = JSON.parseObject(json);
@@ -229,7 +229,7 @@ public class SelectController {
     @RequestMapping("/updateByPrimaryKey")
     public Result updateByPrimaryKey(String tableCode, String json, String primaryKeyCode) {
         if (StringUtils.isEmpty(primaryKeyCode)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         CheckInput(tableCode, json);
         List<DataTableCol> cols = dataTableColMapper.selectByTabCode(tableCode);
@@ -271,11 +271,11 @@ public class SelectController {
     @RequestMapping("/delByPrimaryKey")
     public Result deleteByPrimaryKey(String tableCode, String id, String primaryKeyCode) {
         if (StringUtils.isEmpty(primaryKeyCode)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         if (StringUilt.stringIsNullOrEmpty(tableCode) ||
                 StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
 
         SqlVo sql=SqlVo.getInstance("delete from "+tableCode+" where " + primaryKeyCode + " = '"+id+"'");
@@ -286,10 +286,10 @@ public class SelectController {
 
     private void CheckInput(String tableCode, String json) {
         if (StringUilt.stringIsNullOrEmpty(tableCode)) {
-            throw new ParameterNullException("表名不能为空！");
+            throw new CustomMessageException("表名不能为空！");
         }
         if (StringUilt.stringIsNullOrEmpty(json)) {
-            throw new ParameterNullException("数据不能为空！");
+            throw new CustomMessageException("数据不能为空！");
         }
     }
 }

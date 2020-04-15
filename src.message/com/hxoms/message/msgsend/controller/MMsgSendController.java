@@ -1,6 +1,6 @@
 package com.hxoms.message.msgsend.controller;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.message.msgsend.entity.MMsgSend;
@@ -45,15 +45,15 @@ public class MMsgSendController {
     public Result insert(MMsgSend record) {
         if(StringUilt.stringIsNullOrEmpty(record.getMsgid()))
         {
-            throw new ParameterNullException("参数消息不能为空！");
+            throw new CustomMessageException("参数消息不能为空！");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getReceiveUserId()))
         {
-            throw new ParameterNullException("参数用户ID不能为空！");
+            throw new CustomMessageException("参数用户ID不能为空！");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getReceiveUsername()))
         {
-            throw new ParameterNullException("参数用户名不能为空！");
+            throw new CustomMessageException("参数用户名不能为空！");
         }
         msgSendService.insert(record);
         return Result.success();
@@ -69,7 +69,7 @@ public class MMsgSendController {
     public Result select(String userid) {
         if(StringUilt.stringIsNullOrEmpty(userid))
         {
-            throw new ParameterNullException("用户ID参数不能为空！");
+            throw new CustomMessageException("用户ID参数不能为空！");
         }
         MMsgSendExample example=new MMsgSendExample();
         MMsgSendExample.Criteria criteria=example.createCriteria();

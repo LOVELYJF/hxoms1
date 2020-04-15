@@ -2,8 +2,7 @@ package com.hxoms.support.role.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.AlertMessageException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -47,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void insertRole(Role role) {
         if (role == null) {
-            throw new ParameterNullException("角色不能为空");
+            throw new CustomMessageException("角色不能为空");
         }
         role.setId(UUIDGenerator.getPrimaryKey());
         role.setOrderIndex(roleMapper.findMaxOrderno());
@@ -61,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
         String roleState = role != null ? role.getRoleState() : "";
         String roleCode = role != null ? role.getRoleCode() : "";
         if (StringUtils.isEmpty(roleState) || StringUtils.isEmpty(roleCode)) {
-            throw new ParameterNullException("角色编码或角色状态不能为空");
+            throw new CustomMessageException("角色编码或角色状态不能为空");
         }
         roleMapper.changeRoleState(role);
     }
@@ -69,11 +68,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role selectByPrimaryKey(String roleId) {
         if (StringUtils.isEmpty(roleId)) {
-            throw new ParameterNullException("角色Id不能为空");
+            throw new CustomMessageException("角色Id不能为空");
         }
         Role role = roleMapper.selectByPrimaryKey(roleId);
         if (role == null) {
-            throw new ParameterNullException("角色不存在");
+            throw new CustomMessageException("角色不存在");
         }
         return role;
     }
@@ -81,7 +80,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void updateRole(Role role) {
         if (role == null) {
-            throw new ParameterNullException("角色不能为空");
+            throw new CustomMessageException("角色不能为空");
         }
         roleMapper.updateByPrimaryKeySelective(role);
     }
@@ -89,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteRole(String roleId) {
         if (StringUtils.isEmpty(roleId)) {
-            throw new ParameterNullException("角色Id不能为空");
+            throw new CustomMessageException("角色Id不能为空");
         }
         roleMapper.deleteByPrimaryKey(roleId);
     }
@@ -113,10 +112,10 @@ public class RoleServiceImpl implements RoleService {
         //初始化所有权限相关表
         User user = userMapper.selectPasswordByUserCode(loginName);
         if (user == null) {
-            throw new ParameterNullException("用户不存在");
+            throw new CustomMessageException("用户不存在");
         }
         if (!Constants.USER_TYPES[0].equals(user.getUserType())) {
-            throw new AlertMessageException("只能初始化管理员用户");
+            throw new CustomMessageException("只能初始化管理员用户");
         }
         //初始化模块权限
         initModule(user.getOrgId());

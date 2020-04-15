@@ -1,6 +1,6 @@
 package com.hxoms.support.sysdict.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.StringUilt;
@@ -39,7 +39,7 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public void insertSysDict(SysDict sysDict) {
         if (sysDict == null) {
-            throw new ParameterNullException("添加内容不能为空");
+            throw new CustomMessageException("添加内容不能为空");
         }
         selectDictCode(sysDict);
         sysDict.setId(UUIDGenerator.getPrimaryKey());
@@ -61,7 +61,7 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public void updateSysDict(SysDict sysDict) {
         if (sysDict == null) {
-            throw new ParameterNullException("修改内容不能为空");
+            throw new CustomMessageException("修改内容不能为空");
         }
         selectDictCode(sysDict);
         sysDict.setModifyTime(new Date());
@@ -76,7 +76,7 @@ public class SysDictServiceImpl implements SysDictService {
     @Transactional
     public void deleteSysDict(SysDict sysDict) {
         if (sysDict == null) {
-            throw new ParameterNullException("删除内容不能为空");
+            throw new CustomMessageException("删除内容不能为空");
         }
         //根据前台传过来的Id查询code
         String dictCode = sysDictMapper.seleteSysDictCode(sysDict.getId());
@@ -100,17 +100,17 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public void selectDictCode(SysDict sysDict) {
         if (sysDict == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(sysDict.getDictCode())) {
-            throw new ParameterNullException("字典编码不能为空");
+            throw new CustomMessageException("字典编码不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(sysDict.getDictName())) {
-            throw new ParameterNullException("字典名称不能为空");
+            throw new CustomMessageException("字典名称不能为空");
         }
         int count = sysDictMapper.selectDictCode(sysDict);
         if (count > 0) {
-            throw new ParameterNullException("该dictCode名称已存在");
+            throw new CustomMessageException("该dictCode名称已存在");
         }
     }
 
@@ -122,7 +122,7 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     public List<SysDict> selectDict(SysDict sysDict) {
         if (sysDict == null) {
-            throw new ParameterNullException("字典不能为空");
+            throw new CustomMessageException("字典不能为空");
         }
         return sysDictMapper.selectDict(sysDict);
     }

@@ -1,7 +1,7 @@
 package com.hxoms.support.usergroup.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.system.entity.SystemInfo;
@@ -46,7 +46,7 @@ public class SystemUserGroupServiceImpl implements SystemUserGroupService {
     @Transactional
     public void insertSystemUserGroup(SystemUserGroup systemUserGroup) {
         if (systemUserGroup == null) {
-            throw new ParameterNullException("业务系统不能为空");
+            throw new CustomMessageException("业务系统不能为空");
         }
         //删除该业务系统已有管理处室
         systemUserGroupMapper.deleteSystemUserGroup(systemUserGroup);
@@ -103,7 +103,7 @@ public class SystemUserGroupServiceImpl implements SystemUserGroupService {
     @Override
     public void deleteSystemUserGroup(SystemUserGroup systemUserGroup) {
         if (systemUserGroup == null|| StringUilt.stringIsNullOrEmpty(systemUserGroup.getSyId())) {
-            throw new ParameterNullException("业务系统不能为空");
+            throw new CustomMessageException("业务系统不能为空");
         }
         systemUserGroupMapper.deleteSystemUserGroup(systemUserGroup);
     }
@@ -116,7 +116,7 @@ public class SystemUserGroupServiceImpl implements SystemUserGroupService {
      **/
     public void deleteSystemUserGroupById(SystemUserGroup systemUserGroup) {
         if (systemUserGroup == null|| StringUilt.stringIsNullOrEmpty(systemUserGroup.getId())) {
-            throw new ParameterNullException("业务系统不能为空");
+            throw new CustomMessageException("业务系统不能为空");
         }
         systemUserGroupMapper.deleteSystemUserGroupById(systemUserGroup);
     }
@@ -129,7 +129,7 @@ public class SystemUserGroupServiceImpl implements SystemUserGroupService {
     @Override
     public List<SystemUserGroup> selectUserGroupBySyId(SystemUserGroup systemUserGroup) {
         if (systemUserGroup == null) {
-            throw new ParameterNullException("业务系统不能为空");
+            throw new CustomMessageException("业务系统不能为空");
         }
         return systemUserGroupMapper.selectUserGroupBySyId(systemUserGroup);
     }

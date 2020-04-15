@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.customquery.entity.ShareQueryPlan;
 import com.hxoms.support.customquery.entity.paramentity.SharePlanParam;
@@ -37,14 +37,14 @@ public class ShareQueryPlanServiceImpl implements ShareQueryPlanService {
             shareQueryPlan.setId(UUIDGenerator.getPrimaryKey());
             int insert = shareQueryPlanMapper.insertSelective(shareQueryPlan);
             if (insert == 0){
-                throw new ParameterNullException("分享失败");
+                throw new CustomMessageException("分享失败");
             }
         }
         //删除
         for (ShareQueryPlan shareQueryPlan : sharePlanParam.getShareQueryPlanDeleteList() ) {
             int delete = shareQueryPlanMapper.deleteShareUser(shareQueryPlan);
             if (delete == 0){
-                throw new ParameterNullException("分享失败");
+                throw new CustomMessageException("分享失败");
             }
         }
     }
@@ -53,7 +53,7 @@ public class ShareQueryPlanServiceImpl implements ShareQueryPlanService {
     public Map<String, Object> shareQueryList(String queryPlanId) {
         Map<String, Object> resultMap = new HashMap<>();
         if (StringUtils.isEmpty(queryPlanId)){
-            throw new ParameterNullException("请选择需要分享的方案");
+            throw new CustomMessageException("请选择需要分享的方案");
         }
         //用户列表
         List<User> users = userMapper.selectAllUser();

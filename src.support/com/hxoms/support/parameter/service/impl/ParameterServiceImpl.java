@@ -1,6 +1,6 @@
 package com.hxoms.support.parameter.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.parameter.entity.Parameter;
 import com.hxoms.support.parameter.mapper.ParameterMapper;
@@ -31,7 +31,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public void insertParameter(Parameter parameter) {
         if (parameter == null) {
-            throw new ParameterNullException("添加参数不能为空");
+            throw new CustomMessageException("添加参数不能为空");
         }
         parameter.setPmId(UUIDGenerator.getPrimaryKey());
         Integer orderIndex = parameterMapper.selectMaxOrderIndex();
@@ -52,7 +52,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public void sortParameter(String ids) {
         if(StringUtils.isBlank(ids)){
-            throw new ParameterNullException("排序参数不能为空");
+            throw new CustomMessageException("排序参数不能为空");
         }
         String[] idArray = ids.split(",");
         parameterMapper.sortParameter(idArray);
@@ -66,7 +66,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public void updateParameter(Parameter parameter) {
         if (parameter == null) {
-            throw new ParameterNullException("修改参数不能为空");
+            throw new CustomMessageException("修改参数不能为空");
         }
         parameter.setModifyTime(new Date());
         parameter.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -81,7 +81,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public void deleteParameter(Parameter parameter) {
         if (parameter == null) {
-            throw new ParameterNullException("删除参数不能为空");
+            throw new CustomMessageException("删除参数不能为空");
         }
         parameterMapper.deleteParameter(parameter);
     }
@@ -104,7 +104,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public String selectPValueByCode(String code){
         if (StringUtils.isEmpty(code)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String pValue = parameterMapper.selectPValueByCode(code);
         return pValue;

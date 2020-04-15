@@ -1,6 +1,6 @@
 package com.hxoms.support.parameter.controller;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.parameter.entity.Parameter;
 import com.hxoms.support.parameter.service.ParameterService;
@@ -86,7 +86,7 @@ public class ParameterController {
     @RequestMapping("/selectByCode")
     public String selectPValueByCode(String code){
         if (StringUtils.isEmpty(code)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String pValue = parameterService.selectPValueByCode(code);
         return pValue;

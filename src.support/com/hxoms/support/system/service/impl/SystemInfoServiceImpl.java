@@ -1,7 +1,6 @@
 package com.hxoms.support.system.service.impl;
 
-import com.hxoms.common.exceptions.AlertMessageException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.Constants;
@@ -49,7 +48,7 @@ public class SystemInfoServiceImpl implements SystemInfoService {
     @Override
     public void insertSystemInfo(SystemInfo systemInfo) {
         if (systemInfo == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         systemInfo.setId(UUIDGenerator.getPrimaryKey());
         UserInfo userInfo = UserInfoUtil.getUserInfo();
@@ -64,7 +63,7 @@ public class SystemInfoServiceImpl implements SystemInfoService {
     @Override
     public void updateSystemInfo(SystemInfo systemInfo) {
         if (systemInfo == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         systemInfo.setModifyTime(new Date());
         systemInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -74,21 +73,21 @@ public class SystemInfoServiceImpl implements SystemInfoService {
     @Override
     public void deleteSystemInfo(SystemInfo systemInfo) {
         if (systemInfo == null || systemInfo.getId() == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         //判断是否有子节点
         List<SystemInfo> kidList = systemInfoMapper.selectKidsSysInfo(systemInfo.getId());
         if (kidList == null || kidList.isEmpty()) {
             systemInfoMapper.deleteByPrimaryKey(systemInfo.getId());
         } else {
-            throw new AlertMessageException("存在子节点,不可以删除");
+            throw new CustomMessageException("存在子节点,不可以删除");
         }
     }
 
     @Override
     public SystemInfo selectSysInfoByPrimaryKey(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("id为空");
+            throw new CustomMessageException("id为空");
         }
         return systemInfoMapper.selectByPrimaryKey(id);
     }

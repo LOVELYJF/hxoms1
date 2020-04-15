@@ -1,6 +1,6 @@
 package com.hxoms.support.operateLog.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.operateLog.entity.CfOperatemethod;
 import com.hxoms.support.operateLog.entity.CfOperatemethodExample;
@@ -31,7 +31,7 @@ public class CfOperatemethodServiceImpl implements CfOperatemethodService {
     public int deleteByPrimaryKey(String id){
         if(StringUilt.stringIsNullOrEmpty(id))
         {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.deleteByPrimaryKey(id);
     }
@@ -46,11 +46,11 @@ public class CfOperatemethodServiceImpl implements CfOperatemethodService {
         **/
         if(record==null)
         {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getName()))
         {
-            throw new ParameterNullException("操作方式名称不能为空");
+            throw new CustomMessageException("操作方式名称不能为空");
         }
     }
     /**
@@ -121,7 +121,7 @@ public class CfOperatemethodServiceImpl implements CfOperatemethodService {
     public CfOperatemethod selectByPrimaryKey(String id){
         if(StringUilt.stringIsNullOrEmpty(id))
         {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.selectByPrimaryKey(id);
     }

@@ -1,6 +1,6 @@
 package com.hxoms.message.discussiongroup.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.message.discussiongroup.entity.DiscussionGroup;
@@ -39,7 +39,7 @@ public class DiscussionGroupServiceImpl implements DiscussionGroupService {
     @Override
     public String insertDisGroup(DiscussionGroup discussionGroup, List<MsgUser> disGroupUsers) {
         if (disGroupUsers == null || disGroupUsers.size() == 0){
-            throw new ParameterNullException("成员为空");
+            throw new CustomMessageException("成员为空");
         }
 
         //没有名称时，以其中一位成员姓名为讨论组名称
@@ -52,7 +52,7 @@ public class DiscussionGroupServiceImpl implements DiscussionGroupService {
         //插入讨论组
         int insertDisGroup = discussionGroupMapper.insert(discussionGroup);
         if (insertDisGroup != 1){
-            throw new ParameterNullException("讨论组新建失败");
+            throw new CustomMessageException("讨论组新建失败");
         }
 
         //插入讨论组成员
@@ -83,13 +83,13 @@ public class DiscussionGroupServiceImpl implements DiscussionGroupService {
     @Transactional(rollbackFor=Exception.class)
     public void deleteDisGroup(String disGroupId) {
         if (StringUtils.isEmpty(disGroupId)){
-            throw new ParameterNullException("讨论组ID为空");
+            throw new CustomMessageException("讨论组ID为空");
         }
 
         //删除讨论组
         int delDisGroup = discussionGroupMapper.deleteByPrimaryKey(disGroupId);
         if (delDisGroup == 0){
-            throw new ParameterNullException("删除讨论组失败");
+            throw new CustomMessageException("删除讨论组失败");
         }
 
         //删除讨论组成员

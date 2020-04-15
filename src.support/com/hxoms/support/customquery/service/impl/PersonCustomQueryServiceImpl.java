@@ -1,8 +1,8 @@
 package com.hxoms.support.customquery.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.utils.ExcelUtil;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -40,7 +40,7 @@ public class PersonCustomQueryServiceImpl implements PersonCustomQueryService {
 
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null) {
-            throw new ParameterNullException("请先登录");
+            throw new CustomMessageException("请先登录");
         }
         List<ConditionEntity> conditionEntities = customQueryParam.getConditionEntities();
         List<OrderEntity> orderEntities = customQueryParam.getOrderEntities();
@@ -48,7 +48,7 @@ public class PersonCustomQueryServiceImpl implements PersonCustomQueryService {
         String b0111 = customQueryParam.getB0111();
 
         if (fields == null || fields.size() < 1) {
-            throw new ParameterNullException("参数异常");
+            throw new CustomMessageException("参数异常");
         }
 
         String baseTableName = AnalyzingSqlUtil.getBaseTable(conditionEntities, fields, orderEntities);

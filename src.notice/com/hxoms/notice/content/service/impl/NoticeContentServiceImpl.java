@@ -1,6 +1,6 @@
 package com.hxoms.notice.content.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.notice.content.entity.NoticeContent;
@@ -27,7 +27,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
     @Override
     public String insertOrUpdateContent(NoticeContent noticeContent, boolean isInsert) {
         if (noticeContent == null) {
-            throw new ParameterNullException("编辑内容参数为空");
+            throw new CustomMessageException("编辑内容参数为空");
         }
         noticeContent.setModifyTime(new Date());
         noticeContent.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -53,7 +53,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
         Map<String,String> map = new HashMap<String, String>();
         String userId = UserInfoUtil.getUserInfo().getId();
         if (StringUtils.isBlank(userId)) {
-            throw new ParameterNullException("获取登录人Id失败！");
+            throw new CustomMessageException("获取登录人Id失败！");
         }else{
             map.put("userId",userId);
             map.put("columnId",columnId);
@@ -65,7 +65,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
     @Override
     public NoticeContent selectContentPrimaryKey(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("参数id为空");
+            throw new CustomMessageException("参数id为空");
         }
         return noticeContentMapper.selectByPrimaryKey(id);
     }
@@ -73,7 +73,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
     @Override
     public void saveSortContent(List<NoticeContent> list) {
         if (list == null || list.isEmpty()) {
-            throw new ParameterNullException("集合参数为空");
+            throw new CustomMessageException("集合参数为空");
         }
         for (int i = 0; i < list.size(); i++) {
             NoticeContent noticeContent = list.get(i);
@@ -85,7 +85,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
     @Override
     public void deleteNoticeContentPrimaryKey(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("参数id为空");
+            throw new CustomMessageException("参数id为空");
         }
         noticeContentMapper.deleteByPrimaryKey(id);
     }
@@ -93,7 +93,7 @@ public class NoticeContentServiceImpl implements NoticeContentService {
     @Override
     public void updateStatusByType(String id, String value, String type) {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(type)) {
-            throw new ParameterNullException("参数id或type为空");
+            throw new CustomMessageException("参数id或type为空");
         }
         NoticeContent noticeContent = new NoticeContent();
         noticeContent.setId(id);

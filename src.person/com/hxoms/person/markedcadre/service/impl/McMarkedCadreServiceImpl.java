@@ -7,8 +7,8 @@ package com.hxoms.person.markedcadre.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.rmbKit.ClassConvertHelper;
 import com.hxoms.common.rmbKit.MergeDOC;
 import com.hxoms.common.rmbKit.RmbConvertHelper;
@@ -127,7 +127,7 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
     @Override
     public void sortBySequence(String ids) {
         if(StringUtils.isBlank(ids)){
-            throw new ParameterNullException("排序参数不能为空");
+            throw new CustomMessageException("排序参数不能为空");
         }
         String[] idArray = ids.split(",");
         mapper.sortBySequence(idArray);
@@ -207,7 +207,7 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
     @Override
     public void deleteForList(String ids) {
         if(StringUtils.isBlank(ids)){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String[] idArray = ids.split(",");
         mapper.deleteForList(idArray);
@@ -221,7 +221,7 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
     @Override
     public Map<String,Object> selectDetailedInfo(String id) {
         if (StringUilt.stringIsNullOrEmpty(id)){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         Map<String, Object> map = new LinkedHashMap<>();
 

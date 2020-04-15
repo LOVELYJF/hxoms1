@@ -1,6 +1,6 @@
 package com.hxoms.notice.query.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.notice.content.entity.NoticeContent;
 import com.hxoms.notice.query.mapper.NoticeQueryMapper;
@@ -32,7 +32,7 @@ public class NoticeQueryServiceImpl implements NoticeQueryService {
         Map<String,Object> parm = new HashMap<String, Object>();
         String userId = UserInfoUtil.getUserInfo().getId();
         if (StringUtils.isBlank(userId)) {
-            throw new ParameterNullException("获取登录人Id失败！");
+            throw new CustomMessageException("获取登录人Id失败！");
         }else{
             parm.put("userId",userId);
             parm.put("columnId",columnId);
@@ -46,7 +46,7 @@ public class NoticeQueryServiceImpl implements NoticeQueryService {
         List<NoticeContent> list = new ArrayList<NoticeContent>();
         String userId = UserInfoUtil.getUserInfo().getId();
         if (StringUtils.isBlank(userId)) {
-            throw new ParameterNullException("获取登录人Id失败！");
+            throw new CustomMessageException("获取登录人Id失败！");
         }else{
             list = noticeQueryMapper.selectNoticeByKeyWord(userId,keyWord);
             return list;

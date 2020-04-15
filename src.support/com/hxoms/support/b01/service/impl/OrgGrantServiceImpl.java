@@ -1,7 +1,6 @@
 package com.hxoms.support.b01.service.impl;
 
-import com.hxoms.common.exceptions.DataExistException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.Constants;
@@ -55,7 +54,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public OrgGrant selectGrantModule(String orgId) {
         if (orgId == null) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         //所有的使用的模块
         List<Module> currUserModuleList = moduleService.selectCurrGrantModule(UserInfoUtil.getUserInfo().getId());
@@ -80,7 +79,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public OrgGrant selectGrantSystem(String orgId) {
         if (orgId == null) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         //获取所有的系统
         List<SystemInfo> systemInfoList = systemInfoService.selectCurrUserGrantSystemInfo();
@@ -103,11 +102,11 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public void insertGrantModule(OrgGrant orgGrant) {
         if (orgGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String orgId = orgGrant.getOrgId();
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         //先删除已授权的模块
         orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_module");
@@ -122,11 +121,11 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public void insertGrantSystem(OrgGrant orgGrant) {
         if (orgGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String orgId = orgGrant.getOrgId();
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("角色id为空");
+            throw new CustomMessageException("角色id为空");
         }
         //先删除已授权的模块
         orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_system");
@@ -141,15 +140,15 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public void insertGrantLeaderTypeInfo(OrgGrant orgGrant) {
         if (orgGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String orgId = orgGrant.getOrgId();
         String leaderTypeId = orgGrant.getLeaderTypeId();
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         if (StringUtils.isBlank(leaderTypeId)) {
-            throw new ParameterNullException("干部类别id为空");
+            throw new CustomMessageException("干部类别id为空");
         }
         //先删除已授权的模块
         orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_leadertype");
@@ -167,11 +166,11 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public void insertGrantOrg(OrgGrant orgGrant) {
         if (orgGrant == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String orgId = orgGrant.getOrgId();
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         //先删除已授权的模块
         orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_sub");
@@ -195,7 +194,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public OrgGrant selectGrantLeaderType(String orgId, String leaderTypeId) {
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id不能为空");
+            throw new CustomMessageException("机构id不能为空");
         }
         User user = userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
         //当前用户所在机构所具有的信息集权限
@@ -228,7 +227,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
         //查询干部类别
         List<Tree> leaderTypeList = orgGrantMapper.selectLeaderType(Constants.LEADER_TYPE);
         if (leaderTypeList == null || leaderTypeList.isEmpty()) {
-            throw new DataExistException("字典中干部类别不存在");
+            throw new CustomMessageException("字典中干部类别不存在");
         }
         return leaderTypeList;
     }
@@ -236,7 +235,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public OrgGrant selectGrantOrg(String orgId) {
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id不能为空");
+            throw new CustomMessageException("机构id不能为空");
         }
         List<Tree> list = orgService.selectOrgTree();
         List<String> checkList = orgGrantMapper.selectGrantOrg(orgId);
@@ -249,7 +248,7 @@ public class OrgGrantServiceImpl implements OrgGrantService {
     @Override
     public void copyOrgGrantForOtherOrg(String srcOrgId, List<String> list) {
         if (StringUtils.isBlank(srcOrgId)) {
-            throw new ParameterNullException("源机构id不能为空");
+            throw new CustomMessageException("源机构id不能为空");
         }
         if (list == null || list.isEmpty()) {
             return;

@@ -6,7 +6,7 @@ package com.hxoms.support.DataChangedLog.service;
  */
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -40,13 +40,13 @@ public class DataChangedLogServiceImpl implements DataChangedLogService {
             record.setOperateDate(new Date());
         }
         if (null == record.getTableName() || record.getTableName().isEmpty()) {
-            throw new ParameterNullException("表名不能为空！");
+            throw new CustomMessageException("表名不能为空！");
         }
         if (null == record.getOperatorName() || record.getOperatorName().isEmpty()) {
-            throw new ParameterNullException("操作人不能为空！");
+            throw new CustomMessageException("操作人不能为空！");
         }
         if (null == record.getChangedData() || record.getChangedData().isEmpty()) {
-            throw new ParameterNullException("修改数据不能为空！");
+            throw new CustomMessageException("修改数据不能为空！");
         }
     }
 

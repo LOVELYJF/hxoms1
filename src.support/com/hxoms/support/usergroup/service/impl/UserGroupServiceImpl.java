@@ -1,7 +1,6 @@
 package com.hxoms.support.usergroup.service.impl;
 
-import com.hxoms.common.exceptions.AlertMessageException;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -46,13 +45,13 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void insertUserGroup(UserGroup userGroup) {
         if (userGroup == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUtils.isBlank(userGroup.getUgName())) {
-            throw new ParameterNullException("名称不能为空");
+            throw new CustomMessageException("名称不能为空");
         }
         if (StringUtils.isBlank(userGroup.getOrgId())) {
-            throw new ParameterNullException("所属机构不能为空");
+            throw new CustomMessageException("所属机构不能为空");
         }
         userGroup.setId(UUIDGenerator.getPrimaryKey());
         userGroup.setModifyTime(new Date());
@@ -63,13 +62,13 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void updateUserGroup(UserGroup userGroup) {
         if (userGroup == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUtils.isBlank(userGroup.getUgName())) {
-            throw new ParameterNullException("用户组名称不能为空");
+            throw new CustomMessageException("用户组名称不能为空");
         }
         if (StringUtils.isBlank(userGroup.getId())) {
-            throw new ParameterNullException("用户组id不能为空");
+            throw new CustomMessageException("用户组id不能为空");
         }
         userGroup.setModifyTime(new Date());
         userGroup.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -79,7 +78,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void deleteUserGroup(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("用户组id不能为空");
+            throw new CustomMessageException("用户组id不能为空");
         }
         //删除用户组
         userGroupMapper.deleteByPrimaryKey(id);
@@ -92,7 +91,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public List<Tree> selectUserGroupUserTree(String orgId) {
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id不能为空");
+            throw new CustomMessageException("机构id不能为空");
         }
         List<Tree> list = userGroupMapper.selectUserGroupUserTree(orgId);
         return TreeUtil.listToTreeJson(list);
@@ -101,7 +100,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public List<UserGroup> selectUserGroupList(String orgId) {
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id不能为空");
+            throw new CustomMessageException("机构id不能为空");
         }
         return userGroupMapper.selectUserGroupList(orgId);
     }
@@ -109,10 +108,10 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignUgIdForUser(String ugId, String userId) {
         if (StringUtils.isBlank(ugId)) {
-            throw new ParameterNullException("用户组id不能为空");
+            throw new CustomMessageException("用户组id不能为空");
         }
         if (StringUtils.isBlank(userId)) {
-            throw new ParameterNullException("用户id不能为空");
+            throw new CustomMessageException("用户id不能为空");
         }
         //删除已分配的用户组
         userGroupMapper.deleteAssignUserGroup(userId);
@@ -128,14 +127,14 @@ public class UserGroupServiceImpl implements UserGroupService {
     public Map<String, Object> selectRoleWithUserGroupAndUser(String type, String id, String orgId) {
         Map<String, Object> map = new HashMap<>();
         if (StringUtils.isBlank(orgId)) {
-            throw new ParameterNullException("机构id为空");
+            throw new CustomMessageException("机构id为空");
         }
         List<Role> assignRoleList = selectAssignRole(type, id);
         //获取所有的角色
         List<Role> roleList = roleMapper.selectRoleList(null, orgId);
         map.put("list", roleList);
         if (roleList == null || roleList.isEmpty()) {
-            throw new AlertMessageException("当前机构下没有角色");
+            throw new CustomMessageException("当前机构下没有角色");
         } else if (assignRoleList == null || assignRoleList.isEmpty()) {
             return map;
         }
@@ -157,7 +156,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     public List<Role> selectAssignRole(String type, String id) {
         if (StringUtils.isBlank(type) || StringUtils.isBlank(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         List<Role> roleList;
         //判断是用户组还是用户
@@ -166,7 +165,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         } else if ("usergroup".equals(type)) {
             roleList = roleMapper.selectUserGroupAssignRoles(id);
         } else {
-            throw new AlertMessageException("type类型不存在");
+            throw new CustomMessageException("type类型不存在");
         }
         return roleList;
     }
@@ -174,7 +173,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Override
     public void assignRolesForUserOrUserGroup(String type, String id, List<String> roleIds) {
         if (StringUtils.isBlank(type) || StringUtils.isBlank(id)) {
-            throw new ParameterNullException("类型或者id不能为空");
+            throw new CustomMessageException("类型或者id不能为空");
         }
         if ("user".equals(type)) {
             //先删除
@@ -189,7 +188,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 userGroupMapper.assignRolesForUserGroup(id, roleIds);
             }
         } else {
-            throw new AlertMessageException("授权类型不存在:[" + type + "]");
+            throw new CustomMessageException("授权类型不存在:[" + type + "]");
         }
     }
     /**

@@ -1,6 +1,6 @@
 package com.hxoms.support.b01.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.*;
@@ -79,22 +79,22 @@ public class OrgServiceImpl implements OrgService {
      **/
     private void CheckInput(B01 b01) {
         if (b01 == null) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(b01.getB0101())) {
-            throw new ParameterNullException("机构名称不能为空");
+            throw new CustomMessageException("机构名称不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(b01.getB0114())) {
-            throw new ParameterNullException("机构编码不能为空");
+            throw new CustomMessageException("机构编码不能为空");
         }
 
         int count = b01Mapper.doubleOrgCode(b01);
         if (count > 0) {
-            throw new ParameterNullException("机构编码重复");
+            throw new CustomMessageException("机构编码重复");
         }
         count = b01Mapper.doubleOrgName(b01);
         if (count > 0) {
-            throw new ParameterNullException("机构名称重复");
+            throw new CustomMessageException("机构名称重复");
         }
     }
 
@@ -106,7 +106,7 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public List<B01> selectOrg(B01 b01) {
         if (b01 == null) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         List<B01> b01Org = b01Mapper.selectOrg(b01);
         return b01Org;
@@ -121,11 +121,11 @@ public class OrgServiceImpl implements OrgService {
     @Transactional
     public void deleteOrg(String b0111) {
         if (StringUtils.isBlank(b0111)) {
-            throw new ParameterNullException("机构代码不能为空");
+            throw new CustomMessageException("机构代码不能为空");
         }
         int count = b01Mapper.selectOrgByPid(b0111);
         if (count > 0) {
-            throw new ParameterNullException("该机构有下级机构，无法删除！");
+            throw new CustomMessageException("该机构有下级机构，无法删除！");
         }
         b01Mapper.deleteOrg(b0111);
     }
@@ -138,7 +138,7 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public void sortOrg(String b0111s) {
         if (StringUtils.isBlank(b0111s)) {
-            throw new ParameterNullException("排序机构不能为空");
+            throw new CustomMessageException("排序机构不能为空");
         }
         String[] b01s = b0111s.split(",");
         b01Mapper.sortOrg(b01s);
@@ -152,7 +152,7 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public List<B01> selectOrgById(B01 b01) {
         if (b01 == null) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         List<B01> b01List = b01Mapper.selectOrgById(b01);
         return b01List;
@@ -166,7 +166,7 @@ public class OrgServiceImpl implements OrgService {
     @Override
     public B01 selectOrgByB0111(String b0111) {
         if (StringUtils.isBlank(b0111)) {
-            throw new ParameterNullException("机构代码不能为空");
+            throw new CustomMessageException("机构代码不能为空");
         }
         return b01Mapper.selectOrgByB0111(b0111);
     }

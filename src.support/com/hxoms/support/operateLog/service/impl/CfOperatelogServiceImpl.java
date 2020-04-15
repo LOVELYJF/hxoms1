@@ -6,7 +6,7 @@ package com.hxoms.support.operateLog.service.impl;
  */
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.operateLog.entity.CfOperatelog;
 import com.hxoms.support.operateLog.entity.CfOperatelogExample;
@@ -36,7 +36,7 @@ public class CfOperatelogServiceImpl implements CfOperatelogService {
     public int deleteByPrimaryKey(String id){
         if(StringUilt.stringIsNullOrEmpty(id))
         {
-            throw new ParameterNullException("日志主键不能为空");
+            throw new CustomMessageException("日志主键不能为空");
         }
         return mapper.deleteByPrimaryKey(id);
     }
@@ -68,16 +68,16 @@ public class CfOperatelogServiceImpl implements CfOperatelogService {
     private void CheckInput(CfOperatelog record) {
         if(record==null)
         {
-            throw new ParameterNullException("日志不能为空");
+            throw new CustomMessageException("日志不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getOperateModel()))
         {
-            throw new ParameterNullException("模块不能为空");
+            throw new CustomMessageException("模块不能为空");
         }
 
         if(record.getOperateType()<=0)
         {
-            throw new ParameterNullException("操作类型不对");
+            throw new CustomMessageException("操作类型不对");
         }
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         record.setOperatorId(userInfo.getId());
@@ -156,7 +156,7 @@ public class CfOperatelogServiceImpl implements CfOperatelogService {
     public CfOperatelog selectByPrimaryKey(String id){
         if(StringUilt.stringIsNullOrEmpty(id))
         {
-            throw new ParameterNullException("日志主键不能为空");
+            throw new CustomMessageException("日志主键不能为空");
         }
         return mapper.selectByPrimaryKey(id);
     }

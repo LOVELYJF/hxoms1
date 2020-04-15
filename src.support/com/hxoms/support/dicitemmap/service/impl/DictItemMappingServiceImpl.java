@@ -1,7 +1,7 @@
 package com.hxoms.support.dicitemmap.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.dicitemmap.entity.DictItemMapping;
@@ -46,7 +46,7 @@ public class DictItemMappingServiceImpl implements DictItemMappingService {
     public PageInfo<DictItemMapping> selectDictItemMapping(Integer pageNum, Integer pageSize, String keyword, String applicationId, String dicCode) {
         Map<String, Object> param = new HashMap<>();
         if (StringUtils.isEmpty(dicCode)){
-            throw new ParameterNullException("请选择父级菜单");
+            throw new CustomMessageException("请选择父级菜单");
         }
         //分页
         PageUtil.pageHelp(pageNum, pageSize);
@@ -63,22 +63,22 @@ public class DictItemMappingServiceImpl implements DictItemMappingService {
     public void addOrUpdateDictItemMapping(DictItemMapping dictItemMapping) {
         //非空判断
         if (StringUtils.isEmpty(dictItemMapping.getDictCode())){
-            throw new ParameterNullException("字典编码不能为空");
+            throw new CustomMessageException("字典编码不能为空");
         }
         if (StringUtils.isEmpty(dictItemMapping.getItemCode())){
-            throw new ParameterNullException("字典项编码不能为空");
+            throw new CustomMessageException("字典项编码不能为空");
         }
         //新增
         if (StringUtils.isEmpty(dictItemMapping.getId())){
             dictItemMapping.setId(UUIDGenerator.getPrimaryKey());
             int insert = dictItemMappingMapper.insertSelective(dictItemMapping);
             if (insert < 1){
-                throw new ParameterNullException("添加失败");
+                throw new CustomMessageException("添加失败");
             }
         }else{
             int update = dictItemMappingMapper.updateByPrimaryKeySelective(dictItemMapping);
             if (update < 1){
-                throw new ParameterNullException("修改失败");
+                throw new CustomMessageException("修改失败");
             }
         }
     }
@@ -86,11 +86,11 @@ public class DictItemMappingServiceImpl implements DictItemMappingService {
     @Override
     public void deleteDictItemMapping(String id) {
         if (StringUtils.isEmpty(id)){
-            throw new ParameterNullException("字典项id不能为空");
+            throw new CustomMessageException("字典项id不能为空");
         }
         int delete = dictItemMappingMapper.deleteByPrimaryKey(id);
         if (delete < 1){
-            throw new ParameterNullException("删除失败");
+            throw new CustomMessageException("删除失败");
         }
     }
 

@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -38,7 +38,7 @@ public class QueryPlanServiceImpl implements QueryPlanService {
         //当前登录用户
         UserInfo user = UserInfoUtil.getUserInfo();
         if (user == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
         //添加
         if (StringUtils.isEmpty(queryPlanWithBLOBs.getId())){
@@ -56,11 +56,11 @@ public class QueryPlanServiceImpl implements QueryPlanService {
             //插入
             int insertQuery = queryPlanMapper.insertSelective(queryPlanWithBLOBs);
             if (insertQuery == 0){
-                throw new ParameterNullException("保存失败");
+                throw new CustomMessageException("保存失败");
             }
             int insertShare = shareQueryPlanMapper.insertSelective(shareQueryplan);
             if (insertShare == 0){
-                throw new ParameterNullException("保存失败");
+                throw new CustomMessageException("保存失败");
             }
         }else{
             //修改
@@ -68,7 +68,7 @@ public class QueryPlanServiceImpl implements QueryPlanService {
             queryPlanWithBLOBs.setModifyUser(user.getId());
             int update = queryPlanMapper.updateByPrimaryKeySelective(queryPlanWithBLOBs);
             if (update == 0){
-                throw new ParameterNullException("修改失败");
+                throw new CustomMessageException("修改失败");
             }
         }
     }
@@ -83,7 +83,7 @@ public class QueryPlanServiceImpl implements QueryPlanService {
         //当前登录用户
         UserInfo user = UserInfoUtil.getUserInfo();
         if (user == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
 
         //参数

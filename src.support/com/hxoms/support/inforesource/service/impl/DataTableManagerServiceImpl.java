@@ -5,7 +5,7 @@ package com.hxoms.support.inforesource.service.impl;
  * @date:2019-07-17
  */
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.inforesource.entity.DataTableManager;
 import com.hxoms.support.inforesource.entity.DataTableManagerExample;
@@ -24,7 +24,7 @@ public class DataTableManagerServiceImpl implements DataTableManagerService {
     @Override
     public int deleteByPrimaryKey(String id) {
         if(StringUilt.stringIsNullOrEmpty(id)){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.deleteByPrimaryKey(id);
     }
@@ -43,7 +43,7 @@ public class DataTableManagerServiceImpl implements DataTableManagerService {
     @Override
     public DataTableManager selectByPrimaryKey(String id) {
         if(StringUilt.stringIsNullOrEmpty(id)){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.selectByPrimaryKey(id);
     }
@@ -57,13 +57,13 @@ public class DataTableManagerServiceImpl implements DataTableManagerService {
     private void CheckInput(DataTableManager record)
     {
         if(record==null){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getTableid())){
-            throw new ParameterNullException("表不能为空");
+            throw new CustomMessageException("表不能为空");
         }
         if(StringUilt.stringIsNullOrEmpty(record.getSysid())){
-            throw new ParameterNullException("系统不能为空");
+            throw new CustomMessageException("系统不能为空");
         }
     }
 }

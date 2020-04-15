@@ -1,6 +1,6 @@
 package com.hxoms.notice.access.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.notice.access.entity.NoticeAccess;
 import com.hxoms.notice.access.mapper.NoticeAccessMapper;
@@ -27,7 +27,7 @@ public class NoticeAccessServiceImpl implements NoticeAccessService {
         List<NoticeAccess> accessList = new ArrayList<NoticeAccess>();
         NoticeAccess noticeAccess;
         if (id == null) {
-            throw new ParameterNullException("未获取到通知公告Id！");
+            throw new CustomMessageException("未获取到通知公告Id！");
         }
         if (noticeAccessMapper.deleteByContentId(id) >= 0) {
             for(int i = 0;i < orgIdList.size();i++){
@@ -39,14 +39,14 @@ public class NoticeAccessServiceImpl implements NoticeAccessService {
             }
             noticeAccessMapper.insert(accessList);
         } else {
-            throw new ParameterNullException("授权失败！");
+            throw new CustomMessageException("授权失败！");
         }
     }
 
     @Override
     public void deleteNoticeAccessPrimaryKey(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ParameterNullException("参数id为空");
+            throw new CustomMessageException("参数id为空");
         }
         noticeAccessMapper.deleteByPrimaryKey(id);
     }
@@ -55,7 +55,7 @@ public class NoticeAccessServiceImpl implements NoticeAccessService {
     public List<NoticeAccess> selectAccessByContentId(String contentId) {
         List<NoticeAccess> list = new ArrayList<NoticeAccess>();
         if (StringUtils.isBlank(contentId)) {
-            throw new ParameterNullException("未获取到内容Id！");
+            throw new CustomMessageException("未获取到内容Id！");
         }else{
             list = noticeAccessMapper.selectAccessByContentId(contentId);
         return list;

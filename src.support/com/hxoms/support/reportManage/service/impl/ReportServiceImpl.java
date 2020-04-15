@@ -1,8 +1,8 @@
 package com.hxoms.support.reportManage.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.StringUilt;
@@ -48,7 +48,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void insertReport(ReportManage decision) {
         if (decision == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String pid = decision.getPid();
         if (pid == null){
@@ -64,7 +64,7 @@ public class ReportServiceImpl implements ReportService {
         SqlVo sqlVo = SqlVo.getInstance(sql);
         int count = selectMapper.insert(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 
@@ -76,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<LinkedHashMap<String, Object>> echoData(String id) {
         if (id == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String sql = "select pid,node_name,order_index from sys_report order by pid";
         SqlVo sqlVo = SqlVo.getInstance(sql);
@@ -92,7 +92,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void updateReport(ReportManage decision) {
         if (decision == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String sql ="update sys_report set pid='"+decision.getPid()+"'," +
                     "node_name='"+decision.getNodeName()+"'," +
@@ -101,7 +101,7 @@ public class ReportServiceImpl implements ReportService {
         SqlVo sqlVo = SqlVo.getInstance(sql);
         int count = selectMapper.update(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 
@@ -113,11 +113,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void deleteReport(String id) {
         if (id == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         int count = reportMapper.selectTreeNode1(id);
         if(count>0){
-            throw new ParameterNullException("该机构有下级机构，无法删除！");
+            throw new CustomMessageException("该机构有下级机构，无法删除！");
         }
         reportMapper.deleteTreeNode1(id);
 
@@ -160,7 +160,7 @@ public class ReportServiceImpl implements ReportService {
         SqlVo sqlVo = SqlVo.getInstance(dasql);
         int count = selectMapper.update(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
         SqlVo sqlVo1 = new SqlVo();
         sqlVo1.setSql(decision.getDaSql());
@@ -187,7 +187,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void insertConfigTree(DecisionConfig decisionConfig) {
         if (decisionConfig == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String pid = decisionConfig.getPid();
         if (pid == null){
@@ -199,7 +199,7 @@ public class ReportServiceImpl implements ReportService {
         SqlVo sqlVo = SqlVo.getInstance(sql);
         int count = selectMapper.insert(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 
@@ -211,14 +211,14 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void updateConfigTree(DecisionConfig decisionConfig) {
         if (decisionConfig == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String sql ="update decision_show set json='"+decisionConfig.getJson()+"' " +
                     "where id='"+decisionConfig.getId()+"'";
         SqlVo sqlVo = SqlVo.getInstance(sql);
         int count = selectMapper.update(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 
@@ -230,11 +230,11 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void deleteConfigTree(String id) {
         if (id == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         int count = decisionMapper.selectTreeNode2(id);
         if(count>0){
-            throw new ParameterNullException("该机构有下级机构，无法删除！");
+            throw new CustomMessageException("该机构有下级机构，无法删除！");
         }
         decisionMapper.deleteTreeNode2(id);
     }
@@ -247,7 +247,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<LinkedHashMap<String, Object>> selectConfigById(String id) {
         if (id == null) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         int count = decisionMapper.selectTreeNode2(id);
         //如果有子级，查询全部
@@ -276,16 +276,16 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void updateConfigById(DecisionAnalysis decision) {
         if (StringUilt.stringIsNullOrEmpty(decision.getId())) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         if (StringUilt.stringIsNullOrEmpty(decision.getJson())) {
-            throw new ParameterNullException("参数为空");
+            throw new CustomMessageException("参数为空");
         }
         String sql = "update sys_decision_analysis set json = '"+decision.getJson()+"' where id = '"+decision.getId()+"'";
         SqlVo sqlVo = SqlVo.getInstance(sql);
         int count = selectMapper.update(sqlVo);
         if (count == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 }

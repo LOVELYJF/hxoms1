@@ -1,6 +1,6 @@
 package com.hxoms.message.msguser.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.message.msguser.entity.MsgUser;
@@ -36,10 +36,10 @@ public class MsgUserServiceImpl implements MsgUserService {
     @Override
     public void insertDisGroupUsers(List<MsgUser> disGroupUsers, String disGroupId) {
         if (StringUtils.isEmpty(disGroupId)){
-            throw new ParameterNullException("讨论组ID为空");
+            throw new CustomMessageException("讨论组ID为空");
         }
         if (disGroupUsers == null || disGroupUsers.size() == 0){
-            throw new ParameterNullException("讨论组成员为空");
+            throw new CustomMessageException("讨论组成员为空");
         }
 
         //循环修改成员属性
@@ -52,7 +52,7 @@ public class MsgUserServiceImpl implements MsgUserService {
 
         int insertDisGroupUser = msgUserMapper.insertMsgUsers(disGroupUsers);
         if (insertDisGroupUser == 0){
-            throw new ParameterNullException("插入失败");
+            throw new CustomMessageException("插入失败");
         }
     }
 
@@ -64,12 +64,12 @@ public class MsgUserServiceImpl implements MsgUserService {
     @Override
     public void deleteUsersByDisGroupId(String disGroupId) {
         if (StringUtils.isEmpty(disGroupId)){
-            throw new ParameterNullException("讨论组ID为空");
+            throw new CustomMessageException("讨论组ID为空");
         }
 
         int delUsers = msgUserMapper.deleteUsersByDisGroupId(disGroupId, Constants.IS_DEL);
         if (delUsers == 0){
-            throw new ParameterNullException("成员删除失败");
+            throw new CustomMessageException("成员删除失败");
         }
     }
 
@@ -81,7 +81,7 @@ public class MsgUserServiceImpl implements MsgUserService {
     @Override
     public List<MsgUser> selectDisGroupUsers(String disGroupID) {
         if (StringUtils.isEmpty(disGroupID)){
-            throw new ParameterNullException("讨论组ID为空");
+            throw new CustomMessageException("讨论组ID为空");
         }
 
         return msgUserMapper.selectDisGroupUsers(disGroupID, Constants.NOT_DEL);
@@ -97,10 +97,10 @@ public class MsgUserServiceImpl implements MsgUserService {
     @Override
     public void insertMsgUsers(Map<String, List<MsgUser>> msgUserMap, String msgID) {
         if (msgUserMap == null || msgUserMap.size() == 0){
-            throw new ParameterNullException("接收用户不能为空");
+            throw new CustomMessageException("接收用户不能为空");
         }
         if (StringUtils.isEmpty(msgID)){
-            throw new ParameterNullException("消息id不能为空");
+            throw new CustomMessageException("消息id不能为空");
         }
 
         //接收用户列表
@@ -118,7 +118,7 @@ public class MsgUserServiceImpl implements MsgUserService {
 
         int insertMsgUsers = msgUserMapper.insertMsgUsers(msgUserslist);
         if (insertMsgUsers == 0){
-            throw new ParameterNullException("插入失败");
+            throw new CustomMessageException("插入失败");
         }
     }
 }

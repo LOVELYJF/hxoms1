@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.util;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.SpringUtil;
 import com.hxoms.support.customquery.entity.custom.ConditionEntity;
 import com.hxoms.support.customquery.entity.custom.OrderEntity;
@@ -119,7 +119,7 @@ public class AnalyzingSqlUtil {
             String tableName = entity.getKey().toUpperCase();
             DataTable dataTable = entity.getValue();
             if (dataTable == null) {
-                throw new ParameterNullException("参数异常");
+                throw new CustomMessageException("参数异常");
             }
             if (!tableName.equalsIgnoreCase(baseTable)) {
                 //如果选择机构则加入机构条件
@@ -185,7 +185,7 @@ public class AnalyzingSqlUtil {
         for (String filed : fileds) {
             String[] tablename = filed.split("\\.");
             if (tablename.length != 2) {
-                throw new ParameterNullException("参数异常");
+                throw new CustomMessageException("参数异常");
             }
             Map<String, String> param = new HashMap<>();
             param.put("tabCode", tablename[0]);
@@ -219,7 +219,7 @@ public class AnalyzingSqlUtil {
             }else{
                 String[] tablename = conditionEntity.getFieldName().split("\\.");
                 if (tablename.length != 2) {
-                    throw new ParameterNullException("参数异常");
+                    throw new CustomMessageException("参数异常");
                 }
                 if (!tableNameMap.containsKey(tablename[0].toUpperCase())) {
                     DataTable dataTable = dataTableMapper.selectByCode(tablename[0].toUpperCase());
@@ -231,7 +231,7 @@ public class AnalyzingSqlUtil {
         for (OrderEntity orderEntity : orderEntities) {
             String[] tablename = orderEntity.getFieldName().split("\\.");
             if (tablename.length != 2) {
-                throw new ParameterNullException("参数异常");
+                throw new CustomMessageException("参数异常");
             }
             if (!tableNameMap.containsKey(tablename[0].toUpperCase())) {
                 DataTable dataTable = dataTableMapper.selectByCode(tablename[0].toUpperCase());
@@ -242,7 +242,7 @@ public class AnalyzingSqlUtil {
         for (String filed : fileds) {
             String[] tablename = filed.split("\\.");
             if (tablename.length != 2) {
-                throw new ParameterNullException("参数异常");
+                throw new CustomMessageException("参数异常");
             }
             if (!tableNameMap.containsKey(tablename[0].toUpperCase())) {
                 DataTable dataTable = dataTableMapper.selectByCode(tablename[0].toUpperCase());
@@ -265,7 +265,7 @@ public class AnalyzingSqlUtil {
         for (String filed : fileds) {
             String[] tablename = filed.split("\\.");
             if (tablename.length != 2) {
-                throw new ParameterNullException("参数异常");
+                throw new CustomMessageException("参数异常");
             }
             if (tablename[0].toUpperCase().contains("A01")) {
                 baseTable = tablename[0];
@@ -283,7 +283,7 @@ public class AnalyzingSqlUtil {
                 }else{
                     String[] tablename = conditionEntity.getFieldName().split("\\.");
                     if (tablename.length != 2) {
-                        throw new ParameterNullException("参数异常");
+                        throw new CustomMessageException("参数异常");
                     }
                     if (tablename[0].toUpperCase().contains("A01")) {
                         baseTable = tablename[0];
@@ -296,7 +296,7 @@ public class AnalyzingSqlUtil {
             for (OrderEntity orderEntity : orderEntities) {
                 String[] tablename = orderEntity.getFieldName().split("\\.");
                 if (tablename.length != 2) {
-                    throw new ParameterNullException("参数异常");
+                    throw new CustomMessageException("参数异常");
                 }
                 if (tablename[0].toUpperCase().contains("A01")) {
                     baseTable = tablename[0];

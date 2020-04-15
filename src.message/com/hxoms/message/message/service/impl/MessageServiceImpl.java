@@ -1,7 +1,7 @@
 package com.hxoms.message.message.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.message.discussiongroup.entity.DiscussionGroup;
 import com.hxoms.message.discussiongroup.service.DiscussionGroupService;
@@ -56,16 +56,18 @@ public class MessageServiceImpl implements MessageService {
         //消息
         Message message = sendMessageParam.getMessage();
         if (msgUserMap == null || msgUserMap.size() == 0){
-            throw new ParameterNullException("接收用户为空");
+            throw new CustomMessageException("接收用户为空");
         }
         if (StringUtils.isEmpty(message.getContent())){
-            throw new ParameterNullException("接收内容为空");
+            throw new CustomMessageException("接收内容为空");
         }
+
+
 
         //讨论组
         if (msgUserMap.get(Constants.DISCUSSIONGROUP) != null && msgUserMap.get(Constants.DISCUSSIONGROUP).size() != 0){
             if (sendMessageParam.getDiscussionGroup() == null){
-                throw new ParameterNullException("讨论组为空");
+                throw new CustomMessageException("讨论组为空");
             }
             DiscussionGroup discussionGroup = sendMessageParam.getDiscussionGroup();
             List<MsgUser> msgUsers = msgUserMap.get(Constants.DISCUSSIONGROUP);
@@ -83,7 +85,7 @@ public class MessageServiceImpl implements MessageService {
             setMessageInfo(message);
             int insertMsg = messageMapper.insert(message);
             if (insertMsg == 0){
-                throw new ParameterNullException("发送失败");
+                throw new CustomMessageException("发送失败");
             }
         }else{     //普通消息
             //添加消息
@@ -101,7 +103,7 @@ public class MessageServiceImpl implements MessageService {
             setMessageInfo(message);
             int insertMsg = messageMapper.insert(message);
             if (insertMsg == 0){
-                throw new ParameterNullException("发送失败");
+                throw new CustomMessageException("发送失败");
             }
             //接收人添加
             msgUserService.insertMsgUsers(msgUserMap, message.getId());
@@ -126,7 +128,7 @@ public class MessageServiceImpl implements MessageService {
         {}
         //杨波 考虑到系统自动发送的消息是没有发送人的，所在多加一个处理
         if (userInfo == null && StringUilt.stringIsNullOrEmpty(message.getSendUsername()) ){
-            throw new ParameterNullException("没有设置发送用户！");
+            throw new CustomMessageException("没有设置发送用户！");
         }
         //发送者没有设置发送用户信息时才自动添加
         if (userInfo != null&& StringUilt.stringIsNullOrEmpty(message.getSendUsername())) {
@@ -151,7 +153,7 @@ public class MessageServiceImpl implements MessageService {
         //当前登录用户
         UserInfo user = UserInfoUtil.getUserInfo();
         if (user == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
 
         //参数集合
@@ -194,10 +196,10 @@ public class MessageServiceImpl implements MessageService {
                 //讨论组接收消息列表
                 messageCustoms = messageMapper.selectDisGroupReceMsgList(paramMap);
             }else{
-                throw new ParameterNullException("参数错误");
+                throw new CustomMessageException("参数错误");
             }
         }else{
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         //返回数据
         PageInfo<MessageCustom> pageInfo = new PageInfo(messageCustoms);
@@ -214,10 +216,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void updateIsTopBatch(String ids, String isTop){
         if (StringUtils.isEmpty(ids)){
-            throw new ParameterNullException("操作数据为空");
+            throw new CustomMessageException("操作数据为空");
         }
         if (StringUtils.isEmpty(isTop)){
-            throw new ParameterNullException("置顶状态为空");
+            throw new CustomMessageException("置顶状态为空");
         }
 
         //请求参数
@@ -227,7 +229,7 @@ public class MessageServiceImpl implements MessageService {
 
         int updateIsTop = messageMapper.updateIsTopBatch(paramMap);
         if (updateIsTop == 0){
-            throw new ParameterNullException("操作失败");
+            throw new CustomMessageException("操作失败");
         }
     }
 
@@ -239,15 +241,15 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void handleMsg(Message message) {
         if (StringUtils.isEmpty(message.getId())){
-            throw new ParameterNullException("消息Id为空");
+            throw new CustomMessageException("消息Id为空");
         }
         if (StringUtils.isEmpty(message.getHandleResult())){
-            throw new ParameterNullException("处理结果为空");
+            throw new CustomMessageException("处理结果为空");
         }
         //当前登录用户
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
 
         //设置消息信息
@@ -259,7 +261,7 @@ public class MessageServiceImpl implements MessageService {
         //处理
         int handleMsg = messageMapper.updateByPrimaryKeySelective(message);
         if (handleMsg == 0){
-            throw new ParameterNullException("处理失败");
+            throw new CustomMessageException("处理失败");
         }
         //处理消息自动添加已读信息
         ReadMarkParam read=new ReadMarkParam();
@@ -281,16 +283,16 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void setEstimateTime(Message message) {
         if (StringUtils.isEmpty(message.getId())){
-            throw new ParameterNullException("消息Id为空");
+            throw new CustomMessageException("消息Id为空");
         }
         if (message.getEstimateTime() == null){
-            throw new ParameterNullException("预计完成时间为空");
+            throw new CustomMessageException("预计完成时间为空");
         }
 
         //设置预计完成时间
         int setEstimateTime = messageMapper.updateByPrimaryKeySelective(message);
         if (setEstimateTime == 0){
-            throw new ParameterNullException("处理失败");
+            throw new CustomMessageException("处理失败");
         }
     }
 
@@ -304,10 +306,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageCustom selectMsgCustomById(String id, String messageCategory) {
         if (StringUtils.isEmpty(id)){
-            throw new ParameterNullException("消息id为空");
+            throw new CustomMessageException("消息id为空");
         }
         if (StringUtils.isEmpty(messageCategory)){
-            throw new ParameterNullException("消息类别为空");
+            throw new CustomMessageException("消息类别为空");
         }
         //参数集合
         Map<String, Object> paramMap = new HashMap<>();
@@ -325,7 +327,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message selectMsgByID(String id) {
         if (StringUtils.isEmpty(id)){
-            throw new ParameterNullException("消息id为空");
+            throw new CustomMessageException("消息id为空");
         }
         //查询消息
         Message message = messageMapper.selectByPrimaryKey(id);

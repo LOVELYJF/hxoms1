@@ -1,6 +1,6 @@
 package com.hxoms.support.inforesource.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -45,7 +45,7 @@ public class InformationServiceImpl implements InformationService {
     @Transactional
     public void insertColumn(Information information) {
         if(information==null){
-            throw new ParameterNullException("添加内容不能为空");
+            throw new CustomMessageException("添加内容不能为空");
         }
             selectColumnName(information);
             Integer max=informationMapper.selectMaxOrderindex(information);
@@ -67,11 +67,11 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public void selectColumnName(Information information){
         if(information==null){
-            throw new ParameterNullException("列名不能为空");
+            throw new CustomMessageException("列名不能为空");
         }
         int count= informationMapper.selectColumnName(information);
         if(count>0){
-            throw new ParameterNullException(information.getEnglishName()+"列名已存在");
+            throw new CustomMessageException(information.getEnglishName()+"列名已存在");
         }
     }
 
@@ -84,7 +84,7 @@ public class InformationServiceImpl implements InformationService {
     @Transactional
     public void updateColumn(Information information) {
         if(information==null){
-            throw new ParameterNullException("保存内容不能为空");
+            throw new CustomMessageException("保存内容不能为空");
         }
         selectColumnName(information);
         String oldEnglisnName=informationMapper.selectOldColumnName(information.getId());
@@ -104,7 +104,7 @@ public class InformationServiceImpl implements InformationService {
     @Transactional
     public void dropColumn(Information information) {
         if(information==null){
-            throw new ParameterNullException("删除内容不能为空");
+            throw new CustomMessageException("删除内容不能为空");
         }
             informationMapper.dropColumn(information);
             informationMapper.deleteInformation(information);
@@ -118,7 +118,7 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public List<Information> selectInformation(String tableName) {
         if(StringUtils.isBlank(tableName)){
-            throw new ParameterNullException("表名不能为空");
+            throw new CustomMessageException("表名不能为空");
         }
         return informationMapper.selectInformation(tableName);
     }
@@ -132,7 +132,7 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public List<Tree> selectSysDictItem(String dictCode) {
         if(StringUtils.isBlank(dictCode)){
-            throw new ParameterNullException("字典编码不能为空");
+            throw new CustomMessageException("字典编码不能为空");
         }
         return TreeUtil.listToTreeJson(sysDictItemMapper.selectSysDictItem(dictCode));
     }
@@ -145,7 +145,7 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public void sortInformations(String[] ids) {
         if(ids==null||ids.length==0){
-            throw new ParameterNullException("排序字段不能为空");
+            throw new CustomMessageException("排序字段不能为空");
         }
         for(int i=0;i<ids.length;i++){
             Information information=new Information();

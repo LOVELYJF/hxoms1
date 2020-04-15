@@ -1,6 +1,6 @@
 package com.hxoms.full.search.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.utils.*;
 import com.hxoms.full.search.entity.FullSearchSetting;
@@ -39,7 +39,7 @@ public class FullTextSearchServiceImpl implements FullTextSearchService {
     @Override
     public Map<String, Object> selectColumnListByTabCode(String tabCode) {
         if (StringUtils.isBlank(tabCode)) {
-            throw new ParameterNullException("表编码参数为空");
+            throw new CustomMessageException("表编码参数为空");
         }
         //已经索引的列
         List<String> indexCol = fullSearchSettingMapper.selectIndexColumnByTabCode(tabCode);
@@ -74,7 +74,7 @@ public class FullTextSearchServiceImpl implements FullTextSearchService {
     @Override
     public void creatSearcherIndex(String tabCode) {
         if (tabCode == null) {
-            throw new ParameterNullException("表编码参数为空");
+            throw new CustomMessageException("表编码参数为空");
         }
         //获取列信息
         List<FullSearchSetting> list = fullSearchSettingMapper.selectIndexColumn(tabCode);
@@ -91,7 +91,7 @@ public class FullTextSearchServiceImpl implements FullTextSearchService {
         int limit = pageUtil.getLimit();
         int page = pageUtil.getPage();
         if (limit == 0) {
-            throw new ParameterNullException("分页limit不能为0！！！");
+            throw new CustomMessageException("分页limit不能为0！！！");
         }
         //根据关键字进行索引查询
         List<PersonInfoIndex> personInfoIndices = new IndexUtils().queryIndex(keyword, strings);

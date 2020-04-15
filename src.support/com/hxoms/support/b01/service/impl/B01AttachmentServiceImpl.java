@@ -1,7 +1,7 @@
 package com.hxoms.support.b01.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.utils.DomainObjectUtil;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -44,7 +44,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
     @Override
     public List<B01Attachment> selectAttachmentByB0111(B01Attachment b01Attachment) {
         if (b01Attachment == null) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         return b01AttachmentMapper.selectAttachmentByB0111(b01Attachment);
     }
@@ -57,7 +57,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
     @Override
     public void deleteAttachmentById(B01Attachment b01Attachment) {
         if (b01Attachment == null) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         String fileName= DomainObjectUtil.getRequest().getSession()
                 .getServletContext().getRealPath(b01Attachment.getFileUrl());
@@ -65,7 +65,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
         if (delFile.isFile() && delFile.exists()) {
             delFile.delete();
         } else {
-            throw new ParameterNullException("没有该文件，删除失败");
+            throw new CustomMessageException("没有该文件，删除失败");
         }
         b01AttachmentMapper.deleteAttachmentById(b01Attachment);
     }
@@ -78,7 +78,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
     @Override
     public void uplodeB01Attachment(MultipartFile[] files, String orgCode, HttpServletRequest request) {
         if (StringUilt.stringIsNullOrEmpty(orgCode)) {
-            throw new ParameterNullException("机构不能为空");
+            throw new CustomMessageException("机构不能为空");
         }
         String url = "upload/org/" + orgCode;
         //文件存储路径
@@ -102,7 +102,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
                     //验证文件名称是否重复
                     count = b01AttachmentMapper.selectFileExist(b01Attachment);
                     if (count > 0) {
-                        //throw new ParameterNullException("附件名称已存在！");
+                        //throw new CustomMessageException("附件名称已存在！");
                         continue;
                     }
                     try {
@@ -122,7 +122,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
                 }
             }
         } else {
-            throw new ParameterNullException("附件不能为空");
+            throw new CustomMessageException("附件不能为空");
         }
 
     }
@@ -136,7 +136,7 @@ public class B01AttachmentServiceImpl implements B01AttachmentService {
     public void selectFileExist(B01Attachment b01Attachment) {
         int count = b01AttachmentMapper.selectFileExist(b01Attachment);
         if (count > 0) {
-            throw new ParameterNullException("附件名称已存在！");
+            throw new CustomMessageException("附件名称已存在！");
         }
     }
 

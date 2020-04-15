@@ -1,8 +1,8 @@
 package com.hxoms.support.indexTemp.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -46,7 +46,7 @@ public class IndexTempServiceImpl implements IndexTempService {
             //查询处室
             UserGroupUser userGroupUser = userGroupMapper.selectUserGroupUser(userInfo.getId());
             if(userGroupUser == null){
-                throw new ParameterNullException("该用户没有分配处室权限");
+                throw new CustomMessageException("该用户没有分配处室权限");
             }
             for (IndexTemp indexTemp:indexTemps ) {
                 if(StringUtils.isEmpty(indexTemp.getId())){
@@ -78,12 +78,12 @@ public class IndexTempServiceImpl implements IndexTempService {
     public List<IndexTemp> selectIndexTempByOrg() {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
         //查询处室
         UserGroupUser userGroupUser = userGroupMapper.selectUserGroupUser(userInfo.getId());
         if(userGroupUser == null){
-            throw new ParameterNullException("该用户没有分配处室权限");
+            throw new CustomMessageException("该用户没有分配处室权限");
         }
         return indexTempMapper.selectIndexTempByOrg(userGroupUser.getUgId());
     }
@@ -92,12 +92,12 @@ public class IndexTempServiceImpl implements IndexTempService {
     public List selectSysTempModule() {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (userInfo == null){
-            throw new ParameterNullException("用户信息获取失败");
+            throw new CustomMessageException("用户信息获取失败");
         }
         //查询处室
         UserGroupUser userGroupUser = userGroupMapper.selectUserGroupUser(userInfo.getId());
         if(userGroupUser == null){
-            throw new ParameterNullException("该用户没有分配处室权限");
+            throw new CustomMessageException("该用户没有分配处室权限");
         }
         List<IndexTemp> indexTemps = indexTempMapper.selectIndexTempByOrg(userGroupUser.getUgId());
 
@@ -165,7 +165,7 @@ public class IndexTempServiceImpl implements IndexTempService {
         //查询处室
         UserGroupUser userGroupUser = userGroupMapper.selectUserGroupUser(userInfo.getId());
         if(userGroupUser == null){
-            throw new ParameterNullException("该用户没有分配处室权限");
+            throw new CustomMessageException("该用户没有分配处室权限");
         }
         try {
             for (IndexTemp temp:indexTemps) {
@@ -376,7 +376,7 @@ public class IndexTempServiceImpl implements IndexTempService {
     @Override
     public List<Tree> selectTree(String tableName) {
         if (StringUtils.isEmpty(tableName)){
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         String sql = "select id,pid,node_name as label from "+tableName +" order by order_index ";
         if("CF_SYSTEM".equals(tableName.toUpperCase())){
@@ -427,7 +427,7 @@ public class IndexTempServiceImpl implements IndexTempService {
     @Override
     public Map selectTableList(Integer pageSize, Integer pageNum, String tableName) {
         if (StringUtils.isEmpty(tableName)){
-            throw new ParameterNullException("参数错误");
+            throw new CustomMessageException("参数错误");
         }
         Map<String, Object> resultMap = new HashMap<>();
         //查询数据

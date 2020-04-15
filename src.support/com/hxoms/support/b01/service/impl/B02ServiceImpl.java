@@ -1,6 +1,6 @@
 package com.hxoms.support.b01.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.support.b01.entity.B02;
@@ -31,7 +31,7 @@ public class B02ServiceImpl implements B02Service {
     @Override
     public B02 selectB02Byb0111(String b0111) {
         if(StringUtils.isBlank(b0111)){
-            throw new ParameterNullException("机构代码不能为空");
+            throw new CustomMessageException("机构代码不能为空");
         }
         return b02Mapper.selectB02Byb0111(b0111);
     }
@@ -55,7 +55,7 @@ public class B02ServiceImpl implements B02Service {
     @Override
     public void deleteB02(String b0111) {
         if(StringUtils.isBlank(b0111)){
-            throw new ParameterNullException("机构代码不能为空");
+            throw new CustomMessageException("机构代码不能为空");
         }
         b02Mapper.deleteB02(b0111);
     }
@@ -72,7 +72,7 @@ public class B02ServiceImpl implements B02Service {
     private B02 CheckInput(B02 b02)
     {
         if(b02==null){
-            throw new ParameterNullException("机构编制信息不能为空");
+            throw new CustomMessageException("机构编制信息不能为空");
         }
 
         b02.setModifyUser(UserInfoUtil.getUserInfo().getId());

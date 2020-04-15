@@ -1,9 +1,9 @@
 package com.hxoms.support.inforesource.service.impl;
 
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.common.exceptions.ParameterNullException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -44,11 +44,11 @@ public class DataTableServiceImpl implements DataTableService {
     @Override
     public int deleteByPrimaryKey(String id) {
         if (StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         DataTable dataTable = selectByPrimaryKey(id);
         if (dataTable == null) {
-            throw new ParameterNullException("该表不存在！");
+            throw new CustomMessageException("该表不存在！");
         }
         int result = mapper.deleteByPrimaryKey(id);
         dataTableColMapper.deleteByTabCode(dataTable.getTabCode());
@@ -122,7 +122,7 @@ public class DataTableServiceImpl implements DataTableService {
     @Override
     public DataTable selectByPrimaryKey(String id) {
         if (StringUilt.stringIsNullOrEmpty(id)) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         return mapper.selectByPrimaryKey(id);
     }
@@ -138,7 +138,7 @@ public class DataTableServiceImpl implements DataTableService {
         DataTableExample example = new DataTableExample();
         DataTableExample.Criteria criteria = example.createCriteria();
         if (StringUilt.stringIsNullOrEmpty(tableCode)) {
-            throw new ParameterNullException("表名不能为空！");
+            throw new CustomMessageException("表名不能为空！");
         }
         criteria.andTabCodeEqualTo(tableCode);
         List<DataTable> dataTables = mapper.selectByExample(example);
@@ -171,7 +171,7 @@ public class DataTableServiceImpl implements DataTableService {
     @Override
     public void sortOrderIndex(String[] ids) {
         if (ids == null || ids.length == 0) {
-            throw new ParameterNullException("排序内容不能为空");
+            throw new CustomMessageException("排序内容不能为空");
         }
         for (int i = 0; i < ids.length; i++) {
             DataTable dataTable = new DataTable();
@@ -199,22 +199,22 @@ public class DataTableServiceImpl implements DataTableService {
 
     private void CheckInput(DataTable record) {
         if (record == null) {
-            throw new ParameterNullException("参数不能为空");
+            throw new CustomMessageException("参数不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getTabCode())) {
-            throw new ParameterNullException("表名不能为空");
+            throw new CustomMessageException("表名不能为空");
         }
         if (StringUilt.stringIsNullOrEmpty(record.getTabName())) {
-            throw new ParameterNullException("表中文名不能为空");
+            throw new CustomMessageException("表中文名不能为空");
         }
 
         DataTable dataTable = selectByTableCode(record.getTabCode());
         if (dataTable != null && dataTable.getId().equals(record.getId()) == false) {
-            throw new ParameterNullException("该表已经存在！");
+            throw new CustomMessageException("该表已经存在！");
         }
         int count = mapper.selectTableName(record);
         if (count > 0) {
-            throw new ParameterNullException("该表已经存在！");
+            throw new CustomMessageException("该表已经存在！");
         }
     }
 

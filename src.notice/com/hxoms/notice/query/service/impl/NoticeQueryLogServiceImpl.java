@@ -2,7 +2,7 @@ package com.hxoms.notice.query.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.notice.query.entity.NoticeQueryLog;
@@ -30,7 +30,7 @@ public class NoticeQueryLogServiceImpl implements NoticeQueryLogService {
     public void insertQueryLog(String ip,String contentId) {
         NoticeQueryLog noticeQueryLog = new NoticeQueryLog();
         if (contentId == null) {
-            throw new ParameterNullException("未获取到通知公告Id");
+            throw new CustomMessageException("未获取到通知公告Id");
         }
         noticeQueryLog.setId(UUIDGenerator.getPrimaryKey());
         noticeQueryLog.setContentId(contentId);
@@ -55,7 +55,7 @@ public class NoticeQueryLogServiceImpl implements NoticeQueryLogService {
         }
         PageHelper.startPage(pageNum, pageSize);
         if (StringUtils.isBlank(contentId)) {
-            throw new ParameterNullException("未获取到通知公告id！");
+            throw new CustomMessageException("未获取到通知公告id！");
         }else{
             list = noticeQueryLogMapper.selectNoticeLogByContentId(contentId);
             PageInfo pageInfo = new PageInfo(list);

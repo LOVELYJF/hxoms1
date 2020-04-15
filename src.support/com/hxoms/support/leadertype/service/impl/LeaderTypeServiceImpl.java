@@ -1,6 +1,6 @@
 package com.hxoms.support.leadertype.service.impl;
 
-import com.hxoms.common.exceptions.ParameterNullException;
+import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.support.inforesource.entity.DataTable;
@@ -36,7 +36,7 @@ public class LeaderTypeServiceImpl implements LeaderTypeService {
     @Override
     public List<DataTable> selectGrantLeaderTypeInfo(String leaderTypeId) {
         if (StringUtils.isEmpty(leaderTypeId)) {
-            throw new ParameterNullException("干部类别参数为空");
+            throw new CustomMessageException("干部类别参数为空");
         }
         // 查询当前用户
         User user = userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
