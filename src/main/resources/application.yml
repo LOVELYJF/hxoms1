@@ -5,10 +5,10 @@ server:
 spring:
   datasource:
     druid:
-#      username: HXOMS
-#      password: 12345abcde
-#      url: jdbc:dm://www.24hbs.com:5236/HXOMS
-#      driver-class-name: dm.jdbc.driver.DmDriver
+      #      username: HXOMS
+      #      password: 12345abcde
+      #      url: jdbc:dm://www.24hbs.com:5236/HXOMS
+      #      driver-class-name: dm.jdbc.driver.DmDriver
       initial-size: 5
       min-idle: 5
       max-active: 20
@@ -20,3 +20,18 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
 logging:
   config: classpath:log4j2.xml
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    map-underscore-to-camel-case: true
+#  global-config:
+#    db-config:
+
+#      logic-delete-value: 0
+#      logic-not-delete-value: 1
+#      id-type: assign_uuid
+#      table-underline: true
+#    configuration:
+#      map-underscore-to-camel-case: true
+#      cache-enabled: false
+#    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
