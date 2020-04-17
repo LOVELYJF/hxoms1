@@ -15,7 +15,9 @@ public class Constants {
      * 人员照片存放路径
      */
     public static final String PHOTOS_PATH = "/photos";
-    /**人员文件存储路径*/
+    /**
+     * 人员文件存储路径
+     */
     public static final String PERSON_FILE_PATH = "/upload/personFiles";
 
     /**
@@ -130,4 +132,9 @@ public class Constants {
      * 人员信息集
      */
     public static String PERSON_INFO = "person_infos";
+
+    /**
+     * lucene根目录配置
+     */
+    public static String LUCENE_BASE_DIR = "E:/lucene";
 }

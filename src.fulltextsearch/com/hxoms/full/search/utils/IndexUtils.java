@@ -1,6 +1,8 @@
 package com.hxoms.full.search.utils;
 
+import com.github.pagehelper.Constant;
 import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.full.search.entity.PersonInfoIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -33,22 +35,12 @@ public class IndexUtils {
         new IndexUtils();
     }
 
-    private static String baseDir = "E:/lucene";
+    private String baseDir = "D:/lucene";
 
     public IndexUtils() {
-        try {
-            File file = ResourceUtils.getFile("classpath:hx-lucene.properties");
-            InputStream inputStream = new FileInputStream(file);
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            String property = properties.getProperty("lucene.baseDir");
-            if (StringUtils.isBlank(property)) {
-                throw new CustomMessageException("请检查hx-lucene.properties中的配置参数");
-            } else {
-                baseDir = property;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String luceneBaseDir = Constants.LUCENE_BASE_DIR;
+        if (!StringUtils.isBlank(luceneBaseDir)) {
+            baseDir = luceneBaseDir;
         }
     }
 

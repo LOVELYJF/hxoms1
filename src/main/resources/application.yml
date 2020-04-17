@@ -18,12 +18,22 @@ spring:
       password: Hxyz-2020#
       url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&characterEncoding=utf8
       driver-class-name: com.mysql.jdbc.Driver
+  jackson:
+#    default-property-inclusion: non_null
+
 logging:
   config: classpath:log4j2.xml
+
 mybatis-plus:
   configuration:
     cache-enabled: false
     map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      table-underline: true
+      id-type: assign_uuid
+      logic-delete-value: 0
+      logic-not-delete-value: 1
 #  global-config:
 #    db-config:
 
