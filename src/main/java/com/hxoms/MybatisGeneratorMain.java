@@ -20,7 +20,7 @@ public class MybatisGeneratorMain {
     }
 
     public void generator() throws Exception {
-        List<String> warnings = new ArrayList<String>();
+        List<String> warnings = new ArrayList<>();
         boolean overwrite = true;
         //指定 逆向工程配置文件
 
