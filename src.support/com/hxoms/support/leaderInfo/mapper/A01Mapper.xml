@@ -128,19 +128,15 @@
   <!--根据机构ID查询-->
   <select id="selectByOrgId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-    *
-    from
-    (
-    SELECT
-        c.*,row_number() over(partition by c.A0100 order by NULL) rn
-    FROM
-        a01 c
-    INNER JOIN a02 d ON c.a0100 = d.a0100
-    INNER JOIN (SELECT b0111 FROM b01) e ON d.a0201b = e.b0111
-    WHERE
-        e.b0111 = #{orgId,jdbcType=VARCHAR}
-    AND d.a0255 = '1'
-    ) b where rn= 1
+    DISTINCT c.*
+    from a01 c inner join  a02 d
+    on c.a0100 = d.a0100
+    INNER JOIN
+    (select b0111 from b01) e
+    ON
+    d.a0201b=e.b0111
+    where
+    e.b0111 = #{orgId,jdbcType=VARCHAR} and d.a0255='1'
   </select>
 
   <!--查询数据信息集-->
