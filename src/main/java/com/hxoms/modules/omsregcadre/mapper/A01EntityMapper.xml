@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.A01EntityMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.A01Entity">
+    <id column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="A0101" jdbcType="VARCHAR" property="a0101" />
+    <result column="A0102" jdbcType="VARCHAR" property="a0102" />
+    <result column="A0104" jdbcType="VARCHAR" property="a0104" />
+    <result column="A0117_A" jdbcType="VARCHAR" property="a0117A" />
+    <result column="A0117" jdbcType="VARCHAR" property="a0117" />
+    <result column="A0104_A" jdbcType="VARCHAR" property="a0104A" />
+    <result column="A0111B" jdbcType="VARCHAR" property="a0111b" />
+    <result column="A0111A" jdbcType="VARCHAR" property="a0111a" />
+    <result column="A0107" jdbcType="VARCHAR" property="a0107" />
+    <result column="A0114A" jdbcType="VARCHAR" property="a0114a" />
+    <result column="A0114B" jdbcType="VARCHAR" property="a0114b" />
+    <result column="A0115B" jdbcType="VARCHAR" property="a0115b" />
+    <result column="A0115A" jdbcType="VARCHAR" property="a0115a" />
+    <result column="A0120" jdbcType="VARCHAR" property="a0120" />
+    <result column="A0128" jdbcType="VARCHAR" property="a0128" />
+    <result column="A0144" jdbcType="TIMESTAMP" property="a0144" />
+    <result column="A0121" jdbcType="VARCHAR" property="a0121" />
+    <result column="A0122" jdbcType="VARCHAR" property="a0122" />
+    <result column="A0127" jdbcType="VARCHAR" property="a0127" />
+    <result column="A0160" jdbcType="VARCHAR" property="a0160" />
+    <result column="A0163" jdbcType="VARCHAR" property="a0163" />
+    <result column="A0165" jdbcType="VARCHAR" property="a0165" />
+    <result column="A0180" jdbcType="VARCHAR" property="a0180" />
+    <result column="A0141" jdbcType="VARCHAR" property="a0141" />
+    <result column="A0187A" jdbcType="VARCHAR" property="a0187a" />
+    <result column="A0195" jdbcType="VARCHAR" property="a0195" />
+    <result column="A0192A" jdbcType="VARCHAR" property="a0192a" />
+    <result column="A0194" jdbcType="VARCHAR" property="a0194" />
+    <result column="A0197" jdbcType="VARCHAR" property="a0197" />
+    <result column="A0196" jdbcType="VARCHAR" property="a0196" />
+    <result column="A2949" jdbcType="VARCHAR" property="a2949" />
+    <result column="A0140" jdbcType="VARCHAR" property="a0140" />
+    <result column="QRZXL" jdbcType="VARCHAR" property="qrzxl" />
+    <result column="QRZXW" jdbcType="VARCHAR" property="qrzxw" />
+    <result column="QRZXLXX" jdbcType="VARCHAR" property="qrzxlxx" />
+    <result column="QRZXWXX" jdbcType="VARCHAR" property="qrzxwxx" />
+    <result column="ZZXL" jdbcType="VARCHAR" property="zzxl" />
+    <result column="ZZXW" jdbcType="VARCHAR" property="zzxw" />
+    <result column="ZZXLXX" jdbcType="VARCHAR" property="zzxlxx" />
+    <result column="ZZXWXX" jdbcType="VARCHAR" property="zzxwxx" />
+    <result column="CBDW" jdbcType="VARCHAR" property="cbdw" />
+    <result column="JSNLSJ" jdbcType="VARCHAR" property="jsnlsj" />
+    <result column="NRZW" jdbcType="VARCHAR" property="nrzw" />
+    <result column="NMZW" jdbcType="VARCHAR" property="nmzw" />
+    <result column="RMLY" jdbcType="VARCHAR" property="rmly" />
+    <result column="RXZ_DATE" jdbcType="TIMESTAMP" property="rxzDate" />
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="IS_DELETED" jdbcType="VARCHAR" property="isDeleted" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="TIME_STAMP" jdbcType="TIMESTAMP" property="timeStamp" />
+    <result column="A0184" jdbcType="VARCHAR" property="a0184" />
+    <result column="NODE_ID" jdbcType="VARCHAR" property="nodeId" />
+    <result column="A3921" jdbcType="VARCHAR" property="a3921" />
+    <result column="A3927" jdbcType="VARCHAR" property="a3927" />
+    <result column="A01X01" jdbcType="BIGINT" property="a01x01" />
+    <result column="A01X02" jdbcType="DECIMAL" property="a01x02" />
+    <result column="ZZXX" jdbcType="VARCHAR" property="zzxx" />
+    <result column="QRZXX" jdbcType="VARCHAR" property="qrzxx" />
+    <result column="A0134" jdbcType="TIMESTAMP" property="a0134" />
+    <result column="A0140_LRMX" jdbcType="VARCHAR" property="a0140Lrmx" />
+    <result column="PHOTODETAIL" jdbcType="VARCHAR" property="photodetail" />
+    <result column="A0194A" jdbcType="VARCHAR" property="a0194a" />
+    <result column="A0221" jdbcType="VARCHAR" property="a0221" />
+    <result column="A0288" jdbcType="TIMESTAMP" property="a0288" />
+    <result column="A0192E" jdbcType="VARCHAR" property="a0192e" />
+    <result column="A0192C" jdbcType="TIMESTAMP" property="a0192c" />
+    <result column="LEADERTYPE" jdbcType="INTEGER" property="leadertype" />
+    <result column="TBR" jdbcType="VARCHAR" property="tbr" />
+    <result column="TBSJ" jdbcType="VARCHAR" property="tbsj" />
+    <result column="QRZXLB" jdbcType="VARCHAR" property="qrzxlb" />
+    <result column="ZZXLB" jdbcType="VARCHAR" property="zzxlb" />
+    <result column="A0221A" jdbcType="VARCHAR" property="a0221a" />
+    <result column="A1701_A" jdbcType="VARCHAR" property="a1701A" />
+    <result column="IS_NORMAL" jdbcType="VARCHAR" property="isNormal" />
+    <result column="OPERATE_BATCH" jdbcType="VARCHAR" property="operateBatch" />
+    <result column="ZGXL" jdbcType="VARCHAR" property="zgxl" />
+    <result column="ZGXLB" jdbcType="VARCHAR" property="zgxlb" />
+    <result column="ZGXLXX" jdbcType="VARCHAR" property="zgxlxx" />
+    <result column="ZGXW" jdbcType="VARCHAR" property="zgxw" />
+    <result column="ZGXWXX" jdbcType="VARCHAR" property="zgxwxx" />
+    <result column="GSFAQK" jdbcType="VARCHAR" property="gsfaqk" />
+    <result column="CFQN" jdbcType="VARCHAR" property="cfqn" />
+    <result column="AGE_2" jdbcType="VARCHAR" property="age2" />
+    <result column="A0196B" jdbcType="VARCHAR" property="a0196b" />
+    <result column="A0192D" jdbcType="VARCHAR" property="a0192d" />
+    <result column="A0229" jdbcType="VARCHAR" property="a0229" />
+    <result column="CHANGE_STATE" jdbcType="VARCHAR" property="changeState" />
+    <result column="ZJ_TYPE" jdbcType="VARCHAR" property="zjType" />
+    <result column="A0192" jdbcType="LONGVARCHAR" property="a0192" />
+    <result column="A14Z101" jdbcType="LONGVARCHAR" property="a14z101" />
+    <result column="A15Z101" jdbcType="LONGVARCHAR" property="a15z101" />
+    <result column="A1701" jdbcType="LONGVARCHAR" property="a1701" />
+    <result column="RXZ_DATES" jdbcType="LONGVARCHAR" property="rxzDates" />
+    <result column="A17Z1" jdbcType="LONGVARCHAR" property="a17z1" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    A0100, A0101, A0102, A0104, A0117_A, A0117, A0104_A, A0111B, A0111A, A0107, A0114A,
+    A0114B, A0115B, A0115A, A0120, A0128, A0144, A0121, A0122, A0127, A0160, A0163, A0165,
+    A0180, A0141, A0187A, A0195, A0192A, A0194, A0197, A0196, A2949, A0140, QRZXL, QRZXW,
+    QRZXLXX, QRZXWXX, ZZXL, ZZXW, ZZXLXX, ZZXWXX, CBDW, JSNLSJ, NRZW, NMZW, RMLY, RXZ_DATE,
+    ID, IS_DELETED, MODIFY_USER, MODIFY_TIME, TIME_STAMP, A0184, NODE_ID, A3921, A3927,
+    A01X01, A01X02, ZZXX, QRZXX, A0134, A0140_LRMX, PHOTODETAIL, A0194A, A0221, A0288,
+    A0192E, A0192C, LEADERTYPE, TBR, TBSJ, QRZXLB, ZZXLB, A0221A, A1701_A, IS_NORMAL,
+    OPERATE_BATCH, ZGXL, ZGXLB, ZGXLXX, ZGXW, ZGXWXX, GSFAQK, CFQN, AGE_2, A0196B, A0192D,
+    A0229, CHANGE_STATE, ZJ_TYPE,A0192, A14Z101, A15Z101, A1701, RXZ_DATES, A17Z1
+  </sql>
+
+
+</mapper>

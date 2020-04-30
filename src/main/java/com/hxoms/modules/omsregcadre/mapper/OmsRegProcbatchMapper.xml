@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
+    <result column="RF_UNNIT" jdbcType="VARCHAR" property="rfUnnit" />
+    <result column="RF_UCONTACTS" jdbcType="VARCHAR" property="rfUcontacts" />
+    <result column="RF_UPHONE" jdbcType="VARCHAR" property="rfUphone" />
+    <result column="SUBMIT_UB0000" jdbcType="VARCHAR" property="submitUb0000" />
+    <result column="SUBMIT_UNAME" jdbcType="VARCHAR" property="submitUname" />
+    <result column="SUBMIT_UCATEGORY" jdbcType="VARCHAR" property="submitUcategory" />
+    <result column="SUBMIT_UCONTACTS" jdbcType="VARCHAR" property="submitUcontacts" />
+    <result column="SUBMIT_PHONE" jdbcType="VARCHAR" property="submitPhone" />
+    <result column="SUBMIT_TIME" jdbcType="TIMESTAMP" property="submitTime" />
+    <result column="SUBMIT_PERSON" jdbcType="VARCHAR" property="submitPerson" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="SORT_ID" jdbcType="VARCHAR" property="sortId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CREATE_DATE, CREATE_USER, BATCH_NO, RF_UNNIT, RF_UCONTACTS, RF_UPHONE, SUBMIT_UB0000, 
+    SUBMIT_UNAME, SUBMIT_UCATEGORY, SUBMIT_UCONTACTS, SUBMIT_PHONE, SUBMIT_TIME, SUBMIT_PERSON, 
+    STATUS,MODIFY_TIME,MODIFY_USER,SORT_ID
+  </sql>
+
+  <select id="getHistoryBatch" resultType="java.lang.String">
+    select BATCH_NO batchNo from oms_reg_procbatch
+  </select>
+</mapper>
