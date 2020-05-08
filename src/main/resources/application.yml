@@ -9,15 +9,17 @@ spring:
       #      password: 12345abcde
       #      url: jdbc:dm://www.24hbs.com:5236/HXOMS
       #      driver-class-name: dm.jdbc.driver.DmDriver
+      username: root
+      password: 123456
+      url: jdbc:mysql://localhost:3307/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      driver-class-name: com.mysql.jdbc.Driver
       initial-size: 5
       min-idle: 5
       max-active: 20
+      max-wait: 60000
       test-while-idle: true
       validation-query: select 1
-      username: hxoms
-      password: Hxyz-2020#
-      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&characterEncoding=utf8
-      driver-class-name: com.mysql.jdbc.Driver
+      filters: stat,log4j
   jackson:
 #    default-property-inclusion: non_null
 
@@ -45,3 +47,24 @@ mybatis-plus:
 #      map-underscore-to-camel-case: true
 #      cache-enabled: false
 #    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
+
+defulttargetdatasource:
+  #  datasourceId: gz_orcal
+  #  username: root
+  #  password: 123456
+  #  url: jdbc:mysql://127.0.0.1:3307/hxoim?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+  #  databasetype: com.mysql.jdbc.Driver
+  #  code: gz_orcal_master
+  datasourceId: gz_orcal
+  username: newhxdba
+  password: 123456
+  url: jdbc:oracle:thin:@127.0.0.1:1521:orcl
+  databasetype: oracle.jdbc.driver.OracleDriver
+  code: gz_orcal_master
+
+# 开启定时调度
+job:
+  cron: 0 53 13 * * ?
+
+data:
+  initSplic: 1500

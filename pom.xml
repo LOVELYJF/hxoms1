@@ -76,6 +76,15 @@
             <version>5.1.47</version>
         </dependency>
 
+        <!--添加orcal 连接-->
+        <dependency>
+            <groupId>com.orcal</groupId>
+            <artifactId>OrcalJdbcDriver</artifactId>
+            <version>6.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/ojdbc6.jar</systemPath>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -201,6 +210,22 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/src/lib/mybatis-generator.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+        </dependency>
+
+        <!--aspect,通过注解切换数据源需要用到-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+
+
+
     </dependencies>
 
     <build>
