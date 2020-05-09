@@ -182,6 +182,25 @@ public class OmsRegProcpersonInfoController {
     }
 
 
+    /* 大检查上传登记备案记录(出入境（公安）)
+     * @param
+     * @return
+     */
+    @PostMapping("/checkUploadRegRecord")
+    public Result checkUploadRegRecord() {
+        // 读取Excel表格
+        try{
+            List<OmsRegProcpersonInfo> list = readOmsDataGA();
+            List<OmsRegProcpersonInfo> mepinfoList = mrpinfoService.checkUploadRegRecord(list);
+            return Result.success(mepinfoList);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+
+
     /**
      * 上传公安数据
      * @return
@@ -242,7 +261,7 @@ public class OmsRegProcpersonInfoController {
                 if (cell == null) {
                     continue;
                 }
-                orpInfo.setBirthDate(cell.getStringCellValue());
+                orpInfo.setBirthDate(cell.getDateCellValue());
 
                 //身份证号
                 cell = hssfRow.getCell(4);

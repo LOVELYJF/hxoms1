@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonInfo> {
 
-    IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page, OmsRegProcpersonInfo msRegProcpersonInfo);
+    IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page, OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException;
 
     Object insertRpinfo(OmsRegProcpersonInfo orpInfo);
 
@@ -31,4 +31,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
     IPage<OmsRegProcpersonInfo> getRegPersonInfoList(Page page, OmsRegProcpersonInfo msRegProcpersonInfo);
 
     List<OmsRegProcpersonInfo> selectPersonByBatchNo(String batchNo);
+
+    List<OmsRegProcpersonInfo> checkUploadRegRecord(List<OmsRegProcpersonInfo> list);
 }
