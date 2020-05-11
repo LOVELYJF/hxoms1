@@ -77,4 +77,14 @@ public interface A01Mapper {
      * @date: 2019/8/28
      */
     List<Map<String,Object>> selectFamily(String id);
+
+    /**
+     * 功能描述: <br>
+     * 〈根据关键字/姓氏查询结果〉
+     * @Param: [name]
+     * @Return: java.util.List<java.util.LinkedHashMap<java.lang.String,java.lang.Object>>
+     * @Author: 李逍遥
+     * @Date: 2020/4/29 11:42
+     */
+    List<LinkedHashMap<String, Object>> selectAllInfoByName(String name);
 }
