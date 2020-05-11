@@ -23,8 +23,8 @@ public class CustomMessageException extends RuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-//    @Override
-//    public synchronized Throwable fillInStackTrace() {
-//        return this;
-//    }
+    /*@Override
+    public synchronized Throwable fillInStackTrace() {
+        return this;
+    }*/
 }
