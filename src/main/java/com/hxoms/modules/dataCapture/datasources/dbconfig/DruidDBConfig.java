@@ -1,6 +1,8 @@
 package com.hxoms.modules.dataCapture.datasources.dbconfig;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
@@ -26,8 +28,8 @@ import java.util.Map;
  * @data 2020/4/14 9:44
  * @Description:
  */
-//@Configuration
-//@EnableTransactionManagement
+@Configuration
+@EnableTransactionManagement
 public class DruidDBConfig {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -106,11 +108,12 @@ public class DruidDBConfig {
 
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dynamicDataSource());
+        MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
+        sqlSessionFactory.setDataSource(dynamicDataSource());
         //解决驼峰命名失效
-//        sqlSessionFactoryBean.setConfiguration(configuration());
-        return sqlSessionFactoryBean.getObject();
+        sqlSessionFactory.setConfiguration(configuration());
+//          sqlSessionFactoryBean.
+        return sqlSessionFactory.getObject();
     }
 //    @Bean
 //    public SqlSessionTemplate sqlSessionTemplate() throws Exception {
@@ -121,11 +124,11 @@ public class DruidDBConfig {
      * 读取驼峰命名设置
      * @return
      */
-//    @Bean
-//    @ConfigurationProperties(prefix = "mybatis.configuration")
-//    public org.apache.ibatis.session.Configuration configuration(){
-//        return new org.apache.ibatis.session.Configuration();
-//    }
+    @Bean
+    @ConfigurationProperties(prefix = "mybatis-plus.configuration")
+    public MybatisConfiguration configuration(){
+        return new MybatisConfiguration();
+    }
 
 
 
