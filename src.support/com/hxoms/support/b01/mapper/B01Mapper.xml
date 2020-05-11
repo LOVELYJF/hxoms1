@@ -610,7 +610,7 @@
 
     <select id="selectOrgGrantTree" resultType="com.hxoms.support.b01.entity.B01Tree">
         select
---         b.b0100,
+        b.b0100,
         b.b0111 as "id",
         b.b0101 as "label", b.b0121 as "pId" from cf_org_sub os
         inner join b01 b
