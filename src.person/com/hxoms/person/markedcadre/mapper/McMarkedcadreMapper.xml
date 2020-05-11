@@ -148,7 +148,8 @@
 
   <!--查询拼接信息-->
   <select id="selectAppendInfo" resultType="java.lang.String">
-    select CONCAT(a0187a,a15z101,zzxl,a1701) from a01 where a0100 = #{id}
+      select CONCAT(IFNULL(a0187a,' '),IFNULL(a15z101,' '),IFNULL(zzxl,' '),a1701) from a01 where a0100 = #{id}
+
   </select>
 
   <!--查询特征信息-->
@@ -167,71 +168,52 @@
 
   <!--查询职务变迁-->
   <select id="selectJobChanges" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
-        SELECT
- a.a0101,
- FLOOR(
-  ROUND(
-  to_number(
-   to_date(substr(b.a0504,1, 7), 'yyyy-mm')-
-   to_date(a.a0107, 'yyyy-mm')
-   )
-  ) / 365.2422
- ) AS age,
- b.item_name,
- (
   SELECT
-   (
-    ROUND(
-     SUM(
-      FLOOR(
-       ROUND(
-       to_number(
-        TO_DATE(substr(a05.A0504, 1,7), 'yyyy-mm')-
-        TO_DATE(a01.a0107, 'yyyy-mm')
-        )
-       ) / 365.2422
-      )
-     ) / count(a05.A0501B)
-    )
-   ) AS avg
-  FROM
-   a01
-  LEFT JOIN a05 ON a01.a0100 = a05.A0100
-  WHERE
-   a05.A0501B = b.item_code
-  GROUP BY
-   a05.A0501B
- ) AS avg
-FROM
- a01 a
-INNER JOIN (
- SELECT
-  c.a0100,
-  sd.item_name,
-  sd.item_code,
-  c.a0504
- FROM
-  a05 c
- LEFT JOIN sys_dict_item sd ON c.a0501b = sd.item_code
- WHERE
-  c.a0100 = #{id}
- AND sd.dict_code = (
-  SELECT
-   dict_code
-  FROM
-   sys_dict
-  WHERE
-   hx_dict_code = (
-    SELECT
-     dic_code
+        a.a0101,
+        FLOOR(DATEDIFF(STR_TO_DATE(LEFT(b.a0504,7), '%Y-%m'),STR_TO_DATE(a.a0107, '%Y%m'))/365.2422) AS age,
+        b.item_name,
+        (
+            SELECT(
+									ROUND(SUM(FLOOR(DATEDIFF(STR_TO_DATE(LEFT(a05.A0504,7), '%Y-%m'),STR_TO_DATE(a01.a0107, '%Y%m'))/365.2422)) / count(a05.A0501B)
+                )) AS avg
+            FROM
+                a01
+            LEFT JOIN a05 ON a01.a0100 = a05.a0100
+            WHERE
+                a05.A0501B = b.item_code
+            GROUP BY
+                a05.A0501B
+        ) AS avg
     FROM
-     data_table_col
-    WHERE
-     tab_code = 'A05'
-    AND COL_CODE = 'a0501b'
-   )
- )
-) b ON a.A0100 = b.a0100
+        a01 a
+    INNER JOIN (
+        SELECT
+            c.a0100,
+            sd.item_name,
+            sd.item_code,
+						c.a0504
+        FROM
+            a05 c
+        LEFT JOIN sys_dict_item sd ON c.a0501b = sd.item_code
+        WHERE
+            c.a0100 = #{id}
+        AND sd.dict_code = (
+            SELECT
+                dict_code
+            FROM
+                sys_dict
+            WHERE
+                hx_dict_code = (
+                    SELECT
+                        dic_code
+                    FROM
+                        data_table_col
+                    WHERE
+                        tab_code = 'A05'
+                    AND COL_CODE = 'a0501b'
+                )
+        )
+    ) b ON a.a0100 = b.a0100
   </select>
 
   <!--查询学历情况-->
