@@ -28,7 +28,7 @@ public class DynamicDataSourceAspect {
     private void pointcut() {
 
     }
-    @Autowired
+//    @Autowired
     private DynamicDataSource dynamicDataSource;
 
 

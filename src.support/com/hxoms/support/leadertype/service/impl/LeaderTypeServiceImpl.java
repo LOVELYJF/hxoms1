@@ -1,6 +1,6 @@
 package com.hxoms.support.leadertype.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.support.inforesource.entity.DataTable;

@@ -1,5 +1,5 @@
 package com.hxoms.message.read.service.impl;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;

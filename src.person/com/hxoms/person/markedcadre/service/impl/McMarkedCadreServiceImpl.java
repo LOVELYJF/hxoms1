@@ -7,7 +7,7 @@ package com.hxoms.person.markedcadre.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
 import com.hxoms.common.rmbKit.ClassConvertHelper;
 import com.hxoms.common.rmbKit.MergeDOC;

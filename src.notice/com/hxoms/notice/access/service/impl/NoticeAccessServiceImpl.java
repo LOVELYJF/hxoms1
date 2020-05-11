@@ -1,6 +1,6 @@
 package com.hxoms.notice.access.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.notice.access.entity.NoticeAccess;
 import com.hxoms.notice.access.mapper.NoticeAccessMapper;

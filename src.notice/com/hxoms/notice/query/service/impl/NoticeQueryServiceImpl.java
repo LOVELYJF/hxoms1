@@ -1,6 +1,6 @@
 package com.hxoms.notice.query.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.notice.content.entity.NoticeContent;
 import com.hxoms.notice.query.mapper.NoticeQueryMapper;

@@ -5,7 +5,7 @@ package com.hxoms.support.inforesource.service.impl;
  * @date:2019-07-17
  */
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.inforesource.entity.DataTableManager;
 import com.hxoms.support.inforesource.entity.DataTableManagerExample;

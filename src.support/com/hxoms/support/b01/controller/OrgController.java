@@ -3,6 +3,7 @@ package com.hxoms.support.b01.controller;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.service.OrgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,12 @@ public class OrgController {
     @Autowired
     private OrgService orgService;
 
+    /**
+     * 当前登录人员权限下的所有机构
+     * 
+     * @author sunqian
+     * @date 2020/4/24 16:01
+     */
     @RequestMapping("/selectOrgTree")
     public Result selectOrgTree() {
         List<Tree> list  = orgService.selectOrgTree();

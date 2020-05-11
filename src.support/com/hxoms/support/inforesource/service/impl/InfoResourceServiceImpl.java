@@ -1,6 +1,6 @@
 package com.hxoms.support.inforesource.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;

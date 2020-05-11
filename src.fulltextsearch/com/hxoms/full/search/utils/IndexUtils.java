@@ -1,7 +1,5 @@
 package com.hxoms.full.search.utils;
 
-import com.github.pagehelper.Constant;
-import com.hxoms.common.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.full.search.entity.PersonInfoIndex;
 import org.apache.commons.lang3.StringUtils;
@@ -22,13 +20,11 @@ import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-import org.springframework.util.ResourceUtils;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class IndexUtils {
     public static void main(String[] args) {

@@ -1,6 +1,6 @@
 package com.hxoms.support.b01.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.support.b01.entity.B02;

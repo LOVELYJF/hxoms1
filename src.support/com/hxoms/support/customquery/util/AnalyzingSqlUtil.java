@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.util;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.SpringUtil;
 import com.hxoms.support.customquery.entity.custom.ConditionEntity;
 import com.hxoms.support.customquery.entity.custom.OrderEntity;

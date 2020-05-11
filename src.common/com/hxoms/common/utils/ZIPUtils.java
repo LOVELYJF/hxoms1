@@ -322,16 +322,16 @@ public class ZIPUtils {
         //测试copy文件
         //copyDir("D:\\TEST","D:\\test222");
 
-        //FileUtils.copyDirectory(new File("D:\\TEST"), new File("D:\\test222"),false);
+        //OmsFileUtils.copyDirectory(new File("D:\\TEST"), new File("D:\\test222"),false);
 
-//		  List<File> fileList = (List<File>)FileUtils.listFiles(new File("D:\\DEVELOPMENT\\workspace\\hxhnms\\WebContent\\photos"),null,false);
+//		  List<File> fileList = (List<File>)OmsFileUtils.listFiles(new File("D:\\DEVELOPMENT\\workspace\\hxhnms\\WebContent\\photos"),null,false);
 //	      if(fileList!=null && fileList.size()>0) {
 //	    	  for(File file:fileList) {
 //	    		  System.out.println(file.getName());
 //	    	  }
 //	      }
-        //FileUtils.copyDirectory(new File("D:\\TEST"), new File("D:\\test222"),false);
-        //FileUtils.copyFileToDirectory(new File("D:\\TEST\\new.docx"), new File("D:\\test444"));
+        //OmsFileUtils.copyDirectory(new File("D:\\TEST"), new File("D:\\test222"),false);
+        //OmsFileUtils.copyFileToDirectory(new File("D:\\TEST\\new.docx"), new File("D:\\test444"));
 
     }
 }

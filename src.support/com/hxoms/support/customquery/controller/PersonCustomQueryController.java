@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.controller;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.customquery.entity.paramentity.CustomQueryParam;
 import com.hxoms.support.customquery.service.PersonCustomQueryService;

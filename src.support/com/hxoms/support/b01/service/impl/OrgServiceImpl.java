@@ -1,10 +1,11 @@
 package com.hxoms.support.b01.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.b01.service.OrgService;
 import com.hxoms.support.user.entity.User;
@@ -32,6 +33,19 @@ public class OrgServiceImpl implements OrgService {
 
     @Override
     public List<Tree> selectOrgTree() {
+        List<Tree> treeList = selectOrgTreeList();
+        treeList = TreeUtil.listToTreeJson(treeList);
+        //增加配偶子女机构
+        B01Tree tree = new B01Tree();
+        tree.setB0100(Constants.FAMILY_B0100);
+        tree.setId("999");
+        tree.setLabel("配偶子女");
+        treeList.add(tree);
+        return treeList;
+    }
+
+    @Override
+    public List<Tree> selectOrgTreeList() {
         User user = userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
         //判断用户类型根据类型不同用不同的方式查询
         List<Tree> treeList = null;
@@ -42,7 +56,6 @@ public class OrgServiceImpl implements OrgService {
             //普通用户所拥有的权限
             treeList = b01Mapper.selectUserGrantTree(user.getId());
         }
-        treeList = TreeUtil.listToTreeJson(treeList);
         return treeList;
     }
 

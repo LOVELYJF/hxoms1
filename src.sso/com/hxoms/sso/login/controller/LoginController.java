@@ -1,6 +1,6 @@
 package com.hxoms.sso.login.controller;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.exceptions.UserCheckException;
 import com.hxoms.common.listener.TokenExpireListener;
 import com.hxoms.common.utils.*;

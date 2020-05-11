@@ -1,6 +1,6 @@
 package com.hxoms.full.search.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.utils.*;
 import com.hxoms.full.search.entity.FullSearchSetting;

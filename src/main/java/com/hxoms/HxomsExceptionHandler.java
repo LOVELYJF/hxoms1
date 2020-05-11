@@ -1,6 +1,6 @@
 package com.hxoms;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package com.hxoms.support.parameter.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.parameter.entity.Parameter;
 import com.hxoms.support.parameter.mapper.ParameterMapper;

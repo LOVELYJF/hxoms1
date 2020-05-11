@@ -2,7 +2,7 @@ package com.hxoms.general.select.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.common.utils.*;

@@ -1,6 +1,6 @@
 package com.hxoms.support.operateLog.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.operateLog.entity.CfOperatemethod;
 import com.hxoms.support.operateLog.entity.CfOperatemethodExample;

@@ -137,4 +137,14 @@ public class Constants {
      * lucene根目录配置
      */
     public static String LUCENE_BASE_DIR = "E:/lucene";
+
+    /**
+     *配偶子女b0100
+     */
+    public static String FAMILY_B0100 = "ABB9009B-023F-4641-9C9E-BECCBED53A6C";
+
+    /**
+     *  备案表文件标题
+     */
+    public static String[] TITLES = {"因公临时出国人员备案表","因公临时赴港澳人员备案表","因公临时赴台人员备案表"};
 }

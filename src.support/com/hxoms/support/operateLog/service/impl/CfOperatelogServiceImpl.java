@@ -6,7 +6,7 @@ package com.hxoms.support.operateLog.service.impl;
  */
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.support.operateLog.entity.CfOperatelog;
 import com.hxoms.support.operateLog.entity.CfOperatelogExample;

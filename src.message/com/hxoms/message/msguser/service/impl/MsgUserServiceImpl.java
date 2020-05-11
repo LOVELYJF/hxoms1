@@ -1,6 +1,6 @@
 package com.hxoms.message.msguser.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.message.msguser.entity.MsgUser;

@@ -1,6 +1,6 @@
 package com.hxoms.message.msgsend.controller;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.message.msgsend.entity.MMsgSend;

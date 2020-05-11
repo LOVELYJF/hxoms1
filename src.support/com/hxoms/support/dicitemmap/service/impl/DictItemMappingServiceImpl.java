@@ -1,7 +1,7 @@
 package com.hxoms.support.dicitemmap.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.dicitemmap.entity.DictItemMapping;

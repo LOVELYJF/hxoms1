@@ -1,6 +1,6 @@
 package com.hxoms.support.customquery.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.support.customquery.entity.ShareQueryPlan;
 import com.hxoms.support.customquery.entity.paramentity.SharePlanParam;

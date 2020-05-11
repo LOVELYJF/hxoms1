@@ -2,7 +2,7 @@ package com.hxoms.modules.sysUser.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;

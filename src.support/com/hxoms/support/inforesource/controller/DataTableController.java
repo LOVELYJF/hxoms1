@@ -1,6 +1,6 @@
 package com.hxoms.support.inforesource.controller;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.support.inforesource.entity.DataTable;

@@ -1,7 +1,7 @@
 package com.hxoms.message.message.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.message.discussiongroup.entity.DiscussionGroup;
 import com.hxoms.message.discussiongroup.service.DiscussionGroupService;

@@ -1,6 +1,6 @@
 package com.hxoms.support.inforesource.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.Reflector.ReflectHelpper;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;

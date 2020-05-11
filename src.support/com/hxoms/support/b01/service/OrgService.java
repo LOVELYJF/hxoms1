@@ -14,6 +14,8 @@ public interface OrgService {
      */
     List<Tree> selectOrgTree();
 
+    List<Tree> selectOrgTreeList();
+
     void updateOrg(B01 b01);
 
     void insertOrg(B01 b01);

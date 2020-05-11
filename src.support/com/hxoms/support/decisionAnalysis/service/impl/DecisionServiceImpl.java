@@ -1,6 +1,6 @@
 package com.hxoms.support.decisionAnalysis.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.common.tree.Tree;

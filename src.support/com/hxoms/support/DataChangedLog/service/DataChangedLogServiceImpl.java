@@ -6,7 +6,7 @@ package com.hxoms.support.DataChangedLog.service;
  */
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;

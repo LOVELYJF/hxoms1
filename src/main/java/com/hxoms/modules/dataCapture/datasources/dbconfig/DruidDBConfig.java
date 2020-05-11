@@ -26,8 +26,8 @@ import java.util.Map;
  * @data 2020/4/14 9:44
  * @Description:
  */
-@Configuration
-@EnableTransactionManagement
+//@Configuration
+//@EnableTransactionManagement
 public class DruidDBConfig {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -109,8 +109,7 @@ public class DruidDBConfig {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
         //解决驼峰命名失效
-        sqlSessionFactoryBean.setConfiguration(configuration());
-//          sqlSessionFactoryBean
+//        sqlSessionFactoryBean.setConfiguration(configuration());
         return sqlSessionFactoryBean.getObject();
     }
 //    @Bean
@@ -122,11 +121,11 @@ public class DruidDBConfig {
      * 读取驼峰命名设置
      * @return
      */
-    @Bean
-    @ConfigurationProperties(prefix = "mybatis-plus.configuration")
-    public org.apache.ibatis.session.Configuration configuration(){
-        return new org.apache.ibatis.session.Configuration();
-    }
+//    @Bean
+//    @ConfigurationProperties(prefix = "mybatis.configuration")
+//    public org.apache.ibatis.session.Configuration configuration(){
+//        return new org.apache.ibatis.session.Configuration();
+//    }
 
 
 

@@ -1,6 +1,6 @@
 package com.hxoms.notice.column.service.impl;
 
-import com.hxoms.common.CustomMessageException;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.utils.UUIDGenerator;
