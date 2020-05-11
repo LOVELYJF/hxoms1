@@ -141,7 +141,7 @@
 
   <!--查询数据信息集-->
   <select id="selectLeaderInfoData" parameterType="java.lang.String" resultType="com.hxoms.support.leaderInfo.util.LowerKeyMap">
-    select * from ${arg0} where a0100 = #{arg1,jdbcType=VARCHAR}
+    select * from ${tablecode} where a0100 = #{id,jdbcType=VARCHAR}
   </select>
 
   <!--查询家庭成员-->
