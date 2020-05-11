@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.condition.mapper.OmsConditionMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.condition.entity.OmsCondition">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="condition_type" jdbcType="VARCHAR" property="conditionType" />
+    <result column="check_type" jdbcType="CHAR" property="checkType" />
+    <result column="info_type" jdbcType="CHAR" property="infoType" />
+    <result column="sql" jdbcType="VARCHAR" property="sql" />
+    <result column="json" jdbcType="VARCHAR" property="json" />
+    <result column="desc" jdbcType="VARCHAR" property="desc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, condition_type, check_type, info_type, sql, json, desc
+  </sql>
+
+
+</mapper>

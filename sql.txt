@@ -1,0 +1,2 @@
+--创建表空间
+CREATE TABLESPACE "HXOMS" DATAFILE 'D:\dmdbms\data\DAMENG\HXOMS.dbf' SIZE 128 autoextend on maxsize 16777215 CACHE = NORMAL;

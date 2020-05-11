@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.file.mapper.OmsFileMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.file.entity.OmsFile">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
+    <result column="TABLE_CODE" jdbcType="VARCHAR" property="tableCode" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, FILE_NAME, FILE_TYPE, TABLE_CODE, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
+  </sql>
+
+  <select id="selectFileListByCode" resultType="com.hxoms.modules.file.entity.OmsFile">
+    select * from oms_file
+    where table_code=#{tableCode}
+  </select>
+
+</mapper>
