@@ -26,6 +26,19 @@ public class LeaderInfoController {
         Map<String,Object> map = leaderInfoService.selectBasicInfo(pageNum, pageSize, orgId);
         return Result.success(map);
     }
+    /**
+     * 功能描述: <br>
+     * 〈根据关键词/姓氏模糊查询结果〉
+     * @Param: [name]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/4/29 11:04
+     */
+    @RequestMapping("/selectBasicInfoByName")
+    public Result selectBasicInfoByName(String name){
+        Map<String,Object> map = leaderInfoService.selectBasicInfoByName(name);
+        return Result.success(map);
+    }
 
     /**
      * @desc: 查询数据信息集
