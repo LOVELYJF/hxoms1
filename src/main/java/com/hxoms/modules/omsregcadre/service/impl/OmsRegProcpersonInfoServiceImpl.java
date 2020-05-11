@@ -45,7 +45,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) {
+    public IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException {
         //查询数据来源为干部的登记备案人员信息
         List<String> a0100str = baseMapper.selectRegProcpersonInfo();
         IPage<OmsRegProcpersonInfo> mepinfoList = null;
@@ -320,9 +320,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     //将日期格式化
                     SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
                     //脱密开始日期
-                    String secretStartDate = sd.format(omsreginfo.getSecretStartDate());
+                    String secretStartDate = sd.format(omsreginfo.getDecryptStartdate());
                     //脱密结束日期
-                    String secretEndDate = sd.format(omsreginfo.getSecretStartDate());
+                    String secretEndDate = sd.format(omsreginfo.getDecryptEnddate());
                     //计算两个日期相差年数
                     int year = OmsRegInitUtil.yearDateDiff(secretStartDate,secretEndDate);
 
@@ -446,12 +446,72 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         return baseMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<OmsRegProcpersonInfo> checkUploadRegRecord(List<OmsRegProcpersonInfo> list) {
+        int con =0;
+        QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        queryWrapper.eq("DATA_TYPE","1");
+        //查询登记备案干部的数据
+        List<OmsRegProcpersonInfo> omsregList = baseMapper.selectList(queryWrapper);
+        //登记备案为干部的身份证号集合
+        List<String> idnumbers =null;
+        for (int i=0;i<omsregList.size();i++){
+            idnumbers.add(omsregList.get(i).getIdnumber());
+        }
+        //出国境导入数据集合
+        for (OmsRegProcpersonInfo cgjdata :list){
+            //登记备案中包含出入境
+            if (idnumbers.contains(cgjdata.getIdnumber())){
+                continue;
+            }else{
+                //登记备案不中包含出入境
+
+
+            }
+        }
+
+
+
+
+
+
+       /* if (omsregList !=null && omsregList.size() >0){
+            OmsRegProcpersonInfo gbData = omsregList.get(0);
+            OmsRegProcpersonInfo gaData = omsregList.get(1);
+            //身份账号与名称一致
+            if (gbData.getIdnumber().equals(gaData.getIdnumber())
+                    && gbData.getName() .equals(gaData.getName())){
+                //更新干部相关信息从公安数据中维护
+                OmsRegProcpersonInfo omsreginfo = new OmsRegProcpersonInfo();
+                omsreginfo.setId(gbData.getId());
+                //户口所在地
+                omsreginfo.setRegisteResidence(gaData.getRegisteResidence());
+                //入库标识  新增U  修改I  撤消D
+                omsreginfo.setInboundFlag("I");
+                //备案状态  0未备案，1已备案，2已确认
+                omsreginfo.setRfStatus("1");
+                //验收状态  1已验收，0待验收
+                omsreginfo.setCheckStatus("1");
+                omsreginfo.setModifyTime(new Date());
+                con = baseMapper.updateById(omsreginfo);
+                if (con > 0){
+                    baseMapper.deleteById(gaData.getId());
+                }
+            }else{
+                throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
+            }*/
+        return null;
+        }
+
+
+
     /**
      * 初始化信息
      * @param a01
      * @return
      */
-    private OmsRegProcpersonInfo initData(A01Entity a01){
+    private OmsRegProcpersonInfo initData(A01Entity a01) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         OmsRegProcpersonInfo orpInfo = new OmsRegProcpersonInfo();
         //根据身份证号截取对应的出生日期
         String birthDay = OmsRegInitUtil.getBirthByIdNumber(a01.getA0184());
@@ -477,7 +537,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //验收状态
         orpInfo.setCheckStatus("0");
         //出生日期
-        orpInfo.setBirthDate(birthDay);
+        orpInfo.setBirthDate(simpleDateFormat.parse(birthDay));
         //拼音简称
         orpInfo.setPy("");
         //身份证号
