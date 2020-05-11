@@ -139,7 +139,7 @@
                         FROM sys_dict t2
                        WHERE t2.standard IS NOT NULL)
                          UNION ALL
-		(SELECT id AS "tableId",
+		(SELECT item_id AS "tableId",
             item_code AS "id",
             '0' AS "pId",
             CONCAT(item_code,item_name) AS "label",
