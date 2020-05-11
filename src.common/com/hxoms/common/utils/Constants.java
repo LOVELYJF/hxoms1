@@ -30,9 +30,9 @@ public class Constants {
     public static final int ERROR = 1;
 
     /**
-     * 默认重置密码123456
+     * 默认重置密码12345678
      */
-    public static final String USER_PWD = "123456";
+    public static final String USER_PWD = "12345678";
     /**
      * 请求头中的key
      */
