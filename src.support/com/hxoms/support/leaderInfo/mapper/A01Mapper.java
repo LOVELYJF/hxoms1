@@ -3,6 +3,7 @@ package com.hxoms.support.leaderInfo.mapper;
 import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.entity.A01WithBLOBs;
 import com.hxoms.support.leaderInfo.util.LowerKeyMap;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public interface A01Mapper {
      * @author: sundeng
      * @date: 2019/7/26
      */
-    List<LowerKeyMap<String, Object>> selectLeaderInfoData(String tablecode, String id);
+    List<LowerKeyMap<String, Object>>    selectLeaderInfoData(@Param("tablecode") String tablecode,@Param("id") String id);
 
     /**
      * @desc: 查询家庭成员
@@ -77,4 +78,14 @@ public interface A01Mapper {
      * @date: 2019/8/28
      */
     List<Map<String,Object>> selectFamily(String id);
+
+    /**
+     * 功能描述: <br>
+     * 〈根据关键字/姓氏查询结果〉
+     * @Param: [name]
+     * @Return: java.util.List<java.util.LinkedHashMap<java.lang.String,java.lang.Object>>
+     * @Author: 李逍遥
+     * @Date: 2020/4/29 11:42
+     */
+    List<LinkedHashMap<String, Object>> selectAllInfoByName(String name);
 }

@@ -110,6 +110,7 @@ public class DruidDBConfig {
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
         //解决驼峰命名失效
         sqlSessionFactoryBean.setConfiguration(configuration());
+//          sqlSessionFactoryBean
         return sqlSessionFactoryBean.getObject();
     }
 //    @Bean
@@ -122,7 +123,7 @@ public class DruidDBConfig {
      * @return
      */
     @Bean
-    @ConfigurationProperties(prefix = "mybatis.configuration")
+    @ConfigurationProperties(prefix = "mybatis-plus.configuration")
     public org.apache.ibatis.session.Configuration configuration(){
         return new org.apache.ibatis.session.Configuration();
     }

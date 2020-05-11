@@ -141,7 +141,7 @@
 
   <!--查询数据信息集-->
   <select id="selectLeaderInfoData" parameterType="java.lang.String" resultType="com.hxoms.support.leaderInfo.util.LowerKeyMap">
-    select * from ${arg0} where a0100 = #{arg1,jdbcType=VARCHAR}
+    select * from ${tablecode} where a0100 = #{id,jdbcType=VARCHAR}
   </select>
 
   <!--查询家庭成员-->
@@ -221,8 +221,22 @@
     ORDER BY
 	col_code asc
   </select>
+  <!-- 根据关键字/姓氏查询结果-->
+    <select id="selectAllInfoByName" resultType="java.util.LinkedHashMap">
+     select
+    DISTINCT c.* , e.b0111
+    from a01 c inner join  a02 d
+    on c.a0100 = d.a0100
+    INNER JOIN
+    (select b0111 from b01) e
+    ON
+    d.a0201b=e.b0111
+    where
+    c.A0101 like "%"#{name,jdbcType=VARCHAR}"%" and d.a0255='1'
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from a01
     where a0100 = #{a0100,jdbcType=VARCHAR}
   </delete>
