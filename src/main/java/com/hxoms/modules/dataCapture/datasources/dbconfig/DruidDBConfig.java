@@ -1,6 +1,8 @@
 package com.hxoms.modules.dataCapture.datasources.dbconfig;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
@@ -106,12 +108,12 @@ public class DruidDBConfig {
 
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dynamicDataSource());
+        MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
+        sqlSessionFactory.setDataSource(dynamicDataSource());
         //解决驼峰命名失效
-        sqlSessionFactoryBean.setConfiguration(configuration());
-//          sqlSessionFactoryBean
-        return sqlSessionFactoryBean.getObject();
+        sqlSessionFactory.setConfiguration(configuration());
+//          sqlSessionFactoryBean.
+        return sqlSessionFactory.getObject();
     }
 //    @Bean
 //    public SqlSessionTemplate sqlSessionTemplate() throws Exception {
@@ -124,8 +126,8 @@ public class DruidDBConfig {
      */
     @Bean
     @ConfigurationProperties(prefix = "mybatis-plus.configuration")
-    public org.apache.ibatis.session.Configuration configuration(){
-        return new org.apache.ibatis.session.Configuration();
+    public MybatisConfiguration configuration(){
+        return new MybatisConfiguration();
     }
 
 
