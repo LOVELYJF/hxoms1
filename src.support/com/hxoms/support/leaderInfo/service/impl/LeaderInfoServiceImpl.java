@@ -114,4 +114,45 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
         resultMap.put("tableData",tableData);
         return Collections.singletonList(resultMap);
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈根据关键词/姓氏模糊查询返回数据〉
+     * @Param: [name]
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/4/29 11:07
+     */
+    @Override
+    public Map<String, Object> selectBasicInfoByName(String name) {
+        //结果map
+        Map<String, Object> resultMap = new LinkedHashMap<>();
+
+        //查询动态表头信息
+        List<DataTableCol> dataTableColList = mcMarkedcadreMapper.selectDynamicColumn();
+        resultMap.put("dataCol", dataTableColList);
+
+        //查询列相关字典
+        Map<String, Object> dicCodeItemMap = new LinkedHashMap<>();
+        for (DataTableCol dataTableCol : dataTableColList) {
+            String controlType = dataTableCol.getControlType();
+            if ("2".equals(controlType) || "14".equals(controlType)) {
+                if (!dicCodeItemMap.containsKey(dataTableCol.getDicCode())) {
+                    List<Map<String, Object>> dicCodeItems = sysDictItemService.getDictInfoByDictCode(dataTableCol.getDicCode(), null);
+                    dicCodeItemMap.put(dataTableCol.getDicCode(), dicCodeItems);
+                }
+            }
+        }
+        resultMap.put("dicCodeItems", dicCodeItemMap);
+
+
+        if(name == null){
+            return null;
+        }else {
+            List<LinkedHashMap<String, Object>> list1 = a01Mapper.selectAllInfoByName(name);
+            PageInfo info1 = new PageInfo(list1);
+            resultMap.put("info",info1);
+            return resultMap;
+        }
+    }
 }

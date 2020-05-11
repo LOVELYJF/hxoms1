@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.support.sysdict.mapper.SysDictItemMapper">
     <resultMap id="BaseResultMap" type="com.hxoms.support.sysdict.entity.SysDictItem">
-        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="item_id" jdbcType="VARCHAR" property="id"/>
         <result column="dict_code" jdbcType="VARCHAR" property="dictCode"/>
         <result column="item_code" jdbcType="VARCHAR" property="itemCode"/>
         <result column="item_name" jdbcType="VARCHAR" property="itemName"/>
@@ -32,7 +32,7 @@
         insert into sys_dict_item
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                id,
+                item_id,
             </if>
             <if test="dictCode != null">
                 dict_code,
@@ -149,7 +149,7 @@
     item_levelcode=#{itemLevelcode},short_name=#{shortName},item_desc=#{itemDesc},
     comp_spell=#{compSpell},logo_spell=#{logoSpell},is_use=#{isUse},is_leaf=#{isLeaf},
     modify_user=#{modifyUser},modify_time=#{modifyTime},securitylevel=#{securitylevel},
-    item_level=#{itemLevel},parent_item_code=#{parentItemCode} WHERE id=#{id}
+    item_level=#{itemLevel},parent_item_code=#{parentItemCode} WHERE item_id=#{id}
     </update>
 
     <!--删除字典映射表信息-->
@@ -159,7 +159,7 @@
 
     <!--通过id查询code-->
     <select id="selectItemCodeById" parameterType="String" resultMap="BaseResultMap">
-    SELECT dict_code,item_code FROM sys_dict_item WHERE id=#{id}
+    SELECT dict_code,item_code FROM sys_dict_item WHERE item_id=#{id}
     </select>
 
     <!--通过pCode查询子code-->
@@ -178,7 +178,7 @@
         <foreach collection="array" open="case id" close="end" item="id" index="index" separator="">
             when #{id} then #{index}
         </foreach>
-        where id IN
+        where item_id IN
         <foreach collection="array" open="(" close=")" item="id" index="index" separator=",">
             #{id}
         </foreach>
@@ -191,10 +191,10 @@
 
     <!--通过code查询映射信息-->
     <select id="selectItemAllById" parameterType="String" resultMap="BaseResultMap">
-        SELECT id,dict_code,item_code,item_name,item_num,item_levelcode,short_name,item_desc,comp_spell,
+        SELECT item_id,dict_code,item_code,item_name,item_num,item_levelcode,short_name,item_desc,comp_spell,
         logo_spell,is_use,is_leaf,orderindex,time_stamp,modify_user,modify_time,securitylevel,
         item_level,parent_item_code
-        FROM sys_dict_item WHERE id=#{id}
+        FROM sys_dict_item WHERE item_id=#{id}
     </select>
 
     <!--点击资源信息项页面数据字典显示-->
@@ -205,13 +205,13 @@
 
     <!--通过父级code查询下级映射信息-->
     <select id="selectDictItemByPCode" parameterType="String" resultMap="BaseResultMap">
-    SELECT id,item_code,item_name,orderindex FROM sys_dict_item WHERE parent_item_code=#{itemCode} AND dict_code=#{dictCode}
+    SELECT item_id,item_code,item_name,orderindex FROM sys_dict_item WHERE parent_item_code=#{itemCode} AND dict_code=#{dictCode}
     ORDER BY orderindex
     </select>
 
     <!--查询映射树-->
     <select id="selectItemTree" parameterType="com.hxoms.support.sysdict.entity.SysDictItem" resultType="com.hxoms.common.tree.Tree">
-    SELECT id AS "tableId", item_code as "id",CONCAT(item_code,item_name) as "label",parent_item_code as "pId"
+    SELECT item_id AS "tableId", item_code as "id",CONCAT(item_code,item_name) as "label",parent_item_code as "pId"
     FROM sys_dict_item
     WHERE dict_code=#{dictCode}
     ORDER BY orderindex
@@ -219,7 +219,7 @@
 
     <!--根据dictCode查询字典映射信息-->
     <select id="selectItemByDictCode" parameterType="String" resultType="com.hxoms.common.tree.Tree">
-    SELECT id AS "tableId", item_code as "id",item_name as "label",parent_item_code as "pId"
+    SELECT item_id AS "tableId", item_code as "id",item_name as "label",parent_item_code as "pId"
     FROM sys_dict_item
     WHERE dict_code=#{dictCode}
     ORDER BY orderindex
@@ -229,7 +229,7 @@
     <select id="doubleItemCode" parameterType="com.hxoms.support.sysdict.entity.SysDictItem" resultType="Integer">
         select count(dict_code) from sys_dict_item where dict_code=#{dictCode} and item_code=#{itemCode}
         <if test="id != null and id!=''">
-            and id!=#{id}
+            and item_id!=#{id}
         </if>
     </select>
     <!--通过dictcode查询字典项-->
