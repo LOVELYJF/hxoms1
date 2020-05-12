@@ -45,7 +45,7 @@
     <if test="revokeapply.rfB0000!=null and revokeapply.rfB0000!=''">
       AND RF_B0000 = #{revokeapply.rfB0000}
     </if>
-    limit (page.current-1)*page.size,page.size
+    limit ${(page.current-1)},${page.size}
   </select>
 
 </mapper>

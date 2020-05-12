@@ -27,8 +27,8 @@
     <result column="IDENTITY_CODE" jdbcType="CHAR" property="identityCode" />
     <result column="IDENTITY" jdbcType="VARCHAR" property="identity" />
     <result column="SECRET_LEVEL" jdbcType="VARCHAR" property="secretLevel" />
-    <result column="SECRET_STARTDATE" jdbcType="DATE" property="secretStartDate" />
-    <result column="SECRET_ENDDATE" jdbcType="VARCHAR" property="secretEndDate" />
+    <result column="DECRYPT_STARTDATE" jdbcType="DATE" property="decryptStartdate" />
+    <result column="DECRYPT_ENDDATE" jdbcType="VARCHAR" property="decryptEnddate" />
     <result column="MAIN_LEADER" jdbcType="CHAR" property="mainLeader" />
     <result column="LICENCE_IDENTITY" jdbcType="INTEGER" property="licenceIdentity" />
     <result column="NF" jdbcType="CHAR" property="nf" />
