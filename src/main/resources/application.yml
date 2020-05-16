@@ -21,6 +21,7 @@ spring:
       max-active: 1
       test-while-idle: true
       validation-query: select 1
+      max-wait: 10
   jackson:
     default-property-inclusion: non_null
   servlet:
@@ -120,3 +121,4 @@ post:
   801: 国家工作人员配偶
   802: 国家工作人员子女
   999: 其他
+
