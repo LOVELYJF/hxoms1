@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omssmrperson.mapper.OmsSmrPersonInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="ID_CARD_NUMBER" jdbcType="VARCHAR" property="idCardNumber" />
+    <result column="A0141" jdbcType="VARCHAR" property="a0141" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
+    <result column="SECRET_RELATED_POST" jdbcType="VARCHAR" property="secretRelatedPost" />
+    <result column="SECRET_RELATED_LEVEL" jdbcType="VARCHAR" property="secretRelatedLevel" />
+    <result column="SECRET_REVIEW_DATE" jdbcType="TIMESTAMP" property="secretReviewDate" />
+    <result column="SECRET_RELATED_ORG" jdbcType="VARCHAR" property="secretRelatedOrg" />
+    <result column="MAX_SECRET_RELATED_ORG" jdbcType="VARCHAR" property="maxSecretRelatedOrg" />
+    <result column="MAX_SECRET_RELATED_LEVEL" jdbcType="VARCHAR" property="maxSecretRelatedLevel" />
+    <result column="MAX_FINISH_DATE" jdbcType="DATE" property="maxFinishDate" />
+    <result column="START_DATE" jdbcType="DATE" property="startDate" />
+    <result column="FINISH_DATE" jdbcType="DATE" property="finishDate" />
+    <result column="UPDATE_USER_ID" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, A0100, B0100, ID_CARD_NUMBER, A0141, POST, PERSON_STATE, SECRET_RELATED_POST,
+    SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, SECRET_RELATED_ORG, MAX_SECRET_RELATED_ORG, 
+    MAX_SECRET_RELATED_LEVEL, MAX_FINISH_DATE, START_DATE, FINISH_DATE, UPDATE_USER_ID, 
+    UPDATE_TIME, IMPORT_YEAR
+  </sql>
+
+  <!-- 以下为自行添加的代码 -->
+  <!-- 查询涉密人员管理列表 -->
+  <select id="selectSmrPersonInfo" parameterType="java.util.Map" resultType="BaseResultMap">
+    SELECT
+        t.ID,
+        t.A0100,
+        t.B0100,
+        concat(r.SURNAME,r.NAME) as NAME,
+        t.ID_CARD_NUMBER,
+        t.A0141,
+        t.POST,
+        t.PERSON_STATE,
+        t.SECRET_RELATED_POST,
+        t.SECRET_RELATED_LEVEL,
+        t.SECRET_REVIEW_DATE,
+        t.SECRET_RELATED_ORG,
+        t.MAX_SECRET_RELATED_ORG,
+        t.MAX_SECRET_RELATED_LEVEL,
+        t.MAX_FINISH_DATE,
+        t.START_DATE,
+        t.FINISH_DATE,
+        t.UPDATE_USER_ID,
+        t.UPDATE_TIME,
+        t.IMPORT_YEAR
+    FROM
+        oms_smr_personinfo t
+        LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
+    WHERE 1 = 1
+        <if test="name !=null and name !=''">
+          AND concat(r.SURNAME,r.NAME) like #{name}
+        </if>
+        <if test="namePy !=null and namePy !=''">
+          AND r.PY like #{namePy}
+        </if>
+        <if test="b0100 !=null and b0100 !=''">
+          AND t.B0100 = #{b0100}
+        </if>
+        <if test="level !=null and level !=''">
+          AND t.SECRET_RELATED_LEVEL = #{level}
+        </if>
+        <if test="post !=null and post !=''">
+          AND t.SECRET_RELATED_POST = #{post}
+        </if>
+        <if test="personState !=null and personState !=''">
+          AND t.PERSON_STATE = #{personState}
+        </if>
+        <if test="idList !=null and idList !=''">
+          AND t.B0100 IN
+          <foreach collection="idList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+          </foreach>
+        </if>
+    ORDER BY t.UPDATE_TIME DESC
+  </select>
+
+  <!-- 批量添加涉密人员 -->
+  <insert id="insert" parameterType="java.util.List">
+    INSERT INTO oms_reg_procpersoninfo (
+        ID, A0100, B0100, ID_CARD_NUMBER, A0141, POST, PERSON_STATE, SECRET_RELATED_POST,
+        SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, SECRET_RELATED_ORG, MAX_SECRET_RELATED_ORG,
+        MAX_SECRET_RELATED_LEVEL, MAX_FINISH_DATE, START_DATE, FINISH_DATE, UPDATE_USER_ID,
+        UPDATE_TIME, IMPORT_YEAR
+    )
+    VALUES
+    <foreach collection="list" item="item" index= "index" separator =",">
+      (
+        #{item.id},
+        #{item.aA0100},
+        #{item.b0100},
+        #{item.idCardNumber},
+        #{item.a0141},
+        #{item.post},
+        #{item.personState},
+        #{item.secretRelatedPost},
+        #{item.secretRelatedLevel},
+        #{item.secretReviewDate},
+        #{item.secretRelatedOrg},
+        #{item.maxSecretRelatedOrg},
+        #{item.maxSecretRelatedLevel},
+        #{item.maxFinishDate},
+        #{item.startDate},
+        #{item.finishDate},
+        #{item.updateUserId},
+        #{item.updateTime},
+        #{item.import}
+      )
+    </foreach>
+  </insert>
+</mapper>
