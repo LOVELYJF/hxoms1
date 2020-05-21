@@ -9,6 +9,5 @@ import java.util.Map;
 
 @Repository
 public interface OmsSmrPersonInfoMapper  extends BaseMapper<OmsSmrPersonInfo> {
-
     List<OmsSmrPersonInfo> selectSmrPersonInfo(Map<String,Object> param);
 }
