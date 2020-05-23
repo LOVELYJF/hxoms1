@@ -4,117 +4,81 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-
-@TableAnnotation(TableName = "cf_certificate", TableDescription="证照管理")
+@TableAnnotation(TableName = "cf_certificate", TableDescription="证件信息表")
 public class CfCertificate {
-
-    /**
-     * 主键
-     */
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="ID")
     private String id;
-    /**
-     * 证件拥有人ID
-     */
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="证件拥有人ID")
+
+    @ColumnAnnotation(FieldName = "A0184",   FieldDescription="证件拥有者身份证号码")
+    private String a0184;
+
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="证件拥有者ID")
     private String a0100;
-    /**
-     * 国籍
-     */
+
     @ColumnAnnotation(FieldName = "GJ",   FieldDescription="国籍")
     private String gj;
-    /**
-     * 中文出生地
-     */
-    @ColumnAnnotation(FieldName = "ZWCSDD",   FieldDescription="中文出生地")
+
+    @ColumnAnnotation(FieldName = "ZWCSDD",   FieldDescription="中文出生地点")
     private String zwcsdd;
-    /**
-     * 英文出生地
-     */
-    @ColumnAnnotation(FieldName = "YWCSDD",   FieldDescription="英文出生地")
+
+    @ColumnAnnotation(FieldName = "YWCSDD",   FieldDescription="英文出生地点")
     private String ywcsdd;
-    /**
-     * 证件号码
-     */
+
     @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
     private String zjhm;
-    /**
-     * 证件类型(1、因公护照  2、因私护照  3、因公港澳证  4、因私港澳证  5、因公赴台证  6、因私赴台证)
-     */
-    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型")
+
+    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1、因公护照  2、因私护照  3、因公港澳证  4、因私港澳证  5、因公赴台证  6、因私赴台证)")
     private Integer zjlx;
-    /**
-     * 证件形式
-     */
+
     @ColumnAnnotation(FieldName = "ZJXS",   FieldDescription="证件形式")
-    private Integer zjxs;
-    /**
-     * 存放地址
-     */
-    @ColumnAnnotation(FieldName = "LOCATION",   FieldDescription="存放地址")
+    private String zjxs;
+
+    @ColumnAnnotation(FieldName = "LOCATION",   FieldDescription="证照存放地址")
     private String location;
-    /**
-     * 中文签发地点
-     */
+
     @ColumnAnnotation(FieldName = "ZWQFDD",   FieldDescription="中文签发地点")
     private String zwqfdd;
-    /**
-     * 英文签发地点
-     */
+
     @ColumnAnnotation(FieldName = "YWQFDD",   FieldDescription="英文签发地点")
     private String ywqfdd;
-    /**
-     * 中文签发机关
-     */
+
     @ColumnAnnotation(FieldName = "ZWQFJG",   FieldDescription="中文签发机关")
     private String zwqfjg;
-    /**
-     * 英文签发机关
-     */
+
     @ColumnAnnotation(FieldName = "YWQFJG",   FieldDescription="英文签发机关")
     private String ywqfjg;
-    /**
-     * 签发日期
-     */
+
     @ColumnAnnotation(FieldName = "QFRQ",   FieldDescription="签发日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date qfrq;
-    /**
-     * 有效期至
-     */
+
     @ColumnAnnotation(FieldName = "YXQZ",   FieldDescription="有效期至")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date yxqz;
-    /**
-     * 证件上交日期
-     */
-    @ColumnAnnotation(FieldName = "ZJSJRQ",   FieldDescription="证件上交日期")
+
+    @ColumnAnnotation(FieldName = "ZJSJRQ",   FieldDescription="证件上缴日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date zjsjrq;
-    /**
-     * 证件当前状态
-     */
-    @ColumnAnnotation(FieldName = "DQZZ",   FieldDescription="证件当前状态")
-    private Integer dqzz;
-    /**
-     * 人员是否有效
-     */
-    @ColumnAnnotation(FieldName = "ISCABINET",   FieldDescription="人员是否有效")
-    private Integer isCabinet;
+
+    @ColumnAnnotation(FieldName = "DQZT",   FieldDescription="当前状态(1、初次录入 2、入柜未确认 3、在库  4、借出未出柜 5、借出出柜未确认  6、借出  7、归还未入柜  8、归还入柜未确认   9、盘点未取出 ，10、盘点取出未确认 11 、盘出   12、盘点未入柜  13 盘点入柜未确认，14永久取出)")
+    private Integer dqzt;
+
+    @ColumnAnnotation(FieldName = "ISCABINET",   FieldDescription="人员是否有效，1，有效，0，无效")
+    private Integer iscabinet;
 
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.id = id == null ? null : id.trim();
     }
 
     public String getA0100() {
@@ -122,7 +86,7 @@ public class CfCertificate {
     }
 
     public void setA0100(String a0100) {
-        this.a0100 = a0100;
+        this.a0100 = a0100 == null ? null : a0100.trim();
     }
 
     public String getGj() {
@@ -130,7 +94,7 @@ public class CfCertificate {
     }
 
     public void setGj(String gj) {
-        this.gj = gj;
+        this.gj = gj == null ? null : gj.trim();
     }
 
     public String getZwcsdd() {
@@ -138,7 +102,7 @@ public class CfCertificate {
     }
 
     public void setZwcsdd(String zwcsdd) {
-        this.zwcsdd = zwcsdd;
+        this.zwcsdd = zwcsdd == null ? null : zwcsdd.trim();
     }
 
     public String getYwcsdd() {
@@ -146,7 +110,7 @@ public class CfCertificate {
     }
 
     public void setYwcsdd(String ywcsdd) {
-        this.ywcsdd = ywcsdd;
+        this.ywcsdd = ywcsdd == null ? null : ywcsdd.trim();
     }
 
     public String getZjhm() {
@@ -154,7 +118,7 @@ public class CfCertificate {
     }
 
     public void setZjhm(String zjhm) {
-        this.zjhm = zjhm;
+        this.zjhm = zjhm == null ? null : zjhm.trim();
     }
 
     public Integer getZjlx() {
@@ -165,12 +129,12 @@ public class CfCertificate {
         this.zjlx = zjlx;
     }
 
-    public Integer getZjxs() {
+    public String getZjxs() {
         return zjxs;
     }
 
-    public void setZjxs(Integer zjxs) {
-        this.zjxs = zjxs;
+    public void setZjxs(String zjxs) {
+        this.zjxs = zjxs == null ? null : zjxs.trim();
     }
 
     public String getLocation() {
@@ -178,7 +142,7 @@ public class CfCertificate {
     }
 
     public void setLocation(String location) {
-        this.location = location;
+        this.location = location == null ? null : location.trim();
     }
 
     public String getZwqfdd() {
@@ -186,7 +150,7 @@ public class CfCertificate {
     }
 
     public void setZwqfdd(String zwqfdd) {
-        this.zwqfdd = zwqfdd;
+        this.zwqfdd = zwqfdd == null ? null : zwqfdd.trim();
     }
 
     public String getYwqfdd() {
@@ -194,7 +158,7 @@ public class CfCertificate {
     }
 
     public void setYwqfdd(String ywqfdd) {
-        this.ywqfdd = ywqfdd;
+        this.ywqfdd = ywqfdd == null ? null : ywqfdd.trim();
     }
 
     public String getZwqfjg() {
@@ -202,7 +166,7 @@ public class CfCertificate {
     }
 
     public void setZwqfjg(String zwqfjg) {
-        this.zwqfjg = zwqfjg;
+        this.zwqfjg = zwqfjg == null ? null : zwqfjg.trim();
     }
 
     public String getYwqfjg() {
@@ -210,7 +174,7 @@ public class CfCertificate {
     }
 
     public void setYwqfjg(String ywqfjg) {
-        this.ywqfjg = ywqfjg;
+        this.ywqfjg = ywqfjg == null ? null : ywqfjg.trim();
     }
 
     public Date getQfrq() {
@@ -237,88 +201,28 @@ public class CfCertificate {
         this.zjsjrq = zjsjrq;
     }
 
-    public Integer getDqzz() {
-        return dqzz;
+    public Integer getDqzt() {
+        return dqzt;
     }
 
-    public void setDqzz(Integer dqzz) {
-        this.dqzz = dqzz;
+    public void setDqzt(Integer dqzt) {
+        this.dqzt = dqzt;
     }
 
-    public Integer getIsCabinet() {
-        return isCabinet;
+    public Integer getIscabinet() {
+        return iscabinet;
     }
 
-    public void setIsCabinet(Integer isCabinet) {
-        this.isCabinet = isCabinet;
+    public void setIscabinet(Integer iscabinet) {
+        this.iscabinet = iscabinet;
+    }
+
+
+    public String getA0184() {
+        return a0184;
+    }
+
+    public void setA0184(String a0184) {
+        this.a0184 = a0184;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
