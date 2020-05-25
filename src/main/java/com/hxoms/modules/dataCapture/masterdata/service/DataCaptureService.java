@@ -1,7 +1,6 @@
-package com.hxoms.modules.dataCapture.service;
+package com.hxoms.modules.dataCapture.masterdata.service;
 
 //import com.hxoms.modules.dataCapture.datasources.annotation.DBChange;
-import com.hxoms.modules.dataCapture.datasources.annotation.DBChange;
 import com.hxoms.modules.dataCapture.entity.DataSource;
 import com.hxoms.modules.dataCapture.entity.SysLogEntity;
 
@@ -23,16 +22,11 @@ public interface DataCaptureService {
 
    List<Map> getMasterA01(int offset, int rows);
 
-   /**
-    * 通过注解将数据源改为参数指定的。
-    * @param dataSource
-    * @return
-   */
-   List<Map> getTargetA01(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
    int getMasterA01Count();
 
-   int getTargetA01Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA01(List<Map> updateList);
@@ -47,16 +41,11 @@ public interface DataCaptureService {
      * **/
     List<Map> getMasterA02(int offset, int rows);
 
-    /**
-    * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-    * @return
-    */
-    List<Map> getTargetA02(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA02Count();
 
-    int getTargetA02Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA02(List<Map> updateList);
@@ -70,16 +59,11 @@ public interface DataCaptureService {
 
     List<Map> getMasterA05(int offset, int rows);
 
-   /**
-    * 通过注解将数据源改为参数指定的。
-    * @param dataSource
-    * @return
-  */
-  List<Map> getTargetA05(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
   int getMasterA05Count();
 
-  int getTargetA05Count(@DBChange DataSource dataSource);
+
 
 
 
@@ -94,16 +78,11 @@ public interface DataCaptureService {
 
     List<Map> getMasterA06(int offset, int rows);
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    List<Map> getTargetA06(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA06Count();
 
-    int getTargetA06Count(@DBChange DataSource dataSource);
+
 
 
      void      updateMasterA06(List<Map> updateList);
@@ -116,16 +95,11 @@ public interface DataCaptureService {
      * **/
     List<Map> getMasterA08(int offset, int rows);
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    List<Map> getTargetA08(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA08Count();
 
-    int getTargetA08Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA08(List<Map> updateList);
@@ -140,16 +114,11 @@ public interface DataCaptureService {
 
     List<Map> getMasterA14(int offset, int rows);
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    List<Map> getTargetA14(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA14Count();
 
-    int getTargetA14Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA14(List<Map> updateList);
@@ -163,16 +132,11 @@ public interface DataCaptureService {
 
     List<Map> getMasterA15(int offset, int rows);
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    List<Map> getTargetA15(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA15Count();
 
-    int getTargetA15Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA15(List<Map> updateList);
@@ -186,16 +150,11 @@ public interface DataCaptureService {
     * **/
     List<Map> getMasterA17(int offset, int rows);
 
-   /**
-    * 通过注解将数据源改为参数指定的。
-    * @param dataSource
-    * @return
-    */
-    List<Map> getTargetA17(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA17Count();
 
-    int getTargetA17Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA17(List<Map> updateList);
@@ -210,25 +169,18 @@ public interface DataCaptureService {
       * **/
     List<Map> getMasterA36(int offset, int rows);
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    List<Map> getTargetA36(@DBChange DataSource dataSource, int minpage, int maxpage);
+
 
     int getMasterA36Count();
 
-    int getTargetA36Count(@DBChange DataSource dataSource);
+
 
 
     void      updateMasterA36(List<Map> updateList);
 
     void      insertMasterA36(List<Map> insertList);
 
-    // 日志
 
-    void     insertSysLog(SysLogEntity sysLogEntity);
 
 //    /**
 //     * 目标数据源向主数据同步

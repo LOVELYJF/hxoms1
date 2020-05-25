@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
@@ -9,6 +10,7 @@ import java.util.Date;
 /**
  * oms_reg_procpersoninfo
  */
+@TableName("oms_reg_procpersoninfo")
 @TableAnnotation(TableName = "oms_reg_procpersoninfo", TableDescription="登记备案人员信息表")
 public class OmsRegProcpersonInfo {
     /**

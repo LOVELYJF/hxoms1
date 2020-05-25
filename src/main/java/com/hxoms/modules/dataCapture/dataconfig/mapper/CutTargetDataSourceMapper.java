@@ -1,4 +1,4 @@
-package com.hxoms.modules.dataCapture.datasources.mapper;
+package com.hxoms.modules.dataCapture.dataconfig.mapper;
 
 import com.hxoms.modules.dataCapture.entity.DataSource;
 import org.apache.ibatis.annotations.Param;

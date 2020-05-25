@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hxoms.modules.dataCapture.mapper.DataCaptureMapper">
+<mapper namespace="com.hxoms.modules.dataCapture.masterdata.mapper.DataCaptureMapper">
 
     <sql id="orcal_paging_frist" >
        SELECT *
@@ -1652,29 +1652,8 @@
         </foreach>
     </insert>
 
-    <insert id="insertSysLog" parameterType="com.hxoms.modules.dataCapture.log.aspect.SysLogAspect">
-        insert into synchronization_Data_log (
-        id,
-        operation,
-        method,
-        params,
-        time,
-        ip,
-        CREATE_DATE
-        )
-        VALUES
-        (
-        UUID(),
-        #{operation},
-        #{method},
-        #{params},
-        #{time},
-        #{ip},
-        #{createDate}
 
-        )
 
-    </insert>
 
 
 </mapper>

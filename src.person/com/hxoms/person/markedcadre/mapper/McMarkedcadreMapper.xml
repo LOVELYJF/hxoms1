@@ -95,11 +95,8 @@
   <!--根据id查询列表-->
   <select id="selectInfoByNodeId" parameterType="java.lang.String" resultType="com.hxoms.support.leaderInfo.util.LowerKeyMap">
       SELECT
-
           a.id,
-          b.*,
-          row_number() over(partition by b.a0100 order by b.a0100) as num
-
+          b.*
       FROM
           (
               SELECT
@@ -107,14 +104,14 @@
               FROM
                   mc_a01 m
               WHERE
-                 m.mc_id in ( SELECT
-				mc.id
-			FROM
-				mc_markedcadre mc START WITH ID = #{id} CONNECT BY PRIOR mc.ID = mc.PARENTID)
-
-
+                  FIND_IN_SET(
+                          m.mc_id,
+                          queryChildrenMarkedcadre (
+                                  #{id}
+                          )
+                  )
           ) a
-          inner JOIN a01 b ON a.a01_id = b.a0100
+          LEFT JOIN a01 b ON a.a01_id = b.a0100
   </select>
 
   <!--查询所有列表信息-->

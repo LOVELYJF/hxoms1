@@ -5,10 +5,10 @@ server:
 spring:
   datasource:
     druid:
-      #      username: HXOMS
-      #      password: 12345abcde
-      #      url: jdbc:dm://www.24hbs.com:5236/HXOMS
-      #      driver-class-name: dm.jdbc.driver.DmDriver
+#            username: HXOMS
+#            password: 12345abcde
+#            url: jdbc:dm://www.24hbs.com:5236/HXOMS
+#            driver-class-name: dm.jdbc.driver.DmDriver
       username: hxoms
       password: Hxyz-2020#
       url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
@@ -42,8 +42,6 @@ mybatis-plus:
       #id-type: assign_uuid
       logic-delete-value: 0
       logic-not-delete-value: 1
-#  mapper-locations: classpath:com/hxoms/**/mapper/*.xml
-#    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
 #  global-config:
 #    db-config:
 
@@ -57,27 +55,6 @@ mybatis-plus:
 omsFile:
   baseDir: E:/oms #文件存储的路径
 #    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
-
-defulttargetdatasource:
-  #  datasourceId: gz_orcal
-  #  username: root
-  #  password: 123456
-  #  url: jdbc:mysql://127.0.0.1:3307/hxoim?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-  #  databasetype: com.mysql.jdbc.Driver
-  #  code: gz_orcal_master
-  datasourceId: gz_orcal
-  username: newhxdba
-  password: 123456
-  url: jdbc:oracle:thin:@127.0.0.1:1521:orcl
-  databasetype: oracle.jdbc.driver.OracleDriver
-  code: gz_orcal_master
-
-# 开启定时调度
-job:
-  cron: 59 59 23 * * ?
-
-data:
-  initSplic: 1500
 
 #职务code
 postcode:
@@ -121,4 +98,3 @@ post:
   801: 国家工作人员配偶
   802: 国家工作人员子女
   999: 其他
-

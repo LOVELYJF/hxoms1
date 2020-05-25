@@ -1,10 +1,9 @@
-package com.hxoms.modules.dataCapture.service.lmpl;
+package com.hxoms.modules.dataCapture.masterdata.service.lmpl;
 
-import com.hxoms.modules.dataCapture.datasources.annotation.DBChange;
-import com.hxoms.modules.dataCapture.entity.DataSource;
 import com.hxoms.modules.dataCapture.entity.SysLogEntity;
-import com.hxoms.modules.dataCapture.mapper.DataCaptureMapper;
-import com.hxoms.modules.dataCapture.service.DataCaptureService;
+
+import com.hxoms.modules.dataCapture.masterdata.mapper.DataCaptureMapper;
+import com.hxoms.modules.dataCapture.masterdata.service.DataCaptureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,16 +31,9 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA01(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA01(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA01(minpage,maxpage);
-    }
+
+
+
 
     @Override
     public int getMasterA01Count() {
@@ -49,11 +41,6 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA01Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA01Count();
-    }
 
     @Override
     public void updateMasterA01(List<Map> updateList) {
@@ -85,16 +72,6 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA02(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA02(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA02(minpage,maxpage);
-    }
 
     @Override
     public int getMasterA02Count() {
@@ -102,11 +79,6 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA02Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA02Count();
-    }
 
     @Override
     public void updateMasterA02(List<Map> updateList) {
@@ -132,16 +104,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA05(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA05(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA05(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA05Count() {
@@ -149,11 +112,6 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA05Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA05Count();
-    }
 
     @Override
     public void updateMasterA05(List<Map> updateList) {
@@ -175,16 +133,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA06(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA06(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA06(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA06Count() {
@@ -192,11 +141,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA06Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA06Count();
-    }
+
     @Override
     public void updateMasterA06(List<Map> updateList) {
 
@@ -215,16 +160,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA08(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA08(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA08(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA08Count() {
@@ -232,11 +168,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA08Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA08Count();
-    }
+
     @Override
     public void updateMasterA08(List<Map> updateList) {
         dataCaptureMapper.updateMasterA08(updateList);
@@ -254,16 +186,6 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA14(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA14(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA14(minpage,maxpage);
-    }
 
     @Override
     public int getMasterA14Count() {
@@ -271,11 +193,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA14Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA14Count();
-    }
+
     @Override
     public void updateMasterA14(List<Map> updateList) {
         dataCaptureMapper.updateMasterA14(updateList);
@@ -294,16 +212,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA15(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA15(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA15(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA15Count() {
@@ -311,11 +220,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA15Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA15Count();
-    }
+
     @Override
     public void updateMasterA15(List<Map> updateList) {
 
@@ -336,22 +241,14 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA17(offset,row);
     }
 
-    @DBChange
-    @Override
-    public List<Map> getTargetA17(@DBChange DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA17(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA17Count() {
         return dataCaptureMapper.getMasterA17Count();
     }
 
-    @DBChange
-    @Override
-    public int getTargetA17Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA17Count();
-    }
+
 
     @Override
     public void updateMasterA17(List<Map> updateList) {
@@ -373,16 +270,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         return dataCaptureMapper.getMasterA36(offset,row);
     }
 
-    /**
-     * 通过注解将数据源改为参数指定的。
-     * @param dataSource
-     * @return
-     */
-    @DBChange
-    @Override
-    public List<Map> getTargetA36(  @DBChange  DataSource dataSource,int minpage,int maxpage) {
-        return dataCaptureMapper.getTargetA36(minpage,maxpage);
-    }
+
 
     @Override
     public int getMasterA36Count() {
@@ -390,11 +278,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
     }
 
 
-    @DBChange
-    @Override
-    public int getTargetA36Count(@DBChange DataSource dataSource) {
-        return dataCaptureMapper.getTargetA36Count();
-    }
+
     @Override
     public void updateMasterA36(List<Map> updateList) {
         dataCaptureMapper.updateMasterA36(updateList);
@@ -407,11 +291,7 @@ public class DataCaptureServiceImpl implements DataCaptureService {
 
 
 
-    @Override
-    public void insertSysLog(SysLogEntity sysLogEntity) {
 
-        dataCaptureMapper.insertSysLog(sysLogEntity);
-    }
 
 
 //    /**

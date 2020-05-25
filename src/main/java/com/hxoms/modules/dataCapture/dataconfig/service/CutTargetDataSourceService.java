@@ -1,4 +1,4 @@
-package com.hxoms.modules.dataCapture.datasources.service;
+package com.hxoms.modules.dataCapture.dataconfig.service;
 
 import com.hxoms.modules.dataCapture.entity.DataSource;
 

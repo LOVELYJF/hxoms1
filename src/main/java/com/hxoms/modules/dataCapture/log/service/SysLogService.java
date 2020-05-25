@@ -28,5 +28,5 @@ import com.hxoms.modules.dataCapture.entity.SysLogEntity;
  ***/
 public interface SysLogService extends IService<SysLogEntity> {
 
-
+      void deleteAndsave();
 }

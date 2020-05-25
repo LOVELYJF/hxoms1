@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface OmsRegRevokeApplyMapper extends BaseMapper<OmsRegRevokeApply> {
 
-    IPage<OmsRegRevokeApply> selectRevokeApplyList(@Param("page") Page page, @Param("revokeapply")OmsRegRevokeApply revokeApply);
+    IPage<OmsRegRevokeApply> selectRevokeApplyList(@Param("page") Page page);
 }

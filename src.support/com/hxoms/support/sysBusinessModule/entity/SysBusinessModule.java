@@ -16,6 +16,7 @@ public class SysBusinessModule {
     /**
      * 主键
      */
+
     @IdAnnotation
     @ColumnAnnotation(FieldName = "id",  FieldDescription="主键")
     private String id;

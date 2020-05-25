@@ -1,8 +1,8 @@
-package com.hxoms.modules.dataCapture.datasources.synchronizationData;
+package com.hxoms.modules.dataCapture.synchdata;
 
-import com.hxoms.modules.dataCapture.log.annotation.SysLog;
 import com.hxoms.modules.dataCapture.entity.DynamicData;
-import com.hxoms.modules.dataCapture.service.DataCaptureService;
+import com.hxoms.modules.dataCapture.log.annotation.SysLog;
+import com.hxoms.modules.dataCapture.masterdata.service.DataCaptureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +16,7 @@ public class InsertAndUpdate {
 
     @Autowired
     private DataCaptureService a01Service;
+
 
     @Autowired
     private DynamicData dynamicData;

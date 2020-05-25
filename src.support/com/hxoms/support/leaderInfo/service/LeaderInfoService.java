@@ -12,4 +12,6 @@ public interface LeaderInfoService {
     List<Map<String,Object>> selectLeaderInfoData(String tablecode, String id);
     //根据关键词/姓氏模糊查询返回数据
     Map<String, Object> selectBasicInfoByName(String name);
+
+    void    updateLeaderInfoByTableCode(Map<String,String> updateMap);
 }

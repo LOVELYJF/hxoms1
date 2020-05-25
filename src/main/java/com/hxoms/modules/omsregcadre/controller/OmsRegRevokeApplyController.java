@@ -28,9 +28,9 @@ public class OmsRegRevokeApplyController {
      * @return
      */
     @PostMapping("/queryRevokeApplyList")
-    public Result queryRevokeApplyList(Page page, OmsRegRevokeApply revokeApply) {
+    public Result queryRevokeApplyList(Page page) {
         try {
-            IPage<OmsRegRevokeApply> revokeApplyList = revokeApplyService.queryRevokeApplyList(page, revokeApply);
+            IPage<OmsRegRevokeApply> revokeApplyList = revokeApplyService.queryRevokeApplyList(page);
             return Result.success(revokeApplyList);
         } catch (Exception e) {
             e.printStackTrace();

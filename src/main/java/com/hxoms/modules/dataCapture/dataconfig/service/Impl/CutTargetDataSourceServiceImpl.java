@@ -1,8 +1,8 @@
-package com.hxoms.modules.dataCapture.datasources.service.Impl;
+package com.hxoms.modules.dataCapture.dataconfig.service.Impl;
 
-import com.hxoms.modules.dataCapture.datasources.mapper.CutTargetDataSourceMapper;
+import com.hxoms.modules.dataCapture.dataconfig.mapper.CutTargetDataSourceMapper;
+import com.hxoms.modules.dataCapture.dataconfig.service.CutTargetDataSourceService;
 import com.hxoms.modules.dataCapture.entity.DataSource;
-import com.hxoms.modules.dataCapture.datasources.service.CutTargetDataSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

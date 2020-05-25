@@ -5,7 +5,7 @@ package com.hxoms.modules.dataCapture.log.aspect;
 
 import com.hxoms.modules.dataCapture.log.annotation.SysLog;
 import com.hxoms.modules.dataCapture.entity.SysLogEntity;
-import com.hxoms.modules.dataCapture.service.DataCaptureService;
+import com.hxoms.modules.dataCapture.log.service.SysLogService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,9 +29,8 @@ import java.util.*;
 @Aspect
 @Component
 public class SysLogAspect {
-
-	@Autowired
-	private DataCaptureService a01Service;
+    @Autowired
+    private SysLogService sysLogService;
 
 	@Pointcut("@annotation(com.hxoms.modules.dataCapture.log.annotation.SysLog)")
 	public void logPointCut() {
@@ -96,7 +95,7 @@ public class SysLogAspect {
 		sysLog.setTime(time);
 		sysLog.setCreateDate(new Date());
 		//保存系统日志
-		a01Service.insertSysLog(sysLog);
+		sysLogService.save(sysLog);
 	}
 
 	public String getLocalIp(){
