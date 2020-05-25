@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.privateabroad.entity.OmsPriApply">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="POLITICAL_OUTLOOK" jdbcType="VARCHAR" property="politicalOutlook" />
+    <result column="HEALTH" jdbcType="VARCHAR" property="health" />
+    <result column="POSTRANK" jdbcType="VARCHAR" property="postrank" />
+    <result column="ABROAD_TIME" jdbcType="TIMESTAMP" property="abroadTime" />
+    <result column="RETURN_TIME" jdbcType="TIMESTAMP" property="returnTime" />
+    <result column="GO_COUNTRY" jdbcType="VARCHAR" property="goCountry" />
+    <result column="PASS_COUNTRY" jdbcType="VARCHAR" property="passCountry" />
+    <result column="OUTSIDE_TIME" jdbcType="INTEGER" property="outsideTime" />
+    <result column="ABROAD_REASONS" jdbcType="VARCHAR" property="abroadReasons" />
+    <result column="APPLY_TIME" jdbcType="TIMESTAMP" property="applyTime" />
+    <result column="REVERT_LICENCE_TIME" jdbcType="TIMESTAMP" property="revertLicenceTime" />
+    <result column="CLASSIFICA_POST" jdbcType="VARCHAR" property="classificaPost" />
+    <result column="CLASSIFICATION_LEVEL" jdbcType="VARCHAR" property="classificationLevel" />
+    <result column="DECLASSIFICA_STARTTIME" jdbcType="TIMESTAMP" property="declassificaStarttime" />
+    <result column="DECLASSIFICA_ENDTIME" jdbcType="TIMESTAMP" property="declassificaEndtime" />
+    <result column="PAPER" jdbcType="INTEGER" property="paper" />
+    <result column="REAL_GO_COUNTRY" jdbcType="VARCHAR" property="realGoCountry" />
+    <result column="REAL_PASS_COUNTRY" jdbcType="VARCHAR" property="realPassCountry" />
+    <result column="REAL_ABROAD_TIME" jdbcType="TIMESTAMP" property="realAbroadTime" />
+    <result column="REAL_RETURN_TIME" jdbcType="TIMESTAMP" property="realReturnTime" />
+    <result column="REAL_OUTSIDE_TIME" jdbcType="INTEGER" property="realOutsideTime" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="ABROAD_PHONE" jdbcType="VARCHAR" property="abroadPhone" />
+    <result column="SFXYZQJWYJ" jdbcType="CHAR" property="sfxyzqjwyj" />
+    <result column="LAST_ASK_TIME" jdbcType="TIMESTAMP" property="lastAskTime" />
+    <result column="SFZQJWYJ" jdbcType="CHAR" property="sfzqjwyj" />
+    <result column="FINAL_CONCLUSION" jdbcType="VARCHAR" property="finalConclusion" />
+    <result column="PASSPORT" jdbcType="INTEGER" property="passport" />
+    <result column="PASSPORT_NUM" jdbcType="VARCHAR" property="passportNum" />
+    <result column="HONGKONGANDMACAO_PASSPORT" jdbcType="INTEGER" property="hongkongandmacaoPassport" />
+    <result column="HONGKONGANDMACAO_PASSPORT_NUM" jdbcType="VARCHAR" property="hongkongandmacaoPassportNum" />
+    <result column="HONGKONG_VISA" jdbcType="INTEGER" property="hongkongVisa" />
+    <result column="MACAO_VISA" jdbcType="INTEGER" property="macaoVisa" />
+    <result column="TAIWAN_PASSPORT" jdbcType="INTEGER" property="taiwanPassport" />
+    <result column="TAIWAN_PASSPORT_NUM" jdbcType="VARCHAR" property="taiwanPassportNum" />
+    <result column="TAIWAN_VISA" jdbcType="INTEGER" property="taiwanVisa" />
+    <result column="IS_LUOGUAN" jdbcType="CHAR" property="isLuoguan" />
+    <result column="IS_SPOUSEANDCHILDREN_SUPERVISE" jdbcType="CHAR" property="isSpouseandchildrenSupervise" />
+    <result column="IS_LEADERS" jdbcType="CHAR" property="isLeaders" />
+    <result column="IS_SPECIALLY_APPROVED" jdbcType="CHAR" property="isSpeciallyApproved" />
+    <result column="NEGATIVE_INFO" jdbcType="VARCHAR" property="negativeInfo" />
+    <result column="PASSPORT_TERM" jdbcType="TIMESTAMP" property="passportTerm" />
+    <result column="FUNDS_SOURCE" jdbcType="VARCHAR" property="fundsSource" />
+    <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
+    <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
+  </resultMap>
+  <resultMap id="ResultMapVO" type="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO" extends="BaseResultMap">
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
+    <result column="birthDate" jdbcType="TIMESTAMP" property="birthDate" />
+    <result column="identifyType" jdbcType="VARCHAR" property="identifyType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, A0100, B0100, POLITICAL_OUTLOOK, HEALTH, POSTRANK, ABROAD_TIME, RETURN_TIME,
+    GO_COUNTRY, PASS_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME,
+    CLASSIFICA_POST, CLASSIFICATION_LEVEL, DECLASSIFICA_STARTTIME, DECLASSIFICA_ENDTIME,
+    PAPER, REAL_GO_COUNTRY, REAL_PASS_COUNTRY, REAL_ABROAD_TIME, REAL_RETURN_TIME, REAL_OUTSIDE_TIME,
+    DESCRIPTION, ABROAD_PHONE, SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ, FINAL_CONCLUSION,
+    PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, HONGKONGANDMACAO_PASSPORT_NUM,
+    HONGKONG_VISA, MACAO_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, TAIWAN_VISA, IS_LUOGUAN,
+    IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO,
+    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, REMARKS, CREATE_USER, CREATE_TIME,
+    MODIFY_USER, MODIFY_TIME, SORT_ID
+  </sql>
+
+  <!--分页因私出国申请列表-->
+  <select id="selectOmsPriApplyIPage" parameterType="com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam" resultMap="ResultMapVO">
+    select pa.*,
+    CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+    rp.SEX as sex,
+    rp.BIRTH_DATE as birthDate,
+    rp.WORK_UNIT as b0101,
+    rp.IDENTITY as identifyType
+    from oms_pri_apply pa
+    LEFT JOIN oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
+    left join oms_reg_procpersoninfo rp1 on pa.A0100 = rp1.A0100
+    where 1=1
+    <if test="omsPriApplyIPageParam.applyStartTime != null and omsPriApplyIPageParam.applyStopTime != null">
+      and pa.APPLY_TIME &gt; #{omsPriApplyIPageParam.applyStartTime} and pa.APPLY_TIME &lt; #{omsPriApplyIPageParam.applyStopTime}
+    </if>
+    <if test="omsPriApplyIPageParam.abroadStartTime != null and omsPriApplyIPageParam.abroadEndTime != null">
+      and pa.ABROAD_TIME &gt; #{omsPriApplyIPageParam.abroadStartTime} and pa.ABROAD_TIME &lt; #{omsPriApplyIPageParam.abroadEndTime}
+    </if>
+    <if test="omsPriApplyIPageParam.name != null and omsPriApplyIPageParam.name != ''">
+      and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+      and rp.PY LIKE  CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+    </if>
+    <if test="omsPriApplyIPageParam.createUser != null and omsPriApplyIPageParam.createUser != ''">
+      and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+      and rp1.PY LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+    </if>
+    <if test="omsPriApplyIPageParam.applyStatus != null and omsPriApplyIPageParam.applyStatus != ''">
+      and pa.APPLY_STATUS in
+      <foreach collection="omsPriApplyIPageParam.applyStatus" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by pa.APPLY_STATUS, pa.ABROAD_TIME
+  </select>
+
+  <!--通过人员id查询因私出国申请所需用户信息-->
+  <select id="selectPersonInfoByA0100" parameterType="java.lang.String" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+    select op.A0100 as a0100,
+           op.NAME as name,
+           op.SEX as sex,
+           op.BIRTH_DATE as birthDate,
+           orp.IDNUMBER as idnumber,
+           orp.POLITICAL_AFFI as politicalOutlook,
+           orp.POST as postrank,
+           orp.REGISTE_RESIDENCE as registeResidence,
+           op.B0101 as b0101,
+           orp.SECRET_LEVEL as classificationLevel,
+           orp.MAIN_LEADER as isLeaders,
+           orp.nf as isLuoguan,
+           orp.fjgnf as isSpouseandchildrenSupervise,
+           orp.RF_B0000 as b0100
+    from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
+    where 1=1
+      and op.A0100 = #{a0100}
+  </select>
+
+  <!--通过人员id查询因私出国申请所需用户信息-->
+  <select id="selectPersonByKeyword" parameterType="java.lang.String" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
+    select op.*
+    from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
+    where
+      op.name like CONCAT('%',#{keyword},'%')
+      or orp.PY like CONCAT('%',#{keyword},'%')
+  </select>
+
+  <!--申请详情-->
+  <select id="selectPriApplyById" parameterType="java.lang.String" resultMap="ResultMapVO">
+    select opa.*,
+           orp.NAME as name,
+           orp.BIRTH_DATE as birthDate,
+           orp.SEX as sex,
+           orp.IDNUMBER as idnumber,
+           orp.REGISTE_RESIDENCE as registeResidence,
+           orp.WORK_UNIT as b0101,
+           orp.IDENTITY as identifyType
+    from oms_pri_apply opa left join oms_reg_procpersoninfo orp on opa.A0100 = orp.A0100
+    where opa.ID = #{id}
+  </select>
+</mapper>

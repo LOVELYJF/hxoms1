@@ -1,5 +1,6 @@
 package com.hxoms.modules.condition.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
@@ -44,6 +45,7 @@ public class OmsCondition {
      * 生成的sql条件
      */
     @ColumnAnnotation(FieldName = "sql",  FieldDescription="生成的sql条件")
+    @TableField("`sql`")
     private String sql;
 
     /**
@@ -56,6 +58,7 @@ public class OmsCondition {
      * 条件的中文描述
      */
     @ColumnAnnotation(FieldName = "desc",  FieldDescription="条件的中文描述")
+    @TableField("`desc`")
     private String desc;
 
     /**
