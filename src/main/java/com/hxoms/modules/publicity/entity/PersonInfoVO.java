@@ -24,6 +24,10 @@ public class PersonInfoVO {
     private Date birthDate;
     //职务
     private String job;
+    //机构
+    private String b0100;
+
+    private String b0101;
 
     public String getA0100() {
         return a0100;
@@ -63,5 +67,21 @@ public class PersonInfoVO {
 
     public void setJob(String job) {
         this.job = job;
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
+    }
+
+    public String getB0101() {
+        return b0101;
+    }
+
+    public void setB0101(String b0101) {
+        this.b0101 = b0101;
     }
 }
