@@ -59,6 +59,23 @@
     select A0100 from OMS_REG_PROCPERSONINFO
   </select>
 
+
+  <select id="selectPersonAndAllowRevoke" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo" resultType="list">
+    SELECT
+      info.SURNAME,
+      info.`NAME`,
+      info.A0100,
+    FROM oms_reg_procpersoninfo info
+           LEFT JOIN oms_smr_personinfo smr on info.A0100 = smr.A0100
+           LEFT JOIN a01 a1 on info.A0100 = a1.a0100
+           LEFT JOIN a30 a3 on a1.a0100 = a3.a0100
+    WHERE a3.a3001='免职'
+    <if test="name!=null and name!=''">
+      AND ((CONCAT(IFNULLLL(SURNAME,''),IFNULLLL(NAME,'')) LIKE '%${revokeapply.name}%') or (PY LIKE '%${name}%'))
+    </if>
+  </select>
+
+
   <insert id="batchAddorpInfo" parameterType="list">
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,

@@ -37,4 +37,22 @@
     VALID_UNTIL, VISITING_TASKS
   </sql>
 
+  <select id="selectEntryexitRecordIPage" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultMap="BaseResultMap">
+    select * from oms_entryexit_record where 1=1
+    <if test="entryexitrecord.name!=null and entryexitrecord.name!=''">
+      AND CONCAT(IFNULLLL(SURNAME,''),IFNULLLL(NAME,'')) LIKE '%${entryexitrecord.name}%'
+    </if>
+    <if test="entryexitrecord.dataSource!=null and entryexitrecord.dataSource!=''">
+      AND DATA_SOURCE = #{entryexitrecord.dataSource}
+    </if>
+    <if test="entryexitrecord.ogeStatus!=null and entryexitrecord.ogeStatus!=''">
+      AND ORG_STATUS = #{entryexitrecord.ogeStatus}
+    </if>
+    <if test="entryexitrecord.ogeStartDate != null">
+      and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[>=]]>#{entryexitrecord.ogeStartDate}
+    </if>
+    <if test="entryexitrecord.ogeEndDate != null">
+      and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[<=]]>#{entryexitrecord.ogeEndDate}
+    </if>
+  </select>
 </mapper>

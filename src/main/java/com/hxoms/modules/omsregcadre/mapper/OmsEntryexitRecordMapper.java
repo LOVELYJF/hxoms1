@@ -1,5 +1,12 @@
 package com.hxoms.modules.omsregcadre.mapper;
 
-public interface OmsEntryexitRecordMapper {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 
+import java.util.List;
+
+public interface OmsEntryexitRecordMapper extends BaseMapper<OmsEntryexitRecord> {
+
+    List<OmsEntryexitRecord> selectEntryexitRecordIPage(OmsEntryexitRecordIPagParam entryexitrecord);
 }

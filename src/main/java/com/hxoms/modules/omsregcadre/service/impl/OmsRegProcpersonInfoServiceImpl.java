@@ -36,6 +36,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private OmsRegProcbatchMapper regProcbatchMapper;
     @Autowired
     private OmsRegRevokeApplyMapper revokeApplyMapper;
+    @Autowired
+    private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
 
     /**
      * 初始化登记备案信息
@@ -140,7 +142,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Object updateRpinfo(OmsRegProcpersonInfo orpInfo) {
-        if (StringUtils.isEmpty(orpInfo.getId()) || StringUtils.isEmpty(orpInfo.getA0100())){
+        if (StringUtils.isBlank(orpInfo.getId()) || StringUtils.isBlank(orpInfo.getA0100())){
             throw new CustomMessageException("缺少必要参数");
         }else{
             orpInfo.setInboundFlag("I");
@@ -157,7 +159,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Object deleteRpinfo(String id) {
-        if (StringUtils.isEmpty(id)){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("缺少必要参数id");
         }else {
             return baseMapper.deleteById(id);
@@ -261,23 +263,23 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public IPage<OmsRegProcpersonInfo> getProvinceCadreRegInfo(Page page, OmsRegProcpersonInfo msRegProcpersonInfo) {
         QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getSecretLevel())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getSecretLevel())){
             //查询条件涉密等级
             queryWrapper.eq("SECRET_LEVEL",msRegProcpersonInfo.getSecretLevel());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getIdentityCode())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getIdentityCode())){
             //身份情况
             queryWrapper.eq("IDENTITY_CODE",msRegProcpersonInfo.getIdentityCode());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getIncumbencyStatus())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getIncumbencyStatus())){
             //在职状态
             queryWrapper.eq("INCUMBENCY_STATUS",msRegProcpersonInfo.getIncumbencyStatus());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getInboundFlag())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getInboundFlag())){
             //入库状态
             queryWrapper.eq("INBOUND_FLAG",msRegProcpersonInfo.getInboundFlag());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getRfStatus())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getRfStatus())){
             //备案状态
             queryWrapper.eq("RF_STATUS",msRegProcpersonInfo.getRfStatus());
         }
@@ -288,6 +290,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         return baseMapper.selectPage(page,queryWrapper);
     }
 
+    /**
+     * 提取备案
+     * @return
+     * @throws ParseException
+     */
     @Override
     public Object extractRegPersonInfo() throws ParseException {
         int con=0;
@@ -313,7 +320,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //退出方式
                 A30 a30 = a30Mapper.selectOne(queryWrapper1);
                 //在职状态变更为辞职、免职、退休、开除、去世、挂职等
-                if (!StringUtils.isEmpty(a30.getA3001())){
+                if (!StringUtils.isBlank(a30.getA3001())){
                     //撤销登记备案申请表
                     OmsRegRevokeApply applyinfo = new OmsRegRevokeApply();
 
@@ -332,6 +339,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            //退出时间
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = revokeApplyMapper.insert(applyinfo);
@@ -342,6 +351,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = revokeApplyMapper.insert(applyinfo);
@@ -352,6 +362,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = revokeApplyMapper.insert(applyinfo);
@@ -404,31 +415,31 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public IPage<OmsRegProcpersonInfo> getRegPersonInfoList(Page page, OmsRegProcpersonInfo msRegProcpersonInfo) {
         QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getSecretLevel())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getSecretLevel())){
             //查询条件涉密等级
             queryWrapper.eq("SECRET_LEVEL",msRegProcpersonInfo.getSecretLevel());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getIdentityCode())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getIdentityCode())){
             //身份情况
             queryWrapper.eq("IDENTITY_CODE",msRegProcpersonInfo.getIdentityCode());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getIncumbencyStatus())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getIncumbencyStatus())){
             //在职状态
             queryWrapper.eq("INCUMBENCY_STATUS",msRegProcpersonInfo.getIncumbencyStatus());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getInboundFlag())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getInboundFlag())){
             //入库状态
             queryWrapper.eq("INBOUND_FLAG",msRegProcpersonInfo.getInboundFlag());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getRfStatus())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getRfStatus())){
             //备案状态
             queryWrapper.eq("RF_STATUS",msRegProcpersonInfo.getRfStatus());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getCheckStatus())){
-            //备案状态
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getCheckStatus())){
+            //验收状态
             queryWrapper.eq("CHECK_STATUS",msRegProcpersonInfo.getCheckStatus());
         }
-        if (!StringUtils.isEmpty(msRegProcpersonInfo.getPost())){
+        if (!StringUtils.isBlank(msRegProcpersonInfo.getPost())){
             //职务职称
             queryWrapper.eq("POST",msRegProcpersonInfo.getPost());
         }
@@ -439,6 +450,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
 
+    /**
+     * 根据批次号查询对应的人员信息
+     * @param batchNo
+     * @return
+     */
     @Override
     public List<OmsRegProcpersonInfo> selectPersonByBatchNo(String batchNo) {
         QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
@@ -446,64 +462,112 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         return baseMapper.selectList(queryWrapper);
     }
 
+
+
+    /**
+     * 登记备案大检查，上传登记备案记录 并查询未备案列表人员
+     * @param list
+     * @return
+     */
     @Override
-    public List<OmsRegProcpersonInfo> checkUploadRegRecord(List<OmsRegProcpersonInfo> list) {
+    public int checkUploadRegRecord(List<OmsRegProcpersonInfo> list) {
+        QueryWrapper<OmsRegYearcheckInfo> yearcheckInfoWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+        yearcheckInfoWrapper.eq("RF_STATUS","0");
+        yearcheckInfoWrapper.eq("CREATE_DATE",new Date("yyyy"));
+        List<OmsRegYearcheckInfo> yearoldlist = yearcheckInfoMapper.selectList(yearcheckInfoWrapper);
+        if (yearoldlist!=null){
+            yearcheckInfoMapper.delete(null);
+        }
         int con =0;
         QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
         queryWrapper.eq("DATA_TYPE","1");
         //查询登记备案干部的数据
         List<OmsRegProcpersonInfo> omsregList = baseMapper.selectList(queryWrapper);
         //登记备案为干部的身份证号集合
-        List<String> idnumbers =null;
+        List<String> gbidnumbers =null;
         for (int i=0;i<omsregList.size();i++){
-            idnumbers.add(omsregList.get(i).getIdnumber());
+            gbidnumbers.add(omsregList.get(i).getIdnumber());
         }
         //出国境导入数据集合
         for (OmsRegProcpersonInfo cgjdata :list){
             //登记备案中包含出入境
-            if (idnumbers.contains(cgjdata.getIdnumber())){
+            if (gbidnumbers.contains(cgjdata.getIdnumber())){
                 continue;
             }else{
                 //登记备案不中包含出入境
-
-
+                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                BeanUtils.copyProperties(cgjdata, yearcheckInfo);
+                yearcheckInfo.setCreateDate(new Date("yyyy"));
+                yearcheckInfo.setCreateUser("");
+                con = yearcheckInfoMapper.insert(yearcheckInfo);
             }
         }
 
-
-
-
-
-
-       /* if (omsregList !=null && omsregList.size() >0){
-            OmsRegProcpersonInfo gbData = omsregList.get(0);
-            OmsRegProcpersonInfo gaData = omsregList.get(1);
-            //身份账号与名称一致
-            if (gbData.getIdnumber().equals(gaData.getIdnumber())
-                    && gbData.getName() .equals(gaData.getName())){
-                //更新干部相关信息从公安数据中维护
-                OmsRegProcpersonInfo omsreginfo = new OmsRegProcpersonInfo();
-                omsreginfo.setId(gbData.getId());
-                //户口所在地
-                omsreginfo.setRegisteResidence(gaData.getRegisteResidence());
-                //入库标识  新增U  修改I  撤消D
-                omsreginfo.setInboundFlag("I");
-                //备案状态  0未备案，1已备案，2已确认
-                omsreginfo.setRfStatus("1");
-                //验收状态  1已验收，0待验收
-                omsreginfo.setCheckStatus("1");
-                omsreginfo.setModifyTime(new Date());
-                con = baseMapper.updateById(omsreginfo);
-                if (con > 0){
-                    baseMapper.deleteById(gaData.getId());
-                }
-            }else{
-                throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
-            }*/
-        return null;
+        //出入境（公安）导入数据身份证号集合
+        List<String> gaidnumbers =null;
+        for (int i=0;i<list.size();i++){
+            gaidnumbers.add(list.get(i).getIdnumber());
         }
+        //登记备案干部集合
+        for (OmsRegProcpersonInfo gbdata :omsregList){
+            //出入境包含登记备案
+            if (gbidnumbers.contains(gbdata.getIdnumber())){
+                continue;
+            }else{
+                //出入境不包含登记备案
+                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                BeanUtils.copyProperties(gbdata, yearcheckInfo);
+                yearcheckInfo.setCreateDate(new Date("yyyy"));
+                yearcheckInfo.setCreateUser("");
+                con = yearcheckInfoMapper.insert(yearcheckInfo);
+            }
+        }
+        return con;
+    }
 
+    /**
+     * 查询年度列表
+      * @param list
+     * @return
+     */
+    @Override
+    public List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersonInfo> list) {
+        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+        yearcheckWrapper.groupBy("CREATE_DATE");
+        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+    }
 
+    /**
+     * 查询大检查中未备案人员列表（可根据年度进行查询）
+     * @param year
+     * @return
+     */
+    @Override
+    public List<OmsRegYearcheckInfo> queryYearCheckList(Date year) {
+        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+        if (year!=null){
+            yearcheckWrapper.eq("CREATE_DATE",year);
+        }
+        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+    }
+
+    @Override
+    public Object selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo) {
+        //查询符合撤销登记备案的人员信息（1.免职人员 2.脱密结束时间 < 当前时间）
+        return baseMapper.selectPersonAndAllowRevoke(msRegProcpersonInfo);
+    }
+
+    /**
+     * 根据人员编号查询对应备案申请
+     * @param a0100
+     * @return
+     */
+    @Override
+    public Object selectInfoByA0100(String a0100) {
+        QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        queryWrapper.eq("A0100",a0100);
+        return baseMapper.selectOne(queryWrapper);
+    }
 
     /**
      * 初始化信息
