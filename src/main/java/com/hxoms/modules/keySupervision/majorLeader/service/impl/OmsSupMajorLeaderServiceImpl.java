@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * @param omsSupMajorLeader
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
 
 		//查询主要领导是否已经存在
@@ -121,6 +123,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * @param omsSupMajorLeader
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
 
 		int count  =  omsSupMajorLeaderMapper.deleteById(omsSupMajorLeader.getId());
@@ -142,6 +145,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * <b>自动识别主要领导（每个单位前两名）</b>
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeaderAuto() {
 		List<PersonOrgOrder> list = personOrgOrderMapper.selectMajorLeaderAuto();
 		//查询领导信息
