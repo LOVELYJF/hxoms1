@@ -7,7 +7,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
@@ -21,6 +20,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -86,6 +86,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 * @param omsSupNakedSign
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void addOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 		//查询裸官是否已经存在
 		QueryWrapper<OmsSupNakedSign> queryNakedSign = new QueryWrapper<OmsSupNakedSign>();
@@ -124,6 +125,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 * @param omsSupNakedSign
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void updateOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
 		if(count < 1){
@@ -148,6 +150,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 * @param omsSupNakedSign
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 
 		int count =  omsSupNakedSignMapper.deleteById(omsSupNakedSign.getId());
