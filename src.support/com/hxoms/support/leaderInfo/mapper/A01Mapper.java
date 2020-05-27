@@ -1,5 +1,6 @@
 package com.hxoms.support.leaderInfo.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.entity.A01WithBLOBs;
 import com.hxoms.support.leaderInfo.util.LowerKeyMap;
@@ -9,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface A01Mapper {
+public interface A01Mapper extends BaseMapper<A01> {
     int deleteByPrimaryKey(String a0100);
 
     int insert(A01WithBLOBs record);
@@ -41,7 +42,7 @@ public interface A01Mapper {
      * @author: sundeng
      * @date: 2019/7/26
      */
-    List<LowerKeyMap<String, Object>>    selectLeaderInfoData(@Param("tablecode") String tablecode,@Param("id") String id);
+    List<LowerKeyMap<String, Object>>  selectLeaderInfoData(@Param("tablecode") String tablecode,@Param("id") String id);
 
     /**
      * @desc: 查询家庭成员
@@ -88,4 +89,22 @@ public interface A01Mapper {
      * @Date: 2020/4/29 11:42
      */
     List<LinkedHashMap<String, Object>> selectAllInfoByName(String name);
+
+
+    /**
+     * <b>查询人员政治面貌</b>
+     * @param a0100
+     * @author:luoshuai
+     * @date 2020/5/15 14:05
+     * @return
+     */
+    List<Map<String,Object>> selectPiliticalAffi(String a0100);
+
+
+    /**
+     * <b>查询人员信息</b>
+     * @param a0100
+     * @return
+     */
+    List<Map<String,Object>> selectPersonInfo(String a0100);
 }

@@ -1,11 +1,13 @@
 package com.hxoms.modules.file.service;
 
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.paramentity.AbroadAskFileParams;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface OmsFileService {
     /**
@@ -35,4 +37,10 @@ public interface OmsFileService {
     void deleteOmsFile(String id);
 
     void downloadOmsFile(String fileId, String applyId) throws Exception;
+
+    /**
+     * 查询请示文件
+     *
+     */
+    Map<String, Object> selectAbroadAskFile(AbroadAskFileParams abroadAskFileParams);
 }

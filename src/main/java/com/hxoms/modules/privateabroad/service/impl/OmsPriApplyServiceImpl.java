@@ -67,12 +67,9 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         omsPriApply.setB0100(b0100);
         //查询用户基本信息
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(a0100);
-        //获取涉密信息
-        //TODO
-        //获取负面信息
-        //TODO
-        //证件信息
-        //TODO
+        //TODO 获取涉密信息
+        //TODO  获取负面信息
+        //TODO  证件信息
         return omsPriApplyVO;
     }
 
@@ -197,8 +194,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             queryWrapper.eq("check_type", type);
         }
         //因私出国
-        queryWrapper.eq("condition_type", "2");
-        queryWrapper.orderByAsc("check_type");
+        queryWrapper.eq("condition_type", "2")
+                .orderByAsc("check_type");
         List<OmsCondition> omsConditions = omsConditionMapper.selectList(queryWrapper);
 
         if (omsConditions != null && omsConditions.size() > 0){

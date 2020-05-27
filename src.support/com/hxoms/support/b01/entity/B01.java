@@ -6,6 +6,8 @@ package com.hxoms.support.b01.entity;
  * @CreateDate: 2019/5/22$ 17:46$
  */
 public class B01 {
+    //主键
+    private String b0100;
     //单位代码，ID
     private String b0111;
     //单位名称
@@ -134,6 +136,14 @@ public class B01 {
     private String b0180;
     //job_number_desc
     private String jobNumberDesc;
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
+    }
 
     public String getB0111() {
         return b0111;
