@@ -2,8 +2,10 @@ package com.hxoms.support.b01.mapper;
 
 import com.hxoms.common.tree.Tree;
 import com.hxoms.support.b01.entity.B01;
+import org.springframework.scheduling.support.SimpleTriggerContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 机构mapper接口
@@ -94,4 +96,23 @@ public interface B01Mapper {
     List<Tree> selectUserGrantTree(String userId);
 
     List<Tree> selectAllOrgTree();
+
+    /**
+     * @description: 根据单位ID查询单位名称
+     * @param map
+     * @author : luoshuai
+     * @date : 2020/5/15 13:54
+     * @return
+     */
+    List<String> selectOrgByList(Map<String,Object> map);
+
+
+    /**
+     * @description: 根据单位名称查询单位
+     * @param map
+     * @author : luoshuai
+     * @date : 2020/5/15 13:54
+     * @return
+     */
+    B01 selectOrgByB0101(Map<String,Object> map);
 }
