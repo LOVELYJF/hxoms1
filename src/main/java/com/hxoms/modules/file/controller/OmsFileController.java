@@ -1,8 +1,8 @@
 package com.hxoms.modules.file.controller;
 
-import com.hxoms.common.utils.DomainObjectUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.paramentity.AbroadAskFileParams;
 import com.hxoms.modules.file.service.OmsFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/omsFile")
@@ -72,5 +68,13 @@ public class OmsFileController {
     public void downloadOmsFile(String fileId, String applyId) throws Exception {
         omsFileService.downloadOmsFile(fileId, applyId);
 //        return Result.success();
+    }
+
+    /**
+     * 查询请示文件
+     *
+     */
+    public void selectAbroadAskFile(AbroadAskFileParams abroadAskFileParams){
+        Map<String, Object> result = omsFileService.selectAbroadAskFile(abroadAskFileParams);
     }
 }

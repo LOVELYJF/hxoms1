@@ -1,14 +1,20 @@
 package com.hxoms.modules.file.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.file.OmsFileUtils;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.OmsReplaceKeywords;
+import com.hxoms.modules.file.entity.paramentity.AbroadAskFileParams;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
+import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
 import com.hxoms.modules.file.service.OmsFileService;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,12 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.lang.reflect.MalformedParameterizedTypeException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OmsFileServiceImpl implements OmsFileService {
@@ -37,10 +40,16 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsFileMapper omsFileMapper;
     @Autowired
     private OmsPubApplyMapper omsPubApplyMapper;
+    @Autowired
+    private OmsReplaceKeywordsMapper omsReplaceKeywordsMapper;
+    @Autowired
+    private OmsPriApplyMapper omsPriApplyMapper;
 
     @Override
     public List<OmsFile> selectFileListByCode(String tableCode) {
-        return omsFileMapper.selectFileListByCode(tableCode);
+        QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("TABLE_CODE", tableCode);
+        return omsFileMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -173,5 +182,69 @@ public class OmsFileServiceImpl implements OmsFileService {
             }
             tempFile.delete();
         }
+    }
+
+    @Override
+    public Map<String, Object> selectAbroadAskFile(AbroadAskFileParams abroadAskFileParams) {
+        Map<String, Object> result = new HashMap<>();
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //查询文件
+        QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
+        queryWrapperFile.eq("TABLE_CODE", abroadAskFileParams.getTableCode())
+                .eq("B0100", userInfo.getOrgId())
+                //请示文件
+                .eq("FILE_TYPE", "3");
+        OmsFile omsFile = omsFileMapper.selectOne(queryWrapperFile);
+        //查询关键字
+        QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+        queryWrapperKeyword.eq("TYPE", abroadAskFileParams.getTableCode());
+        List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+        if (omsFile == null){
+            //为空时先添加默认数据
+            omsFile = new OmsFile();
+            omsFile.setId(UUIDGenerator.getPrimaryKey());
+            omsFile.setB0100(userInfo.getOrgId());
+            // TODO   根据不同类型初始化不同内容
+            omsFile.setFileName("");
+            omsFile.setFrontContent("");
+            omsFile.setBankContent("");
+            omsFile.setFileType("3");
+            omsFile.setTableCode(abroadAskFileParams.getTableCode());
+            omsFile.setCreateTime(new Date());
+            omsFile.setCreateUser(userInfo.getId());
+            if (omsFileMapper.insert(omsFile) < 0){
+                throw new CustomMessageException("数据异常");
+            }
+        }
+        if ("1".equals(abroadAskFileParams.getIsEdit())){
+            //编辑
+            result.put("omsFile", omsFile);
+            result.put("omsReplaceKeywordList", omsReplaceKeywordList);
+        } else if("0".equals(abroadAskFileParams.getIsEdit())){
+            //查看
+            OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadAskFileParams.getApplyID());
+            // 替换关键词
+            for (OmsReplaceKeywords omsReplaceKeywords : omsReplaceKeywordList) {
+                //反射机制代替关键词
+                Class clazz = omsPriApplyVO.getClass();
+                try {
+                    String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(omsPriApplyVO);
+                    omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
+                    omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    throw new CustomMessageException("数据异常");
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    throw new CustomMessageException("数据异常");
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    throw new CustomMessageException("数据异常");
+                }
+            }
+            result.put("omsFile", omsFile);
+        }
+        return result;
     }
 }
