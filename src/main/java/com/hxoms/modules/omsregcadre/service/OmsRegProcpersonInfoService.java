@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonInfo> {
@@ -32,5 +34,13 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
 
     List<OmsRegProcpersonInfo> selectPersonByBatchNo(String batchNo);
 
-    List<OmsRegProcpersonInfo> checkUploadRegRecord(List<OmsRegProcpersonInfo> list);
+    int checkUploadRegRecord(List<OmsRegProcpersonInfo> list);
+
+    List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersonInfo> list);
+
+    List<OmsRegYearcheckInfo> queryYearCheckList(Date year);
+
+    Object selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo);
+
+    Object selectInfoByA0100(String a0100);
 }

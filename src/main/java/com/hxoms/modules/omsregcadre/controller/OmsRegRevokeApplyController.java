@@ -50,6 +50,8 @@ public class OmsRegRevokeApplyController {
     }
 
 
+
+
     /**
      * 添加撤销备案人员
      * @param
@@ -60,6 +62,28 @@ public class OmsRegRevokeApplyController {
         return Result.success(revokeApplyService.insertRevokeRegPerson(regProcpersonInfo));
     }
 
+    /**
+     * 撤销备案申请
+     * @param revokeApply
+     * @return
+     * @throws ParseException
+     */
+    @PostMapping("/revokeRegApply")
+    public Result revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException {
+        return Result.success(revokeApplyService.revokeRegApply(revokeApply));
+    }
+
+
+    /**
+     * 报处长审批
+     * @param revokeApply
+     * @return
+     * @throws ParseException
+     */
+    @PostMapping("/reportLeaderApply")
+    public Result reportLeaderApply(OmsRegRevokeApply revokeApply) throws ParseException {
+        return Result.success(revokeApplyService.reportLeaderApply(revokeApply));
+    }
 
 
     /**
@@ -68,12 +92,12 @@ public class OmsRegRevokeApplyController {
      * @return
      */
     @PostMapping("/approvalRevokeRegPerson")
-    public Result approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval) {
-        if (!StringUtils.isEmpty(regRevokeApproval.getApplyId())
-                && !StringUtils.isEmpty(regRevokeApproval.getApprovalUser())
-                && !StringUtils.isEmpty(regRevokeApproval.getApprovalOpinion())
-                && !StringUtils.isEmpty(regRevokeApproval.getApprovalConclusion())) {
-            return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval));
+    public Result approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+        if (!StringUtils.isEmpty(applyIds)
+                && !StringUtils.isBlank(regRevokeApproval.getApprovalUser())
+                && !StringUtils.isBlank(regRevokeApproval.getApprovalOpinion())
+                && !StringUtils.isBlank(regRevokeApproval.getApprovalConclusion())) {
+            return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds));
         } else {
             return Result.error("必传参数为空");
         }

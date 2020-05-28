@@ -150,6 +150,13 @@ public class OmsRegRevokeApply {
     private String rfB0000;
 
     /**
+     * 脱密日期
+     */
+    @ColumnAnnotation(FieldName = "EXIT_DATE",  FieldDescription="退出日期")
+    private String exitDate;
+
+
+    /**
      * 主键
      * @return ID 主键
      */
@@ -517,4 +524,14 @@ public class OmsRegRevokeApply {
         this.rfB0000 = rfB0000 == null ? null : rfB0000.trim();
     }
 
+    /**
+     * 退出时间
+     */
+    public String getExitDate() {
+        return exitDate;
+    }
+
+    public void setExitDate(String exitDate) {
+        this.exitDate = exitDate;
+    }
 }

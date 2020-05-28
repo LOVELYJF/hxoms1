@@ -16,6 +16,8 @@ public interface OmsRegProcpersonInfoMapper extends BaseMapper<OmsRegProcpersonI
 
     int batchAddorpInfo(@Param(value = "list")List<OmsRegProcpersonInfo> subList);
 
+    Object selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo);
+
 }
 
 
