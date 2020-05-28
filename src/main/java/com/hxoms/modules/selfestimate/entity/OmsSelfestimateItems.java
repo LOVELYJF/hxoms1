@@ -1,4 +1,4 @@
-package com.hxoms.modules.file.entity;
+package com.hxoms.modules.selfestimate.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,26 +7,20 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_replace_keywords", TableDescription="出国境文件替换关键词")
-public class OmsReplaceKeywords {
+@TableAnnotation(TableName = "oms_selfestimate_items", TableDescription="出国自评项目")
+public class OmsSelfestimateItems {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
-    private String fileId;
+    @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="自评材料清单ID")
+    private String selffileId;
 
-    @ColumnAnnotation(FieldName = "KEYWORD",   FieldDescription="关键词")
-    private String keyword;
+    @ColumnAnnotation(FieldName = "CHECK_ITEM",   FieldDescription="检查项目")
+    private String checkItem;
 
-    @ColumnAnnotation(FieldName = "REPLACE_FIELD",   FieldDescription="替换字段名字")
-    private String replaceField;
-
-    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="描述")
-    private String description;
-
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型（因公、因私）")
-    private String type;
+    @ColumnAnnotation(FieldName = "ENABLE",   FieldDescription="启用状态（0禁用 1启用）")
+    private Integer enable;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -52,44 +46,28 @@ public class OmsReplaceKeywords {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getFileId() {
-        return fileId;
+    public String getSelffileId() {
+        return selffileId;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId == null ? null : fileId.trim();
+    public void setSelffileId(String selffileId) {
+        this.selffileId = selffileId == null ? null : selffileId.trim();
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getCheckItem() {
+        return checkItem;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword == null ? null : keyword.trim();
+    public void setCheckItem(String checkItem) {
+        this.checkItem = checkItem == null ? null : checkItem.trim();
     }
 
-    public String getReplaceField() {
-        return replaceField;
+    public Integer getEnable() {
+        return enable;
     }
 
-    public void setReplaceField(String replaceField) {
-        this.replaceField = replaceField == null ? null : replaceField.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+    public void setEnable(Integer enable) {
+        this.enable = enable;
     }
 
     public Date getCreateTime() {

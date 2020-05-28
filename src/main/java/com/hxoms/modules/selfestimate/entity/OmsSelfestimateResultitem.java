@@ -1,4 +1,4 @@
-package com.hxoms.modules.file.entity;
+package com.hxoms.modules.selfestimate.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,26 +7,23 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_replace_keywords", TableDescription="出国境文件替换关键词")
-public class OmsReplaceKeywords {
+@TableAnnotation(TableName = "oms_selfestimate_resultitem", TableDescription="自评项目结果子表")
+public class OmsSelfestimateResultitem {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
-    private String fileId;
+    @ColumnAnnotation(FieldName = "RESULT_ID",   FieldDescription="主表ID")
+    private String resultId;
 
-    @ColumnAnnotation(FieldName = "KEYWORD",   FieldDescription="关键词")
-    private String keyword;
+    @ColumnAnnotation(FieldName = "CHECK_ID",   FieldDescription="检查项ID")
+    private String checkId;
 
-    @ColumnAnnotation(FieldName = "REPLACE_FIELD",   FieldDescription="替换字段名字")
-    private String replaceField;
+    @ColumnAnnotation(FieldName = "CHECK_RESULT",   FieldDescription="检查结果（1通过、0不通过）")
+    private Integer checkResult;
 
-    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="描述")
+    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明")
     private String description;
-
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型（因公、因私）")
-    private String type;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -52,28 +49,28 @@ public class OmsReplaceKeywords {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getFileId() {
-        return fileId;
+    public String getResultId() {
+        return resultId;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId == null ? null : fileId.trim();
+    public void setResultId(String resultId) {
+        this.resultId = resultId == null ? null : resultId.trim();
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getCheckId() {
+        return checkId;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword == null ? null : keyword.trim();
+    public void setCheckId(String checkId) {
+        this.checkId = checkId == null ? null : checkId.trim();
     }
 
-    public String getReplaceField() {
-        return replaceField;
+    public Integer getCheckResult() {
+        return checkResult;
     }
 
-    public void setReplaceField(String replaceField) {
-        this.replaceField = replaceField == null ? null : replaceField.trim();
+    public void setCheckResult(Integer checkResult) {
+        this.checkResult = checkResult;
     }
 
     public String getDescription() {
@@ -82,14 +79,6 @@ public class OmsReplaceKeywords {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
     }
 
     public Date getCreateTime() {

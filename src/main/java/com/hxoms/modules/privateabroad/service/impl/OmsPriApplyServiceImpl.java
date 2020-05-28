@@ -201,7 +201,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (omsConditions != null && omsConditions.size() > 0){
             //检验条件
             for (OmsCondition omsCondition : omsConditions) {
-                String sql = omsCondition.getSql();
+                String sql = omsCondition.getSqlContent();
                 if (!StringUtils.isBlank(sql)) {
                     Map<String, String> map = new HashMap<>();
                     sql = sql
@@ -212,7 +212,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                     int count = omsPubApplyMapper.excuteSelectSql(sql);
                     //条件标题
                     map.put("title", omsCondition.getName());
-                    map.put("desc", omsCondition.getDesc());
+                    map.put("desc", omsCondition.getDescription());
                     if (count > 0) {
                         //不符合条件
                         map.put("isFit" , "0");

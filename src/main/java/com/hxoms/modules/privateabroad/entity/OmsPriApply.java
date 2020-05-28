@@ -130,11 +130,8 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT_NUM",   FieldDescription="港澳通行证号")
     private String hongkongandmacaoPassportNum;
 
-    @ColumnAnnotation(FieldName = "HONGKONG_VISA",   FieldDescription="香港签注(1一次、2多次)")
-    private Integer hongkongVisa;
-
-    @ColumnAnnotation(FieldName = "MACAO_VISA",   FieldDescription="澳门签注(1一次、2多次)")
-    private Integer macaoVisa;
+    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_VISA",   FieldDescription="港澳签注(1一次、2多次)")
+    private Integer hongkongandmacaoVisa;
 
     @ColumnAnnotation(FieldName = "TAIWAN_PASSPORT",   FieldDescription="台湾通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer taiwanPassport;
@@ -171,11 +168,11 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
-    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、" +
-            "4自评上报、5组织部初审、6征求有关单位意见、"+
-            "7待反馈意见、8组织部审批、9核实批件、"+
-            "10制作备案表、11已办结、12待领证、13已领证、14撤销)")
+    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
     private String applyStatus;
+
+    @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书")
+    private Integer isEntrust;
 
     @ColumnAnnotation(FieldName = "REMARKS",   FieldDescription="备注")
     private String remarks;
@@ -471,20 +468,12 @@ public class OmsPriApply {
         this.hongkongandmacaoPassportNum = hongkongandmacaoPassportNum == null ? null : hongkongandmacaoPassportNum.trim();
     }
 
-    public Integer getHongkongVisa() {
-        return hongkongVisa;
+    public Integer getHongkongandmacaoVisa() {
+        return hongkongandmacaoVisa;
     }
 
-    public void setHongkongVisa(Integer hongkongVisa) {
-        this.hongkongVisa = hongkongVisa;
-    }
-
-    public Integer getMacaoVisa() {
-        return macaoVisa;
-    }
-
-    public void setMacaoVisa(Integer macaoVisa) {
-        this.macaoVisa = macaoVisa;
+    public void setHongkongandmacaoVisa(Integer hongkongandmacaoVisa) {
+        this.hongkongandmacaoVisa = hongkongandmacaoVisa;
     }
 
     public Integer getTaiwanPassport() {
@@ -581,6 +570,14 @@ public class OmsPriApply {
 
     public void setApplyStatus(String applyStatus) {
         this.applyStatus = applyStatus == null ? null : applyStatus.trim();
+    }
+
+    public Integer getIsEntrust() {
+        return isEntrust;
+    }
+
+    public void setIsEntrust(Integer isEntrust) {
+        this.isEntrust = isEntrust;
     }
 
     public String getRemarks() {

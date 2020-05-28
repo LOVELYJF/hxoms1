@@ -36,8 +36,7 @@
     <result column="PASSPORT_NUM" jdbcType="VARCHAR" property="passportNum" />
     <result column="HONGKONGANDMACAO_PASSPORT" jdbcType="INTEGER" property="hongkongandmacaoPassport" />
     <result column="HONGKONGANDMACAO_PASSPORT_NUM" jdbcType="VARCHAR" property="hongkongandmacaoPassportNum" />
-    <result column="HONGKONG_VISA" jdbcType="INTEGER" property="hongkongVisa" />
-    <result column="MACAO_VISA" jdbcType="INTEGER" property="macaoVisa" />
+    <result column="HONGKONGANDMACAO_VISA" jdbcType="INTEGER" property="hongkongandmacaoVisa" />
     <result column="TAIWAN_PASSPORT" jdbcType="INTEGER" property="taiwanPassport" />
     <result column="TAIWAN_PASSPORT_NUM" jdbcType="VARCHAR" property="taiwanPassportNum" />
     <result column="TAIWAN_VISA" jdbcType="INTEGER" property="taiwanVisa" />
@@ -50,6 +49,7 @@
     <result column="FUNDS_SOURCE" jdbcType="VARCHAR" property="fundsSource" />
     <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
     <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="IS_ENTRUST" jdbcType="INTEGER" property="isEntrust" />
     <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -57,7 +57,7 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
   </resultMap>
-  <resultMap id="ResultMapVO" type="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO" extends="BaseResultMap">
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
@@ -105,7 +105,7 @@
     </if>
     <if test="omsPriApplyIPageParam.applyStatus != null and omsPriApplyIPageParam.applyStatus != ''">
       and pa.APPLY_STATUS in
-      <foreach collection="omsPriApplyIPageParam.applyStatus" item="item" index="index" open="(" separator="," close=")">
+      <foreach close=")" collection="omsPriApplyIPageParam.applyStatus" index="index" item="item" open="(" separator=",">
         #{item}
       </foreach>
     </if>

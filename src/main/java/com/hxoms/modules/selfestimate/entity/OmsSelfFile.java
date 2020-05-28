@@ -1,4 +1,4 @@
-package com.hxoms.modules.file.entity;
+package com.hxoms.modules.selfestimate.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,25 +7,22 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_replace_keywords", TableDescription="出国境文件替换关键词")
-public class OmsReplaceKeywords {
+@TableAnnotation(TableName = "oms_self_file", TableDescription="自评材料清单")
+public class OmsSelfFile {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
-    private String fileId;
+    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="机构ID")
+    private String b0100;
 
-    @ColumnAnnotation(FieldName = "KEYWORD",   FieldDescription="关键词")
-    private String keyword;
+    @ColumnAnnotation(FieldName = "CHECKFILE_ID",   FieldDescription="检查文件ID")
+    private String checkfileId;
 
-    @ColumnAnnotation(FieldName = "REPLACE_FIELD",   FieldDescription="替换字段名字")
-    private String replaceField;
+    @ColumnAnnotation(FieldName = "FILENAME",   FieldDescription="文件名称")
+    private String filename;
 
-    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="描述")
-    private String description;
-
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型（因公、因私）")
+    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期出国)")
     private String type;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
@@ -52,36 +49,28 @@ public class OmsReplaceKeywords {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getFileId() {
-        return fileId;
+    public String getB0100() {
+        return b0100;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId == null ? null : fileId.trim();
+    public void setB0100(String b0100) {
+        this.b0100 = b0100 == null ? null : b0100.trim();
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getCheckfileId() {
+        return checkfileId;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword == null ? null : keyword.trim();
+    public void setCheckfileId(String checkfileId) {
+        this.checkfileId = checkfileId == null ? null : checkfileId.trim();
     }
 
-    public String getReplaceField() {
-        return replaceField;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setReplaceField(String replaceField) {
-        this.replaceField = replaceField == null ? null : replaceField.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+    public void setFilename(String filename) {
+        this.filename = filename == null ? null : filename.trim();
     }
 
     public String getType() {

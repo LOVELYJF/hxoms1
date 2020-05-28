@@ -2,18 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.condition.mapper.OmsConditionMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.condition.entity.OmsCondition">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="condition_type" jdbcType="VARCHAR" property="conditionType" />
-    <result column="check_type" jdbcType="CHAR" property="checkType" />
-    <result column="info_type" jdbcType="CHAR" property="infoType" />
-    <result column="sql" jdbcType="VARCHAR" property="sql" />
-    <result column="json" jdbcType="VARCHAR" property="json" />
-    <result column="desc" jdbcType="VARCHAR" property="desc" />
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CONDITION_TYPE" jdbcType="VARCHAR" property="conditionType" />
+    <result column="CHECK_TYPE" jdbcType="INTEGER" property="checkType" />
+    <result column="INFO_TYPE" jdbcType="INTEGER" property="infoType" />
+    <result column="SQL_CONTENT" jdbcType="VARCHAR" property="sqlContent" />
+    <result column="JSON_CONTENT" jdbcType="VARCHAR" property="jsonContent" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, condition_type, check_type, info_type, sql, json, desc
+    ID, NAME, CONDITION_TYPE, CHECK_TYPE, INFO_TYPE, SQL_CONTENT, JSON_CONTENT, DESCRIPTION
   </sql>
-
-
 </mapper>

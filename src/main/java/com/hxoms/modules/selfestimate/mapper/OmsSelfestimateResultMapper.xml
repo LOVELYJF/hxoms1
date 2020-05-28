@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.file.entity.OmsReplaceKeywords">
+<mapper namespace="com.hxoms.modules.selfestimate.mapper.OmsSelfestimateResultMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResult">
     <id column="ID" jdbcType="VARCHAR" property="id" />
-    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
-    <result column="KEYWORD" jdbcType="VARCHAR" property="keyword" />
-    <result column="REPLACE_FIELD" jdbcType="VARCHAR" property="replaceField" />
-    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
     <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="AUDIT_OPINION" jdbcType="VARCHAR" property="auditOpinion" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, FILE_ID, KEYWORD, REPLACE_FIELD, DESCRIPTION, TYPE, CREATE_TIME, CREATE_USER, 
-    MODIFY_TIME, MODIFY_USER
+    ID, APPLY_ID, SELFFILE_ID, TYPE, AUDIT_OPINION, CREATE_TIME, CREATE_USER, MODIFY_TIME, 
+    MODIFY_USER
   </sql>
 </mapper>
