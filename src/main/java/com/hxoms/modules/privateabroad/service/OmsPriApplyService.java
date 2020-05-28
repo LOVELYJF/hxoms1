@@ -8,7 +8,6 @@ import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OmsPriApplyService {
     /**
@@ -60,10 +59,4 @@ public interface OmsPriApplyService {
      * @return
      */
     OmsPriApplyVO selectPriApplyById(String id);
-    /**
-     * 检查约束条件
-     * @param id 申请id
-     * @return
-     */
-    List<Map<String, String>> checkRrestrainCondition(String id);
 }

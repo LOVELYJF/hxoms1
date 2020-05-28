@@ -7,8 +7,6 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.condition.entity.OmsCondition;
-import com.hxoms.modules.condition.mapper.OmsConditionMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriTogetherperson;
@@ -18,7 +16,6 @@ import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriTogetherpersonMapper;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
-import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,10 +33,6 @@ import java.util.*;
 public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     @Autowired
     private OmsPriApplyMapper omsPriApplyMapper;
-    @Autowired
-    private OmsConditionMapper omsConditionMapper;
-    @Autowired
-    private OmsPubApplyMapper omsPubApplyMapper;
     @Autowired
     private OmsPriTogetherpersonMapper omsPriTogetherpersonMapper;
 
@@ -169,66 +162,5 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(id);
         return omsPriApplyVO;
-    }
-
-    @Override
-    public List<Map<String, String>> checkRrestrainCondition(String id) {
-        OmsPriApply omsPriApply = omsPriApplyMapper.selectById(id);
-        return checkPriApply(omsPriApply, "2");
-    }
-
-    /**
-     * 申请信息校验
-     * @param omsPriApply 申请信息
-     * @param type 1、选择人员后校验（保存前） 2、保存时（保存后）
-     * @return
-     */
-    public List<Map<String, String>> checkPriApply(OmsPriApply omsPriApply, String type) {
-        String flag = "1";   //是否通过验证,默认通过
-        //结果
-        List<Map<String, String>> result = new ArrayList<>();
-        //登录用户信息
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        QueryWrapper<OmsCondition> queryWrapper = new QueryWrapper<>();
-        if ("1".equals(type)){
-            queryWrapper.eq("check_type", type);
-        }
-        //因私出国
-        queryWrapper.eq("condition_type", "2")
-                .orderByAsc("check_type");
-        List<OmsCondition> omsConditions = omsConditionMapper.selectList(queryWrapper);
-
-        if (omsConditions != null && omsConditions.size() > 0){
-            //检验条件
-            for (OmsCondition omsCondition : omsConditions) {
-                String sql = omsCondition.getSqlContent();
-                if (!StringUtils.isBlank(sql)) {
-                    Map<String, String> map = new HashMap<>();
-                    sql = sql
-                            .replace("@a0100", omsPriApply.getA0100())
-                            .replace("@id", omsPriApply.getId())
-                            .replace("@loginA0100", userInfo.getId());
-
-                    int count = omsPubApplyMapper.excuteSelectSql(sql);
-                    //条件标题
-                    map.put("title", omsCondition.getName());
-                    map.put("desc", omsCondition.getDescription());
-                    if (count > 0) {
-                        //不符合条件
-                        map.put("isFit" , "0");
-                        flag = "0";
-                    }else{
-                        //符合条件
-                        map.put("isFit" , "1");
-                    }
-                    result.add(map);
-                }
-            }
-        }
-        Map<String, String> map = new HashMap<>();
-        map.put("title", "是否通过验证");
-        map.put("isFit", flag);
-        result.add(map);
-        return result;
     }
 }
