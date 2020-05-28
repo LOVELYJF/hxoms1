@@ -4,32 +4,34 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-
-/**
- * <b>裸官信息实体类</b>
- * @author luoshuai
- * @date 2020/5/8 18:51
- */
-@TableAnnotation(TableName = "oms_sup_naked_sign", TableDescription="裸官信息表 ")
+@TableAnnotation(TableName = "oms_sup_naked_sign", TableDescription="裸官信息表")
 public class OmsSupNakedSign {
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "id",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="")
-    private String a0100;
+    @ColumnAnnotation(FieldName = "modify_user",   FieldDescription="修改用户")
+    private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
-    private String workUnit;
+    @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="修改时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date modifyTime;
+
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部主键")
+    private String a0100;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
 
     @ColumnAnnotation(FieldName = "PINYIN",   FieldDescription="拼音")
     private String pinyin;
+
+    @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
+    private String workUnit;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
@@ -54,7 +56,6 @@ public class OmsSupNakedSign {
     @ColumnAnnotation(FieldName = "XZXGW",   FieldDescription="限制性岗位")
     private String xzxgw;
 
-
     public String getId() {
         return id;
     }
@@ -63,20 +64,28 @@ public class OmsSupNakedSign {
         this.id = id == null ? null : id.trim();
     }
 
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser == null ? null : modifyUser.trim();
+    }
+
+    public Date getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
     public String getA0100() {
         return a0100;
     }
 
     public void setA0100(String a0100) {
         this.a0100 = a0100 == null ? null : a0100.trim();
-    }
-
-    public String getWorkUnit() {
-        return workUnit;
-    }
-
-    public void setWorkUnit(String workUnit) {
-        this.workUnit = workUnit == null ? null : workUnit.trim();
     }
 
     public String getName() {
@@ -93,6 +102,14 @@ public class OmsSupNakedSign {
 
     public void setPinyin(String pinyin) {
         this.pinyin = pinyin == null ? null : pinyin.trim();
+    }
+
+    public String getWorkUnit() {
+        return workUnit;
+    }
+
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit == null ? null : workUnit.trim();
     }
 
     public String getSex() {
@@ -150,5 +167,4 @@ public class OmsSupNakedSign {
     public void setXzxgw(String xzxgw) {
         this.xzxgw = xzxgw == null ? null : xzxgw.trim();
     }
-
 }
