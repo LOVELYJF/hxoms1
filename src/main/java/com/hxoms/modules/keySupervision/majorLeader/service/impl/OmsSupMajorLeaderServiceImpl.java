@@ -9,7 +9,6 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
-import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
