@@ -13,7 +13,7 @@ public class OmsCondition {
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="约束条件名称")
     private String name;
 
-    @ColumnAnnotation(FieldName = "CONDITION_TYPE",   FieldDescription="条件类型1--因公条件,2--因私条件，3延期回国 后续可以增加。。。")
+    @ColumnAnnotation(FieldName = "CONDITION_TYPE",   FieldDescription="条件类型： 因公条件  因私条件  延期回国 后续可以增加。。。")
     private String conditionType;
 
     @ColumnAnnotation(FieldName = "CHECK_TYPE",   FieldDescription="1--保存前校验;2--保存后校验")

@@ -14,4 +14,9 @@
   <sql id="Base_Column_List">
     ID, NAME, CONDITION_TYPE, CHECK_TYPE, INFO_TYPE, SQL_CONTENT, JSON_CONTENT, DESCRIPTION
   </sql>
+
+  <!--纯sql执行-->
+  <select id="excuteSelectSql" resultType="java.lang.Integer">
+    ${sql}
+  </select>
 </mapper>
