@@ -7,18 +7,21 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * <b>主要领导信息表</b>
- * @author luoshuai
- * @date 2020/5/10 18:26
- */
 @TableAnnotation(TableName = "oms_sup_major_leader", TableDescription="主要领导信息表")
 public class OmsSupMajorLeader {
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "id",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "modify_user",   FieldDescription="修改用户")
+    private String modifyUser;
+
+    @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="修改时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date modifyTime;
+
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
@@ -33,7 +36,7 @@ public class OmsSupMajorLeader {
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "A3600",   FieldDescription="主要领导")
+    @ColumnAnnotation(FieldName = "A3600",   FieldDescription="家庭成员")
     private String a3600;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
@@ -56,6 +59,22 @@ public class OmsSupMajorLeader {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getModifyUser() {
+        return modifyUser;
+    }
+
+    public void setModifyUser(String modifyUser) {
+        this.modifyUser = modifyUser == null ? null : modifyUser.trim();
+    }
+
+    public Date getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
     public String getA0100() {
@@ -137,5 +156,4 @@ public class OmsSupMajorLeader {
     public void setRank(String rank) {
         this.rank = rank == null ? null : rank.trim();
     }
-
 }
