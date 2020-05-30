@@ -10,7 +10,6 @@
 		<result column="PINYIN" jdbcType="VARCHAR" property="pinyin" />
 		<result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
 		<result column="SEX" jdbcType="VARCHAR" property="sex" />
-		<result column="A3600" jdbcType="VARCHAR" property="a3600" />
 		<result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
 		<result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
 		<result column="POST" jdbcType="VARCHAR" property="post" />
@@ -18,12 +17,8 @@
 		<result column="XZXGW" jdbcType="VARCHAR" property="xzxgw" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, A3600, BIRTH_DATE,
+		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
 		POLITICAL_AFFI, POST, RANK, XZXGW
 	</sql>
-
-	<select id="selectA0100List" resultType="java.lang.String">
-		select A0100 from oms_sup_naked_sign;
-	</select>
 
 </mapper>
