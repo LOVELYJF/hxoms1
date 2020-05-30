@@ -163,8 +163,6 @@
     select * from ${tablecode} where a0100 = #{id,jdbcType=VARCHAR}
   </select>
 
-	<!-- 根据单位集合和姓名查询信息集 -->
-
 
 	<!--查询家庭成员-->
 	<select id="selectFamilyMember" parameterType="java.lang.String" resultType="java.util.Map">
