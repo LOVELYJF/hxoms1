@@ -15,10 +15,11 @@
 	<select id="selectMajorLeaderAuto" resultMap="BaseResultMap">
 		SELECT
 			<include refid="Base_Column_List"/>
-		FROM person_org_order poo1 WHERE
+		FROM person_org_order poo1
+		WHERE
 		(
-		SELECT count(1) FROM person_org_order poo2 WHERE
-		poo1.a0201b=poo2.a0201b AND poo2.orderindex &lt;= poo1.orderindex
+			SELECT count(1) FROM person_org_order poo2 WHERE
+			poo1.a0201b=poo2.a0201b AND poo2.orderindex &lt;= poo1.orderindex
 		) &lt;= 2
 		ORDER BY poo1.a0201b
 	</select>

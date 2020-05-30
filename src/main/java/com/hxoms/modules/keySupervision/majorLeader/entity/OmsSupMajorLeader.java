@@ -36,9 +36,6 @@ public class OmsSupMajorLeader {
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "A3600",   FieldDescription="家庭成员")
-    private String a3600;
-
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -115,14 +112,6 @@ public class OmsSupMajorLeader {
 
     public void setSex(String sex) {
         this.sex = sex == null ? null : sex.trim();
-    }
-
-    public String getA3600() {
-        return a3600;
-    }
-
-    public void setA3600(String a3600) {
-        this.a3600 = a3600 == null ? null : a3600.trim();
     }
 
     public Date getBirthDate() {
