@@ -1,4 +1,4 @@
-package com.hxoms.modules.file.entity;
+package com.hxoms.modules.privateabroad.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,26 +7,25 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_replace_keywords", TableDescription="出国境文件替换关键词")
-public class OmsReplaceKeywords {
+@TableAnnotation(TableName = "oms_pri_delay_apply", TableDescription="延期回国申请")
+public class OmsPriDelayApply {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
-    private String fileId;
+    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请ID")
+    private String applyId;
 
-    @ColumnAnnotation(FieldName = "KEYWORD",   FieldDescription="关键词")
-    private String keyword;
+    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
+    private String applyStatus;
 
-    @ColumnAnnotation(FieldName = "REPLACE_FIELD",   FieldDescription="替换字段名字")
-    private String replaceField;
+    @ColumnAnnotation(FieldName = "ESTIMATE_RETURNTIME",   FieldDescription="预计回国时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date estimateReturntime;
 
-    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="描述")
-    private String description;
-
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型（因公、因私）")
-    private String type;
+    @ColumnAnnotation(FieldName = "DELAY_REASON",   FieldDescription="延期理由")
+    private String delayReason;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -52,44 +51,36 @@ public class OmsReplaceKeywords {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getFileId() {
-        return fileId;
+    public String getApplyId() {
+        return applyId;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId == null ? null : fileId.trim();
+    public void setApplyId(String applyId) {
+        this.applyId = applyId == null ? null : applyId.trim();
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getApplyStatus() {
+        return applyStatus;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword == null ? null : keyword.trim();
+    public void setApplyStatus(String applyStatus) {
+        this.applyStatus = applyStatus == null ? null : applyStatus.trim();
     }
 
-    public String getReplaceField() {
-        return replaceField;
+    public Date getEstimateReturntime() {
+        return estimateReturntime;
     }
 
-    public void setReplaceField(String replaceField) {
-        this.replaceField = replaceField == null ? null : replaceField.trim();
+    public void setEstimateReturntime(Date estimateReturntime) {
+        this.estimateReturntime = estimateReturntime;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDelayReason() {
+        return delayReason;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason == null ? null : delayReason.trim();
     }
 
     public Date getCreateTime() {
