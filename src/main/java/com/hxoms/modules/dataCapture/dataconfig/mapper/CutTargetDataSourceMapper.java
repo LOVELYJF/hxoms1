@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
 public interface CutTargetDataSourceMapper {
 
 
+
     DataSource targetDataSource(@Param("tableName") String tableName, @Param("code") String code);
 
 }
