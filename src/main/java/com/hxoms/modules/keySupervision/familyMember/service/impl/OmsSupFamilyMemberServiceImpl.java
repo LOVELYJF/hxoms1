@@ -19,6 +19,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper;
+import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
@@ -74,6 +75,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	}
 
 
+
 	/**
 	 * <b>查询人员现状</b>
 	 * @return
@@ -111,13 +113,35 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	}
 
 
+
+	/**
+	 * <b>查询人员基本信息</b>
+	 * @param page
+	 * @param idList
+	 * @param name
+	 * @return
+	 */
+	public Page getPersonInfoForfamily(Page<Map<String,Object>> page, List<String> idList, String name) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("name" , name);
+		map.put("idList", idList);
+		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
+		List<Map<String,Object>> mapList = a01Mapper.selectPersonInfoForfamily(map);
+		page.setRecords(mapList);
+		PageInfo pageInfo = new PageInfo(mapList);
+		page.setTotal(pageInfo.getTotal());
+		page.setPages(pageInfo.getPages());
+		return page;
+	}
+
+
 	/**
 	 * <b>查询家庭成员信息</b>
 	 * @param a0100
 	 * @param page
 	 * @return
 	 */
-	public Page<A36> getFamilyMember(Page page,String a0100) {
+	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
