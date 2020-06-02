@@ -1,11 +1,12 @@
 package com.hxoms.modules.sysUser.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-public interface CfUserMapper {
+public interface CfUserMapper extends BaseMapper<CfUser> {
     /**
      * 功能描述: <br>
      * 〈获取用户列表〉
@@ -14,7 +15,7 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/4/30 10:02
      */
-    List<CfUser> getSysUserList(@Param("userName") String keyWord, @Param("orgId") String orgId);
+    List<CfUser> getSysUserList(@Param("userName") String keyWord, @Param("orgId") List<String> orgId);
     /**
      * 功能描述: <br>
      * 〈新增用户〉
@@ -53,7 +54,7 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/4/30 10:43
      */
-    CfUser selectByPrimaryKey(@Param("userName") String keyWord);
+    List<CfUser> selectByPrimaryKey(@Param("userName") String keyWord);
     /**
      * 功能描述: <br>
      * 〈查询密码〉
@@ -112,7 +113,7 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/5/7 16:09
      */
-    List<CfUser> getSysUserListByParm(String orgId, String userType);
+    List<CfUser> getSysUserListByParm(List<String> orgId, String userType);
 
     /**
      * 功能描述: <br>
@@ -132,6 +133,26 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/5/7 16:11
      */
-    List<CfUser> getOperatorByNameOrState(String name, List<String> state);
+    List<CfUser> getOperatorByNameOrState(String name, List<String> state, List<String> orgIds);
 
+    /**
+     * 功能描述: <br>
+     * 〈查询经办人审批列表〉
+     * @Param: [keyWord, orgId]
+     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
+     * @Author: 李逍遥
+     * @Date: 2020/5/13 10:56
+     */
+    List<CfUser> getOperatorApprovalList(@Param("userName")String keyWord, @Param("orgIds") List<String> orgIds, @Param("userType") String userType, @Param("states") List<String> states);
+
+
+    /**
+     * 功能描述: <br>
+     * 〈通过身份证读取设备匹配经办人〉
+     * @Param: [idcard, states, userType]
+     * @Return: com.hxoms.modules.sysUser.entity.CfUser
+     * @Author: 李逍遥
+     * @Date: 2020/5/15 10:06
+     */
+    CfUser getOperatorApprovalByIdCard(@Param("idCard")String idCard,@Param("states") String states,@Param("userType") String userType);
 }

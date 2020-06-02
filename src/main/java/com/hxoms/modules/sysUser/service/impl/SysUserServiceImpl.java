@@ -1,5 +1,6 @@
 package com.hxoms.modules.sysUser.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -17,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> implements SysUserService {
 
     @Autowired
     private CfUserMapper cfUserMapper;
@@ -31,7 +32,7 @@ public class SysUserServiceImpl implements SysUserService {
       * @Date: 2020/4/28 16:08
       */
     @Override
-    public PageInfo getSysUserList(Integer pageNum, Integer pageSize, String keyWord, String orgId) {
+    public PageInfo getSysUserList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId) {
 
         if (pageNum == null) {
             pageNum = 1;
@@ -84,11 +85,7 @@ public class SysUserServiceImpl implements SysUserService {
             user.setUserId(UUIDGenerator.getPrimaryKey());
             //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
-            //设置用户类型（未设置，从前端传或者手动设置（比较麻烦），1超级管理员、2系统管理员、3安全审计管理员、4安全保密管理员、5监督处工作人员、6经办人、7相关处室、8其他）
-
-            //设置状态（未设置，1、从前端传过来 2、后台获取目前登录人员角色，根据角色创建状态）
-
-            //创建人（未设置，1、从前端传过来 2、后台获取当前登录人，）
+            //创建人
             user.setCreator(loginUser.getUserName());
             //创建时间
             user.setCreatetime(new Date());
@@ -107,11 +104,11 @@ public class SysUserServiceImpl implements SysUserService {
      * @Date: 2020/4/28 16:36
      */
     @Override
-    public CfUser getUserByCodeORName(String keyWord) {
+    public  List<CfUser> getUserByCodeORName(String keyWord) {
         if (StringUtils.isEmpty(keyWord)) {
             throw new CustomMessageException("参数为空!");
         }
-       CfUser user = cfUserMapper.selectByPrimaryKey(keyWord);
+        List<CfUser> user = cfUserMapper.selectByPrimaryKey(keyWord);
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }

@@ -45,12 +45,15 @@
         <include refid="Base_Column_List"/>
         from cf_user
         <where>
-            <if test='orgId != null and orgId != ""'>
-                and org_id = #{orgId}
-            </if>
             <if test='userName != null and userName != ""'>
                 and (user_name like CONCAT('%',#{userName},'%')
                 or user_code like CONCAT('%',#{userName},'%'))
+            </if>
+            <if test='orgId != null and orgId != ""'>
+                and org_id in
+                <foreach collection="list" item="org_id" separator="," open="(" close=")">
+                    #{org_id}
+                </foreach>
             </if>
         </where>
     </select>
@@ -360,7 +363,10 @@
         from cf_user
         <where>
             <if test='orgId != null and orgId != ""'>
-                and org_id = #{orgId}
+                and org_id in
+                <foreach collection="list" item="org_id" separator="," open="(" close=")">
+                    #{org_id}
+                </foreach>
             </if>
             <if test='userType != null and userType != ""'>
                 and user_type = #{userType}
@@ -396,6 +402,54 @@
                 <foreach collection="list" item="user_state" separator="," open="(" close=")">
                     #{user_state}
                 </foreach>
+            </if>
+            <if test='orgIds != null and orgIds != ""'>
+                and org_id in
+                <foreach collection="list" item="orgIds" separator="," open="(" close=")">
+                    #{orgIds}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getOperatorApprovalList" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+       select
+        <include refid="Base_Column_List"/>
+        from cf_user
+        <where>
+            <if test='orgIds != null and orgIds != ""'>
+                and org_id in
+                <foreach collection="list" item="orgIds" separator="," open="(" close=")">
+                    #{orgIds}
+                </foreach>
+            </if>
+            <if test='userName != null and userName != ""'>
+                and (user_name like CONCAT('%',#{userName},'%')
+                or user_code like CONCAT('%',#{userName},'%'))
+            </if>
+            <if test='userType != null and userType != ""'>
+                and user_type = #{userType}
+            </if>
+            <if test='states != null and states != ""'>
+                and user_state in
+                <foreach collection="list" item="user_state" separator="," open="(" close=")">
+                    #{user_state}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getOperatorApprovalByIdCard" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+        select
+        <include refid="Base_Column_List"/>
+        from cf_user
+        <where>
+            <if test='idCard != null and idCard != ""'>
+                and IDNUMBER = #{idCard}
+            </if>
+            <if test='userType != null and userType != ""'>
+                and user_type = #{userType}
+            </if>
+            <if test='states != null and states != ""'>
+                and user_state = #{states}
             </if>
         </where>
     </select>
