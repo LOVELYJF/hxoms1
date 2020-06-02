@@ -21,7 +21,7 @@ public class PersonExcelToDB {
     public static void main(String[] orgs) {
         /*findA01List();
         System.out.println(maps);*/
-        String name = "安　          伟";
+        String name = "章传强";
         String newName = name.replaceAll("　", "").replace(" ","");
         System.out.println(newName);
     }
@@ -72,8 +72,8 @@ public class PersonExcelToDB {
                      * DQZT当前状态，首次默认为取出状态
                      */
                     String sql = "insert into cf_certificate" +
-                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT) " +
-                            "values (?,?,?,?,?,?,?,?,?,?,?,?)";
+                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT,ZWQFJG) " +
+                            "values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     String sql2 = "insert into oms_entryexit_record (ID,IMPORT_TIME,IMPORT_PERSON,OGA_MODE," +
                             "DATA_SOURCE,A0100,OGE_STATUS,NAME,SEX,BIRTH_DATE,NATIONALITY,ID_TYPE,ID_NUMBER," +
@@ -88,7 +88,7 @@ public class PersonExcelToDB {
                         //如果结果集包含"境"字，就添加到出国境记录表，如果不包含，就添加到证照表里面
                         if (list.get(i).get("IDCard").toString().contains("境")) {
 
-                            String name = list.get(i).get("name").toString();
+                            String name = list.get(i).get("name").toString().replaceAll(" ","");
                             String sex  = list.get(i).get("sex").toString();
                             String csny = list.get(i).get("csny").toString();
                             String A0100 = findA0100ByName(maps,name,sex,csny.substring(0,6));
@@ -146,6 +146,15 @@ public class PersonExcelToDB {
 
                             }
 
+                            String zjlx = (String) list.get(i).get("zjlx");
+                            int zjlxInt = 1;
+                            if (zjlx.contains("护照")){
+                                zjlxInt = 1;
+                            }else if(zjlx.contains("港澳")){
+                                zjlxInt = 2;
+                            }else if(zjlx.contains("台湾")){
+                                zjlxInt = 3;
+                            }
                             ps.setString(1, UUIDGenerator.getPrimaryKey());
 
                             ps.setString(2, (String) list.get(i).get("IDCard"));
@@ -158,7 +167,7 @@ public class PersonExcelToDB {
 
                             ps.setString(6, (String) list.get(i).get("gj"));
 
-                            ps.setString(7, (String) list.get(i).get("zjlx"));
+                            ps.setInt(7, zjlxInt);
 
                             ps.setString(8, (String) list.get(i).get("cardNum"));
 
@@ -170,11 +179,13 @@ public class PersonExcelToDB {
 
                             ps.setInt(12, 1);
 
+                            ps.setString(13,(String)list.get(i).get("qfdw"));
+
                             ps.addBatch();
 
                         }
 
-                        if (i % 20 == 0) {
+                        if (i % 500 == 0) {
 
                             ps.executeBatch();
 
@@ -317,7 +328,7 @@ public class PersonExcelToDB {
                 "as sex FROM a01";
 
 
-        try {
+     try {
             Connection conn = JDBC.getConnection();
 
             conn.setAutoCommit(false);
@@ -342,6 +353,7 @@ public class PersonExcelToDB {
             e.printStackTrace();
         }
     }
+
 
     public static String findA0100ByName(List<Map<String,Object>> list,String name,String sex,String A0107){
 

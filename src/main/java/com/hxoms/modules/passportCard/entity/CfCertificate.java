@@ -13,6 +13,9 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="ID")
     private String id;
 
+    @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
+    private String name;
+
     @ColumnAnnotation(FieldName = "A0184",   FieldDescription="证件拥有者身份证号码")
     private String a0184;
 
@@ -40,6 +43,9 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "LOCATION",   FieldDescription="证照存放地址")
     private String location;
 
+    @ColumnAnnotation(FieldName = "GJDW",   FieldDescription="证件管理单位")
+    private  String gjdw;
+
     @ColumnAnnotation(FieldName = "ZWQFDD",   FieldDescription="中文签发地点")
     private String zwqfdd;
 
@@ -53,25 +59,74 @@ public class CfCertificate {
     private String ywqfjg;
 
     @ColumnAnnotation(FieldName = "QFRQ",   FieldDescription="签发日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date qfrq;
-
     @ColumnAnnotation(FieldName = "YXQZ",   FieldDescription="有效期至")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date yxqz;
 
     @ColumnAnnotation(FieldName = "ZJSJRQ",   FieldDescription="证件上缴日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date zjsjrq;
+
+    @ColumnAnnotation(FieldName = "MANAGEUNIT",   FieldDescription="管理单位")
+    private String manageUnit;
+
+    @ColumnAnnotation(FieldName = "STORAGEPLACE",   FieldDescription="台办证件存放位置")
+    private  String storagePlace;
+
+    @ColumnAnnotation(FieldName = "CABINETNUM",   FieldDescription="柜子编号")
+    private String cabinetNnm;
 
     @ColumnAnnotation(FieldName = "DQZT",   FieldDescription="当前状态(1、初次录入 2、入柜未确认 3、在库  4、借出未出柜 5、借出出柜未确认  6、借出  7、归还未入柜  8、归还入柜未确认   9、盘点未取出 ，10、盘点取出未确认 11 、盘出   12、盘点未入柜  13 盘点入柜未确认，14永久取出)")
     private Integer dqzt;
 
     @ColumnAnnotation(FieldName = "ISCABINET",   FieldDescription="人员是否有效，1，有效，0，无效")
     private Integer iscabinet;
+
+
+    @ColumnAnnotation(FieldName = "UPDATE_TIME",   FieldDescription="证件修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    private Date updateTime;
+
+    @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效0:有效，1:无效")
+    private int isValid;
+
+    public int getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(int isValid) {
+        this.isValid = isValid;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getGjdw() {
+        return gjdw;
+    }
+
+    public void setGjdw(String gjdw) {
+        this.gjdw = gjdw;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;
@@ -224,5 +279,29 @@ public class CfCertificate {
 
     public void setA0184(String a0184) {
         this.a0184 = a0184;
+    }
+
+    public String getManageUnit() {
+        return manageUnit;
+    }
+
+    public void setManageUnit(String manageUnit) {
+        this.manageUnit = manageUnit;
+    }
+
+    public String getStoragePlace() {
+        return storagePlace;
+    }
+
+    public void setStoragePlace(String storagePlace) {
+        this.storagePlace = storagePlace;
+    }
+
+    public String getCabinetNnm() {
+        return cabinetNnm;
+    }
+
+    public void setCabinetNnm(String cabinetNnm) {
+        this.cabinetNnm = cabinetNnm;
     }
 }
