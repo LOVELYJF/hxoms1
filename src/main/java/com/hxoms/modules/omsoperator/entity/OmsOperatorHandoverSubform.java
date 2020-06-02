@@ -1,8 +1,10 @@
 package com.hxoms.modules.omsoperator.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -58,6 +60,8 @@ public class OmsOperatorHandoverSubform {
      * 出生日期
      */
     @ColumnAnnotation(FieldName = "Birthday",  FieldDescription="出生日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthday;
 
     /**
@@ -88,6 +92,8 @@ public class OmsOperatorHandoverSubform {
      * 交接时间
      */
     @ColumnAnnotation(FieldName = "HandoverTime",  FieldDescription="交接时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date handovertime;
 
     /**
@@ -100,12 +106,16 @@ public class OmsOperatorHandoverSubform {
      * 出国（境）时间
      */
     @ColumnAnnotation(FieldName = "ExitDate",  FieldDescription="出国（境）时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date exitdate;
 
     /**
      * 入境时间
      */
     @ColumnAnnotation(FieldName = "EntryDate",  FieldDescription="入境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date entrydate;
 
     /**

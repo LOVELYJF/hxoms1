@@ -1,9 +1,12 @@
 package com.hxoms.modules.omsmobilizingcadres.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.IgnoreLogAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -34,18 +37,24 @@ public class OmsMobilizingcadre {
      * 调整时间
      */
     @ColumnAnnotation(FieldName = "Adjustment_time",  FieldDescription="调整时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date adjustmentTime;
 
     /**
      * 完成时间
      */
     @ColumnAnnotation(FieldName = "Completion_time",  FieldDescription="完成时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date completionTime;
 
     /**
      * 创建日期
      */
     @ColumnAnnotation(FieldName = "Create_date",  FieldDescription="创建日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createDate;
 
     /**

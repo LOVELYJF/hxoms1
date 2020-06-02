@@ -1,8 +1,10 @@
 package com.hxoms.modules.omsoperator.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -34,6 +36,8 @@ public class OmsOperatorApproval {
      * 提交时间
      */
     @ColumnAnnotation(FieldName = "SubmissionTime",  FieldDescription="提交时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date submissiontime;
 
     /**
@@ -46,6 +50,8 @@ public class OmsOperatorApproval {
      * 审批时间
      */
     @ColumnAnnotation(FieldName = "ApprovalDate",  FieldDescription="审批时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date approvaldate;
 
     /**

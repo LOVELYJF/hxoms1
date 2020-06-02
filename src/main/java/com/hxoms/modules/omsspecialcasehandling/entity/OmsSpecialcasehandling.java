@@ -1,9 +1,11 @@
 package com.hxoms.modules.omsspecialcasehandling.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
-import com.hxoms.common.hxannotation.IgnoreLogAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -40,7 +42,9 @@ public class OmsSpecialcasehandling {
      * 出生日期
      */
     @ColumnAnnotation(FieldName = "Birth",  FieldDescription="出生日期")
-    private String birth;
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date birth;
 
     /**
      * 政治面貌
@@ -64,12 +68,16 @@ public class OmsSpecialcasehandling {
      * 申请开始时间
      */
     @ColumnAnnotation(FieldName = "Start_time",  FieldDescription="申请开始时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date startTime;
 
     /**
      * 申请结束时间
      */
     @ColumnAnnotation(FieldName = "End_time",  FieldDescription="申请结束时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date endTime;
 
     /**
@@ -152,7 +160,7 @@ public class OmsSpecialcasehandling {
      * 出生日期
      * @return Birth 出生日期
      */
-    public String getBirth() {
+    public Date getBirth() {
         return birth;
     }
 
@@ -160,8 +168,8 @@ public class OmsSpecialcasehandling {
      * 出生日期
      * @param birth 出生日期
      */
-    public void setBirth(String birth) {
-        this.birth = birth == null ? null : birth.trim();
+    public void setBirth(Date birth) {
+        this.birth = birth;
     }
 
     /**

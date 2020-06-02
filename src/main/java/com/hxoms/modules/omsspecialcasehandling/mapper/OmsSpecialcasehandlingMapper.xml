@@ -6,7 +6,7 @@
     <result column="Company" jdbcType="VARCHAR" property="company" />
     <result column="Name" jdbcType="VARCHAR" property="name" />
     <result column="Sex" jdbcType="VARCHAR" property="sex" />
-    <result column="Birth" jdbcType="VARCHAR" property="birth" />
+    <result column="Birth" jdbcType="TIMESTAMP" property="birth" />
     <result column="PoliticsStatus" jdbcType="VARCHAR" property="politicsstatus" />
     <result column="Duty" jdbcType="VARCHAR" property="duty" />
     <result column="Incumbency_status" jdbcType="VARCHAR" property="incumbencyStatus" />
@@ -41,7 +41,7 @@
       End_time, A0100, B0100
       )
     values (#{id,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=VARCHAR}, #{birth,jdbcType=VARCHAR}, #{politicsstatus,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{birth,jdbcType=TIMESTAMP}, #{politicsstatus,jdbcType=VARCHAR},
       #{duty,jdbcType=VARCHAR}, #{incumbencyStatus,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{a0100,jdbcType=VARCHAR}, #{b0100,jdbcType=VARCHAR}
       )
@@ -100,7 +100,7 @@
         #{sex,jdbcType=VARCHAR},
       </if>
       <if test="birth != null">
-        #{birth,jdbcType=VARCHAR},
+        #{birth,jdbcType=TIMESTAMP},
       </if>
       <if test="politicsstatus != null">
         #{politicsstatus,jdbcType=VARCHAR},
@@ -138,7 +138,7 @@
         Sex = #{sex,jdbcType=VARCHAR},
       </if>
       <if test="birth != null">
-        Birth = #{birth,jdbcType=VARCHAR},
+        Birth = #{birth,jdbcType=TIMESTAMP},
       </if>
       <if test="politicsstatus != null">
         PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
@@ -169,7 +169,7 @@
     set Company = #{company,jdbcType=VARCHAR},
       Name = #{name,jdbcType=VARCHAR},
       Sex = #{sex,jdbcType=VARCHAR},
-      Birth = #{birth,jdbcType=VARCHAR},
+      Birth = #{birth,jdbcType=TIMESTAMP},
       PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
       Duty = #{duty,jdbcType=VARCHAR},
       Incumbency_status = #{incumbencyStatus,jdbcType=VARCHAR},

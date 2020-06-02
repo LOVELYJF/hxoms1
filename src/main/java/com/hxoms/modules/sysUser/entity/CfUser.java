@@ -1,8 +1,10 @@
 package com.hxoms.modules.sysUser.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -88,6 +90,8 @@ public class CfUser {
      * 修改时间
      */
     @ColumnAnnotation(FieldName = "modify_time",  FieldDescription="修改时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
 
     /**
@@ -100,6 +104,8 @@ public class CfUser {
      * 有效期(过了此日期不允许登录)
      */
     @ColumnAnnotation(FieldName = "USER_EXPIRE",  FieldDescription="有效期(过了此日期不允许登录)")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date userExpire;
 
     /**
@@ -118,6 +124,8 @@ public class CfUser {
      * 创建时间
      */
     @ColumnAnnotation(FieldName = "CREATETIME",  FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createtime;
 
     /**
@@ -148,12 +156,16 @@ public class CfUser {
      * 身份证有效期开始时间
      */
     @ColumnAnnotation(FieldName = "CARE_START_DATE",  FieldDescription="身份证有效期开始时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date careStartDate;
 
     /**
      * 身份证有效期结束时间
      */
     @ColumnAnnotation(FieldName = "CARD_EXPIRY_DATE",  FieldDescription="身份证有效期结束时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date cardExpiryDate;
 
     /**
