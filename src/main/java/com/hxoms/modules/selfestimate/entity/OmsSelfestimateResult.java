@@ -19,7 +19,7 @@ public class OmsSelfestimateResult {
     @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="文件ID")
     private String selffileId;
 
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期出国)")
+    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期回国)")
     private String type;
 
     @ColumnAnnotation(FieldName = "AUDIT_OPINION",   FieldDescription="审核意见")

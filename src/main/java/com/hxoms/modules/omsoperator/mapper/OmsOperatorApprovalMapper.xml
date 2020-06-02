@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="OperatorId" jdbcType="VARCHAR" property="operatorid" />
+    <result column="StepName" jdbcType="VARCHAR" property="stepname" />
+    <result column="SubmissionTime" jdbcType="DATE" property="submissiontime" />
+    <result column="Submitter" jdbcType="VARCHAR" property="submitter" />
+    <result column="ApprovalDate" jdbcType="DATE" property="approvaldate" />
+    <result column="Approver" jdbcType="VARCHAR" property="approver" />
+    <result column="ApprovalResult" jdbcType="VARCHAR" property="approvalresult" />
+    <result column="ApprovalOpinion" jdbcType="VARCHAR" property="approvalopinion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, OperatorId, StepName, SubmissionTime, Submitter, ApprovalDate, Approver, ApprovalResult, 
+    ApprovalOpinion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oms_operator_approval
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    <select id="selectByUserId" resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+      select
+      <include refid="Base_Column_List" />
+      from oms_operator_approval
+      where OperatorId = #{userId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from oms_operator_approval
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+    insert into oms_operator_approval (ID, OperatorId, StepName, 
+      SubmissionTime, Submitter, ApprovalDate, 
+      Approver, ApprovalResult, ApprovalOpinion
+      )
+    values (#{id,jdbcType=VARCHAR}, #{operatorid,jdbcType=VARCHAR}, #{stepname,jdbcType=VARCHAR}, 
+      #{submissiontime,jdbcType=DATE}, #{submitter,jdbcType=VARCHAR}, #{approvaldate,jdbcType=DATE}, 
+      #{approver,jdbcType=VARCHAR}, #{approvalresult,jdbcType=VARCHAR}, #{approvalopinion,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+    insert into oms_operator_approval
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="operatorid != null">
+        OperatorId,
+      </if>
+      <if test="stepname != null">
+        StepName,
+      </if>
+      <if test="submissiontime != null">
+        SubmissionTime,
+      </if>
+      <if test="submitter != null">
+        Submitter,
+      </if>
+      <if test="approvaldate != null">
+        ApprovalDate,
+      </if>
+      <if test="approver != null">
+        Approver,
+      </if>
+      <if test="approvalresult != null">
+        ApprovalResult,
+      </if>
+      <if test="approvalopinion != null">
+        ApprovalOpinion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorid != null">
+        #{operatorid,jdbcType=VARCHAR},
+      </if>
+      <if test="stepname != null">
+        #{stepname,jdbcType=VARCHAR},
+      </if>
+      <if test="submissiontime != null">
+        #{submissiontime,jdbcType=DATE},
+      </if>
+      <if test="submitter != null">
+        #{submitter,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaldate != null">
+        #{approvaldate,jdbcType=DATE},
+      </if>
+      <if test="approver != null">
+        #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalresult != null">
+        #{approvalresult,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalopinion != null">
+        #{approvalopinion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+    update oms_operator_approval
+    <set>
+      <if test="operatorid != null">
+        OperatorId = #{operatorid,jdbcType=VARCHAR},
+      </if>
+      <if test="stepname != null">
+        StepName = #{stepname,jdbcType=VARCHAR},
+      </if>
+      <if test="submissiontime != null">
+        SubmissionTime = #{submissiontime,jdbcType=DATE},
+      </if>
+      <if test="submitter != null">
+        Submitter = #{submitter,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaldate != null">
+        ApprovalDate = #{approvaldate,jdbcType=DATE},
+      </if>
+      <if test="approver != null">
+        Approver = #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalresult != null">
+        ApprovalResult = #{approvalresult,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalopinion != null">
+        ApprovalOpinion = #{approvalopinion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
+    update oms_operator_approval
+    set OperatorId = #{operatorid,jdbcType=VARCHAR},
+      StepName = #{stepname,jdbcType=VARCHAR},
+      SubmissionTime = #{submissiontime,jdbcType=DATE},
+      Submitter = #{submitter,jdbcType=VARCHAR},
+      ApprovalDate = #{approvaldate,jdbcType=DATE},
+      Approver = #{approver,jdbcType=VARCHAR},
+      ApprovalResult = #{approvalresult,jdbcType=VARCHAR},
+      ApprovalOpinion = #{approvalopinion,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

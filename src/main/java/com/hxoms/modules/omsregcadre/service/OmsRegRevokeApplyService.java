@@ -11,7 +11,7 @@ import java.text.ParseException;
 
 public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeApply> {
 
-    IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page, OmsRegRevokeApply revokeApply);
+    IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page);
 
     Object searchRevokeRegPerson() throws ParseException;
 

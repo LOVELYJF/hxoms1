@@ -1,9 +1,10 @@
 package com.hxoms.modules.dataCapture.timingschedule;
 
-import com.hxoms.modules.dataCapture.datasources.synchronizationData.SynchronizationData;
+import com.hxoms.modules.dataCapture.synchdata.Synchdata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ import java.util.Calendar;
  * @Description: 定时调度任务
  ***/
 @Service
+@PropertySource("classpath:/dataCapture.porperties")
 public class ScheduleServiceImp {
     @Autowired
-    private SynchronizationData synchronizationData;
+    private Synchdata synchronizationData;
+
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //    @Value("${job.cron}")

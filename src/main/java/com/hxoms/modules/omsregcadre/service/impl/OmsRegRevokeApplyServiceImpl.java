@@ -34,8 +34,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     private OmsRegRevokeApprovalMapper regRevokeApprovalMapper;
 
     @Override
-    public IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page,OmsRegRevokeApply revokeApply) {
-        return baseMapper.selectRevokeApplyList(page,revokeApply);
+    public IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page) {
+        return baseMapper.selectRevokeApplyList(page);
     }
 
     @Override

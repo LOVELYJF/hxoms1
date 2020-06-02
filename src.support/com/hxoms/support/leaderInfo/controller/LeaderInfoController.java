@@ -3,6 +3,7 @@ package com.hxoms.support.leaderInfo.controller;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.leaderInfo.service.LeaderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,5 +50,20 @@ public class LeaderInfoController {
     public Result getUiSetingWithData(String tablecode, String id) {
         List<Map<String, Object>> a31s = leaderInfoService.selectLeaderInfoData(tablecode, id);
         return Result.success(a31s);
+    }
+
+    /**
+     * @desc:  修改干部信息
+     *
+     *
+     */
+    @RequestMapping("/updateLeaderInfoByTableCode")
+    public Result updateLeaderInfoByTableCode(@RequestBody Map<String,String> updateMap){
+
+        System.out.println(updateMap);
+        leaderInfoService.updateLeaderInfoByTableCode(updateMap);
+
+        return Result.success();
+
     }
 }

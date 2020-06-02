@@ -22,7 +22,7 @@ public class OmsSelfFile {
     @ColumnAnnotation(FieldName = "FILENAME",   FieldDescription="文件名称")
     private String filename;
 
-    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期出国)")
+    @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期回国)")
     private String type;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")

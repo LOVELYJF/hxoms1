@@ -3,6 +3,7 @@ package com.hxoms.modules.dataCapture.controller;
 import com.hxoms.modules.dataCapture.entity.DefultTargetDataSource;
 import com.hxoms.modules.dataCapture.datasources.service.CutTargetDataSourceService;
 import com.hxoms.modules.dataCapture.datasources.synchronizationData.SynchronizationData;
+import com.hxoms.modules.dataCapture.log.service.SysLogService;
 import com.hxoms.modules.dataCapture.service.DataCaptureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ public class DataCaptureController {
     private CutTargetDataSourceService cutTargetDataSourceService;
     @Autowired
     private DefultTargetDataSource defultTargetDataSource;
+    @Autowired
+    private SysLogService  sysLogService;
 
     @Autowired
     private SynchronizationData synchronizationData;
@@ -48,8 +51,9 @@ public class DataCaptureController {
 //      log.info("从目标数据源查询的数据条数"+mapList1.size()+"2次");
 //      List<Map> masterList1 =  a01Service.getMasterA01();
 //      log.info("从主数据源查询的数据条数"+masterList1.size()+"2次");
-        synchronizationData.synchronizationData();
-     return a01Service.getMasterA01(0,100000);
+//        synchronizationData.synchronizationData();
+        sysLogService.deleteAndsave();
+     return null;
     }
 
 

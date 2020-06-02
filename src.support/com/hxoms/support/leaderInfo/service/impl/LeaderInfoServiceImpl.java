@@ -2,6 +2,12 @@ package com.hxoms.support.leaderInfo.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.dataType.DataType;
+import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.StringUilt;
+import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.general.select.entity.SqlVo;
+import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.person.markedcadre.mapper.McMarkedcadreMapper;
 import com.hxoms.support.inforesource.entity.DataTableCol;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
@@ -11,10 +17,8 @@ import com.hxoms.support.sysdict.service.SysDictItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class LeaderInfoServiceImpl implements LeaderInfoService {
@@ -27,6 +31,9 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
 
     @Autowired
     private SysDictItemService sysDictItemService;
+
+    @Autowired
+    private SelectMapper selectMapper;
 
     //根据id查询返回数据
     @Override
@@ -154,5 +161,290 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
             resultMap.put("info",info1);
             return resultMap;
         }
+    }
+
+    @Override
+    public void updateLeaderInfoByTableCode(Map<String,String> updateMap) {
+        /** StringBuffer  线程安全
+         *  StringBuilder则没有实现线程安全功能，所以性能略高
+         * **/
+      StringBuffer  sb = new StringBuffer();
+      String sql   = "";
+      String tableId = "";
+
+        if(updateMap.get("tableName") !=null){
+            // 表 Id
+            tableId += updateMap.get("tableName") +"00";
+
+           if(updateMap.get(tableId.toLowerCase())!=null && !updateMap.get(tableId.toLowerCase()).isEmpty()){
+
+               updateTable(updateMap);
+           }else{
+
+               insterTable(updateMap);
+           }
+
+
+        }else{
+
+            throw new CustomMessageException("表名为空，请仔细检查");
+        }
+
+
+    }
+
+    public void  updateTable(Map<String,String> updateMap){
+        StringBuffer  sb = new StringBuffer();
+        String sql   = "";
+        String tableId = "";
+
+        if(updateMap.get("tableName") !=null){
+
+            sb.append(" update  " + updateMap.get("tableName")  + " set " );
+            tableId += updateMap.get("tableName") +"00";
+
+            List<LinkedHashMap<String, Object>> typemap  =  judgeType(updateMap.get("tableName"));
+
+            Iterator<Map.Entry<String, String>>  tm =  updateMap.entrySet().iterator();
+
+            while(tm.hasNext()){
+                Map.Entry<String, String>    entity  =   tm.next();
+                String colName =  entity.getKey().toLowerCase();
+
+                if(!"tablename".equals(colName) && !tableId.toLowerCase().equals(colName)){
+
+                    String type =  judgeType(typemap,colName);
+                    String colValue = (String) entity.getValue();
+
+                    if(type.equals("datetime")){
+
+                        String  splicType = getSplicType(colValue);
+
+                        sb.append(colName+" = "+ " str_to_date('"+ colValue+"' ,'%Y"+splicType+"%m"+splicType+"%d')");
+
+                    }else{
+
+                        sb.append(colName+" = "+ "'"+ colValue+"'");
+
+                    }
+
+
+
+
+                    sb.append(",");
+
+
+
+                }
+
+            }
+
+            sql =   sb.substring(0,sb.length()-1);
+
+
+            sql=sql+(" where "+tableId.toLowerCase()+" = " + "'" + updateMap.get(tableId.toLowerCase())+"'" );
+
+
+        }
+
+        if(sql.length()>0){
+
+            SqlVo instance = SqlVo.getInstance(sql);
+            selectMapper.update(instance);
+
+
+        }
+
+
+
+
+    }
+
+    public void insterTable(Map<String,String> updateMap){
+
+
+        StringBuffer  sb = new StringBuffer();
+        String sql   = "";
+        String tableId = "";
+
+        updateMap.size();
+
+        if(updateMap.get("tableName") !=null){
+
+            sb.append("insert into   " + updateMap.get("tableName") +"\t" );
+            tableId += updateMap.get("tableName") +"00";
+
+            List<LinkedHashMap<String, Object>> typemap  =  judgeType(updateMap.get("tableName"));
+
+            Iterator<Map.Entry<String, String>>  tm =  updateMap.entrySet().iterator();
+
+            // 字段语句
+            StringBuffer fieldSql = new StringBuffer();
+            // 值语句
+            StringBuffer valueSql = new StringBuffer();
+
+            fieldSql.append("(");
+
+            valueSql.append("(");
+
+            int count = 0;
+
+            while(tm.hasNext()){
+                Map.Entry<String, String>    entity  =   tm.next();
+                String colName =  entity.getKey().toLowerCase();
+
+                count++;
+
+                if(!"tablename".equals(colName) ){
+
+                    // 添加字段
+
+                    fieldSql.append(colName);
+
+
+
+                    // 添加值
+
+                    String type =  judgeType(typemap,colName);   // 获取 值得类型
+                    String colValue = (String) entity.getValue();
+                  // 先判断字段是否为 主键， 在判断 值类型
+
+                  if(tableId.toLowerCase().equals(colName)){
+
+                      valueSql.append("'"+ UUIDGenerator.getPrimaryKey()+"'");
+                  }else{
+
+                      if(type.equals("datetime")){
+
+                          String  splicType = getSplicType(colValue);
+
+                          valueSql.append( " str_to_date('"+ colValue+"' ,'%Y"+splicType+"%m"+splicType+"%d')");
+
+                      }else{
+
+                          valueSql.append("'"+ colValue+"'");
+
+                      }
+
+                  }
+
+
+
+
+                    if(count<updateMap.size()){
+                        fieldSql.append(",");
+                        valueSql.append(",");
+                    }
+
+
+
+                }
+
+            }
+            fieldSql.deleteCharAt(fieldSql.length()-1);
+            fieldSql.append(")");
+            valueSql.deleteCharAt(valueSql.length()-1);
+            valueSql.append(")");
+
+
+
+         sql+=sb.toString()+fieldSql+"\t"+"value"+"\t" +valueSql;
+
+        }
+
+        if(sql.length()>0){
+
+            SqlVo instance = SqlVo.getInstance(sql);
+            selectMapper.insert(instance);
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+    public String judgeType(List<LinkedHashMap<String, Object>> map,String colName){
+
+        if(map!=null && map.size()>0){
+
+            for(Map m : map){
+
+                if(colName.equals(m.get("column_name").toString().toLowerCase())){
+
+                    return (String) m.get("data_type");
+
+                }
+
+            }
+
+
+        }
+
+        
+      return  "";
+
+    }
+
+
+    public List<LinkedHashMap<String, Object>> judgeType(String tableName){
+
+
+        String sqlType = "select distinct column_name,data_type " +
+                "from information_schema.columns " +
+                "where table_name='"+tableName+" '";
+
+        SqlVo instance = SqlVo.getInstance(sqlType);
+        List<LinkedHashMap<String, Object>> map = selectMapper.select(instance);
+
+
+        return  map;
+
+    }
+
+
+    public String getSplicType(String colValue){
+        for(DataType dateType  : DataType.values()){
+
+             if(colValue.indexOf(dateType.getCode())!=-1){
+
+                 return  dateType.getCode();
+
+             }
+
+        }
+
+        return  null;
+
+
+    }
+
+
+    public static void main(String[] args) {
+
+        String str = "222";
+        String s ="";
+
+
+        Map m = new HashMap();
+        m.put("1",1);
+        m.put("2",2);
+        m.put(null,3);
+        m.put(null,5);
+        m.put("6",6);
+
+        System.out.println(m.size());
+
+        System.out.println(s.isEmpty());
+
+//        str+="333";   使用 + 通过反编译可知，他是生成了一个 中间过渡的 StringBuffer 添加的，最后在转成 String；
+        str.concat("3333");
+
+        System.out.println(str);
+
     }
 }
