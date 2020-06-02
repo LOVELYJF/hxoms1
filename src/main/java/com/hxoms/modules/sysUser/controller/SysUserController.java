@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 功能描述: <br>
  * 〈系统设置-用户管理〉
@@ -27,13 +29,13 @@ public class SysUserController {
 /**
  * 功能描述: <br>
  * 〈获取用户列表〉
- * @Param: [pageNum, pageSize, keyWord, orgId]
+ * @Param: [pageNum, pageSize, keyWord（用户名或者登陆名）, orgId（机构ID集合）]
  * @Return: com.hxoms.common.utils.Result
  * @Author: 李逍遥
  * @Date: 2020/4/28 15:45
  */
     @RequestMapping("/getSysUserList")
-    public Result getSysUserList(Integer pageNum, Integer pageSize, String keyWord, String orgId) {
+    public Result getSysUserList(Integer pageNum, Integer pageSize, String keyWord, @RequestParam(value ="orgId",required = false) List<String> orgId) {
         PageInfo pageInfo = sysUserService.getSysUserList(pageNum, pageSize, keyWord, orgId);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
@@ -51,17 +53,17 @@ public class SysUserController {
         sysUserService.InserOrUpdateSysUser(user,loginUser);
         return Result.success();
     }
-    /**
-     * 功能描述: <br>
-     * 〈按照登录名或者姓名查询用户〉
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/4/28 16:19
-     */
+   /**
+    * 功能描述: <br>
+    * 〈按照登录名或者姓名查询用户〉
+    * @Param: [keyWord]
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: 李逍遥
+    * @Date: 2020/5/20 17:25
+    */
     @RequestMapping("/getUserByCodeORName")
     public Result getUserByCodeORName(String keyWord){
-        CfUser user = sysUserService.getUserByCodeORName(keyWord);
+        List<CfUser> user = sysUserService.getUserByCodeORName(keyWord);
         return Result.success(user);
     }
 

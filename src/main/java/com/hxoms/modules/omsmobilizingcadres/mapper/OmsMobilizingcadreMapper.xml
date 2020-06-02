@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsmobilizingcadres.mapper.OmsMobilizingcadreMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="Adjustment_time" jdbcType="DATE" property="adjustmentTime" />
+    <result column="Completion_time" jdbcType="DATE" property="completionTime" />
+    <result column="Create_date" jdbcType="DATE" property="createDate" />
+    <result column="Create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="status" jdbcType="CHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, A0100, B0100, Adjustment_time, Completion_time, Create_date, Create_user, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oms_mobilizingcadre
+    where A0100 = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAllMobilizingCadre" resultType="java.util.LinkedHashMap">
+    SELECT b.b0101 as '单位' , a.A0101 AS '姓名', a.A0104 AS '性别', a.A0107 AS '出生年月' ,
+            a2.A0215A as '职务职级' , a.a0141 AS '政治面貌' , m.Adjustment_time AS '调整时间' ,
+            m.Completion_time as '结束时间' , m.status AS '状态'
+    FROM oms_mobilizingcadre m
+    INNER JOIN a01 a
+    ON m.A0100 = a.a0100
+    INNER JOIN a02 a2
+    on a2.a0100 = a.A0100
+    INNER JOIN b01 b
+    on a2.a0201b = b.b0111
+    <where>
+      <if test='orgIds != null and orgIds != ""'>
+        and b.b0111 in
+        <foreach collection="list" item="orgIds" separator="," open="(" close=")">
+          #{orgIds}
+        </foreach>
+      </if>
+      <if test='name != null and name != ""'>
+        and (a.A0101 like CONCAT('%',#{name},'%')
+      </if>
+      <if test='status != null and status != ""'>
+        and m.status = #{status}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from oms_mobilizingcadre
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+    insert into oms_mobilizingcadre (ID, A0100, B0100, 
+      Adjustment_time, Completion_time, Create_date, 
+      Create_user, status)
+    values (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{b0100,jdbcType=VARCHAR}, 
+      #{adjustmentTime,jdbcType=DATE}, #{completionTime,jdbcType=DATE}, #{createDate,jdbcType=DATE}, 
+      #{createUser,jdbcType=VARCHAR}, #{status,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+    insert into oms_mobilizingcadre
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="a0100 != null">
+        A0100,
+      </if>
+      <if test="b0100 != null">
+        B0100,
+      </if>
+      <if test="adjustmentTime != null">
+        Adjustment_time,
+      </if>
+      <if test="completionTime != null">
+        Completion_time,
+      </if>
+      <if test="createDate != null">
+        Create_date,
+      </if>
+      <if test="createUser != null">
+        Create_user,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="a0100 != null">
+        #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="b0100 != null">
+        #{b0100,jdbcType=VARCHAR},
+      </if>
+      <if test="adjustmentTime != null">
+        #{adjustmentTime,jdbcType=DATE},
+      </if>
+      <if test="completionTime != null">
+        #{completionTime,jdbcType=DATE},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+    update oms_mobilizingcadre
+    <set>
+      <if test="a0100 != null">
+        A0100 = #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="b0100 != null">
+        B0100 = #{b0100,jdbcType=VARCHAR},
+      </if>
+      <if test="adjustmentTime != null">
+        Adjustment_time = #{adjustmentTime,jdbcType=DATE},
+      </if>
+      <if test="completionTime != null">
+        Completion_time = #{completionTime,jdbcType=DATE},
+      </if>
+      <if test="createDate != null">
+        Create_date = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="createUser != null">
+        Create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+    update oms_mobilizingcadre
+    set A0100 = #{a0100,jdbcType=VARCHAR},
+      B0100 = #{b0100,jdbcType=VARCHAR},
+      Adjustment_time = #{adjustmentTime,jdbcType=DATE},
+      Completion_time = #{completionTime,jdbcType=DATE},
+      Create_date = #{createDate,jdbcType=DATE},
+      Create_user = #{createUser,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
