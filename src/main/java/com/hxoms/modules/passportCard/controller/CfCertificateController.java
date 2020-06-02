@@ -30,7 +30,7 @@ public class CfCertificateController {
 
         InputStream inputStream = null;
 
-        if (file.equals("") || file.getSize() <= 0) {
+        if (file.equals("") || file.getSize() <= 0 ) {
 
             file = null;
 
