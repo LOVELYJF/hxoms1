@@ -1,20 +1,32 @@
 package com.hxoms.common.util.JDBC;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.sql.*;
 
 public class JDBC {
 
-    //public static final String URL = "jdbc:mysql://www.24hbs.cn:3306/hxoms";
-
-   // public static final String USER = "hxoms";
-
-    //public static final String PASSWORD = "Hxyz-2020#";
-
-    public static final String URL = "jdbc:mysql://localhost:3306/hxoms";
+    /*public static final String URL = "jdbc:mysql://127.0.0.1:3306/hxoms";
 
     public static final String USER = "root";
 
-    public static final String PASSWORD = "12345abcde";
+    public static final String PASSWORD = "12345abcde";*/
+
+    public static final String URL = "jdbc:mysql://www.24hbs.com:3306/hxoms";
+
+    public static final String USER = "hxoms";
+
+    public static final String PASSWORD = "Hxyz-2020#";
+
+    /*@Value("${spring.datasourece.druid.url}")
+    private static  String URL;
+
+    @Value("${spring.datasourece.druid.username}")
+    public static String USER;
+
+
+    @Value("${spring.datasourece.druid.password}")
+    public static String PASSWORD;*/
 
     public static void main(String[] args) {
         try {
@@ -25,8 +37,6 @@ public class JDBC {
             Connection conn = getConnection();
             //3.操作数据库，实现增删改查
             Statement stmt = conn.createStatement();
-            String sql = "select * from cf_certificate";
-            String sql2 = "insert into cf_certificate(ID,A0184)VALUES(?,?)";
         } catch (SQLException e) {
             e.printStackTrace();
         }
