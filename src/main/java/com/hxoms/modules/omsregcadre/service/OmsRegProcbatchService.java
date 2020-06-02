@@ -13,3 +13,4 @@ public interface OmsRegProcbatchService  extends IService<OmsRegProcbatch> {
 
     List<String> getHistoryBatch();
 }
+
