@@ -85,7 +85,7 @@ public class OmsFileUtils {
      * @param map
      * @return
      */
-    public static boolean replaceAndGenerateWord(String srcPath, String destPath, Map<String, String> map) {
+    public boolean replaceAndGenerateWord(String srcPath, String destPath, Map<String, String> map) {
         String[] sp = srcPath.split("\\.");
         String[] dp = destPath.split("\\.");
         // 判断文件有无扩展名
@@ -169,7 +169,7 @@ public class OmsFileUtils {
      * @param map
      * @return
      */
-    private static boolean replaceDocx(String srcPath, String destPath, Map<String, String> map) {
+    private boolean replaceDocx(String srcPath, String destPath, Map<String, String> map) {
         try {
             XWPFDocument document = new XWPFDocument(POIXMLDocument.openPackage(srcPath));
             // 替换段落中的指定文字
@@ -230,7 +230,7 @@ public class OmsFileUtils {
      * @param map
      * @return
      */
-    private static boolean replaceDoc(String srcPath, String destPath, Map<String, String> map) {
+    private boolean replaceDoc(String srcPath, String destPath, Map<String, String> map) {
         HWPFDocument document = null;
         try {
             document = new HWPFDocument(new FileInputStream(srcPath));
@@ -257,7 +257,7 @@ public class OmsFileUtils {
      * @param destPath 结果路径
      * @param map
      */
-    private static boolean replaceXSSFWorkbook(String srcPath, String destPath, Map<String, String> map) {
+    private boolean replaceXSSFWorkbook(String srcPath, String destPath, Map<String, String> map) {
         try {
             FileInputStream input = new FileInputStream(new File(srcPath));
             Workbook wb = new XSSFWorkbook(OPCPackage.open(input));
@@ -303,7 +303,7 @@ public class OmsFileUtils {
      * @param destPath 结果路径
      * @param map
      */
-    private static boolean replaceHSSFWorkbook(String srcPath, String destPath, Map<String, String> map) {
+    private boolean replaceHSSFWorkbook(String srcPath, String destPath, Map<String, String> map) {
         try {
             POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(srcPath));
             Workbook wb = new HSSFWorkbook(fs);
