@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="RF_B0000" jdbcType="VARCHAR" property="rfB0000" />
+    <result column="INBOUND_FLAG" jdbcType="CHAR" property="inboundFlag" />
+    <result column="RF_STATUS" jdbcType="CHAR" property="rfStatus" />
+    <result column="CHECK_STATUS" jdbcType="CHAR" property="checkStatus" />
+    <result column="INCUMBENCY_STATUS" jdbcType="CHAR" property="incumbencyStatus" />
+    <result column="DATA_TYPE" jdbcType="CHAR" property="dataType" />
+    <result column="SURNAME" jdbcType="VARCHAR" property="surname" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SEX" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
+    <result column="NATION" jdbcType="VARCHAR" property="nation" />
+    <result column="IDNUMBER" jdbcType="CHAR" property="idnumber" />
+    <result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
+    <result column="HEALTH" jdbcType="VARCHAR" property="health" />
+    <result column="REGISTE_RESIDENCE_CODE" jdbcType="VARCHAR" property="registeResidenceCode" />
+    <result column="REGISTE_RESIDENCE" jdbcType="VARCHAR" property="registeResidence" />
+    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="POST_CODE" jdbcType="VARCHAR" property="postCode" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="PERSON_MANAGER" jdbcType="VARCHAR" property="personManager" />
+    <result column="IDENTITY_CODE" jdbcType="CHAR" property="identityCode" />
+    <result column="IDENTITY" jdbcType="VARCHAR" property="identity" />
+    <result column="SECRET_LEVEL" jdbcType="VARCHAR" property="secretLevel" />
+    <result column="DECRYPT_STARTDATE" jdbcType="DATE" property="decryptStartdate" />
+    <result column="DECRYPT_ENDDATE" jdbcType="VARCHAR" property="decryptEnddate" />
+    <result column="MAIN_LEADER" jdbcType="CHAR" property="mainLeader" />
+    <result column="LICENCE_IDENTITY" jdbcType="INTEGER" property="licenceIdentity" />
+    <result column="NF" jdbcType="CHAR" property="nf" />
+    <result column="FJGNF" jdbcType="CHAR" property="fjgnf" />
+    <result column="XRXGW" jdbcType="CHAR" property="xrxgw" />
+    <result column="LQGZ" jdbcType="CHAR" property="lqgz" />
+    <result column="DQGZ" jdbcType="CHAR" property="dqgz" />
+    <result column="REPLYOPINION" jdbcType="CHAR" property="replyopinion" />
+    <result column="ABROADTIME" jdbcType="DATE" property="abroadtime" />
+    <result column="REASON" jdbcType="VARCHAR" property="reason" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
+    <result column="PY" jdbcType="VARCHAR" property="py" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE,
+    SURNAME, NAME, SEX, BIRTH_DATE, NATION, IDNUMBER, POLITICAL_AFFI, HEALTH, REGISTE_RESIDENCE_CODE,
+    REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
+    SECRET_LEVEL, SECRET_STARTDATE, SECRET_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY,
+    NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON,CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY
+
+  </sql>
+
+  <select id="selectRegProcpersonInfo" resultType="java.lang.String">
+    select A0100 from OMS_REG_PROCPERSONINFO
+  </select>
+
+
+  <select id="selectPersonAndAllowRevoke" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo" resultType="list">
+    SELECT
+      info.SURNAME,
+      info.`NAME`,
+      info.A0100,
+    FROM oms_reg_procpersoninfo info
+           LEFT JOIN oms_smr_personinfo smr on info.A0100 = smr.A0100
+           LEFT JOIN a01 a1 on info.A0100 = a1.a0100
+           LEFT JOIN a30 a3 on a1.a0100 = a3.a0100
+    WHERE a3.a3001='免职'
+    <if test="name!=null and name!=''">
+      AND ((CONCAT(IFNULLLL(SURNAME,''),IFNULLLL(NAME,'')) LIKE '%${revokeapply.name}%') or (PY LIKE '%${name}%'))
+    </if>
+  </select>
+
+
+  <insert id="batchAddorpInfo" parameterType="list">
+      insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
+              INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
+              INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
+              NAME, SEX, BIRTH_DATE,
+              NATION, IDNUMBER, POLITICAL_AFFI,
+              HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
+              WORK_UNIT, POST_CODE, POST,
+              PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
+              SECRET_LEVEL, SECRET_STARTDATE, SECRET_ENDDATE,
+              MAIN_LEADER, LICENCE_IDENTITY, NF,
+              FJGNF, XRXGW, LQGZ, DQGZ,
+              REPLYOPINION, ABROADTIME, REASON,
+              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY
+    )
+    value
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
+      #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
+      #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
+      #{nation,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
+      #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
+      #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
+      #{personManager,jdbcType=VARCHAR}, #{identityCode,jdbcType=CHAR}, #{identity,jdbcType=VARCHAR},
+      #{secretLevel,jdbcType=VARCHAR}, #{secretStartDate,jdbcType=DATE}, #{secretEndDate,jdbcType=DATE},
+      #{mainLeader,jdbcType=CHAR}, #{licenceIdentity,jdbcType=INTEGER}, #{nf,jdbcType=CHAR},
+      #{fjgnf,jdbcType=CHAR}, #{xrxgw,jdbcType=CHAR}, #{lqgz,jdbcType=CHAR}, #{dqgz,jdbcType=CHAR},
+      #{replyopinion,jdbcType=CHAR}, #{abroadtime,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}
+      #{createTime,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},
+      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+	</insert>
+
+
+</mapper>

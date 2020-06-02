@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="BATCH_ID" jdbcType="VARCHAR" property="batchId" />
+    <result column="SURNAME" jdbcType="VARCHAR" property="surname" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SEX" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
+    <result column="IDNUMBER" jdbcType="VARCHAR" property="idnumber" />
+    <result column="REGISTE_RESIDENCE_CODE" jdbcType="VARCHAR" property="registeResidenceCode" />
+    <result column="REGISTE_RESIDENCE" jdbcType="VARCHAR" property="registeResidence" />
+    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="SECRET_TERM" jdbcType="VARCHAR" property="secretTerm" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="POST_CODE" jdbcType="VARCHAR" property="postCode" />
+    <result column="PERSON_MANAGER" jdbcType="VARCHAR" property="personManager" />
+    <result column="IDENTITY_CODE" jdbcType="VARCHAR" property="identityCode" />
+    <result column="IDENTITY" jdbcType="VARCHAR" property="identity" />
+    <result column="SECRET_STATUS" jdbcType="CHAR" property="secretStatus" />
+    <result column="SECRET_DATE" jdbcType="DATE" property="secretDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, BATCH_ID, SURNAME, A0100, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE, 
+    REGISTE_RESIDENCE, WORK_UNIT, SECRET_TERM, POST, POST_CODE, PERSON_MANAGER, IDENTITY_CODE, 
+    IDENTITY, SECRET_STATUS, SECRET_DATE
+  </sql>
+
+  <select id="selectA0100s"  parameterType="java.lang.String" resultType="java.lang.String">
+      select A0100 from oms_reg_procbatchperson where BATCH_ID = #{batchId}
+  </select>
+</mapper>

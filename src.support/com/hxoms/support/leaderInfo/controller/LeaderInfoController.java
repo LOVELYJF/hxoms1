@@ -58,10 +58,10 @@ public class LeaderInfoController {
      *
      */
     @RequestMapping("/updateLeaderInfoByTableCode")
-    public Result updateLeaderInfoByTableCode(@RequestBody Map<String,String> updateMap){
+    public Result updateLeaderInfoByTableCode(@RequestBody Map<String,String> tableData){
 
-        System.out.println(updateMap);
-        leaderInfoService.updateLeaderInfoByTableCode(updateMap);
+        System.out.println(tableData+"1111");
+        leaderInfoService.updateLeaderInfoByTableCode(tableData);
 
         return Result.success();
 
