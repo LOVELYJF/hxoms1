@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="PINYIN" jdbcType="VARCHAR" property="pinyin" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="DISMISSED_TIME" jdbcType="DATE" property="dismissedTime" />
+    <result column="DOCUMENT_NO" jdbcType="VARCHAR" property="documentNo" />
+    <result column="REASON" jdbcType="VARCHAR" property="reason" />
+    <result column="DISMISSED_TIME_START_QUERY" jdbcType="DATE" property="dismissedTimeStartQuery" />
+    <result column="DISMISSED_TIME_END_QUERY" jdbcType="DATE" property="dismissedTimeEndQuery" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, POST, DISMISSED_TIME,
+    DOCUMENT_NO, REASON, DISMISSED_TIME_START_QUERY, DISMISSED_TIME_END_QUERY
+  </sql>
+</mapper>

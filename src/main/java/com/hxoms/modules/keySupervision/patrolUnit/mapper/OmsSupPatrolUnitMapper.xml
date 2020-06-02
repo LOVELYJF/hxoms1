@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.patrolUnit.mapper.OmsSupPatrolUnitMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="UNIT" jdbcType="VARCHAR" property="unit" />
+    <result column="PATROL_START_TIME" jdbcType="DATE" property="patrolStartTime" />
+    <result column="PATROL_END_TIME" jdbcType="DATE" property="patrolEndTime" />
+    <result column="PATROL_START_TIME_QUERY" jdbcType="DATE" property="patrolStartTimeQuery" />
+    <result column="PATROL_END_TIME_QUERY" jdbcType="DATE" property="patrolEndTimeQuery" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, modify_user, modify_time, B0100, UNIT, PATROL_START_TIME, PATROL_END_TIME, PATROL_START_TIME_QUERY,
+    PATROL_END_TIME_QUERY
+  </sql>
+
+</mapper>

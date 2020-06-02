@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverSubformMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="HandoverFormID" jdbcType="VARCHAR" property="handoverformid" />
+    <result column="BusinessId" jdbcType="VARCHAR" property="businessid" />
+    <result column="BusinessType" jdbcType="VARCHAR" property="businesstype" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="Name" jdbcType="VARCHAR" property="name" />
+    <result column="Sex" jdbcType="VARCHAR" property="sex" />
+    <result column="Birthday" jdbcType="DATE" property="birthday" />
+    <result column="IDCard" jdbcType="CHAR" property="idcard" />
+    <result column="PoliticsStatus" jdbcType="VARCHAR" property="politicsstatus" />
+    <result column="Company" jdbcType="VARCHAR" property="company" />
+    <result column="Duty" jdbcType="VARCHAR" property="duty" />
+    <result column="HandoverTime" jdbcType="DATE" property="handovertime" />
+    <result column="HandoverId" jdbcType="VARCHAR" property="handoverid" />
+    <result column="ExitDate" jdbcType="DATE" property="exitdate" />
+    <result column="EntryDate" jdbcType="TIMESTAMP" property="entrydate" />
+    <result column="Explain" jdbcType="VARCHAR" property="explain" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, HandoverFormID, BusinessId, BusinessType, A0100, Name, Sex, Birthday, IDCard, 
+    PoliticsStatus, Company, Duty, HandoverTime, HandoverId, ExitDate, EntryDate, Explain, 
+    Remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oms_operator_handover_subform
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from oms_operator_handover_subform
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+    insert into oms_operator_handover_subform (ID, HandoverFormID, BusinessId, 
+      BusinessType, A0100, Name, 
+      Sex, Birthday, IDCard, PoliticsStatus, 
+      Company, Duty, HandoverTime, 
+      HandoverId, ExitDate, EntryDate, 
+      Explain, Remark)
+    values (#{id,jdbcType=VARCHAR}, #{handoverformid,jdbcType=VARCHAR}, #{businessid,jdbcType=VARCHAR}, 
+      #{businesstype,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{idcard,jdbcType=CHAR}, #{politicsstatus,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{handovertime,jdbcType=DATE}, 
+      #{handoverid,jdbcType=VARCHAR}, #{exitdate,jdbcType=DATE}, #{entrydate,jdbcType=TIMESTAMP}, 
+      #{explain,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+    insert into oms_operator_handover_subform
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="handoverformid != null">
+        HandoverFormID,
+      </if>
+      <if test="businessid != null">
+        BusinessId,
+      </if>
+      <if test="businesstype != null">
+        BusinessType,
+      </if>
+      <if test="a0100 != null">
+        A0100,
+      </if>
+      <if test="name != null">
+        Name,
+      </if>
+      <if test="sex != null">
+        Sex,
+      </if>
+      <if test="birthday != null">
+        Birthday,
+      </if>
+      <if test="idcard != null">
+        IDCard,
+      </if>
+      <if test="politicsstatus != null">
+        PoliticsStatus,
+      </if>
+      <if test="company != null">
+        Company,
+      </if>
+      <if test="duty != null">
+        Duty,
+      </if>
+      <if test="handovertime != null">
+        HandoverTime,
+      </if>
+      <if test="handoverid != null">
+        HandoverId,
+      </if>
+      <if test="exitdate != null">
+        ExitDate,
+      </if>
+      <if test="entrydate != null">
+        EntryDate,
+      </if>
+      <if test="explain != null">
+        Explain,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="handoverformid != null">
+        #{handoverformid,jdbcType=VARCHAR},
+      </if>
+      <if test="businessid != null">
+        #{businessid,jdbcType=VARCHAR},
+      </if>
+      <if test="businesstype != null">
+        #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="a0100 != null">
+        #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="idcard != null">
+        #{idcard,jdbcType=CHAR},
+      </if>
+      <if test="politicsstatus != null">
+        #{politicsstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="handovertime != null">
+        #{handovertime,jdbcType=DATE},
+      </if>
+      <if test="handoverid != null">
+        #{handoverid,jdbcType=VARCHAR},
+      </if>
+      <if test="exitdate != null">
+        #{exitdate,jdbcType=DATE},
+      </if>
+      <if test="entrydate != null">
+        #{entrydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="explain != null">
+        #{explain,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+    update oms_operator_handover_subform
+    <set>
+      <if test="handoverformid != null">
+        HandoverFormID = #{handoverformid,jdbcType=VARCHAR},
+      </if>
+      <if test="businessid != null">
+        BusinessId = #{businessid,jdbcType=VARCHAR},
+      </if>
+      <if test="businesstype != null">
+        BusinessType = #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="a0100 != null">
+        A0100 = #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        Sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        Birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="idcard != null">
+        IDCard = #{idcard,jdbcType=CHAR},
+      </if>
+      <if test="politicsstatus != null">
+        PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        Company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        Duty = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="handovertime != null">
+        HandoverTime = #{handovertime,jdbcType=DATE},
+      </if>
+      <if test="handoverid != null">
+        HandoverId = #{handoverid,jdbcType=VARCHAR},
+      </if>
+      <if test="exitdate != null">
+        ExitDate = #{exitdate,jdbcType=DATE},
+      </if>
+      <if test="entrydate != null">
+        EntryDate = #{entrydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="explain != null">
+        Explain = #{explain,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+    update oms_operator_handover_subform
+    set HandoverFormID = #{handoverformid,jdbcType=VARCHAR},
+      BusinessId = #{businessid,jdbcType=VARCHAR},
+      BusinessType = #{businesstype,jdbcType=VARCHAR},
+      A0100 = #{a0100,jdbcType=VARCHAR},
+      Name = #{name,jdbcType=VARCHAR},
+      Sex = #{sex,jdbcType=VARCHAR},
+      Birthday = #{birthday,jdbcType=DATE},
+      IDCard = #{idcard,jdbcType=CHAR},
+      PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
+      Company = #{company,jdbcType=VARCHAR},
+      Duty = #{duty,jdbcType=VARCHAR},
+      HandoverTime = #{handovertime,jdbcType=DATE},
+      HandoverId = #{handoverid,jdbcType=VARCHAR},
+      ExitDate = #{exitdate,jdbcType=DATE},
+      EntryDate = #{entrydate,jdbcType=TIMESTAMP},
+      Explain = #{explain,jdbcType=VARCHAR},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
