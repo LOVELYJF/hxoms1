@@ -8,10 +8,13 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.OmsFileVO;
 import com.hxoms.modules.file.entity.OmsReplaceKeywords;
+import com.hxoms.modules.file.entity.OmsSealhandleRecords;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
+import com.hxoms.modules.file.mapper.OmsSealhandleRecordsMapper;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
@@ -38,6 +41,8 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsReplaceKeywordsMapper omsReplaceKeywordsMapper;
     @Autowired
     private OmsPriApplyMapper omsPriApplyMapper;
+    @Autowired
+    private OmsSealhandleRecordsMapper omsSealhandleRecordsMapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
@@ -224,6 +229,32 @@ public class OmsFileServiceImpl implements OmsFileService {
         omsFile.setModifyUser(userInfo.getId());
         if (omsFileMapper.updateById(omsFile) < 1){
             throw new CustomMessageException("操作失败");
+        }
+        return "操作成功";
+    }
+
+    @Override
+    public List<OmsFileVO> selectSealHandleList(String tableCode, String applyId) {
+        if (StringUtils.isBlank(tableCode) || StringUtils.isEmpty(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        Map<String, String> params = new HashMap<>();
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        params.put("tableCode", tableCode);
+        params.put("applyId", applyId);
+        params.put("b0100", userInfo.getOrgId());
+        return omsFileMapper.selectSealHandleList(params);
+    }
+
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public String saveSealHandle(List<OmsSealhandleRecords> omsSealhandleRecords) {
+        for (OmsSealhandleRecords item : omsSealhandleRecords) {
+            item.setId(UUIDGenerator.getPrimaryKey());
+            if(omsSealhandleRecordsMapper.insert(item) < 1){
+                throw new CustomMessageException("操作失败");
+            }
         }
         return "操作成功";
     }

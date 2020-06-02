@@ -19,6 +19,10 @@
     <result column="FRONT_CONTENT" jdbcType="LONGVARCHAR" property="frontContent" />
     <result column="BANK_CONTENT" jdbcType="LONGVARCHAR" property="bankContent" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.file.entity.OmsFileVO">
+    <result column="isHandle" jdbcType="INTEGER" property="isHandle" />
+    <result column="isEntrust" jdbcType="INTEGER" property="isEntrust" />
+  </resultMap>
   <sql id="Base_Column_List">
     ID, FILE_ID, B0100, FILE_NAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, CREATE_TIME,
     CREATE_USER, MODIFY_TIME, MODIFY_USER
@@ -26,4 +30,14 @@
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT
   </sql>
+
+  <!--签字盖章列表-->
+  <select id="selectSealHandleList" resultMap="ResultMapVO" parameterType="java.util.Map">
+      select
+      <include refid="Base_Column_List" />,
+      (select count(0) from oms_sealhandle_records where FILE_ID = ofe.ID and APPLY_ID = #{applyId}) as isHandle,
+      (select IS_ENTRUST from oms_pri_apply where id = #{applyId} ) as isEntrust
+      from oms_file ofe
+      where B0100 = #{b0100} and TABLE_CODE = #{tableCode}
+  </select>
 </mapper>
