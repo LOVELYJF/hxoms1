@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="UNIT" jdbcType="VARCHAR" property="unit" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="SUSPEND_TIME" jdbcType="DATE" property="suspendTime" />
+    <result column="SUSPEND_REASON" jdbcType="VARCHAR" property="suspendReason" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="SUSPEND_STRAT_TIME_QUERY" jdbcType="DATE" property="suspendStratTimeQuery" />
+    <result column="SUSPEND_END_TIME_QUERY" jdbcType="DATE" property="suspendEndTimeQuery" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, modify_user, modify_time, UNIT, B0100, SUSPEND_TIME, SUSPEND_REASON, STATUS,
+    SUSPEND_STRAT_TIME_QUERY, SUSPEND_END_TIME_QUERY
+  </sql>
+
+</mapper>
