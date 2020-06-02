@@ -32,7 +32,7 @@
 
   <!-- 以下为自行添加的代码 -->
   <!-- 查询涉密人员管理列表 -->
-  <select id="selectSmrPersonInfo" parameterType="java.util.Map" resultType="BaseResultMap">
+  <select id="selectSmrPersonInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
         t.ID,
         t.A0100,
