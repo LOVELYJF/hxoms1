@@ -17,5 +17,9 @@ public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeApply> {
 
     Object insertRevokeRegPerson(OmsRegProcpersonInfo regProcpersonInfo) throws ParseException;
 
-    Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval);
+    Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds);
+
+    Object revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException;
+
+    Object reportLeaderApply(OmsRegRevokeApply revokeApply);
 }

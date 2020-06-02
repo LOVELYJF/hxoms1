@@ -92,7 +92,7 @@ public interface A01Mapper extends BaseMapper<A01> {
 
 
     /**
-     * <b>查询人员政治面貌</b>
+     * <b>查询政治面貌、拼音、性别</b>
      * @param a0100
      * @author:luoshuai
      * @date 2020/5/15 14:05

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @desc: 因私出国境申请
@@ -109,16 +108,5 @@ public class OmsPriApplyController {
     public Result selectPriApplyById(String id){
         OmsPriApplyVO omsPriApplyVO = omsPriApplyService.selectPriApplyById(id);
         return Result.success(omsPriApplyVO);
-    }
-
-    /**
-     * 检查约束条件
-     * @param id 申请id
-     * @return
-     */
-    @GetMapping("/checkRrestrainCondition")
-    public Result checkRrestrainCondition(String id){
-        List<Map<String, String>> result = omsPriApplyService.checkRrestrainCondition(id);
-        return Result.success(result);
     }
 }

@@ -13,6 +13,9 @@ public class OmsReplaceKeywords {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
+    private String fileId;
+
     @ColumnAnnotation(FieldName = "KEYWORD",   FieldDescription="关键词")
     private String keyword;
 
@@ -47,6 +50,14 @@ public class OmsReplaceKeywords {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId == null ? null : fileId.trim();
     }
 
     public String getKeyword() {

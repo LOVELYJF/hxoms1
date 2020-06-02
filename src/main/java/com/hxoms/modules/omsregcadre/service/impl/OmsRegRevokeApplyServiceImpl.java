@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,9 +42,11 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     public Object searchRevokeRegPerson() throws ParseException {
         int con=0;
         QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        //数据类型 为干部的
         queryWrapper.eq("DATA_TYPE","1");
-
-        //数据类型 为干部的省管干部登记备案查询
+        //入库标识为非撤销的
+        queryWrapper.notIn("INBOUND_FLAG","D");
+        //省管干部登记备案查询
         List<OmsRegProcpersonInfo> reginfolist = regProcpersonInfoMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
         List<A01Entity> a01list = a01Mapper.selectList(null);
@@ -61,7 +64,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                 queryWrapper1.eq("A0100", omsreginfo.getA0100());
                 //退出方式
                 A30 a30 = a30Mapper.selectOne(queryWrapper1);
-                //在职状态变更为辞职、免职、退休、开除、去世、挂职等
+                //在职状态变更为辞职、退休、开除、去世、挂职等（免职不用搜）
                 if (!StringUtils.isEmpty(a30.getA3001())) {
                     //撤销登记备案申请表
                     OmsRegRevokeApply applyinfo = new OmsRegRevokeApply();
@@ -81,6 +84,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = baseMapper.insert(applyinfo);
@@ -91,6 +95,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = baseMapper.insert(applyinfo);
@@ -101,6 +106,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             //复制登记备案相同字段的数据到撤销登记申请表
                             BeanUtils.copyProperties(omsreginfo, applyinfo);
                             applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                            applyinfo.setExitDate(a30.getA3004());
                             applyinfo.setCreateDate(new Date());
                             applyinfo.setCreateUser("");
                             con = baseMapper.insert(applyinfo);
@@ -155,6 +161,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                     //复制登记备案相同字段的数据到撤销登记申请表
                     BeanUtils.copyProperties(omsreginfo, applyinfo);
                     applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                    applyinfo.setExitDate(a30.getA3004());
                     applyinfo.setCreateDate(new Date());
                     applyinfo.setCreateUser("");
                     con = baseMapper.insert(applyinfo);
@@ -165,6 +172,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                     //复制登记备案相同字段的数据到撤销登记申请表
                     BeanUtils.copyProperties(omsreginfo, applyinfo);
                     applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                    applyinfo.setExitDate(a30.getA3004());
                     applyinfo.setCreateDate(new Date());
                     applyinfo.setCreateUser("");
                     con = baseMapper.insert(applyinfo);
@@ -175,6 +183,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                     //复制登记备案相同字段的数据到撤销登记申请表
                     BeanUtils.copyProperties(omsreginfo, applyinfo);
                     applyinfo.setId(UUIDGenerator.getPrimaryKey());
+                    applyinfo.setExitDate(a30.getA3004());
                     applyinfo.setCreateDate(new Date());
                     applyinfo.setCreateUser("");
                     con = baseMapper.insert(applyinfo);
@@ -198,11 +207,62 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         return con;
     }
 
+    /**
+     * 批量审批撤销申请
+     * @param regRevokeApproval
+     * @param applyIds
+     * @return
+     */
     @Override
-    public Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval) {
-        regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
-        regRevokeApproval.setApprovalTime(new Date());
-        return regRevokeApprovalMapper.insert(regRevokeApproval);
+    public Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+        String[] num = applyIds.split(",");
+        int con=0;
+        for (int i = 0; i < num.length; i++) {
+            regRevokeApproval.setApplyId(num[i]);
+            regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
+            regRevokeApproval.setApprovalTime(new Date());
+            con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+        }
+        return con;
+    }
+
+    /**
+     * 撤销登记备案
+     * @param revokeApply
+     * @return
+     * @throws ParseException
+     */
+    @Override
+    public Object revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException {
+        QueryWrapper<OmsRegRevokeApply> queryWrapper = new QueryWrapper<OmsRegRevokeApply>();
+        queryWrapper.eq("ID",revokeApply.getId());
+        //将日期格式化
+        SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
+        int year = OmsRegInitUtil.yearDateDiff(sd.format(revokeApply.getExitDate()),sd.format(new Date()));
+        if (year < 3) {
+            throw new CustomMessageException("当前选择人员退出时间小于三年不满足撤销登记备案条件。");
+        }
+        revokeApply.setStatus("0");
+        return baseMapper.update(revokeApply,queryWrapper);
+    }
+
+    /**
+     * 报处长审批
+     * @param revokeApply
+     * @return
+     */
+    @Override
+    public Object reportLeaderApply(OmsRegRevokeApply revokeApply) {
+        QueryWrapper<OmsRegRevokeApply> queryWrapper = new QueryWrapper<OmsRegRevokeApply>();
+        queryWrapper.eq("ID",revokeApply.getId());
+        //状态(填写0，已上报1（经办人上报干部监督处），已审批2（干部监督处已审批），已抽取3（登记备案工作已经抽取数据）、已备案4（登记备案结果已确认）、退回5（资料不全，干部监督处退回）、拒批9（干部监督处不允许撤销）
+        String status = revokeApply.getStatus();
+        //只上报填写、退回状态的，其它状态不能上报
+        if (!status.equals("0") || !status.equals("5")){
+            throw new CustomMessageException("只能上报填写、退回状态的申请记录。");
+        }
+        revokeApply.setStatus("1");
+        return baseMapper.update(revokeApply,queryWrapper);
     }
 
 

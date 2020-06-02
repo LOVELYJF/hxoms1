@@ -181,7 +181,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //先进行保存前校验
         if (!preList.isEmpty()) {
             for (OmsCondition omsCondition : preList) {
-                String sql = omsCondition.getSql();
+                String sql = omsCondition.getSqlContent();
                 if (StringUtils.isBlank(sql)) {
                     continue;
                 }
@@ -203,7 +203,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //保存后校验
         if (!sufList.isEmpty()) {
             for (OmsCondition omsCondition : sufList) {
-                String sql = omsCondition.getSql();
+                String sql = omsCondition.getSqlContent();
                 if (StringUtils.isBlank(sql)) {
                     continue;
                 }

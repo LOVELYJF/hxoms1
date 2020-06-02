@@ -2,23 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper">
 	<resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign">
-
-		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<id column="id" jdbcType="VARCHAR" property="id" />
+		<result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
 		<result column="A0100" jdbcType="VARCHAR" property="a0100" />
-		<result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="PINYIN" jdbcType="VARCHAR" property="pinyin" />
-		<result column="SEX" jdbcType="CHAR" property="sex" />
-		<result column="A3600" jdbcType="VARCHAR" property="a3600" />
-		<result column="BIRTH_DATE" jdbcType="TIMESTAMP" property="birthDate" />
-		<result column="POLITICAL_AFFI" jdbcType="CHAR" property="politicalAffi" />
+		<result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+		<result column="SEX" jdbcType="VARCHAR" property="sex" />
+		<result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
+		<result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
 		<result column="POST" jdbcType="VARCHAR" property="post" />
 		<result column="RANK" jdbcType="VARCHAR" property="rank" />
-		<result column="XZXGW" jdbcType="CHAR" property="xzxgw" />
+		<result column="XZXGW" jdbcType="VARCHAR" property="xzxgw" />
 	</resultMap>
 	<sql id="Base_Column_List">
-    ID, A0100, WORK_UNIT, NAME, PINYIN, SEX, A3600, BIRTH_DATE, POLITICAL_AFFI,
-    POST, RANK, XZXGW
-  </sql>
+		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
+		POLITICAL_AFFI, POST, RANK, XZXGW
+	</sql>
 
 </mapper>

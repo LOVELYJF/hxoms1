@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -20,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -187,19 +189,46 @@ public class OmsRegProcpersonInfoController {
      * @return
      */
     @PostMapping("/checkUploadRegRecord")
-    public Result checkUploadRegRecord() {
+    public Result checkUploadRegRecord(Date year) {
         // 读取Excel表格
         try{
+            //登记备案大检查上传登记备案记录
             List<OmsRegProcpersonInfo> list = readOmsDataGA();
-            List<OmsRegProcpersonInfo> mepinfoList = mrpinfoService.checkUploadRegRecord(list);
-            return Result.success(mepinfoList);
+            //查询年度列表
+            List<OmsRegYearcheckInfo> yearList = mrpinfoService.queryYearList(list);
+
+            // 匹配未备案人员 新增到大检查表中
+            int con = mrpinfoService.checkUploadRegRecord(list);
+            List<OmsRegYearcheckInfo> yearcheckinfoList = null;
+            if (con >0){
+                //查询大检查中未备案人员列表（可根据年度进行查询）
+                yearcheckinfoList = mrpinfoService.queryYearCheckList(year);
+            }
+            return Result.success(yearcheckinfoList);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
         }
     }
 
+    /**
+     * 查询所有满足撤销登记备案条件人员
+     * @param
+     * @return
+     */
+    @PostMapping("/selectPersonAndAllowRevoke")
+    public Result selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo){
+        return Result.success(mrpinfoService.selectPersonAndAllowRevoke(msRegProcpersonInfo));
+    }
 
+    /**
+     * 根据人员编号查询对应备案申请
+     * @return
+     */
+    @PostMapping("/selectInfoByA0100")
+    public Result selectInfoByA0100(String a0100){
+        return Result.success(mrpinfoService.selectInfoByA0100(a0100));
+    }
 
     /**
      * 上传公安数据
