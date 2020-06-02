@@ -2,15 +2,13 @@ package com.hxoms.modules.file.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.paramentity.AbroadAskFileParams;
+import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.service.OmsFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +20,9 @@ public class OmsFileController {
     private OmsFileService omsFileService;
 
     /**
-     * 根据业务表编码查询文件列表
-     *
-     * @author sunqian
-     * @date 2020/5/7 14:17
+     * 文件列表
+     * @param tableCode 类型（因公 因私 延期回国）
+     * @return
      */
     @GetMapping("/selectFileListByCode")
     public Result selectFileListByCode(String tableCode) {
@@ -34,47 +31,33 @@ public class OmsFileController {
     }
 
     /**
-     * 文件上传(单文件)
+     * 查询富文本文件详情
      *
-     * @author sunqian
-     * @date 2020/5/7 17:07
      */
-    @PostMapping("/uploadOmsFile")
-    public Result uploadOmsFile(MultipartFile file, OmsFile omsFile) throws IOException {
-        omsFileService.uploadOmsFile(file, omsFile);
-        return Result.success();
+    @GetMapping("/selectFileDestail")
+    public Result selectFileDestail(AbroadFileDestailParams broadFileDestailParams){
+        Map<String, Object> result = omsFileService.selectFileDestail(broadFileDestailParams);
+        return Result.success(result);
     }
 
     /**
-     * 根据id删除文件
+     * 文件类型下载
      *
-     * @author sunqian
-     * @date 2020/5/8 11:28
-     */
-    @PostMapping("/deleteOmsFile")
-    public Result deleteOmsFile(String id) {
-        omsFileService.deleteOmsFile(id);
-        return Result.success();
-    }
-
-    /**
-     * 下载文件
-     * 根据申请的记录进行下载
-     *
-     * @author sunqian
-     * @date 2020/5/8 14:34
      */
     @GetMapping("/downloadOmsFile")
-    public void downloadOmsFile(String fileId, String applyId) throws Exception {
-        omsFileService.downloadOmsFile(fileId, applyId);
-//        return Result.success();
+    public void downloadOmsFile(AbroadFileDestailParams abroadFileDestailParams) throws Exception {
+        omsFileService.downloadOmsFile(abroadFileDestailParams);
     }
 
     /**
-     * 查询请示文件
-     *
+     * 保存富文本文件
+     * @param omsFile
+     * @return
+     * @throws Exception
      */
-    public void selectAbroadAskFile(AbroadAskFileParams abroadAskFileParams){
-        Map<String, Object> result = omsFileService.selectAbroadAskFile(abroadAskFileParams);
+    @PostMapping("/saveTextOmsFile")
+    public Result saveTextOmsFile(OmsFile omsFile) throws Exception {
+        String result = omsFileService.saveTextOmsFile(omsFile);
+        return Result.success().setMsg(result);
     }
 }
