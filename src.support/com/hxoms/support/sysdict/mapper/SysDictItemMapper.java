@@ -99,4 +99,59 @@ public interface SysDictItemMapper {
      * @date 2019/8/27 14:12
      */
     List<SysDictItem> selectSysdictItemListByDictCode(String dictCode);
+
+
+    /**
+     * <b>查询因公因私限制内容</b>
+     * @author luoshuai
+     * @param pubPri
+     * @return
+     */
+    List<SysDictItem> selectSensitiveLimit(String pubPri);
+
+    /**
+     * <b>查询家庭成员关系列表</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> selectFamilyMemberRelationship();
+
+    /**
+     * <b>查询政治面貌集合</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> selectPoliticalAffi();
+
+
+    /**
+     * <b>查询人员现状</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> getPersonStatus();
+
+
+    /**
+     * <b>查询国籍</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> getNationality();
+
+
+    /**
+     * <b>查询移居类别</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> getMigrationCategory();
+
+
+    /**
+     * <b>查询处分类型</b>
+     * @author luoshuai
+     * @return
+     */
+    List<SysDictItem> selectDisciplinaryActionType();
 }

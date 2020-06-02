@@ -1,38 +1,34 @@
 package com.hxoms.modules.file.service;
 
 import com.hxoms.modules.file.entity.OmsFile;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
+import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import java.util.List;
+import java.util.Map;
 
 public interface OmsFileService {
     /**
-     * 根据业务表编码查询文件
-     *
-     * @author sunqian
-     * @date 2020/5/7 14:18
+     * 文件列表
+     * @param tableCode 类型（因公 因私 延期回国）
+     * @return
      */
     List<OmsFile> selectFileListByCode(String tableCode);
 
     /**
-     * 文件上传
+     * 查询富文本文件详情
      *
-     * @author sunqian
-     * @date 2020/5/7 17:09
      */
-    void uploadOmsFile(MultipartFile file, OmsFile omsFile) throws IOException;
-
-    void uploadOmsFileList(List<MultipartFile> fileList, OmsFile omsFile) throws IOException;
+    Map<String, Object> selectFileDestail(AbroadFileDestailParams abroadFileDestailParams);
 
     /**
-     * 根据主键删除文件
-     * 
-     * @author sunqian
-     * @date 2020/5/8 11:29
+     * 文件类型下载
+     * @param abroadFileDestailParams
      */
-    void deleteOmsFile(String id);
+    void downloadOmsFile(AbroadFileDestailParams abroadFileDestailParams);
 
-    void downloadOmsFile(String fileId, String applyId) throws Exception;
+    /**
+     * 保存富文本文件
+     * @param omsFile
+     * @return
+     */
+    String saveTextOmsFile(OmsFile omsFile);
 }

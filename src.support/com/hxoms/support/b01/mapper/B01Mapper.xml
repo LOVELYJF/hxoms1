@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.support.b01.mapper.B01Mapper">
     <resultMap id="BaseResultMap" type="com.hxoms.support.b01.entity.B01">
+        <id column="B0100" jdbcType="VARCHAR" property="b0100"/>
         <result column="b0101" jdbcType="VARCHAR" property="b0101"/>
         <result column="b0104" jdbcType="VARCHAR" property="b0104"/>
         <result column="b0107" jdbcType="VARCHAR" property="b0107"/>
@@ -633,5 +634,22 @@
     <select id="selectAllOrgTree" resultType="com.hxoms.support.b01.entity.B01Tree">
         select b.b0100,b.b0111 as "id",b.b0101 as "label", b.b0121 as "pId" from  b01 b
         where b.is_deleted='0' order by b.sortid
+    </select>
+
+    <!-- 查询工作单位名称 -->
+    <select id="selectOrgByList" parameterType="java.util.Map" resultType="java.lang.String">
+        select b.b0101 from b01 b
+        <where>
+            <if test="idList != null and idList.size > 0">b.B0100 in
+                <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据单位名称查询单位是否存在 -->
+    <select id="selectOrgByB0101" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select b.B0100,b.b0111 FROM b01 b where b.b0101=#{b0101}
     </select>
 </mapper>

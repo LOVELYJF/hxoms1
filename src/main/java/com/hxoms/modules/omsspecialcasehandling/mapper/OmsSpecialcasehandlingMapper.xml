@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsspecialcasehandling.mapper.OmsSpecialcasehandlingMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="Company" jdbcType="VARCHAR" property="company" />
+    <result column="Name" jdbcType="VARCHAR" property="name" />
+    <result column="Sex" jdbcType="VARCHAR" property="sex" />
+    <result column="Birth" jdbcType="VARCHAR" property="birth" />
+    <result column="PoliticsStatus" jdbcType="VARCHAR" property="politicsstatus" />
+    <result column="Duty" jdbcType="VARCHAR" property="duty" />
+    <result column="Incumbency_status" jdbcType="VARCHAR" property="incumbencyStatus" />
+    <result column="Start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="End_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, Company, Name, Sex, Birth, PoliticsStatus, Duty, Incumbency_status, Start_time, 
+    End_time, A0100, B0100
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oms_specialcasehandling
+    where Name = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="getAllSpecialCase" resultType="java.util.LinkedHashMap">
+    select
+    <include refid="Base_Column_List" />
+    from oms_specialcasehandling
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from oms_specialcasehandling
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
+    insert into oms_specialcasehandling (ID, Company, Name, 
+      Sex, Birth, PoliticsStatus, 
+      Duty, Incumbency_status, Start_time, 
+      End_time, A0100, B0100
+      )
+    values (#{id,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{birth,jdbcType=VARCHAR}, #{politicsstatus,jdbcType=VARCHAR}, 
+      #{duty,jdbcType=VARCHAR}, #{incumbencyStatus,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{a0100,jdbcType=VARCHAR}, #{b0100,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
+    insert into oms_specialcasehandling
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="company != null">
+        Company,
+      </if>
+      <if test="name != null">
+        Name,
+      </if>
+      <if test="sex != null">
+        Sex,
+      </if>
+      <if test="birth != null">
+        Birth,
+      </if>
+      <if test="politicsstatus != null">
+        PoliticsStatus,
+      </if>
+      <if test="duty != null">
+        Duty,
+      </if>
+      <if test="incumbencyStatus != null">
+        Incumbency_status,
+      </if>
+      <if test="startTime != null">
+        Start_time,
+      </if>
+      <if test="endTime != null">
+        End_time,
+      </if>
+      <if test="a0100 != null">
+        A0100,
+      </if>
+      <if test="b0100 != null">
+        B0100,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birth != null">
+        #{birth,jdbcType=VARCHAR},
+      </if>
+      <if test="politicsstatus != null">
+        #{politicsstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="incumbencyStatus != null">
+        #{incumbencyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="a0100 != null">
+        #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="b0100 != null">
+        #{b0100,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
+    update oms_specialcasehandling
+    <set>
+      <if test="company != null">
+        Company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        Name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        Sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birth != null">
+        Birth = #{birth,jdbcType=VARCHAR},
+      </if>
+      <if test="politicsstatus != null">
+        PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        Duty = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="incumbencyStatus != null">
+        Incumbency_status = #{incumbencyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        Start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        End_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="a0100 != null">
+        A0100 = #{a0100,jdbcType=VARCHAR},
+      </if>
+      <if test="b0100 != null">
+        B0100 = #{b0100,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
+    update oms_specialcasehandling
+    set Company = #{company,jdbcType=VARCHAR},
+      Name = #{name,jdbcType=VARCHAR},
+      Sex = #{sex,jdbcType=VARCHAR},
+      Birth = #{birth,jdbcType=VARCHAR},
+      PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
+      Duty = #{duty,jdbcType=VARCHAR},
+      Incumbency_status = #{incumbencyStatus,jdbcType=VARCHAR},
+      Start_time = #{startTime,jdbcType=TIMESTAMP},
+      End_time = #{endTime,jdbcType=TIMESTAMP},
+      A0100 = #{a0100,jdbcType=VARCHAR},
+      B0100 = #{b0100,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
