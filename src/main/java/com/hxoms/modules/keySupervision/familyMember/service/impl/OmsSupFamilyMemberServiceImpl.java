@@ -1,6 +1,5 @@
 package com.hxoms.modules.keySupervision.familyMember.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,7 +18,6 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper;
-import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
@@ -142,6 +140,9 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 * @return
 	 */
 	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
+
+//		查询家庭成员信息，查看航行字典表的函数代码
+
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
