@@ -24,7 +24,6 @@ import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
@@ -126,8 +125,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 		map.put("idList", idList);
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<Map<String,Object>> mapList = a01Mapper.selectPersonInfoForfamily(map);
-		page.setRecords(mapList);
 		PageInfo pageInfo = new PageInfo(mapList);
+		page.setRecords(mapList);
 		page.setTotal(pageInfo.getTotal());
 		page.setPages(pageInfo.getPages());
 		return page;
@@ -141,8 +140,6 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 * @return
 	 */
 	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
-
-//		查询家庭成员信息，查看航行字典表的函数代码
 
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
