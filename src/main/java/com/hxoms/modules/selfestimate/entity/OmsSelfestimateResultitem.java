@@ -7,14 +7,14 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_selfestimate_resultitem", TableDescription="自评项目结果子表")
+@TableAnnotation(TableName = "oms_selfestimate_resultitem", TableDescription="自评项目结果")
 public class OmsSelfestimateResultitem {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "RESULT_ID",   FieldDescription="主表ID")
-    private String resultId;
+    @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="自评材料清单ID")
+    private String selffileId;
 
     @ColumnAnnotation(FieldName = "CHECK_ID",   FieldDescription="检查项ID")
     private String checkId;
@@ -49,12 +49,12 @@ public class OmsSelfestimateResultitem {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getResultId() {
-        return resultId;
+    public String getSelffileId() {
+        return selffileId;
     }
 
-    public void setResultId(String resultId) {
-        this.resultId = resultId == null ? null : resultId.trim();
+    public void setSelffileId(String selffileId) {
+        this.selffileId = selffileId == null ? null : selffileId.trim();
     }
 
     public String getCheckId() {
