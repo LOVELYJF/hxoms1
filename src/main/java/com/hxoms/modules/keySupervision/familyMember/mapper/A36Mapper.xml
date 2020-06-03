@@ -70,6 +70,16 @@
 			GETDICTITEM('07',a.a3627,'0') as 'a3627'
 		from a36
 		where a.a3600=#{a3600}
-  </select>
+	</select>
+
+	<!-- 查询家庭成员的主键 -->
+	<select id="selectA3600List" parameterType="java.lang.String" resultType="java.lang.String">
+		select
+			a3600
+		from a36
+		where
+			a0100=#{a0100}
+	</select>
+
 
 </mapper>

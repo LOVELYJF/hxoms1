@@ -134,7 +134,7 @@ public class OmsSupFamilyMemberController {
 
 
 	/**
-	 * <b>撤销家庭成员登记备案</b>
+	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
 	 * @param a0100
 	 * @return
 	 */

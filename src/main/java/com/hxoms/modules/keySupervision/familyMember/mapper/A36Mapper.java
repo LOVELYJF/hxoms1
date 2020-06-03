@@ -22,4 +22,12 @@ public interface A36Mapper extends BaseMapper<A36> {
 	 * @return
 	 */
 	List<String> selectPiliticalAffi(String a3600);
+
+
+	/**
+	 * <b>查询家庭成员主键</b>
+	 * @param a0100
+	 * @return
+	 */
+	List<String> selectA3600List(String a0100);
 }
