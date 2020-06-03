@@ -12,7 +12,31 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
+  <resultMap id="FileListResultMap" extends="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
+    <collection property="omsSelfestimateItems" ofType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems">
+      <id column="ID" jdbcType="VARCHAR" property="id" />
+      <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
+      <result column="CHECK_ITEM" jdbcType="VARCHAR" property="checkItem" />
+      <result column="ENABLE" jdbcType="INTEGER" property="enable" />
+      <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+      <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+      <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List">
     ID, B0100, CHECKFILE_ID, FILENAME, TYPE, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
+
+  <select id="selectOmsSelfFileList" parameterType="java.util.Map" resultMap="FileListResultMap">
+      select *
+      from oms_self_file osf left join oms_selfestimate_items osi on osf.ID = osi.SELFFILE_ID
+      where 1=1
+      <if test="b0100 != null and b0100 != ''">
+        and osf.B0100 = #{b0100}
+      </if>
+      <if test="type != null and type != ''">
+        and osf.TYPE = #{type}
+      </if>
+  </select>
 </mapper>

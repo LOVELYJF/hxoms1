@@ -16,6 +16,9 @@ public class OmsSelfestimateResultitem {
     @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="自评材料清单ID")
     private String selffileId;
 
+    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="出国申请ID")
+    private String applyId;
+
     @ColumnAnnotation(FieldName = "CHECK_ID",   FieldDescription="检查项ID")
     private String checkId;
 
@@ -55,6 +58,14 @@ public class OmsSelfestimateResultitem {
 
     public void setSelffileId(String selffileId) {
         this.selffileId = selffileId == null ? null : selffileId.trim();
+    }
+
+    public String getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(String applyId) {
+        this.applyId = applyId == null ? null : applyId.trim();
     }
 
     public String getCheckId() {
