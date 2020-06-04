@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper">
+
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.familyMember.entity.A36">
+		<id column="a3600" jdbcType="VARCHAR" property="a3600" />
+		<result column="a0100" jdbcType="VARCHAR" property="a0100" />
+		<result column="a3601" jdbcType="VARCHAR" property="a3601" />
+		<result column="a3604a" jdbcType="VARCHAR" property="a3604a" />
+		<result column="a3607" jdbcType="VARCHAR" property="a3607" />
+		<result column="a3611" jdbcType="VARCHAR" property="a3611" />
+		<result column="a3627" jdbcType="VARCHAR" property="a3627" />
+		<result column="id" jdbcType="VARCHAR" property="id" />
+		<result column="is_deleted" jdbcType="CHAR" property="isDeleted" />
+		<result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+		<result column="sortid" jdbcType="INTEGER" property="sortid" />
+		<result column="operate_batch" jdbcType="VARCHAR" property="operateBatch" />
+		<result column="is_normal" jdbcType="VARCHAR" property="isNormal" />
+		<result column="nationality" jdbcType="VARCHAR" property="nationality" />
+		<result column="live_place" jdbcType="VARCHAR" property="livePlace" />
+		<result column="lmmigrate_number" jdbcType="VARCHAR" property="lmmigrateNumber" />
+		<result column="lmmigrate_type" jdbcType="VARCHAR" property="lmmigrateType" />
+		<result column="lmmigrate_time" jdbcType="TIMESTAMP" property="lmmigrateTime" />
+		<result column="chinese_passport_number" jdbcType="VARCHAR" property="chinesePassportNumber" />
+		<result column="id_card" jdbcType="VARCHAR" property="idCard" />
+		<result column="hukou_location" jdbcType="VARCHAR" property="hukouLocation" />
+		<result column="person_status" jdbcType="VARCHAR" property="personStatus" />
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.keySupervision.familyMember.entity.A36">
+		<result column="time_stamp" jdbcType="LONGVARBINARY" property="timeStamp" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		a3600, a0100, a3601, a3604a, a3607, a3611, a3627, id, is_deleted, modify_user, modify_time,
+		node_id, sortid, operate_batch, is_normal, nationality, live_place, lmmigrate_number,
+		lmmigrate_type, lmmigrate_time, chinese_passport_number, id_card, hukou_location,
+		person_status
+	</sql>
+	<sql id="Blob_Column_List">
+		time_stamp
+	</sql>
+
+	<!-- 查询家庭成员信息 -->
+	<select id="selectFamilyMember" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+			a.a3600,
+			a.a0100,
+			a.a3601,
+			a.a3604a,
+			a.a3607,
+			a.a3611,
+			GETDICTITEM('07',a.a3627,'0') as 'a3627',
+			a.person_status,
+			a.nationality,
+			a.live_place,
+			a.lmmigrate_number,
+			a.lmmigrate_type,
+			a.lmmigrate_time,
+			a.chinese_passport_number,
+			a.id_card,
+			a.hukou_location
+		from a36 as a
+		where a.a0100=#{a0100}
+  </select>
+
+	<!-- 查询家庭成员政治面貌 -->
+	<select id="selectPiliticalAffi" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			GETDICTITEM('07',a.a3627,'0') as 'a3627'
+		from a36
+		where a.a3600=#{a3600}
+  </select>
+
+</mapper>

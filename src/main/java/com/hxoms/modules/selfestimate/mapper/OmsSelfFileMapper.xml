@@ -12,7 +12,7 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
-  <resultMap id="FileListResultMap" extends="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
+  <resultMap id="ItemListResultMap" extends="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
     <collection property="omsSelfestimateItems" ofType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems">
       <id column="ID" jdbcType="VARCHAR" property="id" />
       <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
@@ -24,11 +24,16 @@
       <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
     </collection>
   </resultMap>
+  <resultMap extends="BaseResultMap" id="FileListResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
+    <association column="CHECKFILE_ID" property="omsFile" select="com.hxoms.modules.file.mapper.OmsFileMapper.selectById">
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     ID, B0100, CHECKFILE_ID, FILENAME, TYPE, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
 
-  <select id="selectOmsSelfFileList" parameterType="java.util.Map" resultMap="FileListResultMap">
+  <!--自评信息维护列表-->
+  <select id="selectItemsList" parameterType="java.util.Map" resultMap="ItemListResultMap">
       select *
       from oms_self_file osf left join oms_selfestimate_items osi on osf.ID = osi.SELFFILE_ID
       where 1=1
@@ -38,5 +43,19 @@
       <if test="type != null and type != ''">
         and osf.TYPE = #{type}
       </if>
+  </select>
+
+  <!--自评文件列表-->
+  <select id="selectFileList" parameterType="java.util.Map" resultMap="FileListResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from oms_self_file
+    where 1=1
+    <if test="b0100 != null and b0100 != ''">
+      and B0100 = #{b0100}
+    </if>
+    <if test="type != null and type != ''">
+      and TYPE = #{type}
+    </if>
   </select>
 </mapper>

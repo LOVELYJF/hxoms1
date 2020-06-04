@@ -1,12 +1,6 @@
 package com.hxoms.modules.selfestimate.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hxoms.common.hxannotation.ColumnAnnotation;
-import com.hxoms.common.hxannotation.IdAnnotation;
-import com.hxoms.common.hxannotation.TableAnnotation;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
+import com.hxoms.modules.file.entity.OmsFile;
 import java.util.List;
 
 /**
@@ -15,6 +9,8 @@ import java.util.List;
 public class OmsSelfFileVO extends OmsSelfFile{
     //自评项目
     private List<OmsSelfestimateItems> omsSelfestimateItems;
+    //文件详情
+    private OmsFile omsFile;
 
     public List<OmsSelfestimateItems> getOmsSelfestimateItems() {
         return omsSelfestimateItems;
@@ -22,5 +18,13 @@ public class OmsSelfFileVO extends OmsSelfFile{
 
     public void setOmsSelfestimateItems(List<OmsSelfestimateItems> omsSelfestimateItems) {
         this.omsSelfestimateItems = omsSelfestimateItems;
+    }
+
+    public OmsFile getOmsFile() {
+        return omsFile;
+    }
+
+    public void setOmsFile(OmsFile omsFile) {
+        this.omsFile = omsFile;
     }
 }

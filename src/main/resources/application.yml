@@ -9,16 +9,16 @@ spring:
 #            password: 12345abcde
 #            url: jdbc:dm://www.24hbs.com:5236/HXOMS
 #            driver-class-name: dm.jdbc.driver.DmDriver
-      username: hxoms
-      password: Hxyz-2020#
-      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
-#      username: root
-#      password: 123456
-#      url: jdbc:mysql://localhost:3307/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+#      username: hxoms
+#      password: Hxyz-2020#
+#      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      username: root
+      password: 123456
+      url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
       driver-class-name: com.mysql.jdbc.Driver
-      initial-size: 5
-      min-idle: 5
-      max-active: 15
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
       test-while-idle: true
       validation-query: select 1
       max-wait: 10
@@ -28,6 +28,8 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 1000MB
+
+
 
 logging:
   config: classpath:log4j2.xml

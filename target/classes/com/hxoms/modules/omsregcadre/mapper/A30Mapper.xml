@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.A30Mapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.A30">
+    <id column="A3000" jdbcType="VARCHAR" property="a3000" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="is_deleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="a0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="a3001" jdbcType="VARCHAR" property="a3001" />
+    <result column="a3004" jdbcType="VARCHAR" property="a3004" />
+    <result column="a3007a" jdbcType="VARCHAR" property="a3007a" />
+    <result column="a3034" jdbcType="VARCHAR" property="a3034" />
+    <result column="a3038" jdbcType="VARCHAR" property="a3038" />
+    <result column="is_normal" jdbcType="VARCHAR" property="isNormal" />
+    <result column="operate_batch" jdbcType="VARCHAR" property="operateBatch" />
+    <result column="a3117a" jdbcType="VARCHAR" property="a3117a" />
+    <result column="a3137" jdbcType="VARCHAR" property="a3137" />
+    <result column="a3101" jdbcType="VARCHAR" property="a3101" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.omsregcadre.entity.A30">
+    <result column="time_stamp" jdbcType="LONGVARBINARY" property="timeStamp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    A3000, id, is_deleted, modify_user, modify_time, node_id, a0100, a3001, a3004, a3007a, 
+    a3034, a3038, is_normal, operate_batch, a3117a, a3137, a3101
+  </sql>
+  <sql id="Blob_Column_List">
+    time_stamp
+  </sql>
+
+</mapper>

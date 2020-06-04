@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.privateabroad.entity.OmsPriDelayApply">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="ESTIMATE_RETURNTIME" jdbcType="TIMESTAMP" property="estimateReturntime" />
+    <result column="DELAY_REASON" jdbcType="VARCHAR" property="delayReason" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, APPLY_ID, APPLY_STATUS, ESTIMATE_RETURNTIME, DELAY_REASON, CREATE_TIME, CREATE_USER, 
+    MODIFY_TIME, MODIFY_USER
+  </sql>
+</mapper>

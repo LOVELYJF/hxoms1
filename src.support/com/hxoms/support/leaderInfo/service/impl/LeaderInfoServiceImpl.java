@@ -17,6 +17,8 @@ import com.hxoms.support.sysdict.service.SysDictItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -214,13 +216,14 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
                 if(!"tablename".equals(colName) && !tableId.toLowerCase().equals(colName)){
 
                     String type =  judgeType(typemap,colName);
-                    String colValue = (String) entity.getValue();
+                    String colValue =  entity.getValue().toString();
 
                     if(type.equals("datetime")){
+                        colValue =    dealDateFormat(colValue);
 
                         String  splicType = getSplicType(colValue);
 
-                        sb.append(colName+" = "+ " str_to_date('"+ colValue+"' ,'%Y"+splicType+"%m"+splicType+"%d')");
+                        sb.append(colName+" = "+ " str_to_date('"+ colValue+"' ,'%Y"+splicType+"%m"+splicType+"%d %H:%i:%s')");
 
                     }else{
 
@@ -423,6 +426,22 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
 
     }
 
+    public  String dealDateFormat(String oldDate) {
+        Date date1 = null;
+        DateFormat df2 = null;
+        try {
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date date = df.parse(oldDate);
+            SimpleDateFormat df1 = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+            date1 = df1.parse(date.toString());
+            df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        } catch (ParseException e) {
+
+            e.printStackTrace();
+        }
+        return df2.format(date1);
+    }
+
 
     public static void main(String[] args) {
 
@@ -436,6 +455,7 @@ public class LeaderInfoServiceImpl implements LeaderInfoService {
         m.put(null,3);
         m.put(null,5);
         m.put("6",6);
+
 
         System.out.println(m.size());
 

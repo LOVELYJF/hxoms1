@@ -20,13 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@Transactional(propagation= Propagation.NESTED,isolation= Isolation.DEFAULT,readOnly = false)
+//@Transactional(propagation= Propagation.NESTED,isolation= Isolation.DEFAULT,readOnly = false)
 public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLogEntity> implements SysLogService {
 
     @Transactional
     @Override
     public void deleteAndsave() {
-        baseMapper.deleteById("1260497187368955905");
+        baseMapper.deleteById("2da48869-e21c-1038-99c7-fe7a699dd96a");
         int a = 1/0;
     }
 }
