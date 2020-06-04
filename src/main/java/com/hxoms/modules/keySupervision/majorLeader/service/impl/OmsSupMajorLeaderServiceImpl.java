@@ -152,6 +152,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			OmsSupMajorLeader omsSupMajorLeader = new OmsSupMajorLeader();
 			//将查询到的主要领导保存到主要领导信息表中
 			String a0100 = person.getA01000();
+			//根据领导主键查询领导信息
 			List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
 			if(mapList.size() > 0){
 				omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
@@ -169,9 +170,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 				omsSupMajorLeader.setPost((String) mapList.get(0).get("a0215a"));
 				omsSupMajorLeader.setRank((String) mapList.get(0).get("A0221"));
+			}else{
+				throw new CustomMessageException("该领导不存在");
 			}
 
-			//查询主要领导是否已经存在
+			//查询主要领导是否已经存在于主要领导信息表
 			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
@@ -184,9 +187,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 					QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 					wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 					omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
-				}else{
-					throw new CustomMessageException("自动标识领导失败");
+				}else {
+					throw new CustomMessageException("在登记备案库中修改为主要领导失败");
 				}
+			}else{
+				throw new CustomMessageException("该主要领导已经存在");
 			}
 		}
 	}
@@ -257,7 +262,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
 				//设置单元格字体大小
-				for(int j = 0;j < 6;j++){
+				for(int j = 0;j < 7;j++){
 					row.getCell(j).setCellStyle(style1);
 				}
 			}
