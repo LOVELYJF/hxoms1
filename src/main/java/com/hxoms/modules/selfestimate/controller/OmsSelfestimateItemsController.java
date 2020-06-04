@@ -78,6 +78,20 @@ public class OmsSelfestimateItemsController {
     @PostMapping("/deleteSelfFile")
     public Result deleteSelfFile(String id) throws Exception {
         String result  = omsSelfestimateItemsService.deleteSelfFile(id);
+
         return Result.success().setMsg(result);
     }
+
+    /**
+     * 自评文件列表
+     * @return
+     * @param type 因公 因私  延期回国
+     * @throws Exception
+     */
+    @GetMapping("/selectFileList")
+    public Result selectFileList(String type) throws Exception {
+        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectFileList(type);
+        return Result.success(omsSelfFileVOS);
+    }
+
 }

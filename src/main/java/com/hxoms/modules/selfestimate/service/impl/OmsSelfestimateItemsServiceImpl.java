@@ -42,7 +42,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("type", type);
         paramMap.put("b0100", userInfo.getOrgId());
-        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfFileMapper.selectOmsSelfFileList(paramMap);
+        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfFileMapper.selectItemsList(paramMap);
         return omsSelfFileVOS;
     }
 
@@ -123,5 +123,19 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
             throw new CustomMessageException("删除失败");
         }
         return "删除成功";
+    }
+
+    @Override
+    public List<OmsSelfFileVO> selectFileList(String type) {
+        if (StringUtils.isEmpty(type)){
+            throw new CustomMessageException("参数错误");
+        }
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("b0100", userInfo.getOrgId());
+        paramMap.put("type", type);
+        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfFileMapper.selectFileList(paramMap);
+        return omsSelfFileVOS;
     }
 }

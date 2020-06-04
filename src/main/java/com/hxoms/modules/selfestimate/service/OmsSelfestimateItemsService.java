@@ -38,4 +38,11 @@ public interface OmsSelfestimateItemsService {
      * @param id
      */
     String deleteSelfFile(String id);
+
+    /**
+     * 自评文件列表
+     * @return
+     * @param type 因公 因私  延期回国
+     */
+    List<OmsSelfFileVO> selectFileList(String type);
 }
