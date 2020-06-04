@@ -101,6 +101,15 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明情况")
     private String description;
 
+    @ColumnAnnotation(FieldName = "PERSONDEPART_OPINION",   FieldDescription="人事部门审核意见")
+    private String persondepartOpinion;
+
+    @ColumnAnnotation(FieldName = "CHECK_PERSON",   FieldDescription="审核人")
+    private String checkPerson;
+
+    @ColumnAnnotation(FieldName = "RESPONSIBLE_PERSON",   FieldDescription="负责人")
+    private String responsiblePerson;
+
     @ColumnAnnotation(FieldName = "ABROAD_PHONE",   FieldDescription="国外通讯及本人联系电话")
     private String abroadPhone;
 
@@ -394,6 +403,30 @@ public class OmsPriApply {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public String getPersondepartOpinion() {
+        return persondepartOpinion;
+    }
+
+    public void setPersondepartOpinion(String persondepartOpinion) {
+        this.persondepartOpinion = persondepartOpinion == null ? null : persondepartOpinion.trim();
+    }
+
+    public String getCheckPerson() {
+        return checkPerson;
+    }
+
+    public void setCheckPerson(String checkPerson) {
+        this.checkPerson = checkPerson == null ? null : checkPerson.trim();
+    }
+
+    public String getResponsiblePerson() {
+        return responsiblePerson;
+    }
+
+    public void setResponsiblePerson(String responsiblePerson) {
+        this.responsiblePerson = responsiblePerson == null ? null : responsiblePerson.trim();
     }
 
     public String getAbroadPhone() {

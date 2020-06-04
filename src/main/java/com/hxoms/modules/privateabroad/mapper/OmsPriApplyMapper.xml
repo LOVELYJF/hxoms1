@@ -27,6 +27,9 @@
     <result column="REAL_RETURN_TIME" jdbcType="TIMESTAMP" property="realReturnTime" />
     <result column="REAL_OUTSIDE_TIME" jdbcType="INTEGER" property="realOutsideTime" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="PERSONDEPART_OPINION" jdbcType="VARCHAR" property="persondepartOpinion" />
+    <result column="CHECK_PERSON" jdbcType="VARCHAR" property="checkPerson" />
+    <result column="RESPONSIBLE_PERSON" jdbcType="VARCHAR" property="responsiblePerson" />
     <result column="ABROAD_PHONE" jdbcType="VARCHAR" property="abroadPhone" />
     <result column="SFXYZQJWYJ" jdbcType="CHAR" property="sfxyzqjwyj" />
     <result column="LAST_ASK_TIME" jdbcType="TIMESTAMP" property="lastAskTime" />
@@ -64,17 +67,18 @@
     <result column="birthDate" jdbcType="TIMESTAMP" property="birthDate" />
     <result column="identifyType" jdbcType="VARCHAR" property="identifyType" />
   </resultMap>
+
   <sql id="Base_Column_List">
-    ID, A0100, B0100, POLITICAL_OUTLOOK, HEALTH, POSTRANK, ABROAD_TIME, RETURN_TIME,
-    GO_COUNTRY, PASS_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME,
-    CLASSIFICA_POST, CLASSIFICATION_LEVEL, DECLASSIFICA_STARTTIME, DECLASSIFICA_ENDTIME,
-    PAPER, REAL_GO_COUNTRY, REAL_PASS_COUNTRY, REAL_ABROAD_TIME, REAL_RETURN_TIME, REAL_OUTSIDE_TIME,
-    DESCRIPTION, ABROAD_PHONE, SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ, FINAL_CONCLUSION,
-    PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, HONGKONGANDMACAO_PASSPORT_NUM,
-    HONGKONG_VISA, MACAO_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, TAIWAN_VISA, IS_LUOGUAN,
-    IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO,
-    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, REMARKS, CREATE_USER, CREATE_TIME,
-    MODIFY_USER, MODIFY_TIME, SORT_ID
+    ID, A0100, B0100, POLITICAL_OUTLOOK, HEALTH, POSTRANK, ABROAD_TIME, RETURN_TIME, 
+    GO_COUNTRY, PASS_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME, 
+    CLASSIFICA_POST, CLASSIFICATION_LEVEL, DECLASSIFICA_STARTTIME, DECLASSIFICA_ENDTIME, 
+    PAPER, REAL_GO_COUNTRY, REAL_PASS_COUNTRY, REAL_ABROAD_TIME, REAL_RETURN_TIME, REAL_OUTSIDE_TIME, 
+    DESCRIPTION, PERSONDEPART_OPINION, CHECK_PERSON, RESPONSIBLE_PERSON, ABROAD_PHONE, 
+    SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ, FINAL_CONCLUSION, PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, 
+    HONGKONGANDMACAO_PASSPORT_NUM, HONGKONGANDMACAO_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, 
+    TAIWAN_VISA, IS_LUOGUAN, IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, 
+    NEGATIVE_INFO, PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, IS_ENTRUST, 
+    REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID
   </sql>
 
   <!--分页因私出国申请列表-->
@@ -87,7 +91,7 @@
     rp.IDENTITY as identifyType
     from oms_pri_apply pa
     LEFT JOIN oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
-    left join oms_reg_procpersoninfo rp1 on pa.A0100 = rp1.A0100
+    left join oms_reg_procpersoninfo rp1 on pa.CREATE_USER = rp1.A0100
     where 1=1
     <if test="omsPriApplyIPageParam.applyStartTime != null and omsPriApplyIPageParam.applyStopTime != null">
       and pa.APPLY_TIME &gt; #{omsPriApplyIPageParam.applyStartTime} and pa.APPLY_TIME &lt; #{omsPriApplyIPageParam.applyStopTime}
@@ -145,7 +149,7 @@
   <!--申请详情-->
   <select id="selectPriApplyById" parameterType="java.lang.String" resultMap="ResultMapVO">
     select opa.*,
-           orp.NAME as name,
+           CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) as name,
            orp.BIRTH_DATE as birthDate,
            orp.SEX as sex,
            orp.IDNUMBER as idnumber,

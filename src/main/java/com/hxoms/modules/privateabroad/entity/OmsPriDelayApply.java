@@ -16,6 +16,9 @@ public class OmsPriDelayApply {
     @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请ID")
     private String applyId;
 
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="申请人")
+    private String a0100;
+
     @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
     private String applyStatus;
 
@@ -26,6 +29,11 @@ public class OmsPriDelayApply {
 
     @ColumnAnnotation(FieldName = "DELAY_REASON",   FieldDescription="延期理由")
     private String delayReason;
+
+    @ColumnAnnotation(FieldName = "APPLY_TIME",   FieldDescription="申请时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date applyTime;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -59,6 +67,14 @@ public class OmsPriDelayApply {
         this.applyId = applyId == null ? null : applyId.trim();
     }
 
+    public String getA0100() {
+        return a0100;
+    }
+
+    public void setA0100(String a0100) {
+        this.a0100 = a0100 == null ? null : a0100.trim();
+    }
+
     public String getApplyStatus() {
         return applyStatus;
     }
@@ -81,6 +97,14 @@ public class OmsPriDelayApply {
 
     public void setDelayReason(String delayReason) {
         this.delayReason = delayReason == null ? null : delayReason.trim();
+    }
+
+    public Date getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(Date applyTime) {
+        this.applyTime = applyTime;
     }
 
     public Date getCreateTime() {
