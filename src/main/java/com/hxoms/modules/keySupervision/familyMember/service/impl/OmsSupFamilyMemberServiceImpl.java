@@ -177,7 +177,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			queryWrapper.eq("A0100", a36.getA0100());
 			OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
 			//限制性岗位的裸官家属可登记备案
-			if(omsSupNakedSign.getXzxgw().equals("1")){
+			if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1")){
 				OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 				if(a36.getA3604a().equals("丈夫") || a36.getA3604a().equals("妻子")){
 					omsRegProcpersonInfo.setPost("801");
