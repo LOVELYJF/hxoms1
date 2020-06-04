@@ -35,7 +35,7 @@ import java.util.*;
 public class OmsFileUtils {
     Logger logger = LoggerFactory.getLogger(OmsFileUtils.class);
 
-//    @Value("${omsFile.baseDir}")
+    @Value("${omsFile.baseDir}")
     private String baseDir;
 
     public String getBaseDir() {

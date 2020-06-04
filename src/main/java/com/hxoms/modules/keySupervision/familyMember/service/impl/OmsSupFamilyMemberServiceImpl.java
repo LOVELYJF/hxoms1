@@ -1,6 +1,5 @@
 package com.hxoms.modules.keySupervision.familyMember.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -74,6 +73,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	}
 
 
+
 	/**
 	 * <b>查询人员现状</b>
 	 * @return
@@ -111,13 +111,36 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	}
 
 
+
+	/**
+	 * <b>查询人员基本信息</b>
+	 * @param page
+	 * @param idList
+	 * @param name
+	 * @return
+	 */
+	public Page getPersonInfoForfamily(Page<Map<String,Object>> page, List<String> idList, String name) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("name" , name);
+		map.put("idList", idList);
+		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
+		List<Map<String,Object>> mapList = a01Mapper.selectPersonInfoForfamily(map);
+		PageInfo pageInfo = new PageInfo(mapList);
+		page.setRecords(mapList);
+		page.setTotal(pageInfo.getTotal());
+		page.setPages(pageInfo.getPages());
+		return page;
+	}
+
+
 	/**
 	 * <b>查询家庭成员信息</b>
 	 * @param a0100
 	 * @param page
 	 * @return
 	 */
-	public Page<A36> getFamilyMember(Page page,String a0100) {
+	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
+
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
@@ -154,7 +177,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			queryWrapper.eq("A0100", a36.getA0100());
 			OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
 			//限制性岗位的裸官家属可登记备案
-			if(omsSupNakedSign.getXzxgw().equals("1")){
+			if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1")){
 				OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 				if(a36.getA3604a().equals("丈夫") || a36.getA3604a().equals("妻子")){
 					omsRegProcpersonInfo.setPost("801");
@@ -174,7 +197,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 				//生成备案人员主键
 				omsRegProcpersonInfo.setId(UUIDGenerator.getPrimaryKey());
-				omsRegProcpersonInfo.setA0100(a36.getA0100());
+				omsRegProcpersonInfo.setA0100(a36.getA3600());
 				omsRegProcpersonInfo.setInboundFlag("U");
 				omsRegProcpersonInfo.setRfStatus("1");
 				omsRegProcpersonInfo.setCheckStatus("1");
@@ -203,7 +226,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					throw new CustomMessageException("家庭成员备案失败");
 				}
 			}else {
-				throw new CustomMessageException("裸官在费限制性岗位，家属不能备案");
+				throw new CustomMessageException("裸官在限制性岗位，家属才能备案");
 			}
 		}
 	}
@@ -211,16 +234,21 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>撤销家庭成员登记备案</b>
+	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
 	 * @param a0100
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeToRegistration(String a0100) {
-		//根据干部主键在备案表中查询所有的家庭成员信息
+
+		//根据干部主键查询干部的家庭成员信息主键
+		List<String> a3600List = a36Mapper.selectA3600List(a0100);
+		//根据家庭成员的主键集合查询备案表中的家庭成员备案信息
 		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
-		queryWrapper.eq("A0100", a0100);
+		queryWrapper.in(a3600List != null & a3600List.size() > 0, "A0100", a3600List);
 		List<OmsRegProcpersonInfo> list = omsRegProcpersonInfoMapper.selectList(queryWrapper);
+
+
 		for(OmsRegProcpersonInfo omsRegProcpersonInfo : list){
 			//修改备案人员信息，改为已撤销，未备案，未验收
 			omsRegProcpersonInfo.setInboundFlag("D");
@@ -228,7 +256,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			omsRegProcpersonInfo.setCheckStatus("0");
 			omsRegProcpersonInfo.setIncumbencyStatus("0");
 			omsRegProcpersonInfo.setFjgnf("0");
-			int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+			int count = omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
 			if(count < 0){
 				throw new CustomMessageException("裸官家庭成员撤销备案失败");
 			}else{

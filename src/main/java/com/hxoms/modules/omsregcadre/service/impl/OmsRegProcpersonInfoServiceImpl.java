@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersonInfoMapper,OmsRegProcpersonInfo> implements OmsRegProcpersonInfoService {
+public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersonInfoMapper,OmsRegProcpersonInfo> implements  OmsRegProcpersonInfoService {
 
 
     @Autowired

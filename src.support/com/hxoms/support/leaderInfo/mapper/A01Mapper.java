@@ -107,4 +107,12 @@ public interface A01Mapper extends BaseMapper<A01> {
      * @return
      */
     List<Map<String,Object>> selectPersonInfo(String a0100);
+
+
+    /**
+     * <b>查询人员信息</b>
+     * @param map
+     * @return
+     */
+	List<Map<String, Object>> selectPersonInfoForfamily(Map<String, Object> map);
 }

@@ -3,9 +3,11 @@ package com.hxoms.modules.keySupervision.familyMember.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.familyMember.entity.A36;
+import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <b>家庭成员控制层</b>
@@ -29,6 +31,14 @@ public interface OmsSupFamilyMemberService {
 	List<SysDictItem> getPoliticalAffi();
 
 
+	/**
+	 * <b>查询人员基本信息</b>
+	 * @param page
+	 * @param idList
+	 * @param name
+	 * @return
+	 */
+	Page getPersonInfoForfamily(Page<Map<String,Object>> page, List<String> idList, String name);
 
 
 	/**
@@ -37,7 +47,7 @@ public interface OmsSupFamilyMemberService {
 	 * @param page
 	 * @return
 	 */
-	Page<A36> getFamilyMember(Page page,String a0100);
+	Page<A36> getFamilyMember(Page<A36> page,String a0100);
 
 
 	/**
@@ -57,7 +67,7 @@ public interface OmsSupFamilyMemberService {
 
 
 	/**
-	 * <b>撤销家庭成员登记备案</b>
+	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
 	 * @param a0100
 	 * @return
 	 */
@@ -82,4 +92,5 @@ public interface OmsSupFamilyMemberService {
 	 * @return
 	 */
 	List<SysDictItem> getMigrationCategory();
+
 }

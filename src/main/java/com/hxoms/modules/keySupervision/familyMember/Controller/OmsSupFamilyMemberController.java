@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.familyMember.entity.A36;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <b>家庭成员控制层</b>
@@ -78,13 +81,28 @@ public class OmsSupFamilyMemberController {
 
 
 	/**
+	 * <b>查询人员基本信息</b>
+	 * @param page
+	 * @param idList
+	 * @param name
+	 * @return
+	 */
+	@GetMapping("/getPersonInfoForfamily")
+	public Result getPersonInfoForfamily(Page<Map<String,Object>> page, @RequestParam(value = "idList",required = false) List<String> idList,
+	                                     String name){
+		page = omsSupFamilyMemberService.getPersonInfoForfamily(page,idList,name);
+		return Result.success(page);
+	}
+
+
+	/**
 	 * <b>查询家庭成员信息</b>
 	 * @param a0100
 	 * @param page
 	 * @return
 	 */
 	@GetMapping("/getFamilyMemberInfo")
-	public Result getFamilyMemberInfo(Page page, String a0100){
+	public Result getFamilyMemberInfo(Page<A36> page, String a0100){
 		page = omsSupFamilyMemberService.getFamilyMember(page, a0100);
 		return Result.success(page);
 
@@ -116,7 +134,7 @@ public class OmsSupFamilyMemberController {
 
 
 	/**
-	 * <b>撤销家庭成员登记备案</b>
+	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
 	 * @param a0100
 	 * @return
 	 */

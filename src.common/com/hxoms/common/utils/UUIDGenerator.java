@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public class UUIDGenerator {
 	public static void main(String[] args) {
-//		String md5Code = MD5.GetMD5Code("123456");
-//		System.out.println(md5Code);
-		for (int i = 0; i <12; i++) {
+		String md5Code = MD5.GetMD5Code("123456");
+		System.out.println(md5Code);
+		for (int i = 0; i < 12; i++) {
 			System.out.println(UUIDGenerator.getPrimaryKey());
 		}
 	}
