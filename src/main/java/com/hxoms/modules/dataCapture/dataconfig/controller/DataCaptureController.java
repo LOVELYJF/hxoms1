@@ -1,6 +1,7 @@
 package com.hxoms.modules.dataCapture.dataconfig.controller;
 
 
+import com.hxoms.modules.dataCapture.log.service.SysLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +30,27 @@ public class DataCaptureController {
 //    private SynchronizationData synchronizationData;
 //
 //    private final Logger log = LoggerFactory.getLogger(getClass());
+      @Autowired
+     private SysLogService sysLogService;
 //
-//    @RequestMapping("/getA01")
-//    public List<Map> getA01(){
-//
-////      DataSource dataSource = cutTargetDataSourceService.targetDataSource("dataSource","2");
-////      if(dataSource == null){
-////          dataSource = defultTargetDataSource;
-////      }
-////      List<Map> mapList =  a01Service.getTargetA01(dataSource);
-////      log.info("从目标数据源查询的数据条数"+mapList.size());
-////      List<Map> masterList =  a01Service.getMasterA01();
-////      log.info("从主数据源查询的数据条数"+masterList.size());
-////      List<Map> mapList1 =  a01Service.getTargetA01(dataSource);
-////      log.info("从目标数据源查询的数据条数"+mapList1.size()+"2次");
-////      List<Map> masterList1 =  a01Service.getMasterA01();
-////      log.info("从主数据源查询的数据条数"+masterList1.size()+"2次");
+    @RequestMapping("/getA01")
+    public  void getA01(){
+
+//      DataSource dataSource = cutTargetDataSourceService.targetDataSource("dataSource","2");
+//      if(dataSource == null){
+//          dataSource = defultTargetDataSource;
+//      }
+//      List<Map> mapList =  a01Service.getTargetA01(dataSource);
+//      log.info("从目标数据源查询的数据条数"+mapList.size());
+//      List<Map> masterList =  a01Service.getMasterA01();
+//      log.info("从主数据源查询的数据条数"+masterList.size());
+//      List<Map> mapList1 =  a01Service.getTargetA01(dataSource);
+//      log.info("从目标数据源查询的数据条数"+mapList1.size()+"2次");
+//      List<Map> masterList1 =  a01Service.getMasterA01();
+//      log.info("从主数据源查询的数据条数"+masterList1.size()+"2次");
 //        synchronizationData.synchronizationData();
-//     return a01Service.getMasterA01(0,100000);
-//    }
+      sysLogService.deleteAndsave();
+    }
 
 
 }

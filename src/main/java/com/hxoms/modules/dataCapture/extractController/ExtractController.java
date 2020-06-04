@@ -4,6 +4,7 @@ import com.hxoms.modules.dataCapture.dataconfig.service.CutTargetDataSourceServi
 import com.hxoms.modules.dataCapture.entity.DataSource;
 import com.hxoms.modules.dataCapture.entity.DefultTargetDataSource;
 import com.hxoms.modules.dataCapture.extracttable.ExtractData;
+import com.hxoms.modules.dataCapture.log.service.SysLogService;
 import com.hxoms.modules.dataCapture.masterdata.service.DataCaptureService;
 import com.hxoms.modules.dataCapture.synchdata.Synchdata;
 import org.slf4j.Logger;
@@ -31,6 +32,9 @@ public class ExtractController {
     @Autowired
     private Synchdata synchdata;
 
+    @Autowired
+    private SysLogService sysLogService;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @RequestMapping("/getA01")
@@ -48,7 +52,7 @@ public class ExtractController {
 //      log.info("从目标数据源查询的数据条数"+mapList1.size()+"2次");
 //      List<Map> masterList1 =  a01Service.getMasterA01();
 //      log.info("从主数据源查询的数据条数"+masterList1.size()+"2次");
-        synchdata.synchronizationData();
+        sysLogService.deleteAndsave();
         return null;
     }
 }
