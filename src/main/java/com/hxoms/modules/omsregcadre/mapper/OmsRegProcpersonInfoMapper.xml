@@ -59,6 +59,17 @@
     select A0100 from OMS_REG_PROCPERSONINFO
   </select>
 
+  <select id="selectA0100ByMap" parameterType="java.util.Map"  resultMap="BaseResultMap">
+    select A0100,IDNUMBER
+    from OMS_REG_PROCPERSONINFO t
+    where 1=1
+    <if test="name!=null and name!=''">
+        and CONCAT(IFNULL(t.SURNAME,''),IFNULL(t.NAME,'')) = #{name}
+    </if>
+    <if test="birthDay!=null and birthDay!=''">
+        and date_format(t.BIRTH_DATE, '%Y/%m') = #{birthDay}
+    </if>
+  </select>
 
   <select id="selectPersonAndAllowRevoke" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo" resultType="list">
     SELECT
