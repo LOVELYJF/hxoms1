@@ -42,10 +42,25 @@ public interface OmsSupCaseInfoService {
 
 	/**
 	 * <b>修改立案信息</b>
+	 * @param id
+	 * @return
+	 */
+	OmsSupCaseInfo updateCaseInfo(String id);
+
+
+	/**
+	 * <b保存修改的立案信息</b>
 	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	void updateCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
+	void updateSaveCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
+
+	/**
+	 * <b保存修改的立案信息并转到处分信息</b>
+	 * @param omsSupCaseInfo
+	 * @return
+	 */
+	void updateCaseInfoToDisciplinary(OmsSupCaseInfo omsSupCaseInfo);
 
 
 	/**

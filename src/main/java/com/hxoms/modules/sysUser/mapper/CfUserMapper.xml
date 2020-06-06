@@ -31,13 +31,17 @@
     <result column="FINGERPRINT_2" jdbcType="LONGVARCHAR" property="fingerprint2" />
     <result column="IDNUMBER" jdbcType="VARCHAR" property="idnumber" />
     <result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
+    <result column="SEX" jdbcType="CHAR" property="sex" />
+    <result column="Duty" jdbcType="VARCHAR" property="duty" />
+    <result column="MAC" jdbcType="VARCHAR" property="mac" />
   </resultMap>
 
   <sql id="Base_Column_List">
     user_id, user_name, user_code, user_type, user_state, user_photo, user_email, user_mobile, 
     user_password, order_index, org_id, modify_user, modify_time, org_name, USER_EXPIRE, 
     USER_LOGINFAILNUM, CREATOR, CREATETIME, IP, A0100, Registe_residence, CARD_ISSUING_AUTHORITY,
-    CARE_START_DATE, CARD_EXPIRY_DATE, CARD_PHYSICAL_ID,FINGERPRINT_1, FINGERPRINT_2, IDNUMBER,POLITICAL_AFFI
+    CARE_START_DATE, CARD_EXPIRY_DATE, CARD_PHYSICAL_ID,FINGERPRINT_1, FINGERPRINT_2, IDNUMBER,POLITICAL_AFFI, SEX,
+    Duty, MAC
   </sql>
 
     <select id="getSysUserList" parameterType="string" resultMap="BaseResultMap">
@@ -147,6 +151,15 @@
             <if test="politicalAffi != null">
                 POLITICAL_AFFI,
             </if>
+            <if test="sex != null">
+                SEX,
+            </if>
+            <if test="duty != null">
+                Duty,
+            </if>
+            <if test="mac != null">
+                MAC,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">
@@ -236,6 +249,15 @@
             <if test="politicalAffi != null">
                 #{politicalAffi,jdbcType=VARCHAR}
             </if>
+            <if test="sex != null">
+                #{sex,jdbcType=CHAR},
+            </if>
+            <if test="duty != null">
+                #{duty,jdbcType=VARCHAR},
+            </if>
+            <if test="mac != null">
+                #{mac,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.modules.sysUser.entity.CfUser">
@@ -324,6 +346,15 @@
             </if>
             <if test="politicalAffi != null">
                 POLITICAL_AFFI = #{politicalAffi,jdbcType=VARCHAR}
+            </if>
+            <if test="sex != null">
+                SEX = #{sex,jdbcType=CHAR},
+            </if>
+            <if test="duty != null">
+                Duty = #{duty,jdbcType=VARCHAR},
+            </if>
+            <if test="mac != null">
+                MAC = #{mac,jdbcType=VARCHAR},
             </if>
         </set>
         where user_id = #{userId,jdbcType=VARCHAR}
@@ -464,7 +495,8 @@
       IP, A0100, Registe_residence, 
       CARD_ISSUING_AUTHORITY, CARE_START_DATE, 
       CARD_EXPIRY_DATE, CARD_PHYSICAL_ID, FINGERPRINT_1, 
-      FINGERPRINT_2, IDNUMBER,POLITICAL_AFFI)
+      FINGERPRINT_2, IDNUMBER,POLITICAL_AFFI, SEX, Duty,
+      MAC)
     values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, 
       #{userType,jdbcType=CHAR}, #{userState,jdbcType=CHAR}, #{userPhoto,jdbcType=VARCHAR}, 
       #{userEmail,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
@@ -474,7 +506,8 @@
       #{ip,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR}, 
       #{cardIssuingAuthority,jdbcType=VARCHAR}, #{careStartDate,jdbcType=TIMESTAMP}, 
       #{cardExpiryDate,jdbcType=TIMESTAMP}, #{cardPhysicalId,jdbcType=VARCHAR}, #{fingerprint1,jdbcType=LONGVARCHAR}, 
-      #{fingerprint2,jdbcType=LONGVARCHAR},#{idnumber,jdbcType=VARCHAR},#{politicalAffi,jdbcType=VARCHAR})
+      #{fingerprint2,jdbcType=LONGVARCHAR},#{idnumber,jdbcType=VARCHAR},#{politicalAffi,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{duty,jdbcType=VARCHAR},
+      #{mac,jdbcType=VARCHAR})
   </insert>
 
 
@@ -508,7 +541,10 @@
       FINGERPRINT_1 = #{fingerprint1,jdbcType=LONGVARCHAR},
       FINGERPRINT_2 = #{fingerprint2,jdbcType=LONGVARCHAR},
       IDNUMBER = #{idnumber,jdbcType=VARCHAR},
-      POLITICAL_AFFI = #{politicalAffi,jdbcType=VARCHAR}
+      POLITICAL_AFFI = #{politicalAffi,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=CHAR},
+      Duty = #{duty,jdbcType=VARCHAR},
+      MAC = #{mac,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=VARCHAR}
   </update>
     <update id="updatePassword" >

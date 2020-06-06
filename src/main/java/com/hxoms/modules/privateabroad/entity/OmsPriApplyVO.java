@@ -1,6 +1,8 @@
 package com.hxoms.modules.privateabroad.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import com.hxoms.modules.passportCard.entity.CfCertificate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -31,8 +33,9 @@ public class OmsPriApplyVO extends OmsPriApply{
     //随行人员
     private List<OmsPriTogetherperson> omsPriTogetherpeoples;
     //原涉密信息
-
+    List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
     //证照信息
+    List<CfCertificate> cfCertificates;
 
     public String getName() {
         return name;
@@ -96,5 +99,21 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setOmsPriTogetherpeoples(List<OmsPriTogetherperson> omsPriTogetherpeoples) {
         this.omsPriTogetherpeoples = omsPriTogetherpeoples;
+    }
+
+    public List<CfCertificate> getCfCertificates() {
+        return cfCertificates;
+    }
+
+    public void setCfCertificates(List<CfCertificate> cfCertificates) {
+        this.cfCertificates = cfCertificates;
+    }
+
+    public List<OmsSmrOldInfoVO> getOmsSmrOldInfoVOS() {
+        return omsSmrOldInfoVOS;
+    }
+
+    public void setOmsSmrOldInfoVOS(List<OmsSmrOldInfoVO> omsSmrOldInfoVOS) {
+        this.omsSmrOldInfoVOS = omsSmrOldInfoVOS;
     }
 }

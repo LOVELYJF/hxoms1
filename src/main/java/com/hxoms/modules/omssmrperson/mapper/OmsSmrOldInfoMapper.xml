@@ -18,9 +18,47 @@
     <result column="QR_TIME" jdbcType="TIMESTAMP" property="qrTime" />
     <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
+    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
+  </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
     START_DATE, FINISH_DATE, QR_SECRET_RELATED_POST, QR_SECRET_RELATED_LEVEL, QR_START_DATE, 
     QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR
   </sql>
+
+  <select id="getSmrOldInfoList" parameterType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo" resultMap="BaseResultMap">
+    SELECT
+      t.ID,
+      t.A0100,
+      b.B0101 AS B0100,
+      t.SECRET_RELATED_POST,
+      t.SECRET_RELATED_LEVEL,
+      t.SECRET_REVIEW_DATE,
+      t.START_DATE,
+      t.FINISH_DATE,
+      t.QR_SECRET_RELATED_POST,
+      t.QR_SECRET_RELATED_LEVEL,
+      t.QR_START_DATE,
+      t.QR_FINISH_DATE,
+      t.QR_USER_ID,
+      t.QR_TIME,
+      t.IMPORT_YEAR
+    FROM oms_reg_revokeapply t
+    LEFT JOIN b01 b on t.B0100 = b.B0100
+    WHERE t.A0100 = #{A0100}
+    limit ${(page.current-1)},${page.size}
+  </select>
+
+  <!--涉密信息列表-->
+  <select id="getSmrOldInfoVOList" parameterType="java.util.Map" resultMap="ResultMapVO">
+    SELECT
+      t.*,
+      b.b0101 as b0101
+    FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+    WHERE 1=1
+    <if test="a0100 != null and a0100 != ''">
+          t.A0100 = #{a0100}
+    </if>
+  </select>
 </mapper>

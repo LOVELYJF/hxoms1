@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,31 +99,10 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		omsSupCaseInfo.setPinyin((String)list.get(0).get("a0102"));
 
 		//检查立案信息的文书号是否出现缺号
-		String documentNum = omsSupCaseInfo.getCaseDocumentNo();
-		String yearNum = documentNum.substring(documentNum.indexOf("[") + 1, documentNum.indexOf("]"));
-		String no = documentNum.substring(documentNum.indexOf("]") + 1, documentNum.indexOf("号"));
-		Integer num = Integer.parseInt(no);
-		if(UtilDateTime.nowYear().equals(yearNum)){
-			//根据当前年份查询数据库中的文书号数量
-			QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
-			queryWrapper.like(yearNum != null, "CASE_DOCUMENT_NO", "[" + yearNum + "]");
-			int resultCount = omsSupCaseInfoMapper.selectCount(queryWrapper);
-			if(resultCount != 0){
-				if((resultCount + 1) != num){
-					throw new CustomMessageException("立案文书号不连续,当前文书号到" +
-							documentNum.substring(0, documentNum.indexOf("]") + 1) + num + "号");
-				}
-			}else{
-				if(num != 1){
-					throw new CustomMessageException("立案文书号应该从当年1号开始");
-				}
-			}
-		}else {
-			throw new CustomMessageException("立案年份不正确");
-		}
-
+		checkCaseDocumentNo(omsSupCaseInfo.getCaseDocumentNo());
 
 		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
+		omsSupCaseInfo.setModifyTime(new Date());
 		int count = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
 		if(count < 1){
 			throw new CustomMessageException("操作失败");
@@ -137,45 +117,124 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addToDisciplinary(OmsSupCaseInfo omsSupCaseInfo) {
-		OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
 
 		//查询立案人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupCaseInfo.getA0100());
-		omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
+		omsSupCaseInfo.setPinyin((String)list.get(0).get("a0102"));
 
-		omsSupDisciplinary.setId(UUIDGenerator.getPrimaryKey());
-		omsSupDisciplinary.setA0100(omsSupCaseInfo.getA0100());
-		omsSupDisciplinary.setWorkUnit(omsSupCaseInfo.getWorkUnit());
-		omsSupDisciplinary.setName(omsSupCaseInfo.getName());
-		omsSupDisciplinary.setDisciplinaryPost(omsSupCaseInfo.getCasePost());
-		omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
-		omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
-		//根据处分类型计算影响期及结束时间
+		//检查立案信息的文书号是否出现缺号
+		checkCaseDocumentNo(omsSupCaseInfo.getCaseDocumentNo());
+
+		//保存立案信息
+		int saveCount = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
+		if(saveCount < 0){
+			throw new CustomMessageException("保存失败");
+		}else {
+			//保存到处分信息
+			OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
+			omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
+			//将立案信息的主键设置成处分信息的主键
+			omsSupDisciplinary.setId(omsSupCaseInfo.getId());
+			omsSupDisciplinary.setA0100(omsSupCaseInfo.getA0100());
+			omsSupDisciplinary.setWorkUnit(omsSupCaseInfo.getWorkUnit());
+			omsSupDisciplinary.setName(omsSupCaseInfo.getName());
+			omsSupDisciplinary.setDisciplinaryPost(omsSupCaseInfo.getCasePost());
+			omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
+			omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
+			omsSupDisciplinary.setModifyTime(new Date());
+			//根据处分类型计算影响期及结束时间
 
 
 
 
 
-		int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
-		if(count <= 0){
-			throw new CustomMessageException("保存到处分信息失败");
+			int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
+			if(count <= 0){
+				throw new CustomMessageException("保存到处分信息失败");
+			}
 		}
 	}
 
 
 	/**
 	 * <b>修改立案信息</b>
+	 * @param id
+	 * @return
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public OmsSupCaseInfo updateCaseInfo(String id) {
+		//根据主键查询立案人员信息
+		OmsSupCaseInfo omsSupCaseInfo = omsSupCaseInfoMapper.selectById(id);
+		return omsSupCaseInfo;
+	}
+
+
+	/**
+	 * <b保存修改的立案信息</b>
 	 * @param omsSupCaseInfo
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void updateCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+	public void updateSaveCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+		omsSupCaseInfo.setModifyTime(new Date());
 		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
-		if(count <= 0){
+		if(count < 0){
 			throw new CustomMessageException("修改立案信息失败");
 		}
 	}
 
+	/**
+	 * <b保存修改的立案信息并转到处分信息</b>
+	 * @param omsSupCaseInfo
+	 * @return
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public void updateCaseInfoToDisciplinary(OmsSupCaseInfo omsSupCaseInfo) {
+		//更新保存立案信息
+		updateSaveCaseInfo(omsSupCaseInfo);
+
+		//根据id查处分信息表中是否存在该人员信息
+		QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
+		queryWrapper.eq("ID", omsSupCaseInfo.getId());
+
+		if(omsSupDisciplinaryMapper.selectOne(queryWrapper) != null){
+			//处分信息已经存在，进行修改,
+			OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
+			omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
+			omsSupDisciplinary.setModifyTime(new Date());
+
+			int updateCount = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
+			if(updateCount < 0){
+				throw new CustomMessageException("更新保存到处分信息失败");
+			}
+
+		}else {
+			//处分信息不存在，保存到处分信息
+			List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupCaseInfo.getA0100());
+			OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
+			omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
+			//将立案信息的主键设置成处分信息的主键
+			omsSupDisciplinary.setId(omsSupCaseInfo.getId());
+			omsSupDisciplinary.setA0100(omsSupCaseInfo.getA0100());
+			omsSupDisciplinary.setWorkUnit(omsSupCaseInfo.getWorkUnit());
+			omsSupDisciplinary.setName(omsSupCaseInfo.getName());
+			omsSupDisciplinary.setDisciplinaryPost(omsSupCaseInfo.getCasePost());
+			omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
+			omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
+			omsSupDisciplinary.setModifyTime(new Date());
+			//根据处分类型计算影响期及结束时间
+
+
+
+
+
+			int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
+			if(count <= 0){
+				throw new CustomMessageException("保存到处分信息失败");
+			}
+		}
+
+	}
 
 
 	/**
@@ -279,7 +338,35 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
+
+
+	/**
+	 * <b>检查立案信息的文书号是否连续</b>
+	 * @param documentNum
+	 */
+	 public void checkCaseDocumentNo(String documentNum){
+		 //检查立案信息的文书号是否出现缺号
+		 String yearNum = documentNum.substring(documentNum.indexOf("[") + 1, documentNum.indexOf("]"));
+		 String no = documentNum.substring(documentNum.indexOf("]") + 1, documentNum.indexOf("号"));
+		 Integer num = Integer.parseInt(no);
+		 if(UtilDateTime.nowYear().equals(yearNum)){
+			 //根据当前年份查询数据库中的文书号数量
+			 QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
+			 queryWrapper.like(yearNum != null, "CASE_DOCUMENT_NO", "[" + yearNum + "]");
+			 int resultCount = omsSupCaseInfoMapper.selectCount(queryWrapper);
+			 if(resultCount != 0){
+				 if((resultCount + 1) != num){
+					 throw new CustomMessageException("立案文书号不连续,当前文书号到" +
+							 documentNum.substring(0, documentNum.indexOf("]") + 1) + resultCount + "号");
+				 }
+			 }else{
+				 if(num != 1){
+					 throw new CustomMessageException("立案文书号应该从当年1号开始");
+				 }
+			 }
+		 }else {
+			 throw new CustomMessageException("立案年份不正确");
+		 }
+	 }
 }

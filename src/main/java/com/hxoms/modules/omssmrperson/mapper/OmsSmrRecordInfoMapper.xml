@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SEX" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTH_DATE" jdbcType="VARCHAR" property="birthDate" />
+    <result column="ID_CARD_NUMBER" jdbcType="VARCHAR" property="idCardNumber" />
+    <result column="NATION" jdbcType="VARCHAR" property="nation" />
+    <result column="A0141" jdbcType="VARCHAR" property="a0141" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="SECRET_RELATED_POST" jdbcType="VARCHAR" property="secretRelatedPost" />
+    <result column="SECRET_RELATED_LEVEL" jdbcType="VARCHAR" property="secretRelatedLevel" />
+    <result column="SECRET_REVIEW_DATE" jdbcType="TIMESTAMP" property="secretReviewDate" />
+    <result column="START_DATE" jdbcType="DATE" property="startDate" />
+    <result column="FINISH_DATE" jdbcType="DATE" property="finishDate" />
+    <result column="IMPORT_USER_ID" jdbcType="VARCHAR" property="importUserId" />
+    <result column="IMPORT_DATE" jdbcType="DATE" property="importDate" />
+    <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
+    <result column="IS_MATCHING" jdbcType="VARCHAR" property="isMatching" />
+
+    <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, B0100, NAME, SEX, BIRTH_DATE, ID_CARD_NUMBER, NATION, A0141, POST, SECRET_RELATED_POST, 
+    SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, START_DATE, FINISH_DATE, IMPORT_USER_ID, 
+    IMPORT_DATE, IMPORT_YEAR, IS_MATCHING
+  </sql>
+
+  <!-- 批量添加涉密人员备案信息 -->
+  <insert id="insertRecordList" parameterType="java.util.List">
+    INSERT INTO oms_smr_recordinfo (
+      ID, B0100, NAME, SEX, BIRTH_DATE, ID_CARD_NUMBER, NATION, A0141, POST, SECRET_RELATED_POST,
+      SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, START_DATE, FINISH_DATE, IMPORT_USER_ID,
+      IMPORT_DATE, IMPORT_YEAR, IS_MATCHING
+    )
+    VALUES
+    <foreach collection="list" item="item" index= "index" separator =",">
+      (
+        #{item.id},
+        #{item.b0100},
+        #{item.name},
+        #{item.sex},
+        #{item.birthDay},
+        #{item.idCardNumber},
+        #{item.nation},
+        #{item.a0141},
+        #{item.post},
+        #{item.secretRelatedPost},
+        #{item.secretRelatedLevel},
+        #{item.secretReviewDate},
+        #{item.startDate},
+        #{item.finishDate},
+        #{item.importUserId},
+        #{item.importDate},
+        #{item.importYear},
+        #{item.isMatching}
+      )
+    </foreach>
+  </insert>
+  <!-- 获取已匹配人员列表 -->
+  <select id="getMatchingPerson" resultMap="BaseResultMap">
+    SELECT
+        t.*,
+        p.PERSON_STATE
+    FROM
+        oms_smr_recordinfo t
+        LEFT JOIN oms_smr_personinfo p ON t.ID_CARD_NUMBER = p.ID_CARD_NUMBER
+    WHERE
+        t.IS_MATCHING = '1'
+  </select>
+</mapper>

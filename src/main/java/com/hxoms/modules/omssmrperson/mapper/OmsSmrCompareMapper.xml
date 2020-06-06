@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omssmrperson.entity.OmsSmrCompare">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="ID_CARD_NUMBER_ERROR" jdbcType="VARCHAR" property="idCardNumberError" />
+    <result column="ID_CARD_NUMBER_RIGHT" jdbcType="VARCHAR" property="idCardNumberRight" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SEX" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTH_DATE" jdbcType="VARCHAR" property="birthDate" />
+    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, WORK_UNIT, 
+    POST
+  </sql>
+
+  <!-- 获取已匹配人员列表 -->
+  <select id="getCompareIdCard" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        oms_smr_compare t
+    ORDER BY
+        t.WORK_UNIT
+  </select>
+
+  <!-- 获取已匹配人员列表 -->
+  <select id="getMatchingDate" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        oms_smr_compare t
+    WHERE 1=1
+    AND t.WORK_UNIT = (select b.b0101 from b01 b where b.b0100 = #{workUnit})
+    AND t.ID_CARD_NUMBER_RIGHT = #{idCardNumber}
+  </select>
+</mapper>

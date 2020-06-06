@@ -7,6 +7,16 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
+import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
+import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
+import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
+import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
+import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
+import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriTogetherperson;
@@ -35,6 +45,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsPriApplyMapper omsPriApplyMapper;
     @Autowired
     private OmsPriTogetherpersonMapper omsPriTogetherpersonMapper;
+    @Autowired
+    private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
+    @Autowired
+    private OmsSupCaseInfoMapper omsSupCaseInfoMapper;
+    @Autowired
+    private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
+    @Autowired
+    private OmsSupDismissedMapper omsSupDissmissedMapper;
+    @Autowired
+    private CfCertificateMapper cfCertificateMapper;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -54,15 +74,49 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(a0100) || StringUtils.isBlank(b0100)){
             throw new CustomMessageException("参数错误");
         }
-        //约束条件检查
-        OmsPriApply omsPriApply = new OmsPriApply();
-        omsPriApply.setA0100(a0100);
-        omsPriApply.setB0100(b0100);
         //查询用户基本信息
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(a0100);
-        //TODO 获取涉密信息
-        //TODO  获取负面信息
-        //TODO  证件信息
+        //获取涉密信息
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("a0100", a0100);
+        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
+        omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
+        //获取负面信息
+        StringBuilder negativeInfo = new StringBuilder();
+        //立案
+        QueryWrapper<OmsSupCaseInfo> lian = new QueryWrapper<>();
+        lian.eq("A0100", a0100);
+        negativeInfo.append("立案：");
+        if (omsSupCaseInfoMapper.selectCount(lian) > 0){
+            negativeInfo.append("是\n");
+        }else{
+            negativeInfo.append("否\n");
+        }
+        //违反外事纪律
+        QueryWrapper<OmsSupViolationDiscipline> waishi = new QueryWrapper<>();
+        waishi.eq("A0100", a0100);
+        negativeInfo.append("违反外事纪律");
+        if (omsSupViolationDisciplineMapper.selectCount(waishi) > 0){
+            negativeInfo.append("有\n");
+        }else{
+            negativeInfo.append("无\n");
+        }
+        //免职撤职
+        QueryWrapper<OmsSupDismissed> mianzhi = new QueryWrapper<>();
+        mianzhi.eq("A0100", a0100);
+        negativeInfo.append("免职撤职");
+        if (omsSupDissmissedMapper.selectCount(mianzhi) > 0){
+            negativeInfo.append("是\n");
+        }else{
+            negativeInfo.append("否\n");
+        }
+        omsPriApplyVO.setNegativeInfo(negativeInfo.toString());
+        //证件信息
+        QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
+        cfCertificate.eq("A0100", a0100)
+                .eq("IS_VALID", 0);
+        List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+        omsPriApplyVO.setCfCertificates(cfCertificates);
         return omsPriApplyVO;
     }
 
@@ -88,7 +142,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             throw new CustomMessageException("回国时间不能为空");
         }
         //基本信息保存
-        //设置草稿状态，type为2时，如果验证信息通过则修改相关状态
+        //设置草稿状态
         omsPriApply.setApplyStatus("1");
         if (StringUtils.isBlank(omsPriApply.getId())) {
             omsPriApply.setId(UUIDGenerator.getPrimaryKey());
@@ -121,14 +175,13 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     public String deletePriApply(String id) {
         //只能删除草稿状态的
         QueryWrapper<OmsPriApply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
         queryWrapper.eq("applyStatus", '1');  //草稿
+        queryWrapper.eq("id", id);
         int count = omsPriApplyMapper.selectCount(queryWrapper);
-        if (count > 0){
+        if (count == 0){
             throw new CustomMessageException("只能删除草稿");
         }
-        int deleteStatus = omsPriApplyMapper.deleteById(id);
-        if (deleteStatus < 1){
+        if (omsPriApplyMapper.deleteById(id) < 1){
             throw new CustomMessageException("删除失败");
         }
         return "删除成功";

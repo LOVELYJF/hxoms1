@@ -53,7 +53,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	public Page<OmsSupDisciplinary> getDisciplinaryInfo(Page<OmsSupDisciplinary> page, OmsSupDisciplinary omsSupDisciplinary, List<String> idList) {
 
-		//查询工作单位代码查询工作单位名称
+		//根据工作单位代码查询工作单位名称
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("idList", idList);
 		List<String> list = b01Mapper.selectOrgByList(map);
@@ -89,7 +89,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
-		//根据处分类型计算影响其和结束时间
+		//根据处分类型计算影响期和结束时间
 
 
 
@@ -116,6 +116,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		List<SysDictItem> list = sysDictItemMapper.selectDisciplinaryActionType();
 		return list;
 	}
+
 
 	/**
 	 * <b>修改处分信息</b>

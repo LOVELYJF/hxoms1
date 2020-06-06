@@ -3,6 +3,7 @@ package com.hxoms.modules.keySupervision.caseInfo.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
+import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.caseInfo.service.OmsSupCaseInfoService;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,12 +66,35 @@ public class OmsSupCaseInfoController extends BaseController {
 
 	/**
 	 * <b>修改立案信息</b>
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/updateCaseInfo")
+	public Result updateCaseInfo(String id){
+		OmsSupCaseInfo omsSupCaseInfo = omsSupCaseInfoService.updateCaseInfo(id);
+		return Result.success(omsSupCaseInfo);
+	}
+
+
+	/**
+	 * <b保存修改的立案信息</b>
 	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	@PostMapping("/updateCaseInfo")
-	public Result updateCaseInfo(OmsSupCaseInfo omsSupCaseInfo){
-		omsSupCaseInfoService.updateCaseInfo(omsSupCaseInfo);
+	@PostMapping("/updateSaveCaseInfo")
+	public Result updateSaveCaseInfo(OmsSupCaseInfo omsSupCaseInfo){
+		omsSupCaseInfoService.updateSaveCaseInfo(omsSupCaseInfo);
+		return Result.success();
+	}
+
+	/**
+	 * <b保存修改的立案信息并转到处分信息</b>
+	 * @param omsSupCaseInfo
+	 * @return
+	 */
+	@PostMapping("/updateCaseInfoToDisciplinary")
+	public Result updateCaseInfoToDisciplinary(OmsSupCaseInfo omsSupCaseInfo){
+		omsSupCaseInfoService.updateCaseInfoToDisciplinary(omsSupCaseInfo);
 		return Result.success();
 	}
 
