@@ -51,7 +51,7 @@ public class OmsPriApplyController {
     }
 
     /**
-     * 选择人员（保存前约束条件判断）
+     * 选择人员
      * @param b0100 机构id
      * @param a0100 人员id
      * @return
