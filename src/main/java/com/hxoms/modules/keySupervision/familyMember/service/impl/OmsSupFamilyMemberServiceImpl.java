@@ -274,6 +274,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
 				omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
 				omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yy-MM-dd"));
+				omsRegRevokeApply.setStatus("0");
 
 				int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
 				if(result < 0){
