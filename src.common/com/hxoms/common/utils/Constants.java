@@ -147,4 +147,69 @@ public class Constants {
      *  备案表文件标题
      */
     public static String[] TITLES = {"因公临时出国人员备案表","因公临时赴港澳人员备案表","因公临时赴台人员备案表"};
+
+    /*******出国境 业务类型*****/
+    public static String[] oms_business={"oms_pub_apply","oms_pri_apply","oms_pri_delay_apply"};
+    public static String[] oms_businessName={"因公出国","因私出国","延期回国"};
+
+
+    /**
+     * 因公 业务
+     *
+     */
+    public  static String[] public_business ={"pu1","pu2","pu3","pu4"};
+    /**
+     * 因公 业务 状态名称
+     *
+     */
+    public  static String[] public_businessName ={"未下发","草稿","带材料审核"};
+
+    /**
+     * 因私 业务
+     *
+     */
+    public  static String[] private_business ={"pr1","pr2","pr3","pr4","pr5","pr6","pr7"};
+    /**
+     * 因私 业务 状态名称
+     *
+     */
+    public  static String[] private_businessName ={"草稿","生成材料","打印材料","自评上报","待领证","已领证","撤销"};
+
+    /**
+     *  干部监督处业务
+     * */
+
+    public static String[] leader_business={"le1","le2","le3","le4","le5","le6","le7","le8","le9"};
+
+
+    /**
+     *  干部监督处业务 状态名称
+     * */
+
+    public static String[] leader_businessName={"业务办理","征求意见","记录意见","做成审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
+
+    /**
+     *  干部监督处 批次 (主)状态
+     * */
+
+    public static String[] batch_status={"ba1","ba2"};
+
+    /**
+     *  干部监督处业务 (主)状态名称
+     * */
+
+    public static String[] batch_statusName={"批次正在处理","批次已处理"};
+
+
+    /**
+     *  干部监督处 批次 (副)状态  待定
+     * */
+
+    public static String[] batch_slave_status={"ba1","ba2"};
+
+    /**
+     *  干部监督处业务 （副）状态名称
+     * */
+
+    public static String[] batch_slave_statusName={"业务办理","征求意见","记录意见","做成审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
 }
