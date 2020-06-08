@@ -15,10 +15,11 @@
 		<result column="POST" jdbcType="VARCHAR" property="post" />
 		<result column="RANK" jdbcType="VARCHAR" property="rank" />
 		<result column="XZXGW" jdbcType="VARCHAR" property="xzxgw" />
+		<result column="NS_STATUS" jdbcType="CHAR" property="nsStatus" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
-		POLITICAL_AFFI, POST, RANK, XZXGW
+		POLITICAL_AFFI, POST, RANK, XZXGW,NS_STATUS
 	</sql>
 
 </mapper>
