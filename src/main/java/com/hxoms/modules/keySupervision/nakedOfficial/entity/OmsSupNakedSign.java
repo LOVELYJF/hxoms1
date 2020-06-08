@@ -166,6 +166,6 @@ public class OmsSupNakedSign {
     }
 
     public void setNsStatus(String nsStatus) {
-        this.nsStatus = nsStatus;
+        this.nsStatus = nsStatus == null ? null : nsStatus.trim();
     }
 }
