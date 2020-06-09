@@ -52,6 +52,7 @@
     <result column="FUNDS_SOURCE" jdbcType="VARCHAR" property="fundsSource" />
     <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
     <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="CANCEL_REASON" jdbcType="VARCHAR" property="cancelReason" />
     <result column="IS_ENTRUST" jdbcType="INTEGER" property="isEntrust" />
     <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
@@ -67,7 +68,6 @@
     <result column="birthDate" jdbcType="TIMESTAMP" property="birthDate" />
     <result column="identifyType" jdbcType="VARCHAR" property="identifyType" />
   </resultMap>
-
   <sql id="Base_Column_List">
     ID, A0100, B0100, POLITICAL_OUTLOOK, HEALTH, POSTRANK, ABROAD_TIME, RETURN_TIME, 
     GO_COUNTRY, PASS_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME, 
@@ -77,8 +77,8 @@
     SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ, FINAL_CONCLUSION, PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, 
     HONGKONGANDMACAO_PASSPORT_NUM, HONGKONGANDMACAO_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, 
     TAIWAN_VISA, IS_LUOGUAN, IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, 
-    NEGATIVE_INFO, PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, IS_ENTRUST, 
-    REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID
+    NEGATIVE_INFO, PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON, 
+    IS_ENTRUST, REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID
   </sql>
 
   <!--分页因私出国申请列表-->
@@ -134,7 +134,8 @@
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           orp.RF_B0000 as b0100
+           orp.RF_B0000 as b0100,
+
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
     where 1=1
       and op.A0100 = #{a0100}

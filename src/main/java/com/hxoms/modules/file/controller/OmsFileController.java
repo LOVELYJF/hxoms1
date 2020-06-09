@@ -2,7 +2,7 @@ package com.hxoms.modules.file.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsSealhandleRecords;
+import com.hxoms.modules.file.entity.OmsSealhandleRecordsVO;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.entity.OmsFileVO;
 import com.hxoms.modules.file.service.OmsFileService;
@@ -77,13 +77,13 @@ public class OmsFileController {
 
     /**
      * 保存签字盖章
-     * @param omsSealhandleRecords
+     * @param omsSealhandleRecordsVOS
      * @return
      * @throws Exception
      */
     @PostMapping("/saveSealHandle")
-    public Result saveSealHandle(List<OmsSealhandleRecords> omsSealhandleRecords) throws Exception {
-        String result = omsFileService.saveSealHandle(omsSealhandleRecords);
+    public Result saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS) throws Exception {
+        String result = omsFileService.saveSealHandle(omsSealhandleRecordsVOS);
         return Result.success().setMsg(result);
     }
 }

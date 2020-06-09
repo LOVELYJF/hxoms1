@@ -19,6 +19,9 @@ public class OmsFile {
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="机构ID（初始化文件为空）")
     private String b0100;
 
+    @ColumnAnnotation(FieldName = "FILE_SHORTNAME",   FieldDescription="文件简称")
+    private String fileShortname;
+
     @ColumnAnnotation(FieldName = "FILE_NAME",   FieldDescription="文件名称")
     private String fileName;
 
@@ -78,6 +81,14 @@ public class OmsFile {
 
     public void setB0100(String b0100) {
         this.b0100 = b0100 == null ? null : b0100.trim();
+    }
+
+    public String getFileShortname() {
+        return fileShortname;
+    }
+
+    public void setFileShortname(String fileShortname) {
+        this.fileShortname = fileShortname == null ? null : fileShortname.trim();
     }
 
     public String getFileName() {

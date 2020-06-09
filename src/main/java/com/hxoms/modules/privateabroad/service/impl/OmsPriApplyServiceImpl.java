@@ -27,6 +27,7 @@ import com.hxoms.modules.privateabroad.mapper.OmsPriTogetherpersonMapper;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,9 +142,18 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (omsPriApply.getReturnTime() != null){
             throw new CustomMessageException("回国时间不能为空");
         }
+        if(!omsPriApply.getAbroadTime().before(omsPriApply.getReturnTime())){
+            throw new CustomMessageException("出国时间不能晚于回国时间");
+        }
         //基本信息保存
         //设置草稿状态
         omsPriApply.setApplyStatus("1");
+        //出国时长
+        long day = omsPriApply.getReturnTime().getTime() - omsPriApply.getAbroadTime().getTime()/DateUtils.MILLIS_PER_DAY;
+        omsPriApply.setOutsideTime((int) day);
+        //归还证照时间(回国后十天)
+        Date revertLicenceTime = DateUtils.addDays(omsPriApply.getReturnTime(), 10);
+        omsPriApply.setRevertLicenceTime(revertLicenceTime);
         if (StringUtils.isBlank(omsPriApply.getId())) {
             omsPriApply.setId(UUIDGenerator.getPrimaryKey());
             omsPriApplyMapper.insert(omsPriApply);
@@ -192,6 +202,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(omsPriApply.getApplyStatus()) && StringUtils.isBlank(omsPriApply.getId())){
             throw new CustomMessageException("参数错误");
         }
+
         int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
         if (updateStatus < 1){
             throw new CustomMessageException("操作失败");
@@ -214,6 +225,17 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             throw new CustomMessageException("参数错误");
         }
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(id);
+        //获取涉密信息
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("a0100", omsPriApplyVO.getA0100());
+        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
+        omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
+        //证件信息
+        QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
+        cfCertificate.eq("A0100", omsPriApplyVO.getA0100())
+                .eq("IS_VALID", 0);
+        List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+        omsPriApplyVO.setCfCertificates(cfCertificates);
         return omsPriApplyVO;
     }
 }

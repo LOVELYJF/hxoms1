@@ -5,6 +5,7 @@
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
     <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="FILE_SHORTNAME" jdbcType="VARCHAR" property="fileShortname" />
     <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
     <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
     <result column="TABLE_CODE" jdbcType="VARCHAR" property="tableCode" />
@@ -24,15 +25,15 @@
     <result column="isEntrust" jdbcType="INTEGER" property="isEntrust" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, FILE_ID, B0100, FILE_NAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, CREATE_TIME,
-    CREATE_USER, MODIFY_TIME, MODIFY_USER
+    ID, FILE_ID, B0100, FILE_SHORTNAME, FILE_NAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, 
+    CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT
   </sql>
 
   <!--签字盖章列表-->
-  <select id="selectSealHandleList" resultMap="ResultMapVO" parameterType="java.util.Map">
+  <select id="selectSealHandleList" parameterType="java.util.Map" resultMap="ResultMapVO">
       select
       <include refid="Base_Column_List" />,
       (select count(0) from oms_sealhandle_records where FILE_ID = ofe.ID and APPLY_ID = #{applyId}) as isHandle,
