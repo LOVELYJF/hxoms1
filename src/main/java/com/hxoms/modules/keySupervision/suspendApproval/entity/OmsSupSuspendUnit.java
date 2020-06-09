@@ -10,13 +10,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @TableAnnotation(TableName = "oms_sup_suspend_unit", TableDescription="暂停出国境单位")
 public class OmsSupSuspendUnit {
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "id",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "modify_user",   FieldDescription="修改用户")
+    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改用户")
     private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="修改时间")
+    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
