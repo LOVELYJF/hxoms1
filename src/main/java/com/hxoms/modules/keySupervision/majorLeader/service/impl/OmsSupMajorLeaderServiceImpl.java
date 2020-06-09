@@ -6,15 +6,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
-import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -42,6 +41,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	private OmsSupMajorLeaderMapper omsSupMajorLeaderMapper;
 	@Autowired
 	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	@Autowired
+	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 	@Autowired
 	private B01Mapper b01Mapper;
 	@Autowired
@@ -104,13 +105,16 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 			omsSupMajorLeader.setMlStatus("1");
 			omsSupMajorLeader.setModifyTime(new Date());
+
+			//在登记备案库中查询人员的身份证出生日期
+			omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
 			int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
 			if (count < 1) {
 				throw new CustomMessageException("添加主要领导失败");
 			}
 		}else{
 			//查询主要领导状态是否可用
-			if(majorLeaderList.get(0).getMlStatus().equals(1)){
+			if(majorLeaderList.get(0).getMlStatus().equals("1")){
 				throw new CustomMessageException("主要领导已经存在");
 			}
 		}
@@ -182,8 +186,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				omsSupMajorLeader.setSex((String) mapList.get(0).get("sex"));
 				omsSupMajorLeader.setPoliticalAffi((String) mapList.get(0).get("politicalAffi"));
 
-				Date date = UtilDateTime.toDateFormat((String) mapList.get(0).get("a0107"), "yy-MM-dd");
-				omsSupMajorLeader.setBirthDate(date);
+				//在登记备案库中查询人员的身份证出生日期
+				omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
 				omsSupMajorLeader.setModifyTime(new Date());
 
 				omsSupMajorLeader.setPost((String) mapList.get(0).get("a0215a"));
@@ -197,7 +201,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			}else {
 				//查询主要领导状态是否可用
 				if(majorLeaderList.get(0).getMlStatus().equals(1)){
-					throw new CustomMessageException("主要领导已经存在");
+					//主要领导已经存在,进行下一轮循环
+					continue;
 				}
 			}
 			//在备案库中设置该对象为主要领导
