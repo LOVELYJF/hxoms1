@@ -14,10 +14,11 @@
     <result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
     <result column="POST" jdbcType="VARCHAR" property="post" />
     <result column="RANK" jdbcType="VARCHAR" property="rank" />
+    <result column="ML_STATUS" jdbcType="CHAR" property="mlStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, SEX, BIRTH_DATE,
-    POLITICAL_AFFI, POST, RANK
+    POLITICAL_AFFI, POST, RANK,ML_STATUS
   </sql>
 
 
