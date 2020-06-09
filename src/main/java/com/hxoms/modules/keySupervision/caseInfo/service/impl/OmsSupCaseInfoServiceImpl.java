@@ -66,6 +66,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
+				.eq("CI_STATUS", "1")
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
 				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
@@ -103,6 +104,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 
 		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
 		omsSupCaseInfo.setModifyTime(new Date());
+		omsSupCaseInfo.setCiStatus("1");
 		int count = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
 		if(count < 1){
 			throw new CustomMessageException("操作失败");
@@ -125,6 +127,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		//检查立案信息的文书号是否出现缺号
 		checkCaseDocumentNo(omsSupCaseInfo.getCaseDocumentNo());
 
+		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
+		omsSupCaseInfo.setCiStatus("1");
+		omsSupCaseInfo.setModifyTime(new Date());
 		//保存立案信息
 		int saveCount = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
 		if(saveCount < 0){
@@ -142,6 +147,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
 			omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
 			omsSupDisciplinary.setModifyTime(new Date());
+			omsSupDisciplinary.setDcStatus("1");
 			//根据处分类型计算影响期及结束时间
 
 
@@ -155,18 +161,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		}
 	}
 
-
-	/**
-	 * <b>修改立案信息</b>
-	 * @param id
-	 * @return
-	 */
-	@Transactional(rollbackFor=Exception.class)
-	public OmsSupCaseInfo updateCaseInfo(String id) {
-		//根据主键查询立案人员信息
-		OmsSupCaseInfo omsSupCaseInfo = omsSupCaseInfoMapper.selectById(id);
-		return omsSupCaseInfo;
-	}
 
 
 	/**
@@ -198,8 +192,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		queryWrapper.eq("ID", omsSupCaseInfo.getId());
 
 		if(omsSupDisciplinaryMapper.selectOne(queryWrapper) != null){
-			//处分信息已经存在，进行修改,
+			//处分信息已经存在，进行修改
 			OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
+			//在立案信息处只能修改处分的类型和修改时间信息
 			omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
 			omsSupDisciplinary.setModifyTime(new Date());
 
@@ -207,7 +202,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			if(updateCount < 0){
 				throw new CustomMessageException("更新保存到处分信息失败");
 			}
-
 		}else {
 			//处分信息不存在，保存到处分信息
 			List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupCaseInfo.getA0100());
@@ -239,12 +233,14 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 
 	/**
 	 * <b>删除立案信息</b>
-	 * @param id
+	 * @param omsSupCaseInfo
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void deleteCaseInfo(String id) {
-		int count = omsSupDisciplinaryMapper.deleteById(id);
+	public void removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+		omsSupCaseInfo.setCiStatus("0");
+		omsSupCaseInfo.setModifyTime(new Date());
+		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
 		if(count <= 0){
 			throw new CustomMessageException("删除立案信息失败");
 		}

@@ -65,18 +65,6 @@ public class OmsSupCaseInfoController extends BaseController {
 
 
 	/**
-	 * <b>修改立案信息</b>
-	 * @param id
-	 * @return
-	 */
-	@GetMapping("/updateCaseInfo")
-	public Result updateCaseInfo(String id){
-		OmsSupCaseInfo omsSupCaseInfo = omsSupCaseInfoService.updateCaseInfo(id);
-		return Result.success(omsSupCaseInfo);
-	}
-
-
-	/**
 	 * <b保存修改的立案信息</b>
 	 * @param omsSupCaseInfo
 	 * @return
@@ -101,12 +89,12 @@ public class OmsSupCaseInfoController extends BaseController {
 
 	/**
 	 * <b>删除立案信息</b>
-	 * @param id
+	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	@PostMapping("/deleteCaseInfo")
-	public Result deleteCaseInfo(String id){
-		omsSupCaseInfoService.deleteCaseInfo(id);
+	@PostMapping("/removeCaseInfo")
+	public Result removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo){
+		omsSupCaseInfoService.removeCaseInfo(omsSupCaseInfo);
 		return Result.success();
 	}
 
