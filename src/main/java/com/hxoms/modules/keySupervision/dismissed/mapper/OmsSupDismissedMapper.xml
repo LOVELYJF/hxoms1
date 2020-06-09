@@ -15,9 +15,10 @@
     <result column="REASON" jdbcType="VARCHAR" property="reason" />
     <result column="DISMISSED_TIME_START_QUERY" jdbcType="DATE" property="dismissedTimeStartQuery" />
     <result column="DISMISSED_TIME_END_QUERY" jdbcType="DATE" property="dismissedTimeEndQuery" />
+    <result column="DM_STATUS" jdbcType="CHAR" property="dmStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, POST, DISMISSED_TIME,
-    DOCUMENT_NO, REASON, DISMISSED_TIME_START_QUERY, DISMISSED_TIME_END_QUERY
+    DOCUMENT_NO, REASON, DISMISSED_TIME_START_QUERY, DISMISSED_TIME_END_QUERY,DM_STATUS
   </sql>
 </mapper>
