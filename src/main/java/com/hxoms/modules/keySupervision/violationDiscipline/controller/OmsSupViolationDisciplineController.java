@@ -66,12 +66,12 @@ public class OmsSupViolationDisciplineController extends BaseController {
 
 	/**
 	 * <b>删除违反外事人员信息</b>
-	 * @param id
+	 * @param omsSupViolationDiscipline
 	 * @return
 	 */
-	@PostMapping("/deleteViolationDiscipline")
-	private Result deleteViolationDiscipline(String id){
-		omsSupViolationDisciplineService.deleteViolationDisciplineInfo(id);
+	@PostMapping("/removeViolationDiscipline")
+	private Result removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline){
+		omsSupViolationDisciplineService.removeViolationDiscipline(omsSupViolationDiscipline);
 		return Result.success();
 	}
 

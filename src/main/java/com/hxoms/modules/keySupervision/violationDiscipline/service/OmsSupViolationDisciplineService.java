@@ -42,10 +42,10 @@ public interface OmsSupViolationDisciplineService {
 
 	/**
 	 * <b>删除违反外事人员信息</b>
-	 * @param id
+	 * @param omsSupViolationDiscipline
 	 * @return
 	 */
-	void deleteViolationDisciplineInfo(String id);
+	void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline);
 
 
 	/**
