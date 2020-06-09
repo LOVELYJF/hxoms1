@@ -165,6 +165,12 @@ public class OmsRegProcpersonInfo {
     private String secretLevel;
 
     /**
+     * 涉密岗位
+     */
+    @ColumnAnnotation(FieldName = "SECRET_POST", FieldDescription = "涉密岗位")
+    private String secretPost;
+
+    /**
      * 脱密期管理开始日期
      */
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE", FieldDescription = "脱密期管理开始日期")
@@ -1026,4 +1032,11 @@ public class OmsRegProcpersonInfo {
         this.py = py == null ? null : py.trim();
     }
 
+    public String getSecretPost() {
+        return secretPost;
+    }
+
+    public void setSecretPost(String secretPost) {
+        this.secretPost = secretPost;
+    }
 }
