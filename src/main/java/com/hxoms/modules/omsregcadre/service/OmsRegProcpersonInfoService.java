@@ -43,4 +43,12 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
     Object selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo);
 
     Object selectInfoByA0100(String a0100);
+
+    /**
+     * <b>查询登记备案库中的人员信息（出生日期）</b>
+     * @param a0100
+     * @author luoshuai
+     * @return
+     */
+    public Date getOmsRegProcpersonBirthDate(String a0100);
 }
