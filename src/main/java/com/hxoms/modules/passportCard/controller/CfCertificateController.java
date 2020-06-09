@@ -1,17 +1,19 @@
 package com.hxoms.modules.passportCard.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.util.Excel.PersonExcelToDB;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.entity.vo.CfCertificateVo;
+import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.service.CfCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+
+
 
 @RestController
 @RequestMapping("/cfCertificate")
@@ -58,29 +60,37 @@ public class CfCertificateController {
 
     /**
      * 条件查询所有
-     * @param cfCertificateVo
+     * @param cfCertificatePageParam
      * @return
      */
-    @GetMapping("/findAll")
-    public Result findAll(CfCertificateVo cfCertificateVo){
+    @GetMapping("/selectCfCertificate")
+    public Result selectCfCertificate(CfCertificatePageParam cfCertificatePageParam){
+        PageInfo<CfCertificate> cfCertificatePageInfo = cfCertificateService.selectCfCertificateIPage(cfCertificatePageParam);
 
-        Map<String,Object> map = new HashMap<String,Object>();
-
-        map.put("data",cfCertificateService.findAll(cfCertificateVo));
-        map.put("total",cfCertificateService.findAllCount(cfCertificateVo));
-        return Result.success(map);
+        return Result.success(cfCertificatePageInfo);
     }
 
 
     /**
      * 保存或者修改证照信息
-     * @param cfCertificateVo
+     * 如果是证照对于模块，对比完成之后，
+     * 如果正常，传入ID 保存单位，状态改成已取出
+     * 如果不正常，传入ID ，异常信息,状态改成以取出
+     * @param cfCertificate
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public Result saveOrUpdate(CfCertificateVo cfCertificateVo){
+    public Result saveOrUpdate(CfCertificate cfCertificate){
 
-        return Result.success(cfCertificateService.saveOrUpdate(cfCertificateVo));
+        return Result.success(cfCertificateService.saveOrUpdate(cfCertificate));
+
+    }
+
+
+    @GetMapping("/findOverduePass")
+    public Result findOverduePass(CfCertificate cfCertificate){
+
+        return Result.success("");
 
     }
 
@@ -94,6 +104,13 @@ public class CfCertificateController {
 
         return Result.success(cfCertificateService.delete(id));
 
+    }
+    /**
+     * 查询已经验证的护照信息的总数
+     */
+    @GetMapping("/findSuccessCf")
+    public Result findSuccessCf(){
+        return Result.success(cfCertificateService.findSuccessCf());
     }
 
 }
