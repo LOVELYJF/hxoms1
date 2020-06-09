@@ -13,6 +13,7 @@ import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapp
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -47,6 +48,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	private OmsSupFamilyMemberService omsSupFamilyMemberService;
 	@Autowired
 	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	@Autowired
+	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
 
 	/**
@@ -105,6 +108,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsSupNakedSign.setXzxgw("0");
 			omsSupNakedSign.setNsStatus("1");
 			omsSupNakedSign.setModifyTime(new Date());
+			//在登记备案库中查询人员的身份证出生日期
+			omsSupNakedSign.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupNakedSign.getA0100()));
 			//生成裸官信息主键
 			omsSupNakedSign.setId(UUIDGenerator.getPrimaryKey());
 			int count = omsSupNakedSignMapper.insert(omsSupNakedSign);
