@@ -65,6 +65,19 @@ public class OmsRegInitUtil {
             return calEnd.get(Calendar.YEAR) - calBegin.get(Calendar.YEAR);
         }
 
+
+        /**
+         * 计算两个日期相差天数
+         */
+        public static int dayDiff(Date startDate,Date endDate){
+            Calendar  from  =  Calendar.getInstance();
+            from.setTime(startDate);
+            Calendar  to  =  Calendar.getInstance();
+            to.setTime(endDate);
+            int day = (int) ((to.getTimeInMillis()  -  from.getTimeInMillis())  /  (24  *  3600  *  1000));
+            return day;
+        }
+
         /**
          * 判断当前姓名是否为复姓
          * @param name

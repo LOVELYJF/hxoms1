@@ -13,6 +13,9 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
+    private String b0100;
+
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -71,6 +74,17 @@ public class OmsEntryexitRecord {
 
     @ColumnAnnotation(FieldName = "VISITING_TASKS",   FieldDescription="出访任务出国（境）事项")
     private String visitingTasks;
+
+    @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    private String comparisionResult;
+
+    public String getComparisionResult() {
+        return comparisionResult;
+    }
+
+    public void setComparisionResult(String comparisionResult) {
+        this.comparisionResult = comparisionResult;
+    }
 
     public String getId() {
         return id;
@@ -214,5 +228,13 @@ public class OmsEntryexitRecord {
 
     public void setVisitingTasks(String visitingTasks) {
         this.visitingTasks = visitingTasks == null ? null : visitingTasks.trim();
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
     }
 }
