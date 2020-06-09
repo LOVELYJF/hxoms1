@@ -63,6 +63,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupDisciplinary.getDisciplinaryType() != null && omsSupDisciplinary.getDisciplinaryType() != "",
 						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
+				.eq("DC_STATUS", "1")
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
 						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
 				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
@@ -99,6 +100,8 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
 		omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
 		omsSupDisciplinary.setId(UUIDGenerator.getPrimaryKey());
+		omsSupDisciplinary.setModifyTime(new Date());
+		omsSupDisciplinary.setDcStatus("1");
 
 		int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
 		if(count <= 0){
@@ -131,7 +134,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 
 
-
+		omsSupDisciplinary.setModifyTime(new Date());
 		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
 			throw new CustomMessageException("操作失败");
@@ -141,12 +144,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 	/**
 	 * <b>删除处分信息</b>
-	 * @param id
+	 * @param omsSupDisciplinary
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void deleteDisciplinaryInfo(String id) {
-		int count = omsSupDisciplinaryMapper.deleteById(id);
+	public void removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		omsSupDisciplinary.setModifyTime(new Date());
+		omsSupDisciplinary.setDcStatus("0");
+		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
 			throw new CustomMessageException("操作失败");
 		}

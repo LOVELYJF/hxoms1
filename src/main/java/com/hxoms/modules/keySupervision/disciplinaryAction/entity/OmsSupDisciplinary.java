@@ -68,6 +68,10 @@ public class OmsSupDisciplinary {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date disciplinaryStartQuery;
 
+
+    @ColumnAnnotation(FieldName = "DC_STATUS",   FieldDescription="处分信息状态")
+    private String dcStatus;
+
     public String getId() {
         return id;
     }
@@ -194,5 +198,14 @@ public class OmsSupDisciplinary {
 
     public void setDisciplinaryStartQuery(Date disciplinaryStartQuery) {
         this.disciplinaryStartQuery = disciplinaryStartQuery;
+    }
+
+
+    public String getDcStatus() {
+        return dcStatus;
+    }
+
+    public void setDcStatus(String dcStatus) {
+        this.dcStatus = dcStatus == null ? null : dcStatus.trim();
     }
 }

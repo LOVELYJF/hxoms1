@@ -18,10 +18,11 @@
     <result column="INFLUENCE_TIME" jdbcType="VARCHAR" property="influenceTime" />
     <result column="DISCIPLINARY_END_QUERY" jdbcType="DATE" property="disciplinaryEndQuery" />
     <result column="DISCIPLINARY_START_QUERY" jdbcType="DATE" property="disciplinaryStartQuery" />
+    <result column="DC_STATUS" jdbcType="CHAR" property="dcStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, DISCIPLINARY_POST,
     DISCIPLINARY_TIME, DISCIPLINARY_DOCUMENT_NO, DISCIPLINARY_TYPE, DISCIPLINARY_END_TIME,
-    WHY_DISCIPLINARY, INFLUENCE_TIME, DISCIPLINARY_END_QUERY, DISCIPLINARY_START_QUERY
+    WHY_DISCIPLINARY, INFLUENCE_TIME, DISCIPLINARY_END_QUERY, DISCIPLINARY_START_QUERY,DC_STATUS
   </sql>
 </mapper>
