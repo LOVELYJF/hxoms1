@@ -38,6 +38,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private OmsRegRevokeApplyMapper revokeApplyMapper;
     @Autowired
     private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
+    @Autowired
+    private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
 
     /**
      * 初始化登记备案信息
@@ -618,6 +620,20 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setPersonManager((a01.getA0195()));
         orpInfo.setCreateTime(new Date());
         return orpInfo;
+    }
+
+
+    /**
+     * <b>查询登记备案库中的人员信息（出生日期）</b>
+     * @param a0100
+     * @author luoshuai
+     * @return
+     */
+    public Date getOmsRegProcpersonBirthDate(String a0100){
+        QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        queryWrapper.eq("A0100", a0100);
+        OmsRegProcpersonInfo omsRegProcpersonInfo = omsRegProcpersonInfoMapper.selectOne(queryWrapper);
+        return omsRegProcpersonInfo.getBirthDate();
     }
 
 }
