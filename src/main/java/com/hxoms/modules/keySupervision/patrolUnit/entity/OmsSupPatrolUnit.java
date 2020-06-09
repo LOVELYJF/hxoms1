@@ -10,13 +10,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @TableAnnotation(TableName = "oms_sup_patrol_unit", TableDescription="被巡视单位信息表")
 public class OmsSupPatrolUnit {
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "id",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "modify_user",   FieldDescription="修改用户")
+    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改用户")
     private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="修改时间")
+    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
@@ -46,6 +46,10 @@ public class OmsSupPatrolUnit {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date patrolEndTimeQuery;
+
+
+    @ColumnAnnotation(FieldName = "PU_STATUS",   FieldDescription="被巡视单位状态")
+    private String puStatus;
 
     public String getId() {
         return id;
@@ -117,5 +121,14 @@ public class OmsSupPatrolUnit {
 
     public void setPatrolEndTimeQuery(Date patrolEndTimeQuery) {
         this.patrolEndTimeQuery = patrolEndTimeQuery;
+    }
+
+
+    public String getPuStatus() {
+        return puStatus;
+    }
+
+    public void setPuStatus(String puStatus) {
+        this.puStatus = puStatus == null ? null : puStatus.trim();
     }
 }
