@@ -25,12 +25,13 @@
     <result column="ZJSJRQ" jdbcType="TIMESTAMP" property="zjsjrq" />
     <result column="DQZT" jdbcType="INTEGER" property="dqzt" />
     <result column="ISCABINET" jdbcType="INTEGER" property="iscabinet" />
+    <result column="SAVESTATUS" jdbcType="VARCHAR" property="savestatus" />
   </resultMap>
 
 
     <sql id="Base_Column_List">
     ID, A0100, GJ, ZWCSDD, YWCSDD, ZJHM, ZJLX, ZJXS, LOCATION, ZWQFDD, YWQFDD, ZWQFJG,
-    YWQFJG, QFRQ, YXQZ, ZJSJRQ, DQZT, ISCABINET
+    YWQFJG, QFRQ, YXQZ, ZJSJRQ, DQZT, ISCABINET,SAVESTATUS
   </sql>
 
     <select id="findAll" parameterType="com.hxoms.modules.passportCard.entity.vo.CfCertificateVo"
