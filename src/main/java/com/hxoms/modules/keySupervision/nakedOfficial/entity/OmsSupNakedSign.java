@@ -53,6 +53,9 @@ public class OmsSupNakedSign {
     @ColumnAnnotation(FieldName = "XZXGW",   FieldDescription="限制性岗位")
     private String xzxgw;
 
+    @ColumnAnnotation(FieldName = "NS_STATUS",   FieldDescription="裸官状态")
+    private String nsStatus;
+
     public String getId() {
         return id;
     }
@@ -155,5 +158,14 @@ public class OmsSupNakedSign {
 
     public void setXzxgw(String xzxgw) {
         this.xzxgw = xzxgw == null ? null : xzxgw.trim();
+    }
+
+
+    public String getNsStatus() {
+        return nsStatus;
+    }
+
+    public void setNsStatus(String nsStatus) {
+        this.nsStatus = nsStatus == null ? null : nsStatus.trim();
     }
 }

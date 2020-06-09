@@ -57,6 +57,10 @@ public class OmsSupDismissed {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date dismissedTimeEndQuery;
 
+    @ColumnAnnotation(FieldName = "DM_STATUS",   FieldDescription="免职撤职状态")
+    private String dmStatus;
+
+
     public String getId() {
         return id;
     }
@@ -159,5 +163,14 @@ public class OmsSupDismissed {
 
     public void setDismissedTimeEndQuery(Date dismissedTimeEndQuery) {
         this.dismissedTimeEndQuery = dismissedTimeEndQuery;
+    }
+
+
+    public String getDmStatus() {
+        return dmStatus;
+    }
+
+    public void setDmStatus(String dmStatus) {
+        this.dmStatus = dmStatus == null ? null : dmStatus.trim();
     }
 }

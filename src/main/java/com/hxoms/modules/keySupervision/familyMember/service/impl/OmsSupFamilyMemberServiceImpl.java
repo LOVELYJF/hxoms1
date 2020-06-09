@@ -158,9 +158,12 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateFamilyMemberInfo(List<A36> list) {
-		boolean flag = updateBatchById(list);
-		if(!flag){
-			throw new CustomMessageException("操作失败");
+		for(A36 a36 : list){
+			a36.setModifyTime(new Date());
+			int count = a36Mapper.updateById(a36);
+			if(count < 0){
+				throw new CustomMessageException("更新家庭成员信息失败");
+			}
 		}
 	}
 
@@ -173,6 +176,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	@Transactional(rollbackFor=Exception.class)
 	public void addToRegistration(List<A36> list) {
 		for(A36 a36 : list){
+			//根据裸官主键查询裸官信息
 			QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 			queryWrapper.eq("A0100", a36.getA0100());
 			OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
@@ -220,6 +224,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				Date date = UtilDateTime.toDateFormat(a36.getA3607(),"yyyy-MM-dd");
 				omsRegProcpersonInfo.setBirthDate(date);
 				omsRegProcpersonInfo.setCreateTime(new Date());
+				omsRegProcpersonInfo.setModifyTime(new Date());
 
 				int count = omsRegProcpersonInfoMapper.insert(omsRegProcpersonInfo);
 				if(count <= 0){
@@ -256,6 +261,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			omsRegProcpersonInfo.setCheckStatus("0");
 			omsRegProcpersonInfo.setIncumbencyStatus("0");
 			omsRegProcpersonInfo.setFjgnf("0");
+			omsRegProcpersonInfo.setModifyTime(new Date());
 			int count = omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
 			if(count < 0){
 				throw new CustomMessageException("裸官家庭成员撤销备案失败");
@@ -274,6 +280,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
 				omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
 				omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yy-MM-dd"));
+				omsRegRevokeApply.setStatus("0");
 
 				int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
 				if(result < 0){

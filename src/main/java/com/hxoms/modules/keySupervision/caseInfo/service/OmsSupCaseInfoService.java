@@ -41,14 +41,6 @@ public interface OmsSupCaseInfoService {
 
 
 	/**
-	 * <b>修改立案信息</b>
-	 * @param id
-	 * @return
-	 */
-	OmsSupCaseInfo updateCaseInfo(String id);
-
-
-	/**
 	 * <b保存修改的立案信息</b>
 	 * @param omsSupCaseInfo
 	 * @return
@@ -65,10 +57,10 @@ public interface OmsSupCaseInfoService {
 
 	/**
 	 * <b>删除立案信息</b>
-	 * @param id
+	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	void deleteCaseInfo(String id);
+	void removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
 
 
 	/**

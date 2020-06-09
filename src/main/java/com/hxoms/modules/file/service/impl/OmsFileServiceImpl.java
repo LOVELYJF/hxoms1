@@ -7,17 +7,16 @@ import com.hxoms.common.utils.FileUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsFileVO;
-import com.hxoms.modules.file.entity.OmsReplaceKeywords;
-import com.hxoms.modules.file.entity.OmsSealhandleRecords;
+import com.hxoms.modules.file.entity.*;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
 import com.hxoms.modules.file.mapper.OmsSealhandleRecordsMapper;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import com.hxoms.modules.privateabroad.service.OmsPriDelayApplyService;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,8 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsReplaceKeywordsMapper omsReplaceKeywordsMapper;
     @Autowired
     private OmsPriApplyMapper omsPriApplyMapper;
+    @Autowired
+    private OmsPriDelayApplyService omsPriDelayApplyService;
     @Autowired
     private OmsSealhandleRecordsMapper omsSealhandleRecordsMapper;
 
@@ -125,28 +126,14 @@ public class OmsFileServiceImpl implements OmsFileService {
                 //查看
                 OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadFileDestailParams.getApplyID());
                 // 替换关键词
-                for (OmsReplaceKeywords omsReplaceKeywords : omsReplaceKeywordList) {
-                    //反射机制代替关键词
-                    Class clazz = omsPriApplyVO.getClass();
-                    try {
-                        String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(omsPriApplyVO);
-                        omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
-                        omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                        throw new CustomMessageException("数据异常");
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                        throw new CustomMessageException("数据异常");
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                        throw new CustomMessageException("数据异常");
-                    }
-                }
-                result.put("omsFile", omsFile);
+                replaceKeywordsDestail(omsPriApplyVO, omsReplaceKeywordList, omsFile);
             }else if("oms_pri_delay_apply".equals(abroadFileDestailParams.getTableCode())){
-                //TODO 延期出国
+                //查看
+                OmsPriDelayApplyVO omsPriDelayApplyVO = omsPriDelayApplyService.selectDelayApplyById(abroadFileDestailParams.getApplyID());
+                // 替换关键词
+                replaceKeywordsDestail(omsPriDelayApplyVO, omsReplaceKeywordList, omsFile);
             }
+            result.put("omsFile", omsFile);
         }
         return result;
     }
@@ -179,33 +166,23 @@ public class OmsFileServiceImpl implements OmsFileService {
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
         String srcPath = omsFileUtils.getBaseDir() + File.separator;
         String destPath = omsFileUtils.getBaseDir() + File.separator;
-        //因私出国
+
         if ("oms_pri_apply".equals(abroadFileDestailParams.getTableCode())){
+            //因私出国
             //查看
             OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadFileDestailParams.getApplyID());
-            // 替换关键词
-            for (OmsReplaceKeywords omsReplaceKeywords : omsReplaceKeywordList) {
-                //反射机制代替关键词
-                Class clazz = omsPriApplyVO.getClass();
-                try {
-                    String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(omsPriApplyVO);
-                    keywords.put(omsReplaceKeywords.getKeyword(), value);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    throw new CustomMessageException("数据异常");
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                    throw new CustomMessageException("数据异常");
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                    throw new CustomMessageException("数据异常");
-                }
-            }
+            // 替换关键词封装
+            replaceKeywordsFile(omsPriApplyVO, omsReplaceKeywordList, keywords);
             srcPath += "yinsichuguo" + File.separator + omsFile.getFileName();
             destPath += "yinsichuguo" + File.separator + omsPriApplyVO.getId() + File.separator + omsFile.getFileName();
-
         }else if("oms_pri_delay_apply".equals(abroadFileDestailParams.getTableCode())){
-            //TODO 延期出国
+            //延期回国
+            //查看
+            OmsPriDelayApplyVO omsPriDelayApplyVO = omsPriDelayApplyService.selectDelayApplyById(abroadFileDestailParams.getApplyID());
+            // 替换关键词封装
+            replaceKeywordsFile(omsPriDelayApplyVO, omsReplaceKeywordList, keywords);
+            srcPath += "yanqihuiguo" + File.separator + omsFile.getFileName();
+            destPath += "yanqihuiguo" + File.separator + omsPriDelayApplyVO.getId() + File.separator + omsFile.getFileName();
         }
         //替换关键词
         boolean status = omsFileUtils.replaceAndGenerateWord(srcPath, destPath, keywords);
@@ -225,8 +202,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        omsFile.setModifyTime(new Date());
         omsFile.setModifyUser(userInfo.getId());
+        omsFile.setModifyTime(new Date());
         if (omsFileMapper.updateById(omsFile) < 1){
             throw new CustomMessageException("操作失败");
         }
@@ -249,15 +226,81 @@ public class OmsFileServiceImpl implements OmsFileService {
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String saveSealHandle(List<OmsSealhandleRecords> omsSealhandleRecords) {
-        for (OmsSealhandleRecords item : omsSealhandleRecords) {
-            item.setId(UUIDGenerator.getPrimaryKey());
-            if(omsSealhandleRecordsMapper.insert(item) < 1){
-                throw new CustomMessageException("操作失败");
+    public String saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS) {
+        for (OmsSealhandleRecordsVO item : omsSealhandleRecordsVOS) {
+            QueryWrapper<OmsSealhandleRecords> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("APPLY_ID", item.getApplyId())
+                    .eq("FILE_ID", item.getFileId());
+            if ("0".equals(item.getIsHandle())){
+                omsSealhandleRecordsMapper.delete(queryWrapper);
+            }else{
+                //没有则插入
+                if (omsSealhandleRecordsMapper.selectCount(queryWrapper) < 1){
+                    OmsSealhandleRecords omsSealhandleRecords = new OmsSealhandleRecords();
+                    omsSealhandleRecords.setId(UUIDGenerator.getPrimaryKey());
+                    omsSealhandleRecords.setApplyId(item.getApplyId());
+                    omsSealhandleRecords.setFileId(item.getFileId());
+                    if(omsSealhandleRecordsMapper.insert(omsSealhandleRecords) < 1){
+                        throw new CustomMessageException("操作失败");
+                    }
+                }
             }
         }
         return "操作成功";
     }
 
+    /**
+     * 关键词替换（非文件）
+     * @param t
+     * @param omsReplaceKeywordList
+     * @param omsFile
+     * @param <T>
+     */
+    private <T> void replaceKeywordsDestail(T t, List<OmsReplaceKeywords> omsReplaceKeywordList, OmsFile omsFile){
+        for (OmsReplaceKeywords omsReplaceKeywords : omsReplaceKeywordList) {
+            //反射机制代替关键词
+            Class clazz = t.getClass();
+            try {
+                String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
+                omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
+                omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            }
+        }
+    }
 
+    /**
+     * 关键词替换（文件）
+     * @param t
+     * @param omsReplaceKeywordList
+     * @param map
+     * @param <T>
+     */
+    private <T> void replaceKeywordsFile(T t, List<OmsReplaceKeywords> omsReplaceKeywordList, Map<String, String> map){
+        for (OmsReplaceKeywords omsReplaceKeywords : omsReplaceKeywordList) {
+            //反射机制代替关键词
+            Class clazz = t.getClass();
+            try {
+                String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
+                map.put(omsReplaceKeywords.getKeyword(), value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("数据异常");
+            }
+        }
+    }
 }

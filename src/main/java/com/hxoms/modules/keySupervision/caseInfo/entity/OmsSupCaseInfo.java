@@ -63,6 +63,10 @@ public class OmsSupCaseInfo {
     @ColumnAnnotation(FieldName = "DISCIPLINARY_ACTION_TYPE",   FieldDescription="处分类型")
     private String disciplinaryActionType;
 
+    @ColumnAnnotation(FieldName = "CI_STATUS",   FieldDescription="立案状态")
+    private String ciStatus;
+
+
     public String getId() {
         return id;
     }
@@ -181,5 +185,14 @@ public class OmsSupCaseInfo {
 
     public void setDisciplinaryActionType(String disciplinaryActionType) {
         this.disciplinaryActionType = disciplinaryActionType == null ? null : disciplinaryActionType.trim();
+    }
+
+
+    public String getCiStatus() {
+        return ciStatus;
+    }
+
+    public void setCiStatus(String ciStatus) {
+        this.ciStatus = ciStatus == null ? null : ciStatus.trim();
     }
 }

@@ -49,10 +49,10 @@ public interface OmsSupDisciplinaryService {
 
 	/**
 	 * <b>删除处分信息</b>
-	 * @param id
+	 * @param omsSupDisciplinary
 	 * @return
 	 */
-	void deleteDisciplinaryInfo(String id);
+	void removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary);
 
 
 	/**

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +58,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		QueryWrapper<OmsSupDismissed> queryWrapper = new QueryWrapper<OmsSupDismissed>();
 		queryWrapper
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
+				.eq("DM_STATUS", "1")
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
 				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
@@ -89,10 +92,12 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 
 
 
-
+		omsSupDismissed.setId(UUIDGenerator.getPrimaryKey());
+		omsSupDismissed.setModifyTime(new Date());
+		omsSupDismissed.setDmStatus("1");
 		int count = omsSupDismissedMapper.insert(omsSupDismissed);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("添加免职撤职人员失败");
 		}
 	}
 
@@ -104,23 +109,26 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		omsSupDismissed.setModifyTime(new Date());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("修改免职撤职人员失败");
 		}
 	}
 
 
 	/**
 	 * <b>删除免职撤职信息</b>
-	 * @param id
+	 * @param omsSupDismissed
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void deleteDismissedInfo(String id) {
-		int count = omsSupDismissedMapper.deleteById(id);
+	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		omsSupDismissed.setDmStatus("0");
+		omsSupDismissed.setModifyTime(new Date());
+		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("删除免职撤职人员失败");
 		}
 	}
 

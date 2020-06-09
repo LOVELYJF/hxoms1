@@ -2,7 +2,6 @@ package com.hxoms.modules.passportCard.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
-import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +14,10 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "COLLECTION_ID",   FieldDescription="催缴人")
     private String collectionId;
 
+
+    @ColumnAnnotation(FieldName = "CF_ID",   FieldDescription="证件号码ID，关联证件表主键ID")
+    private String cfId;
+
     @ColumnAnnotation(FieldName = "COLLECTION_TIME",   FieldDescription="催缴时间")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -26,7 +29,7 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "RESPONSIBLE_PHONE",   FieldDescription="经办人联系方式")
     private String responsiblePhone;
 
-    @ColumnAnnotation(FieldName = "SAVE_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "SAVE_TIME",   FieldDescription="保存时间")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date saveTime;
@@ -88,5 +91,13 @@ public class CfCertificateCollection {
 
     public void setCollectionContext(String collectionContext) {
         this.collectionContext = collectionContext == null ? null : collectionContext.trim();
+    }
+
+    public String getCfId() {
+        return cfId;
+    }
+
+    public void setCfId(String cfId) {
+        this.cfId = cfId;
     }
 }

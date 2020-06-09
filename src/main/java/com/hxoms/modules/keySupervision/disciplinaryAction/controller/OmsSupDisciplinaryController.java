@@ -76,12 +76,12 @@ public class OmsSupDisciplinaryController extends BaseController {
 
 	/**
 	 * <b>删除处分信息</b>
-	 * @param id
+	 * @param omsSupDisciplinary
 	 * @return
 	 */
-	@PostMapping("/deleteDisciplinaryInfo")
-	public Result deleteDisciplinaryInfo(String id){
-		omsSupDisciplinaryService.deleteDisciplinaryInfo(id);
+	@PostMapping("/removeDisciplinaryInfo")
+	public Result removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary){
+		omsSupDisciplinaryService.removeDisciplinaryInfo(omsSupDisciplinary);
 		return Result.success();
 	}
 

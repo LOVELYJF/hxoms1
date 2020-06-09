@@ -41,10 +41,10 @@ public interface OmsSupDismissedService {
 
 	/**
 	 * <b>删除免职撤职信息</b>
-	 * @param id
+	 * @param omsSupDismissed
 	 * @return
 	 */
-	void deleteDismissedInfo(String id);
+	void removeDismissedInfo(OmsSupDismissed omsSupDismissed);
 
 
 	/**

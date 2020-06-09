@@ -180,6 +180,9 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
     private String applyStatus;
 
+    @ColumnAnnotation(FieldName = "CANCEL_REASON",   FieldDescription="撤销原因")
+    private String cancelReason;
+
     @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书")
     private Integer isEntrust;
 
@@ -603,6 +606,14 @@ public class OmsPriApply {
 
     public void setApplyStatus(String applyStatus) {
         this.applyStatus = applyStatus == null ? null : applyStatus.trim();
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason == null ? null : cancelReason.trim();
     }
 
     public Integer getIsEntrust() {

@@ -45,14 +45,16 @@
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
     <result column="PY" jdbcType="VARCHAR" property="py" />
+    <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
+
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE,
     SURNAME, NAME, SEX, BIRTH_DATE, NATION, IDNUMBER, POLITICAL_AFFI, HEALTH, REGISTE_RESIDENCE_CODE,
     REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
     SECRET_LEVEL, SECRET_STARTDATE, SECRET_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY,
-    NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON,CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY
-
+    NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON,CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
   </sql>
 
   <select id="selectRegProcpersonInfo" resultType="java.lang.String">
@@ -100,7 +102,7 @@
               MAIN_LEADER, LICENCE_IDENTITY, NF,
               FJGNF, XRXGW, LQGZ, DQGZ,
               REPLYOPINION, ABROADTIME, REASON,
-              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY
+              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
     )
     value
     <foreach collection="list" item="item" index="index" separator=",">
@@ -117,7 +119,7 @@
       #{fjgnf,jdbcType=CHAR}, #{xrxgw,jdbcType=CHAR}, #{lqgz,jdbcType=CHAR}, #{dqgz,jdbcType=CHAR},
       #{replyopinion,jdbcType=CHAR}, #{abroadtime,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}
       #{createTime,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},
-      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR}
+      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},#{secretPost,jdbcType=VARCHAR}
       )
     </foreach>
 

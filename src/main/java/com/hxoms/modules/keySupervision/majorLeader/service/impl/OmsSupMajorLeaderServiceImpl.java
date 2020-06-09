@@ -6,7 +6,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
@@ -14,6 +13,7 @@ import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -42,6 +42,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	@Autowired
 	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
 	@Autowired
+	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
+	@Autowired
 	private B01Mapper b01Mapper;
 	@Autowired
 	private A01Mapper a01Mapper;
@@ -63,6 +65,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
 		queryWrapper.in(list != null && list.size() > 0,"WORK_UNIT", list)
+				.eq("ML_STATUS", "1")
 				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
 				.or()
@@ -100,18 +103,29 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			omsSupMajorLeader.setPoliticalAffi((String) list.get(0).get("politicalAffi"));
 			omsSupMajorLeader.setPinyin((String) list.get(0).get("a0102"));
 			omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
+			omsSupMajorLeader.setMlStatus("1");
+			omsSupMajorLeader.setModifyTime(new Date());
+
+			//在登记备案库中查询人员的身份证出生日期
+			omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
 			int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
 			if (count < 1) {
-				throw new CustomMessageException("操作失败");
-			}else {
-				//在备案库中设置该对象为主要领导
-				OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
-				omsRegProcpersonInfo.setMainLeader("1");
-				QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
-				queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-				omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				throw new CustomMessageException("添加主要领导失败");
+			}
+		}else{
+			//查询主要领导状态是否可用
+			if(majorLeaderList.get(0).getMlStatus().equals("1")){
+				throw new CustomMessageException("主要领导已经存在");
 			}
 		}
+
+		//在备案库中设置该对象为主要领导
+		OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+		omsRegProcpersonInfo.setMainLeader("1");
+		omsRegProcpersonInfo.setModifyTime(new Date());
+		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+		queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
+		omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 
 	}
 
@@ -124,14 +138,16 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
-
-		int count  =  omsSupMajorLeaderMapper.deleteById(omsSupMajorLeader.getId());
+		omsSupMajorLeader.setMlStatus("0");
+		omsSupMajorLeader.setModifyTime(new Date());
+		int count  =  omsSupMajorLeaderMapper.updateById(omsSupMajorLeader);
 		if(count < 1){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("取消主要领导信息失败");
 		}else {
 			//在备案库中取消主要领导标识
 			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 			omsRegProcpersonInfo.setMainLeader("0");
+			omsRegProcpersonInfo.setModifyTime(new Date());
 			QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
@@ -150,11 +166,17 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		//查询领导信息
 		for(PersonOrgOrder person : list){
 			OmsSupMajorLeader omsSupMajorLeader = new OmsSupMajorLeader();
-			//将查询到的主要领导保存到主要领导信息表中
+			//获得领导主键
 			String a0100 = person.getA01000();
-			//根据领导主键查询领导信息
-			List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
-			if(mapList.size() > 0){
+
+			//查询主要领导是否已经存在于主要领导信息表
+			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
+			queryWrapper.eq("A0100", a0100);
+			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
+			if(majorLeaderList.size() < 1) {
+				//根据领导主键查询领导信息
+				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
+
 				omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 				omsSupMajorLeader.setA0100((String) mapList.get(0).get("a0100"));
 				omsSupMajorLeader.setWorkUnit((String) mapList.get(0).get("b0101"));
@@ -164,35 +186,32 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				omsSupMajorLeader.setSex((String) mapList.get(0).get("sex"));
 				omsSupMajorLeader.setPoliticalAffi((String) mapList.get(0).get("politicalAffi"));
 
-				Date date = UtilDateTime.toDateFormat((String) mapList.get(0).get("a0107"), "yy-MM-dd");
-				omsSupMajorLeader.setBirthDate(date);
-
+				//在登记备案库中查询人员的身份证出生日期
+				omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
+				omsSupMajorLeader.setModifyTime(new Date());
 
 				omsSupMajorLeader.setPost((String) mapList.get(0).get("a0215a"));
 				omsSupMajorLeader.setRank((String) mapList.get(0).get("A0221"));
-			}else{
-				throw new CustomMessageException("该领导不存在");
-			}
-
-			//查询主要领导是否已经存在于主要领导信息表
-			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
-			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
-			if(majorLeaderList.size() < 1) {
+				omsSupMajorLeader.setMlStatus("1");
+				//进行保存领导信息
 				int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
-				if(count > 0){
-					//在备案库中设置该对象为主要领导
-					OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
-					omsRegProcpersonInfo.setMainLeader("1");
-					QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
-					wrapper.eq("A0100", omsSupMajorLeader.getA0100());
-					omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
-				}else {
-					throw new CustomMessageException("在登记备案库中修改为主要领导失败");
+				if(count < 0){
+					throw new CustomMessageException("添加主要领导信息失败");
 				}
-			}else{
-				throw new CustomMessageException("该主要领导已经存在");
+			}else {
+				//查询主要领导状态是否可用
+				if(majorLeaderList.get(0).getMlStatus().equals(1)){
+					//主要领导已经存在,进行下一轮循环
+					continue;
+				}
 			}
+			//在备案库中设置该对象为主要领导
+			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+			omsRegProcpersonInfo.setMainLeader("1");
+			omsRegProcpersonInfo.setModifyTime(new Date());
+			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
+			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
 		}
 	}
 

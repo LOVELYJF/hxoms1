@@ -18,11 +18,12 @@
     <result column="INFLUENCE_TIME" jdbcType="VARCHAR" property="influenceTime" />
     <result column="VIOLATION_END_TIME" jdbcType="DATE" property="violationEndTime" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="VD_STATUS" jdbcType="CHAR" property="vdStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, VIOLATION_DIS_POST,
     VIOLATION_DIS_TYPE, VIOLATION_DIS_TIME, VIOLATION_TIME_START_QUERY, VIOLATION_TIME_END_QUERY,
-    VIOLATION_DOCUMENT_NO, INFLUENCE_TIME, VIOLATION_END_TIME, DESCRIPTION
+    VIOLATION_DOCUMENT_NO, INFLUENCE_TIME, VIOLATION_END_TIME, DESCRIPTION,VD_STATUS
   </sql>
 
 </mapper>

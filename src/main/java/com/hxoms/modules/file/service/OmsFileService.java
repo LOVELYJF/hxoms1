@@ -2,7 +2,7 @@ package com.hxoms.modules.file.service;
 
 import com.hxoms.modules.file.entity.OmsFile;
 import com.hxoms.modules.file.entity.OmsFileVO;
-import com.hxoms.modules.file.entity.OmsSealhandleRecords;
+import com.hxoms.modules.file.entity.OmsSealhandleRecordsVO;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +44,9 @@ public interface OmsFileService {
 
     /**
      * 保存签字盖章
-     * @param omsSealhandleRecords
+     * @param omsSealhandleRecordsVOS
      * @return
      * @throws Exception
      */
-    String saveSealHandle(List<OmsSealhandleRecords> omsSealhandleRecords);
+    String saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS);
 }

@@ -96,6 +96,17 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效0:有效，1:无效")
     private int isValid;
 
+    @ColumnAnnotation(FieldName = "SAVESTATUS",   FieldDescription="证照当前状态(0:正常,1:超期未归还,2:过期证照,3:注销,4:转出,5:,6:验证失败,7:失效证照,8:其他)")
+    private String savestatus;
+
+    public String getSavestatus() {
+        return savestatus;
+    }
+
+    public void setSavestatus(String savestatus) {
+        this.savestatus = savestatus;
+    }
+
     public int getIsValid() {
         return isValid;
     }

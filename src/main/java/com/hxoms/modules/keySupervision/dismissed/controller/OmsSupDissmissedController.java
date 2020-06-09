@@ -63,12 +63,12 @@ public class OmsSupDissmissedController extends BaseController {
 
 	/**
 	 * <b>删除免职撤职信息</b>
-	 * @param id
+	 * @param omsSupDismissed
 	 * @return
 	 */
 	@PostMapping("/deleteDismissedInfo")
-	public Result deleteDismissedInfo(String id){
-		omsSupDismissedService.deleteDismissedInfo(id);
+	public Result removeDismissedInfo(OmsSupDismissed omsSupDismissed){
+		omsSupDismissedService.removeDismissedInfo(omsSupDismissed);
 		return Result.success();
 	}
 
