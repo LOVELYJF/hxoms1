@@ -7,10 +7,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
-import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendPersonMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
-import com.hxoms.support.b01.mapper.B01Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +34,11 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	 */
 	public Page<OmsSupSuspendUnit> getSuspendUnitInfo(Page<OmsSupSuspendUnit> page, OmsSupSuspendUnit omsSupSuspendUnit) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
-		queryWrapper.eq(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
-				"UNIT",omsSupSuspendUnit.getUnit())
+		queryWrapper
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
-						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery());
-
+						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())
+				.like(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
+				"UNIT",omsSupSuspendUnit.getUnit());
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupSuspendUnit> resultList = omsSupSuspendUnitMapper.selectList(queryWrapper);
 		PageInfo<OmsSupSuspendUnit> pageInfo = new PageInfo<OmsSupSuspendUnit>(resultList);
@@ -61,7 +59,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	public void updateSuspendUnitInfo(List<OmsSupSuspendUnit> list) {
 		boolean flag = updateBatchById(list);
 		if(!flag){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("修改暂停状态失败");
 		}
 	}
 
