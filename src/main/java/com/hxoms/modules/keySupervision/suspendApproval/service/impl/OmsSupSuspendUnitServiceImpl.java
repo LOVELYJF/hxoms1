@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	public Page<OmsSupSuspendUnit> getSuspendUnitInfo(Page<OmsSupSuspendUnit> page, OmsSupSuspendUnit omsSupSuspendUnit) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
 		queryWrapper
+				.eq("IS_EFFECTIVE", "1")
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
 						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())
 				.like(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
@@ -52,14 +54,19 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 
 	/**
 	 * <b>修改暂停审批单位信息(允许审批)</b>
-	 * @param list
+	 * @param idList
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void updateSuspendUnitInfo(List<OmsSupSuspendUnit> list) {
-		boolean flag = updateBatchById(list);
-		if(!flag){
-			throw new CustomMessageException("修改暂停状态失败");
+	public void updateSuspendUnitInfo(List<String> idList) {
+		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
+		queryWrapper.in(idList != null && idList.size() > 0, "ID", idList);
+		OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
+		omsSupSuspendUnit.setStatus("允许审批");
+		omsSupSuspendUnit.setModifyTime(new Date());
+		int count = omsSupSuspendUnitMapper.update(omsSupSuspendUnit, queryWrapper);
+		if(count < 0){
+			throw new CustomMessageException("修改状态失败");
 		}
 	}
 
