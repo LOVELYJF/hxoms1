@@ -55,13 +55,19 @@ public class OmsSupSuspendPerson {
     @ColumnAnnotation(FieldName = "SUSPEND_REASON",   FieldDescription="暂停原因")
     private String suspendReason;
 
-    @ColumnAnnotation(FieldName = "SUSPEND_STRAT_TIME_QUERY",   FieldDescription="暂停查询开始时间")
+    @ColumnAnnotation(FieldName = "SUSPEND_START_TIME_QUERY",   FieldDescription="暂停查询开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date suspendStratTimeQuery;
+    private Date suspendStartTimeQuery;
 
     @ColumnAnnotation(FieldName = "SUSPEND_END_TIME_QUERY",   FieldDescription="暂停查询结束时间")
-    private String suspendEndTimeQuery;
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date suspendEndTimeQuery;
+
+    @ColumnAnnotation(FieldName = "IS_EFFECTIVE",   FieldDescription="是否有效")
+    private String isEffective;
+
 
     public String getId() {
         return id;
@@ -167,19 +173,28 @@ public class OmsSupSuspendPerson {
         this.suspendReason = suspendReason == null ? null : suspendReason.trim();
     }
 
-    public Date getSuspendStratTimeQuery() {
-        return suspendStratTimeQuery;
+    public Date getSuspendStartTimeQuery() {
+        return suspendStartTimeQuery;
     }
 
-    public void setSuspendStratTimeQuery(Date suspendStratTimeQuery) {
-        this.suspendStratTimeQuery = suspendStratTimeQuery;
+    public void setSuspendStartTimeQuery(Date suspendStartTimeQuery) {
+        this.suspendStartTimeQuery = suspendStartTimeQuery;
     }
 
-    public String getSuspendEndTimeQuery() {
+    public Date getSuspendEndTimeQuery() {
         return suspendEndTimeQuery;
     }
 
-    public void setSuspendEndTimeQuery(String suspendEndTimeQuery) {
-        this.suspendEndTimeQuery = suspendEndTimeQuery == null ? null : suspendEndTimeQuery.trim();
+    public void setSuspendEndTimeQuery(Date suspendEndTimeQuery) {
+        this.suspendEndTimeQuery = suspendEndTimeQuery;
+    }
+
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
     }
 }
