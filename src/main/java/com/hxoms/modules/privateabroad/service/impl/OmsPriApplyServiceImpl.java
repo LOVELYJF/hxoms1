@@ -7,6 +7,7 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
@@ -56,6 +57,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsSupDismissedMapper omsSupDissmissedMapper;
     @Autowired
     private CfCertificateMapper cfCertificateMapper;
+    @Autowired
+    private OmsConditionService omsConditionService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -118,12 +121,15 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 .eq("IS_VALID", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
+        //约束条件
+        List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, "oms_pri_apply");
+        omsPriApplyVO.setCondition(condition);
         return omsPriApplyVO;
     }
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
+    public List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
@@ -178,7 +184,9 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (result < 1){
             throw new CustomMessageException("申请失败");
         }
-        return "申请成功";
+        //约束条件
+        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriApply.getId(), "oms_pri_apply");
+        return condition;
     }
 
     @Override
@@ -202,7 +210,11 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(omsPriApply.getApplyStatus()) && StringUtils.isBlank(omsPriApply.getId())){
             throw new CustomMessageException("参数错误");
         }
+        //撤销
+        if ("14".equals(omsPriApply.getApplyStatus())){
 
+        }
+        //撤回
         int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
         if (updateStatus < 1){
             throw new CustomMessageException("操作失败");

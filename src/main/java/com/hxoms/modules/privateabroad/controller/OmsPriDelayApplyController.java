@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @desc: 延期回国
  * @author: lijing
@@ -44,8 +47,8 @@ public class OmsPriDelayApplyController {
      */
     @PostMapping("/insertOrUpdateApply")
     public Result insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) throws Exception {
-        String result = omsPriDelayApplyService.insertOrUpdateApply(omsPriDelayApply);
-        return Result.success().setMsg(result);
+        List<Map<String, String>> result = omsPriDelayApplyService.insertOrUpdateApply(omsPriDelayApply);
+        return Result.success(result);
     }
 
     /**

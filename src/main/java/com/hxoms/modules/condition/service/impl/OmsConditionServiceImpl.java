@@ -38,14 +38,22 @@ public class OmsConditionServiceImpl implements OmsConditionService {
         }
         String a0100 = "";
         if ("oms_pri_apply".equals(type) || "oms_pri_delay_apply".equals(type)){
-            //因私出国, 因公出国
+            //因私出国, 延期回国
             OmsPriApply omsPriApply = omsPriApplyMapper.selectById(applyId);
             if (omsPriApply == null){
                 throw new CustomMessageException("申请不存在");
             }
             a0100 = omsPriApply.getA0100();
         }
-        return checkPriApply(a0100, applyId, type);
+        return checkApply(a0100, applyId, type);
+    }
+
+    @Override
+    public List<Map<String, String>> checkConditionByA0100(String a0100, String type) {
+        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(type)){
+            throw new CustomMessageException("参数错误");
+        }
+        return checkApplyByA0100(a0100, type);
     }
 
     /**
@@ -55,7 +63,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
      * @param type 因公 因私 延期回国
      * @return
      */
-    public List<Map<String, String>> checkPriApply(String a0100, String applyId, String type) {
+    public List<Map<String, String>> checkApply(String a0100, String applyId, String type) {
         //结果
         List<Map<String, String>> result = new ArrayList<>();
         //登录用户信息
@@ -81,6 +89,52 @@ public class OmsConditionServiceImpl implements OmsConditionService {
                     //条件标题
                     map.put("title", omsCondition.getName());
                     map.put("desc", omsCondition.getDescription());
+                    if (count > 0) {
+                        //不符合条件
+                        map.put("isFit" , "0");
+                    }else{
+                        //符合条件
+                        map.put("isFit" , "1");
+                    }
+                    result.add(map);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 选择人员约束条件校验
+     * @param a0100 申请信息
+     * @param type 因公 因私 延期回国
+     * @return
+     */
+    public List<Map<String, String>> checkApplyByA0100(String a0100, String type) {
+        //结果
+        List<Map<String, String>> result = new ArrayList<>();
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //约束条件
+        QueryWrapper<OmsCondition> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("condition_type", type)
+                .eq("CHECK_TYPE", 1)
+                .orderByAsc("check_type");
+        List<OmsCondition> omsConditions = omsConditionMapper.selectList(queryWrapper);
+
+        if (omsConditions != null && omsConditions.size() > 0){
+            //检验条件
+            for (OmsCondition omsCondition : omsConditions) {
+                String sql = omsCondition.getSqlContent();
+                if (!StringUtils.isBlank(sql)) {
+                    Map<String, String> map = new HashMap<>();
+                    sql = sql
+                            .replace("@a0100", a0100)
+                            .replace("@loginA0100", userInfo.getId());
+
+                    int count = omsConditionMapper.excuteSelectSql(sql);
+                    //条件标题
+                    map.put("desc", omsCondition.getDescription());
+                    map.put("title", omsCondition.getName());
                     if (count > 0) {
                         //不符合条件
                         map.put("isFit" , "0");

@@ -7,6 +7,7 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc: 延期回国
@@ -33,6 +35,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
     @Autowired
     private OmsPriApplyService omsPriApplyService;
+    @Autowired
+    private OmsConditionService omsConditionService;
 
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -48,7 +52,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     }
 
     @Override
-    public String insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) {
+    public List<Map<String, String>> insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsPriDelayApply.getId())){
@@ -67,7 +71,9 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
-        return "操作成功";
+        //约束条件
+        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriDelayApply.getApplyId(), "oms_pri_delay_apply");
+        return condition;
     }
 
     @Override
