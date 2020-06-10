@@ -41,7 +41,7 @@ public class OmsSupSuspendUnitController {
 	 * @return
 	 */
 	@PostMapping("/updateSuspendUnitInfo")
-	public Result updateSuspendUnitInfo(@RequestParam(value = "idList",required = false) List<String> idList){
+	public Result updateSuspendUnitInfo(@RequestParam(value = "idList") List<String> idList){
 		omsSupSuspendUnitService.updateSuspendUnitInfo(idList);
 		return Result.success();
 	}
