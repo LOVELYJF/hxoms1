@@ -3,7 +3,9 @@ package com.hxoms.modules.passportCard.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.entity.vo.CfCertificateVo;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
     //Integer findAllCount(CfCertificate cfCertificate);
 
-    List<CfCertificate> findOverduePass(CfCertificatePageParam cfCertificatePageParam);
+    List<CfCertificateReminder> findOverduePass(CfCertificateReminderParam cfCertificateReminderParam);
 
     CfCertificate findCfById(String id);
 

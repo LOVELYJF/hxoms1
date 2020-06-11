@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.util.Excel.PersonExcelToDB;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.service.CfCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -87,10 +89,15 @@ public class CfCertificateController {
     }
 
 
+    /**
+     * 查找过期证照
+     * @param cfCertificateReminderParam
+     * @return
+     */
     @GetMapping("/findOverduePass")
-    public Result findOverduePass(CfCertificate cfCertificate){
+    public Result findOverduePass(CfCertificateReminderParam cfCertificateReminderParam){
 
-        return Result.success("");
+        return Result.success(cfCertificateService.findOverduePass(cfCertificateReminderParam));
 
     }
 

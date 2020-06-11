@@ -5,7 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.entity.vo.CfCertificateVo;
 import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.service.CfCertificateService;
@@ -67,8 +69,11 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
 
     @Override
-    public PageInfo<CfCertificate> findOverduePass(CfCertificatePageParam cfCertificatePageParam) {
-        return null;
+    public PageInfo<CfCertificateReminder> findOverduePass(CfCertificateReminderParam cfCertificateReminderParam) {
+        PageHelper.startPage(cfCertificateReminderParam.getPageNum(),cfCertificateReminderParam.getPageSize());
+        List<CfCertificateReminder> cfCertificateReminderList= cfCertificateMapper.findOverduePass(cfCertificateReminderParam);
+        PageInfo<CfCertificateReminder> pageInfo = new PageInfo(cfCertificateReminderList);
+        return pageInfo;
     }
 
     public Integer findSuccessCf(){

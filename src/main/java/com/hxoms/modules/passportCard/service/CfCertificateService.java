@@ -3,7 +3,9 @@ package com.hxoms.modules.passportCard.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.entity.vo.CfCertificateVo;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public interface CfCertificateService extends IService<CfCertificate> {
    boolean delete(String id);
 
    //查询所有需要上缴的证照信息
-   PageInfo<CfCertificate> findOverduePass(CfCertificatePageParam cfCertificatePageParam);
+   PageInfo<CfCertificateReminder> findOverduePass(CfCertificateReminderParam cfCertificateReminderParam);
 
    //查询没有维护的证照信息
    Integer findSuccessCf();
