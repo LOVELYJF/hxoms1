@@ -157,7 +157,7 @@ public class Constants {
      * 因公 业务
      *
      */
-    public  static String[] public_business ={"pu1","pu2","pu3","pu4"};
+    public  static String[] public_business ={"1","2","3"};
     /**
      * 因公 业务 状态名称
      *
@@ -168,18 +168,20 @@ public class Constants {
      * 因私 业务
      *
      */
-    public  static String[] private_business ={"pr1","pr2","pr3","pr4","pr5","pr6","pr7"};
+    public  static String[] private_business ={"1","2","3","4","29","30","31"};
     /**
      * 因私 业务 状态名称
      *
      */
-    public  static String[] private_businessName ={"草稿","生成材料","打印材料","自评上报","待领证","已领证","撤销"};
+    public  static String[] private_businessName ={"草稿","生成材料","打印材料清单","自评","待领证","已领证","撤销"};
 
     /**
      *  干部监督处业务
+     *
+     *  数字 从 20 开始
      * */
 
-    public static String[] leader_business={"le1","le2","le3","le4","le5","le6","le7","le8","le9"};
+    public static String[] leader_business={"20","21","22","23","24","25","26","27","28"};
 
 
     /**
