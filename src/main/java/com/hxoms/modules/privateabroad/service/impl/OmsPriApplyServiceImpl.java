@@ -60,7 +60,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
         if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())){
-            omsPriApplyIPageParam.setApplyStatus(omsPriApplyIPageParam.getApplyStatusString().split(","));
+            //omsPriApplyIPageParam.setApplyStatus();
         }
         //分页
         PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum(), omsPriApplyIPageParam.getPageSize());

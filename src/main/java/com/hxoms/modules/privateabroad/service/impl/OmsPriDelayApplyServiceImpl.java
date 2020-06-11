@@ -38,7 +38,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
         if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())){
-            omsPriApplyIPageParam.setApplyStatus(omsPriApplyIPageParam.getApplyStatusString().split(","));
+           // omsPriApplyIPageParam.setApplyStatus(omsPriApplyIPageParam.getApplyStatusString().split(","));
         }
         //分页
         PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum(), omsPriApplyIPageParam.getPageSize());
