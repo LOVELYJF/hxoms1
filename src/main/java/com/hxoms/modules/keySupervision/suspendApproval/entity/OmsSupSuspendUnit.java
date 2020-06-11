@@ -48,6 +48,10 @@ public class OmsSupSuspendUnit {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date suspendEndTimeQuery;
 
+    @ColumnAnnotation(FieldName = "IS_EFFECTIVE",   FieldDescription="是否有效")
+    private String isEffective;
+
+
     public String getId() {
         return id;
     }
@@ -126,5 +130,14 @@ public class OmsSupSuspendUnit {
 
     public void setSuspendEndTimeQuery(Date suspendEndTimeQuery) {
         this.suspendEndTimeQuery = suspendEndTimeQuery;
+    }
+
+
+    public String getIsEffective() {
+        return isEffective;
+    }
+
+    public void setIsEffective(String isEffective) {
+        this.isEffective = isEffective == null ? null : isEffective.trim();
     }
 }

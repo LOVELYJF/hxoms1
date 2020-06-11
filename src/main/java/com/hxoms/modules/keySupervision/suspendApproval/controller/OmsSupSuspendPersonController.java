@@ -38,12 +38,12 @@ public class OmsSupSuspendPersonController {
 
 	/**
 	 * <b>修改暂停审批人员信息(允许审批)</b>
-	 * @param list
+	 * @param idList
 	 * @return
 	 */
 	@PostMapping("/updateSuspendPersonInfo")
-	public Result updateSuspendPersonInfo(@RequestBody List<OmsSupSuspendPerson> list){
-		omsSupSuspendPersonService.updateSuspendPersonInfo(list);
+	public Result updateSuspendPersonInfo(List<String> idList){
+		omsSupSuspendPersonService.updateSuspendPersonInfo(idList);
 		return Result.success();
 	}
 }

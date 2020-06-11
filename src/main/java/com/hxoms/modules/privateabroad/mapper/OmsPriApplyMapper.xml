@@ -51,7 +51,7 @@
     <result column="PASSPORT_TERM" jdbcType="TIMESTAMP" property="passportTerm" />
     <result column="FUNDS_SOURCE" jdbcType="VARCHAR" property="fundsSource" />
     <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
-    <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="APPLY_STATUS" jdbcType="INTEGER" property="applyStatus" />
     <result column="CANCEL_REASON" jdbcType="VARCHAR" property="cancelReason" />
     <result column="IS_ENTRUST" jdbcType="INTEGER" property="isEntrust" />
     <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
@@ -121,7 +121,7 @@
     select op.A0100 as a0100,
            op.NAME as name,
            op.SEX as sex,
-           op.BIRTH_DATE as birthDate,
+           orp.BIRTH_DATE as birthDate,
            orp.IDNUMBER as idnumber,
            orp.POLITICAL_AFFI as politicalOutlook,
            orp.POST as postrank,
@@ -130,11 +130,11 @@
            orp.SECRET_LEVEL as classificationLevel,
            orp.DECRYPT_STARTDATE as declassificaStarttime,
            orp.DECRYPT_ENDDATE as declassificaEndtime,
-           orp.CLASSIFICA_POST as classificaPost,
+           orp.SECRET_POST as classificaPost,
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           orp.RF_B0000 as b0100,
+           orp.RF_B0000 as b0100
 
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
     where 1=1

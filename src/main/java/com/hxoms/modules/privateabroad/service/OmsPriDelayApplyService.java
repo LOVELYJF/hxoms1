@@ -5,6 +5,9 @@ import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 
+import java.util.List;
+import java.util.Map;
+
 public interface OmsPriDelayApplyService {
     /**
      * 延期回国申请列表
@@ -17,7 +20,7 @@ public interface OmsPriDelayApplyService {
      * @param omsPriDelayApply  申请接收参数类
      * @return
      */
-    String insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply);
+    List<Map<String, String>> insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply);
     /**
      * 修改延期回国申请状态
      * @param omsPriDelayApply 申请id

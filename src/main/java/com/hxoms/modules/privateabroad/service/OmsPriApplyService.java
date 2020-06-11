@@ -8,6 +8,7 @@ import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OmsPriApplyService {
     /**
@@ -31,7 +32,7 @@ public interface OmsPriApplyService {
      * @return
      * @throws Exception
      */
-    String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
+    List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
     /**
      * 删除申请
      * @param id 申请id

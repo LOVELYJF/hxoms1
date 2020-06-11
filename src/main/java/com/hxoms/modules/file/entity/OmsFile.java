@@ -25,7 +25,7 @@ public class OmsFile {
     @ColumnAnnotation(FieldName = "FILE_NAME",   FieldDescription="文件名称")
     private String fileName;
 
-    @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="文件类别（1系统 2其他）")
+    @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="文件类别（1系统 2非涉密人员 3涉密人员（原单位涉密人员） 4涉密人员（原单位脱密期人员））")
     private String fileType;
 
     @ColumnAnnotation(FieldName = "TABLE_CODE",   FieldDescription="关联模块(因公、因私、延期回国)")

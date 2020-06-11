@@ -101,6 +101,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	@Transactional(rollbackFor=Exception.class)
 	public void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 		omsSupPatrolUnit.setPuStatus("0");
+		omsSupPatrolUnit.setModifyTime(new Date());
 		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("删除被巡视单位失败");
