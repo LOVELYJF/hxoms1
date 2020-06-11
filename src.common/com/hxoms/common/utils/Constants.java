@@ -168,12 +168,12 @@ public class Constants {
      * 因私 业务
      *
      */
-    public  static int[] private_business ={1,2,3,4,29,30,31};
+    public  static int[] private_business ={1,2,3,4,5,29,30,31};
     /**
      * 因私 业务 状态名称
      *
      */
-    public  static String[] private_businessName ={"草稿","生成材料","打印材料清单","自评","待领证","已领证","撤销"};
+    public  static String[] private_businessName ={"草稿","生成材料","打印材料清单","签字盖章","自评","待领证","已领证","撤销"};
 
     /**
      *  干部监督处业务
