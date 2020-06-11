@@ -157,7 +157,7 @@ public class Constants {
      * 因公 业务
      *
      */
-    public  static String[] public_business ={"1","2","3"};
+    public  static int[] public_business ={1,2,3};
     /**
      * 因公 业务 状态名称
      *
@@ -168,7 +168,7 @@ public class Constants {
      * 因私 业务
      *
      */
-    public  static String[] private_business ={"1","2","3","4","29","30","31"};
+    public  static int[] private_business ={1,2,3,4,29,30,31};
     /**
      * 因私 业务 状态名称
      *
@@ -182,7 +182,7 @@ public class Constants {
      * */
 
 
-    public static String[] leader_business={"20","21","22","23","24","25","26","27","28"};
+    public static int[] leader_business={20,21,22,23,24,25,26,27,28};
 
 
     /**
