@@ -177,8 +177,8 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
-    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
-    private String applyStatus;
+    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料清单、4自评、5业务受理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
+    private Integer applyStatus;
 
     @ColumnAnnotation(FieldName = "CANCEL_REASON",   FieldDescription="撤销原因")
     private String cancelReason;
@@ -600,12 +600,12 @@ public class OmsPriApply {
         this.isComparison = isComparison == null ? null : isComparison.trim();
     }
 
-    public String getApplyStatus() {
+    public Integer getApplyStatus() {
         return applyStatus;
     }
 
-    public void setApplyStatus(String applyStatus) {
-        this.applyStatus = applyStatus == null ? null : applyStatus.trim();
+    public void setApplyStatus(Integer applyStatus) {
+        this.applyStatus = applyStatus;
     }
 
     public String getCancelReason() {

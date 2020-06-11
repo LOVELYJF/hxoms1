@@ -3,10 +3,7 @@ package com.hxoms.modules.privateabroad.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
@@ -57,6 +54,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsPriDelayApply.getId())){
             //添加
+            omsPriDelayApply.setApplyStatus(1);
             omsPriDelayApply.setId(UUIDGenerator.getPrimaryKey());
             omsPriDelayApply.setCreateUser(userInfo.getId());
             omsPriDelayApply.setCreateTime(new Date());
@@ -72,7 +70,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
             }
         }
         //约束条件
-        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriDelayApply.getApplyId(), "oms_pri_delay_apply");
+        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriDelayApply.getApplyId(), Constants.oms_business[2]);
         return condition;
     }
 
@@ -92,7 +90,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         //只能删除草稿状态的
         QueryWrapper<OmsPriDelayApply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        queryWrapper.eq("applyStatus", '1');  //草稿
+        queryWrapper.eq("applyStatus", 1);  //草稿
         int count = omsPriDelayApplyMapper.selectCount(queryWrapper);
         if (count == 0){
             throw new CustomMessageException("只能删除草稿");

@@ -37,7 +37,7 @@ public class OmsPriApplyIPageParam {
     //经办人（姓名或者拼音）
     private String createUser;
     //状态
-    private String[] applyStatus;
+    private Integer[] applyStatus;
     private String applyStatusString;
 
     public Integer getPageNum() {
@@ -104,11 +104,11 @@ public class OmsPriApplyIPageParam {
         this.createUser = createUser;
     }
 
-    public String[] getApplyStatus() {
+    public Integer[] getApplyStatus() {
         return applyStatus;
     }
 
-    public void setApplyStatus(String[] applyStatus) {
+    public void setApplyStatus(Integer[] applyStatus) {
         this.applyStatus = applyStatus;
     }
 

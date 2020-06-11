@@ -2,6 +2,7 @@ package com.hxoms.modules.condition.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.condition.entity.OmsCondition;
@@ -37,7 +38,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             throw new CustomMessageException("参数错误");
         }
         String a0100 = "";
-        if ("oms_pri_apply".equals(type) || "oms_pri_delay_apply".equals(type)){
+        if (Constants.oms_business[1].equals(type) || Constants.oms_business[2].equals(type)){
             //因私出国, 延期回国
             OmsPriApply omsPriApply = omsPriApplyMapper.selectById(applyId);
             if (omsPriApply == null){

@@ -1,6 +1,7 @@
 package com.hxoms.modules.selfestimate.service.impl;
 
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -75,7 +76,7 @@ public class OmsSelfestimateResultServiceImpl implements OmsSelfestimateResultSe
         omsSelfestimateResultitemResult.setOmsSelfestimateResultitems(omsSelfestimateResultitems);
         //查询出国人所在单位
         String b0100;
-        if ("oms_pri_apply".equals(type)){
+        if (Constants.oms_business[1].equals(type)){
             //因私出国
             OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(applyId);
             if (omsPriApplyVO != null){

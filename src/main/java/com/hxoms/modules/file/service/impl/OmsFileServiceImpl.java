@@ -3,10 +3,7 @@ package com.hxoms.modules.file.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.file.OmsFileUtils;
-import com.hxoms.common.utils.FileUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.file.entity.*;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
@@ -47,24 +44,30 @@ public class OmsFileServiceImpl implements OmsFileService {
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public List<OmsFile> selectFileListByCode(String tableCode) {
-        if (StringUtils.isBlank(tableCode)){
+    public List<OmsFile> selectFileListByCode(String tableCode, String a0100) {
+        if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(a0100)){
             throw new CustomMessageException("参数错误");
         }
+        //涉密信息
+        List<String> fileType = new ArrayList<>();
+        fileType.add("1"); //系统
+        //TODO 涉密信息
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("B0100", userInfo.getOrgId())
+                .in("FILE_TYPE",fileType)
                 .orderByAsc("CREATE_TIME");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
         if (omsFiles == null || omsFiles.size() < 1) {
             //初始化机构文件
             queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
-            .eq("B0100", "")
-            .or()
-            .isNull("B0100");
+                    .in("FILE_TYPE",fileType)
+                    .eq("B0100", "")
+                    .or()
+                    .isNull("B0100");
             List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
             if (omsFileSystem != null && omsFileSystem.size() > 0) {
                 //插入
@@ -77,10 +80,10 @@ public class OmsFileServiceImpl implements OmsFileService {
                     omsFileMapper.insert(omsfile);
                 }
                 //复制文件
-                if ("oms_pri_apply".equals(tableCode)){
+                if (Constants.oms_business[1].equals(tableCode)){
                     //因私出国
                     omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + userInfo.getOrgId());
-                } else if("oms_pri_delay_apply".equals(tableCode)){
+                } else if(Constants.oms_business[2].equals(tableCode)){
                     //延期回国
                     omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
                 }
@@ -122,12 +125,12 @@ public class OmsFileServiceImpl implements OmsFileService {
             result.put("omsReplaceKeywordList", omsReplaceKeywordList);
         } else if("0".equals(abroadFileDestailParams.getIsEdit())){
             //因私出国
-            if ("oms_pri_apply".equals(abroadFileDestailParams.getTableCode())){
+            if (Constants.oms_business[1].equals(abroadFileDestailParams.getTableCode())){
                 //查看
                 OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadFileDestailParams.getApplyID());
                 // 替换关键词
                 replaceKeywordsDestail(omsPriApplyVO, omsReplaceKeywordList, omsFile);
-            }else if("oms_pri_delay_apply".equals(abroadFileDestailParams.getTableCode())){
+            }else if(Constants.oms_business[2].equals(abroadFileDestailParams.getTableCode())){
                 //查看
                 OmsPriDelayApplyVO omsPriDelayApplyVO = omsPriDelayApplyService.selectDelayApplyById(abroadFileDestailParams.getApplyID());
                 // 替换关键词
@@ -167,7 +170,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         String srcPath = omsFileUtils.getBaseDir() + File.separator;
         String destPath = omsFileUtils.getBaseDir() + File.separator;
 
-        if ("oms_pri_apply".equals(abroadFileDestailParams.getTableCode())){
+        if (Constants.oms_business[1].equals(abroadFileDestailParams.getTableCode())){
             //因私出国
             //查看
             OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadFileDestailParams.getApplyID());
@@ -175,7 +178,7 @@ public class OmsFileServiceImpl implements OmsFileService {
             replaceKeywordsFile(omsPriApplyVO, omsReplaceKeywordList, keywords);
             srcPath += "yinsichuguo" + File.separator + omsFile.getFileName();
             destPath += "yinsichuguo" + File.separator + omsPriApplyVO.getId() + File.separator + omsFile.getFileName();
-        }else if("oms_pri_delay_apply".equals(abroadFileDestailParams.getTableCode())){
+        }else if(Constants.oms_business[2].equals(abroadFileDestailParams.getTableCode())){
             //延期回国
             //查看
             OmsPriDelayApplyVO omsPriDelayApplyVO = omsPriDelayApplyService.selectDelayApplyById(abroadFileDestailParams.getApplyID());
@@ -202,8 +205,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        omsFile.setModifyUser(userInfo.getId());
         omsFile.setModifyTime(new Date());
+        omsFile.setModifyUser(userInfo.getId());
         if (omsFileMapper.updateById(omsFile) < 1){
             throw new CustomMessageException("操作失败");
         }
