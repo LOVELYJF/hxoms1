@@ -5,7 +5,7 @@
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
-    <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="APPLY_STATUS" jdbcType="INTEGER" property="applyStatus" />
     <result column="CANCEL_REASON" jdbcType="VARCHAR" property="cancelReason" />
     <result column="ESTIMATE_RETURNTIME" jdbcType="TIMESTAMP" property="estimateReturntime" />
     <result column="DELAY_REASON" jdbcType="VARCHAR" property="delayReason" />

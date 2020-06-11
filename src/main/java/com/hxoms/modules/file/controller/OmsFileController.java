@@ -27,8 +27,8 @@ public class OmsFileController {
      * @return
      */
     @GetMapping("/selectFileListByCode")
-    public Result selectFileListByCode(String tableCode) {
-        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode);
+    public Result selectFileListByCode(String tableCode, String a0100) {
+        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode, a0100);
         return Result.success(list);
     }
 

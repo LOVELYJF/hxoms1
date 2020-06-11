@@ -24,8 +24,8 @@ public interface OmsSupSuspendPersonService {
 
 	/**
 	 * <b>修改暂停审批人员信息(允许审批)</b>
-	 * @param list
+	 * @param idList
 	 * @return
 	 */
-	void updateSuspendPersonInfo(List<OmsSupSuspendPerson> list);
+	void updateSuspendPersonInfo(List<String> idList);
 }

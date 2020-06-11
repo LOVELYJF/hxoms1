@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc: 因私出国境申请
@@ -71,8 +72,8 @@ public class OmsPriApplyController {
      */
     @PostMapping("/insertOrUpdatePriApply")
     public Result insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) throws Exception {
-        String result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
-        return Result.success().setMsg(result);
+        List<Map<String, String>> result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
+        return Result.success(result);
     }
 
     /**

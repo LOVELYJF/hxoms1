@@ -23,10 +23,10 @@ public interface OmsSupSuspendUnitService {
 
 	/**
 	 * <b>修改暂停审批单位信息(允许审批)</b>
-	 * @param list
+	 * @param idList
 	 * @return
 	 */
-	void updateSuspendUnitInfo(List<OmsSupSuspendUnit> list);
+	void updateSuspendUnitInfo(List<String> idList);
 
 
 }
