@@ -19,7 +19,7 @@
     <result column="QFRQ" jdbcType="TIMESTAMP" property="qfrq" />
     <result column="YXQZ" jdbcType="TIMESTAMP" property="yxqz" />
     <result column="ZJSJRQ" jdbcType="TIMESTAMP" property="zjsjrq" />
-    <result column="ISLOCK" jdbcType="INTEGER" property="isLock"/>
+    <result column="ISLOCK" jdbcType="INTEGER" property="islock"/>
     <result column="DQZT" jdbcType="INTEGER" property="dqzt" />
     <result column="ISCABINET" jdbcType="INTEGER" property="iscabinet" />
 
@@ -94,8 +94,8 @@
         ORDER BY cc.update_time DESC
     </select>
 
-    <select id="findOverduePass" parameterType="com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam"
-                                    resultType="com.hxoms.modules.passportCard.entity.CfCertificate">
+    <select id="findOverduePass" parameterType="com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam"
+                                    resultType="com.hxoms.modules.passportCard.entity.CfCertificateReminder">
         SELECT
         cf.*
         FROM

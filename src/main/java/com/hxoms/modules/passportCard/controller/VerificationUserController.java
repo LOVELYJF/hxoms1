@@ -40,7 +40,7 @@ public class VerificationUserController {
 
        boolean flag =  verificationUserService.verificationFingerprint(idNum,fingerprint);
 
-        return Result.success(flag);
+       return Result.success(flag);
 
     }
 

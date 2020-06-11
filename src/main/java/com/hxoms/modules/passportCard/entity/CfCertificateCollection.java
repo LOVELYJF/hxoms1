@@ -18,10 +18,13 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "CF_ID",   FieldDescription="证件号码ID，关联证件表主键ID")
     private String cfId;
 
-    @ColumnAnnotation(FieldName = "COLLECTION_TIME",   FieldDescription="催缴时间")
+    @ColumnAnnotation(FieldName = "COLLECTIONf_TIME",   FieldDescription="催缴时间")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date collectionTime;
+
+    @ColumnAnnotation(FieldName = "COLLECTION_TYPE",   FieldDescription=" 催缴类型-1:短信催缴 2:电话催缴")
+    private Integer collectionType;
 
     @ColumnAnnotation(FieldName = "RESPONSIBLE_USER",   FieldDescription="经办人")
     private String responsibleUser;
@@ -99,5 +102,13 @@ public class CfCertificateCollection {
 
     public void setCfId(String cfId) {
         this.cfId = cfId;
+    }
+
+    public Integer getCollectionType() {
+        return collectionType;
+    }
+
+    public void setCollectionType(Integer collectionType) {
+        this.collectionType = collectionType;
     }
 }

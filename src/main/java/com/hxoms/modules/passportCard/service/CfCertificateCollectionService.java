@@ -1,11 +1,11 @@
-package com.hxoms.modules.passportCard.mapper;
+package com.hxoms.modules.passportCard.service;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.passportCard.entity.CfCertificateCollection;
 
 import java.util.List;
 
-public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateCollection> {
+public interface CfCertificateCollectionService {
 
     //单条增加
     int insert(CfCertificateCollection record);
@@ -15,4 +15,5 @@ public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateC
 
     //条件查询
     List<CfCertificateCollection> selectByCfcertificateCollection(CfCertificateCollection cfCertificateCollection);
+
 }
