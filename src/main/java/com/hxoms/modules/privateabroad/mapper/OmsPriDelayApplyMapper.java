@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -15,4 +16,9 @@ public interface OmsPriDelayApplyMapper extends BaseMapper<OmsPriDelayApply> {
      * @return
      */
     List<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam);
+    /**
+     * 基本流程数据统计
+     * @return
+     */
+    List<CountStatusResult> selectCountStatus();
 }

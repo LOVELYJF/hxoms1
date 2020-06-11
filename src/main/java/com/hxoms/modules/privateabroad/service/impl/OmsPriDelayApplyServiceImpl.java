@@ -13,6 +13,7 @@ import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.privateabroad.service.OmsPriDelayApplyService;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
         if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())){
-           // omsPriApplyIPageParam.setApplyStatus(omsPriApplyIPageParam.getApplyStatusString().split(","));
+            String[] applyStatus = omsPriApplyIPageParam.getApplyStatusString().split(",");
+            omsPriApplyIPageParam.setApplyStatus((Integer[]) ConvertUtils.convert(applyStatus, Integer.class));
         }
         //分页
         PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum(), omsPriApplyIPageParam.getPageSize());
@@ -54,7 +56,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsPriDelayApply.getId())){
             //添加
-            omsPriDelayApply.setApplyStatus(1);
+            omsPriDelayApply.setApplyStatus(Constants.private_business[0]);
             omsPriDelayApply.setId(UUIDGenerator.getPrimaryKey());
             omsPriDelayApply.setCreateUser(userInfo.getId());
             omsPriDelayApply.setCreateTime(new Date());
@@ -63,6 +65,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
             }
         }else{
             //更新
+            omsPriDelayApply.setApplyStatus(Constants.private_business[0]);
             omsPriDelayApply.setModifyUser(userInfo.getId());
             omsPriDelayApply.setModifyTime(new Date());
             if (omsPriDelayApplyMapper.updateById(omsPriDelayApply) < 1){
@@ -90,7 +93,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         //只能删除草稿状态的
         QueryWrapper<OmsPriDelayApply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        queryWrapper.eq("applyStatus", 1);  //草稿
+        queryWrapper.eq("applyStatus", Constants.private_business[0]);  //草稿
         int count = omsPriDelayApplyMapper.selectCount(queryWrapper);
         if (count == 0){
             throw new CustomMessageException("只能删除草稿");

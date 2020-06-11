@@ -134,8 +134,8 @@
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           orp.RF_B0000 as b0100
-
+           orp.RF_B0000 as b0100,
+           orp.HEALTH as health
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
     where 1=1
       and op.A0100 = #{a0100}
@@ -162,5 +162,20 @@
            orp.IDENTITY as identifyType
     from oms_pri_apply opa left join oms_reg_procpersoninfo orp on opa.A0100 = orp.A0100
     where opa.ID = #{id}
+  </select>
+
+  <!--基本流程数据统计-->
+  <select id="selectCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
+    select "1.填写申请" as label, 1 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 1
+    union all
+    select "2.生成材料" as label, 2 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 2
+    union all
+    select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 3
+    union all
+    select "4.签字盖章" as label, 4 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 4
+    union all
+    select "5.自评" as label, 5 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 5
+    union all
+    select "6.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 20
   </select>
 </mapper>

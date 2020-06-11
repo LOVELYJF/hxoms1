@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -60,4 +61,19 @@ public interface OmsPriApplyService {
      * @return
      */
     OmsPriApplyVO selectPriApplyById(String id);
+
+    /**
+     * 基本流程数据统计
+     * @param type 因私 延期回国
+     * @return
+     */
+    List<CountStatusResult> selectCountStatus(String type);
+
+    /**
+     * 下一步（生成材料）
+     * @param applyId
+     * @return
+     * @throws Exception
+     */
+    List<Map<String, String>> nextCreateFile(String applyId, String type);
 }
