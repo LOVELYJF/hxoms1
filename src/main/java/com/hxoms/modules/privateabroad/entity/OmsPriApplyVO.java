@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc: 因私出国境申请扩展类
@@ -36,6 +37,8 @@ public class OmsPriApplyVO extends OmsPriApply{
     List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
     //证照信息
     List<CfCertificate> cfCertificates;
+    //约束条件
+    List<Map<String, String>> condition;
 
     public String getName() {
         return name;
@@ -115,5 +118,13 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setOmsSmrOldInfoVOS(List<OmsSmrOldInfoVO> omsSmrOldInfoVOS) {
         this.omsSmrOldInfoVOS = omsSmrOldInfoVOS;
+    }
+
+    public List<Map<String, String>> getCondition() {
+        return condition;
+    }
+
+    public void setCondition(List<Map<String, String>> condition) {
+        this.condition = condition;
     }
 }

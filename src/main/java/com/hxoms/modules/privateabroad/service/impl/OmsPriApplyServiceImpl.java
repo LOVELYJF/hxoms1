@@ -3,10 +3,8 @@ package com.hxoms.modules.privateabroad.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
+import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
@@ -56,6 +54,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsSupDismissedMapper omsSupDissmissedMapper;
     @Autowired
     private CfCertificateMapper cfCertificateMapper;
+    @Autowired
+    private OmsConditionService omsConditionService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -118,12 +118,15 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 .eq("IS_VALID", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
+        //约束条件
+        List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, Constants.oms_business[1]);
+        omsPriApplyVO.setCondition(condition);
         return omsPriApplyVO;
     }
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
+    public List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
@@ -147,7 +150,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         //基本信息保存
         //设置草稿状态
-        omsPriApply.setApplyStatus("1");
+        omsPriApply.setApplyStatus(1);
         //出国时长
         long day = omsPriApply.getReturnTime().getTime() - omsPriApply.getAbroadTime().getTime()/DateUtils.MILLIS_PER_DAY;
         omsPriApply.setOutsideTime((int) day);
@@ -178,14 +181,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (result < 1){
             throw new CustomMessageException("申请失败");
         }
-        return "申请成功";
+        //约束条件
+        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriApply.getId(), Constants.oms_business[1]);
+        return condition;
     }
 
     @Override
     public String deletePriApply(String id) {
         //只能删除草稿状态的
         QueryWrapper<OmsPriApply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("applyStatus", '1');  //草稿
+        queryWrapper.eq("applyStatus", 1);  //草稿
         queryWrapper.eq("id", id);
         int count = omsPriApplyMapper.selectCount(queryWrapper);
         if (count == 0){
@@ -199,10 +204,14 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
 
     @Override
     public String updateApplyStatus(OmsPriApply omsPriApply) {
-        if (StringUtils.isBlank(omsPriApply.getApplyStatus()) && StringUtils.isBlank(omsPriApply.getId())){
+        if (omsPriApply.getApplyStatus() != null && StringUtils.isBlank(omsPriApply.getId())){
             throw new CustomMessageException("参数错误");
         }
+        //撤销
+        if ("14".equals(omsPriApply.getApplyStatus())){
 
+        }
+        //撤回
         int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
         if (updateStatus < 1){
             throw new CustomMessageException("操作失败");

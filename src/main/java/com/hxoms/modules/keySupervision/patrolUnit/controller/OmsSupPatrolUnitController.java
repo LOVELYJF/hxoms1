@@ -65,9 +65,9 @@ public class OmsSupPatrolUnitController {
 	 * @param omsSupPatrolUnit
 	 * @return
 	 */
-	@PostMapping("/deletePatrolUnitInfo")
-	public Result deletePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit){
-		omsSupPatrolUnitService.deletePatrolUnitInfo(omsSupPatrolUnit);
+	@PostMapping("/removePatrolUnitInfo")
+	public Result removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit){
+		omsSupPatrolUnitService.removePatrolUnitInfo(omsSupPatrolUnit);
 		return Result.success();
 	}
 }

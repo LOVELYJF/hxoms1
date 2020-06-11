@@ -221,7 +221,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * @return
 	 */
 	public void getMajorLeaderInfoOut(List<OmsSupMajorLeader> list, HttpServletResponse response) {
-		if(list.size() < 1){
+		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
 			//创建HSSFWorkbook对象(excel的文档对象)

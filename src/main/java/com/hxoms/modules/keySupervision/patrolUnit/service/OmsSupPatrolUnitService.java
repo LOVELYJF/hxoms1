@@ -41,5 +41,5 @@ public interface OmsSupPatrolUnitService {
 	 * @param omsSupPatrolUnit
 	 * @return
 	 */
-	void deletePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit);
+	void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit);
 }

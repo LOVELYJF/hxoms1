@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public Page<OmsSupPatrolUnit> getPatrolUnitInfo(Page<OmsSupPatrolUnit> page, OmsSupPatrolUnit omsSupPatrolUnit) {
 		QueryWrapper<OmsSupPatrolUnit> queryWrapper = new QueryWrapper<OmsSupPatrolUnit>();
 		queryWrapper
+				.eq("PU_STATUS", "1")
 				.between(omsSupPatrolUnit.getPatrolStartTimeQuery() != null && omsSupPatrolUnit.getPatrolEndTimeQuery() != null,
 						"PATROL_START_TIME", omsSupPatrolUnit.getPatrolStartTimeQuery(), omsSupPatrolUnit.getPatrolEndTimeQuery())
 				.like(omsSupPatrolUnit.getUnit() != null && omsSupPatrolUnit.getUnit() != "",
@@ -51,7 +53,6 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 		PageInfo<OmsSupPatrolUnit> pageInfo = new PageInfo<OmsSupPatrolUnit>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -67,9 +68,11 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public void addPatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 
 		omsSupPatrolUnit.setId(UUIDGenerator.getPrimaryKey());
+		omsSupPatrolUnit.setModifyTime(new Date());
+		omsSupPatrolUnit.setPuStatus("1");
 		int count = omsSupPatrolUnitMapper.insert(omsSupPatrolUnit);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("增加被巡视单位失败");
 		}
 	}
 
@@ -82,9 +85,10 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	@Transactional(rollbackFor=Exception.class)
 	public void updatePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 		//根据主键修改
+		omsSupPatrolUnit.setModifyTime(new Date());
 		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("修改被巡视单位失败");
 		}
 	}
 
@@ -95,10 +99,12 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void deletePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
-		int count = omsSupPatrolUnitMapper.deleteById(omsSupPatrolUnit.getId());
+	public void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
+		omsSupPatrolUnit.setPuStatus("0");
+		omsSupPatrolUnit.setModifyTime(new Date());
+		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("删除被巡视单位失败");
 		}
 	}
 }

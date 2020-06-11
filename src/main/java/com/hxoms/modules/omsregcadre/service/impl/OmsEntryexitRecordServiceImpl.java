@@ -1,12 +1,21 @@
 package com.hxoms.modules.omsregcadre.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.OmsRegInitUtil;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
+import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
+import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +23,115 @@ import java.util.List;
 @Service
 public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecordMapper, OmsEntryexitRecord> implements OmsEntryexitRecordService {
 
+    @Autowired
+    private OmsPriApplyMapper priApplyMapper;
+    @Autowired
+    private CfCertificateMapper cfCertificateMapper;
+
 
     @Override
     public PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
-        List<OmsEntryexitRecord> omsPriApplyVOS = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
+        List<OmsEntryexitRecord> entryexitRecordsList = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
         //返回数据
-        PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(omsPriApplyVOS);
+        PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(entryexitRecordsList);
         return pageInfo;
+    }
+
+    // @Override
+    public List<OmsPriApply> queryPriApplyList(String a0100) {
+        QueryWrapper<OmsPriApply> priApplyWrapper = new QueryWrapper<OmsPriApply>();
+        priApplyWrapper.eq("A0100", a0100);
+        //比对标识，默认为未比对
+        priApplyWrapper.eq("IS_COMPARISON",'0');
+        //因私申请出国境记录查询
+        List<OmsPriApply>  priApplyList = priApplyMapper.selectList(priApplyWrapper);
+
+        QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
+        exitWrapper.eq("A0100", a0100);
+        //比对结果为null的出入境记录查询
+        exitWrapper.eq("COMPARISON_RESULT",null);
+        List<OmsEntryexitRecord> entryexitRecordsList = baseMapper.selectList(exitWrapper);
+
+        //证件类型（护照1、港澳通行证2、台湾通行证4 ）
+        CfCertificate certificate = new CfCertificate();
+        QueryWrapper<CfCertificate> certificateWrapper = new QueryWrapper<CfCertificate>();
+
+        for (int i=0;i<entryexitRecordsList.size();i++){
+            OmsEntryexitRecord entryexit = entryexitRecordsList.get(i);
+            for (int j=0;j<priApplyList.size();j++){
+                OmsPriApply priapply = priApplyList.get(i);
+                //如果出入境记录中的证照号与因私出国证照号匹配上
+                if (entryexit.getIdNumber().equals(priapply.getPassportNum())
+                        ||entryexit.getIdNumber().equals(priapply.getHongkongandmacaoPassportNum())
+                        ||entryexit.getIdNumber().equals(priapply.getTaiwanPassportNum())){
+                    certificateWrapper.eq("ZJHM", entryexit.getIdNumber());
+                    certificate = cfCertificateMapper.selectOne(certificateWrapper);
+                    //如果证照保管状态为“已注销”,出入境时间又在注销日期之后
+                    //提醒干部监督处：“XXX单位XXX同志持注销证照于XXXX年XX月XX日前往XX国家（地区）。”
+                    if (certificate.getSavestatus().equals("3") && entryexit.getOgeDate().compareTo(certificate.getUpdateTime()) > 0){
+                        throw new CustomMessageException(entryexit.getB0100()+"单位"+entryexit.getName()+"同志持注销证照于"+entryexit.getOgeDate()+"前往"+entryexit.getDestination());
+                    }else{
+                        //非“注销”证照
+                        //出入境状态 出1
+                        if (entryexit.getOgeStatus().equals("1")){
+                            //比对出境时间：出境记录出国时间与因私出国实际出国时间一致
+                            if (entryexit.getOgeDate().compareTo(priapply.getRealAbroadTime())==0){
+                                //进行出访目的地比对 将出入境信息中的地点（国家、地区）与系统中经经办人审核后的实际因私出国（境）目的地和中转地进行比对，包含在其中的，记为一致
+                                if (entryexit.getDestination().contains(priapply.getRealGoCountry()) || entryexit.getDestination().contains(priapply.getRealPassCountry())){
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    entryexit.setComparisionResult("正确");
+                                }else{
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    entryexit.setComparisionResult("出访目的地不匹配");
+                                }
+                            }else{
+                                //出境时间不一致的（并且前后相差超过5天的），提醒干部监督处核查，
+                                if(OmsRegInitUtil.dayDiff(entryexit.getOgeDate(),priapply.getRealAbroadTime())>=5
+                                        || OmsRegInitUtil.dayDiff(entryexit.getOgeDate(),priapply.getRealAbroadTime())<=5){
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
+                                    entryexit.setComparisionResult("出境时间不匹配，并且没有申请变更");
+                                }
+                            }
+                        }else{
+                            //出入境状态入2
+                            //比对入境时间：入境记录回国时间与因私出国实际回国时间一致
+                            if (entryexit.getOgeDate().compareTo(priapply.getRealReturnTime())==0){
+                                //进行出访目的地比对 将出入境信息中的地点（国家、地区）与系统中经经办人审核后的实际因私出国（境）目的地和中转地进行比对，包含在其中的，记为一致
+                                if (entryexit.getDestination().contains(priapply.getRealGoCountry()) || entryexit.getDestination().contains(priapply.getRealPassCountry())){
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    entryexit.setComparisionResult("正确");
+                                }else{
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    entryexit.setComparisionResult("目的地不匹配");
+                                }
+                            }else{
+                                //入境时间不一致的（并且前后相差超过5天的），提醒干部监督处核查，
+                                if(OmsRegInitUtil.dayDiff(entryexit.getOgeDate(),priapply.getRealReturnTime())>=5
+                                        || OmsRegInitUtil.dayDiff(entryexit.getOgeDate(),priapply.getRealReturnTime())<=5){
+                                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
+                                    priapply.setIsComparison("1");
+                                    //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
+                                    entryexit.setComparisionResult("入境时间不匹配，并且没有申请变更");
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+            }
+        }
+        return null;
     }
 }

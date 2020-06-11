@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +47,11 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		queryWrapper.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupSuspendPerson.getName() != null && omsSupSuspendPerson.getName() != "",
 						"NAME", omsSupSuspendPerson.getName())
+				.eq("IS_EFFECTIVE", "1")
 				.eq(omsSupSuspendPerson.getStatus() != null && omsSupSuspendPerson.getStatus() != "",
 						"STATUS", omsSupSuspendPerson.getStatus())
-				.between(omsSupSuspendPerson.getSuspendStratTimeQuery() != null && omsSupSuspendPerson.getSuspendEndTimeQuery() != null,
-						"SUSPEND_TIME", omsSupSuspendPerson.getSuspendStratTimeQuery(), omsSupSuspendPerson.getSuspendEndTimeQuery());
+				.between(omsSupSuspendPerson.getSuspendStartTimeQuery() != null && omsSupSuspendPerson.getSuspendEndTimeQuery() != null,
+						"SUSPEND_TIME", omsSupSuspendPerson.getSuspendStartTimeQuery(), omsSupSuspendPerson.getSuspendEndTimeQuery());
 
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -65,14 +67,20 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 
 	/**
 	 * <b>修改暂停审批人员信息(允许审批)</b>
-	 * @param list
+	 * @param idList
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
-	public void updateSuspendPersonInfo(List<OmsSupSuspendPerson> list) {
-		boolean flag = updateBatchById(list);
-		if(!flag){
-			throw new CustomMessageException("操作失败");
+	public void updateSuspendPersonInfo(List<String> idList) {
+
+		QueryWrapper<OmsSupSuspendPerson> queryWrapper = new QueryWrapper<OmsSupSuspendPerson>();
+		queryWrapper.in(idList != null && idList.size() > 0, "ID", idList);
+		OmsSupSuspendPerson omsSupSuspendPerson = new OmsSupSuspendPerson();
+		omsSupSuspendPerson.setStatus("允许审批");
+		omsSupSuspendPerson.setModifyTime(new Date());
+		int count = omsSupSuspendPersonMapper.update(omsSupSuspendPerson, queryWrapper);
+		if(count < 0){
+			throw new CustomMessageException("修改状态失败");
 		}
 	}
 
