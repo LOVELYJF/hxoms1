@@ -2,6 +2,7 @@ package com.hxoms.modules.selfestimate.service;
 
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemResult;
+import com.hxoms.modules.selfestimate.entity.paramentity.ResultListParam;
 
 import java.util.List;
 
@@ -14,10 +15,8 @@ public interface OmsSelfestimateResultService {
     String insertOrUpdateResult(List<OmsSelfestimateResultitem> omsSelfestimateResultitems);
     /**
      * 查询结果集
-     * @param applyId 申请Id
-     * @param selffileId 文件Id
-     * @param type 类型（因公，因私）
+     * @param resultListParam
      * @return
      */
-    OmsSelfestimateResultitemResult selectResultList(String applyId, String selffileId, String type);
+    OmsSelfestimateResultitemResult selectResultList(ResultListParam resultListParam);
 }

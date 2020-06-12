@@ -6,6 +6,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
@@ -104,7 +106,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			omsSupMajorLeader.setPinyin((String) list.get(0).get("a0102"));
 			omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 			omsSupMajorLeader.setMlStatus("1");
-			omsSupMajorLeader.setModifyTime(new Date());
+			omsSupMajorLeader.setCreateTime(new Date());
+			omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 
 			//在登记备案库中查询人员的身份证出生日期
 			omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
@@ -123,10 +126,13 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 		omsRegProcpersonInfo.setMainLeader("1");
 		omsRegProcpersonInfo.setModifyTime(new Date());
+		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 		queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-		omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-
+		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+		if(count < 0){
+			throw new CustomMessageException("同步到备案信息表失败");
+		}
 	}
 
 
@@ -140,6 +146,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
 		omsSupMajorLeader.setMlStatus("0");
 		omsSupMajorLeader.setModifyTime(new Date());
+		omsSupMajorLeader.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count  =  omsSupMajorLeaderMapper.updateById(omsSupMajorLeader);
 		if(count < 1){
 			throw new CustomMessageException("取消主要领导信息失败");
@@ -148,10 +155,13 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 			omsRegProcpersonInfo.setMainLeader("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-
+			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+			if(count1 < 0){
+				throw new CustomMessageException("同步到备案信息表失败");
+			}
 		}
 	}
 
@@ -160,6 +170,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * <b>自动识别主要领导（每个单位前两名）</b>
 	 * @return
 	 */
+
+
+
+
+
 	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeaderAuto() {
 		List<PersonOrgOrder> list = personOrgOrderMapper.selectMajorLeaderAuto();
@@ -188,7 +203,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 				//在登记备案库中查询人员的身份证出生日期
 				omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
-				omsSupMajorLeader.setModifyTime(new Date());
+				omsSupMajorLeader.setCreateTime(new Date());
+				omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 
 				omsSupMajorLeader.setPost((String) mapList.get(0).get("a0215a"));
 				omsSupMajorLeader.setRank((String) mapList.get(0).get("A0221"));
@@ -209,6 +225,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
 			omsRegProcpersonInfo.setMainLeader("1");
 			omsRegProcpersonInfo.setModifyTime(new Date());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);

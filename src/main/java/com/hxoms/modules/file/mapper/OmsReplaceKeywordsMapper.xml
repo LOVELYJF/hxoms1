@@ -8,13 +8,14 @@
     <result column="REPLACE_FIELD" jdbcType="VARCHAR" property="replaceField" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="USE_TYPE" jdbcType="VARCHAR" property="useType" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, FILE_ID, KEYWORD, REPLACE_FIELD, DESCRIPTION, TYPE, CREATE_TIME, CREATE_USER, 
+    ID, FILE_ID, KEYWORD, REPLACE_FIELD, DESCRIPTION, TYPE, USE_TYPE, CREATE_TIME, CREATE_USER, 
     MODIFY_TIME, MODIFY_USER
   </sql>
 </mapper>

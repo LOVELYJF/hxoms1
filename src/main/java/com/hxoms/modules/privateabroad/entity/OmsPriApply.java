@@ -41,9 +41,6 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "GO_COUNTRY",   FieldDescription="出访国家")
     private String goCountry;
 
-    @ColumnAnnotation(FieldName = "PASS_COUNTRY",   FieldDescription="途径国")
-    private String passCountry;
-
     @ColumnAnnotation(FieldName = "OUTSIDE_TIME",   FieldDescription="在外停留时间")
     private Integer outsideTime;
 
@@ -81,9 +78,6 @@ public class OmsPriApply {
 
     @ColumnAnnotation(FieldName = "REAL_GO_COUNTRY",   FieldDescription="实际出访国家")
     private String realGoCountry;
-
-    @ColumnAnnotation(FieldName = "REAL_PASS_COUNTRY",   FieldDescription="实际途径国家")
-    private String realPassCountry;
 
     @ColumnAnnotation(FieldName = "REAL_ABROAD_TIME",   FieldDescription="实际出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -177,7 +171,7 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
-    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料清单、4自评、5业务受理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
+    @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
     private Integer applyStatus;
 
     @ColumnAnnotation(FieldName = "CANCEL_REASON",   FieldDescription="撤销原因")
@@ -280,14 +274,6 @@ public class OmsPriApply {
         this.goCountry = goCountry == null ? null : goCountry.trim();
     }
 
-    public String getPassCountry() {
-        return passCountry;
-    }
-
-    public void setPassCountry(String passCountry) {
-        this.passCountry = passCountry == null ? null : passCountry.trim();
-    }
-
     public Integer getOutsideTime() {
         return outsideTime;
     }
@@ -366,14 +352,6 @@ public class OmsPriApply {
 
     public void setRealGoCountry(String realGoCountry) {
         this.realGoCountry = realGoCountry == null ? null : realGoCountry.trim();
-    }
-
-    public String getRealPassCountry() {
-        return realPassCountry;
-    }
-
-    public void setRealPassCountry(String realPassCountry) {
-        this.realPassCountry = realPassCountry == null ? null : realPassCountry.trim();
     }
 
     public Date getRealAbroadTime() {

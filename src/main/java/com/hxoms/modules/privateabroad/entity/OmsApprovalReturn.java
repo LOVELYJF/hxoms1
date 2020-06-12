@@ -1,4 +1,4 @@
-package com.hxoms.modules.selfestimate.entity;
+package com.hxoms.modules.privateabroad.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,29 +7,24 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_selfestimate_resultitem", TableDescription="自评项目结果")
-public class OmsSelfestimateResultitem {
-    @IdAnnotation
+@TableAnnotation(TableName = "oms_approval_return", TableDescription="因私出国审批表回收")
+public class OmsApprovalReturn {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="自评材料清单ID")
-    private String selffileId;
-
-    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="出国申请ID")
+    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请ID")
     private String applyId;
 
-    @ColumnAnnotation(FieldName = "CHECK_ID",   FieldDescription="检查项ID")
-    private String checkId;
+    @ColumnAnnotation(FieldName = "RETURN_TIME",   FieldDescription="回收时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date returnTime;
 
-    @ColumnAnnotation(FieldName = "CHECK_RESULT",   FieldDescription="检查结果（1通过、0不通过）")
-    private Integer checkResult;
+    @ColumnAnnotation(FieldName = "RETURN_USER",   FieldDescription="回收人")
+    private String returnUser;
 
-    @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明")
-    private String description;
-
-    @ColumnAnnotation(FieldName = "PERSON_TYPE",   FieldDescription="处理人类型(经办人  干部监督处)")
-    private String personType;
+    @ColumnAnnotation(FieldName = "RETURN_DESC",   FieldDescription="回收说明")
+    private String returnDesc;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -55,14 +50,6 @@ public class OmsSelfestimateResultitem {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getSelffileId() {
-        return selffileId;
-    }
-
-    public void setSelffileId(String selffileId) {
-        this.selffileId = selffileId == null ? null : selffileId.trim();
-    }
-
     public String getApplyId() {
         return applyId;
     }
@@ -71,36 +58,28 @@ public class OmsSelfestimateResultitem {
         this.applyId = applyId == null ? null : applyId.trim();
     }
 
-    public String getCheckId() {
-        return checkId;
+    public Date getReturnTime() {
+        return returnTime;
     }
 
-    public void setCheckId(String checkId) {
-        this.checkId = checkId == null ? null : checkId.trim();
+    public void setReturnTime(Date returnTime) {
+        this.returnTime = returnTime;
     }
 
-    public Integer getCheckResult() {
-        return checkResult;
+    public String getReturnUser() {
+        return returnUser;
     }
 
-    public void setCheckResult(Integer checkResult) {
-        this.checkResult = checkResult;
+    public void setReturnUser(String returnUser) {
+        this.returnUser = returnUser == null ? null : returnUser.trim();
     }
 
-    public String getDescription() {
-        return description;
+    public String getReturnDesc() {
+        return returnDesc;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public String getPersonType() {
-        return personType;
-    }
-
-    public void setPersonType(String personType) {
-        this.personType = personType == null ? null : personType.trim();
+    public void setReturnDesc(String returnDesc) {
+        this.returnDesc = returnDesc == null ? null : returnDesc.trim();
     }
 
     public Date getCreateTime() {

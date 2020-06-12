@@ -2,9 +2,7 @@ package com.hxoms.modules.file.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsSealhandleRecordsVO;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
-import com.hxoms.modules.file.entity.OmsFileVO;
 import com.hxoms.modules.file.service.OmsFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @desc: 材料管理
+ * @author: lijing
+ * @date: 2020-06-12
+ */
 @RestController
 @RequestMapping("/omsFile")
 public class OmsFileController {
@@ -60,30 +63,6 @@ public class OmsFileController {
     @PostMapping("/saveTextOmsFile")
     public Result saveTextOmsFile(OmsFile omsFile) throws Exception {
         String result = omsFileService.saveTextOmsFile(omsFile);
-        return Result.success().setMsg(result);
-    }
-
-    /**
-     * 签字盖章列表
-     * @param tableCode
-     * @param applyId
-     * @return
-     */
-    @GetMapping("selectSealHandleList")
-    public Result selectSealHandleList(String tableCode, String applyId){
-        List<OmsFileVO> omsFileVOs = omsFileService.selectSealHandleList(tableCode, applyId);
-        return Result.success(omsFileVOs);
-    }
-
-    /**
-     * 保存签字盖章
-     * @param omsSealhandleRecordsVOS
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/saveSealHandle")
-    public Result saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS) throws Exception {
-        String result = omsFileService.saveSealHandle(omsSealhandleRecordsVOS);
         return Result.success().setMsg(result);
     }
 }

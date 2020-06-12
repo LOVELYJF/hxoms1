@@ -1,6 +1,7 @@
 package com.hxoms.modules.file.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxoms.modules.file.entity.FileReplaceVO;
 import com.hxoms.modules.file.entity.OmsFile;
 import com.hxoms.modules.file.entity.OmsFileVO;
 
@@ -15,4 +16,11 @@ public interface OmsFileMapper extends BaseMapper<OmsFile> {
      * @return
      */
     List<OmsFileVO> selectSealHandleList(Map<String, String> params);
+
+    /**
+     * 关键词替换数据查询
+     * @param runSql
+     * @return
+     */
+    FileReplaceVO handleSql(String runSql);
 }

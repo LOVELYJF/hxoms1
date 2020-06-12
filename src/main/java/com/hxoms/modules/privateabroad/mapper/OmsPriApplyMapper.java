@@ -42,4 +42,6 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     List<CountStatusResult> selectCountStatus();
+
+    List<OmsPriApplyVO> selectComparisionList();
 }

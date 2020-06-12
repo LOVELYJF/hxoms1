@@ -10,6 +10,7 @@ import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemResult;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO;
+import com.hxoms.modules.selfestimate.entity.paramentity.ResultListParam;
 import com.hxoms.modules.selfestimate.mapper.OmsSelfestimateResultitemMapper;
 import com.hxoms.modules.selfestimate.service.OmsSelfestimateResultService;
 import org.apache.commons.lang3.StringUtils;
@@ -63,26 +64,30 @@ public class OmsSelfestimateResultServiceImpl implements OmsSelfestimateResultSe
     }
 
     @Override
-    public OmsSelfestimateResultitemResult selectResultList(String applyId, String selffileId, String type) {
+    public OmsSelfestimateResultitemResult selectResultList(ResultListParam resultListParam) {
         OmsSelfestimateResultitemResult omsSelfestimateResultitemResult = new OmsSelfestimateResultitemResult();
-        if (StringUtils.isBlank(applyId) || StringUtils.isBlank(selffileId) || StringUtils.isBlank(type)){
+        if (StringUtils.isBlank(resultListParam.getApplyId())
+                || StringUtils.isBlank(resultListParam.getSelffileId())
+                || StringUtils.isBlank(resultListParam.getType())
+                || StringUtils.isBlank(resultListParam.getPersonType())){
             throw new CustomMessageException("参数错误");
         }
         //查询自评项结果
         Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("selffileId", selffileId);
-        paramsMap.put("applyId", applyId);
+        paramsMap.put("selffileId", resultListParam.getSelffileId());
+        paramsMap.put("applyId", resultListParam.getApplyId());
+        paramsMap.put("personType", resultListParam.getPersonType());
         List<OmsSelfestimateResultitemVO> omsSelfestimateResultitems = omsSelfestimateResultitemMapper.selectItemResultList(paramsMap);
         omsSelfestimateResultitemResult.setOmsSelfestimateResultitems(omsSelfestimateResultitems);
         //查询出国人所在单位
         String b0100;
-        if (Constants.oms_business[1].equals(type)){
+        if (Constants.oms_business[1].equals(resultListParam.getType())){
             //因私出国
-            OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(applyId);
+            OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(resultListParam.getApplyId());
             if (omsPriApplyVO != null){
-                omsSelfestimateResultitemResult.setB0100(omsPriApplyVO.getB0100());
-                omsSelfestimateResultitemResult.setB0101(omsPriApplyVO.getB0101());
                 b0100 = omsPriApplyVO.getB0100();
+                omsSelfestimateResultitemResult.setB0100(b0100);
+                omsSelfestimateResultitemResult.setB0101(omsPriApplyVO.getB0101());
             }else{
                 throw new CustomMessageException("该申请单不存在");
             }

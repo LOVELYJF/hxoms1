@@ -15,10 +15,12 @@
     <result column="POST" jdbcType="VARCHAR" property="post" />
     <result column="RANK" jdbcType="VARCHAR" property="rank" />
     <result column="ML_STATUS" jdbcType="CHAR" property="mlStatus" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, SEX, BIRTH_DATE,
-    POLITICAL_AFFI, POST, RANK,ML_STATUS
+    POLITICAL_AFFI, POST, RANK,ML_STATUS,CREATE_USER,CREATE_TIME
   </sql>
 
 

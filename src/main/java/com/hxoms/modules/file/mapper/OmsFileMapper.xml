@@ -5,12 +5,13 @@
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
     <result column="B0100" jdbcType="VARCHAR" property="b0100" />
-    <result column="FILE_SHORTNAME" jdbcType="VARCHAR" property="fileShortname" />
     <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="FILE_SHORTNAME" jdbcType="VARCHAR" property="fileShortname" />
     <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
     <result column="TABLE_CODE" jdbcType="VARCHAR" property="tableCode" />
     <result column="IS_EDIT" jdbcType="VARCHAR" property="isEdit" />
     <result column="SEAL_DESC" jdbcType="VARCHAR" property="sealDesc" />
+    <result column="RUN_SQL" jdbcType="VARCHAR" property="runSql" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
@@ -25,8 +26,8 @@
     <result column="isEntrust" jdbcType="INTEGER" property="isEntrust" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, FILE_ID, B0100, FILE_SHORTNAME, FILE_NAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, 
-    CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
+    ID, FILE_ID, B0100, FILE_NAME, FILE_SHORTNAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, 
+    RUN_SQL, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT
@@ -40,5 +41,10 @@
       (select IS_ENTRUST from oms_pri_apply where id = #{applyId} ) as isEntrust
       from oms_file ofe
       where B0100 = #{b0100} and TABLE_CODE = #{tableCode}
+  </select>
+
+  <!--关键词替换数据查询-->
+  <select id="handleSql" resultType="com.hxoms.modules.file.entity.FileReplaceVO">
+    ${sql}
   </select>
 </mapper>

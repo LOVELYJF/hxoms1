@@ -13,6 +13,9 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国审批id")
+    private String priapplyId;
+
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
     private String b0100;
 
@@ -53,7 +56,7 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "ID_TYPE",   FieldDescription="证件种类")
     private String idType;
 
-    @ColumnAnnotation(FieldName = "ID_NUMBER",   FieldDescription="证件种类")
+    @ColumnAnnotation(FieldName = "ID_NUMBER",   FieldDescription="证件号")
     private String idNumber;
 
     @ColumnAnnotation(FieldName = "DESTINATION",   FieldDescription="前往地")
@@ -236,5 +239,13 @@ public class OmsEntryexitRecord {
 
     public void setB0100(String b0100) {
         this.b0100 = b0100;
+    }
+
+    public String getPriapplyId() {
+        return priapplyId;
+    }
+
+    public void setPriapplyId(String priapplyId) {
+        this.priapplyId = priapplyId;
     }
 }

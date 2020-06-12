@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.file.mapper.OmsCreateFileMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.file.entity.OmsCreateFile">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
+    <result column="TABLE_CODE" jdbcType="VARCHAR" property="tableCode" />
+    <result column="IS_EDIT" jdbcType="VARCHAR" property="isEdit" />
+    <result column="IS_SEALHANDLE" jdbcType="CHAR" property="isSealhandle" />
+    <result column="CHECK_ADVICES" jdbcType="VARCHAR" property="checkAdvices" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.file.entity.OmsCreateFile">
+    <result column="FRONT_CONTENT" jdbcType="LONGVARCHAR" property="frontContent" />
+    <result column="BANK_CONTENT" jdbcType="LONGVARCHAR" property="bankContent" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    FRONT_CONTENT, BANK_CONTENT
+  </sql>
+</mapper>
