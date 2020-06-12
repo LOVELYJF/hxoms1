@@ -9,4 +9,6 @@ import java.util.List;
 public interface OmsEntryexitRecordMapper extends BaseMapper<OmsEntryexitRecord> {
 
     List<OmsEntryexitRecord> selectEntryexitRecordIPage(OmsEntryexitRecordIPagParam entryexitrecord);
+
+    List<OmsEntryexitRecord> selectNoMatchList(String a0100);
 }
