@@ -16,10 +16,12 @@
 		<result column="RANK" jdbcType="VARCHAR" property="rank" />
 		<result column="XZXGW" jdbcType="VARCHAR" property="xzxgw" />
 		<result column="NS_STATUS" jdbcType="CHAR" property="nsStatus" />
+		<result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
-		POLITICAL_AFFI, POST, RANK, XZXGW,NS_STATUS
+		POLITICAL_AFFI, POST, RANK, XZXGW,NS_STATUS,CREATE_USER,CREATE_TIME
 	</sql>
 
 </mapper>
