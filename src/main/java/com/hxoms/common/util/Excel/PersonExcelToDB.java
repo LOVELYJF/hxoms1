@@ -18,13 +18,7 @@ public class PersonExcelToDB {
 
     static List<Map<String, Object>> maps = new ArrayList<>();
 
-    public static void main(String[] orgs) {
-        /*findA01List();
-        System.out.println(maps);*/
-        String name = "章传强";
-        String newName = name.replaceAll("　", "").replace(" ","");
-        System.out.println(newName);
-    }
+    static String[] zd = {"IDCard", "name", "sex", "csny", "gj", "zjlx", "cardNum", "csd", "qfdw", "qfrq", "yxqz"};
 
     /**
      * 导入Excel的内容导入到数据库，因为数据较多，所以用JDBC
@@ -40,9 +34,9 @@ public class PersonExcelToDB {
         if (list != null && list.size()>0){
 
             /**
-             * 查询A01里面的数据，放在List<Map<String,Object>>  maps公有变量中，方便查询取值
+             * 查询oms_reg_procpersoninfo（登记备案表）里面的数据，放在List<Map<String,Object>>  maps公有变量中，方便查询取值
              */
-            findA01List();
+            findOrpList();
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
 
@@ -72,11 +66,11 @@ public class PersonExcelToDB {
                      * DQZT当前状态，首次默认为取出状态
                      */
                     String sql = "insert into cf_certificate" +
-                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT,ZWQFJG) " +
-                            "values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT,ZWQFJG,OMS_ID,) " +
+                            "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     String sql2 = "insert into oms_entryexit_record (ID,IMPORT_TIME,IMPORT_PERSON,OGA_MODE," +
-                            "DATA_SOURCE,A0100,OGE_STATUS,NAME,SEX,BIRTH_DATE,NATIONALITY,ID_TYPE,ID_NUMBER," +
+                            "DATA_SOURCE,OMS_ID,OGE_STATUS,NAME,SEX,BIRTH_DATE,NATIONALITY,ID_TYPE,ID_NUMBER," +
                             "DESTINATION,ENTRACE_EXIT,OGE_DATE,VALID_UNTIL,VISITING_TASKS)values(" +
                             "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -85,13 +79,15 @@ public class PersonExcelToDB {
                     ps2 = conn.prepareStatement(sql2);
 
                     for (int i = 0; i < list.size(); i++) {
+                        String name = list.get(i).get("name").toString().replaceAll(" ","");
+                        String sex  = list.get(i).get("sex").toString();
+                        String csny = list.get(i).get("csny").toString();
+                        String omsId = findOmsIdByName(maps,name,sex,csny);
+
                         //如果结果集包含"境"字，就添加到出国境记录表，如果不包含，就添加到证照表里面
                         if (list.get(i).get("IDCard").toString().contains("境")) {
 
-                            String name = list.get(i).get("name").toString().replaceAll(" ","");
-                            String sex  = list.get(i).get("sex").toString();
-                            String csny = list.get(i).get("csny").toString();
-                            String A0100 = findA0100ByName(maps,name,sex,csny.substring(0,6));
+
                             ps2.setString(1, UUIDGenerator.getPrimaryKey());
 
                             ps2.setString(2,dateDB);
@@ -102,7 +98,7 @@ public class PersonExcelToDB {
 
                             ps2.setString(5,dataSource);
 
-                            ps2.setString(6,A0100);
+                            ps2.setString(6,omsId);
 
                             ps2.setInt(7,1);
 
@@ -131,8 +127,6 @@ public class PersonExcelToDB {
                             ps2.addBatch();
 
                         } else {
-
-                            String sex = (String) list.get(i).get("sex");
 
                             int sexInt = 1;
 
@@ -181,11 +175,13 @@ public class PersonExcelToDB {
 
                             ps.setString(13,(String)list.get(i).get("qfdw"));
 
+                            ps.setString(14,omsId);
+
                             ps.addBatch();
 
                         }
 
-                        if (i % 500 == 0) {
+                        if (i % 1000 == 0) {
 
                             ps.executeBatch();
 
@@ -235,11 +231,6 @@ public class PersonExcelToDB {
         return a;
 
     }
-
-
-    static String[] zd = {"IDCard", "name", "sex", "csny", "gj", "zjlx", "cardNum", "csd", "qfdw", "qfrq", "yxqz"};
-
-    static String[] jl = {"status", "name", "sex", "csny", "gj", "zjlx", "cardNum", "toLocation", "crka", "crjrq", "crjsj"};
 
     /**
      * 导入Excel的内容导入到数据库，因为数据较多，所以用JDBC
@@ -322,13 +313,12 @@ public class PersonExcelToDB {
     /**
      * 查询人员的基本信息方便查询取值
      */
-    public static void findA01List() {
-        String sql = "SELECT a0100,a0101,A0107, A0184,(case WHEN " +
-                "a0104=1 THEN '男' WHEN  a0104=2 THEN '女' END)" +
-                "as sex FROM a01";
+    public static void findOrpList() {
+
+        String sql = "select id,Replace(CONCAT(SURNAME,name),' ','') as name,Replace(BIRTH_DATE,'-','') as birthDate,idnumber,CASE SEX WHEN 1 then '男' when 2 then '女' end as SEX FROM oms_reg_procpersoninfo";
 
 
-     try {
+        try {
             Connection conn = JDBC.getConnection();
 
             conn.setAutoCommit(false);
@@ -346,25 +336,23 @@ public class PersonExcelToDB {
                 dataMap.put("sex", rs.getString(5));
                 maps.add(dataMap);
             }
-            /*stat.close();
-            rs.close();
-            conn.close();*/
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 
-    public static String findA0100ByName(List<Map<String,Object>> list,String name,String sex,String A0107){
+    public static String findOmsIdByName(List<Map<String,Object>> list,String name,String sex,String A0107){
 
-        String A0100 = null;
+        String omsId = null;
 
         for (int i= 0;i<list.size();i++) {
             if (list.get(i).get("A0101").toString().replace(" ","").equals(name) && list.get(i).get("sex").equals(sex) && list.get(i).get("A0107").equals(A0107)) {
-                A0100 = list.get(i).get("A0100").toString();
+                omsId = list.get(i).get("A0100").toString();
             }
         }
-        return A0100;
+        return omsId;
 
     }
 

@@ -16,8 +16,14 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="ID")
     private String id;
 
+    @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
+    private String omsId;
+
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
+
+    @ColumnAnnotation(FieldName = "PY",   FieldDescription="姓名首字母")
+    private String py;
 
     @ColumnAnnotation(FieldName = "A0184",   FieldDescription="证件拥有者身份证号码")
     private String a0184;
@@ -442,5 +448,27 @@ public class CfCertificate {
         this.sex = sex;
     }
 
+    public String getPy() {
+        return py;
+    }
 
+    public void setPy(String py) {
+        this.py = py;
+    }
+
+    public Integer getIslock() {
+        return islock;
+    }
+
+    public void setIslock(Integer islock) {
+        this.islock = islock;
+    }
+
+    public String getOmsId() {
+        return omsId;
+    }
+
+    public void setOmsId(String omsId) {
+        this.omsId = omsId;
+    }
 }

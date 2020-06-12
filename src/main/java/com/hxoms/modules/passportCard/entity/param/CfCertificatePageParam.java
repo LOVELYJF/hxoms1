@@ -9,6 +9,8 @@ public class CfCertificatePageParam extends CfCertificate {
     /**分页大小*/
     private Integer pageSize;
 
+    private String incumbencyStatus;
+
     public Integer getPageNum() {
         return pageNum;
     }
@@ -23,5 +25,15 @@ public class CfCertificatePageParam extends CfCertificate {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    @Override
+    public String getIncumbencyStatus() {
+        return incumbencyStatus;
+    }
+
+    @Override
+    public void setIncumbencyStatus(String incumbencyStatus) {
+        this.incumbencyStatus = incumbencyStatus;
     }
 }
