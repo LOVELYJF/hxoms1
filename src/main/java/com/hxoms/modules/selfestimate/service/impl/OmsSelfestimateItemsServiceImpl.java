@@ -14,6 +14,7 @@ import com.hxoms.modules.selfestimate.service.OmsSelfestimateItemsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -105,6 +106,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         return "操作成功";
     }
 
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String deleteSelfFile(String id) {
         if (StringUtils.isEmpty(id)){

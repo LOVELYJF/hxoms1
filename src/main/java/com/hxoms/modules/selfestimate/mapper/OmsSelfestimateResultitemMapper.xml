@@ -8,15 +8,17 @@
     <result column="CHECK_ID" jdbcType="VARCHAR" property="checkId" />
     <result column="CHECK_RESULT" jdbcType="INTEGER" property="checkResult" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="PERSON_TYPE" jdbcType="VARCHAR" property="personType" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, SELFFILE_ID, APPLY_ID, CHECK_ID, CHECK_RESULT, DESCRIPTION, CREATE_TIME, CREATE_USER, 
-    MODIFY_TIME, MODIFY_USER
+    ID, SELFFILE_ID, APPLY_ID, CHECK_ID, CHECK_RESULT, DESCRIPTION, PERSON_TYPE, CREATE_TIME, 
+    CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
+
   <!--查询结果子集列表-->
   <select id="selectItemResultList" parameterType="java.util.Map" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
       select
@@ -31,6 +33,7 @@
       where 1=1
       and o1.ENABLE = 1 and o1.SELFFILE_ID = #{selffileId}
       and o2.APPLY_ID = #{applyId}
+      and o2.PERSON_TYPE = #{personType}
       <if test="resultId != null and resultId != ''">
         and o2.RESULT_ID = #{resultId}
       </if>

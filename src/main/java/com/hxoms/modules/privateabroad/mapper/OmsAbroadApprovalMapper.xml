@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.privateabroad.mapper.OmsAbroadApprovalMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.privateabroad.entity.OmsAbroadApproval">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="STEP_CODE" jdbcType="INTEGER" property="stepCode" />
+    <result column="STEP_NAME" jdbcType="VARCHAR" property="stepName" />
+    <result column="APPROVAL_TIME" jdbcType="TIMESTAMP" property="approvalTime" />
+    <result column="APPROVAL_USER" jdbcType="VARCHAR" property="approvalUser" />
+    <result column="SUBMIT_TIME" jdbcType="TIMESTAMP" property="submitTime" />
+    <result column="SUBMIT_USER" jdbcType="VARCHAR" property="submitUser" />
+    <result column="APPROVAL_RESULT" jdbcType="VARCHAR" property="approvalResult" />
+    <result column="APPROVAL_ADVICE" jdbcType="VARCHAR" property="approvalAdvice" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+</mapper>

@@ -1,8 +1,6 @@
 package com.hxoms.modules.file.service;
 
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsFileVO;
-import com.hxoms.modules.file.entity.OmsSealhandleRecordsVO;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import java.util.List;
 import java.util.Map;
@@ -34,20 +32,4 @@ public interface OmsFileService {
      * @return
      */
     String saveTextOmsFile(OmsFile omsFile);
-
-    /**
-     * 签字盖章列表
-     * @param tableCode
-     * @param applyId
-     * @return
-     */
-    List<OmsFileVO> selectSealHandleList(String tableCode, String applyId);
-
-    /**
-     * 保存签字盖章
-     * @param omsSealhandleRecordsVOS
-     * @return
-     * @throws Exception
-     */
-    String saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS);
 }

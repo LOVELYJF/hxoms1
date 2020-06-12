@@ -28,6 +28,9 @@ public class OmsReplaceKeywords {
     @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型（因公、因私）")
     private String type;
 
+    @ColumnAnnotation(FieldName = "USE_TYPE",   FieldDescription="使用范围(1、文件  2、约束条件)")
+    private String useType;
+
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -90,6 +93,14 @@ public class OmsReplaceKeywords {
 
     public void setType(String type) {
         this.type = type == null ? null : type.trim();
+    }
+
+    public String getUseType() {
+        return useType;
+    }
+
+    public void setUseType(String useType) {
+        this.useType = useType == null ? null : useType.trim();
     }
 
     public Date getCreateTime() {

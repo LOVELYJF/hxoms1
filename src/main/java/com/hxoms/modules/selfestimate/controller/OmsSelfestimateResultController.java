@@ -3,6 +3,7 @@ package com.hxoms.modules.selfestimate.controller;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemResult;
+import com.hxoms.modules.selfestimate.entity.paramentity.ResultListParam;
 import com.hxoms.modules.selfestimate.service.OmsSelfestimateResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,14 +37,12 @@ public class OmsSelfestimateResultController {
 
     /**
      * 查询结果集
-     * @param applyId 申请Id
-     * @param selffileId 文件Id
-     * @param type 类型（因公，因私）
+     * @param resultListParam
      * @return
      */
     @GetMapping("selectResultList")
-    public Result selectResultList(String applyId, String selffileId, String type){
-        OmsSelfestimateResultitemResult omsSelfestimateResultitemResult = omsSelfestimateResultService.selectResultList(applyId, selffileId, type);
+    public Result selectResultList(ResultListParam resultListParam){
+        OmsSelfestimateResultitemResult omsSelfestimateResultitemResult = omsSelfestimateResultService.selectResultList(resultListParam);
         return Result.success(omsSelfestimateResultitemResult);
     }
 }

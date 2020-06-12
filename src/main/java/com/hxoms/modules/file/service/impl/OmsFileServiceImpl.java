@@ -6,9 +6,9 @@ import com.hxoms.common.util.file.OmsFileUtils;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.file.entity.*;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
-import com.hxoms.modules.file.mapper.OmsSealhandleRecordsMapper;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
@@ -40,7 +40,7 @@ public class OmsFileServiceImpl implements OmsFileService {
     @Autowired
     private OmsPriDelayApplyService omsPriDelayApplyService;
     @Autowired
-    private OmsSealhandleRecordsMapper omsSealhandleRecordsMapper;
+    private OmsCreateFileMapper omsCreateFileMapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
@@ -124,19 +124,21 @@ public class OmsFileServiceImpl implements OmsFileService {
             result.put("omsFile", omsFile);
             result.put("omsReplaceKeywordList", omsReplaceKeywordList);
         } else if("0".equals(abroadFileDestailParams.getIsEdit())){
-            //因私出国
-            if (Constants.oms_business[1].equals(abroadFileDestailParams.getTableCode())){
-                //查看
-                OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(abroadFileDestailParams.getApplyID());
-                // 替换关键词
-                replaceKeywordsDestail(omsPriApplyVO, omsReplaceKeywordList, omsFile);
-            }else if(Constants.oms_business[2].equals(abroadFileDestailParams.getTableCode())){
-                //查看
-                OmsPriDelayApplyVO omsPriDelayApplyVO = omsPriDelayApplyService.selectDelayApplyById(abroadFileDestailParams.getApplyID());
-                // 替换关键词
-                replaceKeywordsDestail(omsPriDelayApplyVO, omsReplaceKeywordList, omsFile);
-            }
+            //查询sql
+            queryWrapperFile.clear();
+            queryWrapperFile.eq("ID", omsFile.getFileId())
+                    .select("RUN_SQL");
+            OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
+            FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
+            // 替换关键词
+            replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
             result.put("omsFile", omsFile);
+            //查询生成的文件
+            QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+            createFile.eq("FILE_ID", abroadFileDestailParams.getFileId())
+                    .eq("APPLY_ID", abroadFileDestailParams.getApplyID());
+            OmsCreateFile omsCreateFile = omsCreateFileMapper.selectOne(createFile);
+            result.put("omsCreateFile", omsCreateFile);
         }
         return result;
     }
@@ -209,45 +211,6 @@ public class OmsFileServiceImpl implements OmsFileService {
         omsFile.setModifyUser(userInfo.getId());
         if (omsFileMapper.updateById(omsFile) < 1){
             throw new CustomMessageException("操作失败");
-        }
-        return "操作成功";
-    }
-
-    @Override
-    public List<OmsFileVO> selectSealHandleList(String tableCode, String applyId) {
-        if (StringUtils.isBlank(tableCode) || StringUtils.isEmpty(applyId)){
-            throw new CustomMessageException("参数错误");
-        }
-        Map<String, String> params = new HashMap<>();
-        //登录用户信息
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        params.put("tableCode", tableCode);
-        params.put("applyId", applyId);
-        params.put("b0100", userInfo.getOrgId());
-        return omsFileMapper.selectSealHandleList(params);
-    }
-
-    @Transactional(rollbackFor = CustomMessageException.class)
-    @Override
-    public String saveSealHandle(List<OmsSealhandleRecordsVO> omsSealhandleRecordsVOS) {
-        for (OmsSealhandleRecordsVO item : omsSealhandleRecordsVOS) {
-            QueryWrapper<OmsSealhandleRecords> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("APPLY_ID", item.getApplyId())
-                    .eq("FILE_ID", item.getFileId());
-            if ("0".equals(item.getIsHandle())){
-                omsSealhandleRecordsMapper.delete(queryWrapper);
-            }else{
-                //没有则插入
-                if (omsSealhandleRecordsMapper.selectCount(queryWrapper) < 1){
-                    OmsSealhandleRecords omsSealhandleRecords = new OmsSealhandleRecords();
-                    omsSealhandleRecords.setId(UUIDGenerator.getPrimaryKey());
-                    omsSealhandleRecords.setApplyId(item.getApplyId());
-                    omsSealhandleRecords.setFileId(item.getFileId());
-                    if(omsSealhandleRecordsMapper.insert(omsSealhandleRecords) < 1){
-                        throw new CustomMessageException("操作失败");
-                    }
-                }
-            }
         }
         return "操作成功";
     }

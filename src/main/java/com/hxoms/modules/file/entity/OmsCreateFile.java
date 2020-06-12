@@ -7,23 +7,16 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_file", TableDescription="系统材料清单")
-public class OmsFile {
-    @IdAnnotation
+@TableAnnotation(TableName = "oms_create_file", TableDescription="生成材料")
+public class OmsCreateFile {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID（初始化文件为空）")
+    @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID")
     private String fileId;
 
-    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="机构ID（初始化文件为空）")
-    private String b0100;
-
-    @ColumnAnnotation(FieldName = "FILE_NAME",   FieldDescription="文件名称")
-    private String fileName;
-
-    @ColumnAnnotation(FieldName = "FILE_SHORTNAME",   FieldDescription="文件简称")
-    private String fileShortname;
+    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请表ID")
+    private String applyId;
 
     @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="文件类别（1系统 2非涉密人员 3涉密人员（原单位涉密人员） 4涉密人员（原单位脱密期人员））")
     private String fileType;
@@ -34,11 +27,11 @@ public class OmsFile {
     @ColumnAnnotation(FieldName = "IS_EDIT",   FieldDescription="是否可编辑（1文件 2单页单面 3双页 4双面单页）")
     private String isEdit;
 
-    @ColumnAnnotation(FieldName = "SEAL_DESC",   FieldDescription="签字盖章描述")
-    private String sealDesc;
+    @ColumnAnnotation(FieldName = "IS_SEALHANDLE",   FieldDescription="是否签字盖章")
+    private String isSealhandle;
 
-    @ColumnAnnotation(FieldName = "RUN_SQL",   FieldDescription="执行sql")
-    private String runSql;
+    @ColumnAnnotation(FieldName = "CHECK_ADVICES",   FieldDescription="审核意见")
+    private String checkAdvices;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -78,28 +71,12 @@ public class OmsFile {
         this.fileId = fileId == null ? null : fileId.trim();
     }
 
-    public String getB0100() {
-        return b0100;
+    public String getApplyId() {
+        return applyId;
     }
 
-    public void setB0100(String b0100) {
-        this.b0100 = b0100 == null ? null : b0100.trim();
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName == null ? null : fileName.trim();
-    }
-
-    public String getFileShortname() {
-        return fileShortname;
-    }
-
-    public void setFileShortname(String fileShortname) {
-        this.fileShortname = fileShortname == null ? null : fileShortname.trim();
+    public void setApplyId(String applyId) {
+        this.applyId = applyId == null ? null : applyId.trim();
     }
 
     public String getFileType() {
@@ -126,20 +103,20 @@ public class OmsFile {
         this.isEdit = isEdit == null ? null : isEdit.trim();
     }
 
-    public String getSealDesc() {
-        return sealDesc;
+    public String getIsSealhandle() {
+        return isSealhandle;
     }
 
-    public void setSealDesc(String sealDesc) {
-        this.sealDesc = sealDesc == null ? null : sealDesc.trim();
+    public void setIsSealhandle(String isSealhandle) {
+        this.isSealhandle = isSealhandle == null ? null : isSealhandle.trim();
     }
 
-    public String getRunSql() {
-        return runSql;
+    public String getCheckAdvices() {
+        return checkAdvices;
     }
 
-    public void setRunSql(String runSql) {
-        this.runSql = runSql == null ? null : runSql.trim();
+    public void setCheckAdvices(String checkAdvices) {
+        this.checkAdvices = checkAdvices == null ? null : checkAdvices.trim();
     }
 
     public Date getCreateTime() {
