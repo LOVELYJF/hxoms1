@@ -56,6 +56,14 @@ public class OmsSupNakedSign {
     @ColumnAnnotation(FieldName = "NS_STATUS",   FieldDescription="裸官状态")
     private String nsStatus;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
+
     public String getId() {
         return id;
     }
@@ -167,5 +175,22 @@ public class OmsSupNakedSign {
 
     public void setNsStatus(String nsStatus) {
         this.nsStatus = nsStatus == null ? null : nsStatus.trim();
+    }
+
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

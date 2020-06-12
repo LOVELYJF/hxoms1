@@ -10,12 +10,6 @@ public class CfCertificateVo extends CfCertificate {
      * 单位ID
      */
     private String b0100;
-
-    /**
-     *
-     */
-    private List<String> b0100s;
-
     /**
      * 单位
      */
@@ -50,14 +44,6 @@ public class CfCertificateVo extends CfCertificate {
      * 用于分页
      */
     private int pageNum;
-
-    public List<String> getB0100s() {
-        return b0100s;
-    }
-
-    public void setB0100s(List<String> b0100s) {
-        this.b0100s = b0100s;
-    }
 
     public int getPageSize() {
         return pageSize;
