@@ -49,7 +49,7 @@
     <result column="PASSPORT_TERM" jdbcType="TIMESTAMP" property="passportTerm" />
     <result column="FUNDS_SOURCE" jdbcType="VARCHAR" property="fundsSource" />
     <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
-    <result column="APPLY_STATUS" jdbcType="VARCHAR" property="applyStatus" />
+    <result column="APPLY_STATUS" jdbcType="INTEGER" property="applyStatus" />
     <result column="CANCEL_REASON" jdbcType="VARCHAR" property="cancelReason" />
     <result column="IS_ENTRUST" jdbcType="INTEGER" property="isEntrust" />
     <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
