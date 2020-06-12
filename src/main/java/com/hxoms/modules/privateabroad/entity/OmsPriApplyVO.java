@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +40,11 @@ public class OmsPriApplyVO extends OmsPriApply{
     List<CfCertificate> cfCertificates;
     //约束条件
     List<Map<String, String>> condition;
+
+    private List<OmsEntryexitRecord> entryexitRecordList;
+
+    private OmsEntryexitRecord entryexitRecord;
+
 
     public String getName() {
         return name;
@@ -126,5 +132,21 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setCondition(List<Map<String, String>> condition) {
         this.condition = condition;
+    }
+
+    public List<OmsEntryexitRecord> getEntryexitRecordList() {
+        return entryexitRecordList;
+    }
+
+    public void setEntryexitRecordList(List<OmsEntryexitRecord> entryexitRecordList) {
+        this.entryexitRecordList = entryexitRecordList;
+    }
+
+    public OmsEntryexitRecord getEntryexitRecord() {
+        return entryexitRecord;
+    }
+
+    public void setEntryexitRecord(OmsEntryexitRecord entryexitRecord) {
+        this.entryexitRecord = entryexitRecord;
     }
 }
