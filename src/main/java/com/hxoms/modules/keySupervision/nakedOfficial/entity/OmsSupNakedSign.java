@@ -64,6 +64,16 @@ public class OmsSupNakedSign {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
+    @ColumnAnnotation(FieldName = "ADD_TIME",   FieldDescription="添加裸官时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date addTime;
+
+    @ColumnAnnotation(FieldName = "DELETE_TIME",   FieldDescription="删除裸官时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date deleteTime;
+
     public String getId() {
         return id;
     }
@@ -192,5 +202,21 @@ public class OmsSupNakedSign {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
     }
 }
