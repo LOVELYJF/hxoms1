@@ -15,15 +15,15 @@ import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
 import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
-import com.hxoms.modules.privateabroad.entity.OmsPriApply;
-import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
-import com.hxoms.modules.privateabroad.entity.OmsPriTogetherperson;
+import com.hxoms.modules.privateabroad.entity.*;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriTogetherpersonMapper;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +56,14 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private CfCertificateMapper cfCertificateMapper;
     @Autowired
     private OmsConditionService omsConditionService;
+    @Autowired
+    private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
         if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())){
-            //omsPriApplyIPageParam.setApplyStatus();
+            String[] applyStatus = omsPriApplyIPageParam.getApplyStatusString().split(",");
+            omsPriApplyIPageParam.setApplyStatus((Integer[]) ConvertUtils.convert(applyStatus, Integer.class));
         }
         //分页
         PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum(), omsPriApplyIPageParam.getPageSize());
@@ -150,7 +153,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         //基本信息保存
         //设置草稿状态
-        omsPriApply.setApplyStatus(1);
+        omsPriApply.setApplyStatus(Constants.private_business[0]);
         //出国时长
         long day = omsPriApply.getReturnTime().getTime() - omsPriApply.getAbroadTime().getTime()/DateUtils.MILLIS_PER_DAY;
         omsPriApply.setOutsideTime((int) day);
@@ -190,7 +193,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     public String deletePriApply(String id) {
         //只能删除草稿状态的
         QueryWrapper<OmsPriApply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("applyStatus", 1);  //草稿
+        queryWrapper.eq("applyStatus", Constants.private_business[0]);  //草稿
         queryWrapper.eq("id", id);
         int count = omsPriApplyMapper.selectCount(queryWrapper);
         if (count == 0){
@@ -207,11 +210,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (omsPriApply.getApplyStatus() != null && StringUtils.isBlank(omsPriApply.getId())){
             throw new CustomMessageException("参数错误");
         }
-        //撤销
-        if ("14".equals(omsPriApply.getApplyStatus())){
+        OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(omsPriApply.getId());
+        if (Constants.private_business[7] == omsPriApply.getApplyStatus()){
+            //撤销
 
+        } else if(Constants.private_business[0] == omsPriApply.getApplyStatus()){
+            //撤回
+            if (omsPriApplyDestail.getApplyStatus() > 20){
+                throw new CustomMessageException("不能撤回");
+            }
         }
-        //撤回
         int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
         if (updateStatus < 1){
             throw new CustomMessageException("操作失败");
@@ -246,5 +254,56 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
         return omsPriApplyVO;
+    }
+
+    @Override
+    public List<CountStatusResult> selectCountStatus(String type) {
+        if (StringUtils.isBlank(type)){
+            throw new CustomMessageException("参数错误");
+        }
+        List<CountStatusResult> countStatusResults = null;
+        if (Constants.oms_business[1].equals(type)){
+            //因私出国
+            countStatusResults = omsPriApplyMapper.selectCountStatus();
+        }else if (Constants.oms_business[2].equals(type)){
+            //延期出国
+            countStatusResults = omsPriDelayApplyMapper.selectCountStatus();
+        }
+
+        return countStatusResults;
+    }
+
+    @Override
+    public List<Map<String, String>> nextCreateFile(String applyId, String type) {
+        if (StringUtils.isBlank(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        //查询约束条件
+        List<Map<String, String>> condition = omsConditionService.checkCondition(applyId, type);
+        for (Map<String, String> item : condition) {
+            if ("0".equals(item.get("isFit"))){
+                return condition;
+            }
+        }
+        if (Constants.oms_business[1].equals(type)){
+            //因私
+            OmsPriApply omsPriApply = new OmsPriApply();
+            omsPriApply.setApplyStatus(Constants.private_business[1]);
+            omsPriApply.setId(applyId);
+            int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
+            if (updateStatus < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        } else if (Constants.oms_business[2].equals(type)){
+            //延期回国
+            OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
+            omsPriDelayApply.setId(applyId);
+            omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
+            int updateStatus = omsPriDelayApplyMapper.updateById(omsPriDelayApply);
+            if (updateStatus < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        }
+        return condition;
     }
 }

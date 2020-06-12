@@ -50,4 +50,19 @@
     </if>
     order by pa.APPLY_STATUS, pa.APPLY_TIME
   </select>
+
+  <!--基本流程数据统计-->
+  <select id="selectCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
+    select "1.填写申请" as label, 1 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 1
+    union all
+    select "2.生成材料" as label, 2 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 2
+    union all
+    select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 3
+    union all
+    select "4.签字盖章" as label, 4 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 4
+    union all
+    select "5.自评" as label, 5 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 5
+    union all
+    select "6.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pri_delay_apply where APPLY_STATUS = 20
+  </select>
 </mapper>

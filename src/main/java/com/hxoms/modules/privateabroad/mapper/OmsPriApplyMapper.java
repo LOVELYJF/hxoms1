@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -36,4 +37,9 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     OmsPriApplyVO selectPriApplyById(String id);
+    /**
+     * 基本流程数据统计
+     * @return
+     */
+    List<CountStatusResult> selectCountStatus();
 }

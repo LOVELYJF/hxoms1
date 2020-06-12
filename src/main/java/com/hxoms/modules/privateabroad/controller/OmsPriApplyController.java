@@ -2,6 +2,7 @@ package com.hxoms.modules.privateabroad.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -110,4 +111,28 @@ public class OmsPriApplyController {
         OmsPriApplyVO omsPriApplyVO = omsPriApplyService.selectPriApplyById(id);
         return Result.success(omsPriApplyVO);
     }
+
+    /**
+     * 基本流程数据统计
+     * @param type 因私 延期回国
+     * @return
+     */
+    @GetMapping("/selectCountStatus")
+    public Result selectCountStatus(String type){
+        List<CountStatusResult> omsPriApplyVO = omsPriApplyService.selectCountStatus(type);
+        return Result.success(omsPriApplyVO);
+    }
+
+    /**
+     * 下一步（生成材料）
+     * @param applyId
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/nextCreateFile")
+    public Result nextCreateFile(String applyId, String type) throws Exception {
+        List<Map<String, String>> result = omsPriApplyService.nextCreateFile(applyId, type);
+        return Result.success(result);
+    }
+
 }
