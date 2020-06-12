@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -28,19 +29,35 @@ public class OmsEntryexitRecordController {
 
     /**
      * 根据人员查询对应的因私出国申请记录
+     * 以及单人比对
      * @return
      */
     @GetMapping("/queryPriApplyList")
     public Result queryPriApplyList(String a0100) {
         try{
-            List<OmsPriApply> priapplylist = entryexitRecordService.queryPriApplyList(a0100);
-
-            return Result.success(priapplylist);
+            Map<String, Object> map = entryexitRecordService.queryPriApplyList(a0100);
+            return Result.success(map);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
         }
     }
+
+ /*   *//**
+     * 批量比对
+     *//*
+    @GetMapping("/queryPriApplyList")
+    public Result queryPriApplyList(String a0100) {
+        try{
+            Map<String, Object> map = entryexitRecordService.queryPriApplyList(a0100);
+            return Result.success(map);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }*/
+
+
 
 
 
