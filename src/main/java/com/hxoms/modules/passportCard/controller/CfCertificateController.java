@@ -8,7 +8,9 @@ import com.hxoms.modules.passportCard.entity.CfCertificate;
 import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
+import com.hxoms.modules.passportCard.entity.param.CfCheckValidParam;
 import com.hxoms.modules.passportCard.service.CfCertificateService;
+import com.hxoms.modules.passportCard.service.CfCheckValidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,9 @@ public class CfCertificateController {
 
     @Autowired
     private CfCertificateService cfCertificateService;
+
+    @Autowired
+    private CfCheckValidService cfCheckValidService;
 
 
     /**
@@ -119,5 +124,25 @@ public class CfCertificateController {
     public Result findSuccessCf(){
         return Result.success(cfCertificateService.findSuccessCf());
     }
+
+    /**
+     * 查看所有重复的有效证件
+     * @param cfCheckValidParam
+     * @return
+     */
+    @GetMapping("/selectCfCheckValid")
+    public Result selectCfCheckValid(CfCheckValidParam cfCheckValidParam){
+        return Result.success(cfCheckValidService.selectCfCheckValid(cfCheckValidParam));
+    }
+
+    /**
+     * 查看有重复证件的人员
+     * @return
+     */
+    @GetMapping("/selectCfCheckValidByName")
+    public Result selectCfCheckValidByName(CfCheckValidParam cfCheckValidParam){
+        return Result.success(cfCheckValidService.selectCfCheckValidByName(cfCheckValidParam));
+    }
+
 
 }

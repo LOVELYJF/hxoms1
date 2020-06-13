@@ -79,7 +79,7 @@ public class PersonExcelToDB {
                     ps2 = conn.prepareStatement(sql2);
 
                     for (int i = 0; i < list.size(); i++) {
-                        String name = list.get(i).get("name").toString().replaceAll(" ","");
+                        String name = list.get(i).get("name").toString().replaceAll(" ","").replaceAll("    ","");
                         String sex  = list.get(i).get("sex").toString();
                         String csny = list.get(i).get("csny").toString();
                         String omsId = findOmsIdByName(maps,name,sex,csny);

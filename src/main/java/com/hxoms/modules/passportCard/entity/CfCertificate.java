@@ -28,6 +28,10 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "A0184",   FieldDescription="证件拥有者身份证号码")
     private String a0184;
 
+    @ColumnAnnotation(FieldName = "CSRQ",   FieldDescription="出生年月")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date csrq;
 
     private  Integer sex;
 
@@ -470,5 +474,13 @@ public class CfCertificate {
 
     public void setOmsId(String omsId) {
         this.omsId = omsId;
+    }
+
+    public Date getCsrq() {
+        return csrq;
+    }
+
+    public void setCsrq(Date csrq) {
+        this.csrq = csrq;
     }
 }

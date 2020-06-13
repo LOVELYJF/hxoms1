@@ -8,6 +8,7 @@
     <result column="NAME" jdbcType="VARCHAR" property="name"/>
     <result column="PY" jdbcType="VARCHAR" property="py"/>
     <result column="GJ" jdbcType="VARCHAR" property="gj" />
+    <result column="CSRQ" jdbcType="TIMESTAMP" property="csrq"/>
     <result column="ZWCSDD" jdbcType="VARCHAR" property="zwcsdd" />
     <result column="YWCSDD" jdbcType="VARCHAR" property="ywcsdd" />
     <result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
@@ -43,6 +44,7 @@
             orp.RF_B0000 ,
             cc.A0184 AS a0184,
             cc.NAME,
+            cc.PY,
             cc.SEX,
             cc.CSRQ,
             cc.GJ,
@@ -67,6 +69,7 @@
         WHERE 1=1 AND cc.IS_VALID = 0
         <if test="name != null">
             AND cc.NAME like CONCAT(CONCAT('%', #{name}), '%')
+            OR cc.PY like CONCAT(CONCAT('%',#{name}),'%')
         </if>
 
         <if test="zjhm != null">

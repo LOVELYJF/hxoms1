@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.mapper.CfCheckValidMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.entity.CfCheckValid">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="OMS_ID" jdbcType="VARCHAR" property="omsId"/>
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="NAME" jdbcType="VARCHAR" property="name"/>
+    <result column="PY" jdbcType="VARCHAR" property="py"/>
+    <result column="GJ" jdbcType="VARCHAR" property="gj" />
+    <result column="ZWCSDD" jdbcType="VARCHAR" property="zwcsdd" />
+    <result column="YWCSDD" jdbcType="VARCHAR" property="ywcsdd" />
+    <result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+    <result column="ZJLX" jdbcType="INTEGER" property="zjlx" />
+    <result column="ZJXS" jdbcType="VARCHAR" property="zjxs" />
+    <result column="SEX" jdbcType="INTEGER" property="sex"/>
+    <result column="LOCATION" jdbcType="VARCHAR" property="location" />
+    <result column="ZWQFDD" jdbcType="VARCHAR" property="zwqfdd" />
+    <result column="YWQFDD" jdbcType="VARCHAR" property="ywqfdd" />
+    <result column="ZWQFJG" jdbcType="VARCHAR" property="zwqfjg" />
+    <result column="YWQFJG" jdbcType="VARCHAR" property="ywqfjg" />
+    <result column="QFRQ" jdbcType="TIMESTAMP" property="qfrq" />
+    <result column="YXQZ" jdbcType="TIMESTAMP" property="yxqz" />
+    <result column="ZJSJRQ" jdbcType="TIMESTAMP" property="zjsjrq" />
+    <result column="ISLOCK" jdbcType="INTEGER" property="islock"/>
+    <result column="DQZT" jdbcType="INTEGER" property="dqzt" />
+    <result column="ISCABINET" jdbcType="INTEGER" property="iscabinet" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="B0101" jdbcType="VARCHAR" property="b0101" />
+    <result column="A0215A" jdbcType="VARCHAR" property="a0215a" />
+    <result column="INCUMBENCYSTATUS" jdbcType="VARCHAR" property="incumbencyStatus" />
+    <result column="B0100PID" jdbcType="VARCHAR" property="b0100Pid" />
+    <result column="DUTY" jdbcType="VARCHAR" property="duty" />
+  </resultMap>
+      <select id="selectCfCheckValid" parameterType="com.hxoms.modules.passportCard.entity.param.CfCheckValidParam"
+                                      resultType="com.hxoms.modules.passportCard.entity.CfCheckValid">
+
+          SELECT
+	        cc.ID AS ID,
+            cc.A0184 AS a0184,
+            cc.NAME,
+            cc.PY,
+            cc.SEX,
+            cc.CSRQ,
+            cc.GJ,
+            cc.ZWCSDD,
+            cc.LOCATION,
+            cc.zjlx,
+            cc.ZJSJRQ,
+            cc.ZJHM,
+            cc.QFRQ,
+            cc.ISLOCK,
+            cc.MANAGEUNIT,
+            cc.YXQZ,
+            cc.DQZT,
+            cc.UPDATE_TIME
+          FROM
+	        cf_certificate c
+          WHERE
+	        (c.A0184, c.ZJLX, c. NAME) IN (
+		      SELECT
+			    cc.A0184, cc.ZJLX, cc.NAME
+		      FROM
+			    cf_certificate cc
+		      GROUP BY
+			    cc.A0184, cc.ZJLX, cc.NAME
+		      HAVING
+			count(*) > 1)
+          AND c.IS_VALID = 0
+            <if test="name != null">
+              AND NAME like CANCAT(CONCAT('%',#{name}),'%')
+            </if>
+          ORDER BY c.NAME
+
+      </select>
+  <select id="selectCfCheckValidByName" parameterType="com.hxoms.modules.passportCard.entity.param.CfCheckValidParam"
+          resultType="com.hxoms.modules.passportCard.entity.CfCheckValid">
+
+        select cc.ID AS ID,
+            cc.A0184 AS a0184,
+            cc.NAME,
+            cc.PY,
+            cc.SEX,
+            cc.CSRQ,
+            cc.GJ,
+            cc.ZWCSDD,
+            cc.LOCATION,
+            cc.zjlx,
+            cc.ZJSJRQ,
+            cc.ZJHM,
+            cc.QFRQ,
+            cc.ISLOCK,
+            cc.MANAGEUNIT,
+            cc.YXQZ,
+            cc.DQZT,
+            cc.UPDATE_TIME,count(1)
+        from cf_certificate cc WHERE 1=1
+        <if test="name != null">
+          AND NAME like CONCAT(CONCAT('%',#{name}),'%');
+        </if>
+          IS_VALID = 0 group by cc.NAME,cc.A0184,cc.ZJLX having count(1) > 1
+
+      </select>
+
+</mapper>
