@@ -120,21 +120,23 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				throw new CustomMessageException("添加裸官信息失败");
 			}
 		}else {
-			//判断裸官状态是否可用
-			if(nakedSignList.get(0).getNsStatus().equals("1")){
-				throw new CustomMessageException("该裸官已经存在,请不要重复添加");
-			}else{
-				//裸官已经存在，但是状态是不可用的，修改状态为可用状态
-				QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
-				queryNakedSign.eq("A0100", omsSupNakedSign.getA0100());
-				OmsSupNakedSign omsSupNakedSign1 = new OmsSupNakedSign();
-				omsSupNakedSign1.setNsStatus("1");
-				omsSupNakedSign1.setModifyTime(new Date());
-				omsSupNakedSign1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-				int count = omsSupNakedSignMapper.update(omsSupNakedSign1,queryWrapper);
-				if(count < 0){
-					throw new CustomMessageException("裸官信息已经存在，修改裸官状态失败");
+			for(OmsSupNakedSign omsSupNakedSign1 : nakedSignList){
+				if(omsSupNakedSign1.getNsStatus().equals("1")){
+					throw new CustomMessageException("该裸官已经存在,请不要重复添加");
+				}else{
+					continue;
 				}
+			}
+			//裸官已经存在，但是状态是不可用的，修改状态为可用状态
+			QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
+			queryNakedSign.eq("A0100", omsSupNakedSign.getA0100());
+			OmsSupNakedSign omsSupNakedSign1 = new OmsSupNakedSign();
+			omsSupNakedSign1.setNsStatus("1");
+			omsSupNakedSign1.setModifyTime(new Date());
+			omsSupNakedSign1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			int count = omsSupNakedSignMapper.update(omsSupNakedSign1,queryWrapper);
+			if(count < 0){
+				throw new CustomMessageException("裸官信息已经存在，修改裸官状态失败");
 			}
 		}
 
