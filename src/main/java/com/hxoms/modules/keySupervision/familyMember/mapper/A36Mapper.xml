@@ -61,7 +61,12 @@
 			a.id_card,
 			a.hukou_location
 		from a36 as a
-		where a.a0100=#{a0100}
+		<where>
+			a3604a in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
+			<trim suffixOverrides="and">
+				<if test="a0100 != null">a0100=#{a0100} and </if>
+			</trim>
+		</where>
   </select>
 
 	<!-- 查询家庭成员政治面貌 -->
