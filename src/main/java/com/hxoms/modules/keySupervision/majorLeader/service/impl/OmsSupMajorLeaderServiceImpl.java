@@ -191,6 +191,8 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		List<PersonOrgOrder> list = personOrgOrderMapper.selectMajorLeaderAuto();
 		//查询领导信息
 		for(PersonOrgOrder person : list){
+			boolean flag = false;
+
 			OmsSupMajorLeader omsSupMajorLeader = new OmsSupMajorLeader();
 			//获得领导主键
 			String a0100 = person.getA01000();
@@ -228,23 +230,27 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			}else {
 				for(OmsSupMajorLeader omsSupMajorLeader1 : majorLeaderList){
 					if(omsSupMajorLeader1.getMlStatus().equals("1")){
-						throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
+						flag = true;
 					}else{
 						continue;
 					}
 				}
 
-				//主要领导已经存在，但是状态是不可用的，修改状态为可用状态
-				QueryWrapper<OmsSupMajorLeader> wrapper = new QueryWrapper<OmsSupMajorLeader>();
-				wrapper.eq("A0100", omsSupMajorLeader.getA0100());
-				OmsSupMajorLeader omsSupMajorLeader1 = new OmsSupMajorLeader();
-				omsSupMajorLeader1.setMlStatus("1");
-				omsSupMajorLeader1.setModifyTime(new Date());
-				omsSupMajorLeader1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-				int count = omsSupMajorLeaderMapper.update(omsSupMajorLeader1,wrapper);
-				if(count < 0){
-					throw new CustomMessageException("主要领导信息已经存在，修改主要领导状态失败");
+				//主要领导存在但是状态是不可用的，修改为可用这个状态
+				if(flag == false){
+					//主要领导已经存在，但是状态是不可用的，修改状态为可用状态
+					QueryWrapper<OmsSupMajorLeader> wrapper = new QueryWrapper<OmsSupMajorLeader>();
+					wrapper.eq("A0100", omsSupMajorLeader.getA0100());
+					OmsSupMajorLeader omsSupMajorLeader1 = new OmsSupMajorLeader();
+					omsSupMajorLeader1.setMlStatus("1");
+					omsSupMajorLeader1.setModifyTime(new Date());
+					omsSupMajorLeader1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+					int count = omsSupMajorLeaderMapper.update(omsSupMajorLeader1,wrapper);
+					if(count < 0){
+						throw new CustomMessageException("主要领导信息已经存在，修改主要领导状态失败");
+					}
 				}
+
 			}
 			//在备案库中设置该对象为主要领导
 			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
