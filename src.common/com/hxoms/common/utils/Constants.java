@@ -152,7 +152,6 @@ public class Constants {
     public static String[] oms_business={"oms_pub_apply","oms_pri_apply","oms_pri_delay_apply"};
     public static String[] oms_businessName={"因公出国","因私出国","延期回国"};
 
-
     /**
      * 因公 业务
      *
@@ -215,4 +214,11 @@ public class Constants {
      * */
 
     public static String[] batch_slave_statusName={"业务办理","征求意见","记录意见","做成审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
+
+    /*******约束条件保存校验*****/
+    public static String[] OMS_CONDITION_CHECKTYPE={"1","2"};
+    public static String[] OMS_CONDITION_CHECKTYPENAME={"保存前","保存后"};
+    /*******关键词替换使用范围*****/
+    public static String[] OMS_KEYWORDS_USERTYPE={"1","2"};
+    public static String[] OMS_KEYWORDS_USERTYPENAME={"文件","约束条件"};
 }
