@@ -63,7 +63,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	public Page<OmsSupNakedSign> getNakedOfficialList(Page<OmsSupNakedSign> page, OmsSupNakedSign omsSupNakedSign,
 	                                                   List<String> idList) {
-		//根据工作单位代码查询工作单位名称
+		//根据工作单位ID查询工作单位名称
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("idList", idList);
 		List<String> list = b01Mapper.selectOrgByList(map);
@@ -84,7 +84,6 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		PageInfo<OmsSupNakedSign> pageInfo = new PageInfo<OmsSupNakedSign>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -150,8 +149,10 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 		queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
-		omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-
+		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+		if(count < 0){
+			throw new CustomMessageException("同步裸官信息到登记备案库失败");
+		}
 	}
 
 
@@ -229,7 +230,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	public void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response) {
 
 		if(list.size() < 1 || list == null){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("不能导出空列表");
 		}else{
 			//创建HSSFWorkbook对象(excel的文档对象)
 			HSSFWorkbook wb = new HSSFWorkbook();
