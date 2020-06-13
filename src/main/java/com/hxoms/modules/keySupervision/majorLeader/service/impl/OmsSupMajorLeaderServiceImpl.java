@@ -13,6 +13,7 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
@@ -60,7 +61,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	public Page<OmsSupMajorLeader> getMajorLeader(Page<OmsSupMajorLeader> page, List<String> idList,
 	                                              OmsSupMajorLeader omsSupMajorLeader) {
-		//查询工作单位代码查询工作单位名称
+		//根据工作单位代码查询工作单位名称
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("idList", idList);
 		List<String> list = b01Mapper.selectOrgByList(map);
@@ -79,7 +80,6 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		PageInfo<OmsSupMajorLeader> pageInfo = new PageInfo<OmsSupMajorLeader>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -116,9 +116,24 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				throw new CustomMessageException("添加主要领导失败");
 			}
 		}else{
-			//查询主要领导状态是否可用
-			if(majorLeaderList.get(0).getMlStatus().equals("1")){
-				throw new CustomMessageException("主要领导已经存在");
+			for(OmsSupMajorLeader omsSupMajorLeader1 : majorLeaderList){
+				if(omsSupMajorLeader1.getMlStatus().equals("1")){
+					throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
+				}else{
+					continue;
+				}
+			}
+
+			//主要领导已经存在，但是状态是不可用的，修改状态为可用状态
+			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
+			queryLeader.eq("A0100", omsSupMajorLeader.getA0100());
+			OmsSupMajorLeader omsSupMajorLeader1 = new OmsSupMajorLeader();
+			omsSupMajorLeader1.setMlStatus("1");
+			omsSupMajorLeader1.setModifyTime(new Date());
+			omsSupMajorLeader1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			int count = omsSupMajorLeaderMapper.update(omsSupMajorLeader1,queryWrapper);
+			if(count < 0){
+				throw new CustomMessageException("主要领导信息已经存在，修改主要领导状态失败");
 			}
 		}
 
@@ -170,13 +185,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 * <b>自动识别主要领导（每个单位前两名）</b>
 	 * @return
 	 */
-
-
-
-
-
 	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeaderAuto() {
+		//查询每个单位的前两名作为主要领导
 		List<PersonOrgOrder> list = personOrgOrderMapper.selectMajorLeaderAuto();
 		//查询领导信息
 		for(PersonOrgOrder person : list){
@@ -215,10 +226,24 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 					throw new CustomMessageException("添加主要领导信息失败");
 				}
 			}else {
-				//查询主要领导状态是否可用
-				if(majorLeaderList.get(0).getMlStatus().equals(1)){
-					//主要领导已经存在,进行下一轮循环
-					continue;
+				for(OmsSupMajorLeader omsSupMajorLeader1 : majorLeaderList){
+					if(omsSupMajorLeader1.getMlStatus().equals("1")){
+						throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
+					}else{
+						continue;
+					}
+				}
+
+				//主要领导已经存在，但是状态是不可用的，修改状态为可用状态
+				QueryWrapper<OmsSupMajorLeader> wrapper = new QueryWrapper<OmsSupMajorLeader>();
+				wrapper.eq("A0100", omsSupMajorLeader.getA0100());
+				OmsSupMajorLeader omsSupMajorLeader1 = new OmsSupMajorLeader();
+				omsSupMajorLeader1.setMlStatus("1");
+				omsSupMajorLeader1.setModifyTime(new Date());
+				omsSupMajorLeader1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				int count = omsSupMajorLeaderMapper.update(omsSupMajorLeader1,wrapper);
+				if(count < 0){
+					throw new CustomMessageException("主要领导信息已经存在，修改主要领导状态失败");
 				}
 			}
 			//在备案库中设置该对象为主要领导
@@ -230,6 +255,10 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
 		}
+
+
+
+
 	}
 
 	/**
