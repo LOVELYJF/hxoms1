@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
 /**
@@ -63,7 +62,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>查询政治面貌集合</b>
+	 * <b>查询政治面貌列表</b>
 	 * @return
 	 */
 	public List<SysDictItem> getPoliticalAffi() {
@@ -136,7 +135,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>根据人员主键查询家庭成员信息</b>
+	 * <b>根据人员主键查询家庭成员信息(配偶子女)</b>
 	 * @param a0100
 	 * @param page
 	 * @return
@@ -184,7 +183,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 		for(A36 a36 : list){
 			//根据裸官主键查询裸官信息，用于判断裸官是否在限制性岗位
 			QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
-			queryWrapper.eq("A0100", a36.getA0100());
+			queryWrapper.eq("A0100", a36.getA0100())
+						.eq("NS_STATUS", "1");
 			OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
 
 			//限制性岗位的裸官家属可登记备案
@@ -255,7 +255,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
+	 * <b>取消裸官在限制性岗位时撤销家庭成员登记备案</b>
 	 * @param a0100
 	 * @return
 	 */
@@ -263,7 +263,6 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	public void removeToRegistration(String a0100) {
 		//查询撤销登记备案表中的所有的数据，用于比对家庭备案是否重复添加
 		List<OmsRegRevokeApply> omsRegRevokeApplyList = omsRegRevokeApplyMapper.selectList(null);
-		boolean flag = false;
 
 		//根据家庭成员备案关联主键查询家庭成员信息
 		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
@@ -272,6 +271,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 		if(list != null && list.size() > 0){
 			for(OmsRegProcpersonInfo omsRegProcpersonInfo : list){
+				boolean flag = false;
+
 				//修改备案人员信息，改为已撤销，未备案，未验收
 				omsRegProcpersonInfo.setInboundFlag("D");
 				omsRegProcpersonInfo.setRfStatus("0");
@@ -319,6 +320,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					}
 				}
 			}
+		}else {
+			throw new CustomMessageException("该干部家庭成员未备案");
 		}
 	}
 }
