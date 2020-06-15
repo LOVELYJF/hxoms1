@@ -179,6 +179,17 @@
 		from a01 a
 		join a02 a02  on a.a0100 = a02.a0100
 		join b01 b  on a02.a0201b = b.b0111
+		<where>
+			<trim suffixOverrides="and">
+				<if test="idList != null">b.B0100 in
+					<foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+						#{item}
+					</foreach>
+					and
+				</if>
+				<if test="name != null">a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%') and </if>
+			</trim>
+		</where>
 	</select>
 
 
