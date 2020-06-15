@@ -259,13 +259,13 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
-			omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
+			int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
+			if(count < 0){
+				throw new CustomMessageException("自动表示领导同步到备案库失败");
+			}
 		}
-
-
-
-
 	}
+
 
 	/**
 	 * <b>导出主要领导信息</b>
@@ -352,10 +352,5 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
-
-
-
 }
