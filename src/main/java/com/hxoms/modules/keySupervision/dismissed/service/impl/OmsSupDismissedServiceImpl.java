@@ -66,7 +66,8 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 						"NAME", omsSupDismissed.getName())
 				.or()
 				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
-						"PINYIN", omsSupDismissed.getName());
+						"PINYIN", omsSupDismissed.getName())
+				.orderByDesc("DISMISSED_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupDismissed> resultList = omsSupDismissedMapper.selectList(queryWrapper);
