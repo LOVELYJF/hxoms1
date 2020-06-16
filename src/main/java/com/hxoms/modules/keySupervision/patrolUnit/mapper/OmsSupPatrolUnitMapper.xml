@@ -12,10 +12,12 @@
     <result column="PATROL_START_TIME_QUERY" jdbcType="DATE" property="patrolStartTimeQuery" />
     <result column="PATROL_END_TIME_QUERY" jdbcType="DATE" property="patrolEndTimeQuery" />
     <result column="PU_STATUS" jdbcType="CHAR" property="puStatus" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, MODIFY_USER, MODIFY_TIME, B0100, UNIT, PATROL_START_TIME, PATROL_END_TIME, PATROL_START_TIME_QUERY,
-    PATROL_END_TIME_QUERY,PU_STATUS
+    PATROL_END_TIME_QUERY,PU_STATUS,CREATE_USER,CREATE_TIME
   </sql>
 
 </mapper>
