@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
@@ -72,7 +73,6 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		PageInfo<OmsSupDismissed> pageInfo = new PageInfo<OmsSupDismissed>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -89,11 +89,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDismissed.getA0100());
 		omsSupDismissed.setPinyin((String)list.get(0).get("a0102"));
-
-
-
 		omsSupDismissed.setId(UUIDGenerator.getPrimaryKey());
-		omsSupDismissed.setModifyTime(new Date());
+		omsSupDismissed.setCreateTime(new Date());
+		omsSupDismissed.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupDismissed.setDmStatus("1");
 		int count = omsSupDismissedMapper.insert(omsSupDismissed);
 		if(count <= 0){
@@ -110,6 +108,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDismissedInfo(OmsSupDismissed omsSupDismissed) {
 		omsSupDismissed.setModifyTime(new Date());
+		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
 		if(count <= 0){
 			throw new CustomMessageException("修改免职撤职人员失败");
@@ -126,6 +125,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
 		omsSupDismissed.setDmStatus("0");
 		omsSupDismissed.setModifyTime(new Date());
+		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
 		if(count <= 0){
 			throw new CustomMessageException("删除免职撤职人员失败");

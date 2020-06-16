@@ -60,6 +60,14 @@ public class OmsSupDismissed {
     @ColumnAnnotation(FieldName = "DM_STATUS",   FieldDescription="免职撤职状态")
     private String dmStatus;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
+
 
     public String getId() {
         return id;
@@ -165,12 +173,27 @@ public class OmsSupDismissed {
         this.dismissedTimeEndQuery = dismissedTimeEndQuery;
     }
 
-
     public String getDmStatus() {
         return dmStatus;
     }
 
     public void setDmStatus(String dmStatus) {
         this.dmStatus = dmStatus == null ? null : dmStatus.trim();
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
