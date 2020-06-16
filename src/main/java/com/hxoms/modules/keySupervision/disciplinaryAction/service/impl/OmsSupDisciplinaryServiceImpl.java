@@ -6,7 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UtilDateTime;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
@@ -77,7 +77,6 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		PageInfo<OmsSupDisciplinary> pageInfo = new PageInfo<OmsSupDisciplinary>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -100,7 +99,8 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
 		omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
 		omsSupDisciplinary.setId(UUIDGenerator.getPrimaryKey());
-		omsSupDisciplinary.setModifyTime(new Date());
+		omsSupDisciplinary.setCreateTime(new Date());
+		omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupDisciplinary.setDcStatus("1");
 
 		int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
@@ -135,6 +135,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 
 		omsSupDisciplinary.setModifyTime(new Date());
+		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
 			throw new CustomMessageException("操作失败");
@@ -150,6 +151,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
 		omsSupDisciplinary.setModifyTime(new Date());
+		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupDisciplinary.setDcStatus("0");
 		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
