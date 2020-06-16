@@ -51,6 +51,14 @@ public class OmsSupPatrolUnit {
     @ColumnAnnotation(FieldName = "PU_STATUS",   FieldDescription="被巡视单位状态")
     private String puStatus;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
+
     public String getId() {
         return id;
     }
@@ -130,5 +138,21 @@ public class OmsSupPatrolUnit {
 
     public void setPuStatus(String puStatus) {
         this.puStatus = puStatus == null ? null : puStatus.trim();
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

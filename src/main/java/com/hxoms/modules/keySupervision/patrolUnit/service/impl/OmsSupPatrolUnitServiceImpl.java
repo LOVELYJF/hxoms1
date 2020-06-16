@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit;
 import com.hxoms.modules.keySupervision.patrolUnit.mapper.OmsSupPatrolUnitMapper;
 import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitService;
@@ -68,7 +69,8 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public void addPatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 
 		omsSupPatrolUnit.setId(UUIDGenerator.getPrimaryKey());
-		omsSupPatrolUnit.setModifyTime(new Date());
+		omsSupPatrolUnit.setCreateTime(new Date());
+		omsSupPatrolUnit.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupPatrolUnit.setPuStatus("1");
 		int count = omsSupPatrolUnitMapper.insert(omsSupPatrolUnit);
 		if(count <= 0){
@@ -86,6 +88,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public void updatePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 		//根据主键修改
 		omsSupPatrolUnit.setModifyTime(new Date());
+		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("修改被巡视单位失败");
@@ -102,6 +105,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 		omsSupPatrolUnit.setPuStatus("0");
 		omsSupPatrolUnit.setModifyTime(new Date());
+		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("删除被巡视单位失败");

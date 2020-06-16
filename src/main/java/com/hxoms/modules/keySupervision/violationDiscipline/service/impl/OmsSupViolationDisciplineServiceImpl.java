@@ -6,11 +6,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
+import com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.support.b01.mapper.B01Mapper;
@@ -71,14 +74,14 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 						"NAME", omsSupViolationDiscipline.getName())
 				.or()
 				.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
-						"PINYIN", omsSupViolationDiscipline.getName());
+						"PINYIN", omsSupViolationDiscipline.getName())
+				.orderByDesc("VIOLATION_DIS_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupViolationDiscipline> resultList = omsSupViolationDisciplineMapper.selectList(queryWrapper);
 		PageInfo<OmsSupViolationDiscipline> pageInfo = new PageInfo<OmsSupViolationDiscipline>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -103,19 +106,24 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		omsSupViolationDiscipline.setPinyin((String)list.get(0).get("a0102"));
 		//生成违反外事人员信息主键
 		omsSupViolationDiscipline.setId(UUIDGenerator.getPrimaryKey());
-		omsSupViolationDiscipline.setModifyTime(new Date());
+		omsSupViolationDiscipline.setCreateTime(new Date());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupViolationDiscipline.setVdStatus("1");
 		int count =  omsSupViolationDisciplineMapper.insert(omsSupViolationDiscipline);
 		if(count < 1){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("新增违反外事纪律人员失败");
 		}else{
-			//在备案记录表中锁定出国时间到影响期的结束时间
+			//在备案表中锁定出国时间到影响期的结束时间
 			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
 			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
 			omsRegProcperson.setModifyTime(new Date());
+			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
+			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
+			if(count1 < 1){
+				throw new CustomMessageException("在备案表中设置锁定出国失败");
+			}
 
 		}
 	}
@@ -134,18 +142,22 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 
 
 		omsSupViolationDiscipline.setModifyTime(new Date());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("修改违反外事纪律人员失败");
 		}else {
 			//在备案记录表中锁定出国时间到影响期的结束时间
 			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
 			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
 			omsRegProcperson.setModifyTime(new Date());
+			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
-
+			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
+			if(count1 < 1){
+				throw new CustomMessageException("在备案表中设置锁定出国失败");
+			}
 		}
 	}
 
@@ -158,18 +170,23 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Transactional(rollbackFor=Exception.class)
 	public void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 		omsSupViolationDiscipline.setModifyTime(new Date());
+		omsSupViolationDiscipline.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		omsSupViolationDiscipline.setVdStatus("0");
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
 		if(count <= 0){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("删除违反外事纪律人员失败");
 		}else {
 			//取消备案表中的锁定出国时间
 			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
 			omsRegProcperson.setAbroadtime(null);
 			omsRegProcperson.setModifyTime(new Date());
+			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
+			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
+			if(count1 < 1){
+				throw new CustomMessageException("在备案表中设置锁定出国失败");
+			}
 		}
 	}
 

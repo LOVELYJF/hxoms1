@@ -71,6 +71,14 @@ public class OmsSupViolationDiscipline {
     @ColumnAnnotation(FieldName = "VD_STATUS",   FieldDescription="违反外事纪律状态")
     private String vdStatus;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
+
 
     public String getId() {
         return id;
@@ -200,12 +208,27 @@ public class OmsSupViolationDiscipline {
         this.description = description == null ? null : description.trim();
     }
 
-
     public String getVdStatus() {
         return vdStatus;
     }
 
     public void setVdStatus(String vdStatus) {
         this.vdStatus = vdStatus == null ? null : vdStatus.trim();
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
