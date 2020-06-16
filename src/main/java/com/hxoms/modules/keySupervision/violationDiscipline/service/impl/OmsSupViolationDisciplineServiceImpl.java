@@ -74,7 +74,8 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 						"NAME", omsSupViolationDiscipline.getName())
 				.or()
 				.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
-						"PINYIN", omsSupViolationDiscipline.getName());
+						"PINYIN", omsSupViolationDiscipline.getName())
+				.orderByDesc("VIOLATION_DIS_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupViolationDiscipline> resultList = omsSupViolationDisciplineMapper.selectList(queryWrapper);
