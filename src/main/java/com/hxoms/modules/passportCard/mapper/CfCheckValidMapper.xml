@@ -65,7 +65,7 @@
 		      GROUP BY
 			    cc.A0184, cc.ZJLX, cc.NAME
 		      HAVING
-			count(*) > 1)
+			count(1) > 1)
           AND c.IS_VALID = 0
             <if test="name != null">
               AND NAME like CANCAT(CONCAT('%',#{name}),'%')

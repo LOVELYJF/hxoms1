@@ -18,6 +18,10 @@ public class PersonExcelToDB {
 
     static List<Map<String, Object>> maps = new ArrayList<>();
 
+    static List<Map<String, Object>> cfMaps = new ArrayList<>();
+
+    static List<Map<String, Object>> ExcelMap = new ArrayList<>();
+
     static String[] zd = {"IDCard", "name", "sex", "csny", "gj", "zjlx", "cardNum", "csd", "qfdw", "qfrq", "yxqz"};
 
     /**
@@ -39,8 +43,10 @@ public class PersonExcelToDB {
             findOrpList();
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
-
+            SimpleDateFormat formatterNow = new SimpleDateFormat("yyyyMMdd");
             Date data1 = new Date();
+
+            String timeNow = formatter.format(data1);
 
             String dateDB = formatter.format(data1);
 
@@ -83,102 +89,111 @@ public class PersonExcelToDB {
                         String sex  = list.get(i).get("sex").toString();
                         String csny = list.get(i).get("csny").toString();
                         String omsId = findOmsIdByName(maps,name,sex,csny);
+                        if(Integer.parseInt(list.get(i).get("yxqz").toString())<Integer.parseInt(timeNow)){
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("zjhm",list.get(i).get("zjhm"));
+                            map.put("name",list.get(i).get("name"));
+                            ExcelMap.add(map);
+                        }else{
 
-                        //如果结果集包含"境"字，就添加到出国境记录表，如果不包含，就添加到证照表里面
-                        if (list.get(i).get("IDCard").toString().contains("境")) {
+                            //如果结果集包含"境"字，就添加到出国境记录表，如果不包含，就添加到证照表里面
+                            if (list.get(i).get("IDCard").toString().contains("境")) {
 
+                                if(!ExcelComparisonList(ExcelMap, list.get(i).get("zjhm").toString())){
 
-                            ps2.setString(1, UUIDGenerator.getPrimaryKey());
+                                    ps2.setString(1, UUIDGenerator.getPrimaryKey());
 
-                            ps2.setString(2,dateDB);
+                                    ps2.setString(2,dateDB);
 
-                            ps2.setString(3,importPerson);
+                                    ps2.setString(3,importPerson);
 
-                            ps2.setString(4,"******");
+                                    ps2.setString(4,"******");
 
-                            ps2.setString(5,dataSource);
+                                    ps2.setString(5,dataSource);
 
-                            ps2.setString(6,omsId);
+                                    ps2.setString(6,omsId);
 
-                            ps2.setInt(7,1);
+                                    ps2.setInt(7,1);
 
-                            ps2.setString(8, list.get(i).get("name").toString());
+                                    ps2.setString(8, list.get(i).get("name").toString());
 
-                            ps2.setString(9,list.get(i).get("sex").toString());
+                                    ps2.setString(9,list.get(i).get("sex").toString());
 
-                            ps2.setString(10,list.get(i).get("csny").toString());
+                                    ps2.setString(10,list.get(i).get("csny").toString());
 
-                            ps2.setString(11,list.get(i).get("gj").toString());
+                                    ps2.setString(11,list.get(i).get("gj").toString());
 
-                            ps2.setInt(12,1);
+                                    ps2.setInt(12,1);
 
-                            ps2.setString(13,list.get(i).get("cardNum").toString());
+                                    ps2.setString(13,list.get(i).get("cardNum").toString());
 
-                            ps2.setString(14,list.get(i).get("csd").toString());
+                                    ps2.setString(14,list.get(i).get("csd").toString());
 
-                            ps2.setString(15,list.get(i).get("qfdw").toString());
+                                    ps2.setString(15,list.get(i).get("qfdw").toString());
 
-                            ps2.setString(16,list.get(i).get("qfrq").toString());
+                                    ps2.setString(16,list.get(i).get("qfrq").toString());
 
-                            ps2.setString(17,list.get(i).get("yxqz").toString());
+                                    ps2.setString(17,list.get(i).get("yxqz").toString());
 
-                            ps2.setString(18,"出入境管理");
+                                    ps2.setString(18,"出入境管理");
 
-                            ps2.addBatch();
-
-                        } else {
-
-                            int sexInt = 1;
-
-                            if (sex.equals("男")) {
-
-                                sexInt = 1;
+                                    ps2.addBatch();
+                                }
 
                             } else {
 
-                                sexInt = 2;
+                                int sexInt = 1;
+
+                                if (sex.equals("男")) {
+
+                                    sexInt = 1;
+
+                                } else {
+
+                                    sexInt = 2;
+
+                                }
+
+                                String zjlx = (String) list.get(i).get("zjlx");
+                                int zjlxInt = 1;
+                                if (zjlx.contains("护照")){
+                                    zjlxInt = 1;
+                                }else if(zjlx.contains("港澳")){
+                                    zjlxInt = 2;
+                                }else if(zjlx.contains("台湾")){
+                                    zjlxInt = 3;
+                                }
+                                ps.setString(1, UUIDGenerator.getPrimaryKey());
+
+                                ps.setString(2, (String) list.get(i).get("IDCard"));
+
+                                ps.setString(3, (String) list.get(i).get("name"));
+
+                                ps.setInt(4, sexInt);
+
+                                ps.setString(5, (String) list.get(i).get("csny"));
+
+                                ps.setString(6, (String) list.get(i).get("gj"));
+
+                                ps.setInt(7, zjlxInt);
+
+                                ps.setString(8, (String) list.get(i).get("cardNum"));
+
+                                ps.setString(9, (String) list.get(i).get("csd"));
+
+                                ps.setString(10, (String) list.get(i).get("qfrq"));
+
+                                ps.setString(11, (String) list.get(i).get("yxqz"));
+
+                                ps.setInt(12, 1);
+
+                                ps.setString(13,(String)list.get(i).get("qfdw"));
+
+                                ps.setString(14,omsId);
+
+                                ps.addBatch();
 
                             }
-
-                            String zjlx = (String) list.get(i).get("zjlx");
-                            int zjlxInt = 1;
-                            if (zjlx.contains("护照")){
-                                zjlxInt = 1;
-                            }else if(zjlx.contains("港澳")){
-                                zjlxInt = 2;
-                            }else if(zjlx.contains("台湾")){
-                                zjlxInt = 3;
-                            }
-                            ps.setString(1, UUIDGenerator.getPrimaryKey());
-
-                            ps.setString(2, (String) list.get(i).get("IDCard"));
-
-                            ps.setString(3, (String) list.get(i).get("name"));
-
-                            ps.setInt(4, sexInt);
-
-                            ps.setString(5, (String) list.get(i).get("csny"));
-
-                            ps.setString(6, (String) list.get(i).get("gj"));
-
-                            ps.setInt(7, zjlxInt);
-
-                            ps.setString(8, (String) list.get(i).get("cardNum"));
-
-                            ps.setString(9, (String) list.get(i).get("csd"));
-
-                            ps.setString(10, (String) list.get(i).get("qfrq"));
-
-                            ps.setString(11, (String) list.get(i).get("yxqz"));
-
-                            ps.setInt(12, 1);
-
-                            ps.setString(13,(String)list.get(i).get("qfdw"));
-
-                            ps.setString(14,omsId);
-
-                            ps.addBatch();
-
                         }
 
                         if (i % 1000 == 0) {
@@ -275,7 +290,7 @@ public class PersonExcelToDB {
                 }
                 for (int row = 0; row < rowNumbers; row++) {
 
-                    Map<String, Object> map = new HashMap<String, Object>();
+                    Map<String, Object> map = new HashMap<>();
 
                     Row r = sheet.getRow(row);
 
@@ -317,6 +332,7 @@ public class PersonExcelToDB {
 
         String sql = "select id,Replace(CONCAT(SURNAME,name),' ','') as name,Replace(BIRTH_DATE,'-','') as birthDate,idnumber,CASE SEX WHEN 1 then '男' when 2 then '女' end as SEX FROM oms_reg_procpersoninfo";
 
+        String sqlCf = "select A0184,NAME,CASE SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END AS SEX,CSRQ,ZJHM FROM cf_certificate";
 
         try {
             Connection conn = JDBC.getConnection();
@@ -325,16 +341,30 @@ public class PersonExcelToDB {
 
             Statement stat = conn.createStatement();
 
+            Statement statCf = conn.createStatement();
+
             ResultSet rs = stat.executeQuery(sql);
+
+            ResultSet rsCf = statCf.executeQuery(sqlCf);
 
             while (rs.next()) {
                 Map<String, Object> dataMap = new HashMap<>();
-                dataMap.put("A0100", rs.getString(1));
-                dataMap.put("A0101", rs.getString(2).replace("　","").replace(" ",""));
-                dataMap.put("A0107", rs.getString(3));
-                dataMap.put("A0184", rs.getString(4));
+                dataMap.put("a0100", rs.getString(1));
+                dataMap.put("a0101", rs.getString(2).replace("　","").replace(" ",""));
+                dataMap.put("a0107", rs.getString(3));
+                dataMap.put("a0184", rs.getString(4));
                 dataMap.put("sex", rs.getString(5));
                 maps.add(dataMap);
+            }
+
+            while (rsCf.next()) {
+                Map<String, Object> dataMapCf = new HashMap<>();
+                dataMapCf.put("a0184", rs.getString(1));
+                dataMapCf.put("name", rs.getString(2).replace("　","").replace(" ",""));
+                dataMapCf.put("sex", rs.getString(3));
+                dataMapCf.put("csrq", rs.getString(4));
+                dataMapCf.put("zjhm", rs.getString(5));
+                cfMaps.add(dataMapCf);
             }
 
         } catch (SQLException e) {
@@ -342,14 +372,32 @@ public class PersonExcelToDB {
         }
     }
 
+    /**
+     * 查询证件信息表里面所有的信息，导入Excel表格的时候判断是否已经导入过
+     */
+    public static boolean ExcelComparisonList(List<Map<String,Object>> list,String zjhm){
 
-    public static String findOmsIdByName(List<Map<String,Object>> list,String name,String sex,String A0107){
+        boolean flag = false;
+
+        for (int i= 0;i<list.size();i++){
+            if (list.get(i).get("zjhm").toString().equals(zjhm)){
+                flag = true;
+            }else{
+                flag = false;
+            }
+        }
+
+        return flag;
+
+    }
+
+    public static String findOmsIdByName(List<Map<String,Object>> list,String name,String sex,String a0107){
 
         String omsId = null;
 
         for (int i= 0;i<list.size();i++) {
-            if (list.get(i).get("A0101").toString().replace(" ","").equals(name) && list.get(i).get("sex").equals(sex) && list.get(i).get("A0107").equals(A0107)) {
-                omsId = list.get(i).get("A0100").toString();
+            if (list.get(i).get("a0101").toString().replace(" ","").equals(name) && list.get(i).get("sex").equals(sex) && list.get(i).get("a0107").equals(a0107)) {
+                omsId = list.get(i).get("a0100").toString();
             }
         }
         return omsId;
