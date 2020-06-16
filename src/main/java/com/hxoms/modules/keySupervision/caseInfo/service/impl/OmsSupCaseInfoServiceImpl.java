@@ -74,7 +74,8 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 						"NAME", omsSupCaseInfo.getName())
 				.or()
 				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
-						"PINYIN", omsSupCaseInfo.getName());
+						"PINYIN", omsSupCaseInfo.getName())
+				.orderByDesc("CASE_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupCaseInfo> resultList = omsSupCaseInfoMapper.selectList(queryWrapper);
