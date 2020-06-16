@@ -70,7 +70,8 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 						"NAME", omsSupDisciplinary.getName())
 				.or()
 				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
-						"PINYIN", omsSupDisciplinary.getName());
+						"PINYIN", omsSupDisciplinary.getName())
+				.orderByDesc("DISCIPLINARY_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupDisciplinary> resultList = omsSupDisciplinaryMapper.selectList(queryWrapper);
