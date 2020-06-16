@@ -66,6 +66,13 @@ public class OmsSupCaseInfo {
     @ColumnAnnotation(FieldName = "CI_STATUS",   FieldDescription="立案状态")
     private String ciStatus;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -187,12 +194,27 @@ public class OmsSupCaseInfo {
         this.disciplinaryActionType = disciplinaryActionType == null ? null : disciplinaryActionType.trim();
     }
 
-
     public String getCiStatus() {
         return ciStatus;
     }
 
     public void setCiStatus(String ciStatus) {
         this.ciStatus = ciStatus == null ? null : ciStatus.trim();
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
