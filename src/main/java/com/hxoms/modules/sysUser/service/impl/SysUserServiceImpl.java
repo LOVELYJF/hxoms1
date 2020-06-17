@@ -4,21 +4,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.StringUilt;
-import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.mapper.CfUserMapper;
 import com.hxoms.modules.sysUser.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> implements SysUserService {
+public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private CfUserMapper cfUserMapper;
@@ -54,8 +53,13 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
     * @Author: 李逍遥
     * @Date: 2020/4/28 16:08
     */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public void InserOrUpdateSysUser(CfUser user,CfUser loginUser) {
+    public void InserOrUpdateSysUser(CfUser user) {
+        //登录用户信息
+        //UserInfo loginUser = UserInfoUtil.getUserInfo();
+        CfUser loginUser = new CfUser();
+        loginUser.setUserName("haha");
         if (user == null) {
             throw new CustomMessageException("用户不能为空!");
         }
@@ -73,6 +77,11 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
         } else {
             //新增用户（给定初始密码）
             //创建用户时，要判断登录名是否重复，并且在在非撤消和拒绝状态
+            //判断是否是经办人
+            if (user.getUserState() == "6"){
+                throw new CustomMessageException("经办人请到经办人注册页面进行注册!");
+            }
+
             CfUser selectUser = cfUserMapper.selectByUserCode(user.getUserCode());
             if(selectUser != null){
                 //判断状态
@@ -89,7 +98,8 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
             user.setCreator(loginUser.getUserName());
             //创建时间
             user.setCreatetime(new Date());
-            cfUserMapper.insertSelective(user);
+            cfUserMapper.insert(user);
+            //cfUserMapper.insertSelective(user);
 
         }
 
@@ -108,7 +118,7 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
         if (StringUtils.isEmpty(keyWord)) {
             throw new CustomMessageException("参数为空!");
         }
-        List<CfUser> user = cfUserMapper.selectByPrimaryKey(keyWord);
+        List<CfUser> user = cfUserMapper.selectByName(keyWord);
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }
@@ -141,6 +151,7 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
      * @Author: 李逍遥
      * @Date: 2020/4/28 17:19
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updatePassword(String userId, String newPassword) {
 
@@ -150,7 +161,9 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
         if (StringUilt.stringIsNullOrEmpty(newPassword)) {
             throw new CustomMessageException("新密码为空!");
         }
-        String selectPassword = cfUserMapper.selectPassword(userId);
+        CfUser user = cfUserMapper.selectByPrimaryKey(userId);
+        String selectPassword = user.getUserPassword();
+        //String selectPassword = cfUserMapper.selectPassword(userId);
         String password = UUIDGenerator.encryptPwd(newPassword);
         if (selectPassword.equals(password)){
             throw new CustomMessageException("新密码和原密码相同!");
@@ -173,7 +186,8 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
         if (StringUtils.isEmpty(userId)) {
             throw new CustomMessageException("参数为空!");
         }
-        CfUser user = cfUserMapper.selectSysUserByUserId(userId);
+        CfUser user = cfUserMapper.selectByPrimaryKey(userId);
+        //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }
@@ -188,12 +202,14 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
      * @Author: 李逍遥
      * @Date: 2020/4/30 11:47
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void resetPassword(String userId) {
         if (StringUtils.isEmpty(userId)) {
             throw new CustomMessageException("参数为空!");
         }
-        CfUser user = cfUserMapper.selectSysUserByUserId(userId);
+        CfUser user =  cfUserMapper.selectByPrimaryKey(userId);
+        //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }
@@ -213,6 +229,7 @@ public class SysUserServiceImpl extends ServiceImpl<CfUserMapper,CfUser> impleme
      * @Author: 李逍遥
      * @Date: 2020/4/30 18:13
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updateUserState(String userId, String state) {
         if (StringUilt.stringIsNullOrEmpty(userId)) {

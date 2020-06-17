@@ -49,8 +49,8 @@ public class SysUserController {
      * @Date: 2020/4/28 15:46
      */
     @RequestMapping("/insertOrUpDateSysUser")
-    public Result insertOrUpDateSysUser(CfUser user,CfUser loginUser) {
-        sysUserService.InserOrUpdateSysUser(user,loginUser);
+    public Result insertOrUpDateSysUser(CfUser user) {
+        sysUserService.InserOrUpdateSysUser(user);
         return Result.success();
     }
    /**
@@ -129,7 +129,7 @@ public class SysUserController {
      */
     @RequestMapping("/updateUserState")
     public Result updateUserState(String userId , String state){
-        sysUserService.updateUserState(userId , state );
+        sysUserService.updateUserState(userId , state);
         return Result.success();
     }
 }

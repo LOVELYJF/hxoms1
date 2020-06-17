@@ -1,13 +1,12 @@
 package com.hxoms.modules.sysUser.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
 
 
-public interface SysUserService extends IService<CfUser> {
+public interface SysUserService {
     /**
      * 功能描述: <br>
      * 〈查询用户列表〉
@@ -26,7 +25,7 @@ public interface SysUserService extends IService<CfUser> {
      * @Author: 李逍遥
      * @Date: 2020/4/28 16:07
      */
-    void InserOrUpdateSysUser(CfUser user,CfUser loginUser);
+    void InserOrUpdateSysUser(CfUser user);
 
     /**
      * 功能描述: <br>
