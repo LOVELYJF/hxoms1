@@ -16,7 +16,6 @@ public interface OmsPriApplyService {
      * 因私出国申请列表
      * @param omsPriApplyIPageParam  查询条件
      * @return
-     * @throws Exception
      */
     PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam);
     /**
@@ -24,35 +23,30 @@ public interface OmsPriApplyService {
      * @param b0100 机构id
      * @param a0100 人员id
      * @return
-     * @throws Exception
      */
     OmsPriApplyVO selectPersonById(String b0100, String a0100);
     /**
      * 新增或修改因私出国申请
      * @param omsPriApplyParam  申请接收参数类
      * @return
-     * @throws Exception
      */
     List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
     /**
      * 删除申请
      * @param id 申请id
      * @return
-     * @throws Exception
      */
     String deletePriApply(String id);
     /**
      * 修改因私出国申请状态
      * @param omsPriApply 申请id
      * @return
-     * @throws Exception
      */
     String updateApplyStatus(OmsPriApply omsPriApply);
     /**
      * 根据姓名或者拼音查找用户
      * @param keyword 关键词
      * @return
-     * @throws Exception
      */
     List<PersonInfoVO> selectPersonByKeyword(String keyword);
     /**
@@ -73,7 +67,13 @@ public interface OmsPriApplyService {
      * 下一步（生成材料）
      * @param applyId
      * @return
-     * @throws Exception
      */
     List<Map<String, String>> nextCreateFile(String applyId, String type);
+
+    /**
+     * 情况报告
+     * @param omsPriApply
+     * @return
+     */
+    String saveAbroadState(OmsPriApply omsPriApply);
 }

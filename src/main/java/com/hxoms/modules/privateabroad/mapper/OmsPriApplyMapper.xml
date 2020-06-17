@@ -91,23 +91,23 @@
     LEFT JOIN oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
     left join oms_reg_procpersoninfo rp1 on pa.CREATE_USER = rp1.A0100
     where 1=1
-    <if test="omsPriApplyIPageParam.applyStartTime != null and omsPriApplyIPageParam.applyStopTime != null">
-      and pa.APPLY_TIME &gt; #{omsPriApplyIPageParam.applyStartTime} and pa.APPLY_TIME &lt; #{omsPriApplyIPageParam.applyStopTime}
+    <if test="params.applyStartTime != null and params.applyStopTime != null">
+      and pa.APPLY_TIME &gt; #{params.applyStartTime} and pa.APPLY_TIME &lt; #{params.applyStopTime}
     </if>
-    <if test="omsPriApplyIPageParam.abroadStartTime != null and omsPriApplyIPageParam.abroadEndTime != null">
-      and pa.ABROAD_TIME &gt; #{omsPriApplyIPageParam.abroadStartTime} and pa.ABROAD_TIME &lt; #{omsPriApplyIPageParam.abroadEndTime}
+    <if test="params.abroadStartTime != null and params.abroadEndTime != null">
+      and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
     </if>
-    <if test="omsPriApplyIPageParam.name != null and omsPriApplyIPageParam.name != ''">
-      and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.name},'%')
-      and rp.PY LIKE  CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+    <if test="params.name != null and params.name != ''">
+      and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{params.name},'%')
+      and rp.PY LIKE  CONCAT('%',#{params.name},'%')
     </if>
-    <if test="omsPriApplyIPageParam.createUser != null and omsPriApplyIPageParam.createUser != ''">
-      and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
-      and rp1.PY LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+    <if test="params.createUser != null and params.createUser != ''">
+      and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{params.createUser},'%')
+      and rp1.PY LIKE CONCAT('%',#{params.createUser},'%')
     </if>
-    <if test="omsPriApplyIPageParam.applyStatus != null and omsPriApplyIPageParam.applyStatus != ''">
+    <if test="params.applyStatus != null and params.applyStatus != ''">
       and pa.APPLY_STATUS in
-      <foreach close=")" collection="omsPriApplyIPageParam.applyStatus" index="index" item="item" open="(" separator=",">
+      <foreach close=")" collection="params.applyStatus" index="index" item="item" open="(" separator=",">
         #{item}
       </foreach>
     </if>

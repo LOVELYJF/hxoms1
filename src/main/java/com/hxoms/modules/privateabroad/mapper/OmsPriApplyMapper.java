@@ -13,9 +13,9 @@ import java.util.List;
 public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
     /**
      * 因私出国申请列表
-     * @param omsPriApplyIPageParam  查询条件
+     * @param params  查询条件
      */
-    List<OmsPriApplyVO> selectOmsPriApplyIPage(@Param("omsPriApplyIPageParam") OmsPriApplyIPageParam omsPriApplyIPageParam);
+    List<OmsPriApplyVO> selectOmsPriApplyIPage(@Param("params") OmsPriApplyIPageParam params);
 
     /**
      * 通过人员id查询因私出国申请所需用户信息

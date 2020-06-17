@@ -12,4 +12,31 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.privateabroad.entity.OmsApprovalReturnVO">
+    <association column="APPLY_ID" property="omsPriApplyVO" select="com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper.selectPriApplyById">
+    </association>
+  </resultMap>
+
+  <!--因私出国审批表回收列表-->
+  <select id="selectPriApprovalReturnPagelist" parameterType="com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApprovalReturnIPageParam" resultMap="ResultMapVO">
+    select ar.*
+    from oms_approval_return ar
+    left join oms_pri_apply pa on ar.APPLY_ID = pa.ID
+    left join oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
+    where 1=1
+    <if test="params.returnStartTime != null and params.returnStopTime != null">
+      and ar.RETURN_TIME &gt; #{params.returnStartTime} and ar.RETURN_TIME &lt; #{params.returnStopTime}
+    </if>
+    <if test="params.abroadStartTime != null and params.abroadEndTime != null">
+      and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
+    </if>
+    <if test="params.name != null and params.name != ''">
+      and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{params.name},'%')
+      and rp.PY LIKE  CONCAT('%',#{params.name},'%')
+    </if>
+    <if test="params.returnUser != null and params.returnUser != ''">
+      and ar.RETURN_DESC like CONCAT('%',#{params.returnUser},'%')
+    </if>
+    order by ar.CREATE_TIME desc
+  </select>
 </mapper>

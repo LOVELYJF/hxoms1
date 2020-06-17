@@ -119,8 +119,8 @@ public class OmsPriApplyController {
      */
     @GetMapping("/selectCountStatus")
     public Result selectCountStatus(String type){
-        List<CountStatusResult> omsPriApplyVO = omsPriApplyService.selectCountStatus(type);
-        return Result.success(omsPriApplyVO);
+        List<CountStatusResult> countStatusResults = omsPriApplyService.selectCountStatus(type);
+        return Result.success(countStatusResults);
     }
 
     /**
@@ -135,4 +135,15 @@ public class OmsPriApplyController {
         return Result.success(result);
     }
 
+    /**
+     * 情况报告
+     * @param omsPriApply
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/saveAbroadState")
+    public Result saveAbroadState(OmsPriApply omsPriApply) throws Exception {
+        String result = omsPriApplyService.saveAbroadState(omsPriApply);
+        return Result.success().setMsg(result);
+    }
 }
