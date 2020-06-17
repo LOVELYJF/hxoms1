@@ -9,12 +9,12 @@ spring:
 #            password: 12345abcde
 #            url: jdbc:dm://www.24hbs.com:5236/HXOMS
 #            driver-class-name: dm.jdbc.driver.DmDriver
-#      username: hxoms
-#      password: Hxyz-2020#
-#      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
-      username: root
-      password: 123456
-      url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
+      username: hxoms
+      password: Hxyz-2020#
+      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      #username: root
+      #password: 123456
+      #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
       driver-class-name: com.mysql.jdbc.Driver
       initial-size: 1
       min-idle: 1

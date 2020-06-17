@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
@@ -37,9 +38,10 @@ public class OmsRegProcpersonInfoController {
      * @date 2020/4/16 18:01
      */
     @GetMapping("/getInitialReginfo")
-    public Result getInitialReginfo(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) {
+    public Result getInitialReginfo(OmsRegProcpersonInfo msRegProcpersonInfo) {
         try{
-            IPage<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getInitialReginfo(page,msRegProcpersonInfo);
+
+            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getInitialReginfo(msRegProcpersonInfo);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();

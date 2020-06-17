@@ -105,7 +105,7 @@
               REPLYOPINION, ABROADTIME, REASON,
               CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
     )
-    value
+    values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
