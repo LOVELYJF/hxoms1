@@ -278,11 +278,6 @@ public class OmsRegProcpersonInfo {
     @ColumnAnnotation(FieldName = "PY", FieldDescription = "拼音简称")
     private String py;
 
-    /**
-     * 家庭成员备案关联主键
-     */
-    @ColumnAnnotation(FieldName = "A01000", FieldDescription = "家庭成员备案关联主键")
-    private String a01000;
 
 
     /**
@@ -1047,12 +1042,4 @@ public class OmsRegProcpersonInfo {
         this.secretPost = secretPost;
     }
 
-
-    public String getA01000() {
-        return a01000;
-    }
-
-    public void setA01000(String a01000) {
-        this.a01000 = a01000 == null ? null : a01000.trim();
-    }
 }

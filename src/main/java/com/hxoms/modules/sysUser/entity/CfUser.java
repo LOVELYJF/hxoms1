@@ -23,7 +23,7 @@ public class CfUser {
     @ColumnAnnotation(FieldName = "user_type",   FieldDescription="用户类型(1超级管理员、2安全保密管理员、3安全审计管理员、4各单位管理员、5监督处工作人员、6经办人、7组织部相关处室、8省外办、9统战部（港澳办）、10统战部（台办）、11省保密局、12省纪委、13部领导、14其他)")
     private String userType;
 
-    @ColumnAnnotation(FieldName = "user_state",   FieldDescription="用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)")
+    @ColumnAnnotation(FieldName = "user_state",   FieldDescription="用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7、登记指纹8)")
     private String userState;
 
     @ColumnAnnotation(FieldName = "user_photo",   FieldDescription="用户照片")
@@ -110,6 +110,9 @@ public class CfUser {
 
     @ColumnAnnotation(FieldName = "MAC",   FieldDescription="Mac地址")
     private String mac;
+
+    @ColumnAnnotation(FieldName = "Telephone",   FieldDescription="座机号")
+    private String telephone;
 
     @ColumnAnnotation(FieldName = "FINGERPRINT_1",   FieldDescription="指纹1(存储指纹BASE64数据)")
     private String fingerprint1;
@@ -355,6 +358,14 @@ public class CfUser {
 
     public void setMac(String mac) {
         this.mac = mac == null ? null : mac.trim();
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone == null ? null : telephone.trim();
     }
 
     public String getFingerprint1() {

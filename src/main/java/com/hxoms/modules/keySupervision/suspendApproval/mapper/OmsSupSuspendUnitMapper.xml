@@ -13,10 +13,12 @@
     <result column="SUSPEND_STRAT_TIME_QUERY" jdbcType="DATE" property="suspendStratTimeQuery" />
     <result column="SUSPEND_END_TIME_QUERY" jdbcType="DATE" property="suspendEndTimeQuery" />
     <result column="IS_EFFECTIVE" jdbcType="CHAR" property="isEffective" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, MODIFY_USER, MODIFY_TIME, UNIT, B0100, SUSPEND_TIME, SUSPEND_REASON, STATUS,
-    SUSPEND_STRAT_TIME_QUERY, SUSPEND_END_TIME_QUERY,IS_EFFECTIVE
+    SUSPEND_STRAT_TIME_QUERY, SUSPEND_END_TIME_QUERY,IS_EFFECTIVE,CREATE_USER,CREATE_TIME
   </sql>
 
 </mapper>

@@ -3,6 +3,7 @@ package com.hxoms.modules.omsregcadre.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonInfo> {
 
-    IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page, OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException;
 
     Object insertRpinfo(OmsRegProcpersonInfo orpInfo);
 
@@ -51,4 +51,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
      * @return
      */
     public Date getOmsRegProcpersonBirthDate(String a0100);
+
+    PageInfo<OmsRegProcpersonInfo> getInitialReginfo(OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException;
 }

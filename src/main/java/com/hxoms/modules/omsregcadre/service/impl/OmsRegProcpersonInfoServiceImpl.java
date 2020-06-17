@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -43,13 +44,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     /**
      * 初始化登记备案信息
-     * @param page
      * @param msRegProcpersonInfo
      * @return
      */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public IPage<OmsRegProcpersonInfo> getInitialReginfo(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException {
+    public PageInfo<OmsRegProcpersonInfo> getInitialReginfo(OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException {
         //查询数据来源为干部的登记备案人员信息
         List<String> a0100str = baseMapper.selectRegProcpersonInfo();
         IPage<OmsRegProcpersonInfo> mepinfoList = null;
@@ -117,9 +117,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             //排序  姓 名 工作单位
             queryWrapper.orderByAsc("SURNAME","NAME","WORK_UNIT");
 
-            mepinfoList = baseMapper.selectPage(page,queryWrapper);
+           // mepinfoList = baseMapper.selectPage(queryWrapper);
         }
-        return mepinfoList;
+        //return mepinfoList;
+        return null;
     }
 
     /**
@@ -130,8 +131,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Object insertRpinfo(OmsRegProcpersonInfo orpInfo) {
-        String id = UUIDGenerator.getPrimaryKey();
-        orpInfo.setId(id);
+        orpInfo.setId(UUIDGenerator.getPrimaryKey());
         orpInfo.setCreateTime(new Date());
         return baseMapper.insert(orpInfo);
     }

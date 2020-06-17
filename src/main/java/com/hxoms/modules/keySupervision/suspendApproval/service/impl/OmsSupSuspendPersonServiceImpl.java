@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendPerson;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendPersonMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendPersonService;
@@ -45,13 +47,14 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		List<String> list = b01Mapper.selectOrgByList(map);
 		QueryWrapper<OmsSupSuspendPerson> queryWrapper = new QueryWrapper<OmsSupSuspendPerson>();
 		queryWrapper.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq(omsSupSuspendPerson.getName() != null && omsSupSuspendPerson.getName() != "",
-						"NAME", omsSupSuspendPerson.getName())
 				.eq("IS_EFFECTIVE", "1")
 				.eq(omsSupSuspendPerson.getStatus() != null && omsSupSuspendPerson.getStatus() != "",
 						"STATUS", omsSupSuspendPerson.getStatus())
 				.between(omsSupSuspendPerson.getSuspendStartTimeQuery() != null && omsSupSuspendPerson.getSuspendEndTimeQuery() != null,
-						"SUSPEND_TIME", omsSupSuspendPerson.getSuspendStartTimeQuery(), omsSupSuspendPerson.getSuspendEndTimeQuery());
+						"SUSPEND_TIME", omsSupSuspendPerson.getSuspendStartTimeQuery(), omsSupSuspendPerson.getSuspendEndTimeQuery())
+				.like(omsSupSuspendPerson.getName() != null && omsSupSuspendPerson.getName() != "",
+						"NAME", omsSupSuspendPerson.getName())
+				.orderByDesc("SUSPEND_TIME");
 
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -59,7 +62,6 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		PageInfo<OmsSupSuspendPerson> pageInfo = new PageInfo<OmsSupSuspendPerson>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -78,9 +80,10 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		OmsSupSuspendPerson omsSupSuspendPerson = new OmsSupSuspendPerson();
 		omsSupSuspendPerson.setStatus("允许审批");
 		omsSupSuspendPerson.setModifyTime(new Date());
+		omsSupSuspendPerson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupSuspendPersonMapper.update(omsSupSuspendPerson, queryWrapper);
 		if(count < 0){
-			throw new CustomMessageException("修改状态失败");
+			throw new CustomMessageException("修改审批状态失败");
 		}
 	}
 

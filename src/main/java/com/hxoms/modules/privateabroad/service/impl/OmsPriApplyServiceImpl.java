@@ -165,21 +165,19 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             omsPriApplyMapper.insert(omsPriApply);
         } else {
             omsPriApplyMapper.updateById(omsPriApply);
+            //删除随行人员
+            QueryWrapper<OmsPriTogetherperson> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("APPLY_ID", omsPriApply.getId());
+            omsPriTogetherpersonMapper.delete(queryWrapper);
         }
         int result = 0;
         //随行人员信息保存
         for (OmsPriTogetherperson omsPriTogetherperson : omsPriTogetherpersonList) {
-            if (StringUtils.isBlank(omsPriTogetherperson.getId())){
-                omsPriTogetherperson.setId(UUIDGenerator.getPrimaryKey());
-                omsPriTogetherperson.setApplyId(omsPriApply.getId());
-                omsPriTogetherperson.setCreateTime(new Date());
-                omsPriTogetherperson.setCreateUser(userInfo.getId());
-                result = omsPriTogetherpersonMapper.insert(omsPriTogetherperson);
-            }else{
-                omsPriTogetherperson.setModifyTime(new Date());
-                omsPriTogetherperson.setCreateUser(userInfo.getId());
-                result = omsPriTogetherpersonMapper.updateById(omsPriTogetherperson);
-            }
+            omsPriTogetherperson.setId(UUIDGenerator.getPrimaryKey());
+            omsPriTogetherperson.setApplyId(omsPriApply.getId());
+            omsPriTogetherperson.setCreateTime(new Date());
+            omsPriTogetherperson.setCreateUser(userInfo.getId());
+            result = omsPriTogetherpersonMapper.insert(omsPriTogetherperson);
         }
         if (result < 1){
             throw new CustomMessageException("申请失败");
@@ -305,5 +303,19 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         }
         return condition;
+    }
+
+    @Override
+    public String saveAbroadState(OmsPriApply omsPriApply) {
+        if(StringUtils.isBlank(omsPriApply.getId())){
+            throw new CustomMessageException("参数错误");
+        }
+        if (omsPriApplyMapper.selectById(omsPriApply.getId()) == null){
+            throw new CustomMessageException("该申请不存在");
+        }
+        if (omsPriApplyMapper.updateById(omsPriApply) < 1){
+            throw new CustomMessageException("操作失败");
+        }
+        return "操作成功";
     }
 }

@@ -46,7 +46,6 @@
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
     <result column="PY" jdbcType="VARCHAR" property="py" />
     <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
-    <result column="A01000" jdbcType="VARCHAR" property="a01000" />
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -55,7 +54,7 @@
     REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
     SECRET_LEVEL, SECRET_STARTDATE, SECRET_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY,
     NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON,CREATE_TIME,CREATE_USER,MODIFY_TIME,
-    MODIFY_USER,SORT_ID,PY,SECRET_POST,A01000
+    MODIFY_USER,SORT_ID,PY,SECRET_POST
   </sql>
 
   <select id="selectRegProcpersonInfo" resultType="java.lang.String">
@@ -105,7 +104,7 @@
               REPLYOPINION, ABROADTIME, REASON,
               CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
     )
-    value
+    values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},

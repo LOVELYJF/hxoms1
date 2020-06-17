@@ -4,7 +4,6 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
-import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,21 +42,13 @@ public class OmsEntryexitRecordController {
         }
     }
 
- /*   *//**
+    /**
      * 批量比对
-     *//*
-    @GetMapping("/queryPriApplyList")
-    public Result queryPriApplyList(String a0100) {
-        try{
-            Map<String, Object> map = entryexitRecordService.queryPriApplyList(a0100);
-            return Result.success(map);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("系统错误");
-        }
-    }*/
-
-
+     */
+    @GetMapping("/batchPriApplyList")
+    public Result batchPriApplyList(List<String> a0100s) {
+        return Result.success(entryexitRecordService.batchPriApplyList(a0100s));
+    }
 
 
 

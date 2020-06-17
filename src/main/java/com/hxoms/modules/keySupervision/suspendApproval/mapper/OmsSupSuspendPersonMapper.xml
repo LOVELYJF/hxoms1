@@ -18,11 +18,13 @@
     <result column="SUSPEND_START_TIME_QUERY" jdbcType="DATE" property="suspendStartTimeQuery" />
     <result column="SUSPEND_END_TIME_QUERY" jdbcType="DATE" property="suspendEndTimeQuery" />
     <result column="IS_EFFECTIVE" jdbcType="CHAR" property="isEffective" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, NAME, SEX, BIRTH_DATE, REGISTERED_RESIDENCE,
     WORK_UNIT, POST, STATUS, SUSPEND_TIME, SUSPEND_REASON, SUSPEND_STRAT_TIME_QUERY,
-    SUSPEND_END_TIME_QUERY,IS_EFFECTIVE
+    SUSPEND_END_TIME_QUERY,IS_EFFECTIVE,CREATE_USER,CREATE_TIME
   </sql>
 
 </mapper>
