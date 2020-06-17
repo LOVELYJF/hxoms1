@@ -5,7 +5,6 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,6 +17,8 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
     private String omsId;
 
+    private String b0100;
+
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
 
@@ -28,8 +29,6 @@ public class CfCertificate {
     private String a0184;
 
     @ColumnAnnotation(FieldName = "CSRQ",   FieldDescription="出生年月")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date csrq;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
@@ -109,7 +108,7 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "EXCEPTION_MESSAGE",   FieldDescription="异常消息")
     private String exceptionMessage;
 
-    @ColumnAnnotation(FieldName = "IS_CABINET",   FieldDescription="人员是否有效，1，有效，0，无效")
+    @ColumnAnnotation(FieldName = "IS_CABINET",   FieldDescription="人员是否有效，0:有效，1:无效")
     private Integer isCabinet;
 
     @ColumnAnnotation(FieldName = "UPDATE_TIME",   FieldDescription="证件修改时间")
@@ -118,13 +117,21 @@ public class CfCertificate {
     private Date updateTime;
 
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效0:有效，1:无效")
-    private int isValid;
+    private Integer isValid;
 
-    public int getIsValid() {
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
+    }
+
+    public Integer getIsValid() {
         return isValid;
     }
 
-    public void setIsValid(int isValid) {
+    public void setIsValid(Integer isValid) {
         this.isValid = isValid;
     }
 

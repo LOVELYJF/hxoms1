@@ -57,9 +57,6 @@ public class CfCertificateVo extends CfCertificate {
         return pageNum;
     }
 
-    public String getB0100() {
-        return b0100;
-    }
 
     public void setB0100(String b0100) {
         this.b0100 = b0100;
