@@ -68,6 +68,14 @@ public class OmsSupSuspendPerson {
     @ColumnAnnotation(FieldName = "IS_EFFECTIVE",   FieldDescription="是否有效")
     private String isEffective;
 
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    private String createUser;
+
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createTime;
+
 
     public String getId() {
         return id;
@@ -196,5 +204,21 @@ public class OmsSupSuspendPerson {
 
     public void setIsEffective(String isEffective) {
         this.isEffective = isEffective == null ? null : isEffective.trim();
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

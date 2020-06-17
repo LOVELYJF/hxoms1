@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
@@ -40,13 +42,14 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
 						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())
 				.like(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
-				"UNIT",omsSupSuspendUnit.getUnit());
+				"UNIT",omsSupSuspendUnit.getUnit())
+				.orderByDesc("SUSPEND_TIME");
+
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupSuspendUnit> resultList = omsSupSuspendUnitMapper.selectList(queryWrapper);
 		PageInfo<OmsSupSuspendUnit> pageInfo = new PageInfo<OmsSupSuspendUnit>(resultList);
 		page.setPages(pageInfo.getPages());
 		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
 		page.setRecords(resultList);
 		return page;
 	}
@@ -64,9 +67,10 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 		OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
 		omsSupSuspendUnit.setStatus("允许审批");
 		omsSupSuspendUnit.setModifyTime(new Date());
+		omsSupSuspendUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupSuspendUnitMapper.update(omsSupSuspendUnit, queryWrapper);
 		if(count < 0){
-			throw new CustomMessageException("修改状态失败");
+			throw new CustomMessageException("修改审批状态失败");
 		}
 	}
 
