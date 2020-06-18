@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -17,6 +18,7 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
     private String omsId;
 
+    @TableField(exist = false)
     private String b0100;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
