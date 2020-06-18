@@ -30,4 +30,12 @@ public interface A36Mapper extends BaseMapper<A36> {
 	 * @return
 	 */
 	List<String> selectA3600List(String a0100);
+
+
+	/**
+	 * <b>查询家庭成员身份证号码集合</b>
+	 * @param a0100
+	 * @return
+	 */
+	List<String> selectIdCardList(String a0100);
 }
