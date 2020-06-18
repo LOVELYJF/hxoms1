@@ -305,47 +305,41 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				if(count < 0){
 					throw new CustomMessageException("裸官家庭成员撤销备案失败");
 				}else{
-					//在撤销登记备案表中添加，首先查询已经存在该家庭成员
+					//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 					for(OmsRegRevokeApply omsRegRevokeApply : omsRegRevokeApplyList){
 						if(omsRegRevokeApply.getIdnumber().equals(omsRegProcpersonInfo.getIdnumber()) &&
 							omsRegRevokeApply.getStatus().equals("0")){
 							//撤销登记备案表中已经存在
 							flag = true;
 							break;
-						}
-					}
-
-
-
-					for(OmsRegRevokeApply omsRegRevokeApply1 : omsRegRevokeApplyList){
-						if(idCardList.contains(omsRegRevokeApply1.getIdnumber()) && omsRegRevokeApply1.getStatus().equals("0")){
-							continue;
 						}else {
-							//撤销登记备案中不存在或申请状态不是已上报，确认不是重复添加
-							OmsRegRevokeApply omsRegRevokeApply = new OmsRegRevokeApply();
-							omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
-							omsRegRevokeApply.setA0100(omsRegProcpersonInfo.getA0100());
-							omsRegRevokeApply.setCreateDate(new Date());
-							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
-							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
-							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
-							omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumber());
-							omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
-							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
-							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
-							omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
-							omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yy-MM-dd"));
-							omsRegRevokeApply.setStatus("0");
-							omsRegRevokeApply.setApplyReason("裸官取消限制性岗位");
-
-							int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
-							if(result < 0){
-								throw new CustomMessageException("保存到撤销登记备案失败");
-							}
+							continue;
 						}
 					}
 
+					if(flag == false){
+						OmsRegRevokeApply omsRegRevokeApply = new OmsRegRevokeApply();
+						omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
+						omsRegRevokeApply.setA0100(omsRegProcpersonInfo.getA0100());
+						omsRegRevokeApply.setCreateDate(new Date());
+						omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+						omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
+						omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
+						omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
+						omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumber());
+						omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
+						omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
+						omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
+						omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
+						omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yy-MM-dd"));
+						omsRegRevokeApply.setStatus("0");
+						omsRegRevokeApply.setApplyReason("裸官取消限制性岗位");
+
+						int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
+						if(result < 0){
+							throw new CustomMessageException("保存到撤销登记备案失败");
+						}
+					}
 				}
 			}else {
 				continue;
