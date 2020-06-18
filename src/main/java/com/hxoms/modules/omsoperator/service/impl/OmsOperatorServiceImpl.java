@@ -15,6 +15,7 @@ import com.hxoms.modules.sysUser.mapper.CfUserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/6 15:32
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String saveOperator(CfUser user,CfUser loginUser) {
         //1、判断有没有选择经办人
@@ -46,7 +48,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
 
         if (StringUilt.isStrOrnull(user.getUserId())) {
             //更新
-            //修改人（未设置，1、从前端传过来 2、后台获取目前登录人员角色）
+            //修改人
             user.setModifyUser(loginUser.getUserName());
             //修改时间
             user.setModifyTime(new Date());
@@ -65,11 +67,11 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             user.setUserType("6");
             //设置状态
             user.setUserState("0");
-            //创建人（未设置，1、从前端传过来 2、后台获取当前登录人，）
+            //创建人
             user.setCreator(loginUser.getUserName());
             //创建时间
             user.setCreatetime(new Date());
-            cfUserMapper.insertSelective(user);
+            cfUserMapper.insert(user);
             msc="经办人未上报干部监督处，到经办人管理页面修改或上报!";
             return msc;
         }
@@ -83,6 +85,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/7 10:30
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String saveAndUploadOperator(CfUser user,CfUser loginUser) {
         //1、判断有没有选择经办人
@@ -132,7 +135,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     private String getString(CfUser user, String msc, OmsOperatorApproval omsOperatorApproval,CfUser loginUser) {
         OmsOperatorApproval omsOperatorApproval1 = operatorApprovalMapper.selectByUserId(user.getUserId());
-        CfUser user1 = cfUserMapper.selectSysUserByUserId(user.getUserId());
+        CfUser user1 = cfUserMapper.selectByPrimaryKey(user.getUserId());
         if (user.getPoliticalAffi().equals("中共党员") || user.getPoliticalAffi().equals("党员")) {
             //如果是，将状态置为“待审批”，用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)
             user.setUserState("4");
@@ -156,7 +159,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 cfUserMapper.updateByPrimaryKeySelective(user);
             }else {
                 //新增
-                cfUserMapper.insertSelective(user);
+                cfUserMapper.insert(user);
             }
             msc = "请通知经办人持单位审批后的申请表及身份证到干部监督处办理审批手续!";
             return msc;
@@ -182,7 +185,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 cfUserMapper.updateByPrimaryKeySelective(user);
             }else {
                 //新增
-                cfUserMapper.insertSelective(user);
+                cfUserMapper.insert(user);
             }
             return msc;
         }
@@ -225,6 +228,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/8 14:41
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String revokeOperator(CfUser user,CfUser loginUser) {
         String msc = "";

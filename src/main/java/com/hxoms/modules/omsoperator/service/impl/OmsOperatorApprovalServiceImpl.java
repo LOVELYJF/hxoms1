@@ -10,6 +10,7 @@ import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.mapper.CfUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,6 +106,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      * @Author: 李逍遥
      * @Date: 2020/5/18 14:47
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String agreeToRegister(CfUser operator, String result, CfUser loginUser) {
         //点击【允许注册】，将申请状态置为“待审批”，将结果保存到经办人审批表的审批意见中，审批结论置为“同意”，
@@ -136,6 +138,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      * @Author: 李逍遥
      * @Date: 2020/5/18 14:47
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String refuseToRegister(CfUser operator, String result, CfUser loginUser) {
         //点击【不允许注册】，弹出拒绝理由填写界面，点【确定】按钮后将申请状态置为“拒绝”，
@@ -187,6 +190,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      * @Author: 李逍遥
      * @Date: 2020/5/18 15:34
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void agreeToApproval(CfUser operator, String result, CfUser loginUser) {
         // 点击【通过】按钮，将经办人申请的状态置为“正常”
@@ -213,6 +217,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      * @Author: 李逍遥
      * @Date: 2020/5/18 15:43
      */
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void refuseToApproval(CfUser operator, String result, CfUser loginUser) {
         //点击【不通过】按钮，将经办人申请的状态置为“拒绝”。
