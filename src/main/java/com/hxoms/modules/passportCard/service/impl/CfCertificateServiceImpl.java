@@ -28,10 +28,18 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
         //PageUtil.pageHelp(cfCertificatePageParam.getPageNum(),cfCertificatePageParam.getPageSize());
-        PageHelper.startPage(cfCertificatePageParam.getPageNum(), cfCertificatePageParam.getPageSize());
+
         List<CfCertificate> cfCertificateList =cfCertificateMapper.selectCfCertificateIPage(cfCertificatePageParam);
+        if (cfCertificatePageParam.getPageNum() == null){
+            cfCertificatePageParam.setPageNum(0);
+        }
+        if(cfCertificatePageParam.getPageSize() ==null){
+            cfCertificatePageParam.setPageSize(cfCertificateList.size());
+        }
+        PageHelper.startPage(cfCertificatePageParam.getPageNum(), cfCertificatePageParam.getPageSize());
 
         PageInfo<CfCertificate> pageInfo = new PageInfo(cfCertificateList);
+
         return pageInfo;
     }
 
