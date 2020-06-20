@@ -73,7 +73,7 @@ public class OmsPriApplyController {
      */
     @PostMapping("/insertOrUpdatePriApply")
     public Result insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) throws Exception {
-        List<Map<String, String>> result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
+        String result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
         return Result.success(result);
     }
 
@@ -131,8 +131,8 @@ public class OmsPriApplyController {
      */
     @PostMapping("/nextCreateFile")
     public Result nextCreateFile(String applyId, String type) throws Exception {
-        List<Map<String, String>> result = omsPriApplyService.nextCreateFile(applyId, type);
-        return Result.success(result);
+        String result = omsPriApplyService.nextCreateFile(applyId, type);
+        return Result.success().setMsg(result);
     }
 
     /**

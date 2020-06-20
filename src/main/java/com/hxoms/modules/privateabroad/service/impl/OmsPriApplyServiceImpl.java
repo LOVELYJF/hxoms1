@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.country.entity.Country;
+import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
@@ -47,17 +49,13 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Autowired
-    private OmsSupCaseInfoMapper omsSupCaseInfoMapper;
-    @Autowired
-    private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
-    @Autowired
-    private OmsSupDismissedMapper omsSupDissmissedMapper;
-    @Autowired
     private CfCertificateMapper cfCertificateMapper;
     @Autowired
     private OmsConditionService omsConditionService;
     @Autowired
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
+    @Autowired
+    private CountryMapper countryMapper;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -66,7 +64,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             omsPriApplyIPageParam.setApplyStatus((Integer[]) ConvertUtils.convert(applyStatus, Integer.class));
         }
         //分页
-        PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum(), omsPriApplyIPageParam.getPageSize());
+        PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum() == null ? 1 : omsPriApplyIPageParam.getPageNum(),
+                omsPriApplyIPageParam.getPageSize() == null ? 10 : omsPriApplyIPageParam.getPageNum());
         List<OmsPriApplyVO> omsPriApplyVOS = omsPriApplyMapper.selectOmsPriApplyIPage(omsPriApplyIPageParam);
         //返回数据
         PageInfo<OmsPriApplyVO> pageInfo = new PageInfo(omsPriApplyVOS);
@@ -83,38 +82,9 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", a0100);
+        paramMap.put("finishDate", "1");
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
-        //获取负面信息
-        StringBuilder negativeInfo = new StringBuilder();
-        //立案
-        QueryWrapper<OmsSupCaseInfo> lian = new QueryWrapper<>();
-        lian.eq("A0100", a0100);
-        negativeInfo.append("立案：");
-        if (omsSupCaseInfoMapper.selectCount(lian) > 0){
-            negativeInfo.append("是\n");
-        }else{
-            negativeInfo.append("否\n");
-        }
-        //违反外事纪律
-        QueryWrapper<OmsSupViolationDiscipline> waishi = new QueryWrapper<>();
-        waishi.eq("A0100", a0100);
-        negativeInfo.append("违反外事纪律");
-        if (omsSupViolationDisciplineMapper.selectCount(waishi) > 0){
-            negativeInfo.append("有\n");
-        }else{
-            negativeInfo.append("无\n");
-        }
-        //免职撤职
-        QueryWrapper<OmsSupDismissed> mianzhi = new QueryWrapper<>();
-        mianzhi.eq("A0100", a0100);
-        negativeInfo.append("免职撤职");
-        if (omsSupDissmissedMapper.selectCount(mianzhi) > 0){
-            negativeInfo.append("是\n");
-        }else{
-            negativeInfo.append("否\n");
-        }
-        omsPriApplyVO.setNegativeInfo(negativeInfo.toString());
         //证件信息
         QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
         cfCertificate.eq("A0100", a0100)
@@ -129,7 +99,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
+    public String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
@@ -182,9 +152,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (result < 1){
             throw new CustomMessageException("申请失败");
         }
-        //约束条件
-        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriApply.getId(), Constants.oms_business[1]);
-        return condition;
+        return omsPriApply.getId();
     }
 
     @Override
@@ -251,6 +219,11 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 .eq("IS_VALID", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
+        //国家列表
+        QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
+        countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
+        List<Country> countries = countryMapper.selectList(countryQueryWrapper);
+        omsPriApplyVO.setCountries(countries);
         return omsPriApplyVO;
     }
 
@@ -272,17 +245,11 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     }
 
     @Override
-    public List<Map<String, String>> nextCreateFile(String applyId, String type) {
-        if (StringUtils.isBlank(applyId)){
+    public String nextCreateFile(String applyId, String type) {
+        if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
-        //查询约束条件
-        List<Map<String, String>> condition = omsConditionService.checkCondition(applyId, type);
-        for (Map<String, String> item : condition) {
-            if ("0".equals(item.get("isFit"))){
-                return condition;
-            }
-        }
+
         if (Constants.oms_business[1].equals(type)){
             //因私
             OmsPriApply omsPriApply = new OmsPriApply();
@@ -302,7 +269,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
-        return condition;
+        return "操作成功";
     }
 
     @Override

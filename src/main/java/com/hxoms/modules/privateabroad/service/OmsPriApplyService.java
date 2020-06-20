@@ -30,7 +30,7 @@ public interface OmsPriApplyService {
      * @param omsPriApplyParam  申请接收参数类
      * @return
      */
-    List<Map<String, String>> insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
+    String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
     /**
      * 删除申请
      * @param id 申请id
@@ -68,7 +68,7 @@ public interface OmsPriApplyService {
      * @param applyId
      * @return
      */
-    List<Map<String, String>> nextCreateFile(String applyId, String type);
+    String nextCreateFile(String applyId, String type);
 
     /**
      * 情况报告

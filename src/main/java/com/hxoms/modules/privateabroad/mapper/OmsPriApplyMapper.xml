@@ -133,7 +133,8 @@
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
            orp.RF_B0000 as b0100,
-           orp.HEALTH as health
+           orp.HEALTH as health,
+           orp.LICENCE_IDENTITY as paper
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
     where 1=1
       and op.A0100 = #{a0100}

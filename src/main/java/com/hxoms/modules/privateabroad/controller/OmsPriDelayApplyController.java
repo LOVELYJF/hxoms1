@@ -47,7 +47,7 @@ public class OmsPriDelayApplyController {
      */
     @PostMapping("/insertOrUpdateApply")
     public Result insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) throws Exception {
-        List<Map<String, String>> result = omsPriDelayApplyService.insertOrUpdateApply(omsPriDelayApply);
+        String result = omsPriDelayApplyService.insertOrUpdateApply(omsPriDelayApply);
         return Result.success(result);
     }
 

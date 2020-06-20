@@ -11,6 +11,12 @@ import com.hxoms.modules.condition.mapper.OmsConditionMapper;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.file.entity.OmsReplaceKeywords;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
+import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
+import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
+import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
+import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
+import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
+import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @desc: 约束条件管理
@@ -37,6 +40,12 @@ public class OmsConditionServiceImpl implements OmsConditionService {
     private OmsPriApplyMapper omsPriApplyMapper;
     @Autowired
     private OmsReplaceKeywordsMapper omsReplaceKeywordsMapper;
+    @Autowired
+    private OmsSupCaseInfoMapper omsSupCaseInfoMapper;
+    @Autowired
+    private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
+    @Autowired
+    private OmsSupDismissedMapper omsSupDissmissedMapper;
 
     @Override
     public List<Map<String, String>> checkCondition(String applyId, String type) {
@@ -72,6 +81,23 @@ public class OmsConditionServiceImpl implements OmsConditionService {
         conditionReplaceVO.setA0100(a0100);
         conditionReplaceVO.setHandleId(userInfo.getId());
         return checkApply(conditionReplaceVO, Constants.OMS_CONDITION_CHECKTYPE[0], type);
+    }
+
+    @Override
+    public String selectNegativeInfo(String a0100, Date abroadTime) {
+        if (StringUtils.isBlank(a0100) || abroadTime == null){
+            throw new CustomMessageException("参数错误");
+        }
+        //获取负面信息
+        StringBuilder negativeInfo = new StringBuilder();
+        Map<String, Object> params = new HashMap<>();
+        params.put("a0100", a0100);
+        params.put("abroadDate", abroadTime);
+        List<String> negativeInfos = omsConditionMapper.selectNegativeInfo(params);
+        for (String item : negativeInfos) {
+            negativeInfo.append(item);
+        }
+        return negativeInfo.toString();
     }
 
     /**
