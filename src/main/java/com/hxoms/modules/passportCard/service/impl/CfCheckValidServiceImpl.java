@@ -17,7 +17,8 @@ public class CfCheckValidServiceImpl implements CfCheckValidService {
     @Override
     public PageInfo<CfCheckValid> selectCfCheckValid(CfCheckValidParam cfCheckValidParam) {
 
-        PageHelper.startPage(cfCheckValidParam.getPageNum(),cfCheckValidParam.getPageSize());
+        PageHelper.startPage(cfCheckValidParam.getPageNum()==null?0:cfCheckValidParam.getPageNum(),
+                cfCheckValidParam.getPageSize()==null?10:cfCheckValidParam.getPageSize());
         List<CfCheckValid> cfCheckValidList = cfCheckValidMapper.selectCfCheckValid(cfCheckValidParam);
         PageInfo<CfCheckValid> pageInfo =new PageInfo(cfCheckValidList);
         return pageInfo;
@@ -25,7 +26,8 @@ public class CfCheckValidServiceImpl implements CfCheckValidService {
 
     @Override
     public PageInfo<CfCheckValid> selectCfCheckValidByName(CfCheckValidParam cfCheckValidParam) {
-        PageHelper.startPage(cfCheckValidParam.getPageNum(),cfCheckValidParam.getPageSize());
+        PageHelper.startPage(cfCheckValidParam.getPageNum()==null?0:cfCheckValidParam.getPageNum(),
+                cfCheckValidParam.getPageSize()==null?10:cfCheckValidParam.getPageSize());
         List<CfCheckValid> cfCheckValidList = cfCheckValidMapper.selectCfCheckValid(cfCheckValidParam);
         PageInfo<CfCheckValid> pageInfo =new PageInfo(cfCheckValidList);
         return pageInfo;

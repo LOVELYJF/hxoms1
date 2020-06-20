@@ -72,7 +72,6 @@ public class CfCertificateController {
      */
     @GetMapping("/selectCfCertificate")
     public Result selectCfCertificate(CfCertificatePageParam cfCertificatePageParam){
-        System.err.println("0000000000000000000000000000000000000000");
         PageInfo<CfCertificate> cfCertificatePageInfo = cfCertificateService.selectCfCertificateIPage(cfCertificatePageParam);
 
         return Result.success(cfCertificatePageInfo);

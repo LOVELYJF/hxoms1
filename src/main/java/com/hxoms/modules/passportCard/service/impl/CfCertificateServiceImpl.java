@@ -3,15 +3,12 @@ package com.hxoms.modules.passportCard.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
 import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
-import com.hxoms.modules.passportCard.entity.vo.CfCertificateVo;
 import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.service.CfCertificateService;
-import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,25 +24,24 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
-        //PageUtil.pageHelp(cfCertificatePageParam.getPageNum(),cfCertificatePageParam.getPageSize());
 
-        List<CfCertificate> cfCertificateList =cfCertificateMapper.selectCfCertificateIPage(cfCertificatePageParam);
-        if (cfCertificatePageParam.getPageNum() == null){
+
+        /*if (cfCertificatePageParam.getPageNum() == null){
             cfCertificatePageParam.setPageNum(0);
         }
         if(cfCertificatePageParam.getPageSize() ==null){
             cfCertificatePageParam.setPageSize(cfCertificateList.size());
-        }
-        PageHelper.startPage(cfCertificatePageParam.getPageNum(), cfCertificatePageParam.getPageSize());
+        }*/
+
+        PageHelper.startPage(cfCertificatePageParam.getPageNum()==null?0 : cfCertificatePageParam.getPageNum(),
+                            cfCertificatePageParam.getPageSize()==null?10 : cfCertificatePageParam.getPageSize());
+        List<CfCertificate> cfCertificateList =cfCertificateMapper.selectCfCertificateIPage(cfCertificatePageParam);
 
         PageInfo<CfCertificate> pageInfo = new PageInfo(cfCertificateList);
 
         return pageInfo;
     }
 
-    /*public Integer findAllCount(CfCertificate cfCertificate){
-        return cfCertificateMapper.findAllCount(cfCertificate);
-    }*/
 
    public boolean saveOrUpdate(CfCertificate cfCertificate){
 
@@ -78,7 +74,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Override
     public PageInfo<CfCertificateReminder> findOverduePass(CfCertificateReminderParam cfCertificateReminderParam) {
-        PageHelper.startPage(cfCertificateReminderParam.getPageNum(),cfCertificateReminderParam.getPageSize());
+        PageHelper.startPage(cfCertificateReminderParam.getPageNum()== null?0:cfCertificateReminderParam.getPageNum(),
+                cfCertificateReminderParam.getPageSize()==null?10:cfCertificateReminderParam.getPageSize());
         List<CfCertificateReminder> cfCertificateReminderList= cfCertificateMapper.findOverduePass(cfCertificateReminderParam);
         PageInfo<CfCertificateReminder> pageInfo = new PageInfo(cfCertificateReminderList);
         return pageInfo;
