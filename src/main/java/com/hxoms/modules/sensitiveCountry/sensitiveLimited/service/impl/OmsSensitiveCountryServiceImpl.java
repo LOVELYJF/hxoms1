@@ -34,9 +34,9 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 	 */
 	public List<SysDictItem> getSensitiveInfo(String pubPri) {
 		if(pubPri.equals("1")){
-			pubPri = "YGMGXXZ";
+			pubPri = "YGCGLY";
 		}else if(pubPri.equals("0")){
-			pubPri = "YSMGXXZ";
+			pubPri = "YSCGLY";
 		}
 		List<SysDictItem> list = sysDictItemMapper.selectSensitiveLimit(pubPri);
 		return list;
@@ -49,9 +49,22 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 	 * @return
 	 */
 	public List<OmsSensitiveCountry> getSensitiveCountryLimitInfo(String pubPri) {
+		//查询父级节点
 		QueryWrapper<OmsSensitiveCountry> queryWrapper = new QueryWrapper<OmsSensitiveCountry>();
-		queryWrapper.eq(pubPri != null && pubPri != "","PUB_PRI", pubPri);
+		queryWrapper.eq(pubPri != null && pubPri != "","PUB_PRI", pubPri)
+					.isNotNull("PARENT_ID");
 		List<OmsSensitiveCountry> list = omsSensitiveCountryMapper.selectList(queryWrapper);
+
+		//查询子节点
+		if(list != null && list.size() > 0){
+			for(OmsSensitiveCountry omsSensitiveCountry : list){
+				QueryWrapper<OmsSensitiveCountry> wrapper = new QueryWrapper<OmsSensitiveCountry>();
+				wrapper.eq(pubPri != null && pubPri != "","PUB_PRI", pubPri)
+						.eq("UPPER_LEVEL", omsSensitiveCountry.getParentId());
+				List<OmsSensitiveCountry> childList = omsSensitiveCountryMapper.selectList(wrapper);
+				omsSensitiveCountry.setList(childList);
+			}
+		}
 		return list;
 	}
 
@@ -78,7 +91,7 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 			omsSensitiveCountry.setId(UUIDGenerator.getPrimaryKey());
 			int count = omsSensitiveCountryMapper.insert(omsSensitiveCountry);
 			if(count < 1){
-				throw new CustomMessageException("操作失败");
+				throw new CustomMessageException("添加失败");
 			}
 		}
 	}
@@ -100,7 +113,7 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 						"UPPER_LEVEL", omsSensitiveCountry.getParentId());
 		int count = omsSensitiveCountryMapper.delete(queryWrapper);
 		if(count < 1){
-			throw new CustomMessageException("操作失败");
+			throw new CustomMessageException("移除失败");
 		}
 	}
 
