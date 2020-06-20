@@ -67,7 +67,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
 						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
-				.eq("VD_STATUS", "1")
 				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
 						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
 				.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
@@ -108,7 +107,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		omsSupViolationDiscipline.setId(UUIDGenerator.getPrimaryKey());
 		omsSupViolationDiscipline.setCreateTime(new Date());
 		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-		omsSupViolationDiscipline.setVdStatus("1");
 		int count =  omsSupViolationDisciplineMapper.insert(omsSupViolationDiscipline);
 		if(count < 1){
 			throw new CustomMessageException("新增违反外事纪律人员失败");
@@ -169,10 +167,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline) {
-		omsSupViolationDiscipline.setModifyTime(new Date());
-		omsSupViolationDiscipline.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		omsSupViolationDiscipline.setVdStatus("0");
-		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
+		int count = omsSupViolationDisciplineMapper.deleteById(omsSupViolationDiscipline.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除违反外事纪律人员失败");
 		}else {

@@ -72,7 +72,6 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
 						"XZXGW", omsSupNakedSign.getXzxgw())
-				.eq("NS_STATUS", "1")
 		        .like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 				        "NAME", omsSupNakedSign.getName())
 				.or()
@@ -107,7 +106,6 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsSupNakedSign.setPoliticalAffi((String) list.get(0).get("politicalAffi"));
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
 			omsSupNakedSign.setXzxgw("0");
-			omsSupNakedSign.setNsStatus("1");
 			omsSupNakedSign.setCreateTime(new Date());
 			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 			//在登记备案库中查询人员的身份证出生日期
@@ -119,24 +117,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				throw new CustomMessageException("添加裸官信息失败");
 			}
 		}else {
-			for(OmsSupNakedSign omsSupNakedSign1 : nakedSignList){
-				if(omsSupNakedSign1.getNsStatus().equals("1")){
-					throw new CustomMessageException("该裸官已经存在,请不要重复添加");
-				}else{
-					continue;
-				}
-			}
-			//裸官已经存在，但是状态是不可用的，修改状态为可用状态
-			QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
-			queryNakedSign.eq("A0100", omsSupNakedSign.getA0100());
-			OmsSupNakedSign omsSupNakedSign1 = new OmsSupNakedSign();
-			omsSupNakedSign1.setNsStatus("1");
-			omsSupNakedSign1.setModifyTime(new Date());
-			omsSupNakedSign1.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			int count = omsSupNakedSignMapper.update(omsSupNakedSign1,queryWrapper);
-			if(count < 0){
-				throw new CustomMessageException("裸官信息已经存在，修改裸官状态失败");
-			}
+			throw new CustomMessageException("该裸官已经存在,请不要重复添加");
+
 		}
 
 		//将裸官信息在备案表中进行同步更新
@@ -194,10 +176,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
-		omsSupNakedSign.setNsStatus("0");
-		omsSupNakedSign.setModifyTime(new Date());
-		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
+		int count =  omsSupNakedSignMapper.deleteById(omsSupNakedSign.getId());
 		if(count < 1){
 			throw new CustomMessageException("取消裸官标识失败");
 		}else {

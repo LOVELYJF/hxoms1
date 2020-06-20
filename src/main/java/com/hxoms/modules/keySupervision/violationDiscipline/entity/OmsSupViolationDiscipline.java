@@ -68,9 +68,6 @@ public class OmsSupViolationDiscipline {
     @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="描述")
     private String description;
 
-    @ColumnAnnotation(FieldName = "VD_STATUS",   FieldDescription="违反外事纪律状态")
-    private String vdStatus;
-
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
     private String createUser;
 
@@ -206,14 +203,6 @@ public class OmsSupViolationDiscipline {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
-    }
-
-    public String getVdStatus() {
-        return vdStatus;
-    }
-
-    public void setVdStatus(String vdStatus) {
-        this.vdStatus = vdStatus == null ? null : vdStatus.trim();
     }
 
     public String getCreateUser() {

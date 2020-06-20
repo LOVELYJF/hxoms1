@@ -59,7 +59,6 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		QueryWrapper<OmsSupDismissed> queryWrapper = new QueryWrapper<OmsSupDismissed>();
 		queryWrapper
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq("DM_STATUS", "1")
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
 				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
@@ -93,7 +92,6 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		omsSupDismissed.setId(UUIDGenerator.getPrimaryKey());
 		omsSupDismissed.setCreateTime(new Date());
 		omsSupDismissed.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-		omsSupDismissed.setDmStatus("1");
 		int count = omsSupDismissedMapper.insert(omsSupDismissed);
 		if(count <= 0){
 			throw new CustomMessageException("添加免职撤职人员失败");
@@ -124,10 +122,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
-		omsSupDismissed.setDmStatus("0");
-		omsSupDismissed.setModifyTime(new Date());
-		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
+		int count = omsSupDismissedMapper.deleteById(omsSupDismissed.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除免职撤职人员失败");
 		}

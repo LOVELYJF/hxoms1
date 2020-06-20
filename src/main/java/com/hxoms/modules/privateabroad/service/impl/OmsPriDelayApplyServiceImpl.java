@@ -33,8 +33,6 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
     @Autowired
     private OmsPriApplyService omsPriApplyService;
-    @Autowired
-    private OmsConditionService omsConditionService;
 
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -51,7 +49,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     }
 
     @Override
-    public List<Map<String, String>> insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) {
+    public String insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsPriDelayApply.getId())){
@@ -72,9 +70,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
-        //约束条件
-        List<Map<String, String>> condition = omsConditionService.checkCondition(omsPriDelayApply.getApplyId(), Constants.oms_business[2]);
-        return condition;
+        return omsPriDelayApply.getId();
     }
 
     @Override

@@ -4,26 +4,28 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 
-@TableAnnotation(TableName = "oms_sensitive_country", TableDescription="")
+import java.util.List;
+
+@TableAnnotation(TableName = "oms_sensiti ve_country", TableDescription="")
 public class OmsSensitiveCountry {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "PARENT_ID",   FieldDescription="父级ID")
-    private Integer parentId;
+    private String parentId;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="名称")
     private String name;
 
     @ColumnAnnotation(FieldName = "UPPER_LEVEL",   FieldDescription="上一级")
-    private Integer upperLevel;
+    private String upperLevel;
 
     @ColumnAnnotation(FieldName = "PUB_PRI",   FieldDescription="因公")
     private String pubPri;
 
-    @ColumnAnnotation(FieldName = "AREA",   FieldDescription="地区")
-    private String area;
+    private List<OmsSensitiveCountry> list;
+
 
     public String getId() {
         return id;
@@ -33,11 +35,11 @@ public class OmsSensitiveCountry {
         this.id = id == null ? null : id.trim();
     }
 
-    public Integer getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 
@@ -49,11 +51,11 @@ public class OmsSensitiveCountry {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getUpperLevel() {
+    public String getUpperLevel() {
         return upperLevel;
     }
 
-    public void setUpperLevel(Integer upperLevel) {
+    public void setUpperLevel(String upperLevel) {
         this.upperLevel = upperLevel;
     }
 
@@ -65,11 +67,11 @@ public class OmsSensitiveCountry {
         this.pubPri = pubPri == null ? null : pubPri.trim();
     }
 
-    public String getArea() {
-        return area;
+    public List<OmsSensitiveCountry> getList() {
+        return list;
     }
 
-    public void setArea(String area) {
-        this.area = area == null ? null : area.trim();
+    public void setList(List<OmsSensitiveCountry> list) {
+        this.list = list;
     }
 }

@@ -3,6 +3,9 @@ package com.hxoms.modules.condition.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
 
+import java.util.List;
+import java.util.Map;
+
 public interface OmsConditionMapper extends BaseMapper<OmsCondition> {
 
     /**
@@ -11,4 +14,11 @@ public interface OmsConditionMapper extends BaseMapper<OmsCondition> {
      * @return
      */
     int excuteSelectSql(String sql);
+
+    /**
+     * 处分信息
+     * @param params
+     * @return
+     */
+    List<String> selectNegativeInfo(Map<String, Object> params);
 }

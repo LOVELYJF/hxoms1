@@ -19,4 +19,40 @@
   <select id="excuteSelectSql" resultType="java.lang.Integer">
     ${sql}
   </select>
+  <!--处分信息-->
+  <select id="selectNegativeInfo" parameterType="java.util.Map" resultType="java.lang.String">
+    select CONCAT("立案：", IFNULL(GROUP_CONCAT(WHY_CASE),"无\n")) as description
+    from oms_sup_case_info
+    where 1=1 and DISCIPLINARY_ACTION = '0'
+    <if test="a0100 != null and a0100 != ''">
+      and A0100 = #{a0100}
+    </if>
+    union ALL
+    select CONCAT("处分：", IFNULL(GROUP_CONCAT(WHY_DISCIPLINARY),"无\n")) as description
+    from oms_sup_disciplinary
+    where 1=1
+    <if test="a0100 != null and a0100 != ''">
+      and A0100 = #{a0100}
+    </if>
+    <if test="abroadTime != null">
+      and DISCIPLINARY_END_TIME &gt;= #{abroadTime}
+    </if>
+    union ALL
+    select CONCAT("违反外事纪律：", IFNULL(GROUP_CONCAT(DESCRIPTION),"无\n")) as description
+    from oms_sup_violation_discipline
+    where 1=1
+    <if test="a0100 != null and a0100 != ''">
+      and A0100 = #{a0100}
+    </if>
+    <if test="abroadTime != null">
+      and VIOLATION_END_TIME &gt;= #{abroadTime}
+    </if>
+    union ALL
+    select CONCAT("免职撤职：", IFNULL(GROUP_CONCAT(REASON),"无")) as description
+    from oms_sup_dismissed
+    where 1=1
+    <if test="a0100 != null and a0100 != ''">
+      and A0100 = #{a0100}
+    </if>
+  </select>
 </mapper>

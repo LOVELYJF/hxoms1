@@ -20,7 +20,7 @@ public interface OmsPriDelayApplyService {
      * @param omsPriDelayApply  申请接收参数类
      * @return
      */
-    List<Map<String, String>> insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply);
+    String insertOrUpdateApply(OmsPriDelayApply omsPriDelayApply);
     /**
      * 修改延期回国申请状态
      * @param omsPriDelayApply 申请id

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendPerson;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendPersonMapper;
@@ -47,7 +46,6 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		List<String> list = b01Mapper.selectOrgByList(map);
 		QueryWrapper<OmsSupSuspendPerson> queryWrapper = new QueryWrapper<OmsSupSuspendPerson>();
 		queryWrapper.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq("IS_EFFECTIVE", "1")
 				.eq(omsSupSuspendPerson.getStatus() != null && omsSupSuspendPerson.getStatus() != "",
 						"STATUS", omsSupSuspendPerson.getStatus())
 				.between(omsSupSuspendPerson.getSuspendStartTimeQuery() != null && omsSupSuspendPerson.getSuspendEndTimeQuery() != null,

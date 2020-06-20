@@ -60,5 +60,9 @@
     <if test="a0100 != null and a0100 != ''">
         and  t.A0100 = #{a0100}
     </if>
+    <if test="finishDate != null and finishDate != ''">
+      and t.QR_FINISH_DATE is not null
+      and t.QR_FINISH_DATE &gt;= now()
+    </if>
   </select>
 </mapper>

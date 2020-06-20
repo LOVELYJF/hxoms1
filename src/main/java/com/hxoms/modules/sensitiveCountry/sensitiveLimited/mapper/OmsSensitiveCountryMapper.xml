@@ -3,14 +3,13 @@
 <mapper namespace="com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveCountryMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveCountry">
     <id column="ID" jdbcType="VARCHAR" property="id" />
-    <result column="PARENT_ID" jdbcType="INTEGER" property="parentId" />
+    <result column="PARENT_ID" jdbcType="CHAR" property="parentId" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
-    <result column="UPPER_LEVEL" jdbcType="INTEGER" property="upperLevel" />
+    <result column="UPPER_LEVEL" jdbcType="CHAR" property="upperLevel" />
     <result column="PUB_PRI" jdbcType="CHAR" property="pubPri" />
-    <result column="AREA" jdbcType="VARCHAR" property="area" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, PARENT_ID, NAME, UPPER_LEVEL, PUB_PRI, AREA
+    ID, PARENT_ID, NAME, UPPER_LEVEL, PUB_PRI
   </sql>
 
 </mapper>

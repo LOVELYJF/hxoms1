@@ -50,8 +50,6 @@ public class OmsSupMajorLeader {
     @ColumnAnnotation(FieldName = "RANK",   FieldDescription="职级")
     private String rank;
 
-    @ColumnAnnotation(FieldName = "ML_STATUS",   FieldDescription="主要领导状态")
-    private String mlStatus;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
@@ -155,15 +153,6 @@ public class OmsSupMajorLeader {
 
     public void setRank(String rank) {
         this.rank = rank == null ? null : rank.trim();
-    }
-
-
-    public String getMlStatus() {
-        return mlStatus;
-    }
-
-    public void setMlStatus(String mlStatus) {
-        this.mlStatus = mlStatus == null ? null : mlStatus.trim();
     }
 
     public String getCreateUser() {

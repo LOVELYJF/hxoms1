@@ -43,11 +43,11 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public Page<OmsSupPatrolUnit> getPatrolUnitInfo(Page<OmsSupPatrolUnit> page, OmsSupPatrolUnit omsSupPatrolUnit) {
 		QueryWrapper<OmsSupPatrolUnit> queryWrapper = new QueryWrapper<OmsSupPatrolUnit>();
 		queryWrapper
-				.eq("PU_STATUS", "1")
 				.between(omsSupPatrolUnit.getPatrolStartTimeQuery() != null && omsSupPatrolUnit.getPatrolEndTimeQuery() != null,
 						"PATROL_START_TIME", omsSupPatrolUnit.getPatrolStartTimeQuery(), omsSupPatrolUnit.getPatrolEndTimeQuery())
 				.like(omsSupPatrolUnit.getUnit() != null && omsSupPatrolUnit.getUnit() != "",
-						"UNIT", omsSupPatrolUnit.getUnit());
+						"UNIT", omsSupPatrolUnit.getUnit())
+				.orderByDesc("PATROL_START_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupPatrolUnit> resultList = omsSupPatrolUnitMapper.selectList(queryWrapper);
@@ -71,7 +71,6 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 		omsSupPatrolUnit.setId(UUIDGenerator.getPrimaryKey());
 		omsSupPatrolUnit.setCreateTime(new Date());
 		omsSupPatrolUnit.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-		omsSupPatrolUnit.setPuStatus("1");
 		int count = omsSupPatrolUnitMapper.insert(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("增加被巡视单位失败");
@@ -103,10 +102,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
-		omsSupPatrolUnit.setPuStatus("0");
-		omsSupPatrolUnit.setModifyTime(new Date());
-		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
+		int count = omsSupPatrolUnitMapper.deleteById(omsSupPatrolUnit.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除被巡视单位失败");
 		}
