@@ -47,10 +47,6 @@ public class OmsSupPatrolUnit {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date patrolEndTimeQuery;
 
-
-    @ColumnAnnotation(FieldName = "PU_STATUS",   FieldDescription="被巡视单位状态")
-    private String puStatus;
-
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
     private String createUser;
 
@@ -129,15 +125,6 @@ public class OmsSupPatrolUnit {
 
     public void setPatrolEndTimeQuery(Date patrolEndTimeQuery) {
         this.patrolEndTimeQuery = patrolEndTimeQuery;
-    }
-
-
-    public String getPuStatus() {
-        return puStatus;
-    }
-
-    public void setPuStatus(String puStatus) {
-        this.puStatus = puStatus == null ? null : puStatus.trim();
     }
 
     public String getCreateUser() {
