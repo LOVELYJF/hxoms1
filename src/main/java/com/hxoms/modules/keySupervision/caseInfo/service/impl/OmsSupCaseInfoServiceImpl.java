@@ -67,7 +67,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
-				.eq("CI_STATUS", "1")
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
 				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
@@ -106,7 +105,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
 		omsSupCaseInfo.setCreateTime(new Date());
 		omsSupCaseInfo.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-		omsSupCaseInfo.setCiStatus("1");
 		int count = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
 		if(count < 1){
 			throw new CustomMessageException("操作失败");
@@ -130,7 +128,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		checkCaseDocumentNo(omsSupCaseInfo.getCaseDocumentNo());
 
 		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
-		omsSupCaseInfo.setCiStatus("1");
 		omsSupCaseInfo.setCreateTime(new Date());
 		omsSupCaseInfo.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
 		//保存立案信息
@@ -151,7 +148,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
 			omsSupDisciplinary.setCreateTime(new Date());
 			omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-			omsSupDisciplinary.setDcStatus("1");
 			//根据处分类型计算影响期及结束时间
 
 
@@ -224,7 +220,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			omsSupDisciplinary.setWhyDisciplinary(omsSupCaseInfo.getWhyCase());
 			omsSupDisciplinary.setCreateTime(new Date());
 			omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
-			omsSupDisciplinary.setDcStatus("1");
 			//根据处分类型计算影响期及结束时间
 
 
@@ -247,10 +242,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
-		omsSupCaseInfo.setCiStatus("0");
-		omsSupCaseInfo.setModifyTime(new Date());
-		omsSupCaseInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
+		int count = omsSupCaseInfoMapper.deleteById(omsSupCaseInfo.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除立案信息失败");
 		}
