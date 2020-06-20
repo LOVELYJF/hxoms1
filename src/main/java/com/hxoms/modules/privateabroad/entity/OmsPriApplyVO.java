@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
@@ -35,16 +36,17 @@ public class OmsPriApplyVO extends OmsPriApply{
     //随行人员
     private List<OmsPriTogetherperson> omsPriTogetherpeoples;
     //原涉密信息
-    List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
+    private List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
     //证照信息
-    List<CfCertificate> cfCertificates;
+    private List<CfCertificate> cfCertificates;
     //约束条件
-    List<Map<String, String>> condition;
-
+    private List<Map<String, String>> condition;
+    //出入境记录列表
     private List<OmsEntryexitRecord> entryexitRecordList;
-
+    //出入境记录
     private OmsEntryexitRecord entryexitRecord;
-
+    //国家列表
+    private List<Country> countries;
 
     public String getName() {
         return name;
@@ -148,5 +150,13 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setEntryexitRecord(OmsEntryexitRecord entryexitRecord) {
         this.entryexitRecord = entryexitRecord;
+    }
+
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
     }
 }
