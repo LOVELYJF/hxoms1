@@ -38,7 +38,6 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	public Page<OmsSupSuspendUnit> getSuspendUnitInfo(Page<OmsSupSuspendUnit> page, OmsSupSuspendUnit omsSupSuspendUnit) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
 		queryWrapper
-				.eq("IS_EFFECTIVE", "1")
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
 						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())
 				.like(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
