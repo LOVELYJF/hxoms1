@@ -22,6 +22,8 @@ public class PersonExcelToDB {
 
     static List<Map<String, Object>> ExcelMap = new ArrayList<>();
 
+    static List<Map<String,Object>> oerMap = new ArrayList<>();
+
     static String[] zd = {"IDCard", "name", "sex", "csny", "gj", "zjlx", "cardNum", "csd", "qfdw", "qfrq", "yxqz"};
 
     /**
@@ -42,11 +44,15 @@ public class PersonExcelToDB {
              */
             findOrpList();
 
+            findCfList();
+
+            findOerList();
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
             SimpleDateFormat formatterNow = new SimpleDateFormat("yyyyMMdd");
             Date data1 = new Date();
 
-            String timeNow = formatter.format(data1);
+            String timeNow = formatterNow.format(data1);
 
             String dateDB = formatter.format(data1);
 
@@ -72,12 +78,12 @@ public class PersonExcelToDB {
                      * DQZT当前状态，首次默认为取出状态
                      */
                     String sql = "insert into cf_certificate" +
-                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT,ZWQFJG,OMS_ID,) " +
+                            "(ID,A0184,NAME,SEX,CSRQ,GJ,ZJLX,ZJHM,ZWCSDD,QFRQ,YXQZ,DQZT,ZWQFJG,OMS_ID) " +
                             "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     String sql2 = "insert into oms_entryexit_record (ID,IMPORT_TIME,IMPORT_PERSON,OGA_MODE," +
                             "DATA_SOURCE,OMS_ID,OGE_STATUS,NAME,SEX,BIRTH_DATE,NATIONALITY,ID_TYPE,ID_NUMBER," +
-                            "DESTINATION,ENTRACE_EXIT,OGE_DATE,VALID_UNTIL,VISITING_TASKS)values(" +
+                            "DESTINATION,ENTRACE_EXIT,OGE_DATE,VALID_UNTIL,PRIAPPLY_ID)values(" +
                             "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     ps = conn.prepareStatement(sql);
@@ -88,113 +94,120 @@ public class PersonExcelToDB {
                         String name = list.get(i).get("name").toString().replaceAll(" ","").replaceAll("    ","");
                         String sex  = list.get(i).get("sex").toString();
                         String csny = list.get(i).get("csny").toString();
+                        String cjsj = list.get(i).get("qfrq").toString();
+                        String cardNum = list.get(i).get("cardNum").toString();
                         String omsId = findOmsIdByName(maps,name,sex,csny);
-                        if(Integer.parseInt(list.get(i).get("yxqz").toString())<Integer.parseInt(timeNow)){
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("zjhm",list.get(i).get("zjhm"));
-                            map.put("name",list.get(i).get("name"));
-                            ExcelMap.add(map);
-                        }else{
-
                             //如果结果集包含"境"字，就添加到出国境记录表，如果不包含，就添加到证照表里面
                             if (list.get(i).get("IDCard").toString().contains("境")) {
+                                //判断出入境记录的证件是否为过期
+                                if(ExcelMap(ExcelMap,cardNum) == 0){
+                                    //判断是否导入过，如果导入过就不导入
+                                    if(ExcelComparisonList(oerMap,cjsj,cardNum)==0){
 
-                                if(!ExcelComparisonList(ExcelMap, list.get(i).get("zjhm").toString())){
+                                        ps2.setString(1, UUIDGenerator.getPrimaryKey());
 
-                                    ps2.setString(1, UUIDGenerator.getPrimaryKey());
+                                        ps2.setString(2,dateDB);
 
-                                    ps2.setString(2,dateDB);
+                                        ps2.setString(3,importPerson);
 
-                                    ps2.setString(3,importPerson);
+                                        ps2.setString(4,"******");
 
-                                    ps2.setString(4,"******");
+                                        ps2.setString(5,dataSource);
 
-                                    ps2.setString(5,dataSource);
+                                        ps2.setString(6,omsId);
 
-                                    ps2.setString(6,omsId);
+                                        ps2.setInt(7,1);
 
-                                    ps2.setInt(7,1);
+                                        ps2.setString(8, list.get(i).get("name").toString());
 
-                                    ps2.setString(8, list.get(i).get("name").toString());
+                                        ps2.setString(9,list.get(i).get("sex").toString());
 
-                                    ps2.setString(9,list.get(i).get("sex").toString());
+                                        ps2.setString(10,list.get(i).get("csny").toString());
 
-                                    ps2.setString(10,list.get(i).get("csny").toString());
+                                        ps2.setString(11,list.get(i).get("gj").toString());
 
-                                    ps2.setString(11,list.get(i).get("gj").toString());
+                                        ps2.setInt(12,1);
 
-                                    ps2.setInt(12,1);
+                                        ps2.setString(13,list.get(i).get("cardNum").toString());
 
-                                    ps2.setString(13,list.get(i).get("cardNum").toString());
+                                        ps2.setString(14,list.get(i).get("csd").toString());
 
-                                    ps2.setString(14,list.get(i).get("csd").toString());
+                                        ps2.setString(15,list.get(i).get("qfdw").toString());
 
-                                    ps2.setString(15,list.get(i).get("qfdw").toString());
+                                        ps2.setString(16,list.get(i).get("qfrq").toString());
 
-                                    ps2.setString(16,list.get(i).get("qfrq").toString());
+                                        ps2.setString(17,findYxqzByNum(ExcelMap,list.get(i).get("cardNum").toString()));
 
-                                    ps2.setString(17,list.get(i).get("yxqz").toString());
+                                        ps2.setString(18,"没有因私出国的ID");
 
-                                    ps2.setString(18,"出入境管理");
-
-                                    ps2.addBatch();
+                                        ps2.addBatch();
+                                    }
                                 }
+                            }else{
+                                //判断护照是否过期，如果超过当前时间，证明户名已经过期
+                                if(Integer.parseInt(list.get(i).get("yxqz").toString())<Integer.parseInt(timeNow)){
+                                    Map<String, Object> map = new HashMap<>();
+                                    map.put("cardNum",list.get(i).get("cardNum"));
+                                    map.put("name",list.get(i).get("name"));
+                                    ExcelMap.add(map);
+                                }else {
 
-                            } else {
+                                    if(!ExcelComparisonList(cfMaps, list.get(i).get("cardNum").toString())){
 
-                                int sexInt = 1;
+                                        int sexInt = 1;
 
-                                if (sex.equals("男")) {
+                                        if (sex.equals("男")) {
 
-                                    sexInt = 1;
+                                            sexInt = 1;
 
-                                } else {
+                                        } else {
 
-                                    sexInt = 2;
+                                            sexInt = 2;
 
+                                        }
+
+                                        String zjlx = (String) list.get(i).get("zjlx");
+                                        int zjlxInt = 1;
+                                        if (zjlx.contains("护照")){
+                                            zjlxInt = 1;
+                                        }else if(zjlx.contains("港澳")){
+                                            zjlxInt = 2;
+                                        }else if(zjlx.contains("台湾")){
+                                            zjlxInt = 4;
+                                        }
+                                        ps.setString(1, UUIDGenerator.getPrimaryKey());
+
+                                        ps.setString(2, (String) list.get(i).get("IDCard"));
+
+                                        ps.setString(3, (String) list.get(i).get("name"));
+
+                                        ps.setInt(4, sexInt);
+
+                                        ps.setString(5, (String) list.get(i).get("csny"));
+
+                                        ps.setString(6, (String) list.get(i).get("gj"));
+
+                                        ps.setInt(7, zjlxInt);
+
+                                        ps.setString(8, (String) list.get(i).get("cardNum"));
+
+                                        ps.setString(9, (String) list.get(i).get("csd"));
+
+                                        ps.setString(10, (String) list.get(i).get("qfrq"));
+
+                                        ps.setString(11, (String) list.get(i).get("yxqz"));
+
+                                        ps.setInt(12, 1);
+
+                                        ps.setString(13,(String)list.get(i).get("qfdw"));
+
+                                        ps.setString(14,omsId);
+
+                                        ps.addBatch();
+
+                                        }
+                                    }
                                 }
-
-                                String zjlx = (String) list.get(i).get("zjlx");
-                                int zjlxInt = 1;
-                                if (zjlx.contains("护照")){
-                                    zjlxInt = 1;
-                                }else if(zjlx.contains("港澳")){
-                                    zjlxInt = 2;
-                                }else if(zjlx.contains("台湾")){
-                                    zjlxInt = 3;
-                                }
-                                ps.setString(1, UUIDGenerator.getPrimaryKey());
-
-                                ps.setString(2, (String) list.get(i).get("IDCard"));
-
-                                ps.setString(3, (String) list.get(i).get("name"));
-
-                                ps.setInt(4, sexInt);
-
-                                ps.setString(5, (String) list.get(i).get("csny"));
-
-                                ps.setString(6, (String) list.get(i).get("gj"));
-
-                                ps.setInt(7, zjlxInt);
-
-                                ps.setString(8, (String) list.get(i).get("cardNum"));
-
-                                ps.setString(9, (String) list.get(i).get("csd"));
-
-                                ps.setString(10, (String) list.get(i).get("qfrq"));
-
-                                ps.setString(11, (String) list.get(i).get("yxqz"));
-
-                                ps.setInt(12, 1);
-
-                                ps.setString(13,(String)list.get(i).get("qfdw"));
-
-                                ps.setString(14,omsId);
-
-                                ps.addBatch();
-
-                            }
-                        }
 
                         if (i % 1000 == 0) {
 
@@ -208,7 +221,6 @@ public class PersonExcelToDB {
 
                             ps2.clearBatch();
 
-                            a = true;
                         }
                     }
 
@@ -222,27 +234,27 @@ public class PersonExcelToDB {
 
                     ps2.clearBatch();
 
+                    maps.clear();    cfMaps.clear();   ExcelMap.clear();  oerMap.clear();
+
                     a = true;
 
                 } catch (SQLException e) {
+                    maps.clear();    cfMaps.clear();   ExcelMap.clear();  oerMap.clear();
                     e.printStackTrace();
                     e.getErrorCode();
                     e.getNextException();
                 }
+                Date data2 = new Date();
+
+                System.err.println("结束时间---------------------" + formatter.format(data2));
+
+                System.err.println("总用时" + (data2.getTime() - data1.getTime()) / 1000 + "秒");
             } else {
-                return false;
+                return a;
             }
 
-            Date data2 = new Date();
-
-            System.err.println("结束时间---------------------" + formatter.format(data2));
-
-            System.out.println("总用时" + (data2.getTime() - data1.getTime()) / 1000 + "秒");
-
         }
-
         maps.clear();
-
         return a;
 
     }
@@ -332,7 +344,7 @@ public class PersonExcelToDB {
 
         String sql = "select id,Replace(CONCAT(SURNAME,name),' ','') as name,Replace(BIRTH_DATE,'-','') as birthDate,idnumber,CASE SEX WHEN 1 then '男' when 2 then '女' end as SEX FROM oms_reg_procpersoninfo";
 
-        String sqlCf = "select A0184,NAME,CASE SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END AS SEX,CSRQ,ZJHM FROM cf_certificate";
+        //String sqlCf = "select A0184,NAME,CASE SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END AS SEX,CSRQ,ZJHM FROM cf_certificate";
 
         try {
             Connection conn = JDBC.getConnection();
@@ -341,11 +353,7 @@ public class PersonExcelToDB {
 
             Statement stat = conn.createStatement();
 
-            Statement statCf = conn.createStatement();
-
             ResultSet rs = stat.executeQuery(sql);
-
-            ResultSet rsCf = statCf.executeQuery(sqlCf);
 
             while (rs.next()) {
                 Map<String, Object> dataMap = new HashMap<>();
@@ -357,13 +365,36 @@ public class PersonExcelToDB {
                 maps.add(dataMap);
             }
 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 查询数据库里已有的护照信息
+     */
+    public static void findCfList(){
+
+        String sqlCf = "select A0184,NAME,CASE SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END AS SEX,CSRQ,ZJHM FROM cf_certificate";
+
+        try {
+            Connection conn = JDBC.getConnection();
+
+            conn.setAutoCommit(false);
+
+            Statement statCf = conn.createStatement();
+
+            ResultSet rsCf = statCf.executeQuery(sqlCf);
+
             while (rsCf.next()) {
                 Map<String, Object> dataMapCf = new HashMap<>();
-                dataMapCf.put("a0184", rs.getString(1));
-                dataMapCf.put("name", rs.getString(2).replace("　","").replace(" ",""));
-                dataMapCf.put("sex", rs.getString(3));
-                dataMapCf.put("csrq", rs.getString(4));
-                dataMapCf.put("zjhm", rs.getString(5));
+                dataMapCf.put("a0184", rsCf.getString(1));
+                dataMapCf.put("name", rsCf.getString(2).replace("　","").replace(" ",""));
+                dataMapCf.put("sex", rsCf.getString(3));
+                dataMapCf.put("csrq", rsCf.getString(4));
+                dataMapCf.put("cardNum", rsCf.getString(5));
                 cfMaps.add(dataMapCf);
             }
 
@@ -372,23 +403,117 @@ public class PersonExcelToDB {
         }
     }
 
+    public static void findOerList(){
+
+        String sqlCf = "SELECT ID_NUMBER,OGE_DATE from oms_entryexit_record";
+
+        try {
+            Connection conn = JDBC.getConnection();
+
+            conn.setAutoCommit(false);
+
+            Statement statOer = conn.createStatement();
+
+            ResultSet rsOer = statOer.executeQuery(sqlCf);
+
+            while (rsOer.next()) {
+                Map<String, Object> dataMapOer = new HashMap<>();
+                dataMapOer.put("cardNum", rsOer.getString(1));
+                dataMapOer.put("ogeDate", rsOer.getString(2).replace("　","").replace(" ",""));
+                oerMap.add(dataMapOer);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据证件号码查找证件有效期
+     * @param list
+     * @param cardNum
+     * @return
+     */
+    public static String findYxqzByNum(List<Map<String,Object>> list,String cardNum){
+
+        String yxqz = null;
+
+        if(list.size()>0){
+            for(int i= 0;i<list.size();i++){
+                if(list.get(i).get("cardNum").toString().equals(cardNum)){
+                    yxqz = list.get(i).get("yxqz").toString();
+                    break;
+                }
+            }
+        }
+        return yxqz;
+    }
+
     /**
      * 查询证件信息表里面所有的信息，导入Excel表格的时候判断是否已经导入过
      */
-    public static boolean ExcelComparisonList(List<Map<String,Object>> list,String zjhm){
+    public static boolean ExcelComparisonList(List<Map<String,Object>> list,String cardNum){
 
         boolean flag = false;
 
-        for (int i= 0;i<list.size();i++){
-            if (list.get(i).get("zjhm").toString().equals(zjhm)){
-                flag = true;
-            }else{
-                flag = false;
+        if(list.size() >0){
+            for (int i= 0;i<list.size();i++){
+                if (list.get(i).get("cardNum").toString().equals(cardNum)){
+                    flag = true;
+                    break;
+                }else{
+                    flag = false;
+                }
             }
         }
 
         return flag;
 
+    }
+
+    /**
+     * 判断导入的记录表的证照是否过期
+     * @param list
+     * @param cardNum
+     * @return
+     */
+    public static int ExcelMap(List<Map<String,Object>> list,String cardNum){
+
+        int flag = 0;
+        if(list.size()>0){
+            for (int i= 0;i<list.size();i++){
+                if(list.get(i).get("cardNum").toString().equals(cardNum)){
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    /**
+     * 根据处境日期和证件号码判断是否导入过
+     * @param list
+     * @param ogeDate
+     * @param cardNum
+     * @return
+     */
+    public static int ExcelComparisonList(List<Map<String,Object>> list,String ogeDate,String cardNum){
+
+        int flag=0;
+
+        if (list.size()>0){
+            for (int i =0;i<list.size();i++){
+                String ogeDatelist = list.get(i).get("ogeDate").toString().replaceAll("-","");
+                String cardNumList= list.get(i).get("cardNum").toString();
+                if (ogeDatelist.equals(ogeDate) && cardNumList.equals(cardNum)){
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+
+        return flag;
     }
 
     public static String findOmsIdByName(List<Map<String,Object>> list,String name,String sex,String a0107){
@@ -398,6 +523,7 @@ public class PersonExcelToDB {
         for (int i= 0;i<list.size();i++) {
             if (list.get(i).get("a0101").toString().replace(" ","").equals(name) && list.get(i).get("sex").equals(sex) && list.get(i).get("a0107").equals(a0107)) {
                 omsId = list.get(i).get("a0100").toString();
+                break;
             }
         }
         return omsId;
