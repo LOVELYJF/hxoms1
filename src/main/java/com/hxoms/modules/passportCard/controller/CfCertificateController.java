@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.util.Excel.PersonExcelToDB;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
-import com.hxoms.modules.passportCard.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.entity.param.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.entity.param.CfCheckValidParam;
@@ -77,7 +76,6 @@ public class CfCertificateController {
         return Result.success(cfCertificatePageInfo);
     }
 
-
     /**
      * 保存或者修改证照信息
      * 如果是证照对于模块，对比完成之后，
@@ -117,8 +115,10 @@ public class CfCertificateController {
         return Result.success(cfCertificateService.delete(id));
 
     }
+
     /**
      * 查询已经验证的护照信息的总数
+     * @return
      */
     @GetMapping("/findSuccessCf")
     public Result findSuccessCf(){

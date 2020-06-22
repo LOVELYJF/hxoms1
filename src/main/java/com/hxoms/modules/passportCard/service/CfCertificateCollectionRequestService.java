@@ -1,7 +1,6 @@
 package com.hxoms.modules.passportCard.service;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.modules.passportCard.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.entity.param.CfCertificateCollectionRequestParam;
 

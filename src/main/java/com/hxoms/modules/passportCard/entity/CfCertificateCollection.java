@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "cf_certificate_collection", TableDescription="")
 public class CfCertificateCollection {
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="保存时间")
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="id")
     private String id;
 
     @ColumnAnnotation(FieldName = "COLLECTION_ID",   FieldDescription="催缴人")
