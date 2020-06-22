@@ -12,31 +12,5 @@ import java.util.List;
  */
 public interface OmsSensitiveMaintenanceService {
 
-	/**
-	 * <b>查询所有的国家</b>
-	 * @return
-	 */
-	List<SysDictItem> getAreaList();
-
-
-	/**
-	 * <b>查询各个限制地区</b>
-	 * @return
-	 */
-	List<OmsSensitiveCountry> getSensitiveCountryMaintainInfo();
-
-
-	/**
-	 * <b>添加敏感地区</b>
-	 * @return
-	 */
-	void addSensitiveCountryMaintainInfo(OmsSensitiveCountry omsSensitiveCountry);
-
-
-	/**
-	 * <b>移除敏感地区</b>
-	 * @return
-	 */
-	void removeSensitiveCountryMaintainInfo(OmsSensitiveCountry omsSensitiveCountry);
 
 }

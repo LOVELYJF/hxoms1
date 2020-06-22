@@ -22,48 +22,5 @@ import java.util.List;
 public class OmsSensitiveMaintenanceController {
 
 
-	@Autowired
-	private OmsSensitiveMaintenanceService omsSensitiveMaintenanceService;
 
-	/**
-	 * <b>查询所有的国家</b>
-	 * @return
-	 */
-	@GetMapping("/getAreaList")
-	public Result getAreaList(){
-		List<SysDictItem> list = omsSensitiveMaintenanceService.getAreaList();
-		return Result.success(list);
-	}
-
-	/**
-	 * <b>查询各个限制地区</b>
-	 * @return
-	 */
-	@GetMapping("/getSensitiveCountryMaintainInfo")
-	public Result getSensitiveCountryMaintainInfo(){
-		List<OmsSensitiveCountry> list = omsSensitiveMaintenanceService.getSensitiveCountryMaintainInfo();
-		return Result.success(list);
-	}
-
-
-	/**
-	 * <b>添加敏感地区</b>
-	 * @return
-	 */
-	@PostMapping("/addSensitiveCountryMaintainInfo")
-	public Result addSensitiveCountryMaintainInfo(OmsSensitiveCountry omsSensitiveCountry){
-		omsSensitiveMaintenanceService.addSensitiveCountryMaintainInfo(omsSensitiveCountry);
-		return Result.success();
-	}
-
-
-	/**
-	 * <b>移除敏感地区</b>
-	 * @return
-	 */
-	@PostMapping("/removeSensitiveCountryMaintainInfo")
-	public Result removeSensitiveCountryMaintainInfo(OmsSensitiveCountry omsSensitiveCountry){
-		omsSensitiveMaintenanceService.removeSensitiveCountryMaintainInfo(omsSensitiveCountry);
-		return Result.success();
-	}
 }
