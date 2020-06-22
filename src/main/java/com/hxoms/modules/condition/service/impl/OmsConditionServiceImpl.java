@@ -11,12 +11,6 @@ import com.hxoms.modules.condition.mapper.OmsConditionMapper;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.file.entity.OmsReplaceKeywords;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
-import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
-import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
-import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
-import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
-import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
-import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -40,12 +34,6 @@ public class OmsConditionServiceImpl implements OmsConditionService {
     private OmsPriApplyMapper omsPriApplyMapper;
     @Autowired
     private OmsReplaceKeywordsMapper omsReplaceKeywordsMapper;
-    @Autowired
-    private OmsSupCaseInfoMapper omsSupCaseInfoMapper;
-    @Autowired
-    private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
-    @Autowired
-    private OmsSupDismissedMapper omsSupDissmissedMapper;
 
     @Override
     public List<Map<String, String>> checkCondition(String applyId, String type) {

@@ -35,6 +35,19 @@ public class OmsConditionController {
         List<Map<String, String>> result = omsConditionService.checkCondition(applyId, type);
         return Result.success(result);
     }
+
+    /**
+     * 检查约束条件(选择人员)
+     * @param a0100 人员id
+     * @param type 类型（因公，因私，延期回国）
+     * @return
+     */
+    @GetMapping("/checkCondition")
+    public Result checkConditionByA0100(String a0100, String type){
+        List<Map<String, String>> result = omsConditionService.checkConditionByA0100(a0100, type);
+        return Result.success(result);
+    }
+
     /**
      * 负面信息
      * @param a0100 人员id
