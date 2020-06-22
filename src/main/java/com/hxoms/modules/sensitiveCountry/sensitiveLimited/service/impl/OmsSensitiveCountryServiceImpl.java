@@ -105,6 +105,9 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 			omsSensitiveCountry.setParentId(null);
 			omsSensitiveCountry.setId(UUIDGenerator.getPrimaryKey());
 			int count = omsSensitiveCountryMapper.insert(omsSensitiveCountry);
+			if(count < 1){
+				throw new CustomMessageException("添加失败");
+			}
 		}
 
 
@@ -151,11 +154,6 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 			throw new CustomMessageException("移除失败");
 		}
 	}
-
-
-
-
-
 }
 
 
