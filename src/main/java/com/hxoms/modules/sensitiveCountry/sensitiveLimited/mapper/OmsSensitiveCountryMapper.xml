@@ -11,5 +11,17 @@
   <sql id="Base_Column_List">
     ID, PARENT_ID, NAME, UPPER_LEVEL, PUB_PRI
   </sql>
+  
+  <select id="selectOmsSensitiveCountry" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from oms_sensitive_country
+    <where>
+        <trim suffixOverrides="and">
+          <if test="parentId == null">PARENT_ID is not null and </if>
+          <if test="pubPri != null">PUB_PRI=#{pubPri} and </if>
+          <if test="upperLevel != null">UPPER_LEVEL=#{upperLevel} and </if>
+          <if test="name != null">NAME =#{name} and </if>
+        </trim>
+    </where>
+  </select>
 
 </mapper>

@@ -6,7 +6,7 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 
 import java.util.List;
 
-@TableAnnotation(TableName = "oms_sensiti ve_country", TableDescription="")
+@TableAnnotation(TableName = "oms_sensitive_country", TableDescription="")
 public class OmsSensitiveCountry {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
