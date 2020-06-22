@@ -42,7 +42,7 @@ public class OmsConditionController {
      * @param type 类型（因公，因私，延期回国）
      * @return
      */
-    @GetMapping("/checkCondition")
+    @GetMapping("/checkConditionByA0100")
     public Result checkConditionByA0100(String a0100, String type){
         List<Map<String, String>> result = omsConditionService.checkConditionByA0100(a0100, type);
         return Result.success(result);
