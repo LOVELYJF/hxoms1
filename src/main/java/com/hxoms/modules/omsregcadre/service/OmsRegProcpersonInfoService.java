@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersonInfoIPagParam;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -26,11 +27,11 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
 
     Object mergeDataGBandGA(String idStr);
 
-    IPage<OmsRegProcpersonInfo> getProvinceCadreRegInfo(Page page, OmsRegProcpersonInfo msRegProcpersonInfo);
+    PageInfo<OmsRegProcpersonInfo> getProvinceCadreRegInfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam);
 
     Object extractRegPersonInfo() throws ParseException;
 
-    IPage<OmsRegProcpersonInfo> getRegPersonInfoList(Page page, OmsRegProcpersonInfo msRegProcpersonInfo);
+    PageInfo<OmsRegProcpersonInfo> getRegPersonInfoList(OmsRegProcpersonInfoIPagParam personInfoIPagParam);
 
     List<OmsRegProcpersonInfo> selectPersonByBatchNo(String batchNo);
 
@@ -52,5 +53,5 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
      */
     public Date getOmsRegProcpersonBirthDate(String a0100);
 
-    PageInfo<OmsRegProcpersonInfo> getInitialReginfo(OmsRegProcpersonInfo msRegProcpersonInfo) throws ParseException;
+    PageInfo<OmsRegProcpersonInfo> getInitialReginfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) throws ParseException;
 }

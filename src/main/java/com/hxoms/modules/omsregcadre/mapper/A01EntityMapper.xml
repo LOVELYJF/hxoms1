@@ -111,5 +111,10 @@
     A0229, CHANGE_STATE, ZJ_TYPE,A0192, A14Z101, A15Z101, A1701, RXZ_DATES, A17Z1
   </sql>
 
+  <select id="selectA01Data" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from A01 where IS_DELETED ='0' and a0184 is not null
+      limit 0,50
+  </select>
+
 
 </mapper>
