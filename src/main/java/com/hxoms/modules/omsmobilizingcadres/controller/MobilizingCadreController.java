@@ -1,10 +1,13 @@
 package com.hxoms.modules.omsmobilizingcadres.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +25,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/mobilizingCadre")
+//开启定时任务注解
+@Component
 public class MobilizingCadreController {
     @Autowired
     MobilizingcadreService mobilizingcadreService;
@@ -35,8 +40,8 @@ public class MobilizingCadreController {
      * @Date: 2020/5/29 9:10
      */
     @RequestMapping("/insertMobilizingCadre")
-    public Result insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre , CfUser loginUser){
-        mobilizingcadreService.insertMobilizingCadre(mobilizingCadre,loginUser);
+    public Result insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre ){
+        mobilizingcadreService.insertMobilizingCadre(mobilizingCadre);
         return Result.success();
     }
 
@@ -78,8 +83,8 @@ public class MobilizingCadreController {
      */
     @RequestMapping("/getAllMobilizingCadre")
     public Result getAllMobilizingCadre(@RequestParam(value ="orgId",required = false) List<String> orgIds, String name, String status){
-        Map<String, Object> map = mobilizingcadreService.getAllMobilizingCadre(orgIds, name, status);
-        return Result.success(map);
+        PageInfo info = mobilizingcadreService.getAllMobilizingCadre(orgIds, name, status);
+        return Result.success(info.getList()).setTotal(info.getTotal());
     }
-    //每天自动拉取干部信息库信息更改状态（未完成）
+
 }

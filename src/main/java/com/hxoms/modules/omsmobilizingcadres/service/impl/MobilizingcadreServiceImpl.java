@@ -3,6 +3,8 @@ package com.hxoms.modules.omsmobilizingcadres.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.omsmobilizingcadres.mapper.OmsMobilizingcadreMapper;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
@@ -30,7 +32,9 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
      * @Date: 2020/5/29 9:09
      */
     @Override
-    public void insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre, CfUser loginUser) {
+    public void insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre) {
+        //获取登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
         if (mobilizingCadre == null){
             throw new CustomMessageException("调整期干部为空!");
         }
@@ -92,13 +96,35 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
      * @Date: 2020/5/29 9:45
      */
     @Override
-    public Map<String, Object> getAllMobilizingCadre(List<String> orgIds, String name, String status) {
-        //结果map
-        Map<String, Object> resultMap = new LinkedHashMap<>();
+    public PageInfo getAllMobilizingCadre(List<String> orgIds, String name, String status) {
 
+        if (orgIds == null){
+            //获取登录用户信息
+            UserInfo loginUser = UserInfoUtil.getUserInfo();
+            if (loginUser.getOrgId() != null ){
+                orgIds.add(loginUser.getOrgId());
+            }
+        }
         List<LinkedHashMap<String, Object>> list = mobilizingcadreMapper.selectAllMobilizingCadre(orgIds,name,status);
-        PageInfo info1 = new PageInfo(list);
-        resultMap.put("info",info1);
-        return resultMap;
+        PageInfo info = new PageInfo(list);
+        return info;
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈每天自动拉取干部信息库信息更改调整期状态〉
+     * @Param: [a0100]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/6/23 11:22
+     */
+    @Override
+    public void updateStatus(String a0100) {
+        if (a0100 == null || a0100.equals("")){
+            throw new CustomMessageException("参数为空!");
+        }
+        mobilizingcadreMapper.updateStatusByA0100(a0100,"1");
+
+    }
+
 }

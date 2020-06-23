@@ -21,9 +21,9 @@
     where A0100 = #{id,jdbcType=VARCHAR}
   </select>
   <select id="selectAllMobilizingCadre" resultType="java.util.LinkedHashMap">
-    SELECT b.b0101 as '单位' , a.A0101 AS '姓名', a.A0104 AS '性别', a.A0107 AS '出生年月' ,
-            a2.A0215A as '职务职级' , a.a0141 AS '政治面貌' , m.Adjustment_time AS '调整时间' ,
-            m.Completion_time as '结束时间' , m.status AS '状态'
+    SELECT m.ID as 'id', b.b0101 as 'WORK_UNIT' , a.A0101 AS 'NAME', a.A0104 AS 'SEX', a.A0107 AS 'BIRTH_DATE' ,
+            a2.A0215A as 'JOB' , a.a0141 AS 'POLITICAL_AFFI' , m.Adjustment_time AS 'Adjustment_time' ,
+            m.Completion_time as 'Completion_time' , m.status AS 'status'
     FROM oms_mobilizingcadre m
     INNER JOIN a01 a
     ON m.A0100 = a.a0100
@@ -32,20 +32,27 @@
     INNER JOIN b01 b
     on a2.a0201b = b.b0111
     <where>
-      <if test='orgIds != null and orgIds != ""'>
+      <if test='orgIds != null and orgIds.size > 0'>
         and b.b0111 in
         <foreach collection="list" item="orgIds" separator="," open="(" close=")">
           #{orgIds}
         </foreach>
       </if>
       <if test='name != null and name != ""'>
-        and (a.A0101 like CONCAT('%',#{name},'%')
+        and a.A0101 like CONCAT('%',#{name},'%')
       </if>
       <if test='status != null and status != ""'>
         and m.status = #{status}
       </if>
     </where>
   </select>
+    <select id="getAllMobilizingCadreByStatus"
+            resultType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
+      select
+      <include refid="Base_Column_List" />
+      from oms_mobilizingcadre
+      where status = #{status,jdbcType=CHAR}
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_mobilizingcadre
     where ID = #{id,jdbcType=VARCHAR}
@@ -151,4 +158,9 @@
       status = #{status,jdbcType=CHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
+    <update id="updateStatusByA0100">
+        update oms_mobilizingcadre
+        set status = #{status,jdbcType=CHAR}
+        where a0100 = #{a0100,jdbcType=VARCHAR}
+    </update>
 </mapper>

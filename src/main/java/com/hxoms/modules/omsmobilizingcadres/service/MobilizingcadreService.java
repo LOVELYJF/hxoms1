@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsmobilizingcadres.service;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
@@ -15,7 +16,7 @@ public interface MobilizingcadreService {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:09
      */
-    void insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre, CfUser loginUser);
+    void insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre);
 
     /**
      * 功能描述: <br>
@@ -45,5 +46,15 @@ public interface MobilizingcadreService {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:45
      */
-    Map<String, Object> getAllMobilizingCadre(List<String> orgIds, String name, String status);
+    PageInfo getAllMobilizingCadre(List<String> orgIds, String name, String status);
+
+    /**
+     * 功能描述: <br>
+     * 〈每天自动拉取干部信息库信息更改调整期状态〉
+     * @Param: [a0100]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/6/23 9:43
+     */
+    void updateStatus(String a0100);
 }
