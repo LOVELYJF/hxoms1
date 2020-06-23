@@ -1,18 +1,17 @@
 package com.hxoms.modules.omsregcadre.controller;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersonInfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,22 +25,23 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/OmsRegProcpersonInfo")
+@RequestMapping("/omsRegProcpersonInfo")
 public class OmsRegProcpersonInfoController {
 
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
-
+    @Autowired
+    private Environment environment;
     /**
      * 初始化
      * @author lijiaojiao
      * @date 2020/4/16 18:01
      */
     @GetMapping("/getInitialReginfo")
-    public Result getInitialReginfo(OmsRegProcpersonInfo msRegProcpersonInfo) {
+    public Result getInitialReginfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) {
         try{
 
-            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getInitialReginfo(msRegProcpersonInfo);
+            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getInitialReginfo(personInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -124,14 +124,13 @@ public class OmsRegProcpersonInfoController {
     /**
      * 查询省管干部登记备案信息
      * （打开登记备案页面）
-     * @param page
-     * @param msRegProcpersonInfo
+     * @param personInfoIPagParam
      * @return
      */
     @GetMapping("/getProvinceCadreRegInfo")
-    public Result getProvinceCadreRegInfo(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) {
+    public Result getProvinceCadreRegInfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) {
         try{
-            IPage<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getProvinceCadreRegInfo(page,msRegProcpersonInfo);
+            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getProvinceCadreRegInfo(personInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -154,14 +153,13 @@ public class OmsRegProcpersonInfoController {
 
     /**
      * 登记备案数据浏览
-     * @param page
-     * @param msRegProcpersonInfo
+     * @param procpersonInfoIPagParam
      * @return
      */
     @GetMapping("/getRegPersonInfoList")
-    public Result getRegPersonInfoList(Page page,OmsRegProcpersonInfo msRegProcpersonInfo) {
+    public Result getRegPersonInfoList(OmsRegProcpersonInfoIPagParam procpersonInfoIPagParam) {
         try{
-            IPage<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getRegPersonInfoList(page,msRegProcpersonInfo);
+            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getRegPersonInfoList(procpersonInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -357,6 +355,18 @@ public class OmsRegProcpersonInfoController {
             }
         }
         return list;
+    }
+
+
+    @PostMapping("/akjfksdf")
+    public Result akjfksdf() {
+
+        String a0221 =  environment.getProperty("postcode." + "1A02");
+        String zhiwu =  environment.getProperty("post." + a0221);
+
+        System.out.println("代码"+a0221);
+        System.out.println("职务"+zhiwu);
+        return Result.success();
     }
 }
 
