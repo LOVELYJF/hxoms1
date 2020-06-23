@@ -59,6 +59,9 @@ public class OmsSupMajorLeader {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
+    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="单位主键")
+    private String b0100;
+
     public String getId() {
         return id;
     }
@@ -169,5 +172,13 @@ public class OmsSupMajorLeader {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100 == null ? null : b0100.trim();
     }
 }

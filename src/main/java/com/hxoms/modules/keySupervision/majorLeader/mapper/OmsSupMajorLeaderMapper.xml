@@ -16,10 +16,11 @@
     <result column="RANK" jdbcType="VARCHAR" property="rank" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, SEX, BIRTH_DATE,
-    POLITICAL_AFFI, POST, RANK,CREATE_USER,CREATE_TIME
+    POLITICAL_AFFI, POST, RANK,CREATE_USER,CREATE_TIME,B0100
   </sql>
 
 

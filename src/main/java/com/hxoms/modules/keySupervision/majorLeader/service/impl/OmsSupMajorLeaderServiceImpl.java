@@ -61,13 +61,10 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	public Page<OmsSupMajorLeader> getMajorLeader(Page<OmsSupMajorLeader> page, List<String> idList,
 	                                              OmsSupMajorLeader omsSupMajorLeader) {
-		//根据工作单位代码查询工作单位名称
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("idList", idList);
-		List<String> list = b01Mapper.selectOrgByList(map);
+
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(list != null && list.size() > 0,"WORK_UNIT", list)
+		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
 				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
 				.or()
@@ -184,6 +181,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 				omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 				omsSupMajorLeader.setA0100((String) mapList.get(0).get("a0100"));
+				omsSupMajorLeader.setB0100((String)mapList.get(0).get("b0100"));
 				omsSupMajorLeader.setWorkUnit((String) mapList.get(0).get("b0101"));
 				omsSupMajorLeader.setName((String) mapList.get(0).get("a0101"));
 				omsSupMajorLeader.setPinyin((String) mapList.get(0).get("a0102"));
