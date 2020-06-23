@@ -6,29 +6,32 @@
     <result column="Company" jdbcType="VARCHAR" property="company" />
     <result column="Name" jdbcType="VARCHAR" property="name" />
     <result column="Sex" jdbcType="VARCHAR" property="sex" />
-    <result column="Birth" jdbcType="TIMESTAMP" property="birth" />
+    <result column="Birth" jdbcType="DATE" property="birth" />
     <result column="PoliticsStatus" jdbcType="VARCHAR" property="politicsstatus" />
     <result column="Duty" jdbcType="VARCHAR" property="duty" />
     <result column="Incumbency_status" jdbcType="VARCHAR" property="incumbencyStatus" />
-    <result column="Start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="End_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="Start_time" jdbcType="DATE" property="startTime" />
+    <result column="End_time" jdbcType="DATE" property="endTime" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+    <result column="Create_date" jdbcType="DATE" property="createDate" />
+    <result column="Create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="modify_time" jdbcType="DATE" property="modifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, Company, Name, Sex, Birth, PoliticsStatus, Duty, Incumbency_status, Start_time, 
-    End_time, A0100, B0100
+    End_time, A0100, B0100, Create_date, Create_user, modify_user, modify_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from oms_specialcasehandling
-    where Name = #{name,jdbcType=VARCHAR}
-  </select>
   <select id="getAllSpecialCase" resultType="java.util.LinkedHashMap">
     select
     <include refid="Base_Column_List" />
     from oms_specialcasehandling
+    <where>
+      <if test="name != null and name != ''">
+       and Name = #{name,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_specialcasehandling
@@ -38,12 +41,14 @@
     insert into oms_specialcasehandling (ID, Company, Name, 
       Sex, Birth, PoliticsStatus, 
       Duty, Incumbency_status, Start_time, 
-      End_time, A0100, B0100
+      End_time, A0100, B0100, Create_date, Create_user, modify_user, modify_time
       )
     values (#{id,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=VARCHAR}, #{birth,jdbcType=TIMESTAMP}, #{politicsstatus,jdbcType=VARCHAR},
-      #{duty,jdbcType=VARCHAR}, #{incumbencyStatus,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{a0100,jdbcType=VARCHAR}, #{b0100,jdbcType=VARCHAR}
+      #{sex,jdbcType=VARCHAR}, #{birth,jdbcType=DATE}, #{politicsstatus,jdbcType=VARCHAR},
+      #{duty,jdbcType=VARCHAR}, #{incumbencyStatus,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, 
+      #{endTime,jdbcType=DATE}, #{a0100,jdbcType=VARCHAR}, #{b0100,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR}, #{modifyUser,jdbcType=VARCHAR},
+      #{modifyTime,jdbcType=DATE}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling">
@@ -85,6 +90,18 @@
       <if test="b0100 != null">
         B0100,
       </if>
+      <if test="createDate != null">
+        Create_date,
+      </if>
+      <if test="createUser != null">
+        Create_user,
+      </if>
+      <if test="modifyUser != null">
+        modify_user,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -100,7 +117,7 @@
         #{sex,jdbcType=VARCHAR},
       </if>
       <if test="birth != null">
-        #{birth,jdbcType=TIMESTAMP},
+        #{birth,jdbcType=DATE},
       </if>
       <if test="politicsstatus != null">
         #{politicsstatus,jdbcType=VARCHAR},
@@ -112,16 +129,28 @@
         #{incumbencyStatus,jdbcType=VARCHAR},
       </if>
       <if test="startTime != null">
-        #{startTime,jdbcType=TIMESTAMP},
+        #{startTime,jdbcType=DATE},
       </if>
       <if test="endTime != null">
-        #{endTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=DATE},
       </if>
       <if test="a0100 != null">
         #{a0100,jdbcType=VARCHAR},
       </if>
       <if test="b0100 != null">
         #{b0100,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyUser != null">
+        #{modifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -138,7 +167,7 @@
         Sex = #{sex,jdbcType=VARCHAR},
       </if>
       <if test="birth != null">
-        Birth = #{birth,jdbcType=TIMESTAMP},
+        Birth = #{birth,jdbcType=DATE},
       </if>
       <if test="politicsstatus != null">
         PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
@@ -150,16 +179,28 @@
         Incumbency_status = #{incumbencyStatus,jdbcType=VARCHAR},
       </if>
       <if test="startTime != null">
-        Start_time = #{startTime,jdbcType=TIMESTAMP},
+        Start_time = #{startTime,jdbcType=DATE},
       </if>
       <if test="endTime != null">
-        End_time = #{endTime,jdbcType=TIMESTAMP},
+        End_time = #{endTime,jdbcType=DATE},
       </if>
       <if test="a0100 != null">
         A0100 = #{a0100,jdbcType=VARCHAR},
       </if>
       <if test="b0100 != null">
         B0100 = #{b0100,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        Create_date = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="createUser != null">
+        Create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyUser != null">
+        modify_user = #{modifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=DATE},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
@@ -169,14 +210,18 @@
     set Company = #{company,jdbcType=VARCHAR},
       Name = #{name,jdbcType=VARCHAR},
       Sex = #{sex,jdbcType=VARCHAR},
-      Birth = #{birth,jdbcType=TIMESTAMP},
+      Birth = #{birth,jdbcType=DATE},
       PoliticsStatus = #{politicsstatus,jdbcType=VARCHAR},
       Duty = #{duty,jdbcType=VARCHAR},
       Incumbency_status = #{incumbencyStatus,jdbcType=VARCHAR},
-      Start_time = #{startTime,jdbcType=TIMESTAMP},
-      End_time = #{endTime,jdbcType=TIMESTAMP},
+      Start_time = #{startTime,jdbcType=DATE},
+      End_time = #{endTime,jdbcType=DATE},
       A0100 = #{a0100,jdbcType=VARCHAR},
-      B0100 = #{b0100,jdbcType=VARCHAR}
+      B0100 = #{b0100,jdbcType=VARCHAR},
+      Create_date = #{createDate,jdbcType=DATE},
+      Create_user = #{createUser,jdbcType=VARCHAR},
+      modify_user = #{modifyUser,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=DATE}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
