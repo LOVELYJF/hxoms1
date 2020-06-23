@@ -17,7 +17,7 @@
     <result column="HandoverTime" jdbcType="DATE" property="handovertime" />
     <result column="HandoverId" jdbcType="VARCHAR" property="handoverid" />
     <result column="ExitDate" jdbcType="DATE" property="exitdate" />
-    <result column="EntryDate" jdbcType="TIMESTAMP" property="entrydate" />
+    <result column="EntryDate" jdbcType="DATE" property="entrydate" />
     <result column="Explain" jdbcType="VARCHAR" property="explain" />
     <result column="Remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
@@ -47,7 +47,7 @@
       #{businesstype,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{idcard,jdbcType=CHAR}, #{politicsstatus,jdbcType=VARCHAR}, 
       #{company,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{handovertime,jdbcType=DATE}, 
-      #{handoverid,jdbcType=VARCHAR}, #{exitdate,jdbcType=DATE}, #{entrydate,jdbcType=TIMESTAMP}, 
+      #{handoverid,jdbcType=VARCHAR}, #{exitdate,jdbcType=DATE}, #{entrydate,jdbcType=DATE}, 
       #{explain,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
@@ -155,7 +155,7 @@
         #{exitdate,jdbcType=DATE},
       </if>
       <if test="entrydate != null">
-        #{entrydate,jdbcType=TIMESTAMP},
+        #{entrydate,jdbcType=DATE},
       </if>
       <if test="explain != null">
         #{explain,jdbcType=VARCHAR},
@@ -211,7 +211,7 @@
         ExitDate = #{exitdate,jdbcType=DATE},
       </if>
       <if test="entrydate != null">
-        EntryDate = #{entrydate,jdbcType=TIMESTAMP},
+        EntryDate = #{entrydate,jdbcType=DATE},
       </if>
       <if test="explain != null">
         Explain = #{explain,jdbcType=VARCHAR},
@@ -238,7 +238,7 @@
       HandoverTime = #{handovertime,jdbcType=DATE},
       HandoverId = #{handoverid,jdbcType=VARCHAR},
       ExitDate = #{exitdate,jdbcType=DATE},
-      EntryDate = #{entrydate,jdbcType=TIMESTAMP},
+      EntryDate = #{entrydate,jdbcType=DATE},
       Explain = #{explain,jdbcType=VARCHAR},
       Remark = #{remark,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
