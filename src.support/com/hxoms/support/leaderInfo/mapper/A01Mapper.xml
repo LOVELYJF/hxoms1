@@ -136,6 +136,7 @@
 			GETDICTITEM('07',a.a0141,'0') as 'politicalAffi',
 			a2.A0215A as 'a0215a',
 			a2.a0221 as 'A0221',
+			b.B0100 as 'b0100',
 			b.B0101 as 'b0101'
 		from  a01 a
 		inner join a02 a2 on a.a0100=a2.a0100
