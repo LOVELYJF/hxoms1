@@ -19,10 +19,11 @@
 		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
 		<result column="ADD_TIME" jdbcType="DATE" property="addTime" />
 		<result column="DELETE_TIME" jdbcType="DATE" property="deleteTime" />
+		<result column="B0100" jdbcType="VARCHAR" property="b0100" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, modify_user, modify_time, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
-		POLITICAL_AFFI, POST, RANK, XZXGW,CREATE_USER,CREATE_TIME,ADD_TIME,DELETE_TIME
+		POLITICAL_AFFI, POST, RANK, XZXGW,CREATE_USER,CREATE_TIME,ADD_TIME,DELETE_TIME,B0100
 	</sql>
 
 </mapper>

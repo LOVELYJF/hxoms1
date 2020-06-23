@@ -63,13 +63,10 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	public Page<OmsSupNakedSign> getNakedOfficialList(Page<OmsSupNakedSign> page, OmsSupNakedSign omsSupNakedSign,
 	                                                   List<String> idList) {
-		//根据工作单位ID查询工作单位名称
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("idList", idList);
-		List<String> list = b01Mapper.selectOrgByList(map);
+
 		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 		queryWrapper
-				.in(list != null && list.size() > 0,"WORK_UNIT", list)
+				.in(idList != null && idList.size() > 0,"B0100", idList)
 				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
 						"XZXGW", omsSupNakedSign.getXzxgw())
 		        .like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
