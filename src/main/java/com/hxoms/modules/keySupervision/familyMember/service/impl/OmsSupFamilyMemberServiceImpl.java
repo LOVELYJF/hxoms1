@@ -241,7 +241,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					//查询家庭成员政治面貌
 					List<String> politicalAffiList = a36Mapper.selectPiliticalAffi(a36.getA3600());
 					//根据人员主键应该只能查到一个人员信息，因此取第一个
-					omsRegProcpersonInfo.setPoliticalAffi(politicalAffiList.get(0));
+					omsRegProcpersonInfo.setPoliticalAfficode(politicalAffiList.get(0));
 
 					Date date = UtilDateTime.toDateFormat(a36.getA3607(),"yyyy-MM-dd");
 					omsRegProcpersonInfo.setBirthDate(date);
