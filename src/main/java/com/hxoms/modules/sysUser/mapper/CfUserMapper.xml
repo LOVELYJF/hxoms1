@@ -19,18 +19,18 @@
     <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
     <result column="org_id" jdbcType="VARCHAR" property="orgId" />
     <result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
-    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="modify_time" jdbcType="DATE" property="modifyTime" />
     <result column="org_name" jdbcType="VARCHAR" property="orgName" />
-    <result column="USER_EXPIRE" jdbcType="TIMESTAMP" property="userExpire" />
+    <result column="USER_EXPIRE" jdbcType="DATE" property="userExpire" />
     <result column="USER_LOGINFAILNUM" jdbcType="INTEGER" property="userLoginfailnum" />
     <result column="CREATOR" jdbcType="VARCHAR" property="creator" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="CREATETIME" jdbcType="DATE" property="createtime" />
     <result column="IP" jdbcType="VARCHAR" property="ip" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="Registe_residence" jdbcType="VARCHAR" property="registeResidence" />
     <result column="CARD_ISSUING_AUTHORITY" jdbcType="VARCHAR" property="cardIssuingAuthority" />
-    <result column="CARE_START_DATE" jdbcType="TIMESTAMP" property="careStartDate" />
-    <result column="CARD_EXPIRY_DATE" jdbcType="TIMESTAMP" property="cardExpiryDate" />
+    <result column="CARE_START_DATE" jdbcType="DATE" property="careStartDate" />
+    <result column="CARD_EXPIRY_DATE" jdbcType="DATE" property="cardExpiryDate" />
     <result column="CARD_PHYSICAL_ID" jdbcType="VARCHAR" property="cardPhysicalId" />
     <result column="IDNUMBER" jdbcType="VARCHAR" property="idnumber" />
     <result column="POLITICAL_AFFI" jdbcType="VARCHAR" property="politicalAffi" />
@@ -241,11 +241,11 @@
       #{userType,jdbcType=CHAR}, #{userState,jdbcType=CHAR}, #{userPhoto,jdbcType=VARCHAR}, 
       #{userEmail,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
       #{orderIndex,jdbcType=INTEGER}, #{orgId,jdbcType=VARCHAR}, #{modifyUser,jdbcType=VARCHAR}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{orgName,jdbcType=VARCHAR}, #{userExpire,jdbcType=TIMESTAMP}, 
-      #{userLoginfailnum,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=DATE}, #{orgName,jdbcType=VARCHAR}, #{userExpire,jdbcType=DATE}, 
+      #{userLoginfailnum,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE}, 
       #{ip,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR}, 
-      #{cardIssuingAuthority,jdbcType=VARCHAR}, #{careStartDate,jdbcType=TIMESTAMP}, 
-      #{cardExpiryDate,jdbcType=TIMESTAMP}, #{cardPhysicalId,jdbcType=VARCHAR}, #{idnumber,jdbcType=VARCHAR}, 
+      #{cardIssuingAuthority,jdbcType=VARCHAR}, #{careStartDate,jdbcType=DATE}, 
+      #{cardExpiryDate,jdbcType=DATE}, #{cardPhysicalId,jdbcType=VARCHAR}, #{idnumber,jdbcType=VARCHAR}, 
       #{politicalAffi,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{duty,jdbcType=VARCHAR}, 
       #{mac,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{fingerprint1,jdbcType=LONGVARCHAR}, 
       #{fingerprint2,jdbcType=LONGVARCHAR})
@@ -396,13 +396,13 @@
         #{modifyUser,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
-        #{modifyTime,jdbcType=TIMESTAMP},
+        #{modifyTime,jdbcType=DATE},
       </if>
       <if test="orgName != null">
         #{orgName,jdbcType=VARCHAR},
       </if>
       <if test="userExpire != null">
-        #{userExpire,jdbcType=TIMESTAMP},
+        #{userExpire,jdbcType=DATE},
       </if>
       <if test="userLoginfailnum != null">
         #{userLoginfailnum,jdbcType=INTEGER},
@@ -411,7 +411,7 @@
         #{creator,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
+        #{createtime,jdbcType=DATE},
       </if>
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
@@ -426,10 +426,10 @@
         #{cardIssuingAuthority,jdbcType=VARCHAR},
       </if>
       <if test="careStartDate != null">
-        #{careStartDate,jdbcType=TIMESTAMP},
+        #{careStartDate,jdbcType=DATE},
       </if>
       <if test="cardExpiryDate != null">
-        #{cardExpiryDate,jdbcType=TIMESTAMP},
+        #{cardExpiryDate,jdbcType=DATE},
       </if>
       <if test="cardPhysicalId != null">
         #{cardPhysicalId,jdbcType=VARCHAR},
@@ -502,13 +502,13 @@
         modify_user = #{modifyUser,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
-        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+        modify_time = #{modifyTime,jdbcType=DATE},
       </if>
       <if test="orgName != null">
         org_name = #{orgName,jdbcType=VARCHAR},
       </if>
       <if test="userExpire != null">
-        USER_EXPIRE = #{userExpire,jdbcType=TIMESTAMP},
+        USER_EXPIRE = #{userExpire,jdbcType=DATE},
       </if>
       <if test="userLoginfailnum != null">
         USER_LOGINFAILNUM = #{userLoginfailnum,jdbcType=INTEGER},
@@ -517,7 +517,7 @@
         CREATOR = #{creator,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+        CREATETIME = #{createtime,jdbcType=DATE},
       </if>
       <if test="ip != null">
         IP = #{ip,jdbcType=VARCHAR},
@@ -532,10 +532,10 @@
         CARD_ISSUING_AUTHORITY = #{cardIssuingAuthority,jdbcType=VARCHAR},
       </if>
       <if test="careStartDate != null">
-        CARE_START_DATE = #{careStartDate,jdbcType=TIMESTAMP},
+        CARE_START_DATE = #{careStartDate,jdbcType=DATE},
       </if>
       <if test="cardExpiryDate != null">
-        CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=TIMESTAMP},
+        CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=DATE},
       </if>
       <if test="cardPhysicalId != null">
         CARD_PHYSICAL_ID = #{cardPhysicalId,jdbcType=VARCHAR},
@@ -585,18 +585,18 @@
       order_index = #{orderIndex,jdbcType=INTEGER},
       org_id = #{orgId,jdbcType=VARCHAR},
       modify_user = #{modifyUser,jdbcType=VARCHAR},
-      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=DATE},
       org_name = #{orgName,jdbcType=VARCHAR},
-      USER_EXPIRE = #{userExpire,jdbcType=TIMESTAMP},
+      USER_EXPIRE = #{userExpire,jdbcType=DATE},
       USER_LOGINFAILNUM = #{userLoginfailnum,jdbcType=INTEGER},
       CREATOR = #{creator,jdbcType=VARCHAR},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      CREATETIME = #{createtime,jdbcType=DATE},
       IP = #{ip,jdbcType=VARCHAR},
       A0100 = #{a0100,jdbcType=VARCHAR},
       Registe_residence = #{registeResidence,jdbcType=VARCHAR},
       CARD_ISSUING_AUTHORITY = #{cardIssuingAuthority,jdbcType=VARCHAR},
-      CARE_START_DATE = #{careStartDate,jdbcType=TIMESTAMP},
-      CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=TIMESTAMP},
+      CARE_START_DATE = #{careStartDate,jdbcType=DATE},
+      CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=DATE},
       CARD_PHYSICAL_ID = #{cardPhysicalId,jdbcType=VARCHAR},
       IDNUMBER = #{idnumber,jdbcType=VARCHAR},
       POLITICAL_AFFI = #{politicalAffi,jdbcType=VARCHAR},
@@ -626,18 +626,18 @@
       order_index = #{orderIndex,jdbcType=INTEGER},
       org_id = #{orgId,jdbcType=VARCHAR},
       modify_user = #{modifyUser,jdbcType=VARCHAR},
-      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=DATE},
       org_name = #{orgName,jdbcType=VARCHAR},
-      USER_EXPIRE = #{userExpire,jdbcType=TIMESTAMP},
+      USER_EXPIRE = #{userExpire,jdbcType=DATE},
       USER_LOGINFAILNUM = #{userLoginfailnum,jdbcType=INTEGER},
       CREATOR = #{creator,jdbcType=VARCHAR},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      CREATETIME = #{createtime,jdbcType=DATE},
       IP = #{ip,jdbcType=VARCHAR},
       A0100 = #{a0100,jdbcType=VARCHAR},
       Registe_residence = #{registeResidence,jdbcType=VARCHAR},
       CARD_ISSUING_AUTHORITY = #{cardIssuingAuthority,jdbcType=VARCHAR},
-      CARE_START_DATE = #{careStartDate,jdbcType=TIMESTAMP},
-      CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=TIMESTAMP},
+      CARE_START_DATE = #{careStartDate,jdbcType=DATE},
+      CARD_EXPIRY_DATE = #{cardExpiryDate,jdbcType=DATE},
       CARD_PHYSICAL_ID = #{cardPhysicalId,jdbcType=VARCHAR},
       IDNUMBER = #{idnumber,jdbcType=VARCHAR},
       POLITICAL_AFFI = #{politicalAffi,jdbcType=VARCHAR},

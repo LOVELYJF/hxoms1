@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +40,11 @@ public class SysUserServiceImpl implements SysUserService {
         if (pageSize == null) {
             pageSize = 10;
         }
+        if (orgId == null){
+            //获取登录用户信息
+            UserInfo loginUser = UserInfoUtil.getUserInfo();
+            orgId.add(loginUser.getOrgId());
+        }
         PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
         List<CfUser> users = cfUserMapper.getSysUserList(keyWord, orgId);
         PageInfo info = new PageInfo(users);
@@ -57,9 +63,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void InserOrUpdateSysUser(CfUser user) {
         //登录用户信息
-        //UserInfo loginUser = UserInfoUtil.getUserInfo();
-        CfUser loginUser = new CfUser();
-        loginUser.setUserName("haha");
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
         if (user == null) {
             throw new CustomMessageException("用户不能为空!");
         }
@@ -99,7 +103,6 @@ public class SysUserServiceImpl implements SysUserService {
             //创建时间
             user.setCreatetime(new Date());
             cfUserMapper.insert(user);
-            //cfUserMapper.insertSelective(user);
 
         }
 
