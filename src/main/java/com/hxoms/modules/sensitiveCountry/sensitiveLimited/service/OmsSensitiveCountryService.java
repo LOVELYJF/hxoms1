@@ -1,6 +1,6 @@
 package com.hxoms.modules.sensitiveCountry.sensitiveLimited.service;
 
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveCountry;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import java.util.List;
@@ -13,10 +13,9 @@ import java.util.List;
 public interface OmsSensitiveCountryService {
 	/**
 	 * <b>查询因公因私限制内容</b>
-	 * @param pubPri
 	 * @return
 	 */
-	List<SysDictItem> getSensitiveInfo(String pubPri);
+	List<SysDictItem> getSensitiveInfo();
 
 
 	/**
@@ -24,23 +23,26 @@ public interface OmsSensitiveCountryService {
 	 * @param pub
 	 * @return
 	 */
-	List<OmsSensitiveCountry> getSensitiveCountryLimitInfo(String pub);
-
+	List<OmsSensitiveLimit> getSensitiveCountryLimitInfo(String pub);
 
 	/**
 	 * <b>添加限制性内容</b>
-	 * @param omsSensitiveCountry
-	 * @return
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 */
-	void addSensitiveCountryLimit(OmsSensitiveCountry omsSensitiveCountry);
+	void addSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri);
 
 
 	/**
-	 * <b>移除限制性内容</b>
-	 * @param omsSensitiveCountry
-	 * @return
+	 * <b>删除限制性内容</b>
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 */
-	void deleteSensitiveLimit(OmsSensitiveCountry omsSensitiveCountry);
+	void deleteSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri);
+
+
 
 
 

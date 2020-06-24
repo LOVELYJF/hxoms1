@@ -2,14 +2,11 @@ package com.hxoms.modules.sensitiveCountry.sensitiveLimited.controller;
 
 
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveCountry;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveCountryService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,14 +22,14 @@ public class OmsSensitiveCountryController {
 
 	@Autowired
 	private OmsSensitiveCountryService omsSensitiveCountryService;
+
 	/**
 	 * <b>查询因公因私限制内容</b>
-	 * @param pubPri
 	 * @return
 	 */
 	@GetMapping("/getSensitiveLimitInfo")
-	public Result getSensitiveInfo(String pubPri){
-		List<SysDictItem> list = omsSensitiveCountryService.getSensitiveInfo(pubPri);
+	public Result getSensitiveInfo(){
+		List<SysDictItem> list = omsSensitiveCountryService.getSensitiveInfo();
 		return Result.success(list);
 	}
 
@@ -44,33 +41,40 @@ public class OmsSensitiveCountryController {
 	 */
 	@GetMapping("/getSensitiveCountryLimitInfo")
 	public Result getSensitiveCountryLimitInfo(String pubPri){
-		List<OmsSensitiveCountry> list = omsSensitiveCountryService.getSensitiveCountryLimitInfo(pubPri);
+		List<OmsSensitiveLimit> list = omsSensitiveCountryService.getSensitiveCountryLimitInfo(pubPri);
 		return Result.success(list);
 	}
 
 
 	/**
 	 * <b>添加限制性内容</b>
-	 * @param omsSensitiveCountry
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 * @return
 	 */
 	@PostMapping("/addSensitiveLimit")
-	public Result addSensitiveCountryLimit(OmsSensitiveCountry omsSensitiveCountry){
-		omsSensitiveCountryService.addSensitiveCountryLimit(omsSensitiveCountry);
+	public Result addSensitiveCountryLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
+	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
+	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
+		omsSensitiveCountryService.addSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
 		return Result.success();
 	}
 
 
 	/**
 	 * <b>移除限制性内容</b>
-	 * @param omsSensitiveCountry
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 * @return
 	 */
 	@PostMapping("/deleteSensitiveLimit")
-	public Result deleteSensitiveLimit(OmsSensitiveCountry omsSensitiveCountry){
-		omsSensitiveCountryService.deleteSensitiveLimit(omsSensitiveCountry);
+	public Result deleteSensitiveLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
+	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
+	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
+		omsSensitiveCountryService.deleteSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
 		return Result.success();
 	}
-
 
 }

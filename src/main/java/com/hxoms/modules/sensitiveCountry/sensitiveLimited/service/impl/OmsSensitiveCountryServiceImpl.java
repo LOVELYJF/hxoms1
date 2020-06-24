@@ -1,17 +1,17 @@
 package com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveCountry;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveCountryMapper;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveCountryService;
+import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,21 +26,15 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 
 
 	@Autowired
-	private OmsSensitiveCountryMapper omsSensitiveCountryMapper;
-	@Autowired
 	private SysDictItemMapper sysDictItemMapper;
+	@Autowired
+	private OmsSensitiveLimitMapper omsSensitiveLimitMapper;
 	/**
 	 * <b>查询因公因私限制内容</b>
-	 * @param pubPri
 	 * @return
 	 */
-	public List<SysDictItem> getSensitiveInfo(String pubPri) {
-		if(pubPri.equals("1")){
-			pubPri = "YGCGLY";
-		}else if(pubPri.equals("0")){
-			pubPri = "YSCGLY";
-		}
-		List<SysDictItem> list = sysDictItemMapper.selectSensitiveLimit(pubPri);
+	public List<SysDictItem> getSensitiveInfo() {
+		List<SysDictItem> list = sysDictItemMapper.selectSensitiveLimit();
 		return list;
 	}
 
@@ -50,108 +44,72 @@ public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryServic
 	 * @param pubPri
 	 * @return
 	 */
-	public List<OmsSensitiveCountry> getSensitiveCountryLimitInfo(String pubPri) {
+	public List<OmsSensitiveLimit> getSensitiveCountryLimitInfo(String pubPri) {
 		//查询父节点
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("parentId", null);
-		List<OmsSensitiveCountry> list = omsSensitiveCountryMapper.selectOmsSensitiveCountry(map);
+		map.put("dictCode", "MGGJ");
+		List<OmsSensitiveLimit> list = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
 
-		//根据父节点查询子节点
-		for(OmsSensitiveCountry omsSensitiveCountry : list){
-			map.put("parentId",1);
-			map.put("pubPri", pubPri);
-			map.put("upperLevel",omsSensitiveCountry.getParentId());
-			List<OmsSensitiveCountry> list1 = omsSensitiveCountryMapper.selectOmsSensitiveCountry(map);
-			omsSensitiveCountry.setList(list1);
+		//查询子节点
+		Map<String,Object> map1 = new HashMap<String, Object>();
+		map1.put("pubPri", pubPri);
+		List<Map<String,String>> omsSensitiveList = omsSensitiveLimitMapper.selectOmsSensitive(map1);
+		for(OmsSensitiveLimit omsSensitiveLimit : list){
+			List<OmsSensitiveLimit> list1 = new ArrayList<OmsSensitiveLimit>();
+			for(int i = 0 ; i < omsSensitiveList.size() ; i++){
+				if(omsSensitiveList.get(i).get("sensitiveLimitId").equals(omsSensitiveLimit.getId())){
+					String sensitiveItem = omsSensitiveList.get(i).get("sensitiveItem");
+					//根据主键查询对应的限制内容
+					map.put("dictCode",null);
+					map.put("itemId", sensitiveItem);
+					List<OmsSensitiveLimit> childList = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
+					list1.add(childList.get(0));
+				}
+				omsSensitiveLimit.setList(list1);
+			}
 		}
 		return list;
-
-//		//查询父级节点
-//		QueryWrapper<OmsSensitiveCountry> queryWrapper = new QueryWrapper<OmsSensitiveCountry>();
-//		queryWrapper.eq(pubPri != null && pubPri != "","PUB_PRI", pubPri)
-//					.isNotNull("PARENT_ID");
-//		List<OmsSensitiveCountry> list = omsSensitiveCountryMapper.selectList(queryWrapper);
-//
-//		//查询子节点
-//		if(list != null && list.size() > 0){
-//			for(OmsSensitiveCountry omsSensitiveCountry : list){
-//				QueryWrapper<OmsSensitiveCountry> wrapper = new QueryWrapper<OmsSensitiveCountry>();
-//				wrapper.eq(pubPri != null && pubPri != "","PUB_PRI", pubPri)
-//						.eq("UPPER_LEVEL", omsSensitiveCountry.getParentId());
-//				List<OmsSensitiveCountry> childList = omsSensitiveCountryMapper.selectList(wrapper);
-//				omsSensitiveCountry.setList(childList);
-//			}
-//		}
-//		return list;
 	}
 
 
 	/**
 	 * <b>添加限制性内容</b>
-	 * @param omsSensitiveCountry
-	 * @return
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 */
-	@Transactional(rollbackFor=Exception.class)
-	public void addSensitiveCountryLimit(OmsSensitiveCountry omsSensitiveCountry) {
-		//查询插入的内容是否存在
+	public void addSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri) {
+		//查询添加的限制性内容是否已经存在
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("upperLevel", omsSensitiveCountry.getParentId());
-		map.put("pubPri", omsSensitiveCountry.getPubPri());
-		map.put("name", omsSensitiveCountry.getName());
-		map.put("parentId", 1);
-		List<OmsSensitiveCountry> list = omsSensitiveCountryMapper.selectOmsSensitiveCountry(map);
-		if (list.size() < 1 || list == null) {
-			omsSensitiveCountry.setUpperLevel(omsSensitiveCountry.getParentId());
-			omsSensitiveCountry.setParentId(null);
-			omsSensitiveCountry.setId(UUIDGenerator.getPrimaryKey());
-			int count = omsSensitiveCountryMapper.insert(omsSensitiveCountry);
+		map.put("sensitiveItem", sensitiveItem);
+		map.put("sensitiveLimitId", sensitiveLimitId);
+		map.put("pubPri", pubPri);
+		List<Map<String,String>> omsSensitiveList = omsSensitiveLimitMapper.selectOmsSensitive(map);
+		if(omsSensitiveList.size() < 1 || omsSensitiveList == null){
+			int count = omsSensitiveLimitMapper.addSensitiveLimit(map);
 			if(count < 1){
 				throw new CustomMessageException("添加失败");
 			}
+		}else {
+			throw new CustomMessageException("添加的内容已经存在");
 		}
-
-
-
-
-//		//查询插入的限制内容是否应存在
-//		QueryWrapper<OmsSensitiveCountry> queryWrapper = new QueryWrapper<OmsSensitiveCountry>();
-//		queryWrapper.eq(omsSensitiveCountry.getPubPri() != null && omsSensitiveCountry.getPubPri() != "",
-//				"PUB_PRI", omsSensitiveCountry.getPubPri())
-//				.eq(omsSensitiveCountry.getName() != null && omsSensitiveCountry.getName() != "",
-//						"NAME", omsSensitiveCountry.getName())
-//				.eq(omsSensitiveCountry.getParentId() != null,
-//						"UPPER_LEVEL", omsSensitiveCountry.getParentId());
-//		OmsSensitiveCountry queryOmsSenstiveCountry = omsSensitiveCountryMapper.selectOne(queryWrapper);
-//
-//		if(queryOmsSenstiveCountry == null){
-//			omsSensitiveCountry.setUpperLevel(omsSensitiveCountry.getParentId());
-//			omsSensitiveCountry.setParentId(null);
-//			omsSensitiveCountry.setId(UUIDGenerator.getPrimaryKey());
-//			int count = omsSensitiveCountryMapper.insert(omsSensitiveCountry);
-//			if(count < 1){
-//				throw new CustomMessageException("添加失败");
-//			}
-//		}
 	}
 
 
 	/**
-	 * <b>移除限制性内容</b>
-	 * @param omsSensitiveCountry
-	 * @return
+	 * <b>删除限制性内容</b>
+	 * @param sensitiveItem
+	 * @param sensitiveLimitId
+	 * @param pubPri
 	 */
-	@Transactional(rollbackFor=Exception.class)
-	public void deleteSensitiveLimit(OmsSensitiveCountry omsSensitiveCountry) {
-		QueryWrapper<OmsSensitiveCountry> queryWrapper = new QueryWrapper<OmsSensitiveCountry>();
-		queryWrapper.eq(omsSensitiveCountry.getPubPri() != null && omsSensitiveCountry.getPubPri() != "",
-				"PUB_PRI", omsSensitiveCountry.getPubPri())
-				.eq(omsSensitiveCountry.getName() != null && omsSensitiveCountry.getName() != "",
-						"NAME",omsSensitiveCountry.getName())
-				.eq(omsSensitiveCountry.getParentId() != null,
-						"UPPER_LEVEL", omsSensitiveCountry.getParentId());
-		int count = omsSensitiveCountryMapper.delete(queryWrapper);
+	public void deleteSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("sensitiveItem", sensitiveItem);
+		map.put("sensitiveLimitId", sensitiveLimitId);
+		map.put("pubPri", pubPri);
+		int count  = omsSensitiveLimitMapper.deleteSensitiveLimit(map);
 		if(count < 1){
-			throw new CustomMessageException("移除失败");
+			throw new CustomMessageException("删除失败");
 		}
 	}
 }
