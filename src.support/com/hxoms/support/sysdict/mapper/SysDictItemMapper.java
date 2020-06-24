@@ -104,10 +104,9 @@ public interface SysDictItemMapper {
     /**
      * <b>查询因公因私限制内容</b>
      * @author luoshuai
-     * @param pubPri
      * @return
      */
-    List<SysDictItem> selectSensitiveLimit(String pubPri);
+    List<SysDictItem> selectSensitiveLimit();
 
     /**
      * <b>查询家庭成员关系列表</b>

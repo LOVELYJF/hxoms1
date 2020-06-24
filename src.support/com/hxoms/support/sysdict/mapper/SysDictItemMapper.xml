@@ -139,16 +139,13 @@
     </insert>
 
     <!-- 查询因公因私限制内容 -->
-    <select id="selectSensitiveLimit" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT * FROM `sys_dict_item` where dict_code=#{pubPri}
+    <select id="selectSensitiveLimit"  resultMap="BaseResultMap">
+        SELECT * FROM `sys_dict_item` where dict_code='YGCGLY' or dict_code='YSCGLY'
     </select>
 
     <!-- 查询家庭成员关系 -->
     <select id="selectFamilyMemberRelationship" resultMap="BaseResultMap">
-        select * from `sys_dict_item`
-        where
-            item_name="妻子" or item_name="丈夫" or item_name="儿子" or item_name="女儿" or
-            item_name="长子" or item_name="长女" or item_name="次子" or item_name="次女"
+        select * from sys_dict_item where dict_code = 'GB4761'
     </select>
 
     <!-- 查询政治面貌集合 -->
@@ -163,12 +160,20 @@
 
     <!-- 查询国籍名称 -->
     <select id="getNationality" resultMap="BaseResultMap">
-         select * from `sys_dict_item` where dict_code="GJMC"
+
+
+
+
+
     </select>
 
     <!-- 查询移居类别 -->
     <select id="getMigrationCategory" resultMap="BaseResultMap">
-        select * from `sys_dict_item` where dict_code="RYYJLB"
+
+
+
+
+
     </select>
 
     <!-- 查询处分类型 -->
