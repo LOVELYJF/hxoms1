@@ -5,9 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling;
 import com.hxoms.modules.omsspecialcasehandling.service.OmsSpecialCaseHandlingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class OmsSpecialCaseHandlingController {
      * @Author: 李逍遥
      * @Date: 2020/6/2 10:56
      */
-    @RequestMapping("/insertOrUpdateSpecialCase")
+    @PostMapping("/insertOrUpdateSpecialCase")
     public Result insertOrUpdateSpecialCase(OmsSpecialcasehandling specialCaseHandling){
         specialCaseHandlingService.insertOrUpdateSpecialCase(specialCaseHandling);
         return Result.success();
@@ -48,7 +46,7 @@ public class OmsSpecialCaseHandlingController {
      * @Author: 李逍遥
      * @Date: 2020/6/2 11:10
      */
-    @RequestMapping("/deleteSpecialCaseById")
+    @PostMapping("/deleteSpecialCaseById")
     public Result deleteSpecialCaseById(String id){
         specialCaseHandlingService.deleteSpecialCaseById(id);
         return Result.success();
@@ -61,7 +59,7 @@ public class OmsSpecialCaseHandlingController {
      * @Author: 李逍遥
      * @Date: 2020/6/22 16:01
      */
-    @RequestMapping("/getAllSpecialCase")
+    @GetMapping("/getAllSpecialCase")
     public Result getAllSpecialCase(Integer pageNum, Integer pageSize, String keyWord){
         PageInfo pageInfo = specialCaseHandlingService.getAllSpecialCase(pageNum,pageSize,keyWord);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());

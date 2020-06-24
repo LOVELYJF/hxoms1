@@ -5,9 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class SysUserController {
  * @Author: 李逍遥
  * @Date: 2020/4/28 15:45
  */
-    @RequestMapping("/getSysUserList")
+    @GetMapping("/getSysUserList")
     public Result getSysUserList(Integer pageNum, Integer pageSize, String keyWord, @RequestParam(value ="orgId",required = false) List<String> orgId) {
         PageInfo pageInfo = sysUserService.getSysUserList(pageNum, pageSize, keyWord, orgId);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
@@ -48,7 +46,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/28 15:46
      */
-    @RequestMapping("/insertOrUpDateSysUser")
+    @PostMapping("/insertOrUpDateSysUser")
     public Result insertOrUpDateSysUser(CfUser user) {
         sysUserService.InserOrUpdateSysUser(user);
         return Result.success();
@@ -61,7 +59,7 @@ public class SysUserController {
     * @Author: 李逍遥
     * @Date: 2020/5/20 17:25
     */
-    @RequestMapping("/getUserByCodeORName")
+    @GetMapping("/getUserByCodeORName")
     public Result getUserByCodeORName(String keyWord){
         List<CfUser> user = sysUserService.getUserByCodeORName(keyWord);
         return Result.success(user);
@@ -75,7 +73,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/30 11:33
      */
-    @RequestMapping("/selectSysUserByUserId")
+    @GetMapping("/selectSysUserByUserId")
     public Result selectSysUserByUserId(@RequestParam String userId) {
         CfUser user = sysUserService.selectSysUserByUserId(userId);
         return Result.success(user);
@@ -88,7 +86,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/28 16:41
      */
-    @RequestMapping("/deleteSysUser")
+    @PostMapping("/deleteSysUser")
     public Result deleteSysUser(String userId){
         sysUserService.deleteSysUser(userId);
         return Result.success();
@@ -101,7 +99,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/28 17:18
      */
-    @RequestMapping("/updatePassword")
+    @PostMapping("/updatePassword")
     public Result updatePassword(String userId , String newPassword){
         sysUserService.updatePassword(userId , newPassword);
         return Result.success();
@@ -114,7 +112,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/30 11:44
      */
-    @RequestMapping("/resetPassword")
+    @PostMapping("/resetPassword")
     public Result resetPassword(@RequestParam String userId) {
         sysUserService.resetPassword(userId);
         return Result.success();
@@ -127,7 +125,7 @@ public class SysUserController {
      * @Author: 李逍遥
      * @Date: 2020/4/30 18:09
      */
-    @RequestMapping("/updateUserState")
+    @PostMapping("/updateUserState")
     public Result updateUserState(String userId , String state){
         sysUserService.updateUserState(userId , state);
         return Result.success();

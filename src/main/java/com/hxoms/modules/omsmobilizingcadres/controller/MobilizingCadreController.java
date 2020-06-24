@@ -8,9 +8,7 @@ import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,8 +23,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/mobilizingCadre")
-//开启定时任务注解
-@Component
 public class MobilizingCadreController {
     @Autowired
     MobilizingcadreService mobilizingcadreService;
@@ -39,7 +35,7 @@ public class MobilizingCadreController {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:10
      */
-    @RequestMapping("/insertMobilizingCadre")
+    @PostMapping("/insertMobilizingCadre")
     public Result insertMobilizingCadre(OmsMobilizingcadre mobilizingCadre ){
         mobilizingcadreService.insertMobilizingCadre(mobilizingCadre);
         return Result.success();
@@ -53,7 +49,7 @@ public class MobilizingCadreController {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:15
      */
-    @RequestMapping("/deleteMobilizingCadre")
+    @PostMapping("/deleteMobilizingCadre")
     public Result deleteMobilizingCadre(String id){
         mobilizingcadreService.deleteMobilizingCadre(id);
         return Result.success();
@@ -67,7 +63,7 @@ public class MobilizingCadreController {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:21
      */
-    @RequestMapping("/getMobilizingCadreByID")
+    @GetMapping("/getMobilizingCadreByID")
     public Result getMobilizingCadreByID(String id){
         OmsMobilizingcadre mobilizingCadre = mobilizingcadreService.getMobilizingCadreByID(id);
         return Result.success(mobilizingCadre);
@@ -81,7 +77,7 @@ public class MobilizingCadreController {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:46
      */
-    @RequestMapping("/getAllMobilizingCadre")
+    @GetMapping("/getAllMobilizingCadre")
     public Result getAllMobilizingCadre(@RequestParam(value ="orgId",required = false) List<String> orgIds, String name, String status){
         PageInfo info = mobilizingcadreService.getAllMobilizingCadre(orgIds, name, status);
         return Result.success(info.getList()).setTotal(info.getTotal());
