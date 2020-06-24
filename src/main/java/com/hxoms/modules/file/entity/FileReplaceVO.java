@@ -64,7 +64,7 @@ public class FileReplaceVO {
     //当前用户
     private String nowUsername;
     //延期时间
-    private String delayTime;
+    private Date delayTime;
     public String getName() {
         return name;
     }
@@ -241,11 +241,11 @@ public class FileReplaceVO {
         this.nowUsername = nowUsername;
     }
 
-    public String getDelayTime() {
+    public Date getDelayTime() {
         return delayTime;
     }
 
-    public void setDelayTime(String delayTime) {
+    public void setDelayTime(Date delayTime) {
         this.delayTime = delayTime;
     }
 }

@@ -121,7 +121,7 @@
            op.SEX as sex,
            orp.BIRTH_DATE as birthDate,
            orp.IDNUMBER as idnumber,
-           orp.POLITICAL_AFFI as politicalOutlook,
+           orp.POLITICAL_AFFINAME as politicalOutlook,
            orp.POST as postrank,
            orp.REGISTE_RESIDENCE as registeResidence,
            op.B0101 as b0101,

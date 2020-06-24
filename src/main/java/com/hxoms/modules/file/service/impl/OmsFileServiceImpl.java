@@ -10,6 +10,8 @@ import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
 import com.hxoms.modules.file.service.OmsFileService;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
@@ -41,6 +43,8 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsPriDelayApplyService omsPriDelayApplyService;
     @Autowired
     private OmsCreateFileMapper omsCreateFileMapper;
+    @Autowired
+    private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
@@ -52,6 +56,14 @@ public class OmsFileServiceImpl implements OmsFileService {
         List<String> fileType = new ArrayList<>();
         fileType.add("1"); //系统
         //TODO 涉密信息
+        //是否主要领导
+        QueryWrapper<OmsRegProcpersoninfo> omsPersoninfo = new QueryWrapper<>();
+        omsPersoninfo.eq("A0100", a0100)
+                .eq("MAIN_LEADER", "1");
+        int omsPersoninfoCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
+        if (omsPersoninfoCount > 0){
+            fileType.add("5"); //主要领导
+        }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
@@ -129,6 +141,7 @@ public class OmsFileServiceImpl implements OmsFileService {
             queryWrapperFile.eq("ID", omsFile.getFileId())
                     .select("RUN_SQL");
             OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
+            omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID());
             FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
             // 替换关键词
             replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);

@@ -69,6 +69,13 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         List<OmsPriApplyVO> omsPriApplyVOS = omsPriApplyMapper.selectOmsPriApplyIPage(omsPriApplyIPageParam);
         //返回数据
         PageInfo<OmsPriApplyVO> pageInfo = new PageInfo(omsPriApplyVOS);
+        //查询途径国家
+        for (OmsPriApplyVO item : pageInfo.getList()) {
+            QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
+            queryWrapper.in("ID", item.getGoCountry().split(","));
+            List<Country> countries = countryMapper.selectList(queryWrapper);
+            item.setCountries(countries);
+        }
         return pageInfo;
     }
 
@@ -92,8 +99,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
         //约束条件
-        List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, Constants.oms_business[1]);
-        omsPriApplyVO.setCondition(condition);
+        /*List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, Constants.oms_business[1]);
+        omsPriApplyVO.setCondition(condition);*/
         return omsPriApplyVO;
     }
 
