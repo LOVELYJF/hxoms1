@@ -141,7 +141,7 @@
   </select>
 
   <!-- 获取差异数据列表 -->
-  <select id="getMatchingDate" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo">
+  <select id="getMatchingDate" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
     SELECT
         t.*
     FROM

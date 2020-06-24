@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrCompare;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
@@ -41,7 +40,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Autowired
     private OmsSmrCompareMapper smrCompareMapper;
     @Autowired
-    private OmsRegProcpersonInfoMapper regProcpersonInfoMapper;
+    private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
 
     @Override
     @Transactional(rollbackFor=Exception.class)
@@ -106,7 +105,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             Map<String, Object> map = new HashMap<>();
             map.put("name",list.get(i).get("name"));
             map.put("birthDay",list.get(i).get("birthDay"));
-            List<OmsRegProcpersonInfo> rpList = regProcpersonInfoMapper.selectA0100ByMap(map);
+            List<OmsRegProcpersoninfo> rpList = regProcpersonInfoMapper.selectA0100ByMap(map);
             String idCardNum = list.get(i).get("idCardNumber").toString();//身份证号
             String srLevel = list.get(i).get("secretRelatedLevel").toString();//涉密等级
             if(StringUtils.isNotBlank(idCardNum)){

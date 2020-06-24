@@ -11,4 +11,6 @@ public interface A02Mapper extends BaseMapper<A02> {
 	 * @return
 	 */
 	List<A02> selectMajorLeaderAutoFromA02();
+
+    String selectB0100ByA021b(String a0201b);
 }

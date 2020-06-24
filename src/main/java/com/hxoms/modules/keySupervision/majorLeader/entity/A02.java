@@ -1,5 +1,6 @@
 package com.hxoms.modules.keySupervision.majorLeader.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -156,6 +157,7 @@ public class A02 {
     @ColumnAnnotation(FieldName = "a0275",   FieldDescription="")
     private String a0275;
 
+    @TableField("a0279_1")
     @ColumnAnnotation(FieldName = "a0279_1",   FieldDescription="")
     private String a02791;
 

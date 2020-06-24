@@ -7,15 +7,11 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.common.utils.UtilDateTime;
-import com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -47,7 +43,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Autowired
 	private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
 	@Autowired
-	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
 	/**
 	 * <b>查询违反外事纪律人员信息</b>
 	 * @param idList
@@ -112,11 +108,11 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			throw new CustomMessageException("新增违反外事纪律人员失败");
 		}else{
 			//在备案表中锁定出国时间到影响期的结束时间
-			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
 			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
 			omsRegProcperson.setModifyTime(new Date());
 			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
 			if(count1 < 1){
@@ -146,11 +142,11 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			throw new CustomMessageException("修改违反外事纪律人员失败");
 		}else {
 			//在备案记录表中锁定出国时间到影响期的结束时间
-			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
 			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
 			omsRegProcperson.setModifyTime(new Date());
 			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
 			if(count1 < 1){
@@ -172,11 +168,11 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			throw new CustomMessageException("删除违反外事纪律人员失败");
 		}else {
 			//取消备案表中的锁定出国时间
-			OmsRegProcpersonInfo omsRegProcperson = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
 			omsRegProcperson.setAbroadtime(null);
 			omsRegProcperson.setModifyTime(new Date());
 			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
 			if(count1 < 1){

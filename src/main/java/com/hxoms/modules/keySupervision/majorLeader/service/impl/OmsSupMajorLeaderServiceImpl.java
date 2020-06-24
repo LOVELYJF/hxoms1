@@ -6,16 +6,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
-import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
@@ -43,7 +41,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	@Autowired
 	private OmsSupMajorLeaderMapper omsSupMajorLeaderMapper;
 	@Autowired
-	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
 	@Autowired
 	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 	@Autowired
@@ -115,11 +113,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		}
 
 		//在备案库中设置该对象为主要领导
-		OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 		omsRegProcpersonInfo.setMainLeader("1");
 		omsRegProcpersonInfo.setModifyTime(new Date());
 		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 		queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 		if(count < 0){
@@ -141,11 +139,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			throw new CustomMessageException("取消主要领导信息失败");
 		}else {
 			//在备案库中取消主要领导标识
-			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setMainLeader("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 			if(count1 < 0){
@@ -206,11 +204,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			}
 
 			//在备案库中设置该对象为主要领导
-			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setMainLeader("1");
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
 			if(count < 0){

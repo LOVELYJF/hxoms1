@@ -1,7 +1,7 @@
 package com.hxoms.modules.omssmrperson.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +20,7 @@ public interface OmsSmrPersonInfoMapper  extends BaseMapper<OmsSmrPersonInfo> {
     //批量添加涉密人员信息
     int insertPersonList(List<OmsSmrPersonInfo> list);
     //判断导入的涉密人员信息能否匹配
-    OmsRegProcpersonInfo getMatchingDate(String workUnit, String idCardNumber);
+    OmsRegProcpersoninfo getMatchingDate(String workUnit, String idCardNumber);
     //获取漏报涉密人员单位
     List<String> getFailReportOrg();
     //获取差异数据列表

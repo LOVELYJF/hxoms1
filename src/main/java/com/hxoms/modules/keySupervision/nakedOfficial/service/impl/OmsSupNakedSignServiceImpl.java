@@ -7,14 +7,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
@@ -49,7 +48,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	@Autowired
 	private OmsSupFamilyMemberService omsSupFamilyMemberService;
 	@Autowired
-	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
 	@Autowired
 	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
@@ -119,14 +118,14 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		}
 
 		//将裸官信息在备案表中进行同步更新
-		OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 		omsRegProcpersonInfo.setNf("1");
 
 		//默认在非限入性岗位
 		omsRegProcpersonInfo.setXrxgw("0");
 		omsRegProcpersonInfo.setModifyTime(new Date());
 		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 		queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 		if(count < 0){
@@ -150,12 +149,12 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		}else {
 
 			//将裸官信息在备案表中进行同步更新
-			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setXrxgw(omsSupNakedSign.getXzxgw());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			//在登记备案表中进行更新登记备案信息
-			QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 			int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 			if(omsSupNakedSign.getXzxgw().equals("0") && num > 0) {
@@ -178,13 +177,13 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			throw new CustomMessageException("取消裸官标识失败");
 		}else {
 			//在备案信息表中设置取消裸官信息
-			OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setNf("0");
 			omsRegProcpersonInfo.setXrxgw("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 
-			QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 			int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
 			//同时撤销其家庭成员的登记备案，转到撤销登记备案表中
