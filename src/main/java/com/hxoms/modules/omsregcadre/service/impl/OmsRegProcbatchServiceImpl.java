@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
     @Autowired
     private OmsRegProcbatchPersonMapper regbatchPersonMapper;
     @Autowired
-    private OmsRegProcpersonInfoMapper regpersonInfoMapper;
+    private OmsRegProcpersoninfoMapper regpersonInfoMapper;
 
 
     /**
@@ -64,10 +64,10 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
         //根据批次id查询该批次对应的人员a0100
         List<String> a0100s = regbatchPersonMapper.selectA0100s(batchId);
-        QueryWrapper<OmsRegProcpersonInfo> personInfoWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        QueryWrapper<OmsRegProcpersoninfo> personInfoWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         personInfoWrapper.in("A0100",a0100s);
 
-        OmsRegProcpersonInfo omsreginfo = new OmsRegProcpersonInfo();
+        OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
         //入库标识  新增U  修改I  撤消D
         omsreginfo.setInboundFlag("I");
         //备案状态  0未备案，1已备案，2已确认

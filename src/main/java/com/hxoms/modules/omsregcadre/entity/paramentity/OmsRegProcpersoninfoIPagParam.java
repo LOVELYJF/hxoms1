@@ -1,12 +1,12 @@
 package com.hxoms.modules.omsregcadre.entity.paramentity;
 
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 
 /**
  * 登记备案信息参数实体类
  * @author lijiaojiao
  */
-public class OmsRegProcpersonInfoIPagParam extends OmsRegProcpersonInfo {
+public class OmsRegProcpersoninfoIPagParam extends OmsRegProcpersoninfo {
 
     /**页码*/
     private Integer pageNum;

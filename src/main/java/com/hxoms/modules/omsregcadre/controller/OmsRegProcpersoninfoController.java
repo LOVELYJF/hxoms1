@@ -2,9 +2,9 @@ package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
-import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersonInfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/omsRegProcpersonInfo")
-public class OmsRegProcpersonInfoController {
+public class OmsRegProcpersoninfoController {
 
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
@@ -38,10 +38,10 @@ public class OmsRegProcpersonInfoController {
      * @date 2020/4/16 18:01
      */
     @GetMapping("/getInitialReginfo")
-    public Result getInitialReginfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) {
+    public Result getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) {
         try{
 
-            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getInitialReginfo(personInfoIPagParam);
+            PageInfo<OmsRegProcpersoninfo> mrpinfoList = mrpinfoService.getInitialReginfo(personInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class OmsRegProcpersonInfoController {
      * @date 2020/4/18 14:01
      */
     @PostMapping("/insertRpinfo")
-    public Result insertRpinfo(OmsRegProcpersonInfo orpInfo) {
+    public Result insertRpinfo(OmsRegProcpersoninfo orpInfo) {
         return Result.success(mrpinfoService.insertRpinfo(orpInfo));
     }
 
@@ -67,7 +67,7 @@ public class OmsRegProcpersonInfoController {
      * @date 2020/4/18 14:01
      */
     @PostMapping("/updateRpinfo")
-    public Result updateRpinfo(OmsRegProcpersonInfo orpInfo) {
+    public Result updateRpinfo(OmsRegProcpersoninfo orpInfo) {
         return Result.success(mrpinfoService.updateRpinfo(orpInfo));
     }
 
@@ -96,8 +96,8 @@ public class OmsRegProcpersonInfoController {
             String dataType="2";
             int count = mrpinfoService.selectCountGongAn(dataType);
             if (count < 0){
-                List<OmsRegProcpersonInfo> list = readOmsDataGA();
-                List<OmsRegProcpersonInfo> mepinfoList = mrpinfoService.insertOmsRegGongAn(list);
+                List<OmsRegProcpersoninfo> list = readOmsDataGA();
+                List<OmsRegProcpersoninfo> mepinfoList = mrpinfoService.insertOmsRegGongAn(list);
                 return Result.success(mepinfoList);
             }else{
                 return Result.error("存在待处理的公安数据，请勿多次上传");
@@ -128,9 +128,9 @@ public class OmsRegProcpersonInfoController {
      * @return
      */
     @GetMapping("/getProvinceCadreRegInfo")
-    public Result getProvinceCadreRegInfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) {
+    public Result getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) {
         try{
-            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getProvinceCadreRegInfo(personInfoIPagParam);
+            PageInfo<OmsRegProcpersoninfo> mrpinfoList = mrpinfoService.getProvinceCadreRegInfo(personInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -157,9 +157,9 @@ public class OmsRegProcpersonInfoController {
      * @return
      */
     @GetMapping("/getRegPersonInfoList")
-    public Result getRegPersonInfoList(OmsRegProcpersonInfoIPagParam procpersonInfoIPagParam) {
+    public Result getRegPersonInfoList(OmsRegProcpersoninfoIPagParam procpersonInfoIPagParam) {
         try{
-            PageInfo<OmsRegProcpersonInfo> mrpinfoList = mrpinfoService.getRegPersonInfoList(procpersonInfoIPagParam);
+            PageInfo<OmsRegProcpersoninfo> mrpinfoList = mrpinfoService.getRegPersonInfoList(procpersonInfoIPagParam);
             return Result.success(mrpinfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -175,7 +175,7 @@ public class OmsRegProcpersonInfoController {
     @GetMapping("/selectPersonByBatchNo")
     public Result selectPersonByBatchNo(String batchNo) {
         try{
-            List<OmsRegProcpersonInfo> personlist = mrpinfoService.selectPersonByBatchNo(batchNo);
+            List<OmsRegProcpersoninfo> personlist = mrpinfoService.selectPersonByBatchNo(batchNo);
             return Result.success(personlist);
         }catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +193,7 @@ public class OmsRegProcpersonInfoController {
         // 读取Excel表格
         try{
             //登记备案大检查上传登记备案记录
-            List<OmsRegProcpersonInfo> list = readOmsDataGA();
+            List<OmsRegProcpersoninfo> list = readOmsDataGA();
             //查询年度列表
             List<OmsRegYearcheckInfo> yearList = mrpinfoService.queryYearList(list);
 
@@ -217,7 +217,7 @@ public class OmsRegProcpersonInfoController {
      * @return
      */
     @PostMapping("/selectPersonAndAllowRevoke")
-    public Result selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo){
+    public Result selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo){
         return Result.success(mrpinfoService.selectPersonAndAllowRevoke(msRegProcpersonInfo));
     }
 
@@ -234,9 +234,9 @@ public class OmsRegProcpersonInfoController {
      * 上传公安数据
      * @return
      */
-    private static List<OmsRegProcpersonInfo> readOmsDataGA() {
+    private static List<OmsRegProcpersoninfo> readOmsDataGA() {
 
-        List<OmsRegProcpersonInfo> list = new ArrayList<OmsRegProcpersonInfo>();
+        List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
         HSSFWorkbook workbook = null;
         try {
             // 读取Excel文件
@@ -261,7 +261,7 @@ public class OmsRegProcpersonInfoController {
                 }
 
                 // 将单元格中的内容存入集合
-                OmsRegProcpersonInfo orpInfo = new OmsRegProcpersonInfo();
+                OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
                 //姓名
                 HSSFCell cell = hssfRow.getCell(1);
                 if (cell == null) {

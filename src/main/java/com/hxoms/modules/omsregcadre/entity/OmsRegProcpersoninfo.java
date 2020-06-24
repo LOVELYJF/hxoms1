@@ -8,7 +8,7 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_reg_procpersoninfo", TableDescription="省管干部登记备案人员信息")
-public class OmsRegProcpersonInfo {
+public class OmsRegProcpersoninfo {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
@@ -28,10 +28,10 @@ public class OmsRegProcpersonInfo {
     @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态")
     private String checkStatus;
 
-    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态")
+    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
     private String incumbencyStatus;
 
-    @ColumnAnnotation(FieldName = "DATA_TYPE",   FieldDescription="数据类型")
+    @ColumnAnnotation(FieldName = "DATA_TYPE",   FieldDescription="数据类型  1.干部    2 公安")
     private String dataType;
 
     @ColumnAnnotation(FieldName = "SURNAME",   FieldDescription="姓")

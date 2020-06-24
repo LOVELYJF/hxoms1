@@ -4,17 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
-import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/OmsRegRevokeApply")
@@ -58,7 +55,7 @@ public class OmsRegRevokeApplyController {
      * @return
      */
     @PostMapping("/insertRevokeRegPerson")
-    public Result insertRevokeRegPerson(OmsRegProcpersonInfo regProcpersonInfo) throws ParseException {
+    public Result insertRevokeRegPerson(OmsRegProcpersoninfo regProcpersonInfo) throws ParseException {
         return Result.success(revokeApplyService.insertRevokeRegPerson(regProcpersonInfo));
     }
 

@@ -1,47 +1,45 @@
 package com.hxoms.modules.omsregcadre.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
-import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersonInfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonInfo> {
+public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersoninfo> {
 
 
-    Object insertRpinfo(OmsRegProcpersonInfo orpInfo);
+    Object insertRpinfo(OmsRegProcpersoninfo orpInfo);
 
-    Object updateRpinfo(OmsRegProcpersonInfo orpInfo);
+    Object updateRpinfo(OmsRegProcpersoninfo orpInfo);
 
     Object deleteRpinfo(String id);
 
-    List<OmsRegProcpersonInfo> insertOmsRegGongAn(List<OmsRegProcpersonInfo> list);
+    List<OmsRegProcpersoninfo> insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
 
     int selectCountGongAn(String dataType);
 
     Object mergeDataGBandGA(String idStr);
 
-    PageInfo<OmsRegProcpersonInfo> getProvinceCadreRegInfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam);
+    PageInfo<OmsRegProcpersoninfo> getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
     Object extractRegPersonInfo() throws ParseException;
 
-    PageInfo<OmsRegProcpersonInfo> getRegPersonInfoList(OmsRegProcpersonInfoIPagParam personInfoIPagParam);
+    PageInfo<OmsRegProcpersoninfo> getRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    List<OmsRegProcpersonInfo> selectPersonByBatchNo(String batchNo);
+    List<OmsRegProcpersoninfo> selectPersonByBatchNo(String batchNo);
 
-    int checkUploadRegRecord(List<OmsRegProcpersonInfo> list);
+    int checkUploadRegRecord(List<OmsRegProcpersoninfo> list);
 
-    List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersonInfo> list);
+    List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersoninfo> list);
 
     List<OmsRegYearcheckInfo> queryYearCheckList(Date year);
 
-    Object selectPersonAndAllowRevoke(OmsRegProcpersonInfo msRegProcpersonInfo);
+    Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo);
 
     Object selectInfoByA0100(String a0100);
 
@@ -53,5 +51,5 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonIn
      */
     public Date getOmsRegProcpersonBirthDate(String a0100);
 
-    PageInfo<OmsRegProcpersonInfo> getInitialReginfo(OmsRegProcpersonInfoIPagParam personInfoIPagParam) throws ParseException;
+    PageInfo<OmsRegProcpersoninfo> getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) throws ParseException;
 }

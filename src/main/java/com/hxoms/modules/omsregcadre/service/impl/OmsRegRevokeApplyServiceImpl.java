@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Autowired
     private A30Mapper a30Mapper;
     @Autowired
-    private OmsRegProcpersonInfoMapper regProcpersonInfoMapper;
+    private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
     @Autowired
     private OmsRegRevokeApprovalMapper regRevokeApprovalMapper;
 
@@ -41,25 +40,25 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Override
     public Object searchRevokeRegPerson() throws ParseException {
         int con=0;
-        QueryWrapper<OmsRegProcpersonInfo> queryWrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         //数据类型 为干部的
         queryWrapper.eq("DATA_TYPE","1");
         //入库标识为非撤销的
         queryWrapper.notIn("INBOUND_FLAG","D");
         //省管干部登记备案查询
-        List<OmsRegProcpersonInfo> reginfolist = regProcpersonInfoMapper.selectList(queryWrapper);
+        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
         List<A01Entity> a01list = a01Mapper.selectList(null);
         List<String> a0100s =null;
         for (int i=0;i<reginfolist.size();i++){
             a0100s.add(reginfolist.get(i).getA0100());
         }
-        OmsRegProcpersonInfo orpInfo = null;
+        OmsRegProcpersoninfo orpInfo = null;
         for (A01Entity a01:a01list) {
             if (a0100s.contains(a01.getA0100())) {
                 //获取当前a0100对应的下标
                 int index = a0100s.indexOf(a01.getA0100());
-                OmsRegProcpersonInfo omsreginfo = reginfolist.get(index);
+                OmsRegProcpersoninfo omsreginfo = reginfolist.get(index);
                 QueryWrapper<A30> queryWrapper1 = new QueryWrapper<A30>();
                 queryWrapper1.eq("A0100", omsreginfo.getA0100());
                 //退出方式
@@ -135,7 +134,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
      * @throws ParseException
      */
     @Override
-    public Object insertRevokeRegPerson(OmsRegProcpersonInfo omsreginfo) throws ParseException {
+    public Object insertRevokeRegPerson(OmsRegProcpersoninfo omsreginfo) throws ParseException {
         int con=0;
         QueryWrapper<A30> queryWrapper1 = new QueryWrapper<A30>();
         queryWrapper1.eq("A0100", omsreginfo.getA0100());

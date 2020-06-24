@@ -15,9 +15,9 @@ import com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersonInfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersonInfoMapper;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -25,7 +25,6 @@ import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.text.resources.cldr.es.FormatData_es_419;
 
 import java.util.*;
 
@@ -44,7 +43,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	@Autowired
 	private OmsSupNakedSignMapper omsSupNakedSignMapper;
 	@Autowired
-	private OmsRegProcpersonInfoMapper omsRegProcpersonInfoMapper;
+	private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
 	@Autowired
 	private OmsRegRevokeApplyMapper omsRegRevokeApplyMapper;
 	@Autowired
@@ -180,14 +179,14 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	public void addToRegistration(List<A36> list) {
 
 		//查询备案表中的所有家庭成员
-		QueryWrapper<OmsRegProcpersonInfo> wrapper = new QueryWrapper<OmsRegProcpersonInfo>();
+		QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 		wrapper.eq("A0100", null)
 				.or()
 				.eq("A0100", "")
 				.eq("POST", "801")
 				.or()
 				.eq("POST", "802");
-		List<OmsRegProcpersonInfo> omsRegProcpersonInfoList = omsRegProcpersonInfoMapper.selectList(wrapper);
+		List<OmsRegProcpersoninfo> omsRegProcpersoninfoList = omsRegProcpersonInfoMapper.selectList(wrapper);
 
 		for(A36 a36 : list){
 			boolean result = false;
@@ -200,7 +199,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			//限制性岗位的裸官家属可登记备案
 			if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1")){
 				//家庭成员登记备案判断是否重复（根据身份证号码判断）
-				for(OmsRegProcpersonInfo omsRegProcpersonInfo : omsRegProcpersonInfoList){
+				for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
 					if(!omsRegProcpersonInfo.getIdnumber().equals(a36.getIdCard())){
 						continue;
 					}else{
@@ -210,7 +209,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				}
 
 				if(result == false){
-					OmsRegProcpersonInfo omsRegProcpersonInfo = new OmsRegProcpersonInfo();
+					OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 					//限制性岗位的裸官家属职务设置为'801'或'802'
 					omsRegProcpersonInfo.setPost("801");
 
@@ -269,14 +268,14 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	@Transactional(rollbackFor=Exception.class)
 	public void removeToRegistration(String a0100) {
 		//查询备案表中的所有家庭成员
-		QueryWrapper<OmsRegProcpersonInfo> wrapper1 = new QueryWrapper<OmsRegProcpersonInfo>();
+		QueryWrapper<OmsRegProcpersoninfo> wrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
 		wrapper1.eq("A0100", null)
 				.or()
 				.eq("A0100", "")
 				.eq("POST", "801")
 				.or()
 				.eq("POST", "802");
-		List<OmsRegProcpersonInfo> omsRegProcpersonInfoList = omsRegProcpersonInfoMapper.selectList(wrapper1);
+		List<OmsRegProcpersoninfo> omsRegProcpersoninfoList = omsRegProcpersonInfoMapper.selectList(wrapper1);
 
 		//查询撤销备案表中的所有家庭成员
 		QueryWrapper<OmsRegRevokeApply> wrapper2 = new QueryWrapper<OmsRegRevokeApply>();
@@ -290,7 +289,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 		//首先查询该干部的家庭成员身份证号，根据身份证号匹配备案表中的家庭成员信息
 		List<String> idCardList = a36Mapper.selectIdCardList(a0100);
-		for(OmsRegProcpersonInfo omsRegProcpersonInfo : omsRegProcpersonInfoList){
+		for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
 			boolean flag = false;
 			if(idCardList.contains(omsRegProcpersonInfo.getIdnumber())){
 				//修改备案人员信息，改为已撤销，未备案，未验收

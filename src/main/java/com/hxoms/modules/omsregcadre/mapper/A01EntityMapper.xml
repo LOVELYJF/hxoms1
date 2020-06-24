@@ -112,8 +112,8 @@
   </sql>
 
   <select id="selectA01Data" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select * from A01 where IS_DELETED ='0' and a0184 is not null
-      limit 0,50
+    select * from A01 where IS_DELETED ='0' and A0165='02' and a0184 is not null
+      limit 0,4
   </select>
 
 
