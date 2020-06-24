@@ -13,6 +13,20 @@ import java.util.Date;
 public class FileReplaceVO {
     //姓名
     private String name;
+    //性别
+    private String sex;
+    //政治面貌
+    private String politicalAffi;
+    //出生日期
+    private Date birthDate;
+    //健康状况
+    private String health;
+    //身份证号码
+    private String idnumber;
+    //户籍地
+    private String registeResidence;
+    //涉密等级
+    private String secretLevel;
     //出境时间
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -49,13 +63,70 @@ public class FileReplaceVO {
     private Date revertLicenceTime;
     //当前用户
     private String nowUsername;
-
+    //延期时间
+    private String delayTime;
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getPoliticalAffi() {
+        return politicalAffi;
+    }
+
+    public void setPoliticalAffi(String politicalAffi) {
+        this.politicalAffi = politicalAffi;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getHealth() {
+        return health;
+    }
+
+    public void setHealth(String health) {
+        this.health = health;
+    }
+
+    public String getIdnumber() {
+        return idnumber;
+    }
+
+    public void setIdnumber(String idnumber) {
+        this.idnumber = idnumber;
+    }
+
+    public String getRegisteResidence() {
+        return registeResidence;
+    }
+
+    public void setRegisteResidence(String registeResidence) {
+        this.registeResidence = registeResidence;
+    }
+
+    public String getSecretLevel() {
+        return secretLevel;
+    }
+
+    public void setSecretLevel(String secretLevel) {
+        this.secretLevel = secretLevel;
     }
 
     public Date getAbroadTime() {
@@ -168,5 +239,13 @@ public class FileReplaceVO {
 
     public void setNowUsername(String nowUsername) {
         this.nowUsername = nowUsername;
+    }
+
+    public String getDelayTime() {
+        return delayTime;
+    }
+
+    public void setDelayTime(String delayTime) {
+        this.delayTime = delayTime;
     }
 }
