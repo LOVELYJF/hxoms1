@@ -37,7 +37,7 @@
             SENSITIVE_ITEM sensitiveItem,
             SENSITIVE_LIMIT_ID sensitiveLimitId,
             PUB_PRI pubPri
-        from oms_sensitive_country
+        from oms_sensitive_limit
         <where>
             <trim suffixOverrides="and">
                 <if test="pubPri != null">PUB_PRI=#{pubPri} and </if>
@@ -48,13 +48,13 @@
     </select>
 
     <insert id="addSensitiveLimit" parameterType="java.util.Map">
-        insert into oms_sensitive_country(SENSITIVE_ITEM,SENSITIVE_LIMIT_ID,PUB_PRI)
+        insert into oms_sensitive_limit(SENSITIVE_ITEM,SENSITIVE_LIMIT_ID,PUB_PRI)
         values (#{sensitiveItem},#{sensitiveLimitId},#{pubPri})
     </insert>
 
 
     <delete id="deleteSensitiveLimit" parameterType="java.util.Map">
-        delete from oms_sensitive_country
+        delete from oms_sensitive_limit
         where SENSITIVE_ITEM=#{sensitiveItem}
         and SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
         and PUB_PRI=#{pubPri}

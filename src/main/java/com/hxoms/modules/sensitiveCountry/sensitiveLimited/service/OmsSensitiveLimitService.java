@@ -10,7 +10,7 @@ import java.util.List;
  * @author luoshuai
  * @date 2020/5/22  10:46
  */
-public interface OmsSensitiveCountryService {
+public interface OmsSensitiveLimitService {
 	/**
 	 * <b>查询因公因私限制内容</b>
 	 * @return

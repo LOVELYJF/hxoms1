@@ -3,7 +3,7 @@ package com.hxoms.modules.sensitiveCountry.sensitiveLimited.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveCountryService;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveLimitService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sensitiveCountry")
-public class OmsSensitiveCountryController {
+public class OmsSensitiveLimitController {
 
 
 	@Autowired
-	private OmsSensitiveCountryService omsSensitiveCountryService;
+	private OmsSensitiveLimitService omsSensitiveLimitService;
 
 	/**
 	 * <b>查询因公因私限制内容</b>
@@ -29,7 +29,7 @@ public class OmsSensitiveCountryController {
 	 */
 	@GetMapping("/getSensitiveLimitInfo")
 	public Result getSensitiveInfo(){
-		List<SysDictItem> list = omsSensitiveCountryService.getSensitiveInfo();
+		List<SysDictItem> list = omsSensitiveLimitService.getSensitiveInfo();
 		return Result.success(list);
 	}
 
@@ -41,7 +41,7 @@ public class OmsSensitiveCountryController {
 	 */
 	@GetMapping("/getSensitiveCountryLimitInfo")
 	public Result getSensitiveCountryLimitInfo(String pubPri){
-		List<OmsSensitiveLimit> list = omsSensitiveCountryService.getSensitiveCountryLimitInfo(pubPri);
+		List<OmsSensitiveLimit> list = omsSensitiveLimitService.getSensitiveCountryLimitInfo(pubPri);
 		return Result.success(list);
 	}
 
@@ -57,7 +57,7 @@ public class OmsSensitiveCountryController {
 	public Result addSensitiveCountryLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
 	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
 	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
-		omsSensitiveCountryService.addSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
+		omsSensitiveLimitService.addSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
 		return Result.success();
 	}
 
@@ -73,7 +73,7 @@ public class OmsSensitiveCountryController {
 	public Result deleteSensitiveLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
 	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
 	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
-		omsSensitiveCountryService.deleteSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
+		omsSensitiveLimitService.deleteSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
 		return Result.success();
 	}
 

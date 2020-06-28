@@ -3,13 +3,11 @@ package com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.impl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveCountryService;
-import com.hxoms.modules.sysUser.entity.CfUser;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.service.OmsSensitiveLimitService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +20,7 @@ import java.util.Map;
  * @date 2020/5/22  10:46
  */
 @Service
-public class OmsSensitiveCountryServiceImpl implements OmsSensitiveCountryService {
+public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 
 
 	@Autowired
