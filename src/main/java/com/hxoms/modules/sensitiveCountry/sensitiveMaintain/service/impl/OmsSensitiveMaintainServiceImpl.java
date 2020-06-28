@@ -4,10 +4,7 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
-import com.hxoms.modules.sysUser.entity.CfUser;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistry;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
