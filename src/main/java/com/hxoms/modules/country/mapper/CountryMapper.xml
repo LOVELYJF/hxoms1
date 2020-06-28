@@ -1,19 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.country.mapper.CountryMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.country.entity.Country">
-    <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="NAME_EN" jdbcType="VARCHAR" property="nameEn" />
-    <result column="NAME_ZH" jdbcType="VARCHAR" property="nameZh" />
-    <result column="NAME_INTERNATIONAL_ABBR" jdbcType="VARCHAR" property="nameInternationalAbbr" />
-    <result column="COUNTRY_PHONE_CODE" jdbcType="INTEGER" property="countryPhoneCode" />
-    <result column="ZONE" jdbcType="VARCHAR" property="zone" />
-    <result column="ZONE_ALIAS" jdbcType="VARCHAR" property="zoneAlias" />
-    <result column="LAT" jdbcType="VARCHAR" property="lat" />
-    <result column="LON" jdbcType="VARCHAR" property="lon" />
-  </resultMap>
-  <sql id="Base_Column_List">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.country.entity.Country">
+		<id column="ID" jdbcType="BIGINT" property="id" />
+		<result column="NAME_EN" jdbcType="VARCHAR" property="nameEn" />
+		<result column="NAME_ZH" jdbcType="VARCHAR" property="nameZh" />
+		<result column="NAME_INTERNATIONAL_ABBR" jdbcType="VARCHAR" property="nameInternationalAbbr" />
+		<result column="COUNTRY_PHONE_CODE" jdbcType="INTEGER" property="countryPhoneCode" />
+		<result column="ZONE" jdbcType="VARCHAR" property="zone" />
+		<result column="ZONE_ALIAS" jdbcType="VARCHAR" property="zoneAlias" />
+		<result column="LAT" jdbcType="VARCHAR" property="lat" />
+		<result column="LON" jdbcType="VARCHAR" property="lon" />
+	</resultMap>
+	<sql id="Base_Column_List">
     ID, NAME_EN, NAME_ZH, NAME_INTERNATIONAL_ABBR, COUNTRY_PHONE_CODE, ZONE, ZONE_ALIAS, 
     LAT, LON
   </sql>
+
+	<select id="getCountryInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select * from country
+		<where>
+			<trim suffixOverrides="and">
+				<if test="nameZh != null">NAME_ZH like concat('%',#{nameZh},'%') and </if>
+				<if test="sensitiveLimitId != null">ID in
+				(select COUNTRY_ID from oms_sensitive_maintain where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}) and </if>
+			</trim>
+		</where>
+	</select>
+
+	<select id="selectSensitiveCountry" parameterType="java.util.Map" resultType="java.util.Map">
+		select * from oms_sensitive_maintain
+		<where>
+			<trim suffixOverrides="and">
+				<if test="countryId != null">country_id=#{countryId} and </if>
+				<if test="sensitiveLimitId != null">sensitive_limit_id=#{sensitiveLimitId} and </if>
+			</trim>
+		</where>
+	</select>
+
+	<insert id="addCountryInfo" parameterType="java.util.Map">
+		insert into oms_sensitive_maintain(country_id,sensitive_limit_id) values(#{countryId},#{sensitiveLimitId})
+	</insert>
+
+	<delete id="deleteCountryInfo" parameterType="java.util.Map">
+		delete from oms_sensitive_maintain where country_id=#{countryId} and sensitive_limit_id=#{sensitiveLimitId}
+	</delete>
 </mapper>
