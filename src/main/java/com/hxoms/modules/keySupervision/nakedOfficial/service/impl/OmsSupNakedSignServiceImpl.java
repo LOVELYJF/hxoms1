@@ -203,7 +203,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 * @param list
 	 * @return
 	 */
-	public void getNakedOfficialOut(@RequestBody List<OmsSupNakedSign> list, HttpServletResponse response) {
+	public void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response) {
 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("不能导出空列表");
