@@ -107,21 +107,21 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
 			if (count < 1) {
 				throw new CustomMessageException("添加主要领导失败");
+			}else {
+				//在备案库中设置该对象为主要领导
+				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+				omsRegProcpersonInfo.setMainLeader("1");
+				omsRegProcpersonInfo.setModifyTime(new Date());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+				queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
+				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				if(count1 < 0){
+					throw new CustomMessageException("同步到备案信息表失败");
+				}
 			}
 		}else{
 			throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
-		}
-
-		//在备案库中设置该对象为主要领导
-		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-		omsRegProcpersonInfo.setMainLeader("1");
-		omsRegProcpersonInfo.setModifyTime(new Date());
-		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-		queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-		if(count < 0){
-			throw new CustomMessageException("同步到备案信息表失败");
 		}
 	}
 
@@ -173,7 +173,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
 			queryWrapper.eq("A0100", a0100);
 			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
-			if(majorLeaderList.size() < 1) {
+			if(majorLeaderList.size() < 1 || majorLeaderList == null) {
 				//根据领导主键查询领导信息
 				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
 
