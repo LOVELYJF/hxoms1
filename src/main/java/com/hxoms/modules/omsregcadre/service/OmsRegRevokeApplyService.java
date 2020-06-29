@@ -4,14 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply;
+import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApproval;
 
 import java.text.ParseException;
 
-public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeApply> {
+public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
 
-    IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page);
+    IPage<OmsRegRevokeapply> queryRevokeApplyList(Page page);
 
     Object searchRevokeRegPerson() throws ParseException;
 
@@ -19,7 +19,7 @@ public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeApply> {
 
     Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds);
 
-    Object revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException;
+    Object revokeRegApply(OmsRegRevokeapply revokeApply) throws ParseException;
 
-    Object reportLeaderApply(OmsRegRevokeApply revokeApply);
+    Object reportLeaderApply(OmsRegRevokeapply revokeApply);
 }
