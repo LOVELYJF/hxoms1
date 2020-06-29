@@ -112,25 +112,24 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			int count = omsSupNakedSignMapper.insert(omsSupNakedSign);
 			if(count < 1){
 				throw new CustomMessageException("添加裸官信息失败");
+			}else {
+				//将裸官信息在备案表中进行同步更新
+				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+				omsRegProcpersonInfo.setNf("1");
+
+				//默认在非限入性岗位
+				omsRegProcpersonInfo.setXrxgw("0");
+				omsRegProcpersonInfo.setModifyTime(new Date());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
+				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				if(count1 < 0){
+					throw new CustomMessageException("同步裸官信息到登记备案库失败");
+				}
 			}
 		}else {
 			throw new CustomMessageException("该裸官已经存在,请不要重复添加");
-
-		}
-
-		//将裸官信息在备案表中进行同步更新
-		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-		omsRegProcpersonInfo.setNf("1");
-
-		//默认在非限入性岗位
-		omsRegProcpersonInfo.setXrxgw("0");
-		omsRegProcpersonInfo.setModifyTime(new Date());
-		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-		queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
-		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-		if(count < 0){
-			throw new CustomMessageException("同步裸官信息到登记备案库失败");
 		}
 	}
 
