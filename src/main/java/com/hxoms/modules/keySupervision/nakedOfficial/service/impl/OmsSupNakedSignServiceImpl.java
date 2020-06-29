@@ -24,6 +24,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -202,7 +203,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 * @param list
 	 * @return
 	 */
-	public void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response) {
+	public void getNakedOfficialOut(@RequestBody List<OmsSupNakedSign> list, HttpServletResponse response) {
 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("不能导出空列表");
