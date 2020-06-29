@@ -79,6 +79,16 @@ public class CfCertificatePageParam {
 
     private Integer isValid;
 
+    private Integer dayqty;
+
+    public Integer getDayqty() {
+        return dayqty;
+    }
+
+    public void setDayqty(Integer dayqty) {
+        this.dayqty = dayqty;
+    }
+
     public Integer getIsValid() {
         return isValid;
     }
