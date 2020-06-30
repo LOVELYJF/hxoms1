@@ -62,9 +62,9 @@
 			a.hukou_location
 		from a36 as a
 		<where>
-			a3604a in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
+			a.a3604a in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
 			<trim suffixOverrides="and">
-				<if test="a0100 != null">a0100=#{a0100} and </if>
+				<if test="a0100 != null"> and a0100=#{a0100} and </if>
 			</trim>
 		</where>
   </select>
@@ -73,7 +73,7 @@
 	<select id="selectPiliticalAffi" parameterType="java.lang.String" resultType="java.lang.String">
 		SELECT
 			GETDICTITEM('07',a.a3627,'0') as 'a3627'
-		from a36
+		from a36 a
 		where a.a3600=#{a3600}
 	</select>
 

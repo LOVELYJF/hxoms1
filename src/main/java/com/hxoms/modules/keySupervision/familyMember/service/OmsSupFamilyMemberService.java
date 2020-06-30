@@ -2,6 +2,7 @@ package com.hxoms.modules.keySupervision.familyMember.service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.keySupervision.familyMember.entity.A36;
 import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -84,7 +85,7 @@ public interface OmsSupFamilyMemberService {
 	 * <b>查询国籍</b>
 	 * @return
 	 */
-	List<SysDictItem> getNationality();
+	List<Country> getNationality();
 
 
 	/**
