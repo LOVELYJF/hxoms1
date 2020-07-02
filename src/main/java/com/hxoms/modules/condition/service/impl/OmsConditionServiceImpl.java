@@ -12,8 +12,10 @@ import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.condition.entity.ConditionReplaceVO;
 import com.hxoms.modules.condition.entity.OmsCondition;
+import com.hxoms.modules.condition.entity.OmsSetting;
 import com.hxoms.modules.condition.mapper.OmsConditionMapper;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.condition.service.OmsSettingService;
 import com.hxoms.modules.file.entity.OmsReplaceKeywords;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -45,6 +47,8 @@ public class OmsConditionServiceImpl implements OmsConditionService {
     private MessageService messageService;
     @Autowired
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
+    @Autowired
+    private OmsSettingService omsSettingService;
 
     @Override
     public List<Map<String, String>> checkCondition(String applyId, String type) {
@@ -273,6 +277,17 @@ public class OmsConditionServiceImpl implements OmsConditionService {
                 }
             }
             int count = omsConditionMapper.excuteSelectSql(sql);
+            //替换描述中
+            if (Constants.OMS_CONDITION_SETTINGTYPE[1].equals(omsCondition.getSettingType())){
+                //获取setting
+                List<OmsSetting> settings = omsSettingService.getSettingCache();
+                for (OmsSetting omsSetting : settings) {
+                    if (omsSetting.getSettingCode().equals(omsCondition.getSettingCode())){
+                        omsCondition.setName(omsCondition.getName().replace(omsCondition.getSettingCode(), omsSetting.getSettingValue()));
+                        break;
+                    }
+                }
+            }
             if (count > 0) {
                 //不符合条件
                 return "0";
