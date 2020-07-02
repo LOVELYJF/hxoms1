@@ -264,7 +264,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				row.createCell(4).setCellValue(list.get(i).getBirthDate());
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
-				row.createCell(7).setCellValue(list.get(i).getXzxgw());
+				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals("1") ? "是" : "否");
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){
 					row.getCell(j).setCellStyle(style1);
