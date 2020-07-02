@@ -29,7 +29,7 @@ public interface OmsSupCaseInfoService {
 	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	void addCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
+	String addCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
 
 
 	/**
