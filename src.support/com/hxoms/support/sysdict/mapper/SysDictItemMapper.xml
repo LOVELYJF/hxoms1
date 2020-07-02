@@ -169,7 +169,7 @@
 
     <!-- 查询处分类型 -->
     <select id="selectDisciplinaryActionType" resultMap="BaseResultMap">
-        select * from `sys_dict_item` where dict_code="XZ42"
+        select * from `sys_dict_item` where dict_code="XZ42" or dict_code="XZ43" or dict_code="QTCF" order by DICT_CODE DESC
     </select>
 
     <!--查询最大的orderIndex-->
