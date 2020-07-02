@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_create_file", TableDescription="生成材料")
 public class OmsCreateFile {
+    @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 

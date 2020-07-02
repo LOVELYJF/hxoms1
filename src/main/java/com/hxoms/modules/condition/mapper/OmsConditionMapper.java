@@ -21,4 +21,11 @@ public interface OmsConditionMapper extends BaseMapper<OmsCondition> {
      * @return
      */
     List<String> selectNegativeInfo(Map<String, Object> params);
+
+    /**
+     * 约束条件列表
+     * @param paramsMap
+     * @return
+     */
+    List<OmsCondition> selectConditionList(Map<String, Object> paramsMap);
 }

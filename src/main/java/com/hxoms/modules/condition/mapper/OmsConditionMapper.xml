@@ -6,19 +6,29 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="CONDITION_TYPE" jdbcType="VARCHAR" property="conditionType" />
     <result column="CHECK_TYPE" jdbcType="INTEGER" property="checkType" />
-    <result column="INFO_TYPE" jdbcType="INTEGER" property="infoType" />
     <result column="SQL_CONTENT" jdbcType="VARCHAR" property="sqlContent" />
-    <result column="JSON_CONTENT" jdbcType="VARCHAR" property="jsonContent" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="CARE_TYPE" jdbcType="CHAR" property="careType" />
+    <result column="REMIND_PERSON_TYPE" jdbcType="VARCHAR" property="remindPersonType" />
+    <result column="SETTING_TYPE" jdbcType="VARCHAR" property="settingType" />
+    <result column="SETTING_CODE" jdbcType="VARCHAR" property="settingCode" />
+    <result column="REMIND_CONTENT" jdbcType="VARCHAR" property="remindContent" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, NAME, CONDITION_TYPE, CHECK_TYPE, INFO_TYPE, SQL_CONTENT, JSON_CONTENT, DESCRIPTION
+    ID, NAME, CONDITION_TYPE, CHECK_TYPE, SQL_CONTENT, DESCRIPTION, CARE_TYPE, REMIND_PERSON_TYPE, 
+    SETTING_TYPE, SETTING_CODE, REMIND_CONTENT, CREATE_TIME, CREATE_USER, MODIFY_TIME, 
+    MODIFY_USER
   </sql>
 
   <!--纯sql执行-->
   <select id="excuteSelectSql" resultType="java.lang.Integer">
     ${sql}
   </select>
+
   <!--处分信息-->
   <select id="selectNegativeInfo" parameterType="java.util.Map" resultType="java.lang.String">
     select CONCAT("立案：", IFNULL(GROUP_CONCAT(WHY_CASE),"无\n")) as description
@@ -54,5 +64,28 @@
     <if test="a0100 != null and a0100 != ''">
       and A0100 = #{a0100}
     </if>
+  </select>
+
+  <!--约束条件列表-->
+  <select id="selectConditionList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from oms_condition
+    where 1=1
+    <if test="careType != null and careType != ''">
+      and CARE_TYPE = #{careType}
+    </if>
+    <if test="conditionType != null and conditionType != ''">
+      and CONDITION_TYPE = #{conditionType}
+    </if>
+      and SETTING_TYPE in ('1', '2')
+    union all
+    select oc.* from oms_condition oc left join oms_setting os on oc.SETTING_CODE = os.SETTING_CODE
+    where 1=1
+    <if test="careType != null and careType != ''">
+      and oc.CARE_TYPE = #{careType}
+    </if>
+    <if test="conditionType != null and conditionType != ''">
+      and oc.CONDITION_TYPE = #{conditionType} and and os.SETTING_TYPE=#{conditionType}
+    </if>
+      and oc.SETTING_TYPE = '3' and os.SETTING_VALUE='1'
   </select>
 </mapper>

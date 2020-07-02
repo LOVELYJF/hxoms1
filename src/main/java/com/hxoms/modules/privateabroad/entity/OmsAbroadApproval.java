@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_abroad_approval", TableDescription="出国境审批表")
 public class OmsAbroadApproval {
+    @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
