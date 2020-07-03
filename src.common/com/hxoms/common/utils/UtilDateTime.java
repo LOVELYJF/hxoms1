@@ -633,4 +633,18 @@ public class UtilDateTime {
 		return Integer.toString(age);
 	}
 
+
+	/**
+	 * <b>获得相隔几个月之后的日期</b>
+	 * @param date
+	 * @return
+	 */
+	public static Date getEndDateByMonth(Date date,int month){
+		Calendar c = Calendar.getInstance();//获得一个日历的实例
+		c.setTime(date);//设置日du历时间zhi
+		c.add(Calendar.MONTH,month);//在日历的月份上增加6个月
+		return c.getTime();
+	}
+
+
 }
