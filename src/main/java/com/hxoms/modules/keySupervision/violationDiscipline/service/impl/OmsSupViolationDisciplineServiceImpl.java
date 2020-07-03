@@ -8,6 +8,7 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
@@ -192,10 +193,35 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 
 	/**
 	 * <b>导出违反外事纪律人员信息</b>
-	 * @param list
+	 * @param idList
+	 * @param response
+	 * @param omsSupViolationDiscipline
 	 * @return
 	 */
-	public void getViolationDisciplineInfoOut(List<OmsSupViolationDiscipline> list, HttpServletResponse response) {
+	public void getViolationDisciplineInfoOut(List<String> idList, OmsSupViolationDiscipline omsSupViolationDiscipline, HttpServletResponse response) {
+
+		//根据工作单位代码查询工作单位名称
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("idList", idList);
+		List<String> list1 = b01Mapper.selectOrgByList(map);
+
+		QueryWrapper<OmsSupViolationDiscipline> queryWrapper = new QueryWrapper<OmsSupViolationDiscipline>();
+		queryWrapper
+				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
+				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
+						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
+				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
+						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
+				.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+						"NAME", omsSupViolationDiscipline.getName())
+				.or()
+				.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+						"PINYIN", omsSupViolationDiscipline.getName())
+				.orderByDesc("VIOLATION_DIS_TIME");
+
+		List<OmsSupViolationDiscipline> list = omsSupViolationDisciplineMapper.selectList(queryWrapper);
+
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
