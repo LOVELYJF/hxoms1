@@ -37,6 +37,18 @@ public class OmsConditionController {
     }
 
     /**
+     * 提醒条件消息发送
+     * @param applyId 申请id
+     * @param type 类型（因公，因私，延期回国）
+     * @return
+     */
+    @GetMapping("/remindCondition")
+    public Result remindCondition(String applyId, String type){
+        omsConditionService.remindCondition(applyId, type);
+        return Result.success().setMsg("成功");
+    }
+
+    /**
      * 检查约束条件(选择人员)
      * @param a0100 人员id
      * @param type 类型（因公，因私，延期回国）

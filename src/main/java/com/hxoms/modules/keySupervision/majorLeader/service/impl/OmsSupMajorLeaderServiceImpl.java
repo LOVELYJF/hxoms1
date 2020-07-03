@@ -12,6 +12,7 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
@@ -107,21 +108,21 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
 			if (count < 1) {
 				throw new CustomMessageException("添加主要领导失败");
+			}else {
+				//在备案库中设置该对象为主要领导
+				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+				omsRegProcpersonInfo.setMainLeader("1");
+				omsRegProcpersonInfo.setModifyTime(new Date());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+				queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
+				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				if(count1 < 0){
+					throw new CustomMessageException("同步到备案信息表失败");
+				}
 			}
 		}else{
 			throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
-		}
-
-		//在备案库中设置该对象为主要领导
-		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-		omsRegProcpersonInfo.setMainLeader("1");
-		omsRegProcpersonInfo.setModifyTime(new Date());
-		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-		queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
-		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-		if(count < 0){
-			throw new CustomMessageException("同步到备案信息表失败");
 		}
 	}
 
@@ -173,7 +174,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
 			queryWrapper.eq("A0100", a0100);
 			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
-			if(majorLeaderList.size() < 1) {
+			if(majorLeaderList.size() < 1 || majorLeaderList == null) {
 				//根据领导主键查询领导信息
 				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
 
@@ -220,10 +221,23 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 	/**
 	 * <b>导出主要领导信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupMajorLeader
+	 * @param response
 	 * @return
 	 */
-	public void getMajorLeaderInfoOut(List<OmsSupMajorLeader> list, HttpServletResponse response) {
+	public void getMajorLeaderInfoOut(List<String> idList, OmsSupMajorLeader omsSupMajorLeader, HttpServletResponse response) {
+
+		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
+		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
+				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						"NAME", omsSupMajorLeader.getName())
+				.or()
+				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						"PINYIN", omsSupMajorLeader.getName());
+
+		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {

@@ -71,6 +71,11 @@ public class OmsSupCaseInfo {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
+    @ColumnAnnotation(FieldName = "DISCIPLINARY_TIME",   FieldDescription="处分时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date disciplinaryTime;
+
     public String getId() {
         return id;
     }
@@ -205,5 +210,13 @@ public class OmsSupCaseInfo {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getDisciplinaryTime() {
+        return disciplinaryTime;
+    }
+
+    public void setDisciplinaryTime(Date disciplinaryTime) {
+        this.disciplinaryTime = disciplinaryTime;
     }
 }

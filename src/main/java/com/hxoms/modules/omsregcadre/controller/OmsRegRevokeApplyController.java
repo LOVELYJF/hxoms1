@@ -27,7 +27,7 @@ public class OmsRegRevokeApplyController {
     @PostMapping("/queryRevokeApplyList")
     public Result queryRevokeApplyList(Page page) {
         try {
-            IPage<OmsRegRevokeApply> revokeApplyList = revokeApplyService.queryRevokeApplyList(page);
+            IPage<OmsRegRevokeapply> revokeApplyList = revokeApplyService.queryRevokeApplyList(page);
             return Result.success(revokeApplyList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class OmsRegRevokeApplyController {
      * @throws ParseException
      */
     @PostMapping("/revokeRegApply")
-    public Result revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException {
+    public Result revokeRegApply(OmsRegRevokeapply revokeApply) throws ParseException {
         return Result.success(revokeApplyService.revokeRegApply(revokeApply));
     }
 
@@ -78,7 +78,7 @@ public class OmsRegRevokeApplyController {
      * @throws ParseException
      */
     @PostMapping("/reportLeaderApply")
-    public Result reportLeaderApply(OmsRegRevokeApply revokeApply) throws ParseException {
+    public Result reportLeaderApply(OmsRegRevokeapply revokeApply) throws ParseException {
         return Result.success(revokeApplyService.reportLeaderApply(revokeApply));
     }
 

@@ -221,4 +221,13 @@ public class Constants {
     /*******关键词替换使用范围*****/
     public static String[] OMS_KEYWORDS_USERTYPE={"1","2"};
     public static String[] OMS_KEYWORDS_USERTYPENAME={"文件","约束条件"};
+    /*******约束条件约束类型*****/
+    public static String[] OMS_CONDITION_CARETYPE={"1","2"};
+    public static String[] OMS_CONDITION_CARETYPENAME={"约束","提醒"};
+    /*******约束条件配置类型*****/
+    public static String[] OMS_CONDITION_SETTINGTYPE={"1","2", "3"};
+    public static String[] OMS_CONDITION_SETTINGTYPENAME={"非配置","可配置", "开关"};
+    /*******约束条件提醒人员类别*****/
+    public static String[] OMS_CONDITION_REMIND_PERSONTYPE={"1","2", "4", "8"};
+    public static String[] OMS_CONDITION_REMIND_PERSONNAME={"经办人","组团单位", "审批单位", "干部监督处"};
 }

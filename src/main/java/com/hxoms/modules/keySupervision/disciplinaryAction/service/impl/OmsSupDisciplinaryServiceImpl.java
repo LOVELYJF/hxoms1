@@ -7,9 +7,11 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -89,11 +91,11 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
-		//根据处分类型计算影响期和结束时间
-
-
-
-
+		//根据处分类型ID查询处分信息，计算影响期和结束时间
+		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
+		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
+		omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
@@ -129,9 +131,10 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	public void updateDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
 
 		//重新计算影响期（根据处分类型计算影响期和结束时间）
-
-
-
+		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
+		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
+		omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 		omsSupDisciplinary.setModifyTime(new Date());
 		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
@@ -158,13 +161,51 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 	/**
 	 * <b>导出处分信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupDisciplinary
+	 * @param response
 	 * @return
 	 */
-	public void getDisciplinaryInfoOut(List<OmsSupDisciplinary> list, HttpServletResponse response) {
+	public void getDisciplinaryInfoOut(List<String> idList, OmsSupDisciplinary omsSupDisciplinary, HttpServletResponse response) {
+
+		//根据工作单位代码查询工作单位名称
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("idList", idList);
+		List<String> list1 = b01Mapper.selectOrgByList(map);
+
+		QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
+		queryWrapper
+				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
+				.eq(omsSupDisciplinary.getDisciplinaryType() != null && omsSupDisciplinary.getDisciplinaryType() != "",
+						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
+				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
+						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
+				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+						"NAME", omsSupDisciplinary.getName())
+				.or()
+				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+						"PINYIN", omsSupDisciplinary.getName())
+				.orderByDesc("DISCIPLINARY_TIME");
+
+		List<OmsSupDisciplinary> list = omsSupDisciplinaryMapper.selectList(queryWrapper);
+
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
+			//查询处分类型
+			List<SysDictItem> dictItemList = getDisciplinaryActionType();
+			for(OmsSupDisciplinary omsSupDisciplinary1 : list){
+				for(SysDictItem sysDictItem : dictItemList){
+					if (omsSupDisciplinary1.getDisciplinaryType().equals(sysDictItem.getId())) {
+						omsSupDisciplinary1.setDisciplinaryType(sysDictItem.getItemName());
+					}else {
+						continue;
+					}
+				}
+			}
+
+
 			//创建HSSFWorkbook对象(excel的文档对象)
 			HSSFWorkbook wb = new HSSFWorkbook();
 			//创建文件样式对象

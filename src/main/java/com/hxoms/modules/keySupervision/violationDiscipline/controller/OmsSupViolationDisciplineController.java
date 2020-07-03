@@ -3,6 +3,7 @@ package com.hxoms.modules.keySupervision.violationDiscipline.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
@@ -78,11 +79,13 @@ public class OmsSupViolationDisciplineController extends BaseController {
 
 	/**
 	 * <b>导出违反外事纪律人员信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupViolationDiscipline
 	 * @return
 	 */
 	@PostMapping("/getViolationDisciplineInfoOut")
-	public void getViolationDisciplineInfoOut(@RequestBody(required = false) List<OmsSupViolationDiscipline> list){
-		omsSupViolationDisciplineService.getViolationDisciplineInfoOut(list,response);
+	public void getViolationDisciplineInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	                                          OmsSupViolationDiscipline omsSupViolationDiscipline){
+		omsSupViolationDisciplineService.getViolationDisciplineInfoOut(idList,omsSupViolationDiscipline,response);
 	}
 }

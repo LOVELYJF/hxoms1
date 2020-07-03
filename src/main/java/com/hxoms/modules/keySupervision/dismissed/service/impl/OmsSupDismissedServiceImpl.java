@@ -10,6 +10,7 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -132,10 +133,33 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 
 	/**
 	 * <b>导出免职撤职人员信息</b>
-	 * @param list
+	 * @param idList
+	 * @param response
+	 * @param omsSupDismissed
 	 * @return
 	 */
-	public void getDismissedInfoOut(List<OmsSupDismissed> list, HttpServletResponse response) {
+	public void getDismissedInfoOut(List<String> idList, OmsSupDismissed omsSupDismissed, HttpServletResponse response) {
+
+		//查询工作单位代码查询工作单位名称
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("idList", idList);
+		List<String> list1 = b01Mapper.selectOrgByList(map);
+
+		QueryWrapper<OmsSupDismissed> queryWrapper = new QueryWrapper<OmsSupDismissed>();
+		queryWrapper
+				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
+				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
+						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
+				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+						"NAME", omsSupDismissed.getName())
+				.or()
+				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+						"PINYIN", omsSupDismissed.getName())
+				.orderByDesc("DISMISSED_TIME");
+
+		List<OmsSupDismissed> list = omsSupDismissedMapper.selectList(queryWrapper);
+
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {

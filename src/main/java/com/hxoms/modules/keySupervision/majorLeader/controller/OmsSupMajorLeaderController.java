@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,12 +76,14 @@ public class OmsSupMajorLeaderController extends BaseController {
 
 	/**
 	 * <b>导出主要领导信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupMajorLeader
 	 * @return
 	 */
 	@PostMapping("/getMajorLeaderInfoOut")
-	public void getMajorLeaderInfoOut(@RequestBody(required = false) List<OmsSupMajorLeader> list){
-		omsSupMajorLeaderService.getMajorLeaderInfoOut(list,response);
+	public void getMajorLeaderInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	                                  OmsSupMajorLeader omsSupMajorLeader){
+		omsSupMajorLeaderService.getMajorLeaderInfoOut(idList,omsSupMajorLeader,response);
 	}
 
 

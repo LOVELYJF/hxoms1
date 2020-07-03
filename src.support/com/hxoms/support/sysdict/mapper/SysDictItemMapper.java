@@ -132,14 +132,6 @@ public interface SysDictItemMapper {
 
 
     /**
-     * <b>查询国籍</b>
-     * @author luoshuai
-     * @return
-     */
-    List<SysDictItem> getNationality();
-
-
-    /**
      * <b>查询移居类别</b>
      * @author luoshuai
      * @return

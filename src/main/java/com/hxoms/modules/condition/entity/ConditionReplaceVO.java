@@ -12,6 +12,9 @@ public class ConditionReplaceVO {
     private String handleId;
     //申请表Id
     private String applyId;
+    //组团单位 TODO
+    //审批单位 TODO
+    //干部监督处 TODO
 
     public String getA0100() {
         return a0100;

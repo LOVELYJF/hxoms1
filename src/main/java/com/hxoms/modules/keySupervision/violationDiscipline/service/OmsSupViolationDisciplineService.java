@@ -1,6 +1,7 @@
 package com.hxoms.modules.keySupervision.violationDiscipline.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +51,10 @@ public interface OmsSupViolationDisciplineService {
 
 	/**
 	 * <b>导出违反外事纪律人员信息</b>
-	 * @param list
+	 * @param idList
+	 * @param response
+	 * @param omsSupViolationDiscipline
 	 * @return
 	 */
-	void getViolationDisciplineInfoOut(List<OmsSupViolationDiscipline> list, HttpServletResponse response);
+	void getViolationDisciplineInfoOut(List<String> idList, OmsSupViolationDiscipline omsSupViolationDiscipline, HttpServletResponse response);
 }

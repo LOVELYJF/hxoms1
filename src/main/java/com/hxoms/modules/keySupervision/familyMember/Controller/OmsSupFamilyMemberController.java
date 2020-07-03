@@ -3,6 +3,7 @@ package com.hxoms.modules.keySupervision.familyMember.Controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.keySupervision.familyMember.entity.A36;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
@@ -64,7 +65,7 @@ public class OmsSupFamilyMemberController {
 	 */
 	@GetMapping("/getNationality")
 	public Result getNationality(){
-		List<SysDictItem> list = omsSupFamilyMemberService.getNationality();
+		List<Country> list = omsSupFamilyMemberService.getNationality();
 		return Result.success(list);
 	}
 

@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.caseInfo.service.OmsSupCaseInfoService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -102,11 +103,13 @@ public class OmsSupCaseInfoController extends BaseController {
 
 	/**
 	 * <b>导出立案信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupCaseInfo
 	 * @return
 	 */
 	@PostMapping("/getCaseInfoOut")
-	public void getCaseInfoOut(@RequestBody(required = false) List<OmsSupCaseInfo> list){
-		omsSupCaseInfoService.getCaseInfoOut(list,response);
+	public void getCaseInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	                           OmsSupCaseInfo omsSupCaseInfo){
+		omsSupCaseInfoService.getCaseInfoOut(idList,omsSupCaseInfo,response);
 	}
 }

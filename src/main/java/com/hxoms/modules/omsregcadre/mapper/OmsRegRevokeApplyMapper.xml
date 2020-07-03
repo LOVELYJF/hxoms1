@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
@@ -33,8 +33,8 @@
     SECRET_STATUS, SECRET_STARTDATE, SECRET_ENDDATE, APPLY_REASON, STATUS,RF_B0000,EXIT_DATE
   </sql>
 
-  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply"
-          resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply">
+  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply"
+          resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
     SELECT * from oms_reg_revokeapply
     WHERE 1=1
     <if test="revokeapply.name!=null and revokeapply.name!=''">

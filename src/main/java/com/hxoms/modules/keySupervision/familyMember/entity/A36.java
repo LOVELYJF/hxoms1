@@ -63,7 +63,7 @@ public class A36 {
     private String isNormal;
 
     @ColumnAnnotation(FieldName = "nationality",   FieldDescription="国籍")
-    private String nationality;
+    private Integer nationality;
 
     @ColumnAnnotation(FieldName = "live_place",   FieldDescription="现居住地")
     private String livePlace;
@@ -214,12 +214,12 @@ public class A36 {
         this.isNormal = isNormal == null ? null : isNormal.trim();
     }
 
-    public String getNationality() {
+    public Integer getNationality() {
         return nationality;
     }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality == null ? null : nationality.trim();
+    public void setNationality(Integer nationality) {
+        this.nationality = nationality;
     }
 
     public String getLivePlace() {

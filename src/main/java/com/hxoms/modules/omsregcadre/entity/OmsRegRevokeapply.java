@@ -9,7 +9,7 @@ import java.util.Date;
  * oms_reg_revokeapply
  */
 @TableAnnotation(TableName = "oms_reg_revokeapply", TableDescription="撤销登记备案申请表")
-public class OmsRegRevokeApply {
+public class OmsRegRevokeapply {
     /**
      * 主键
      */

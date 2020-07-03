@@ -145,7 +145,10 @@
 
     <!-- 查询家庭成员关系 -->
     <select id="selectFamilyMemberRelationship" resultMap="BaseResultMap">
-        select * from sys_dict_item where dict_code = 'GB4761'
+        select * from sys_dict_item
+        where dict_code = 'GB4761'
+        and item_code
+        in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
     </select>
 
     <!-- 查询政治面貌集合 -->
@@ -155,30 +158,18 @@
 
     <!-- 查询人员现状 -->
     <select id="getPersonStatus" resultMap="BaseResultMap">
-          select * from `sys_dict_item` where dict_code="ZB56"
+        select * from `sys_dict_item` where dict_code="ZB56"
     </select>
 
-    <!-- 查询国籍名称 -->
-    <select id="getNationality" resultMap="BaseResultMap">
-
-
-
-
-
-    </select>
 
     <!-- 查询移居类别 -->
     <select id="getMigrationCategory" resultMap="BaseResultMap">
-
-
-
-
-
+        select * from sys_dict_item where dict_code = "YJLB"
     </select>
 
     <!-- 查询处分类型 -->
     <select id="selectDisciplinaryActionType" resultMap="BaseResultMap">
-        select * from `sys_dict_item` where dict_code="XZ42"
+        select * from `sys_dict_item` where dict_code="XZ42" or dict_code="XZ43" or dict_code="QTCF" order by DICT_CODE DESC
     </select>
 
     <!--查询最大的orderIndex-->

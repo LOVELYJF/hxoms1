@@ -19,11 +19,12 @@
     <result column="DISCIPLINARY_ACTION_TYPE" jdbcType="VARCHAR" property="disciplinaryActionType" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="DISCIPLINARY_TIME" jdbcType="DATE" property="disciplinaryTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, modify_user, modify_time, A0100, WORK_UNIT, NAME, PINYIN, CASE_POST, CASE_TIME,
     CASE_TIME_END, CASE_TIME_START, CASE_DOCUMENT_NO, DISCIPLINARY_ACTION, WHY_CASE,
-    DISCIPLINARY_ACTION_TYPE, CREATE_USER, CREATE_TIME
+    DISCIPLINARY_ACTION_TYPE, CREATE_USER, CREATE_TIME,DISCIPLINARY_TIME
   </sql>
 
 </mapper>

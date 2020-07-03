@@ -3,6 +3,7 @@ package com.hxoms.modules.keySupervision.caseInfo.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -29,7 +30,7 @@ public interface OmsSupCaseInfoService {
 	 * @param omsSupCaseInfo
 	 * @return
 	 */
-	void addCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
+	String addCaseInfo(OmsSupCaseInfo omsSupCaseInfo);
 
 
 	/**
@@ -65,9 +66,11 @@ public interface OmsSupCaseInfoService {
 
 	/**
 	 * <b>导出立案信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupCaseInfo
+	 * @param response
 	 * @return
 	 */
-	void getCaseInfoOut(List<OmsSupCaseInfo> list, HttpServletResponse response);
+	void getCaseInfoOut(List<String> idList, OmsSupCaseInfo omsSupCaseInfo, HttpServletResponse response);
 
 }

@@ -1,4 +1,4 @@
-package com.hxoms.modules.privateabroad.entity;
+package com.hxoms.modules.condition.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
@@ -7,25 +7,23 @@ import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@TableAnnotation(TableName = "oms_approval_return", TableDescription="因私出国审批表回收")
-public class OmsApprovalReturn {
+@TableAnnotation(TableName = "oms_setting", TableDescription="系统参数配置")
+public class OmsSetting {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请ID")
-    private String applyId;
+    @ColumnAnnotation(FieldName = "SETTING_NAME",   FieldDescription="配置名称")
+    private String settingName;
 
-    @ColumnAnnotation(FieldName = "RETURN_TIME",   FieldDescription="回收时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date returnTime;
+    @ColumnAnnotation(FieldName = "SETTING_CODE",   FieldDescription="配置编码")
+    private String settingCode;
 
-    @ColumnAnnotation(FieldName = "RETURN_USER",   FieldDescription="回收人")
-    private String returnUser;
+    @ColumnAnnotation(FieldName = "SETTING_TYPE",   FieldDescription="配置类型(因公 因私 延期)")
+    private String settingType;
 
-    @ColumnAnnotation(FieldName = "RETURN_DESC",   FieldDescription="回收说明")
-    private String returnDesc;
+    @ColumnAnnotation(FieldName = "SETTING_VALUE",   FieldDescription="配置值")
+    private String settingValue;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -51,36 +49,36 @@ public class OmsApprovalReturn {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getApplyId() {
-        return applyId;
+    public String getSettingName() {
+        return settingName;
     }
 
-    public void setApplyId(String applyId) {
-        this.applyId = applyId == null ? null : applyId.trim();
+    public void setSettingName(String settingName) {
+        this.settingName = settingName == null ? null : settingName.trim();
     }
 
-    public Date getReturnTime() {
-        return returnTime;
+    public String getSettingCode() {
+        return settingCode;
     }
 
-    public void setReturnTime(Date returnTime) {
-        this.returnTime = returnTime;
+    public void setSettingCode(String settingCode) {
+        this.settingCode = settingCode == null ? null : settingCode.trim();
     }
 
-    public String getReturnUser() {
-        return returnUser;
+    public String getSettingType() {
+        return settingType;
     }
 
-    public void setReturnUser(String returnUser) {
-        this.returnUser = returnUser == null ? null : returnUser.trim();
+    public void setSettingType(String settingType) {
+        this.settingType = settingType == null ? null : settingType.trim();
     }
 
-    public String getReturnDesc() {
-        return returnDesc;
+    public String getSettingValue() {
+        return settingValue;
     }
 
-    public void setReturnDesc(String returnDesc) {
-        this.returnDesc = returnDesc == null ? null : returnDesc.trim();
+    public void setSettingValue(String settingValue) {
+        this.settingValue = settingValue == null ? null : settingValue.trim();
     }
 
     public Date getCreateTime() {

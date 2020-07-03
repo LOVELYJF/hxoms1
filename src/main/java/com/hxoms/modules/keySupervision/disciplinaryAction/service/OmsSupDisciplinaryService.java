@@ -2,6 +2,7 @@ package com.hxoms.modules.keySupervision.disciplinaryAction.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import javax.servlet.http.HttpServletResponse;
@@ -57,8 +58,10 @@ public interface OmsSupDisciplinaryService {
 
 	/**
 	 * <b>导出处分信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupDisciplinary
+	 * @param response
 	 * @return
 	 */
-	void getDisciplinaryInfoOut(List<OmsSupDisciplinary> list, HttpServletResponse response);
+	void getDisciplinaryInfoOut(List<String> idList, OmsSupDisciplinary omsSupDisciplinary, HttpServletResponse response);
 }

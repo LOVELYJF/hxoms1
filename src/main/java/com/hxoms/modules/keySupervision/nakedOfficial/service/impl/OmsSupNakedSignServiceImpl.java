@@ -24,6 +24,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -111,25 +112,24 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			int count = omsSupNakedSignMapper.insert(omsSupNakedSign);
 			if(count < 1){
 				throw new CustomMessageException("添加裸官信息失败");
+			}else {
+				//将裸官信息在备案表中进行同步更新
+				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+				omsRegProcpersonInfo.setNf("1");
+
+				//默认在非限入性岗位
+				omsRegProcpersonInfo.setXrxgw("0");
+				omsRegProcpersonInfo.setModifyTime(new Date());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
+				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				if(count1 < 0){
+					throw new CustomMessageException("同步裸官信息到登记备案库失败");
+				}
 			}
 		}else {
 			throw new CustomMessageException("该裸官已经存在,请不要重复添加");
-
-		}
-
-		//将裸官信息在备案表中进行同步更新
-		OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-		omsRegProcpersonInfo.setNf("1");
-
-		//默认在非限入性岗位
-		omsRegProcpersonInfo.setXrxgw("0");
-		omsRegProcpersonInfo.setModifyTime(new Date());
-		omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-		QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-		queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
-		int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-		if(count < 0){
-			throw new CustomMessageException("同步裸官信息到登记备案库失败");
 		}
 	}
 
@@ -199,10 +199,24 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 
 	/**
 	 * <b>导出裸官信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupNakedSign
 	 * @return
 	 */
-	public void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response) {
+	public void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response) {
+		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
+		queryWrapper
+				.in(idList != null && idList.size() > 0,"B0100", idList)
+				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+						"XZXGW", omsSupNakedSign.getXzxgw())
+				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						"NAME", omsSupNakedSign.getName())
+				.or()
+				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						"PINYIN", omsSupNakedSign.getName());
+
+		List<OmsSupNakedSign> list = omsSupNakedSignMapper.selectList(queryWrapper);
+
 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("不能导出空列表");
@@ -264,7 +278,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				row.createCell(4).setCellValue(list.get(i).getBirthDate());
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
-				row.createCell(7).setCellValue(list.get(i).getXzxgw());
+				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals("1") ? "是" : "否");
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){
 					row.getCell(j).setCellStyle(style1);

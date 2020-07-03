@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyMapper,OmsRegRevokeApply> implements OmsRegRevokeApplyService {
+public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyMapper, OmsRegRevokeapply> implements OmsRegRevokeApplyService {
 
     @Autowired
     private A01EntityMapper a01Mapper;
@@ -33,7 +33,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     private OmsRegRevokeApprovalMapper regRevokeApprovalMapper;
 
     @Override
-    public IPage<OmsRegRevokeApply> queryRevokeApplyList(Page page) {
+    public IPage<OmsRegRevokeapply> queryRevokeApplyList(Page page) {
         return baseMapper.selectRevokeApplyList(page);
     }
 
@@ -66,7 +66,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                 //在职状态变更为辞职、退休、开除、去世、挂职等（免职不用搜）
                 if (!StringUtils.isEmpty(a30.getA3001())) {
                     //撤销登记备案申请表
-                    OmsRegRevokeApply applyinfo = new OmsRegRevokeApply();
+                    OmsRegRevokeapply applyinfo = new OmsRegRevokeapply();
 
                     //将日期格式化
                     SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
@@ -143,7 +143,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         //在职状态变更为辞职、免职、退休、开除、去世、挂职等
         if (!StringUtils.isEmpty(a30.getA3001())) {
             //撤销登记备案申请表
-            OmsRegRevokeApply applyinfo = new OmsRegRevokeApply();
+            OmsRegRevokeapply applyinfo = new OmsRegRevokeapply();
 
             //将日期格式化
             SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
@@ -232,8 +232,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
      * @throws ParseException
      */
     @Override
-    public Object revokeRegApply(OmsRegRevokeApply revokeApply) throws ParseException {
-        QueryWrapper<OmsRegRevokeApply> queryWrapper = new QueryWrapper<OmsRegRevokeApply>();
+    public Object revokeRegApply(OmsRegRevokeapply revokeApply) throws ParseException {
+        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.eq("ID",revokeApply.getId());
         //将日期格式化
         SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
@@ -251,8 +251,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
      * @return
      */
     @Override
-    public Object reportLeaderApply(OmsRegRevokeApply revokeApply) {
-        QueryWrapper<OmsRegRevokeApply> queryWrapper = new QueryWrapper<OmsRegRevokeApply>();
+    public Object reportLeaderApply(OmsRegRevokeapply revokeApply) {
+        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.eq("ID",revokeApply.getId());
         //状态(填写0，已上报1（经办人上报干部监督处），已审批2（干部监督处已审批），已抽取3（登记备案工作已经抽取数据）、已备案4（登记备案结果已确认）、退回5（资料不全，干部监督处退回）、拒批9（干部监督处不允许撤销）
         String status = revokeApply.getStatus();
