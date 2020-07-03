@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,12 +89,14 @@ public class OmsSupDisciplinaryController extends BaseController {
 
 	/**
 	 * <b>导出处分信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupDisciplinary
 	 * @return
 	 */
 	@PostMapping("/getDisciplinaryInfoOut")
-	public void getDisciplinaryInfoOut(@RequestBody(required = false) List<OmsSupDisciplinary> list){
-		omsSupDisciplinaryService.getDisciplinaryInfoOut(list,response);
+	public void getDisciplinaryInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	                                   OmsSupDisciplinary omsSupDisciplinary){
+		omsSupDisciplinaryService.getDisciplinaryInfoOut(idList,omsSupDisciplinary,response);
 	}
 
 }

@@ -11,6 +11,7 @@ import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -160,10 +161,35 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 	/**
 	 * <b>导出处分信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupDisciplinary
+	 * @param response
 	 * @return
 	 */
-	public void getDisciplinaryInfoOut(List<OmsSupDisciplinary> list, HttpServletResponse response) {
+	public void getDisciplinaryInfoOut(List<String> idList, OmsSupDisciplinary omsSupDisciplinary, HttpServletResponse response) {
+
+		//根据工作单位代码查询工作单位名称
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("idList", idList);
+		List<String> list1 = b01Mapper.selectOrgByList(map);
+
+		QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
+		queryWrapper
+				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
+				.eq(omsSupDisciplinary.getDisciplinaryType() != null && omsSupDisciplinary.getDisciplinaryType() != "",
+						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
+				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
+						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
+				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+						"NAME", omsSupDisciplinary.getName())
+				.or()
+				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+						"PINYIN", omsSupDisciplinary.getName())
+				.orderByDesc("DISCIPLINARY_TIME");
+
+		List<OmsSupDisciplinary> list = omsSupDisciplinaryMapper.selectList(queryWrapper);
+
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
