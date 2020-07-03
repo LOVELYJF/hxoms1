@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
@@ -14,6 +15,8 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -40,6 +43,8 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	private B01Mapper b01Mapper;
 	@Autowired
 	private A01Mapper a01Mapper;
+	@Autowired
+	private SysDictItemMapper sysDictItemMapper;
 	@Autowired
 	private OmsSupViolationDisciplineMapper omsSupViolationDisciplineMapper;
 	@Autowired
@@ -91,10 +96,10 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	public void addViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 
 		//根据违反外事记录类型计算影响期及结束时间
-
-
-
-
+		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
+		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
+		omsSupViolationDiscipline.setViolationEndTime(date);
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupViolationDiscipline.getA0100());
@@ -131,9 +136,10 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	public void updateViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 
 		//根据违反外事记录类型计算影响期及结束时间
-
-
-
+		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
+		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
+		omsSupViolationDiscipline.setViolationEndTime(date);
 
 		omsSupViolationDiscipline.setModifyTime(new Date());
 		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
@@ -164,12 +170,13 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Transactional(rollbackFor=Exception.class)
 	public void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 		int count = omsSupViolationDisciplineMapper.deleteById(omsSupViolationDiscipline.getId());
-		if(count <= 0){
+		if(count < 1){
 			throw new CustomMessageException("删除违反外事纪律人员失败");
 		}else {
 			//取消备案表中的锁定出国时间
 			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
-			omsRegProcperson.setAbroadtime(null);
+			//取消的时间设置成当前时间
+			omsRegProcperson.setAbroadtime(new Date() );
 			omsRegProcperson.setModifyTime(new Date());
 			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
