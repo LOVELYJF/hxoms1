@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.roadPage.mapper.CertificateStatisticsMapper">
+
+    <resultMap id="mapResult" type="map">
+        <result column="QTY" property="QTY"></result>
+        <result property="ZJLX" column="ZJLX"></result>
+        <association property="NOTTURNEDINQTY" javaType="int" column="ZJLX" select="getNotturnedinqty">
+            <result column="NOTTURNEDINQTY" property="NOTTURNEDINQTY"></result>
+        </association>
+    </resultMap>
+
+    <select id="getPassportHongKongTaiwan" resultMap="mapResult">
+        SELECT COUNT(*) AS QTY, CC.ZJLX,
+            CASE WHEN CC.ZJLX=1 THEN '护照'
+                     WHEN CC.ZJLX=2 THEN '港澳通行证'
+                     WHEN CC.ZJLX=4 THEN '台湾通行证'
+                ELSE '' END AS COMMENTS
+        FROM CF_CERTIFICATE CC  GROUP BY CC.ZJLX
+    </select>
+
+    <select id="getNotturnedinqty" resultType="int">
+        SELECT COUNT(*) AS NOTTURNEDINQTY FROM cf_certificate cc WHERE cc.ZJLX=#{ZJLX} AND cc.DQZT=4
+    </select>
+
+    <select id="getExpireqty" resultType="hashmap">
+        SELECT COUNT(*) as EXPIREQTY,'已过期数量' as COMMENTS FROM cf_certificate cc
+        WHERE (TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE())) &lt;= #{whereDayqty}
+    </select>
+
+    <select id="getHalfYearExpireqty" resultType="hashmap">
+        SELECT COUNT(*) as HALFYEAREXPIREQTY,'半年内过期数量' as COMMENTS FROM cf_certificate cc
+        WHERE TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE()) &lt;= #{whereDayqty}
+    </select>
+
+
+    <select id="getListCfCertificate" parameterType="com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam"
+                                  resultType="com.hxoms.modules.passportCard.entity.CfCertificate">
+        select * from cf_certificate cc
+        <where>
+            <if test="zjlx!=null and zjlx>0">
+                and cc.zjlx = #{zjlx}
+            </if>
+            <if test="dqzt!=null and dqzt==4">
+                and cc.dqzt=#{dqzt}
+            </if>
+            <if test="dayqty!=null and dayqty &lt; 0">
+                and (TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE())) &lt;= #{dayqty}
+            </if>
+            <if test="dayqty!=null and dayqty > 0">
+                and TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE()) &lt;= #{dayqty}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="pwhResultMap" type="com.hxoms.modules.roadPage.entity.OnbgoApprovalBaen">
+        <result column="PWH" property="pwh"></result>
+        <result column="PWHD" property="pwhd" javaType="string" jdbcType="VARCHAR"></result>
+        <!--select="selectOmsSubApplyPwh" column="pwh" foreignColumn="pwh"-->
+        <collection property="omspubapply" ofType="com.hxoms.modules.publicity.entity.OmsPubApply"
+                    select="selectOmsSubApplyPwh" column="pwh" foreignColumn="pwh">
+            <id column="ID" jdbcType="VARCHAR" property="id" />
+            <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+            <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+            <result column="YSP_ID" jdbcType="VARCHAR" property="yspId" />
+            <result column="YSPDW_ID" jdbcType="VARCHAR" property="yspdwId" />
+            <result column="AGE" jdbcType="VARCHAR" property="age" />
+            <result column="POLITICAL_AFF" jdbcType="VARCHAR" property="politicalAff" />
+            <result column="JOB" jdbcType="VARCHAR" property="job" />
+            <result column="HEALTH" jdbcType="VARCHAR" property="health" />
+            <result column="SFSMRY" jdbcType="CHAR" property="sfsmry" />
+            <result column="SMDJ" jdbcType="VARCHAR" property="smdj" />
+            <result column="NSSJ" jdbcType="TIMESTAMP" property="nssj" />
+            <result column="YSMDJ1" jdbcType="VARCHAR" property="ysmdj1" />
+            <result column="YTMJSSJ1" jdbcType="TIMESTAMP" property="ytmjssj1" />
+            <result column="YSMDJ2" jdbcType="VARCHAR" property="ysmdj2" />
+            <result column="YTMJSSJ2" jdbcType="TIMESTAMP" property="ytmjssj2" />
+            <result column="ZTDW" jdbcType="VARCHAR" property="ztdw" />
+            <result column="ZTNRZW" jdbcType="VARCHAR" property="ztnrzw" />
+            <result column="CGSJ" jdbcType="TIMESTAMP" property="cgsj" />
+            <result column="HGSJ" jdbcType="TIMESTAMP" property="hgsj" />
+            <result column="SDGJ" jdbcType="VARCHAR" property="sdgj" />
+            <result column="TLSJ" jdbcType="VARCHAR" property="tlsj" />
+            <result column="CFRW" jdbcType="VARCHAR" property="cfrw" />
+            <result column="CFSY" jdbcType="VARCHAR" property="cfsy" />
+            <result column="CGSPDW" jdbcType="VARCHAR" property="cgspdw" />
+            <result column="PWH" jdbcType="VARCHAR" property="pwh" />
+            <result column="ZYPWH" jdbcType="VARCHAR" property="zypwh" />
+            <result column="ZJCGQK" jdbcType="VARCHAR" property="zjcgqk" />
+            <result column="SJCGSJ" jdbcType="TIMESTAMP" property="sjcgsj" />
+            <result column="SJHGSJ" jdbcType="TIMESTAMP" property="sjhgsj" />
+            <result column="NFGS" jdbcType="CHAR" property="nfgs" />
+            <result column="SFYSP" jdbcType="CHAR" property="sfysp" />
+            <result column="SFZQJWYJ" jdbcType="CHAR" property="sfzqjwyj" />
+            <result column="SCZQJWYJSJ" jdbcType="TIMESTAMP" property="sczqjwyjsj" />
+            <result column="SFBCZQJWYJ" jdbcType="CHAR" property="sfbczqjwyj" />
+            <result column="JWJL" jdbcType="CHAR" property="jwjl" />
+            <result column="CLSHSFTG" jdbcType="CHAR" property="clshsftg" />
+            <result column="JDCJL" jdbcType="CHAR" property="jdcjl" />
+            <result column="SFZYLD" jdbcType="CHAR" property="sfzyld" />
+            <result column="SFLG" jdbcType="CHAR" property="sflg" />
+            <result column="POZNSJD" jdbcType="CHAR" property="poznsjd" />
+            <result column="FMXX" jdbcType="VARCHAR" property="fmxx" />
+            <result column="DWJSXS" jdbcType="CHAR" property="dwjsxs" />
+            <result column="ZZJL" jdbcType="CHAR" property="zzjl" />
+            <result column="CXYY" jdbcType="VARCHAR" property="cxyy" />
+            <result column="SFTSRY" jdbcType="CHAR" property="sftsry" />
+            <result column="SFZB" jdbcType="CHAR" property="sfzb" />
+            <result column="SFBG" jdbcType="CHAR" property="sfbg" />
+            <result column="SQZT" jdbcType="CHAR" property="sqzt" />
+            <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+            <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+            <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+            <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+            <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
+        </collection>
+    </resultMap>
+
+    <select id="selectQiongtaiWord" resultMap="pwhResultMap">
+        SELECT opa.PWH,CONCAT(opa.PWH,'预审批') AS PWHD  FROM oms_pub_apply opa GROUP BY opa.PWH ORDER BY opa.PWH
+    </select>
+
+    <select id="selectOmsSubApplyPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApply">
+        SELECT * FROM oms_pub_apply opa WHERE opa.PWH=#{pwh}  ORDER BY opa.SQZT
+    </select>
+
+
+</mapper>
