@@ -13,6 +13,7 @@ import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.caseInfo.service.OmsSupCaseInfoService;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -232,10 +233,33 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 
 	/**
 	 * <b>导出立案信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupCaseInfo
+	 * @param response
 	 * @return
 	 */
-	public void getCaseInfoOut(List<OmsSupCaseInfo> list, HttpServletResponse response) {
+	public void getCaseInfoOut(List<String> idList, OmsSupCaseInfo omsSupCaseInfo, HttpServletResponse response) {
+
+		//根据工作单位代码查询工作单位名称
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("idList", idList);
+		List<String> list1 = b01Mapper.selectOrgByList(map);
+		QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
+		queryWrapper
+				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
+				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
+						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
+				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
+						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
+				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+						"NAME", omsSupCaseInfo.getName())
+				.or()
+				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+						"PINYIN", omsSupCaseInfo.getName())
+				.orderByDesc("CASE_TIME");
+
+		List<OmsSupCaseInfo> list = omsSupCaseInfoMapper.selectList(queryWrapper);
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
