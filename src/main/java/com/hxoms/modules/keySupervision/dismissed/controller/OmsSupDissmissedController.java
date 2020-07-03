@@ -2,10 +2,8 @@ package com.hxoms.modules.keySupervision.dismissed.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -10,7 +10,6 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;

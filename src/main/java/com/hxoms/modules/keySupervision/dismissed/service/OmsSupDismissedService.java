@@ -2,7 +2,6 @@ package com.hxoms.modules.keySupervision.dismissed.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
