@@ -50,8 +50,9 @@ public interface OmsSupNakedSignService extends IService<OmsSupNakedSign> {
 
 	/**
 	 * <b>导出裸官信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupNakedSign
 	 * @return
 	 */
-	void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response);
+	void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response);
 }

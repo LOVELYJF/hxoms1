@@ -199,10 +199,24 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 
 	/**
 	 * <b>导出裸官信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupNakedSign
 	 * @return
 	 */
-	public void getNakedOfficialOut(List<OmsSupNakedSign> list, HttpServletResponse response) {
+	public void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response) {
+		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
+		queryWrapper
+				.in(idList != null && idList.size() > 0,"B0100", idList)
+				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+						"XZXGW", omsSupNakedSign.getXzxgw())
+				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						"NAME", omsSupNakedSign.getName())
+				.or()
+				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						"PINYIN", omsSupNakedSign.getName());
+
+		List<OmsSupNakedSign> list = omsSupNakedSignMapper.selectList(queryWrapper);
+
 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("不能导出空列表");
