@@ -43,10 +43,12 @@ public interface OmsSupMajorLeaderService {
 
 	/**
 	 * <b>导出主要领导信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupMajorLeader
+	 * @param response
 	 * @return
 	 */
-	void getMajorLeaderInfoOut(List<OmsSupMajorLeader> list, HttpServletResponse response);
+	void getMajorLeaderInfoOut(List<String> idList,OmsSupMajorLeader omsSupMajorLeader,HttpServletResponse response);
 
 
 	/**

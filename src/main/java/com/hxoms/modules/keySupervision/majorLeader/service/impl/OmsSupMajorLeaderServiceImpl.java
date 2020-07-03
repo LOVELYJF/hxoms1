@@ -12,6 +12,7 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
@@ -220,10 +221,23 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 	/**
 	 * <b>导出主要领导信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupMajorLeader
+	 * @param response
 	 * @return
 	 */
-	public void getMajorLeaderInfoOut(List<OmsSupMajorLeader> list, HttpServletResponse response) {
+	public void getMajorLeaderInfoOut(List<String> idList, OmsSupMajorLeader omsSupMajorLeader, HttpServletResponse response) {
+
+		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
+		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
+				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						"NAME", omsSupMajorLeader.getName())
+				.or()
+				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						"PINYIN", omsSupMajorLeader.getName());
+
+		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);
+
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
