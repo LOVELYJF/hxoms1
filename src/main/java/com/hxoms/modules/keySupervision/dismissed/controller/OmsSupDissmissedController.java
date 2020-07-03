@@ -2,8 +2,10 @@ package com.hxoms.modules.keySupervision.dismissed.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,11 +77,13 @@ public class OmsSupDissmissedController extends BaseController {
 
 	/**
 	 * <b>导出免职撤职人员信息</b>
-	 * @param list
+	 * @param idList
+	 * @param omsSupDismissed
 	 * @return
 	 */
 	@PostMapping("/getDismissedInfoOut")
-	public void getDismissedInfoOut(@RequestBody(required = false) List<OmsSupDismissed> list){
-		omsSupDismissedService.getDismissedInfoOut(list,response);
+	public void getDismissedInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	                                OmsSupDismissed omsSupDismissed){
+		omsSupDismissedService.getDismissedInfoOut(idList,omsSupDismissed,response);
 	}
 }
