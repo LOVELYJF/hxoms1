@@ -193,6 +193,19 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
 		}else {
+			//查询处分类型
+			List<SysDictItem> dictItemList = getDisciplinaryActionType();
+			for(OmsSupDisciplinary omsSupDisciplinary1 : list){
+				for(SysDictItem sysDictItem : dictItemList){
+					if (omsSupDisciplinary1.getDisciplinaryType().equals(sysDictItem.getId())) {
+						omsSupDisciplinary1.setDisciplinaryType(sysDictItem.getItemName());
+					}else {
+						continue;
+					}
+				}
+			}
+
+
 			//创建HSSFWorkbook对象(excel的文档对象)
 			HSSFWorkbook wb = new HSSFWorkbook();
 			//创建文件样式对象
