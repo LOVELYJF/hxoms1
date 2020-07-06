@@ -112,19 +112,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		int count =  omsSupViolationDisciplineMapper.insert(omsSupViolationDiscipline);
 		if(count < 1){
 			throw new CustomMessageException("新增违反外事纪律人员失败");
-		}else{
-			//在备案表中锁定出国时间到影响期的结束时间
-			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
-			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
-			omsRegProcperson.setModifyTime(new Date());
-			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
-			if(count1 < 1){
-				throw new CustomMessageException("在备案表中设置锁定出国失败");
-			}
-
 		}
 	}
 
@@ -147,18 +134,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
 		if(count <= 0){
 			throw new CustomMessageException("修改违反外事纪律人员失败");
-		}else {
-			//在备案记录表中锁定出国时间到影响期的结束时间
-			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
-			omsRegProcperson.setAbroadtime(omsSupViolationDiscipline.getViolationEndTime());
-			omsRegProcperson.setModifyTime(new Date());
-			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
-			if(count1 < 1){
-				throw new CustomMessageException("在备案表中设置锁定出国失败");
-			}
 		}
 	}
 
@@ -173,19 +148,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		int count = omsSupViolationDisciplineMapper.deleteById(omsSupViolationDiscipline.getId());
 		if(count < 1){
 			throw new CustomMessageException("删除违反外事纪律人员失败");
-		}else {
-			//取消备案表中的锁定出国时间
-			OmsRegProcpersoninfo omsRegProcperson = new OmsRegProcpersoninfo();
-			//取消的时间设置成当前时间
-			omsRegProcperson.setAbroadtime(new Date() );
-			omsRegProcperson.setModifyTime(new Date());
-			omsRegProcperson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
-			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-			wrapper.eq("A0100", omsSupViolationDiscipline.getA0100());
-			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcperson, wrapper);
-			if(count1 < 1){
-				throw new CustomMessageException("在备案表中设置锁定出国失败");
-			}
 		}
 	}
 
