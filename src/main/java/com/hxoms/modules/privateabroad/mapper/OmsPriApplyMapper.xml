@@ -115,7 +115,7 @@
   </select>
 
   <!--通过人员id查询因私出国申请所需用户信息-->
-  <select id="selectPersonInfoByA0100" parameterType="java.lang.String" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+  <select id="selectPersonInfoByA0100" parameterType="java.util.Map" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
     select op.A0100 as a0100,
            op.NAME as name,
            op.SEX as sex,
@@ -125,19 +125,19 @@
            orp.POST as postrank,
            orp.REGISTE_RESIDENCE as registeResidence,
            op.B0101 as b0101,
-           orp.SECRET_LEVEL as classificationLevel,
+           ifnull(orp.SECRET_LEVEL,0) as classificationLevel,
            orp.DECRYPT_STARTDATE as declassificaStarttime,
            orp.DECRYPT_ENDDATE as declassificaEndtime,
            orp.SECRET_POST as classificaPost,
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           orp.RF_B0000 as b0100,
+           op.b0100 as b0100,
            orp.HEALTH as health,
            orp.LICENCE_IDENTITY as paper
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
     where 1=1
-      and op.A0100 = #{a0100}
+      and op.A0100 = #{a0100} and op.b0100 = #{b0100}
   </select>
 
   <!--通过人员id查询因私出国申请所需用户信息-->

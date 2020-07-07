@@ -9,6 +9,7 @@ import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
     /**
@@ -19,10 +20,10 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
 
     /**
      * 通过人员id查询因私出国申请所需用户信息
-     * @param a0100 人员id
+     * @param paramMap 人员id
      * @return
      */
-    OmsPriApplyVO selectPersonInfoByA0100(String a0100);
+    OmsPriApplyVO selectPersonInfoByA0100(Map<String, String> paramMap);
 
     /**
      * 根据姓名或者拼音查找用户

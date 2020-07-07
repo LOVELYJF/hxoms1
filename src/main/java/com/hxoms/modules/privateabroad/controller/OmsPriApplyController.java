@@ -72,7 +72,7 @@ public class OmsPriApplyController {
      * @throws Exception
      */
     @PostMapping("/insertOrUpdatePriApply")
-    public Result insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) throws Exception {
+    public Result insertOrUpdatePriApply(@RequestBody OmsPriApplyParam omsPriApplyParam) throws Exception {
         String result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
         return Result.success(result);
     }

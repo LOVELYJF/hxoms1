@@ -65,7 +65,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         //分页
         PageUtil.pageHelp(omsPriApplyIPageParam.getPageNum() == null ? 1 : omsPriApplyIPageParam.getPageNum(),
-                omsPriApplyIPageParam.getPageSize() == null ? 10 : omsPriApplyIPageParam.getPageNum());
+                omsPriApplyIPageParam.getPageSize() == null ? 10 : omsPriApplyIPageParam.getPageSize());
         List<OmsPriApplyVO> omsPriApplyVOS = omsPriApplyMapper.selectOmsPriApplyIPage(omsPriApplyIPageParam);
         //返回数据
         PageInfo<OmsPriApplyVO> pageInfo = new PageInfo(omsPriApplyVOS);
@@ -84,8 +84,11 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(a0100) || StringUtils.isBlank(b0100)){
             throw new CustomMessageException("参数错误");
         }
+        Map<String, String> paramMap1 = new HashMap<>();
+        paramMap1.put("a0100", a0100);
+        paramMap1.put("b0100", b0100);
         //查询用户基本信息
-        OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(a0100);
+        OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(paramMap1);
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", a0100);
