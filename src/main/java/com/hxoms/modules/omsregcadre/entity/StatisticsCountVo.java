@@ -32,6 +32,7 @@ public class StatisticsCountVo {
 	//统计数量
 	private int value;
 
+	//数量
 	private int acount;
 
 	private int bcount;
