@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,16 @@ public class OmsSupSuspendUnitController {
 		return Result.success();
 	}
 
+
+	/**
+	 * <b>查询审批管理状态</b>
+	 * @return
+	 */
+	@GetMapping("/getApprovalStatus")
+	public Result updateSuspendUnitInfo(){
+		List<SysDictItem> list = omsSupSuspendUnitService.getApprovalStatus();
+		return Result.success(list);
+	}
 }
 
 

@@ -2,6 +2,7 @@ package com.hxoms.modules.keySupervision.suspendApproval.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import java.util.List;
 
@@ -29,4 +30,9 @@ public interface OmsSupSuspendUnitService {
 	void updateSuspendUnitInfo(List<String> idList);
 
 
+	/**
+	 * <b>查询审批管理状态</b>
+	 * @return
+	 */
+	List<SysDictItem> getApprovalStatus();
 }
