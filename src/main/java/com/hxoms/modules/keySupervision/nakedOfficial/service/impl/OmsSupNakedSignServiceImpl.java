@@ -17,6 +17,8 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -46,6 +48,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	private B01Mapper b01Mapper;
 	@Autowired
 	private A01Mapper a01Mapper;
+	@Autowired
+	private SysDictItemMapper sysDictItemMapper;
 	@Autowired
 	private OmsSupFamilyMemberService omsSupFamilyMemberService;
 	@Autowired
@@ -300,5 +304,19 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	/**
+	 * <b>查询限制性岗位</b>
+	 * @return
+	 */
+	public List<SysDictItem> getXzxgwInfo() {
+		List<SysDictItem> list = sysDictItemMapper.selectSysdictItemListByDictCode("XZXGW");
+		if(list != null && list.size() > 0){
+			return list;
+		}
+		return new ArrayList<SysDictItem>();
+
 	}
 }

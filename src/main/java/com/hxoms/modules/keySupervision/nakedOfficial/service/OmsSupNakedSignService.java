@@ -3,6 +3,7 @@ package com.hxoms.modules.keySupervision.nakedOfficial.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -55,4 +56,11 @@ public interface OmsSupNakedSignService extends IService<OmsSupNakedSign> {
 	 * @return
 	 */
 	void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response);
+
+
+	/**
+	 * <b>查询限制性岗位</b>
+	 * @return
+	 */
+	List<SysDictItem> getXzxgwInfo();
 }
