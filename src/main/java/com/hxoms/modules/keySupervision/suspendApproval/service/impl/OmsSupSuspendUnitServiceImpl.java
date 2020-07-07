@@ -6,15 +6,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 
 	@Autowired
 	private OmsSupSuspendUnitMapper omsSupSuspendUnitMapper;
+	@Autowired
+	private SysDictItemMapper sysDictItemMapper;
 	/**
 	 * <b>查询暂停单位信息</b>
 	 * @param omsSupSuspendUnit
@@ -37,11 +41,10 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	 */
 	public Page<OmsSupSuspendUnit> getSuspendUnitInfo(Page<OmsSupSuspendUnit> page, OmsSupSuspendUnit omsSupSuspendUnit) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
-		queryWrapper
+		queryWrapper.eq(omsSupSuspendUnit.getStatus() != null && omsSupSuspendUnit.getStatus() != "",
+				"STATUS",omsSupSuspendUnit.getStatus())
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
 						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())
-				.like(omsSupSuspendUnit.getUnit() != null && omsSupSuspendUnit.getUnit() != "",
-				"UNIT",omsSupSuspendUnit.getUnit())
 				.orderByDesc("SUSPEND_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -64,7 +67,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
 		queryWrapper.in(idList != null && idList.size() > 0, "ID", idList);
 		OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
-		omsSupSuspendUnit.setStatus("允许审批");
+		omsSupSuspendUnit.setStatus("1");
 		omsSupSuspendUnit.setModifyTime(new Date());
 		omsSupSuspendUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupSuspendUnitMapper.update(omsSupSuspendUnit, queryWrapper);
@@ -73,6 +76,18 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 		}
 	}
 
+
+	/**
+	 * <b>查询审批管理状态</b>
+	 * @return
+	 */
+	public List<SysDictItem> getApprovalStatus() {
+		List<SysDictItem> list = sysDictItemMapper.selectSysdictItemListByDictCode("CGSPGL");
+		if(list != null && list.size() > 0){
+			return list;
+		}
+		return new ArrayList<SysDictItem>();
+	}
 
 
 }
