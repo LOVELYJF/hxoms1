@@ -64,6 +64,7 @@ public class LoginController {
         //List<Module> grantModules = moduleService.selectUserGrantModules(user.getId());
         map.put("name", user.getUserName());
         map.put("userId", user.getId());
+        map.put("orgId",user.getOrgId());
         //map.put("modules", grantModules);
         return Result.success().setData(map).setToken(token);
     }
