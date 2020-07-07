@@ -42,7 +42,7 @@ public class OmsSupSuspendPersonController {
 	 * @return
 	 */
 	@PostMapping("/updateSuspendPersonInfo")
-	public Result updateSuspendPersonInfo(List<String> idList){
+	public Result updateSuspendPersonInfo(@RequestParam(value = "idList") List<String> idList){
 		omsSupSuspendPersonService.updateSuspendPersonInfo(idList);
 		return Result.success();
 	}

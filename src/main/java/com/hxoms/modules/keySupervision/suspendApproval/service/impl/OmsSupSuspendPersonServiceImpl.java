@@ -76,7 +76,7 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		QueryWrapper<OmsSupSuspendPerson> queryWrapper = new QueryWrapper<OmsSupSuspendPerson>();
 		queryWrapper.in(idList != null && idList.size() > 0, "ID", idList);
 		OmsSupSuspendPerson omsSupSuspendPerson = new OmsSupSuspendPerson();
-		omsSupSuspendPerson.setStatus("允许审批");
+		omsSupSuspendPerson.setStatus("1");
 		omsSupSuspendPerson.setModifyTime(new Date());
 		omsSupSuspendPerson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupSuspendPersonMapper.update(omsSupSuspendPerson, queryWrapper);
