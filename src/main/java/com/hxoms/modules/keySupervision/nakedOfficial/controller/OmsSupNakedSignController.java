@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +84,17 @@ public class OmsSupNakedSignController extends BaseController {
 	public void getNakedOfficialInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                    OmsSupNakedSign omsSupNakedSign){
 		omsNakedOfficialService.getNakedOfficialOut(idList,omsSupNakedSign,response);
+	}
+
+
+	/**
+	 * <b>查询限制性岗位</b>
+	 * @return
+	 */
+	@GetMapping("/getXzxgwInfo")
+	public Result getNakedOfficialInfoOut(){
+		List<SysDictItem> list = omsNakedOfficialService.getXzxgwInfo();
+		return Result.success(list);
 	}
 
 }
