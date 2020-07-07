@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
+import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersoninfo> {
 
@@ -52,4 +54,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     public Date getOmsRegProcpersonBirthDate(String a0100);
 
     PageInfo<OmsRegProcpersoninfo> getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) throws ParseException;
+
+    Map<String, Object> selectStatisticsCount();
 }

@@ -22,9 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersoninfoMapper, OmsRegProcpersoninfo> implements  OmsRegProcpersonInfoService {
@@ -130,6 +128,21 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             pageInfo = new PageInfo(mepinfoList);
         }
         return pageInfo;
+    }
+
+    @Override
+    public Map<String, Object> selectStatisticsCount() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        //入库标识
+        List<StatisticsCountVo> inboudFlaglist = baseMapper.selectInboudFlagCount();
+        //identityCode 省管干部-1 科级以上公务员（企事业单位中层以上管理人员）-2  涉密人员-3 重要岗位人-4 重点监管人员-5 其他人员-9
+        List<StatisticsCountVo> identityCodelist = baseMapper.selectIdentityCodeCount();
+        //主要领导，裸官，核心涉密人员，重要涉密人员，锁定出国人员，纪委不回复，离琼挂职，到琼挂职
+        List<StatisticsCountVo> allFlaglist = baseMapper.selectAllFlagCount();
+        map.put("inboudFlaglist",inboudFlaglist);
+        map.put("identityCodelist",identityCodelist);
+        map.put("allFlaglist",allFlaglist);
+        return map;
     }
 
     /**
