@@ -19,13 +19,13 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="备案机构")
     private String rfB0000;
 
-    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识")
+    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识  新增U  修改I  撤消D")
     private String inboundFlag;
 
-    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态")
+    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态  0未备案，1已备案，2已确认")
     private String rfStatus;
 
-    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态")
+    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态  1已验收，0待验收")
     private String checkStatus;
 
     @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
@@ -87,7 +87,12 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "PERSON_MANAGER",   FieldDescription="人事主管单位")
     private String personManager;
 
-    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码")
+    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码 省管干部-1\n" +
+            "科级以上公务员（企事业单位中层以上管理人员）-2\n" +
+            "涉密人员-3\n" +
+            "重要岗位人-4\n" +
+            "重点监管人员-5\n" +
+            "其他人员-9")
     private String identityCode;
 
     @ColumnAnnotation(FieldName = "IDENTITY",   FieldDescription="身份情况")
@@ -106,28 +111,28 @@ public class OmsRegProcpersoninfo {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 
-    @ColumnAnnotation(FieldName = "MAIN_LEADER",   FieldDescription="是否主要领导")
+    @ColumnAnnotation(FieldName = "MAIN_LEADER",   FieldDescription="是否主要领导 1主要领导，0非主要领导")
     private String mainLeader;
 
-    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况")
+    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况 1护照、2港澳通行证、4台湾通行证，多个通行证用或运算表达，如果有前两个，值为3，如果全有，值为7，证照每次变动都自动更新此列")
     private Integer licenceIdentity;
 
     @ColumnAnnotation(FieldName = "NF",   FieldDescription="是否为裸官0-不是 1-是")
     private String nf;
 
-    @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官")
+    @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官1是，0否")
     private String fjgnf;
 
     @ColumnAnnotation(FieldName = "XRXGW",   FieldDescription="裸官在限入性岗位")
     private String xrxgw;
 
-    @ColumnAnnotation(FieldName = "LQGZ",   FieldDescription="离琼挂职")
+    @ColumnAnnotation(FieldName = "LQGZ",   FieldDescription="离琼挂职1是，0否")
     private String lqgz;
 
-    @ColumnAnnotation(FieldName = "DQGZ",   FieldDescription="到琼挂职")
+    @ColumnAnnotation(FieldName = "DQGZ",   FieldDescription="到琼挂职1是，0否")
     private String dqgz;
 
-    @ColumnAnnotation(FieldName = "REPLYOPINION",   FieldDescription="纪委不回复意见人员")
+    @ColumnAnnotation(FieldName = "REPLYOPINION",   FieldDescription="纪委不回复意见人员1是，0否")
     private String replyopinion;
 
     @ColumnAnnotation(FieldName = "ABROADTIME",   FieldDescription="锁定出国时间到")

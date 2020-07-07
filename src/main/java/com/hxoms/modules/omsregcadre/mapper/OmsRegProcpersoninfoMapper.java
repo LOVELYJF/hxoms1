@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,6 +19,12 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     List<OmsRegProcpersoninfo> selectA0100ByMap(Map<String, Object> map);
 
     List<OmsRegProcpersoninfo> selectProcpersoninfoList(OmsRegProcpersoninfo info);
+
+    List<StatisticsCountVo> selectInboudFlagCount();
+
+    List<StatisticsCountVo> selectIdentityCodeCount();
+
+    List<StatisticsCountVo> selectAllFlagCount();
 }
 
 

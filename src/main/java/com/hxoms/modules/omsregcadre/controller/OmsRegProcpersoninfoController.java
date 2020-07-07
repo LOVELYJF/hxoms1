@@ -4,6 +4,7 @@ import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
+import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -23,6 +24,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/omsRegProcpersonInfo")
@@ -188,7 +190,7 @@ public class OmsRegProcpersoninfoController {
      * @param
      * @return
      */
-    @PostMapping("/checkUploadRegRecord")
+    @GetMapping("/checkUploadRegRecord")
     public Result checkUploadRegRecord(Date year) {
         // 读取Excel表格
         try{
@@ -216,7 +218,7 @@ public class OmsRegProcpersoninfoController {
      * @param
      * @return
      */
-    @PostMapping("/selectPersonAndAllowRevoke")
+    @GetMapping("/selectPersonAndAllowRevoke")
     public Result selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo){
         return Result.success(mrpinfoService.selectPersonAndAllowRevoke(msRegProcpersonInfo));
     }
@@ -225,7 +227,7 @@ public class OmsRegProcpersoninfoController {
      * 根据人员编号查询对应备案申请
      * @return
      */
-    @PostMapping("/selectInfoByA0100")
+    @GetMapping("/selectInfoByA0100")
     public Result selectInfoByA0100(String a0100){
         return Result.success(mrpinfoService.selectInfoByA0100(a0100));
     }
@@ -357,17 +359,24 @@ public class OmsRegProcpersoninfoController {
         return list;
     }
 
-
-    @PostMapping("/akjfksdf")
-    public Result akjfksdf() {
-
-        String a0221 =  environment.getProperty("postcode." + "1A02");
-        String zhiwu =  environment.getProperty("post." + a0221);
-
-        System.out.println("代码"+a0221);
-        System.out.println("职务"+zhiwu);
-        return Result.success();
+    /**
+     *登记备案人员统计
+     * @return
+     */
+    @GetMapping("/selectStatisticsCount")
+    public Result selectStatisticsCount() {
+        try{
+            Map<String, Object> map =  mrpinfoService.selectStatisticsCount();
+            return Result.success(map);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
     }
+
+
+
+
 }
 
 
