@@ -140,7 +140,7 @@
 
     <!-- 查询因公因私限制内容 -->
     <select id="selectSensitiveLimit"  resultMap="BaseResultMap">
-        SELECT * FROM `sys_dict_item` where dict_code='YGCGLY' or dict_code='YSCGLY'
+        SELECT * FROM `sys_dict_item` where dict_code='YGCGLY' or dict_code='YSCGLY' order by TIME_STAMP
     </select>
 
     <!-- 查询家庭成员关系 -->
