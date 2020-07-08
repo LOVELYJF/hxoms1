@@ -1,6 +1,5 @@
 package com.hxoms.modules.condition.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +66,7 @@ public class OmsConditionController {
      * @return
      */
     @GetMapping("/selectNegativeInfo")
-    public Result selectNegativeInfo(String a0100, @JsonFormat(pattern = "yyyy.MM.dd")
-            @DateTimeFormat(pattern = "yyyy.MM.dd") Date abroadTime){
+    public Result selectNegativeInfo(String a0100, @DateTimeFormat(pattern = "yyyy.MM.dd") Date abroadTime){
         String result = omsConditionService.selectNegativeInfo(a0100, abroadTime);
         return Result.success(result);
     }

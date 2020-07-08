@@ -84,7 +84,7 @@
       and oc.CARE_TYPE = #{careType}
     </if>
     <if test="conditionType != null and conditionType != ''">
-      and oc.CONDITION_TYPE = #{conditionType} and and os.SETTING_TYPE=#{conditionType}
+      and oc.CONDITION_TYPE = #{conditionType} and os.SETTING_TYPE=#{conditionType}
     </if>
       and oc.SETTING_TYPE = '3' and os.SETTING_VALUE='1'
   </select>
