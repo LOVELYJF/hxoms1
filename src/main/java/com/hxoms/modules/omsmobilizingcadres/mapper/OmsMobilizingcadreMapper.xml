@@ -21,30 +21,36 @@
     where A0100 = #{id,jdbcType=VARCHAR}
   </select>
   <select id="selectAllMobilizingCadre" resultType="java.util.LinkedHashMap">
-    SELECT m.ID as 'id', b.b0101 as 'WORK_UNIT' , a.A0101 AS 'NAME', a.A0104 AS 'SEX', a.A0107 AS 'BIRTH_DATE' ,
-            a2.A0215A as 'JOB' , a.a0141 AS 'POLITICAL_AFFI' , m.Adjustment_time AS 'Adjustment_time' ,
-            m.Completion_time as 'Completion_time' , m.status AS 'status'
-    FROM oms_mobilizingcadre m
-    INNER JOIN a01 a
-    ON m.A0100 = a.a0100
-    INNER JOIN a02 a2
-    on a2.a0100 = a.A0100
-    INNER JOIN b01 b
-    on a2.a0201b = b.b0111
-    <where>
-      <if test='orgIds != null and orgIds.size > 0'>
-        and b.b0111 in
-        <foreach collection="list" item="orgIds" separator="," open="(" close=")">
+    SELECT
+    m.ID AS 'id',
+    o.B0101 AS 'WORK_UNIT',
+    o.NAME AS 'NAME',
+    o.SEX AS 'SEX',
+    o.BIRTH_DATE AS 'BIRTH_DATE',
+    o.JOB AS 'JOB',
+    o.POLITICAL_AFFI AS 'POLITICAL_AFFI',
+    m.Adjustment_time AS 'Adjustment_time',
+    m.Completion_time AS 'Completion_time',
+    m.STATUS AS 'status'
+    FROM
+    oms_personinfo o,
+    oms_mobilizingcadre m
+    WHERE
+    m.A0100 = o.A0100
+    AND m.b0100 = o.b0100
+      <if test="orgIds != null and orgIds.size > 0">
+        and o.b0111 in
+        <foreach collection="orgIds" item="orgIds" separator="," open="(" close=")">
           #{orgIds}
         </foreach>
       </if>
-      <if test='name != null and name != ""'>
-        and a.A0101 like CONCAT('%',#{name},'%')
+      <if test="name != null and name != ''">
+        and o.name like CONCAT('%',#{name},'%')
       </if>
-      <if test='status != null and status != ""'>
+      <if test="status != null and status != ''">
         and m.status = #{status}
       </if>
-    </where>
+
   </select>
     <select id="getAllMobilizingCadreByStatus"
             resultType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
