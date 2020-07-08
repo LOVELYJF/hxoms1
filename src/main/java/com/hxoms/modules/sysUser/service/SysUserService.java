@@ -75,7 +75,7 @@ public interface SysUserService {
      * @Author: 李逍遥
      * @Date: 2020/4/30 11:46
      */
-    void resetPassword(String userId);
+    void resetPassword(List<String> userId);
 
     /**
      * 功能描述: <br>

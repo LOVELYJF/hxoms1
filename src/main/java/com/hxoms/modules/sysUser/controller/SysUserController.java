@@ -113,7 +113,7 @@ public class SysUserController {
      * @Date: 2020/4/30 11:44
      */
     @PostMapping("/resetPassword")
-    public Result resetPassword(@RequestParam String userId) {
+    public Result resetPassword(@RequestParam(value ="userId",required = false) List<String> userId) {
         sysUserService.resetPassword(userId);
         return Result.success();
     }

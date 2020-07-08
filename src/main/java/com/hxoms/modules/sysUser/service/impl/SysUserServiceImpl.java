@@ -207,21 +207,23 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public void resetPassword(String userId) {
-        if (StringUtils.isEmpty(userId)) {
+    public void resetPassword(List<String> userIds) {
+        if (userIds != null && userIds.size()>0) {
+            for (String userId:userIds) {
+                CfUser user =  cfUserMapper.selectByPrimaryKey(userId);
+                //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
+                if (user == null) {
+                    throw new CustomMessageException("用户不存在!");
+                }
+                //待确认，是否需要添加修改用户及修改时间
+
+                //重置密码
+                String password = UUIDGenerator.encryptPwd(Constants.USER_PWD);
+                cfUserMapper.updatePassword(userId,password);
+            }
+        }else {
             throw new CustomMessageException("参数为空!");
         }
-        CfUser user =  cfUserMapper.selectByPrimaryKey(userId);
-        //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
-        if (user == null) {
-            throw new CustomMessageException("用户不存在!");
-        }
-        //待确认，是否需要添加修改用户及修改时间
-
-        //重置密码
-        String password = UUIDGenerator.encryptPwd(Constants.USER_PWD);
-        cfUserMapper.updatePassword(userId,password);
-
     }
 
     /**

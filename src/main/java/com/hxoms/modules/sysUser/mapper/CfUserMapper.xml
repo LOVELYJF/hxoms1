@@ -136,7 +136,7 @@
         <include refid="Base_Column_List"/>
         from cf_user
         <where>
-            <if test='orgIds != null and orgIds != ""'>
+            <if test='orgIds != null and orgIds.size > 0 '>
                 and org_id in
                 <foreach collection="list" item="orgIds" separator="," open="(" close=")">
                     #{orgIds}
@@ -149,7 +149,7 @@
             <if test='userType != null and userType != ""'>
                 and user_type = #{userType}
             </if>
-            <if test='states != null and states != ""'>
+            <if test='states != null and states.size > 0 '>
                 and user_state in
                 <foreach collection="list" item="user_state" separator="," open="(" close=")">
                     #{user_state}
@@ -164,13 +164,13 @@
                 and (user_name = #{name}
                 or user_code = #{name} )
             </if>
-            <if test='state != null and state != ""'>
+            <if test='state != null and state.size > 0'>
                 and user_state in
                 <foreach collection="list" item="user_state" separator="," open="(" close=")">
                     #{user_state}
                 </foreach>
             </if>
-            <if test='orgIds != null and orgIds != ""'>
+            <if test='orgIds != null and orgIds.size > 0'>
                 and org_id in
                 <foreach collection="list" item="orgIds" separator="," open="(" close=")">
                     #{orgIds}
@@ -183,7 +183,7 @@
         <include refid="Base_Column_List"/>
         from cf_user
         <where>
-            <if test='orgId != null and orgId != ""'>
+            <if test='orgId != null and orgId.size > 0'>
                 and org_id in
                 <foreach collection="list" item="org_id" separator="," open="(" close=")">
                     #{org_id}
