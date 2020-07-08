@@ -164,6 +164,16 @@ public class Constants {
     public  static String[] public_businessName ={"未下发","草稿","带材料审核"};
 
     /**
+     *调整期干部状态
+     *
+     */
+    public static int[] mobilizing_business={0,1};
+    /**
+     *调整期干部状态名称
+     *
+     */
+    public static String[] mobilizing_businessName={"调整期","调整完成"};
+    /**
      * 因私 业务
      *
      */
