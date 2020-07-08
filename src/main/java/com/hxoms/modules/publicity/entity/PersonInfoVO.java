@@ -26,9 +26,10 @@ public class PersonInfoVO {
     private String job;
     //机构
     private String b0100;
-
+    //单位名称
     private String b0101;
-
+    //状态
+    private String status;
     public String getA0100() {
         return a0100;
     }
@@ -83,5 +84,13 @@ public class PersonInfoVO {
 
     public void setB0101(String b0101) {
         this.b0101 = b0101;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

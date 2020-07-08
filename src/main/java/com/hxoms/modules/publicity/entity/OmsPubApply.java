@@ -171,27 +171,30 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "SFBG",   FieldDescription="是否变更")
     private String sfbg;
 
-    @ColumnAnnotation(FieldName = "SQZT",   FieldDescription="申请状态")
-    private String sqzt;
+    @ColumnAnnotation(FieldName = "SQZT",   FieldDescription="申请状态（0-未下发，1-草稿，2-带材料审核，3-待征求意见，4-待反馈意见，5-待处长审批，6-已完结）")
+    private Integer sqzt;
 
-    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
 
-    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
-    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
 
-    @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
     private Integer sortId;
+
+    @ColumnAnnotation(FieldName = "BAH",   FieldDescription="备案号")
+    private String bah;
 
     public String getId() {
         return id;
@@ -577,12 +580,12 @@ public class OmsPubApply {
         this.sfbg = sfbg == null ? null : sfbg.trim();
     }
 
-    public String getSqzt() {
+    public Integer getSqzt() {
         return sqzt;
     }
 
-    public void setSqzt(String sqzt) {
-        this.sqzt = sqzt == null ? null : sqzt.trim();
+    public void setSqzt(Integer sqzt) {
+        this.sqzt = sqzt;
     }
 
     public String getCreateUser() {
@@ -623,5 +626,13 @@ public class OmsPubApply {
 
     public void setSortId(Integer sortId) {
         this.sortId = sortId;
+    }
+
+    public String getBah() {
+        return bah;
+    }
+
+    public void setBah(String bah) {
+        this.bah = bah == null ? null : bah.trim();
     }
 }
