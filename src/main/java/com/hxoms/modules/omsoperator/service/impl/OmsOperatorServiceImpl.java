@@ -3,9 +3,7 @@ package com.hxoms.modules.omsoperator.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.StringUilt;
-import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper;
 import com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverMapper;
@@ -38,14 +36,15 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String saveOperator(CfUser user,CfUser loginUser) {
+    public String saveOperator(CfUser user) {
         //1、判断有没有选择经办人
         if (user == null) {
             throw new CustomMessageException("请先选择经办人!");
         }
         //提示信息
         String msc;
-
+        //获取登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
         if (StringUilt.isStrOrnull(user.getUserId())) {
             //更新
             //修改人
@@ -63,15 +62,12 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             user.setUserId(UUIDGenerator.getPrimaryKey());
             //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
-            //设置用户类型
-            user.setUserType("6");
-            //设置状态
-            user.setUserState("0");
+
             //创建人
             user.setCreator(loginUser.getUserName());
             //创建时间
             user.setCreatetime(new Date());
-            cfUserMapper.insert(user);
+            cfUserMapper.insertSelective(user);
             msc="经办人未上报干部监督处，到经办人管理页面修改或上报!";
             return msc;
         }
@@ -87,12 +83,14 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String saveAndUploadOperator(CfUser user,CfUser loginUser) {
+    public String saveAndUploadOperator(CfUser user) {
         //1、判断有没有选择经办人
         if (user == null) {
             throw new CustomMessageException("请先选择经办人!");
         }
         String msc ="";
+        //获取登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
         //创建审批对象
         OmsOperatorApproval  omsOperatorApproval = new OmsOperatorApproval();
         if (StringUilt.isStrOrnull(user.getUserId())) {
@@ -133,10 +131,10 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/8 10:57
      */
-    private String getString(CfUser user, String msc, OmsOperatorApproval omsOperatorApproval,CfUser loginUser) {
+    private String getString(CfUser user, String msc, OmsOperatorApproval omsOperatorApproval,UserInfo loginUser) {
         OmsOperatorApproval omsOperatorApproval1 = operatorApprovalMapper.selectByUserId(user.getUserId());
         CfUser user1 = cfUserMapper.selectByPrimaryKey(user.getUserId());
-        if (user.getPoliticalAffi().equals("中共党员") || user.getPoliticalAffi().equals("党员")) {
+        //if (user.getPoliticalAffi().equals("中共党员") || user.getPoliticalAffi().equals("党员")) {
             //如果是，将状态置为“待审批”，用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)
             user.setUserState("4");
             // 往经办人审批表插入步骤为“干部监督处审批”的审批记录，提醒系统管理员：“请通知经办人持单位审批后的申请表及身份证到干部监督处办理审批手续”
@@ -159,12 +157,13 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 cfUserMapper.updateByPrimaryKeySelective(user);
             }else {
                 //新增
-                cfUserMapper.insert(user);
+                cfUserMapper.insertSelective(user);
             }
             msc = "请通知经办人持单位审批后的申请表及身份证到干部监督处办理审批手续!";
             return msc;
 
-        } else {
+
+        /*} else {
             //否则置为“征求意见”
             user.setUserState("3");
             // 往经办人审批表插入步骤为“征求意见”的审批记录。
@@ -185,23 +184,10 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 cfUserMapper.updateByPrimaryKeySelective(user);
             }else {
                 //新增
-                cfUserMapper.insert(user);
+                cfUserMapper.insertSelective(user);
             }
             return msc;
-        }
-    }
-
-    /**
-     * 功能描述: <br>
-     * 〈根据姓名或者状态查询经办人列表〉
-     * @Param: [name, state]
-     * @Return: com.github.pagehelper.PageInfo
-     * @Author: 李逍遥
-     * @Date: 2020/5/7 16:00
-     */
-    @Override
-    public List<CfUser> getOperatorByNameOrState(String name, List<String> state, List<String> orgIds) {
-        return cfUserMapper.getOperatorByNameOrState(name,state,orgIds);
+        }*/
     }
 
     /**
@@ -293,16 +279,16 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         return resultMap;
     }
 
-    /**
-     * 功能描述: <br>
-     * 〈获取经办人列表〉
-     * @Param: [pageNum, pageSize, keyWord, orgId]
-     * @Return: com.github.pagehelper.PageInfo
-     * @Author: 李逍遥
-     * @Date: 2020/5/13 9:42
-     */
+   /**
+    * 功能描述: <br>
+    * 〈获取经办人列表〉
+    * @Param: [pageNum, pageSize, keyWord, orgId, state]
+    * @Return: com.github.pagehelper.PageInfo
+    * @Author: 李逍遥
+    * @Date: 2020/7/8 15:30
+    */
     @Override
-    public PageInfo getOperatorList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId) {
+    public PageInfo getOperatorList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId,List<String> state) {
 
         if (pageNum == null) {
             pageNum = 1;
@@ -311,7 +297,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             pageSize = 10;
         }
         PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
-        List<CfUser> users = cfUserMapper.getSysUserListByParm(orgId, "6");
+        List<CfUser> users = cfUserMapper.getOperatorByNameOrState(keyWord, state, orgId, "6");
         PageInfo info = new PageInfo(users);
         return info;
     }

@@ -16,7 +16,7 @@ public interface OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/7 14:36
      */
-    String saveOperator(CfUser user,CfUser loginUser);
+    String saveOperator(CfUser user);
 
     /**
      * 功能描述: <br>
@@ -26,17 +26,7 @@ public interface OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/7 14:36
      */
-    String saveAndUploadOperator(CfUser user,CfUser loginUser);
-
-    /**
-     * 功能描述: <br>
-     * 〈根据姓名或者状态查询经办人列表〉
-     * @Param: [name, state]
-     * @Return: com.github.pagehelper.PageInfo
-     * @Author: 李逍遥
-     * @Date: 2020/5/7 15:54
-     */
-    List<CfUser> getOperatorByNameOrState(String name, List<String> state,List<String> orgIds);
+    String saveAndUploadOperator(CfUser user);
 
     /**
      * 功能描述: <br>
@@ -81,10 +71,10 @@ public interface OmsOperatorService {
     /**
      * 功能描述: <br>
      * 〈获取经办人列表〉
-     * @Param: [pageNum, pageSize, keyWord, orgId]
+     * @Param: [pageNum, pageSize, keyWord, orgId, state]
      * @Return: com.github.pagehelper.PageInfo
      * @Author: 李逍遥
-     * @Date: 2020/5/13 9:41
+     * @Date: 2020/7/8 15:30
      */
-    PageInfo getOperatorList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId);
+    PageInfo getOperatorList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId,List<String> state);
 }

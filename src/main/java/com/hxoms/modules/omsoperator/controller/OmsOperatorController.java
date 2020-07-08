@@ -6,8 +6,7 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,17 +26,19 @@ public class OmsOperatorController {
     @Autowired
     private OmsOperatorService operatorService;
 
-    /**
-     * 功能描述: <br>
-     * 〈获取经办人列表〉
-     * @Param: [pageNum, pageSize, keyWord, orgId]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/5/18 14:28
-     */
-    @RequestMapping("/getOperatorList")
-    public Result getOperatorList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId){
-        PageInfo pageInfo = operatorService.getOperatorList(pageNum,pageSize,keyWord,orgId);
+   /**
+    * 功能描述: <br>
+    * 〈获取经办人列表〉
+    * @Param: [pageNum, pageSize, keyWord, orgId, state]
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: 李逍遥
+    * @Date: 2020/7/8 15:30
+    */
+    @GetMapping("/getOperatorList")
+    public Result getOperatorList(Integer pageNum, Integer pageSize, String keyWord,
+                                  @RequestParam(value ="orgId",required = false) List<String> orgId,
+                                  @RequestParam(value ="state",required = false) List<String> state){
+        PageInfo pageInfo = operatorService.getOperatorList(pageNum,pageSize,keyWord,orgId,state);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
     /**
@@ -48,9 +49,9 @@ public class OmsOperatorController {
      * @Author: 李逍遥
      * @Date: 2020/5/6 11:46
      */
-    @RequestMapping("/saveOperator")
-    public Result saveOperator(CfUser user,CfUser loginUser) {
-        String msc = operatorService.saveOperator(user,loginUser);
+    @PostMapping("/saveOperator")
+    public Result saveOperator(CfUser user) {
+        String msc = operatorService.saveOperator(user);
         return Result.success(msc);
     }
     /**
@@ -62,23 +63,9 @@ public class OmsOperatorController {
      * @Date: 2020/5/7 10:20
      */
     @RequestMapping("/saveAndUploadOperator")
-    public Result saveAndUploadOperator(CfUser user,CfUser loginUser){
-        String msc = operatorService.saveAndUploadOperator(user,loginUser);
+    public Result saveAndUploadOperator(CfUser user){
+        String msc = operatorService.saveAndUploadOperator(user);
         return Result.success(msc);
-    }
-
-    /**
-     * 功能描述: <br>
-     * 〈通过姓名、状态列表、机构列表查询经办人〉
-     * @Param: [name, state,orgIds]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/5/7 15:21
-     */
-    @RequestMapping("/getOperatorByNameOrState")
-    public Result getOperatorByNameOrState(String name, List<String> state, List<String> orgIds){
-        List<CfUser> userList = operatorService.getOperatorByNameOrState(name,state,orgIds);
-        return Result.success(userList);
     }
 
     /**
