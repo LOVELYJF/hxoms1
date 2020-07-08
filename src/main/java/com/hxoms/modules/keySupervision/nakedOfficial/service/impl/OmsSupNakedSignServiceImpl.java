@@ -128,7 +128,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-				if(count1 < 0){
+				if(count1 < 1){
 					throw new CustomMessageException("同步裸官信息到登记备案库失败");
 				}
 			}
