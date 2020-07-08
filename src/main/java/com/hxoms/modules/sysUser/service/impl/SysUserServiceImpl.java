@@ -102,7 +102,7 @@ public class SysUserServiceImpl implements SysUserService {
             user.setCreator(loginUser.getUserName());
             //创建时间
             user.setCreatetime(new Date());
-            cfUserMapper.insert(user);
+            cfUserMapper.insertSelective(user);
 
         }
 
