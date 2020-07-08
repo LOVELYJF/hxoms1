@@ -122,10 +122,10 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(omsPriApply.getAbroadReasons())){
             throw new CustomMessageException("出国事由不能为空");
         }
-        if (omsPriApply.getAbroadTime() != null){
+        if (omsPriApply.getAbroadTime() == null){
             throw new CustomMessageException("出国时间不能为空");
         }
-        if (omsPriApply.getReturnTime() != null){
+        if (omsPriApply.getReturnTime() == null){
             throw new CustomMessageException("回国时间不能为空");
         }
         if(!omsPriApply.getAbroadTime().before(omsPriApply.getReturnTime())){
@@ -134,9 +134,6 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         //基本信息保存
         //设置草稿状态
         omsPriApply.setApplyStatus(Constants.private_business[0]);
-        //出国时长
-        long day = omsPriApply.getReturnTime().getTime() - omsPriApply.getAbroadTime().getTime()/DateUtils.MILLIS_PER_DAY;
-        omsPriApply.setOutsideTime((int) day);
         //归还证照时间(回国后十天)
         Date revertLicenceTime = DateUtils.addDays(omsPriApply.getReturnTime(), 10);
         omsPriApply.setRevertLicenceTime(revertLicenceTime);
@@ -218,6 +215,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             throw new CustomMessageException("参数错误");
         }
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(id);
+        if ("1".equals(omsPriApplyVO.getSex())){
+            omsPriApplyVO.setSex("男");
+        } else if ("2".equals(omsPriApplyVO.getSex())){
+            omsPriApplyVO.setSex("女");
+        }
+        //随行人员
+        QueryWrapper<OmsPriTogetherperson> togetherperson = new QueryWrapper<>();
+        togetherperson.eq("APPLY_ID", omsPriApplyVO.getId());
+        List<OmsPriTogetherperson> omsPriTogetherpersonList = omsPriTogetherpersonMapper.selectList(togetherperson);
+        omsPriApplyVO.setOmsPriTogetherpeoples(omsPriTogetherpersonList);
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", omsPriApplyVO.getA0100());
