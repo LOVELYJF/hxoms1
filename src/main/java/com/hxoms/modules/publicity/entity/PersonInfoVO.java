@@ -18,7 +18,7 @@ public class PersonInfoVO {
     private String name;
     //性别
     private String sex;
-
+    //出生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
@@ -30,6 +30,11 @@ public class PersonInfoVO {
     private String b0101;
     //状态
     private String status;
+    //政治面貌
+    private String POLITICAL_AFFI;
+    //民族
+    private String NATION;
+
     public String getA0100() {
         return a0100;
     }
@@ -92,5 +97,21 @@ public class PersonInfoVO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPOLITICAL_AFFI() {
+        return POLITICAL_AFFI;
+    }
+
+    public void setPOLITICAL_AFFI(String POLITICAL_AFFI) {
+        this.POLITICAL_AFFI = POLITICAL_AFFI;
+    }
+
+    public String getNATION() {
+        return NATION;
+    }
+
+    public void setNATION(String NATION) {
+        this.NATION = NATION;
     }
 }
