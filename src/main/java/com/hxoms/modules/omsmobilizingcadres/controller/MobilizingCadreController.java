@@ -78,8 +78,8 @@ public class MobilizingCadreController {
      * @Date: 2020/5/29 9:46
      */
     @GetMapping("/getAllMobilizingCadre")
-    public Result getAllMobilizingCadre(@RequestParam(value ="orgId",required = false) List<String> orgIds, String name, String status){
-        PageInfo info = mobilizingcadreService.getAllMobilizingCadre(orgIds, name, status);
+    public Result getAllMobilizingCadre(Integer pageNum, Integer pageSize,@RequestParam(value ="orgId",required = false) List<String> orgIds, String name, String status){
+        PageInfo info = mobilizingcadreService.getAllMobilizingCadre(pageNum,pageSize,orgIds, name, status);
         return Result.success(info.getList()).setTotal(info.getTotal());
     }
 

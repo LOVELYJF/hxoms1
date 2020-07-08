@@ -1,7 +1,9 @@
 package com.hxoms.modules.omsmobilizingcadres.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -47,7 +49,8 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         mobilizingCadre.setId(UUIDGenerator.getPrimaryKey());
         mobilizingCadre.setCreateDate(new Date());
         mobilizingCadre.setCreateUser(loginUser.getUserName());
-        mobilizingCadre.setStatus("0");
+        //添加时将状态更改为调整期
+        mobilizingCadre.setStatus(String.valueOf(Constants.mobilizing_business[0]));
         mobilizingcadreMapper.insertSelective(mobilizingCadre);
 
     }
@@ -96,8 +99,13 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
      * @Date: 2020/5/29 9:45
      */
     @Override
-    public PageInfo getAllMobilizingCadre(List<String> orgIds, String name, String status) {
-
+    public PageInfo getAllMobilizingCadre(Integer pageNum, Integer pageSize,List<String> orgIds, String name, String status) {
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 10;
+        }
         if (orgIds == null){
             //获取登录用户信息
             UserInfo loginUser = UserInfoUtil.getUserInfo();
@@ -105,6 +113,7 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
                 orgIds.add(loginUser.getOrgId());
             }
         }
+        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
         List<LinkedHashMap<String, Object>> list = mobilizingcadreMapper.selectAllMobilizingCadre(orgIds,name,status);
         PageInfo info = new PageInfo(list);
         return info;
@@ -123,7 +132,9 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         if (a0100 == null || a0100.equals("")){
             throw new CustomMessageException("参数为空!");
         }
-        mobilizingcadreMapper.updateStatusByA0100(a0100,"1");
+        //进入方法将状态更改为 调整完成
+        String s = String.valueOf(Constants.mobilizing_business[1]);
+        mobilizingcadreMapper.updateStatusByA0100(a0100,s);
 
     }
 

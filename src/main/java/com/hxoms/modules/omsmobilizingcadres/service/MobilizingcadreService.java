@@ -46,7 +46,7 @@ public interface MobilizingcadreService {
      * @Author: 李逍遥
      * @Date: 2020/5/29 9:45
      */
-    PageInfo getAllMobilizingCadre(List<String> orgIds, String name, String status);
+    PageInfo getAllMobilizingCadre(Integer pageNum, Integer pageSize,List<String> orgIds, String name, String status);
 
     /**
      * 功能描述: <br>
