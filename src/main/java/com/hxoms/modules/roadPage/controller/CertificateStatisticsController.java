@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CertificateStatisticsController {
 
 
-
-
-    
-
     @Autowired
     private CertificateStatisticsService certificateStatisticsService;
 
