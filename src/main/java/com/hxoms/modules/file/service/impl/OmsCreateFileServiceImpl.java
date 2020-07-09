@@ -38,7 +38,7 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
     }
 
     @Override
-    public String insertOrUpdate(OmsCreateFile omsCreateFile) {
+    public OmsCreateFile insertOrUpdate(OmsCreateFile omsCreateFile) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsCreateFile.getId())){
@@ -54,10 +54,11 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
             //修改
             omsCreateFile.setModifyUser(userInfo.getId());
             omsCreateFile.setModifyTime(new Date());
+            omsCreateFile.setIsSealhandle("0");
             if (omsCreateFileMapper.updateById(omsCreateFile) < 1){
                 throw new CustomMessageException("操作失败");
             }
         }
-        return "操作成功";
+        return omsCreateFile;
     }
 }

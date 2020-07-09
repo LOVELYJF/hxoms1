@@ -21,5 +21,5 @@ public interface OmsCreateFileService {
      * 保存或者更新
      *
      */
-    String insertOrUpdate(OmsCreateFile omsCreateFile);
+    OmsCreateFile insertOrUpdate(OmsCreateFile omsCreateFile);
 }

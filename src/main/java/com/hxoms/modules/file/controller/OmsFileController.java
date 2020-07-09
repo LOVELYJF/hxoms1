@@ -65,4 +65,13 @@ public class OmsFileController {
         String result = omsFileService.saveTextOmsFile(omsFile);
         return Result.success().setMsg(result);
     }
+    /**
+     * 重新生成内容
+     * @param fileId 文件id
+     */
+    @GetMapping("/selectFileDestailNew")
+    public Result selectFileDestailNew(String fileId){
+        OmsFile omsFile = omsFileService.selectFileDestailNew(fileId);
+        return Result.success(omsFile);
+    }
 }

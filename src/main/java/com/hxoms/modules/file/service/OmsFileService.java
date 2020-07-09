@@ -32,4 +32,9 @@ public interface OmsFileService {
      * @return
      */
     String saveTextOmsFile(OmsFile omsFile);
+    /**
+     * 重新生成内容
+     * @param fileId 文件id
+     */
+    OmsFile selectFileDestailNew(String fileId);
 }
