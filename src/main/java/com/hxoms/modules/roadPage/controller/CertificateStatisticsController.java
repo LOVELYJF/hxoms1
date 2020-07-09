@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/licenceStatistics")
 public class CertificateStatisticsController {
 
+
+
+
     
 
     @Autowired
