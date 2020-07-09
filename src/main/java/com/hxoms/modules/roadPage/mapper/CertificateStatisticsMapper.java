@@ -4,7 +4,6 @@ import com.hxoms.modules.passportCard.entity.CfCertificate;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.roadPage.entity.OnbgoApprovalBaen;
-import org.apache.ibatis.annotations.MapKey;
 
 import java.util.List;
 import java.util.Map;
@@ -33,9 +32,14 @@ public interface CertificateStatisticsMapper {
 
     List<CfCertificate> getListCfCertificate(CfCertificatePageParam cfCertificatePageParam);
 
+    //因公出国（境）预审批
     List<OnbgoApprovalBaen> selectQiongtaiWord();
 
+    //因公出国（境）预审批
     List<OmsPubApply> selectOmsSubApplyPwh(String pwh);
+
+    //因私出国（境）进度
+    List<Map<String,Object>> getFprgoSchedule();
 
 
 }

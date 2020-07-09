@@ -3,7 +3,7 @@
 <mapper namespace="com.hxoms.modules.roadPage.mapper.CertificateStatisticsMapper">
 
     <resultMap id="mapResult" type="map">
-        <result column="QTY" property="QTY"></result>
+        <result column="COUNTQTY" property="COUNTQTY"></result>
         <result property="ZJLX" column="ZJLX"></result>
         <association property="NOTTURNEDINQTY" javaType="int" column="ZJLX" select="getNotturnedinqty">
             <result column="NOTTURNEDINQTY" property="NOTTURNEDINQTY"></result>
@@ -11,7 +11,7 @@
     </resultMap>
 
     <select id="getPassportHongKongTaiwan" resultMap="mapResult">
-        SELECT COUNT(*) AS QTY, CC.ZJLX,
+        SELECT COUNT(*) AS COUNTQTY, CC.ZJLX,
             CASE WHEN CC.ZJLX=1 THEN '护照'
                      WHEN CC.ZJLX=2 THEN '港澳通行证'
                      WHEN CC.ZJLX=4 THEN '台湾通行证'
@@ -20,16 +20,16 @@
     </select>
 
     <select id="getNotturnedinqty" resultType="int">
-        SELECT COUNT(*) AS NOTTURNEDINQTY FROM cf_certificate cc WHERE cc.ZJLX=#{ZJLX} AND cc.DQZT=4
+        SELECT COUNT(*) AS COUNTQTY FROM cf_certificate cc WHERE cc.ZJLX=#{ZJLX} AND cc.DQZT=4
     </select>
 
     <select id="getExpireqty" resultType="hashmap">
-        SELECT COUNT(*) as EXPIREQTY,'已过期数量' as COMMENTS FROM cf_certificate cc
+        SELECT COUNT(*) as COUNTQTY,'已过期数量' as COMMENTS,0 as ZJLX,0 as NOTTURNEDINQTY FROM cf_certificate cc
         WHERE (TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE())) &lt;= #{whereDayqty}
     </select>
 
     <select id="getHalfYearExpireqty" resultType="hashmap">
-        SELECT COUNT(*) as HALFYEAREXPIREQTY,'半年内过期数量' as COMMENTS FROM cf_certificate cc
+        SELECT COUNT(*) as COUNTQTY,'半年内过期数量' as COMMENTS,0 as ZJLX,0 as NOTTURNEDINQTY FROM cf_certificate cc
         WHERE TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE()) &lt;= #{whereDayqty}
     </select>
 
@@ -56,7 +56,6 @@
     <resultMap id="pwhResultMap" type="com.hxoms.modules.roadPage.entity.OnbgoApprovalBaen">
         <result column="PWH" property="pwh"></result>
         <result column="PWHD" property="pwhd" javaType="string" jdbcType="VARCHAR"></result>
-        <!--select="selectOmsSubApplyPwh" column="pwh" foreignColumn="pwh"-->
         <collection property="omspubapply" ofType="com.hxoms.modules.publicity.entity.OmsPubApply"
                     select="selectOmsSubApplyPwh" column="pwh" foreignColumn="pwh">
             <id column="ID" jdbcType="VARCHAR" property="id" />
@@ -122,6 +121,13 @@
 
     <select id="selectOmsSubApplyPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApply">
         SELECT * FROM oms_pub_apply opa WHERE opa.PWH=#{pwh}  ORDER BY opa.SQZT
+    </select>
+
+    <select id="getFprgoSchedule" resultType="map">
+        SELECT CONCAT(orp.SURNAME,orp.`NAME`) as USERNAME,
+            opa.APPLY_STATUS
+        FROM oms_pri_apply opa
+            LEFT JOIN oms_reg_procpersoninfo orp ON opa.A0100 = orp.A0100
     </select>
 
 
