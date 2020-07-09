@@ -42,7 +42,7 @@ public class OmsCreateFileController {
      */
     @PostMapping("/insertOrUpdate")
     public Result insertOrUpdate(OmsCreateFile omsCreateFile){
-        String result = omsCreateFileService.insertOrUpdate(omsCreateFile);
-        return Result.success().setMsg(result);
+        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
+        return Result.success(result);
     }
 }

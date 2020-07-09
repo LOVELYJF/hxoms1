@@ -17,6 +17,8 @@ import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.service.OmsPriDelayApplyService;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,8 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsCreateFileMapper omsCreateFileMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
+    @Autowired
+    private B01Mapper b01Mapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
@@ -52,12 +56,22 @@ public class OmsFileServiceImpl implements OmsFileService {
         if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(a0100)){
             throw new CustomMessageException("参数错误");
         }
-        //涉密信息
         List<String> fileType = new ArrayList<>();
         fileType.add("1"); //系统
-        //TODO 涉密信息
-        //是否主要领导
+        //涉密信息
         QueryWrapper<OmsRegProcpersoninfo> omsPersoninfo = new QueryWrapper<>();
+        omsPersoninfo.eq("A0100", a0100)
+                .eq("secret_level", "0");
+        int sercetCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
+        if (sercetCount > 0){
+            //非涉密
+            fileType.add("2");
+        }else{
+            fileType.add("3");
+            //TODO 涉密人员（原单位脱密期人员）
+        }
+        //是否主要领导
+        omsPersoninfo.clear();
         omsPersoninfo.eq("A0100", a0100)
                 .eq("MAIN_LEADER", "1");
         int omsPersoninfoCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
@@ -66,9 +80,14 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //查询机构信息
+        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+        if (b01 == null){
+            throw new CustomMessageException("数据异常");
+        }
         QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("TABLE_CODE", tableCode)
-                .eq("B0100", userInfo.getOrgId())
+                .eq("B0100", b01.getB0100())
                 .in("FILE_TYPE",fileType)
                 .orderByAsc("CREATE_TIME");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
@@ -77,16 +96,17 @@ public class OmsFileServiceImpl implements OmsFileService {
             queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
                     .in("FILE_TYPE",fileType)
-                    .eq("B0100", "")
-                    .or()
-                    .isNull("B0100");
+                    .and(wrapper->wrapper.eq("B0100", "")
+                            .or()
+                            .isNull("B0100"))
+                    .orderByAsc("CREATE_TIME");
             List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
             if (omsFileSystem != null && omsFileSystem.size() > 0) {
                 //插入
                 for (OmsFile omsfile : omsFileSystem) {
                     omsfile.setFileId(omsfile.getId());
                     omsfile.setId(UUIDGenerator.getPrimaryKey());
-                    omsfile.setB0100(userInfo.getOrgId());
+                    omsfile.setB0100(b01.getB0100());
                     omsfile.setCreateUser(userInfo.getId());
                     omsfile.setCreateTime(new Date());
                     omsFileMapper.insert(omsfile);
@@ -94,10 +114,10 @@ public class OmsFileServiceImpl implements OmsFileService {
                 //复制文件
                 if (Constants.oms_business[1].equals(tableCode)){
                     //因私出国
-                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + userInfo.getOrgId());
+                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + b01.getB0100());
                 } else if(Constants.oms_business[2].equals(tableCode)){
                     //延期回国
-                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
+                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + b01.getB0100());
                 }
                 return omsFileSystem;
             }
@@ -116,10 +136,12 @@ public class OmsFileServiceImpl implements OmsFileService {
         Map<String, Object> result = new HashMap<>();
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //查询机构信息
+        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
         //查询文件
         QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
         queryWrapperFile.eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
-                .eq("B0100", userInfo.getOrgId())
+                .eq("B0100", b01.getB0100())
                 .eq("ID", abroadFileDestailParams.getFileId());
         OmsFile omsFile = omsFileMapper.selectOne(queryWrapperFile);
         if (omsFile == null){
@@ -144,11 +166,14 @@ public class OmsFileServiceImpl implements OmsFileService {
             omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID());
             FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
             // 替换关键词
-            replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
+            if (fileReplaceVO != null){
+                replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
+            }
             result.put("omsFile", omsFile);
             //查询生成的文件
             QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
             createFile.eq("FILE_ID", abroadFileDestailParams.getFileId())
+                    .eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
                     .eq("APPLY_ID", abroadFileDestailParams.getApplyID());
             OmsCreateFile omsCreateFile = omsCreateFileMapper.selectOne(createFile);
             result.put("omsCreateFile", omsCreateFile);
@@ -228,6 +253,14 @@ public class OmsFileServiceImpl implements OmsFileService {
         return "操作成功";
     }
 
+    @Override
+    public OmsFile selectFileDestailNew(String fileId) {
+        if (StringUtils.isEmpty(fileId)){
+            throw new CustomMessageException("参数错误");
+        }
+        return omsFileMapper.selectById(fileId);
+    }
+
     /**
      * 关键词替换（非文件）
      * @param t
@@ -241,8 +274,8 @@ public class OmsFileServiceImpl implements OmsFileService {
             Class clazz = t.getClass();
             try {
                 String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
-                omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
-                omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value);
+                omsFile.setFrontContent(omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value));
+                omsFile.setBankContent(omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 throw new CustomMessageException("数据异常");

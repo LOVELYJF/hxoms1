@@ -286,6 +286,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
+        //约束消息检查
+        omsConditionService.remindCondition(applyId, type);
         return "操作成功";
     }
 
