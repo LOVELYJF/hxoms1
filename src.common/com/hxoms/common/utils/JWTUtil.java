@@ -40,6 +40,7 @@ public class JWTUtil {
         claims.put("userCode", user.getUserCode());
         claims.put("password", user.getPassword());
         claims.put("userName", user.getUserName());
+        claims.put("orgId", user.getOrgId());
         claims.put("loginDate", System.currentTimeMillis());
         String token = "HX" + encoder.encodeToString(JSONObject.toJSONString(claims).getBytes("UTF-8"));
         return token;
