@@ -134,6 +134,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         //基本信息保存
         //设置草稿状态
         omsPriApply.setApplyStatus(Constants.private_business[0]);
+        omsPriApply.setIsEntrust(0);
         //归还证照时间(回国后十天)
         Date revertLicenceTime = DateUtils.addDays(omsPriApply.getReturnTime(), 10);
         omsPriApply.setRevertLicenceTime(revertLicenceTime);

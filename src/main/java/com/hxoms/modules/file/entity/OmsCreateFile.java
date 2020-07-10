@@ -19,6 +19,12 @@ public class OmsCreateFile {
     @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请表ID")
     private String applyId;
 
+    @ColumnAnnotation(FieldName = "FILE_NAME",   FieldDescription="文件名称")
+    private String fileName;
+
+    @ColumnAnnotation(FieldName = "FILE_SHORTNAME",   FieldDescription="文件简称")
+    private String fileShortname;
+
     @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="文件类别（1系统 2非涉密人员 3涉密人员（原单位涉密人员） 4涉密人员（原单位脱密期人员））")
     private String fileType;
 
@@ -27,6 +33,9 @@ public class OmsCreateFile {
 
     @ColumnAnnotation(FieldName = "IS_EDIT",   FieldDescription="是否可编辑（1文件 2单页单面 3双页 4双面单页）")
     private String isEdit;
+
+    @ColumnAnnotation(FieldName = "SEAL_DESC",   FieldDescription="签字盖章描述")
+    private String sealDesc;
 
     @ColumnAnnotation(FieldName = "IS_SEALHANDLE",   FieldDescription="是否签字盖章")
     private String isSealhandle;
@@ -80,6 +89,22 @@ public class OmsCreateFile {
         this.applyId = applyId == null ? null : applyId.trim();
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName == null ? null : fileName.trim();
+    }
+
+    public String getFileShortname() {
+        return fileShortname;
+    }
+
+    public void setFileShortname(String fileShortname) {
+        this.fileShortname = fileShortname == null ? null : fileShortname.trim();
+    }
+
     public String getFileType() {
         return fileType;
     }
@@ -102,6 +127,14 @@ public class OmsCreateFile {
 
     public void setIsEdit(String isEdit) {
         this.isEdit = isEdit == null ? null : isEdit.trim();
+    }
+
+    public String getSealDesc() {
+        return sealDesc;
+    }
+
+    public void setSealDesc(String sealDesc) {
+        this.sealDesc = sealDesc == null ? null : sealDesc.trim();
     }
 
     public String getIsSealhandle() {
