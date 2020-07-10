@@ -34,6 +34,8 @@ public class PersonInfoVO {
     private String POLITICAL_AFFI;
     //民族
     private String NATION;
+    //身份证号
+    private String idnumber;
 
     public String getA0100() {
         return a0100;
@@ -113,5 +115,13 @@ public class PersonInfoVO {
 
     public void setNATION(String NATION) {
         this.NATION = NATION;
+    }
+
+    public String getIdnumber() {
+        return idnumber;
+    }
+
+    public void setIdnumber(String idnumber) {
+        this.idnumber = idnumber;
     }
 }
