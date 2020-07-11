@@ -171,7 +171,7 @@
 			b.b0101 as 'b0101',
 			a.A0101 as 'a0101',
 			GETDICTITEM('02',a.a0104,'0') as 'a0104',
-			orp.BIRTH_DATE as 'birthDate',
+			orp.BIRTH_DATE_GB as 'birthDate',
 			a.a0111a,
 			a.a0141,
 			GETDICTITEM('16',a02.a0255,'0') as 'a0255',
