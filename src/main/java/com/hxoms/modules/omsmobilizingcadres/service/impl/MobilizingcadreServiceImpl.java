@@ -48,7 +48,7 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         }
         mobilizingCadre.setId(UUIDGenerator.getPrimaryKey());
         mobilizingCadre.setCreateDate(new Date());
-        mobilizingCadre.setCreateUser(loginUser.getUserName());
+        mobilizingCadre.setCreateUser(loginUser.getId());
         //添加时将状态更改为调整期
         mobilizingCadre.setStatus(String.valueOf(Constants.mobilizing_business[0]));
         mobilizingcadreMapper.insertSelective(mobilizingCadre);
