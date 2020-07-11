@@ -167,7 +167,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		omsSupCaseInfo.setModifyTime(new Date());
 		omsSupCaseInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
 		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
-		if(count < 0){
+		if(count < 1){
 			throw new CustomMessageException("修改立案信息失败");
 		}
 	}
@@ -203,7 +203,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 				int updateCount = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
-				if(updateCount < 0){
+				if(updateCount < 1){
 					throw new CustomMessageException("更新保存到处分信息失败");
 				}
 			}else {
@@ -225,7 +225,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	@Transactional(rollbackFor=Exception.class)
 	public void removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
 		int count = omsSupCaseInfoMapper.deleteById(omsSupCaseInfo.getId());
-		if(count <= 0){
+		if(count < 1){
 			throw new CustomMessageException("删除立案信息失败");
 		}
 	}
@@ -401,7 +401,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		 omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 		 int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
-		 if(count <= 0){
+		 if(count < 1){
 			 throw new CustomMessageException("保存到处分信息失败");
 		 }
 	 }
