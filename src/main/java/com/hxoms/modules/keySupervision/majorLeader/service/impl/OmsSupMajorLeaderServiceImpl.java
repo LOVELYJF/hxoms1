@@ -117,7 +117,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-				if(count1 < 0){
+				if(count1 < 1){
 					throw new CustomMessageException("同步到备案信息表失败");
 				}
 			}
@@ -147,7 +147,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-			if(count1 < 0){
+			if(count1 < 1){
 				throw new CustomMessageException("同步到备案信息表失败");
 			}
 		}
@@ -197,7 +197,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				omsSupMajorLeader.setRank((String) mapList.get(0).get("A0221"));
 				//进行保存领导信息
 				int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
-				if(count < 0){
+				if(count < 1){
 					throw new CustomMessageException("添加主要领导信息失败");
 				}
 			}else {
@@ -212,7 +212,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
-			if(count < 0){
+			if(count < 1){
 				throw new CustomMessageException("自动标识领导同步到备案库失败");
 			}
 		}
