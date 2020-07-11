@@ -145,4 +145,13 @@ public interface SysDictItemMapper {
      * @return
      */
     List<SysDictItem> selectDisciplinaryActionType();
+
+
+    /**
+     * <b>通过政治面貌代码查询政治面貌</b>
+     * @param a3627
+     * @author luoshuai
+     * @return
+     */
+    String selectPoliticalAffiByCode(String a3627);
 }

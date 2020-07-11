@@ -156,6 +156,11 @@
         select * from `sys_dict_item` where dict_code="GB4762"
     </select>
 
+    <!-- 根据政治面貌代码查询政治面貌 -->
+    <select id="selectPoliticalAffiByCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select item_name from `sys_dict_item` where dict_code = "GB4762" and item_code = #{a3627}
+    </select>
+
     <!-- 查询人员现状 -->
     <select id="getPersonStatus" resultMap="BaseResultMap">
         select * from `sys_dict_item` where dict_code="ZB56"
