@@ -167,19 +167,19 @@
 	<!-- 查询人员信息 -->
 	<select id="selectPersonInfoForfamily" parameterType="java.util.Map" resultType="java.util.Map">
 		select
-			a.a0100,
-			b.b0101,
-			a.A0101,
+			a.a0100 as 'a0100',
+			b.b0101 as 'b0101',
+			a.A0101 as 'a0101',
 			GETDICTITEM('02',a.a0104,'0') as 'a0104',
-			a.A0107,
+			orp.BIRTH_DATE as 'birthDate',
 			a.a0111a,
 			a.a0141,
 			GETDICTITEM('16',a02.a0255,'0') as 'a0255',
-			a02.A0215A,
-			GETDICTITEM('21',a02.a0221,'0') as 'a0221'
+			a02.A0215A as 'post'
 		from a01 a
 		join a02 a02  on a.a0100 = a02.a0100
 		join b01 b  on a02.a0201b = b.b0111
+		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
 		<where>
 			<trim suffixOverrides="and">
 				<if test="idList != null">b.B0100 in
