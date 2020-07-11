@@ -26,7 +26,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -108,7 +107,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
 			omsSupNakedSign.setXzxgw("0");
 			omsSupNakedSign.setCreateTime(new Date());
-			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案库中查询人员的身份证出生日期
 			omsSupNakedSign.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupNakedSign.getA0100()));
 			//生成裸官信息主键
@@ -124,7 +123,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				//默认在非限入性岗位
 				omsRegProcpersonInfo.setXrxgw("0");
 				omsRegProcpersonInfo.setModifyTime(new Date());
-				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
@@ -146,7 +145,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	@Transactional(rollbackFor=Exception.class)
 	public void updateOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 		omsSupNakedSign.setModifyTime(new Date());
-		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
 		if(count < 1){
 			throw new CustomMessageException("修改裸官限制性岗位失败");
@@ -156,7 +155,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setXrxgw(omsSupNakedSign.getXzxgw());
 			omsRegProcpersonInfo.setModifyTime(new Date());
-			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案表中进行更新登记备案信息
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
@@ -185,7 +184,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsRegProcpersonInfo.setNf("0");
 			omsRegProcpersonInfo.setXrxgw("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
-			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupNakedSign.getA0100());

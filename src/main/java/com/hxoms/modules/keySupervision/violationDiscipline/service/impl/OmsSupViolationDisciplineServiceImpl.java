@@ -108,7 +108,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		//生成违反外事人员信息主键
 		omsSupViolationDiscipline.setId(UUIDGenerator.getPrimaryKey());
 		omsSupViolationDiscipline.setCreateTime(new Date());
-		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count =  omsSupViolationDisciplineMapper.insert(omsSupViolationDiscipline);
 		if(count < 1){
 			throw new CustomMessageException("新增违反外事纪律人员失败");
@@ -130,7 +130,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 		omsSupViolationDiscipline.setViolationEndTime(date);
 
 		omsSupViolationDiscipline.setModifyTime(new Date());
-		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
 		if(count <= 0){
 			throw new CustomMessageException("修改违反外事纪律人员失败");

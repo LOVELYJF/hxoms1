@@ -102,7 +102,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
 		omsSupDisciplinary.setId(UUIDGenerator.getPrimaryKey());
 		omsSupDisciplinary.setCreateTime(new Date());
-		omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 		int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
 		if(count <= 0){
@@ -137,7 +137,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 		omsSupDisciplinary.setModifyTime(new Date());
-		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
 			throw new CustomMessageException("修改处分信息失败");

@@ -109,7 +109,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 
 		omsSupCaseInfo.setId(UUIDGenerator.getPrimaryKey());
 		omsSupCaseInfo.setCreateTime(new Date());
-		omsSupCaseInfo.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupCaseInfo.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupCaseInfoMapper.insert(omsSupCaseInfo);
 		if(count < 1){
 			throw new CustomMessageException("操作失败");
@@ -165,7 +165,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	@Transactional(rollbackFor=Exception.class)
 	public void updateSaveCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
 		omsSupCaseInfo.setModifyTime(new Date());
-		omsSupCaseInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupCaseInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
 		if(count < 1){
 			throw new CustomMessageException("修改立案信息失败");
@@ -193,7 +193,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				//在立案信息处只能修改处分的类型和修改时间信息
 				omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
 				omsSupDisciplinary.setModifyTime(new Date());
-				omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				omsSupDisciplinary.setId(omsSupCaseInfo.getId());
 
 				//重新计算影响期
@@ -392,7 +392,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		 omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
 		 omsSupDisciplinary.setCreateTime(new Date());
 		 omsSupDisciplinary.setDisciplinaryTime(omsSupCaseInfo.getDisciplinaryTime());
-		 omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		 omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 		 //根据处分类型计算影响期及结束时间
 		 SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupCaseInfo.getDisciplinaryActionType());

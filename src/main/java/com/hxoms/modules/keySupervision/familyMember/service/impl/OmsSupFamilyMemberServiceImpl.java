@@ -173,7 +173,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	public void updateFamilyMemberInfo(List<A36> list) {
 		for(A36 a36 : list){
 			a36.setModifyTime(new Date());
-			a36.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			a36.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<A36> queryWrapper = new QueryWrapper<A36>();
 			queryWrapper.eq("a3600", a36.getA3600());
 			int count = a36Mapper.update(a36, queryWrapper);
@@ -264,7 +264,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						Date date = UtilDateTime.toDateFormat(a36.getA3607(),"yyyy-MM-dd");
 						omsRegProcpersonInfo.setBirthDate(date);
 						omsRegProcpersonInfo.setCreateTime(new Date());
-						omsRegProcpersonInfo.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+						omsRegProcpersonInfo.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 						int count = omsRegProcpersonInfoMapper.insert(omsRegProcpersonInfo);
 						if(count < 1){
@@ -294,7 +294,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						omsRegProcpersonInfo.setRegisteResidence(a36.getHukouLocation());
 						omsRegProcpersonInfo.setWorkUnit(a36.getA3611());
 						omsRegProcpersonInfo.setModifyTime(new Date());
-						omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+						omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
 						QueryWrapper<OmsRegProcpersoninfo> queryWrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
 						queryWrapper1.eq("IDNUMBER", a36.getIdCard());
@@ -343,7 +343,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					omsRegProcpersonInfo.setRfStatus("0");
 					omsRegProcpersonInfo.setCheckStatus("0");
 					omsRegProcpersonInfo.setModifyTime(new Date());
-					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					int count = omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
 					if(count < 1){
 						throw new CustomMessageException("裸官家庭成员撤销备案失败");
@@ -366,7 +366,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 							OmsRegRevokeapply omsRegRevokeApply = new OmsRegRevokeapply();
 							omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
 							omsRegRevokeApply.setCreateDate(new Date());
-							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
 							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
 							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
 							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
