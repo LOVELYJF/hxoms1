@@ -1,6 +1,7 @@
 package com.hxoms.common.utils;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -68,5 +69,21 @@ public class PageUtil<T> {
         }
         //设置传入页码，以及每页的大小
         PageHelper.startPage(pageNum, pageSize);
+    }
+    /**
+     * @Desc: 将分页信息封装到PageBean
+     * @Author: wangyunquan
+     * @Param: [pageInfo]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/3
+     */
+    public static PageBean packagePage(PageInfo<?> pageInfo) {
+        PageBean pageBean = new PageBean();
+        pageBean.setPageNum(pageInfo.getPageNum());
+        pageBean.setPageSize(pageInfo.getPageSize());
+        pageBean.setTotalSize(pageInfo.getTotal());
+        pageBean.setTotalPages(pageInfo.getPages());
+        pageBean.setContent(pageInfo.getList());
+        return pageBean;
     }
 }

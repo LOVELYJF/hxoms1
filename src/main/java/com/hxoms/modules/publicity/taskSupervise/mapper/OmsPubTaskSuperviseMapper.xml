@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.publicity.taskSupervise.mapper.OmsPubTaskSuperviseMapper">
+    <resultMap id="ztDwMap" type="com.hxoms.modules.publicity.taskSupervise.entity.ZtDwTreeVO">
+        <result column="year"  property="year"></result>
+        <collection property="ztDwList" ofType="com.hxoms.modules.publicity.taskSupervise.entity.ZtDwVo">
+            <result column="ZTDW"  property="ztDw"></result>
+        </collection>
+    </resultMap>
+    <select id="selectZtDwApplyList" parameterType="java.lang.String" resultMap="ztDwMap">
+        SELECT
+            DATE_FORMAT(c.CGSJ, '%Y') AS 'year',
+            c.ZTDW
+        FROM
+            cf_user a
+        INNER JOIN b01 b ON a.org_id = b.b0111
+        INNER JOIN oms_pub_apply c ON b.b0100 = c.B0100
+        WHERE
+            a.user_id = #{id}
+        GROUP BY
+            DATE_FORMAT(c.CGSJ, '%Y'),
+            c.ZTDW
+        ORDER BY
+            year DESC
+    </select>
+
+    <resultMap id="ztDwPersionMap" type="com.hxoms.modules.publicity.taskSupervise.entity.ZtDwPersionVO">
+        <id column="ID"  property="id"/>
+        <result column="SQZT"  property="sqzt"/>
+        <result column="ZTDW"  property="ztdw"/>
+        <result column="CGSPDW"  property="cgspdw"/>
+        <result column="WORK_UNIT"  property="workUnit"/>
+        <result column="NAME"  property="name"/>
+        <result column="SEX"  property="sex"/>
+        <result column="BIRTH_DATE" property="birthDate"/>
+        <result column="POLITICAL_AFFINAME"  property="politicalAffiName"/>
+        <result column="POST"  property="post"/>
+        <result column="CGSJ" property="cgsj"/>
+        <result column="HGSJ" property="hgsj"/>
+        <result column="SDGJ"  property="sdgj"/>
+        <result column="CFRW"  property="cfrw"/>
+        <result column="BAH"  property="bah"/>
+        <result column="SMDJ"  property="smdj"/>
+        <result column="MAIN_LEADER"  property="mainLeader"/>
+        <result column="SFBG"  property="sfbg"/>
+        <result column="ZZJL"  property="zzjl"/>
+    </resultMap>
+    <sql id="sql_seleteZtDwPersion">
+        SELECT
+            a.ID,
+            a.SQZT,
+            a.ZTDW,
+            a.CGSPDW,
+            b.WORK_UNIT,
+            CONCAT(b.SURNAME, b. NAME) NAME,
+            b.SEX,
+            b.BIRTH_DATE,
+            b.POLITICAL_AFFINAME,
+            b.POST,
+            date_format(a.CGSJ,'%Y.%m.%d') CGSJ,
+            date_format(a.HGSJ,'%Y.%m.%d') HGSJ,
+            a.SDGJ,
+            a.CFRW,
+            a.BAH,
+            a.SMDJ,
+            b.MAIN_LEADER,
+            a.SFBG,
+            a.ZZJL
+        FROM
+        cf_user u
+        INNER JOIN b01 d ON u.org_id = d.b0111
+        INNER JOIN oms_pub_apply a ON d.b0100 = a.B0100
+        INNER JOIN oms_reg_procpersoninfo b ON a.A0100 = b.A0100
+        WHERE
+            u.user_id = #{id}
+    </sql>
+    <select id="selectZtDwPersonAll" parameterType="java.lang.String" resultMap="ztDwPersionMap">
+        <include refid="sql_seleteZtDwPersion"/>
+        and ZTDW=#{ztDwName}
+        and DATE_FORMAT(CGSJ,'%Y')=#{year}
+    </select>
+
+
+    <select id="selectZtDwPersonByQuaAll" parameterType="com.hxoms.modules.publicity.taskSupervise.entity.ZtDwPersionQuery" resultMap="ztDwPersionMap">
+        <include refid="sql_seleteZtDwPersion"/>
+        <if test="ztDwName!=null and ztDwName!=''">
+            and a.ZTDW=#{ztDwName}
+        </if>
+        <if test="sqzt!=null and sqzt!=''">
+            and a.SQZT=#{sqzt}
+        </if>
+        <if test="startDate!=null">
+            and a.CGSJ&gt;=#{startDate}
+        </if>
+        <if test="endDate!=null">
+            and a.CGSJ&lt;=#{endDate}
+        </if>
+    </select>
+    <select id="selectById" parameterType="java.lang.String" resultType="com.hxoms.modules.publicity.taskSupervise.entity.UrgeParameterVO">
+        SELECT
+            b.b0111 orgId,
+            p.WORK_UNIT workUnit,
+            CONCAT(p.SURNAME, p.NAME) name,
+            DATEDIFF(DATE_FORMAT(a.cgsj, '%Y-%m-%d'),NOW()) days,
+            a.sqzt
+        FROM
+            oms_pub_apply a
+        INNER JOIN
+            oms_reg_procpersoninfo p ON  a.a0100=p.a0100
+        INNER JOIN
+            b01 b ON a.b0100=b.b0100
+        WHERE
+            a.id = #{id}
+    </select>
+    <select id="selectUserByQua" parameterType="java.lang.String" resultType="com.hxoms.support.user.entity.User">
+        SELECT
+            user_id id,
+            user_name userName
+        FROM
+            cf_user
+        WHERE
+            user_type=#{userType}
+        <if test="orgId!=null and orgId!=''">
+            and org_id = #{orgId}
+        </if>
+    </select>
+</mapper>
