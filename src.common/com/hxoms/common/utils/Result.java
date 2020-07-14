@@ -1,6 +1,7 @@
 package com.hxoms.common.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
@@ -17,29 +18,34 @@ public class Result implements Serializable {
     /**
      * 返回的编码
      */
+    @ApiModelProperty("返回的编码")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int code;
 
     /**
      * 返回的消息
      */
+    @ApiModelProperty("返回的消息")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String msg;
     /**
      * 返回的数据
      */
+    @ApiModelProperty("返回的数据")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
 
     /**
      * 返回的token
      */
+    @ApiModelProperty("返回的token")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String token;
 
     /**
      * 返回的token
      */
+    @ApiModelProperty("返回的token")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long total;
 
