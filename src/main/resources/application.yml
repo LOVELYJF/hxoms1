@@ -11,7 +11,7 @@ spring:
 #            driver-class-name: dm.jdbc.driver.DmDriver
       username: hxoms
       password: Hxyz-2020#
-      url: jdbc:mysql://www.24hbs.cn:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      url: jdbc:mysql://118.24.11.160:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
       #username: root
       #password: 123456
       #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
@@ -28,8 +28,6 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 1000MB
-
-
 
 logging:
   config: classpath:log4j2.xml
@@ -58,6 +56,11 @@ mybatis-plus:
 omsFile:
   baseDir: E:/oms #文件存储的路径
 #    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
+
+file:
+  ueditorImgUrl: /ueditorImgUrl/ #富文本上传图片路径虚拟
+  ueditorRealImgUrl: E:/ueditorImgUrl/ #富文本上传图片路径真实
+
 
 #职务code
 postcode:
