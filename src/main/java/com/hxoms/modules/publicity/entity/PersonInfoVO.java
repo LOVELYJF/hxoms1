@@ -25,7 +25,7 @@ public class PersonInfoVO {
     //职务
     private String job;
     //机构
-    private String b0100;
+    private String b0111;
     //单位名称
     private String b0101;
     //状态
@@ -77,13 +77,7 @@ public class PersonInfoVO {
         this.job = job;
     }
 
-    public String getB0100() {
-        return b0100;
-    }
 
-    public void setB0100(String b0100) {
-        this.b0100 = b0100;
-    }
 
     public String getB0101() {
         return b0101;
@@ -123,5 +117,13 @@ public class PersonInfoVO {
 
     public void setIdnumber(String idnumber) {
         this.idnumber = idnumber;
+    }
+
+    public String getB0111() {
+        return b0111;
+    }
+
+    public void setB0111(String b0111) {
+        this.b0111 = b0111;
     }
 }
