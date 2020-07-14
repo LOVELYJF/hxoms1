@@ -6,7 +6,9 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <b>处分信息模块业务层接口</b>
@@ -64,4 +66,14 @@ public interface OmsSupDisciplinaryService {
 	 * @return
 	 */
 	void getDisciplinaryInfoOut(List<String> idList, OmsSupDisciplinary omsSupDisciplinary, HttpServletResponse response);
+
+
+	/**
+	 * <b>功能描述: 根据处分类型和处分时间计算影响期</b>
+	 * @Param: [omsSupDisciplinary]
+	 * @Return: com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 9:28
+	 */
+	OmsSupDisciplinary getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary);
 }

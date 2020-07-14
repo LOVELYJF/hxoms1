@@ -96,12 +96,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Transactional(rollbackFor=Exception.class)
 	public void addViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 
-		//根据违反外事记录类型计算影响期及结束时间
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
-		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
-		omsSupViolationDiscipline.setViolationEndTime(date);
-
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupViolationDiscipline.getA0100());
 		omsSupViolationDiscipline.setPinyin((String)list.get(0).get("a0102"));
@@ -122,12 +116,6 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
-
-		//根据违反外事记录类型计算影响期及结束时间
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
-		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
-		omsSupViolationDiscipline.setViolationEndTime(date);
 
 		omsSupViolationDiscipline.setModifyTime(new Date());
 		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());

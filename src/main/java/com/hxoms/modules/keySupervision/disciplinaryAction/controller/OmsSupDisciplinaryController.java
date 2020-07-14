@@ -10,7 +10,9 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <b>处分信息模块控制器</b>
@@ -97,6 +99,20 @@ public class OmsSupDisciplinaryController extends BaseController {
 	public void getDisciplinaryInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                   OmsSupDisciplinary omsSupDisciplinary){
 		omsSupDisciplinaryService.getDisciplinaryInfoOut(idList,omsSupDisciplinary,response);
+	}
+
+
+	/**
+	 * <b>功能描述: 根据处分类型和处分时间计算影响期</b>
+	 * @Param: [omsSupDisciplinary]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 9:28
+	 */
+	@GetMapping("getInfluenceAndTime")
+	public Result getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary){
+		omsSupDisciplinary =  omsSupDisciplinaryService.getInfluenceAndTime(omsSupDisciplinary);
+		return Result.success(omsSupDisciplinary);
 	}
 
 }

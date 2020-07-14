@@ -196,7 +196,6 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				omsSupDisciplinary.setId(omsSupCaseInfo.getId());
 
-				//重新计算影响期
 				SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupCaseInfo.getDisciplinaryActionType());
 				omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
 				Date date = UtilDateTime.getEndDateByMonth(omsSupCaseInfo.getDisciplinaryTime(), sysDictItem.getItemNum());
