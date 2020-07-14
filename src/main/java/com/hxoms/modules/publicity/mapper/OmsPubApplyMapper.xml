@@ -266,8 +266,8 @@
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
     SELECT
-    *
-    FROM  OMS_PERSONINFO P
+    op.*,orp.IDNUMBER as idnumber
+    from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
     where p.b0100=#{b0100}
   </select>
     <select id="selectBasePersonInfo" resultType="java.util.Map">
@@ -275,7 +275,7 @@
         ,p.SEX
         ,p.BIRTH_DATE
         ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
-        ,p.POLITICAL_AFFI
+        ,p.POLITICAL_AFFINAME
         ,p.HEALTH
         ,p.A0100
         ,p.SECRET_LEVEL
@@ -319,8 +319,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -365,8 +365,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -414,8 +414,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -445,8 +445,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.IDNUMBER
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
@@ -477,8 +477,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
