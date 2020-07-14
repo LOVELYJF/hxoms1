@@ -20,11 +20,11 @@
 	<select id="getCountryInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
 		select * from country
 		<where>
-			<trim suffixOverrides="and">
-				<if test="nameZh != null">NAME_ZH like concat('%',#{nameZh},'%') and </if>
-				<if test="sensitiveLimitId != null">ID in
-				(select COUNTRY_ID from oms_sensitive_maintain where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}) and </if>
-			</trim>
+			<if test="nameZh != null">
+				NAME_ZH like concat('%',#{nameZh},'%')
+				or
+				NAME_INTERNATIONAL_ABBR like concat('%',#{nameZh},'%')
+			</if>
 		</where>
 	</select>
 
