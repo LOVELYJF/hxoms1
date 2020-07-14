@@ -15,11 +15,9 @@ public class PersonnelPageParam {
     public Integer getPageNum() {
         return pageNum;
     }
-
     public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
     }
-
     public Integer getPageSize() {
         return pageSize;
     }
