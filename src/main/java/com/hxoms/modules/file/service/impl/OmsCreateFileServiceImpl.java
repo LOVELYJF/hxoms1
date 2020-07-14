@@ -31,7 +31,7 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
             throw new CustomMessageException("参数错误");
         }
         QueryWrapper<OmsCreateFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("ID","FILE_ID","APPLY_ID","IS_EDIT", "IS_SEALHANDLE","CHECK_ADVICES")
+        queryWrapper.select("ID","FILE_ID","APPLY_ID","IS_EDIT", "IS_SEALHANDLE","CHECK_ADVICES","SEAL_DESC","FILE_NAME","FILE_SHORTNAME")
                 .eq("TABLE_CODE", tableCode)
                 .eq("APPLY_ID", applyId);
         return omsCreateFileMapper.selectList(queryWrapper);
@@ -52,9 +52,8 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
             }
         }else{
             //修改
-            omsCreateFile.setModifyUser(userInfo.getId());
             omsCreateFile.setModifyTime(new Date());
-            omsCreateFile.setIsSealhandle("0");
+            omsCreateFile.setModifyUser(userInfo.getId());
             if (omsCreateFileMapper.updateById(omsCreateFile) < 1){
                 throw new CustomMessageException("操作失败");
             }

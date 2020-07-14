@@ -70,7 +70,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 
 		omsSupPatrolUnit.setId(UUIDGenerator.getPrimaryKey());
 		omsSupPatrolUnit.setCreateTime(new Date());
-		omsSupPatrolUnit.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupPatrolUnit.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupPatrolUnitMapper.insert(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("增加被巡视单位失败");
@@ -87,7 +87,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	public void updatePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
 		//根据主键修改
 		omsSupPatrolUnit.setModifyTime(new Date());
-		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupPatrolUnitMapper.updateById(omsSupPatrolUnit);
 		if(count <= 0){
 			throw new CustomMessageException("修改被巡视单位失败");

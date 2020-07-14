@@ -65,7 +65,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/6/28 10:15
      */
-    List<OmsPubApply> getPubAppListByCondition(@Param("sqzt") List<String> status, @Param("name") String name, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj, @Param("ztdw") String ztdw, @Param("pwh") String pwh);
+    List<OmsPubApplyVO> getPubAppListByCondition(@Param("sqzt") List<String> status, @Param("name") String name, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj, @Param("ztdw") String ztdw, @Param("pwh") String pwh);
 
     /**
      * 功能描述: <br>
@@ -77,7 +77,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      */
     void repealAllPubApplyByPwh(@Param("pwh")String pwh, @Param("cxyy")String cxyy,@Param("sqzt")String sqzt);
 
-    List<OmsPubApply> selectPubApplyListByPwh(String pwh);
+    List<OmsPubApplyVO> selectPubApplyListByPwh(String pwh);
 
     void repealPubApplyById(@Param("id") String id,@Param("cxyy") String cxyy,@Param("sqzt") String sqzt);
 
@@ -86,4 +86,13 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
     List<OmsPubApplyVO> selectByYSPId(@Param("yspId") String yspId);
 
     void deletePubApplyByYSPId(String id);
+    /**
+     * 功能描述: <br>
+     * 〈根据经办人名字及状态查询未完结的备案申请，〉
+     * @Param:
+     * @Return:
+     * @Author: 李逍遥
+     * @Date: 2020/7/10 9:04
+     */
+    List<OmsPubApplyVO> selectPubAllyByStatusAndName(@Param("createUser") String createUser,@Param("sqzt") int sqzt);
 }

@@ -96,19 +96,13 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Transactional(rollbackFor=Exception.class)
 	public void addViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 
-		//根据违反外事记录类型计算影响期及结束时间
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
-		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
-		omsSupViolationDiscipline.setViolationEndTime(date);
-
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupViolationDiscipline.getA0100());
 		omsSupViolationDiscipline.setPinyin((String)list.get(0).get("a0102"));
 		//生成违反外事人员信息主键
 		omsSupViolationDiscipline.setId(UUIDGenerator.getPrimaryKey());
 		omsSupViolationDiscipline.setCreateTime(new Date());
-		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count =  omsSupViolationDisciplineMapper.insert(omsSupViolationDiscipline);
 		if(count < 1){
 			throw new CustomMessageException("新增违反外事纪律人员失败");
@@ -123,14 +117,8 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	@Transactional(rollbackFor=Exception.class)
 	public void updateViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
 
-		//根据违反外事记录类型计算影响期及结束时间
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupViolationDiscipline.getViolationDisType());
-		omsSupViolationDiscipline.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupViolationDiscipline.getViolationDisTime(), sysDictItem.getItemNum());
-		omsSupViolationDiscipline.setViolationEndTime(date);
-
 		omsSupViolationDiscipline.setModifyTime(new Date());
-		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
 		if(count <= 0){
 			throw new CustomMessageException("修改违反外事纪律人员失败");

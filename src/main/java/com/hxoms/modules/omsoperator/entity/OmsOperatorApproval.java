@@ -27,9 +27,9 @@ public class OmsOperatorApproval {
     private String operatorid;
 
     /**
-     * 步骤名称（1.征求意见 2.干部监督处审批）
+     * 步骤名称（1.干部监督处审批 2.部长审批）
      */
-    @ColumnAnnotation(FieldName = "StepName",  FieldDescription="步骤名称（1.征求意见 2.干部监督处审批）")
+    @ColumnAnnotation(FieldName = "StepName",  FieldDescription="步骤名称（1.干部监督处审批 2.部长审批）")
     private String stepname;
 
     /**

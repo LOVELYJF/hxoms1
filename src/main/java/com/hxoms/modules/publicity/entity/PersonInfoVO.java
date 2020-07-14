@@ -24,8 +24,10 @@ public class PersonInfoVO {
     private Date birthDate;
     //职务
     private String job;
-    //机构
+    //单位id
     private String b0100;
+    //机构id
+    private String b0111;
     //单位名称
     private String b0101;
     //状态
@@ -34,6 +36,8 @@ public class PersonInfoVO {
     private String POLITICAL_AFFI;
     //民族
     private String NATION;
+    //身份证号
+    private String idnumber;
 
     public String getA0100() {
         return a0100;
@@ -113,5 +117,21 @@ public class PersonInfoVO {
 
     public void setNATION(String NATION) {
         this.NATION = NATION;
+    }
+
+    public String getIdnumber() {
+        return idnumber;
+    }
+
+    public void setIdnumber(String idnumber) {
+        this.idnumber = idnumber;
+    }
+
+    public String getB0111() {
+        return b0111;
+    }
+
+    public void setB0111(String b0111) {
+        this.b0111 = b0111;
     }
 }

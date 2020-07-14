@@ -65,6 +65,7 @@ public class LoginController {
         map.put("name", user.getUserName());
         map.put("userId", user.getId());
         map.put("orgId",user.getOrgId());
+        map.put("orgName",user.getOrgName());
         //map.put("modules", grantModules);
         return Result.success().setData(map).setToken(token);
     }

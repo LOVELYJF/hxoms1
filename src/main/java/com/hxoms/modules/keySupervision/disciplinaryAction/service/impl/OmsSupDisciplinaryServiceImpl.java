@@ -91,18 +91,13 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
-		//根据处分类型ID查询处分信息，计算影响期和结束时间
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
-		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
-		omsSupDisciplinary.setDisciplinaryEndTime(date);
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
 		omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
 		omsSupDisciplinary.setId(UUIDGenerator.getPrimaryKey());
 		omsSupDisciplinary.setCreateTime(new Date());
-		omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 		int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
 		if(count <= 0){
@@ -130,14 +125,8 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
 
-		//重新计算影响期（根据处分类型计算影响期和结束时间）
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
-		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
-		omsSupDisciplinary.setDisciplinaryEndTime(date);
-
 		omsSupDisciplinary.setModifyTime(new Date());
-		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDisciplinaryMapper.updateById(omsSupDisciplinary);
 		if(count <= 0){
 			throw new CustomMessageException("修改处分信息失败");
@@ -288,5 +277,22 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 		}
 
 
+	}
+
+
+	/**
+	 * <b>功能描述: 根据处分类型和处分时间计算影响期</b>
+	 * @Param: [omsSupDisciplinary]
+	 * @Return: com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 9:28
+	 */
+	public OmsSupDisciplinary getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary) {
+		//计算影响期
+		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
+		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
+		omsSupDisciplinary.setDisciplinaryEndTime(date);
+		return omsSupDisciplinary;
 	}
 }

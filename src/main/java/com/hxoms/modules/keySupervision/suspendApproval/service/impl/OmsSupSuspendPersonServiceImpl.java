@@ -78,9 +78,9 @@ public class OmsSupSuspendPersonServiceImpl extends ServiceImpl<OmsSupSuspendPer
 		OmsSupSuspendPerson omsSupSuspendPerson = new OmsSupSuspendPerson();
 		omsSupSuspendPerson.setStatus("1");
 		omsSupSuspendPerson.setModifyTime(new Date());
-		omsSupSuspendPerson.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupSuspendPerson.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupSuspendPersonMapper.update(omsSupSuspendPerson, queryWrapper);
-		if(count < 0){
+		if(count < 1){
 			throw new CustomMessageException("修改审批状态失败");
 		}
 	}

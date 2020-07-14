@@ -12,11 +12,9 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
-import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
-import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -45,8 +43,6 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
 	@Autowired
 	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
-	@Autowired
-	private B01Mapper b01Mapper;
 	@Autowired
 	private A01Mapper a01Mapper;
 	@Autowired
@@ -101,7 +97,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			omsSupMajorLeader.setPinyin((String) list.get(0).get("a0102"));
 			omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 			omsSupMajorLeader.setCreateTime(new Date());
-			omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+			omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 			//在登记备案库中查询人员的身份证出生日期
 			omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
@@ -113,11 +109,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 				omsRegProcpersonInfo.setMainLeader("1");
 				omsRegProcpersonInfo.setModifyTime(new Date());
-				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 				int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-				if(count1 < 0){
+				if(count1 < 1){
 					throw new CustomMessageException("同步到备案信息表失败");
 				}
 			}
@@ -143,11 +139,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setMainLeader("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
-			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			queryWrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count1 = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-			if(count1 < 0){
+			if(count1 < 1){
 				throw new CustomMessageException("同步到备案信息表失败");
 			}
 		}
@@ -191,13 +187,13 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				//在登记备案库中查询人员的身份证出生日期
 				omsSupMajorLeader.setBirthDate(omsRegProcpersonInfoService.getOmsRegProcpersonBirthDate(omsSupMajorLeader.getA0100()));
 				omsSupMajorLeader.setCreateTime(new Date());
-				omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+				omsSupMajorLeader.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 				omsSupMajorLeader.setPost((String) mapList.get(0).get("a0215a"));
 				omsSupMajorLeader.setRank((String) mapList.get(0).get("A0221"));
 				//进行保存领导信息
 				int count = omsSupMajorLeaderMapper.insert(omsSupMajorLeader);
-				if(count < 0){
+				if(count < 1){
 					throw new CustomMessageException("添加主要领导信息失败");
 				}
 			}else {
@@ -208,11 +204,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setMainLeader("1");
 			omsRegProcpersonInfo.setModifyTime(new Date());
-			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 			wrapper.eq("A0100", omsSupMajorLeader.getA0100());
 			int count = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, wrapper);
-			if(count < 0){
+			if(count < 1){
 				throw new CustomMessageException("自动标识领导同步到备案库失败");
 			}
 		}

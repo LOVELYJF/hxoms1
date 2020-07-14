@@ -142,7 +142,7 @@
 
   <!--通过人员id查询因私出国申请所需用户信息-->
   <select id="selectPersonByKeyword" parameterType="java.lang.String" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
-    select op.*
+    select op.*,orp.IDNUMBER as idnumber
     from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
     where
       op.name like CONCAT('%',#{keyword},'%')

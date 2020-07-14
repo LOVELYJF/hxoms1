@@ -148,6 +148,14 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
+		//根据身份证号码切割得到出生日期
+		if(list != null && list.size() > 0){
+			for(A36 a36 : list){
+				String birthdate = OmsRegInitUtil.getBirthByIdNumber(a36.getIdCard());
+				a36.setA3607(birthdate);
+			}
+		}
+
 		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
 		page.setRecords(list);
 		page.setTotal(pageInfo.getTotal());
@@ -165,11 +173,11 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	public void updateFamilyMemberInfo(List<A36> list) {
 		for(A36 a36 : list){
 			a36.setModifyTime(new Date());
-			a36.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+			a36.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<A36> queryWrapper = new QueryWrapper<A36>();
 			queryWrapper.eq("a3600", a36.getA3600());
 			int count = a36Mapper.update(a36, queryWrapper);
-			if(count < 0){
+			if(count < 1){
 				throw new CustomMessageException("更新保存家庭成员信息失败");
 			}
 		}
@@ -217,7 +225,12 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						//登记备案库中没有该人员，进行添加
 						OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 						//限制性岗位的裸官家属职务设置为'801'或'802'
-						omsRegProcpersonInfo.setPost("801");
+						String a3604a = a36.getA3604a();
+						if(a3604a.equals("妻子") || a3604a.equals("丈夫")){
+							omsRegProcpersonInfo.setPost("801");
+						}else {
+							omsRegProcpersonInfo.setPost("802");
+						}
 
 						//判断是否复姓
 						boolean flag = OmsRegInitUtil.isCompoundSurname(a36.getA3601());
@@ -230,16 +243,14 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						}
 
 						//生成备案人员主键
-						omsRegProcpersonInfo.setA0100(a36.getA0100());
 						omsRegProcpersonInfo.setId(UUIDGenerator.getPrimaryKey());
 						omsRegProcpersonInfo.setInboundFlag("U");
 						omsRegProcpersonInfo.setRfStatus("1");
 						omsRegProcpersonInfo.setCheckStatus("1");
 						omsRegProcpersonInfo.setIncumbencyStatus("1");
-						omsRegProcpersonInfo.setDataType("1");
-						omsRegProcpersonInfo.setIdentity("裸官配偶子女");
+						omsRegProcpersonInfo.setIdentity("其他人员");
+						omsRegProcpersonInfo.setIdentityCode("9");
 						omsRegProcpersonInfo.setSecretLevel("非涉密");
-						omsRegProcpersonInfo.setFjgnf("1");
 						omsRegProcpersonInfo.setRegisteResidence(a36.getHukouLocation());
 						omsRegProcpersonInfo.setIdnumber(a36.getIdCard());
 						omsRegProcpersonInfo.setWorkUnit(a36.getA3611());
@@ -248,23 +259,43 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						List<String> politicalAffiList = a36Mapper.selectPiliticalAffi(a36.getA3600());
 						//根据人员主键应该只能查到一个人员信息，因此取第一个
 						omsRegProcpersonInfo.setPoliticalAffiname(politicalAffiList.get(0));
+						omsRegProcpersonInfo.setPoliticalAfficode(a36.getA3627());
 
 						Date date = UtilDateTime.toDateFormat(a36.getA3607(),"yyyy-MM-dd");
 						omsRegProcpersonInfo.setBirthDate(date);
 						omsRegProcpersonInfo.setCreateTime(new Date());
-						omsRegProcpersonInfo.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+						omsRegProcpersonInfo.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
 						int count = omsRegProcpersonInfoMapper.insert(omsRegProcpersonInfo);
-						if(count <= 0){
+						if(count < 1){
 							throw new CustomMessageException("家庭成员备案失败");
 						}
 					}else {
 						//登记备案库中 已经存在该人员，进行更新操作，根据身份证号码修改
 						OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+
+						//判断是否复姓
+						boolean flag = OmsRegInitUtil.isCompoundSurname(a36.getA3601());
+						if(flag){
+							omsRegProcpersonInfo.setSurname(a36.getA3601().substring(0, 2));
+							omsRegProcpersonInfo.setName(a36.getA3601().substring(2));
+						}else {
+							omsRegProcpersonInfo.setSurname(a36.getA3601().substring(0, 1));
+							omsRegProcpersonInfo.setName(a36.getA3601().substring(1));
+						}
+						Date date = UtilDateTime.toDateFormat(a36.getA3607(),"yyyy-MM-dd");
+						omsRegProcpersonInfo.setBirthDate(date);
+						//政治面貌代码
 						omsRegProcpersonInfo.setPoliticalAfficode(a36.getA3627());
-						omsRegProcpersonInfo.setPost("801");
-						omsRegProcpersonInfo.setNationCode(a36.getNationality().toString());
+						//根据政治面貌代码查询政治面貌
+						String politicalAffi = sysDictItemMapper.selectPoliticalAffiByCode(a36.getA3627());
+						omsRegProcpersonInfo.setPoliticalAffiname(politicalAffi);
+
 						omsRegProcpersonInfo.setRegisteResidence(a36.getHukouLocation());
+						omsRegProcpersonInfo.setWorkUnit(a36.getA3611());
+						omsRegProcpersonInfo.setModifyTime(new Date());
+						omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
+
 						QueryWrapper<OmsRegProcpersoninfo> queryWrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
 						queryWrapper1.eq("IDNUMBER", a36.getIdCard());
 						omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper1);
@@ -274,7 +305,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				}
 			}
 		}else {
-			throw new CustomMessageException("未选择要备案的人员信息");
+			throw new CustomMessageException("请选择要备案的人员信息");
 		}
 	}
 
@@ -311,11 +342,10 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					omsRegProcpersonInfo.setInboundFlag("D");
 					omsRegProcpersonInfo.setRfStatus("0");
 					omsRegProcpersonInfo.setCheckStatus("0");
-					omsRegProcpersonInfo.setFjgnf("0");
 					omsRegProcpersonInfo.setModifyTime(new Date());
-					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					int count = omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
-					if(count < 0){
+					if(count < 1){
 						throw new CustomMessageException("裸官家庭成员撤销备案失败");
 					}else{
 						if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
@@ -335,9 +365,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						if(flag == false){
 							OmsRegRevokeapply omsRegRevokeApply = new OmsRegRevokeapply();
 							omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
-							omsRegRevokeApply.setA0100(omsRegProcpersonInfo.getA0100());
 							omsRegRevokeApply.setCreateDate(new Date());
-							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
 							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
 							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
 							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
@@ -346,12 +375,13 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
 							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
 							omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
+							omsRegRevokeApply.setIdentityCode(omsRegProcpersonInfo.getIdentityCode());
 							omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yyyy-MM-dd"));
 							omsRegRevokeApply.setStatus("0");
 							omsRegRevokeApply.setApplyReason("裸官取消限制性岗位");
 
 							int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
-							if(result < 0){
+							if(result < 1){
 								throw new CustomMessageException("保存到撤销登记备案失败");
 							}
 						}

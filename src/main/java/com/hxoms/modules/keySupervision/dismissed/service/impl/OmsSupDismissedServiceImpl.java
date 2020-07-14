@@ -91,7 +91,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 		omsSupDismissed.setPinyin((String)list.get(0).get("a0102"));
 		omsSupDismissed.setId(UUIDGenerator.getPrimaryKey());
 		omsSupDismissed.setCreateTime(new Date());
-		omsSupDismissed.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDismissed.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDismissedMapper.insert(omsSupDismissed);
 		if(count <= 0){
 			throw new CustomMessageException("添加免职撤职人员失败");
@@ -107,7 +107,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDismissedInfo(OmsSupDismissed omsSupDismissed) {
 		omsSupDismissed.setModifyTime(new Date());
-		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getUserName());
+		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
 		if(count <= 0){
 			throw new CustomMessageException("修改免职撤职人员失败");

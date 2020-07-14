@@ -16,6 +16,8 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     private String b0101;
 
+    private String idnumber;
+
     public String getB0101() {
         return b0101;
     }
@@ -46,5 +48,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIdnumber() {
+        return idnumber;
+    }
+
+    public void setIdnumber(String idnumber) {
+        this.idnumber = idnumber;
     }
 }

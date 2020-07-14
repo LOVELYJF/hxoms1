@@ -40,7 +40,7 @@ public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandling
         if (specialCaseHandling.getId() != null && !specialCaseHandling.getId().equals("")){
             //修改
             //修改人
-            specialCaseHandling.setModifyUser(loginUser.getUserName());
+            specialCaseHandling.setModifyUser(loginUser.getId());
             //修改时间
             specialCaseHandling.setModifyTime(new Date());
             specialcasehandlingMapper.updateByPrimaryKeySelective(specialCaseHandling);
@@ -48,7 +48,7 @@ public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandling
             //新增
             specialCaseHandling.setId(UUIDGenerator.getPrimaryKey());
             //创建人
-            specialCaseHandling.setCreateUser(loginUser.getUserName());
+            specialCaseHandling.setCreateUser(loginUser.getId());
             //创建时间
             specialCaseHandling.setCreateDate(new Date());
             specialcasehandlingMapper.insertSelective(specialCaseHandling);

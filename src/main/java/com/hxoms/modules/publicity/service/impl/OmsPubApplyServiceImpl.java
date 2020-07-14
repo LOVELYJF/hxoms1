@@ -117,7 +117,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(omsPubApply.getId())) {
             omsPubApply.setId(primaryKey);
             //创建人
-            omsPubApply.setCreateUser(loginUser.getUserName());
+            omsPubApply.setCreateUser(loginUser.getId());
             //创建时间
             omsPubApply.setCreateTime(new Date());
             //申请状态
@@ -138,7 +138,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     // 事由
                     omsPubGroupPreApproval.setCfsy(omsPubApply.getCfsy());
                     //创建人
-                    omsPubGroupPreApproval.setCreateUser(loginUser.getUserName());
+                    omsPubGroupPreApproval.setCreateUser(loginUser.getId());
                     //创建时间
                     omsPubGroupPreApproval.setCreateTime(new Date());
                     //申请状态
@@ -249,7 +249,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String name = omsPubApplyQueryParam.getName();
         /** 通知书文号*/
         String pwh = omsPubApplyQueryParam.getPwh();
-        List<OmsPubApply> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh);
+        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh);
         PageInfo info = new PageInfo(list);
         return info;
     }
@@ -272,7 +272,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             throw new CustomMessageException("撤销原因为空!");
         }
         //查询相关通知书文号的备案申请
-        List<OmsPubApply> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
+        List<OmsPubApplyVO> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
         if (list != null && list.size()>0){
             String sqzt = String.valueOf(Constants.private_business[31]);
             omsPubApplyMapper.repealAllPubApplyByPwh(pwh,cxyy,sqzt);
@@ -355,7 +355,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         //保存台办变更信息、
         omsPubApplyChange.setId(UUIDGenerator.getPrimaryKey());
-        omsPubApplyChange.setModifyUser(loginUser.getUserName());
+        omsPubApplyChange.setModifyUser(loginUser.getId());
         omsPubApplyChange.setModifyTime(new Date());
         omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
         // 更新预备案申请表、
@@ -388,7 +388,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         // 修改时间、
         omsPubApply.setModifyTime(new Date());
         // 修改人、
-        omsPubApply.setModifyUser(loginUser.getUserName());
+        omsPubApply.setModifyUser(loginUser.getId());
         // 修改时申请状态
         omsPubApply.setSqzt(omsPubApplyChange.getSqzt());
         omsPubApplyMapper.updateByPwh(omsPubApply);
@@ -435,7 +435,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //备案主体
             omsPubGroupPreApproval.setBazt(1);
             //创建人、
-            omsPubGroupPreApproval.setCreateUser(loginUser.getUserName());
+            omsPubGroupPreApproval.setCreateUser(loginUser.getId());
             // 创建时间
             omsPubGroupPreApproval.setCreateTime(new Date());
             //申请状态
@@ -472,7 +472,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());//出访事由
                     //申请状态
 
-                    omsPubApply.setCreateUser(loginUser.getUserName());//创建人
+                    omsPubApply.setCreateUser(loginUser.getId());//创建人
                     omsPubApply.setCreateTime(new Date());//创建时间
                     omsPubApplyMapper.insert(omsPubApply);
                     //判断校验类型
@@ -507,7 +507,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyChange.setXcfsy(omsPubGroupPreApproval.getCfsy());//现出访事由
             omsPubApplyChange.setXsdgj(omsPubGroupPreApproval.getSdgj());//现出访国
             omsPubApplyChange.setXtjgj(omsPubGroupPreApproval.getTjgj());//现途径国
-            omsPubApplyChange.setModifyUser(loginUser.getUserName());//修改人
+            omsPubApplyChange.setModifyUser(loginUser.getId());//修改人
             omsPubApplyChange.setModifyTime(new Date());//修改时间
             //修改时状态
 
@@ -521,7 +521,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     omsPubApply.setCfrw(omsPubGroupPreApproval.getCfrw());//现出访任务
                     omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());//现出访事由
                     omsPubApply.setSdgj(omsPubGroupPreApproval.getSdgj());//现出访国
-                    omsPubApply.setModifyUser(loginUser.getUserName());//修改人
+                    omsPubApply.setModifyUser(loginUser.getId());//修改人
                     omsPubApply.setModifyTime(new Date());//修改时间
                     //修改时状态
 

@@ -70,10 +70,13 @@ public class SysUserServiceImpl implements SysUserService {
         if (loginUser == null){
             throw new CustomMessageException("登录用户不能为空!");
         }
+        if (user.getUserState() == null || user.getUserState().equals("")){
+            user.setUserState("1");
+        }
         if (StringUilt.isStrOrnull(user.getUserId())) {
             //更新用户（不用设置密码）
             //修改用户（未设置，1、从前端传过来 2、后台获取目前登录人员角色，根据角色创建状态）
-            user.setModifyUser(loginUser.getUserName());
+            user.setModifyUser(loginUser.getId());
             //修改时间
             user.setModifyTime(new Date());
             cfUserMapper.updateByPrimaryKeySelective(user);
@@ -82,7 +85,7 @@ public class SysUserServiceImpl implements SysUserService {
             //新增用户（给定初始密码）
             //创建用户时，要判断登录名是否重复，并且在在非撤消和拒绝状态
             //判断是否是经办人
-            if (user.getUserState() == "6"){
+            if (user.getUserState().equals("6")){
                 throw new CustomMessageException("经办人请到经办人注册页面进行注册!");
             }
 
@@ -99,7 +102,7 @@ public class SysUserServiceImpl implements SysUserService {
             //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
             //创建人
-            user.setCreator(loginUser.getUserName());
+            user.setCreator(loginUser.getId());
             //创建时间
             user.setCreatetime(new Date());
             cfUserMapper.insertSelective(user);

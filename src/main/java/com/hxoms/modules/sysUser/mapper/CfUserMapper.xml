@@ -188,8 +188,8 @@
         <where>
             <if test='orgId != null and orgId.size > 0'>
                 and org_id in
-                <foreach collection="list" item="org_id" separator="," open="(" close=")">
-                    #{org_id}
+                <foreach collection="orgId" item="orgId" separator="," open="(" close=")">
+                    #{orgId}
                 </foreach>
             </if>
             <if test='userType != null and userType != ""'>
@@ -208,7 +208,7 @@
             <if test='userType != null and userType != ""'>
                 and user_type = #{userType}
             </if>
-            <if test='state != null and userType != ""'>
+            <if test='state != null and state != ""'>
                 and user_state = #{state,jdbcType=CHAR}
             </if>
         </where>
