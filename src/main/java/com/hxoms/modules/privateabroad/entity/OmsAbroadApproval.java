@@ -23,8 +23,8 @@ public class OmsAbroadApproval {
     private String stepName;
 
     @ColumnAnnotation(FieldName = "APPROVAL_TIME",   FieldDescription="审批时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approvalTime;
 
     @ColumnAnnotation(FieldName = "APPROVAL_USER",   FieldDescription="审批人")

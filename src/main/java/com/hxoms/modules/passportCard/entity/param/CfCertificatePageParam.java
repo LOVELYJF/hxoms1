@@ -1,12 +1,16 @@
 package com.hxoms.modules.passportCard.entity.param;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 public class CfCertificatePageParam {
 
     /**页码*/
+    @ApiModelProperty("分页开始")
     private Integer pageNum;
     /**分页大小*/
+    @ApiModelProperty("分页结束")
     private Integer pageSize;
 
     private String incumbencyStatus;
@@ -36,7 +40,7 @@ public class CfCertificatePageParam {
     private String ywcsdd;
 
     private String zjhm;
-
+    @ApiModelProperty("证照类型：1护照 3港澳通行证 4台湾通行证")
     private Integer zjlx;
 
     private String zjxs;
@@ -78,7 +82,7 @@ public class CfCertificatePageParam {
     private Date updateTime;
 
     private Integer isValid;
-
+    @ApiModelProperty("-1已过期数量  181半年内过期数量")
     private Integer dayqty;
 
     public Integer getDayqty() {

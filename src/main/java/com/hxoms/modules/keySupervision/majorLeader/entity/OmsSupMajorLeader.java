@@ -4,18 +4,23 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @TableAnnotation(TableName = "oms_sup_major_leader", TableDescription="主要领导信息表")
 public class OmsSupMajorLeader {
+    @ApiModelProperty("主键")
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ApiModelProperty("修改用户")
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改用户")
     private String modifyUser;
 
+    @ApiModelProperty("修改时间")
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")

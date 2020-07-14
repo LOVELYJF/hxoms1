@@ -3,10 +3,14 @@ package com.hxoms.modules.roadPage.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
+import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
 import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.roadPage.entity.PersonnelPageParam;
 import com.hxoms.modules.roadPage.mapper.CertificateStatisticsMapper;
 import com.hxoms.modules.roadPage.service.CertificateStatisticsService;
+import com.hxoms.modules.roster.mapper.SysRosterMapper;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,12 @@ public class CertificateStatisticsImpl implements CertificateStatisticsService {
 
     @Autowired
     private CertificateStatisticsMapper certificateStatisticsMapper;
+    
+    @Autowired
+    private SysRosterMapper sysRosterMapper;
+
+    @Autowired
+    private OmsSupMajorLeaderMapper omsSupMajorLeaderMapper;
 
     @Override
     public List<Map<String, Object>> getLicenceStatistic() {
@@ -48,8 +58,7 @@ public class CertificateStatisticsImpl implements CertificateStatisticsService {
         PageHelper.startPage(pageNum,pageSize);
         List<CfCertificate> listCfCertificate = certificateStatisticsMapper.getListCfCertificate(cfCertificatePageParam);
 
-        PageInfo<CfCertificate> pageInfo = new PageInfo(listCfCertificate);
-        return pageInfo;
+        return new PageInfo(listCfCertificate);
     }
 
     @Override
@@ -98,5 +107,41 @@ public class CertificateStatisticsImpl implements CertificateStatisticsService {
         map.put("DATAS",fprgoSchedule);
 
         return map;
+    }
+
+
+
+    @Override
+    public Object getPersonnelRoster(PersonnelPageParam plpageParam) {
+        Object object = null;
+        Integer pagenum = plpageParam.getPageNum()==null ? 1 :plpageParam.getPageNum();
+        Integer pagesize = plpageParam.getPageSize()==null ? 10 :plpageParam.getPageSize();
+
+        switch (plpageParam.getOrderIndex()){
+            case 0:
+                object = sysRosterMapper.selectSysRosterRtype("PERSONNELINFORMATION");
+                break;
+            case 1:
+                System.out.println(plpageParam.getNodeName());
+                break;
+            case 2:
+                System.out.println(plpageParam.getNodeName());
+                break;
+            case 3:
+                PageHelper.startPage(pagenum,pagesize);
+                List<OmsSupMajorLeader> omsSupMajorLeaders = omsSupMajorLeaderMapper.selectList(null);
+                object = new PageInfo<>(omsSupMajorLeaders);
+                break;
+            case 4:
+                System.out.println(plpageParam.getNodeName());
+                break;
+            case 5:
+                System.out.println(plpageParam.getNodeName());
+                break;
+            case 6:
+                System.out.println(plpageParam.getNodeName());
+                break;
+        }
+        return object;
     }
 }
