@@ -42,6 +42,13 @@ public class OmsPubDocCallbackServiceImpl implements OmsPubDocCallbackService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * @Desc: 查询可回收登记备案申请
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/7
+     */
     @Override
     public PageBean selectCanCallbApply(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
@@ -59,7 +66,13 @@ public class OmsPubDocCallbackServiceImpl implements OmsPubDocCallbackService {
         selDestroyApplyVOList =omsPubDoccallbackMapper.selectCanCallbApplyAll(userInfo.getId());
         return selDestroyApplyVOList;
     }
-
+    /**
+     * @Desc: 获取登陆用户信息
+     * @Author: wangyunquan
+     * @Param: []
+     * @Return: com.hxoms.support.user.entity.User
+     * @Date: 2020/7/7
+     */
     @Override
     public User selectUserInfo() {
         User user=userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
@@ -72,14 +85,20 @@ public class OmsPubDocCallbackServiceImpl implements OmsPubDocCallbackService {
         userInfo.setUserMobile(user.getUserMobile());
         return userInfo;
     }
-
+    /**
+     * @Desc: 批件回收登记
+     * @Author: wangyunquan
+     * @Param: [callbackRegVo]
+     * @Return: void
+     * @Date: 2020/7/7
+     */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public void docCallbackReg(CallbackRegVo callbackRegVo) {
+    public void insertDocCallbackReg(CallbackRegVo callbackRegVo) {
         OmsPubDoccallback omsPubDocCallback=callbackRegVo.getOmsPubDoccallback();
         List<OmsPubDoccallbackdetail> omsPubDoccallbackdetailList =callbackRegVo.getOmsPubDoccallbackdetailList();
-        if(omsPubDocCallback==null|| omsPubDoccallbackdetailList ==null)
-            throw new CustomMessageException("批件回收登记失败！原因：无操作数据。");
+        if(omsPubDocCallback==null|| omsPubDoccallbackdetailList ==null||omsPubDoccallbackdetailList.size()==0)
+            throw new CustomMessageException("批件回收登记失败！原因：数据不正确。");
         omsPubDocCallback.setId(UUIDGenerator.getPrimaryKey());
         omsPubDoccallbackMapper.insert(omsPubDocCallback);
         for (OmsPubDoccallbackdetail omsPubDocCallbackdetail: omsPubDoccallbackdetailList) {
@@ -89,14 +108,26 @@ public class OmsPubDocCallbackServiceImpl implements OmsPubDocCallbackService {
         if(value==0)
             throw new CustomMessageException("插入失败！");
     }
-
+    /**
+     * @Desc: 查询批件回收登记记录
+     * @Author: wangyunquan
+     * @Param: [pageBean, selCallbackRegByQuaVo]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/7
+     */
     @Override
-    public PageBean SelCallbackRegByQuaVo(PageBean pageBean, SelCallbackRegByQuaVo selCallbackRegByQuaVo) {
+    public PageBean getDestroyRegByQuaVo(PageBean pageBean, SelCallbackRegByQuaVo selCallbackRegByQuaVo) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         PageInfo<OmsPubDoccallback> pageInfo= new PageInfo<OmsPubDoccallback>(SelCallbackRegByQuaVoAll(selCallbackRegByQuaVo));
         return PageUtil.packagePage(pageInfo);
     }
-
+    /**
+     * @Desc: 查询批件回收登记所有记录
+     * @Author: wangyunquan
+     * @Param: [pageBean, selCallbackRegByQuaVo]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/7
+     */
     public List<OmsPubDoccallback> SelCallbackRegByQuaVoAll(SelCallbackRegByQuaVo selCallbackRegByQuaVo) {
         List<OmsPubDoccallback> omsPubDoccallbackList =null;
         //获取用户信息
@@ -107,6 +138,13 @@ public class OmsPubDocCallbackServiceImpl implements OmsPubDocCallbackService {
         omsPubDoccallbackList =omsPubDoccallbackMapper.SelCallbackRegByQuaVoAll(selCallbackRegByQuaVo);
         return omsPubDoccallbackList;
     }
+    /**
+     * @Desc: 批件回收登记记录导出excel文件
+     * @Author: wangyunquan
+     * @Param: [exportRequestPara, outputStream]
+     * @Return: void
+     * @Date: 2020/7/7
+     */
     @Override
     public void exportExcel(ExportRequestPara exportRequestPara, ServletOutputStream outputStream) throws IOException {
         List<OmsPubDoccallback> omsPubDoccallbackList = exportRequestPara.getOmsPubDoccallbackList();

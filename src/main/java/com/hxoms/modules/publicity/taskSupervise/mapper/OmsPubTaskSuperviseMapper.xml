@@ -44,6 +44,7 @@
         <result column="MAIN_LEADER"  property="mainLeader"/>
         <result column="SFBG"  property="sfbg"/>
         <result column="ZZJL"  property="zzjl"/>
+        <result column="PWH"  property="pwh"/>
     </resultMap>
     <sql id="sql_seleteZtDwPersion">
         SELECT
@@ -65,7 +66,8 @@
             a.SMDJ,
             b.MAIN_LEADER,
             a.SFBG,
-            a.ZZJL
+            a.ZZJL,
+            a.PWH
         FROM
         cf_user u
         INNER JOIN b01 d ON u.org_id = d.b0111

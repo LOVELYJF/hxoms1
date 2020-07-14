@@ -1,10 +1,7 @@
 package com.hxoms.modules.publicity.taskSupervise.service;
 
 import com.hxoms.common.utils.PageBean;
-import com.hxoms.modules.publicity.taskSupervise.entity.DownloadBabParam;
-import com.hxoms.modules.publicity.taskSupervise.entity.FileInfo;
-import com.hxoms.modules.publicity.taskSupervise.entity.ZtDwPersionQuery;
-import com.hxoms.modules.publicity.taskSupervise.entity.ZtDwTreeVO;
+import com.hxoms.modules.publicity.taskSupervise.entity.*;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ public interface OmsPubTaskSuperviseService {
     List<ZtDwTreeVO> selectZtDwApplyList();
 
     /**
-     * @Desc: 查询团组人员
+     * @Desc: 通过年份和组团单位名称查询团组人员
      * @Author: wangyunquan
      * @Param: [pageBean, year, ztDwName]
      * @Return: com.hxoms.common.utils.PageBean
@@ -45,11 +42,19 @@ public interface OmsPubTaskSuperviseService {
      */
     FileInfo batchDownloadBab(DownloadBabParam downloadBabParam) throws Exception;
     /**
-     * @Desc: 催办业务流程
+     * @Desc: 查询催办信息
      * @Author: wangyunquan
-     * @Param: [id]
+     * @Param: [urgeBusiness]
      * @Return: void
      * @Date: 2020/6/29
      */
-    void urgeBusiness(String id) throws Exception;
+    void selectUrgeInfo(UrgeBusiness urgeBusiness) throws Exception;
+    /**
+     * @Desc: 办理催办业务
+     * @Author: wangyunquan
+     * @Param: [urgeBusiness]
+     * @Return: void
+     * @Date: 2020/7/14
+     */
+    void insertUrgeBusiness(UrgeBusiness urgeBusiness) throws Exception;
 }

@@ -55,6 +55,8 @@ public class ZtDwPersionVO {
     private String sfbg;
     //最终结论
     private String zzjl;
+    //批文号
+    private String pwh;
 
     public String getId() {
         return id;
@@ -206,5 +208,13 @@ public class ZtDwPersionVO {
 
     public void setZzjl(String zzjl) {
         this.zzjl = zzjl;
+    }
+
+    public String getPwh() {
+        return pwh;
+    }
+
+    public void setPwh(String pwh) {
+        this.pwh = pwh;
     }
 }

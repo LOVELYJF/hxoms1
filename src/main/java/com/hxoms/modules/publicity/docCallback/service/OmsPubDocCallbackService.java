@@ -38,7 +38,7 @@ public interface OmsPubDocCallbackService {
      * @Return: void
      * @Date: 2020/7/7
      */
-    void docCallbackReg(CallbackRegVo callbackRegVo);
+    void insertDocCallbackReg(CallbackRegVo callbackRegVo);
 
     /**
      * @Desc: 查询批件回收登记记录
@@ -47,7 +47,7 @@ public interface OmsPubDocCallbackService {
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/7/7
      */
-    PageBean SelCallbackRegByQuaVo(PageBean pageBean, SelCallbackRegByQuaVo selCallbackRegByQuaVo);
+    PageBean getDestroyRegByQuaVo(PageBean pageBean, SelCallbackRegByQuaVo selCallbackRegByQuaVo);
 
     /**
      * @Desc: 批件回收登记记录导出excel文件

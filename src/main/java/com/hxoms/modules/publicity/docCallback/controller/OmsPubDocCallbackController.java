@@ -62,9 +62,9 @@ public class OmsPubDocCallbackController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/7/7
      */
-    @PostMapping("/docCallbackReg")
-    public  Result docCallbackReg(@RequestBody CallbackRegVo callbackRegVo){
-        omsPubDocCallbackService.docCallbackReg(callbackRegVo);
+    @PostMapping("/insertDocCallbackReg")
+    public  Result insertDocCallbackReg(@RequestBody CallbackRegVo callbackRegVo){
+        omsPubDocCallbackService.insertDocCallbackReg(callbackRegVo);
         return Result.success();
     }
 
@@ -75,9 +75,9 @@ public class OmsPubDocCallbackController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/7/7
      */
-    @GetMapping("/SelCallbackRegByQuaVo")
-    public Result SelCallbackRegByQuaVo(PageBean pageBean,SelCallbackRegByQuaVo selCallbackRegByQuaVo){
-        pageBean=omsPubDocCallbackService.SelCallbackRegByQuaVo(pageBean,selCallbackRegByQuaVo);
+    @GetMapping("/getDestroyRegByQuaVo")
+    public Result getDestroyRegByQuaVo(PageBean pageBean,SelCallbackRegByQuaVo selCallbackRegByQuaVo){
+        pageBean=omsPubDocCallbackService.getDestroyRegByQuaVo(pageBean,selCallbackRegByQuaVo);
         return  Result.success(pageBean);
     }
 

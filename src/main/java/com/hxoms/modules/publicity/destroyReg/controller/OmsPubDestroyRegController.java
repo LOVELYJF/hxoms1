@@ -60,9 +60,9 @@ public class OmsPubDestroyRegController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/7/2
      */
-    @PostMapping("/babDestroyReg")
-    public  Result babDestroyReg(@RequestBody DestroyRegVo destroyRegVo){
-        omsPubDestroyService.babDestroyReg(destroyRegVo);
+    @PostMapping("/insertBabDestroyReg")
+    public  Result insertBabDestroyReg(@RequestBody DestroyRegVo destroyRegVo){
+        omsPubDestroyService.insertBabDestroyReg(destroyRegVo);
         return Result.success();
     }
 
@@ -73,9 +73,9 @@ public class OmsPubDestroyRegController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/7/2
      */
-    @GetMapping("/SelDestroyRegByQuaVo")
-    public Result SelDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo){
-        pageBean=omsPubDestroyService.SelDestroyRegByQuaVo(pageBean,selDestroyRegByQuaVo);
+    @GetMapping("/getDestroyRegByQuaVo")
+    public Result getDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo){
+        pageBean=omsPubDestroyService.getDestroyRegByQuaVo(pageBean,selDestroyRegByQuaVo);
         return  Result.success(pageBean);
     }
 

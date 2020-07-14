@@ -38,7 +38,7 @@ public interface OmsPubDestroyService {
      * @Return: void
      * @Date: 2020/7/2
      */
-    void babDestroyReg(DestroyRegVo destroyRegVo);
+    void insertBabDestroyReg(DestroyRegVo destroyRegVo);
 
     /**
      * @Desc: 查询已销毁登记记录
@@ -47,7 +47,7 @@ public interface OmsPubDestroyService {
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/7/2
      */
-    PageBean SelDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo);
+    PageBean getDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo);
 
     /**
      * @Desc: 销毁登记记录导出excel文件

@@ -39,6 +39,13 @@ public class OmsPubDestroyServiceImpl implements OmsPubDestroyService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * @Desc: 查询提交撤销备案申请
+     * @Author: wangyunquan
+     * @Param: [pageVO]
+     * @Return: com.hxoms.modules.publicity.destroyReg.entity.parameterEntity.PageVO
+     * @Date: 2020/7/2
+     */
     @Override
     public PageBean selectSubmitDesApply(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
@@ -56,7 +63,13 @@ public class OmsPubDestroyServiceImpl implements OmsPubDestroyService {
         selDestroyApplyVOList =omsPubDestroyMapper.selectSubmitDesApplyAll(userInfo.getId());
         return selDestroyApplyVOList;
     }
-
+    /**
+     * @Desc: 获取登陆用户信息
+     * @Author: wangyunquan
+     * @Param: []
+     * @Return: com.hxoms.support.user.entity.User
+     * @Date: 2020/7/2
+     */
     @Override
     public User selectUserInfo() {
         User user=userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
@@ -69,14 +82,20 @@ public class OmsPubDestroyServiceImpl implements OmsPubDestroyService {
         userInfo.setUserMobile(user.getUserMobile());
         return userInfo;
     }
-
+    /**
+     * @Desc: 备案表销毁登记
+     * @Author: wangyunquan
+     * @Param: [destroyRegVo]
+     * @Return: void
+     * @Date: 2020/7/2
+     */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public void babDestroyReg(DestroyRegVo destroyRegVo) {
+    public void insertBabDestroyReg(DestroyRegVo destroyRegVo) {
         OmsPubDestroy omsPubDestroy=destroyRegVo.getOmsPubDestroy();
         List<OmsPubDestroydetail> omsPubDestroydetailList=destroyRegVo.getOmsPubDestroydetailList();
-        if(omsPubDestroy==null||omsPubDestroydetailList==null)
-            throw new CustomMessageException("销毁登记失败！原因：无操作数据。");
+        if(omsPubDestroy==null||omsPubDestroydetailList==null||omsPubDestroydetailList.size()==0)
+            throw new CustomMessageException("销毁登记失败！原因：数据不正确。");
         omsPubDestroy.setId(UUIDGenerator.getPrimaryKey());
         omsPubDestroyMapper.insert(omsPubDestroy);
         for (OmsPubDestroydetail omsPubDestroydetail:omsPubDestroydetailList) {
@@ -86,14 +105,26 @@ public class OmsPubDestroyServiceImpl implements OmsPubDestroyService {
         if(value==0)
             throw new CustomMessageException("插入失败！");
     }
-
+    /**
+     * @Desc: 查询已销毁登记记录
+     * @Author: wangyunquan
+     * @Param: [pageBean, selDestroyRegByQuaVo]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/2
+     */
     @Override
-    public PageBean SelDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo) {
+    public PageBean getDestroyRegByQuaVo(PageBean pageBean,SelDestroyRegByQuaVo selDestroyRegByQuaVo) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         PageInfo<OmsPubDestroy> pageInfo= new PageInfo<OmsPubDestroy>(SelDestroyRegByQuaVoAll(selDestroyRegByQuaVo));
         return PageUtil.packagePage(pageInfo);
     }
-
+    /**
+     * @Desc: 查询已销毁登记所有记录
+     * @Author: wangyunquan
+     * @Param: [pageBean, selDestroyRegByQuaVo]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/2
+     */
     public List<OmsPubDestroy> SelDestroyRegByQuaVoAll(SelDestroyRegByQuaVo selDestroyRegByQuaVo) {
         List<OmsPubDestroy> omsPubDestroyList=null;
         //获取用户信息
@@ -104,6 +135,13 @@ public class OmsPubDestroyServiceImpl implements OmsPubDestroyService {
         omsPubDestroyList=omsPubDestroyMapper.SelDestroyRegByQuaVoAll(selDestroyRegByQuaVo);
         return omsPubDestroyList;
     }
+    /**
+     * @Desc: 销毁登记记录导出excel文件
+     * @Author: wangyunquan
+     * @Param: [exportRequestPara, response]
+     * @Return: void
+     * @Date: 2020/7/3
+     */
     @Override
     public void exportExcel(ExportRequestPara exportRequestPara, ServletOutputStream outputStream) throws IOException {
         List<OmsPubDestroy> omsPubDestroyList = exportRequestPara.getOmsPubDestroyList();

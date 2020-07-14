@@ -3,10 +3,7 @@ package com.hxoms.modules.publicity.taskSupervise.controller;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.publicity.taskSupervise.entity.DownloadBabParam;
-import com.hxoms.modules.publicity.taskSupervise.entity.FileInfo;
-import com.hxoms.modules.publicity.taskSupervise.entity.ZtDwPersionQuery;
-import com.hxoms.modules.publicity.taskSupervise.entity.ZtDwTreeVO;
+import com.hxoms.modules.publicity.taskSupervise.entity.*;
 import com.hxoms.modules.publicity.taskSupervise.service.OmsPubTaskSuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -93,20 +90,38 @@ public class OmsPubTaskSuperviseController {
         return responseEntity;
     }
     /**
-     * @Desc: 催办业务流程
+     * @Desc: 查询催办信息
      * @Author: wangyunquan
-     * @Param: [id]
+     * @Param: [urgeBusiness]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/6/28
      */
-    @PostMapping("/urgeBusiness")
-    public Result urgeBusiness(String id) {
+    @PostMapping("/selectUrgeInfo")
+    public Result selectUrgeInfo(@RequestBody UrgeBusiness urgeBusiness) {
         try {
-            omsPubTaskSuperviseService.urgeBusiness(id);
+            omsPubTaskSuperviseService.selectUrgeInfo(urgeBusiness);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomMessageException("催办失败，原因："+e.getMessage());
+        }
+        return Result.success(urgeBusiness);
+    }
+    /**
+     * @Desc: 办理催办业务
+     * @Author: wangyunquan
+     * @Param: [urgeBusiness]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/7/14
+     */
+    @PostMapping("/insertUrgeBusiness")
+    public Result insertUrgeBusiness(@RequestBody UrgeBusiness urgeBusiness) {
+        try {
+            omsPubTaskSuperviseService.insertUrgeBusiness(urgeBusiness);
         } catch (Exception e) {
             e.printStackTrace();
             throw new CustomMessageException("催办失败，原因："+e.getMessage());
         }
         return Result.success();
     }
+
 }

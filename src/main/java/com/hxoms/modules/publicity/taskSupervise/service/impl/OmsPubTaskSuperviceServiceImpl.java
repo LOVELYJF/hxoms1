@@ -38,18 +38,33 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
 
     @Autowired
     private TaskSuperviseCfg taskSuperviseCfg;
+
+    /**
+     * @Desc: 查询经办人所在单位的团组
+     * @Author: wangyunquan
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.ZtDwVO>
+     * @Date: 2020/6/19
+     */
     @Override
     public List<ZtDwTreeVO> selectZtDwApplyList() {
         //获取用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         List<ZtDwTreeVO> ztDwList = null;
-        if (userInfo == null) {
+        if (userInfo == null)
             return ztDwList;
-        }
         //获取经办人所在单位的组团集合
         ztDwList = omsPubTaskSuperviseMapper.selectZtDwApplyList(userInfo.getId());
         return ztDwList;
     }
+
+    /**
+     * @Desc: 通过年份和组团单位名称查询团组人员
+     * @Author: wangyunquan
+     * @Param: [pageBean, year, ztDwName]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/6
+     */
     @Override
     public PageBean selectZtDwPerson(PageBean pageBean,String year, String ztDwName) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
@@ -57,23 +72,34 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         return PageUtil.packagePage(pageInfo);
     }
 
+    /**
+     * @Desc: 通过年份和组团单位名称查询团组所有人员
+     * @Author: wangyunquan
+     * @Param: [year, ztDwName]
+     * @Return: java.util.List<com.hxoms.modules.publicity.taskSupervise.entity.ZtDwPersionVO>
+     * @Date: 2020/7/14
+     */
     public List<ZtDwPersionVO> selectZtDwPersonAll(String year, String ztDwName) {
         //获取用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         List<ZtDwPersionVO> ztDwPersionVOList = null;
-        if (userInfo == null) {
+        if (userInfo == null)
             return ztDwPersionVOList;
-        }
-        if (StringUtils.isBlank(year) || StringUtils.isBlank(ztDwName)) {
-            return ztDwPersionVOList;
-        }
+        if(StringUtils.isBlank(year)||StringUtils.isBlank(ztDwName))
+            throw  new CustomMessageException("参数为空，请核实！");
         ztDwPersionVOList = omsPubTaskSuperviseMapper.selectZtDwPersonAll(userInfo.getId(), year, ztDwName);
         return ztDwPersionVOList;
     }
 
-
+    /**
+     * @Desc: 通过筛选条件查询团组人员
+     * @Author: wangyunquan
+     * @Param: [pageBean, ztDwPersionQuery]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/7/6
+     */
     @Override
-    public PageBean selectZtDwPersonByQua(PageBean pageBean,ZtDwPersionQuery ztDwPersionQuery) {
+    public PageBean selectZtDwPersonByQua(PageBean pageBean, ZtDwPersionQuery ztDwPersionQuery) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         PageInfo<ZtDwPersionVO> pageInfo= new PageInfo<ZtDwPersionVO>(selectZtDwPersonByQuaAll(ztDwPersionQuery));
         return PageUtil.packagePage(pageInfo);
@@ -83,16 +109,24 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         //获取用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         List<ZtDwPersionVO> ztDwPersionVOList = null;
-        if (userInfo == null ) {
+        if (userInfo == null )
             return ztDwPersionVOList;
-        }
         ztDwPersionQuery.setId(userInfo.getId());
         ztDwPersionVOList = omsPubTaskSuperviseMapper.selectZtDwPersonByQuaAll(ztDwPersionQuery);
         return ztDwPersionVOList;
     }
+    /**
+     * @Desc: 批量下载个人备案表
+     * @Author: wangyunquan
+     * @Param: [downloadBabParam]
+     * @Return: com.hxoms.modules.publicity.taskSupervise.entity.FileInfo
+     * @Date: 2020/7/7
+     */
     @Override
     public  FileInfo batchDownloadBab(DownloadBabParam downloadBabParam) throws Exception {
         List<String> list = downloadBabParam.getList();
+        if(list.size()==0)
+            throw  new CustomMessageException("未选中操作数据，请核实！");
         ZtDwPersionQuery ztDwPersionQuery = downloadBabParam.getZtDwPersionQuery();
         FileInfo  fileInfo = new FileInfo();
         byte[] fileDateByte=null;
@@ -104,7 +138,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
             fileInfo.setFileDataByte(fileDateByte);
         }else{
             //获取生成zip文件数据
-            if(list.size()==0){
+            /*if(list.size()==0){
                 //未选中，则通过条件查询下载
                 List<ZtDwPersionVO> ztDwPersionVOList = selectZtDwPersonByQuaAll(ztDwPersionQuery);
                 for (ZtDwPersionVO ztDwPersionVO:ztDwPersionVOList) {
@@ -112,7 +146,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
                         list.add(ztDwPersionVO.getId());
                     }
                 }
-            }
+            }*/
             //生成zip文件
             String zipFileName=UUIDGenerator.getPrimaryKey()+taskSuperviseCfg.getCompressDownSuffix();
             String zipFilePullPath=taskSuperviseCfg.getCompressDownPath()+zipFileName;
@@ -174,38 +208,26 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         }
         return fileDateByte;
     }
+    /**
+     * @Desc: 查询催办信息
+     * @Author: wangyunquan
+     * @Param: [urgeBusiness]
+     * @Return: void
+     * @Date: 2020/6/29
+     */
     @Override
-    public void urgeBusiness(String id) throws Exception {
-        UrgeParameterVO urgeParameterVO = omsPubTaskSuperviseMapper.selectById(id);
+    public void selectUrgeInfo(UrgeBusiness urgeBusiness) throws Exception {
+        if(StringUtils.isBlank(urgeBusiness.getId()))
+            throw new CustomMessageException("参数为空，请核实！");
+        UrgeParameterVO urgeParameterVO = omsPubTaskSuperviseMapper.selectById(urgeBusiness.getId());
         if (urgeParameterVO == null)
             throw new CustomMessageException("业务数据为空，无法办理催办业务！");
         int sqzt=Integer.parseInt(urgeParameterVO.getSqzt());
         //申请状态为已办结、待领证、已领证、撤销情况，不能办理催办业务。
         if(sqzt>=28)
             throw new CustomMessageException("备案申请状态为："+Constants.leader_business[sqzt]+"，无法办理催办业务！");
-        if (Arrays.asList(Constants.leader_business).contains(sqzt)) {
-            //干部监督处处理
-            preAndRecMessage(urgeParameterVO, taskSuperviseCfg.getJdcMsgTemplate(),"5","1");
-        } else {
-            //经办人处理
-            preAndRecMessage(urgeParameterVO, taskSuperviseCfg.getJbrMsgTemplate(),"6","1");
-        }
-    }
-    /**
-     * @Desc: 准备参数和发送线上消息
-     * @Author: wangyunquan
-     * @Param: [urgeParameterVO, msgTemplate, userType, receiveUserType]
-     * //用户类型：5监督处工作人员、6经办人
-     * //接收用户 key：类型 1个人 2处室 3机构 4讨论组
-     * @Return: void
-     * @Date: 2020/6/29
-     */
-    public void preAndRecMessage(UrgeParameterVO urgeParameterVO,String msgTemplate,String userType,String receiveUserType) throws Exception{
-        //用户类型为监督处工作人员时，查询条件剔除机构单位。
-        List<User> userList=omsPubTaskSuperviseMapper.selectUserByQua(userType.equals("5")?null:urgeParameterVO.getOrgId(),userType);
-        if(userList==null||userList.size()==0)
-            throw new CustomMessageException("无接收者，无法办理催办业务！");
-        SendMessageParam sendMessageParam=new SendMessageParam();
+        //获取模板
+        String msgTemplate=taskSuperviseCfg.getJdcMsgTemplate();
         //设置参数
         Field fields[]=urgeParameterVO.getClass().getDeclaredFields();
         for (int i=0;i<fields.length;i++){
@@ -213,19 +235,61 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
             field.setAccessible(true);
             String fieldName="${"+field.getName()+"}";
             if(msgTemplate.contains(fieldName)){
-                msgTemplate=msgTemplate.replace(fieldName,(String)field.get(urgeParameterVO));
+                final String value = (String) field.get(urgeParameterVO);
+                if(!StringUtils.isBlank(value)) {
+                    msgTemplate=msgTemplate.replace(fieldName,(String)field.get(urgeParameterVO));
+                }
             }
         }
+        urgeBusiness.setMsgContent(msgTemplate);
+    }
+    /**
+     * @Desc: 办理催办业务
+     * @Author: wangyunquan
+     * @Param: [urgeBusiness]
+     * @Return: void
+     * @Date: 2020/7/14
+     */
+    @Override
+    public void insertUrgeBusiness(UrgeBusiness urgeBusiness) throws Exception {
+        if(StringUtils.isBlank(urgeBusiness.getId())||StringUtils.isBlank(urgeBusiness.getMsgContent()))
+            throw new CustomMessageException("参数为空，请核实！");
+        UrgeParameterVO urgeParameterVO = omsPubTaskSuperviseMapper.selectById(urgeBusiness.getId());
+        int sqzt=Integer.parseInt(urgeParameterVO.getSqzt());
+        if (Arrays.asList(Constants.leader_business).contains(sqzt)) {
+            //干部监督处处理
+            preAndRecMessage(urgeParameterVO.getOrgId(), urgeBusiness.getMsgContent(),"5","1");
+        } else {
+            //经办人处理
+            preAndRecMessage(urgeParameterVO.getOrgId(), urgeBusiness.getMsgContent(),"6","1");
+        }
+    }
+
+    /**
+     * @Desc: 发送线上消息
+     * @Author: wangyunquan
+     * @Param: [orgId, msgContent, userType, receiveUserType]
+     * //用户类型：5监督处工作人员、6经办人
+     * //接收用户 key：类型 1个人 2处室 3机构 4讨论组
+     * @Return: void
+     * @Date: 2020/6/29
+     */
+    public void preAndRecMessage(String orgId,String msgContent,String userType,String receiveUserType) throws Exception{
+        //用户类型为监督处工作人员时，查询条件剔除机构单位。
+        List<User> receiveUserList=omsPubTaskSuperviseMapper.selectUserByQua(userType.equals("5")?null:orgId,userType);
+        if(receiveUserList==null||receiveUserList.size()==0)
+            throw new CustomMessageException("无接收者，无法办理催办业务！");
+        SendMessageParam sendMessageParam=new SendMessageParam();
         //设置信息内容
         Message message=new Message();
-        message.setContent(String.format(msgTemplate,urgeParameterVO.getName(),urgeParameterVO.getDays()));
+        message.setContent(msgContent);
         sendMessageParam.setMessage(message);
         //设置接收人
         List<MsgUser> msgUserList=new ArrayList<>();
-        for (User user:userList) {
+        for (User receiveUser:receiveUserList) {
             MsgUser msgUser=new MsgUser();
-            msgUser.setReceiveUserId(user.getId());
-            msgUser.setReceiveUsername(user.getUserName());
+            msgUser.setReceiveUserId(receiveUser.getId());
+            msgUser.setReceiveUsername(receiveUser.getUserName());
             msgUserList.add(msgUser);
         }
         Map<String,List<MsgUser>> msgUserMap=new HashedMap();
