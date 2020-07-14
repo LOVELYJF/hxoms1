@@ -17,13 +17,75 @@
     from oms_operator_handover
     where ID = #{id,jdbcType=VARCHAR}
   </select>
-    <select id="selectByUserId" resultType="java.util.LinkedHashMap">
-      SELECT b.* ,a.HandoverStatus
-      FROM oms_operator_handover a
-      INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
-      AND a.OperatorId = #{userId,jdbcType=VARCHAR}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+
+  <select id="selectOmsPriApplyByStatusAndName"
+          resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+    select opa.*,
+           CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) as name,
+           orp.BIRTH_DATE as birthDate,
+           orp.SEX as sex,
+           orp.IDNUMBER as idnumber,
+           orp.REGISTE_RESIDENCE as registeResidence,
+           orp.WORK_UNIT as b0101,
+           orp.IDENTITY as identifyType
+    from oms_pri_apply opa left join oms_reg_procpersoninfo orp on opa.A0100 = orp.A0100
+    <where>
+      <if test="name != null and name !=''">
+        and opa.CREATE_USER = #{name}
+      </if>
+      <if test="status != null">
+        and opa.APPLY_STATUS <![CDATA[<>]]> #{status}
+      </if>
+    </where>
+  </select>
+  <select id="selectOmsPriDelayApplyByStatusAndName"
+          resultType="com.hxoms.modules.omsoperator.entity.OmsPriDelayVO">
+    select pa.*,
+            rp.SEX as sex,
+            CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+            rp.IDNUMBER as idnumber,
+            rp.WORK_UNIT as b0101,
+            rp.POST as postrank
+    from oms_pri_delay_apply pa
+    LEFT JOIN oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
+    <where>
+      <if test="userId != null and userId != ''">
+        and pa.CREATE_USER = #{userId}
+      </if>
+      <if test="status != null and status != ''">
+        and pa.APPLY_STATUS <![CDATA[<>]]> #{status}
+      </if>
+    </where>
+  </select>
+  <select id="selectByUserId" resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO">
+    SELECT b.* ,a.HandoverStatus as handoverStatus
+    FROM oms_operator_handover a
+    INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
+    <where>
+      <if test="userId != null and userId != ''">
+        AND a.OperatorId = #{userId,jdbcType=VARCHAR}
+        or a.HandoverId = #{userId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="getAllOperatorHandoverByOrgid"
+          resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO">
+    SELECT b.* ,
+            a.HandoverStatus as handoverStatus,
+            a.OperatorId as operatorId,
+            (SELECT c.user_name FROM cf_user c , oms_operator_handover a WHERE c.user_id = a.OperatorId) as operatorName,
+            (SELECT c.user_name FROM cf_user c , oms_operator_handover a WHERE c.user_id = a.HandoverId) as handoverName
+    FROM oms_operator_handover a
+    INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
+    INNER JOIN cf_user cu on cu.user_id = a.OperatorId
+    <where>
+      <if test="orgId != null and orgId != ''">
+        AND cu.org_id = #{orgId,jdbcType=VARCHAR}
+        and a.HandoverStatus = '1'
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_handover
     where ID = #{id,jdbcType=VARCHAR}
   </delete>

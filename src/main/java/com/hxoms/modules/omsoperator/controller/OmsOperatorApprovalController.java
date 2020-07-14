@@ -6,8 +6,7 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.service.OmsOperatorApprovalService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,38 +33,10 @@ public class OmsOperatorApprovalController {
      * @Author: 李逍遥
      * @Date: 2020/5/13 9:34
      */
-    @RequestMapping("/getApprovalList")
-    public Result getApprovalList (Integer pageNum, Integer pageSize, String keyWord, List<String> orgIds){
-        PageInfo pageInfo = operatorApprovalService.getApprovalList(pageNum,pageSize,keyWord,orgIds);
+    @GetMapping("/getApprovalList")
+    public Result getApprovalList (Integer pageNum, Integer pageSize, String keyWord,@RequestParam(value ="orgId",required = false) List<String> orgId){
+        PageInfo pageInfo = operatorApprovalService.getApprovalList(pageNum,pageSize,keyWord,orgId);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
-    }
-
-    /**
-     * 功能描述: <br>
-     * 〈通过用户名或登录名及机构查询经办人〉
-     * @Param: [keyWord, orgId]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/5/15 8:51
-     */
-    @RequestMapping("/getApprovalByName")
-    public Result getApprovalByName(String keyWord, List<String> orgId){
-        List<CfUser> userList =  operatorApprovalService.getApprovalByName(keyWord,orgId);
-        return Result.success(userList);
-    }
-
-    /**
-     * 功能描述: <br>
-     * 〈通过ID查询本经办人审批信息〉
-     * @Param: [operatorId]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/5/18 14:41
-     */
-    @RequestMapping("/getApprovalById")
-    public Result getApprovalById(String operatorId){
-        OmsOperatorApproval approval = operatorApprovalService.getApprovalById(operatorId);
-        return Result.success(approval);
     }
 
     /**
@@ -76,65 +47,66 @@ public class OmsOperatorApprovalController {
      * @Author: 李逍遥
      * @Date: 2020/5/15 9:56
      */
-    @RequestMapping("/getOperatorByIdCard")
-    public Result getOperatorByIdCard(CfUser user){
-        CfUser operator = operatorApprovalService.getOperatorByIdCard(user);
+    @GetMapping("/getOperatorByIdCard")
+    public Result getOperatorByIdCard(String idnumber){
+        CfUser operator = operatorApprovalService.getOperatorByIdCard(idnumber);
         return Result.success(operator);
     }
 
     /**
      * 功能描述: <br>
-     * 〈允许注册〉
-     * @Param: [operator（经办人）, result（审批结果）, loginUser（当前登录用户）]
+     * 〈经办人身份信息重置——保存〉
+     * @Param: [operator]
      * @Return: com.hxoms.common.utils.Result
      * @Author: 李逍遥
-     * @Date: 2020/5/18 9:21
+     * @Date: 2020/7/14 15:28
      */
-    @RequestMapping("/agreeToRegister")
-    public Result agreeToRegister(CfUser operator,String result,CfUser loginUser){
-        String msc = operatorApprovalService.agreeToRegister(operator,result,loginUser);
-        return Result.success(msc);
+    @PostMapping("/saveOperator")
+    public Result saveOperator(CfUser operator){
+        operatorApprovalService.saveOperator(operator);
+        return Result.success();
     }
 
     /**
      * 功能描述: <br>
-     * 〈不允许注册〉
-     * @Param: [operator(经办人), result（审批结果）, loginUser（当前登录用户）]
+     * 〈指纹登记审批通过〉
+     * @Param: [operator]
      * @Return: com.hxoms.common.utils.Result
      * @Author: 李逍遥
-     * @Date: 2020/5/18 9:57
+     * @Date: 2020/7/14 9:23
      */
-    @RequestMapping("/refuseToRegister")
-    public Result refuseToRegister(CfUser operator,String result,CfUser loginUser){
-        String msc = operatorApprovalService.refuseToRegister(operator,result,loginUser);
-        return Result.success(msc);
-    }
-
-    /**
-     * 功能描述: <br>
-     * 〈审批通过〉
-     * @Param: [operator, result, loginUser]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/5/18 15:40
-     */
-    @RequestMapping("/agreeToApproval")
-    public Result agreeToApproval(CfUser operator,String result,CfUser loginUser){
-        operatorApprovalService.agreeToApproval(operator,result,loginUser);
+    @PostMapping("/agreeToApproval")
+    public Result agreeToApproval(CfUser operator){
+        operatorApprovalService.agreeToApproval(operator);
         return Result.success();
     }
 
     /**
      * 功能描述: <br>
      * 〈审批不通过〉
-     * @Param: [operator, result, loginUser]
+     * @Param: [operator]
      * @Return: com.hxoms.common.utils.Result
      * @Author: 李逍遥
      * @Date: 2020/5/18 15:48
      */
-    @RequestMapping("/refuseToApproval")
-    public Result refuseToApproval(CfUser operator,String result,CfUser loginUser){
-        operatorApprovalService.refuseToApproval(operator,result,loginUser);
+    @PostMapping("/refuseToApproval")
+    public Result refuseToApproval(String operatorId){
+        operatorApprovalService.refuseToApproval(operatorId);
         return Result.success();
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈审批页面——审批通过〉
+     * @Param: [operatorId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/14 11:37
+     */
+    @PostMapping("/agreeToApprovalById")
+    public Result agreeToApprovalById(String operatorId){
+        operatorApprovalService.agreeToApprovalById(operatorId);
+        return Result.success();
+
     }
 }
