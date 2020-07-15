@@ -35,4 +35,14 @@ public interface OmsSensitiveLimitMapper {
      * @return
      */
     int deleteSensitiveLimit(Map<String, Object> map);
+
+
+    /**
+     * <b>功能描述: 查询限制性国家</b>
+     * @Param: [sensitiveLimitId]
+     * @Return: java.util.List<java.lang.Integer>
+     * @Author: luoshuai
+     * @Date: 2020/7/14 20:17
+     */
+	List<Integer> getSensitiveMaintain(String sensitiveLimitId);
 }

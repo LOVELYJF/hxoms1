@@ -15,12 +15,6 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 */
 	List<Country> getCountryInfo(Map<String,Object> map);
 
-	/**
-	 * <b>增加敏感国家信息</b>
-	 * @param map
-	 * @return
-	 */
-	int addCountryInfo(Map<String, Object> map);
 
 	/**
 	 * <b>查询敏感国家是否存在</b>
@@ -29,10 +23,18 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 */
 	List<Map<String, Object>> selectSensitiveCountry(Map<String, Object> map);
 
+
 	/**
-	 * <b>删除敏感国家</b>
+	 * <b>保存敏感国家信息</b>
 	 * @param map
 	 * @return
 	 */
-	int deleteCountryInfo(Map<String, Object> map);
+	int addSensitiveMaintain(Map<String, Object> map);
+
+	/**
+	 * <b>删除敏感国家信息</b>
+	 * @param sensitiveLimitId
+	 * @return
+	 */
+	int deleteSensitiveMaintain(String sensitiveLimitId);
 }
