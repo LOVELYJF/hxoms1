@@ -22,6 +22,7 @@ public class UserInfo {
 
     private String orgId;
 
+    private String orgName;
     public String getId() {
         return id;
     }
@@ -100,5 +101,13 @@ public class UserInfo {
 
     public void setOrgId(String orgId) {
         this.orgId = orgId;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
     }
 }

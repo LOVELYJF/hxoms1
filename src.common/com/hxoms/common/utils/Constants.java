@@ -174,6 +174,16 @@ public class Constants {
      */
     public static String[] mobilizing_businessName={"调整期","调整完成"};
     /**
+     *经办人交接状态
+     *
+     */
+    public static int[] handover_business={1,2,3};
+    /**
+     *经办人交接状态名称
+     *
+     */
+    public static String[] handover_businessName={"代办","完成","撤销"};
+    /**
      * 因私 业务
      *
      */
