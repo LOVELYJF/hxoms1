@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc: 自评项目维护
@@ -83,15 +84,29 @@ public class OmsSelfestimateItemsController {
     }
 
     /**
-     * 自评文件列表
+     * 自评结果列表
+     * @return
+     * @param type 因公 因私  延期回国
+     * @param applyId 申请id
+     * @param personType 操作人类型（经办人  干部监督处）
+     * @throws Exception
+     */
+    @GetMapping("/selectFileList")
+    public Result selectFileList(String type, String applyId, String personType) throws Exception {
+        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectFileList(type, applyId, personType);
+        return Result.success(omsSelfFileVOS);
+    }
+
+    /**
+     * 添加文件列表
      * @return
      * @param type 因公 因私  延期回国
      * @throws Exception
      */
-    @GetMapping("/selectFileList")
-    public Result selectFileList(String type) throws Exception {
-        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectFileList(type);
-        return Result.success(omsSelfFileVOS);
+    @GetMapping("/selectOmsFileList")
+    public Result selectOmsFileList(String type) throws Exception {
+        List<Map<String, String>> result = omsSelfestimateItemsService.selectOmsFileList(type);
+        return Result.success(result);
     }
 
 }

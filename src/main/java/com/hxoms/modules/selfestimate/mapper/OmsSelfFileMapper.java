@@ -22,4 +22,10 @@ public interface OmsSelfFileMapper extends BaseMapper<OmsSelfFile> {
      * @param paramMap
      */
     List<OmsSelfFileVO> selectFileList(Map<String, String> paramMap);
+    /**
+     * 添加文件列表
+     * @return
+     * @param paramMap
+     */
+    List<Map<String, String>> selectOmsFileList(Map<String, String> paramMap);
 }

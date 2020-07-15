@@ -1,5 +1,6 @@
 package com.hxoms.modules.selfestimate.service;
 
+import com.hxoms.modules.selfestimate.entity.OmsSelfFile;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemResult;
 import com.hxoms.modules.selfestimate.entity.paramentity.ResultListParam;
@@ -12,11 +13,5 @@ public interface OmsSelfestimateResultService {
      * @param omsSelfestimateResultitems
      * @return
      */
-    String insertOrUpdateResult(List<OmsSelfestimateResultitem> omsSelfestimateResultitems);
-    /**
-     * 查询结果集
-     * @param resultListParam
-     * @return
-     */
-    OmsSelfestimateResultitemResult selectResultList(ResultListParam resultListParam);
+    List<OmsSelfestimateResultitem> insertOrUpdateResult(List<OmsSelfestimateResultitem> omsSelfestimateResultitems);
 }

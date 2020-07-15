@@ -1,18 +1,25 @@
 package com.hxoms.modules.selfestimate.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
+import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import com.hxoms.modules.selfestimate.entity.OmsSelfFile;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemResult;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO;
 import com.hxoms.modules.selfestimate.entity.paramentity.ResultListParam;
 import com.hxoms.modules.selfestimate.mapper.OmsSelfestimateResultitemMapper;
 import com.hxoms.modules.selfestimate.service.OmsSelfestimateResultService;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +40,10 @@ public class OmsSelfestimateResultServiceImpl implements OmsSelfestimateResultSe
 
     @Autowired
     private OmsSelfestimateResultitemMapper omsSelfestimateResultitemMapper;
-    @Autowired
-    private OmsPriApplyMapper omsPriApplyMapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertOrUpdateResult(List<OmsSelfestimateResultitem> omsSelfestimateResultitems) {
+    public List<OmsSelfestimateResultitem> insertOrUpdateResult(List<OmsSelfestimateResultitem> omsSelfestimateResultitems) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //处理自评项结果
@@ -60,39 +65,6 @@ public class OmsSelfestimateResultServiceImpl implements OmsSelfestimateResultSe
                 }
             }
         }
-        return "操作成功";
-    }
-
-    @Override
-    public OmsSelfestimateResultitemResult selectResultList(ResultListParam resultListParam) {
-        OmsSelfestimateResultitemResult omsSelfestimateResultitemResult = new OmsSelfestimateResultitemResult();
-        if (StringUtils.isBlank(resultListParam.getApplyId())
-                || StringUtils.isBlank(resultListParam.getSelffileId())
-                || StringUtils.isBlank(resultListParam.getType())
-                || StringUtils.isBlank(resultListParam.getPersonType())){
-            throw new CustomMessageException("参数错误");
-        }
-        //查询自评项结果
-        Map<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("selffileId", resultListParam.getSelffileId());
-        paramsMap.put("applyId", resultListParam.getApplyId());
-        paramsMap.put("personType", resultListParam.getPersonType());
-        List<OmsSelfestimateResultitemVO> omsSelfestimateResultitems = omsSelfestimateResultitemMapper.selectItemResultList(paramsMap);
-        omsSelfestimateResultitemResult.setOmsSelfestimateResultitems(omsSelfestimateResultitems);
-        //查询出国人所在单位
-        String b0100;
-        if (Constants.oms_business[1].equals(resultListParam.getType())){
-            //因私出国
-            OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(resultListParam.getApplyId());
-            if (omsPriApplyVO != null){
-                b0100 = omsPriApplyVO.getB0100();
-                omsSelfestimateResultitemResult.setB0100(b0100);
-                omsSelfestimateResultitemResult.setB0101(omsPriApplyVO.getB0101());
-            }else{
-                throw new CustomMessageException("该申请单不存在");
-            }
-        }
-        // TODO  主要领导
-        return omsSelfestimateResultitemResult;
+        return omsSelfestimateResultitems;
     }
 }

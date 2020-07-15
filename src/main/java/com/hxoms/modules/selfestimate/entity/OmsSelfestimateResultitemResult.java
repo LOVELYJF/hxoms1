@@ -1,5 +1,6 @@
 package com.hxoms.modules.selfestimate.entity;
 
+import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 
 import java.util.List;
@@ -10,24 +11,14 @@ import java.util.List;
  * @date: 2020-05-26
  */
 public class OmsSelfestimateResultitemResult{
-    //结果项名称
-    private String checkItem;
     //机构id
     private String b0100;
     //机构名称
     private String b0101;
     //机构主要领导
-    private List<PersonInfoVO> personInfoVOS;
+    private List<OmsSupMajorLeader> personInfoVOS;
     //结果集
     private List<OmsSelfestimateResultitemVO> omsSelfestimateResultitems;
-
-    public String getCheckItem() {
-        return checkItem;
-    }
-
-    public void setCheckItem(String checkItem) {
-        this.checkItem = checkItem;
-    }
 
     public String getB0100() {
         return b0100;
@@ -45,11 +36,11 @@ public class OmsSelfestimateResultitemResult{
         this.b0101 = b0101;
     }
 
-    public List<PersonInfoVO> getPersonInfoVOS() {
+    public List<OmsSupMajorLeader> getPersonInfoVOS() {
         return personInfoVOS;
     }
 
-    public void setPersonInfoVOS(List<PersonInfoVO> personInfoVOS) {
+    public void setPersonInfoVOS(List<OmsSupMajorLeader> personInfoVOS) {
         this.personInfoVOS = personInfoVOS;
     }
 
