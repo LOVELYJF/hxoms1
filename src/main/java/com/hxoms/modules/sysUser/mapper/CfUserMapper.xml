@@ -38,6 +38,8 @@
     <result column="Duty" jdbcType="VARCHAR" property="duty" />
     <result column="MAC" jdbcType="VARCHAR" property="mac" />
     <result column="Telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="NATION" jdbcType="VARCHAR" property="nation" />
+    <result column="BIRTH" jdbcType="DATE" property="birth" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.sysUser.entity.CfUser">
     <!--
@@ -58,7 +60,7 @@
     user_password, order_index, org_id, modify_user, modify_time, org_name, USER_EXPIRE, 
     USER_LOGINFAILNUM, CREATOR, CREATETIME, IP, A0100, Registe_residence, CARD_ISSUING_AUTHORITY, 
     CARE_START_DATE, CARD_EXPIRY_DATE, CARD_PHYSICAL_ID, IDNUMBER, POLITICAL_AFFI, SEX, 
-    Duty, MAC, Telephone
+    Duty, MAC, Telephone, NATION, BIRTH
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -120,14 +122,14 @@
     <include refid="Base_Column_List"/>
     from cf_user
     <where>
-      <if test='idCard != null and idCard != ""'>
+      <if test="idCard != null and idCard != ''">
         and IDNUMBER = #{idCard}
       </if>
-      <if test='userType != null and userType != ""'>
-        and user_type = #{userType}
-      </if>
-      <if test='states != null and states != ""'>
+      <if test="states != null and states != ''">
         and user_state = #{states}
+      </if>
+      <if test="userType != null and userType != ''">
+        and user_type = #{userType}
       </if>
     </where>
   </select>
@@ -138,7 +140,7 @@
         <where>
             <if test='orgIds != null and orgIds.size > 0 '>
                 and org_id in
-                <foreach collection="list" item="orgIds" separator="," open="(" close=")">
+                <foreach collection="orgIds" item="orgIds" separator="," open="(" close=")">
                     #{orgIds}
                 </foreach>
             </if>
@@ -151,33 +153,9 @@
             </if>
             <if test='states != null and states.size > 0 '>
                 and user_state in
-                <foreach collection="list" item="user_state" separator="," open="(" close=")">
-                    #{user_state}
+                <foreach collection="states" item="states" separator="," open="(" close=")">
+                    #{states}
                 </foreach>
-            </if>
-        </where>
-    </select>
-    <select id="getOperatorByNameOrState" resultType="com.hxoms.modules.sysUser.entity.CfUser">
-        select * from cf_user
-        <where>
-            <if test='name != null and name != ""'>
-                and (user_name = #{name}
-                or user_code = #{name} )
-            </if>
-            <if test='state != null and state.size > 0'>
-                and user_state in
-                <foreach collection="state" item="state" separator="," open="(" close=")">
-                    #{state}
-                </foreach>
-            </if>
-            <if test='orgIds != null and orgIds.size > 0'>
-                and org_id in
-                <foreach collection="orgIds" item="orgIds" separator="," open="(" close=")">
-                    #{orgIds}
-                </foreach>
-            </if>
-            <if test='userType != null and userType != ""'>
-              and user_type = #{userType}
             </if>
         </where>
     </select>
@@ -323,6 +301,12 @@
       <if test="telephone != null">
         Telephone,
       </if>
+      <if test="nation != null">
+        NATION,
+      </if>
+      <if test="birth != null">
+        BIRTH,
+      </if>
       <if test="fingerprint1 != null">
         FINGERPRINT_1,
       </if>
@@ -423,6 +407,12 @@
       </if>
       <if test="telephone != null">
         #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="birth != null">
+        #{birth,jdbcType=DATE},
       </if>
       <if test="fingerprint1 != null">
         #{fingerprint1,jdbcType=LONGVARCHAR},
@@ -529,6 +519,12 @@
       </if>
       <if test="telephone != null">
         Telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        NATION = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="birth != null">
+        BIRTH = #{birth,jdbcType=DATE},
       </if>
       <if test="fingerprint1 != null">
         FINGERPRINT_1 = #{fingerprint1,jdbcType=LONGVARCHAR},
