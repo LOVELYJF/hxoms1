@@ -4,7 +4,6 @@ import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
-import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -98,9 +97,14 @@ public class OmsRegProcpersoninfoController {
             String dataType="2";
             int count = mrpinfoService.selectCountGongAn(dataType);
             if (count < 0){
-                List<OmsRegProcpersoninfo> list = readOmsDataGA();
-                List<OmsRegProcpersoninfo> mepinfoList = mrpinfoService.insertOmsRegGongAn(list);
-                return Result.success(mepinfoList);
+
+                //获取缓存
+                /*Cache<String,Object> cache = GuavaCache.getCache();
+                cache.put("uploadOmsRegGongAnlist", uploadOmsRegGongAnlist);*/
+
+                List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA();
+                int con = mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
+                return Result.success(con);
             }else{
                 return Result.error("存在待处理的公安数据，请勿多次上传");
             }
@@ -108,6 +112,12 @@ public class OmsRegProcpersoninfoController {
             e.printStackTrace();
             return Result.error("系统错误");
         }
+    }
+
+    @PostMapping("/selectMergeList")
+    public Result selectMergeList(String dataType){
+        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList(dataType);
+        return Result.success(list);
     }
 
 
@@ -236,13 +246,14 @@ public class OmsRegProcpersoninfoController {
      * 上传公安数据
      * @return
      */
+    @PostMapping("/readOmsDataGA")
     private static List<OmsRegProcpersoninfo> readOmsDataGA() {
 
         List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
         HSSFWorkbook workbook = null;
         try {
             // 读取Excel文件
-            InputStream inputStream = new FileInputStream("D:/msdataga.xls");
+            InputStream inputStream = new FileInputStream("D:/Users/Person/Desktop/example.xlsx");
             workbook = new HSSFWorkbook(inputStream);
             inputStream.close();
         } catch (Exception e) {
@@ -292,7 +303,7 @@ public class OmsRegProcpersoninfoController {
                 if (cell == null) {
                     continue;
                 }
-                orpInfo.setBirthDate(cell.getDateCellValue());
+                orpInfo.setBirthDateSfz(cell.getDateCellValue());
 
                 //身份证号
                 cell = hssfRow.getCell(4);

@@ -14,6 +14,7 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
+    <result column="BIRTH_DATE_SFZ" jdbcType="DATE" property="birthDateSfz" />
     <result column="NATION_CODE" jdbcType="VARCHAR" property="nationCode" />
     <result column="NATION_NAME" jdbcType="VARCHAR" property="nationName" />
     <result column="IDNUMBER" jdbcType="CHAR" property="idnumber" />
@@ -52,7 +53,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
-    SURNAME, NAME, SEX, BIRTH_DATE, NATION_CODE, NATION_NAME, IDNUMBER, POLITICAL_AFFICODE, 
+    SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ, NATION_CODE, NATION_NAME, IDNUMBER, POLITICAL_AFFICODE,
     POLITICAL_AFFINAME, HEALTH_CODE, HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, 
     WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_LEVEL, 
     DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY, NF, FJGNF, XRXGW, 
@@ -106,7 +107,7 @@
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
-              NAME, SEX, BIRTH_DATE,
+              NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ,
               NATION, IDNUMBER, POLITICAL_AFFI,
               HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
               WORK_UNIT, POST_CODE, POST,
@@ -122,7 +123,7 @@
       (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
       #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
-      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
+      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},#{birthDateSfz,jdbcType=DATE},
       #{nation,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
       #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
       #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
@@ -138,10 +139,10 @@
 
 	</insert>
 
-    <select id="selectInboudFlagCount" resultType="list">
+    <select id="selectInboudFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
       SELECT
         T_Status.CODE,
-        T_Status.NAME,
+        T_Status.NAM                                                  E,
         IFNULL(T_Main.Cnt, '0') VALUE
       FROM
         (
@@ -159,7 +160,7 @@
         ) T_Main ON T_Main.INBOUND_FLAG = T_Status.code
     </select>
 
-    <select id="selectIdentityCodeCount" resultType="list">
+    <select id="selectIdentityCodeCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
       SELECT
         T_Status.CODE,
         T_Status.NAME,
@@ -187,7 +188,7 @@
 
     </select>
 
-  <select id="selectAllFlagCount" resultType="list">
+  <select id="selectAllFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
     select
       count(orp.MAIN_LEADER=1) as acount,-- 主要领导
       count(orp.NF='1') as bcount,-- 裸官
@@ -198,6 +199,15 @@
       count(orp.DQGZ=1)as gcount, -- 到琼挂职
       (select count(1) from oms_reg_procpersoninfo orp left join oms_sup_suspend_person oss on orp.A0100 = oss.A0100 where oss.status=0)as hcount  -- 锁定出国
     from oms_reg_procpersoninfo orp
+  </select>
+
+
+  <select id="selectMergeList" resultMap="BaseResultMap">
+    select * from oms_reg_procpersoninfo where 1=1
+    and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
+    <if test="dataType!=null and dataType!=''">
+      and DATA_TYPE=#{dataType}
+    </if>
   </select>
 
 </mapper>

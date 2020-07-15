@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.selfestimate.mapper.OmsSelfestimateResultitemMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="CHECK_ID" jdbcType="VARCHAR" property="checkId" />
+    <result column="CHECK_RESULT" jdbcType="INTEGER" property="checkResult" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="PERSON_TYPE" jdbcType="VARCHAR" property="personType" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SELFFILE_ID, APPLY_ID, CHECK_ID, CHECK_RESULT, DESCRIPTION, PERSON_TYPE, CREATE_TIME,
+    CREATE_USER, MODIFY_TIME, MODIFY_USER
+  </sql>
+
+  <!--查询结果子集列表-->
+  <select id="selectItemResultList" parameterType="java.lang.String" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
+      select
+             o1.ID as checkId,
+             o1.CHECK_ITEM as checkItem,
+             o2.ID as id,
+             o2.RESULT_ID as resultId,
+             o2.CHECK_RESULT as checkResult,
+             o2.DESCRIPTION as description
+      from oms_selfestimate_items o1 left join oms_selfestimate_resultitem o2 on o1.ID = o2.CHECK_ID
+      where 1=1
+      and o1.ENABLE = 1
+      <if test="resultId != null and resultId != ''">
+        and o2.RESULT_ID = #{resultId}
+      </if>
+  </select>
+</mapper>

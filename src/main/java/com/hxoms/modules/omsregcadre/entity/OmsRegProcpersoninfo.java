@@ -43,10 +43,16 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
+    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（干部档案）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
+
+    @ColumnAnnotation(FieldName = "BIRTH_DATE_SFZ",   FieldDescription="出生日期（身份证）")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date birthDateSfz;
+
 
     @ColumnAnnotation(FieldName = "NATION_CODE",   FieldDescription="民族代码")
     private String nationCode;
@@ -262,6 +268,14 @@ public class OmsRegProcpersoninfo {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Date getBirthDateSfz() {
+        return birthDateSfz;
+    }
+
+    public void setBirthDateSfz(Date birthDateSfz) {
+        this.birthDateSfz = birthDateSfz;
     }
 
     public String getNationCode() {

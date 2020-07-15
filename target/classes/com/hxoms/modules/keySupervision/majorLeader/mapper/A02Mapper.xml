@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.majorLeader.entity.A02">
+		<id column="a0200" jdbcType="VARCHAR" property="a0200" />
+		<result column="a0100" jdbcType="VARCHAR" property="a0100" />
+		<result column="a0201b" jdbcType="VARCHAR" property="a0201b" />
+		<result column="a0201d" jdbcType="VARCHAR" property="a0201d" />
+		<result column="a0201e" jdbcType="VARCHAR" property="a0201e" />
+		<result column="a0203" jdbcType="VARCHAR" property="a0203" />
+		<result column="a0205" jdbcType="VARCHAR" property="a0205" />
+		<result column="a0207" jdbcType="VARCHAR" property="a0207" />
+		<result column="a0209" jdbcType="VARCHAR" property="a0209" />
+		<result column="a0211" jdbcType="VARCHAR" property="a0211" />
+		<result column="a0213" jdbcType="VARCHAR" property="a0213" />
+		<result column="A0215A" jdbcType="VARCHAR" property="a0215a" />
+		<result column="a0215b" jdbcType="VARCHAR" property="a0215b" />
+		<result column="a0219" jdbcType="VARCHAR" property="a0219" />
+		<result column="a0221" jdbcType="VARCHAR" property="a0221" />
+		<result column="a0221a" jdbcType="VARCHAR" property="a0221a" />
+		<result column="a0221t" jdbcType="VARCHAR" property="a0221t" />
+		<result column="a0222" jdbcType="VARCHAR" property="a0222" />
+		<result column="a0223" jdbcType="DECIMAL" property="a0223" />
+		<result column="a0225" jdbcType="VARCHAR" property="a0225" />
+		<result column="a0229" jdbcType="VARCHAR" property="a0229" />
+		<result column="a0233" jdbcType="VARCHAR" property="a0233" />
+		<result column="a0235a" jdbcType="VARCHAR" property="a0235a" />
+		<result column="a0235b" jdbcType="VARCHAR" property="a0235b" />
+		<result column="a0237" jdbcType="VARCHAR" property="a0237" />
+		<result column="a0239" jdbcType="VARCHAR" property="a0239" />
+		<result column="a0241a" jdbcType="VARCHAR" property="a0241a" />
+		<result column="a0241b" jdbcType="VARCHAR" property="a0241b" />
+		<result column="a0243" jdbcType="VARCHAR" property="a0243" />
+		<result column="a0245" jdbcType="VARCHAR" property="a0245" />
+		<result column="a0247" jdbcType="VARCHAR" property="a0247" />
+		<result column="a0249" jdbcType="VARCHAR" property="a0249" />
+		<result column="a0251" jdbcType="VARCHAR" property="a0251" />
+		<result column="a0251b" jdbcType="VARCHAR" property="a0251b" />
+		<result column="a0253" jdbcType="VARCHAR" property="a0253" />
+		<result column="a0255" jdbcType="VARCHAR" property="a0255" />
+		<result column="a0257a" jdbcType="VARCHAR" property="a0257a" />
+		<result column="a0257b" jdbcType="VARCHAR" property="a0257b" />
+		<result column="a0259" jdbcType="VARCHAR" property="a0259" />
+		<result column="a0261" jdbcType="VARCHAR" property="a0261" />
+		<result column="a0263a" jdbcType="VARCHAR" property="a0263a" />
+		<result column="a0263b" jdbcType="VARCHAR" property="a0263b" />
+		<result column="a0265" jdbcType="VARCHAR" property="a0265" />
+		<result column="a0267" jdbcType="VARCHAR" property="a0267" />
+		<result column="a0269" jdbcType="VARCHAR" property="a0269" />
+		<result column="a0271" jdbcType="VARCHAR" property="a0271" />
+		<result column="a0273" jdbcType="VARCHAR" property="a0273" />
+		<result column="a0275" jdbcType="VARCHAR" property="a0275" />
+		<result column="a0279_1" jdbcType="VARCHAR" property="a02791" />
+		<result column="a0284" jdbcType="VARCHAR" property="a0284" />
+		<result column="a0288" jdbcType="VARCHAR" property="a0288" />
+		<result column="a4901" jdbcType="VARCHAR" property="a4901" />
+		<result column="a4904" jdbcType="VARCHAR" property="a4904" />
+		<result column="a4907" jdbcType="VARCHAR" property="a4907" />
+		<result column="person_category" jdbcType="VARCHAR" property="personCategory" />
+		<result column="org_category" jdbcType="VARCHAR" property="orgCategory" />
+		<result column="manage_category" jdbcType="VARCHAR" property="manageCategory" />
+		<result column="a0201c1" jdbcType="VARCHAR" property="a0201c1" />
+		<result column="a0201d2" jdbcType="VARCHAR" property="a0201d2" />
+		<result column="position_name_desc" jdbcType="VARCHAR" property="positionNameDesc" />
+		<result column="a0222a" jdbcType="VARCHAR" property="a0222a" />
+		<result column="a0222b" jdbcType="VARCHAR" property="a0222b" />
+		<result column="a02manager" jdbcType="VARCHAR" property="a02manager" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="id" jdbcType="VARCHAR" property="id" />
+		<result column="is_deleted" jdbcType="CHAR" property="isDeleted" />
+		<result column="modify_user" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+		<result column="a0279" jdbcType="VARCHAR" property="a0279" />
+		<result column="a0272" jdbcType="VARCHAR" property="a0272" />
+		<result column="a0281" jdbcType="VARCHAR" property="a0281" />
+		<result column="is_normal" jdbcType="VARCHAR" property="isNormal" />
+		<result column="operate_batch" jdbcType="VARCHAR" property="operateBatch" />
+		<result column="a0201b_test" jdbcType="VARCHAR" property="a0201bTest" />
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.keySupervision.majorLeader.entity.A02">
+		<result column="a0201a" jdbcType="LONGVARCHAR" property="a0201a" />
+		<result column="time_stamp" jdbcType="LONGVARBINARY" property="timeStamp" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    a0200, a0100, a0201b, a0201d, a0201e, a0203, a0205, a0207, a0209, a0211, a0213, A0215A,
+    a0215b, a0219, a0221, a0221a, a0221t, a0222, a0223, a0225, a0229, a0233, a0235a, 
+    a0235b, a0237, a0239, a0241a, a0241b, a0243, a0245, a0247, a0249, a0251, a0251b, 
+    a0253, a0255, a0257a, a0257b, a0259, a0261, a0263a, a0263b, a0265, a0267, a0269, 
+    a0271, a0273, a0275, a0279_1, a0284, a0288, a4901, a4904, a4907, person_category, 
+    org_category, manage_category, a0201c1, a0201d2, position_name_desc, a0222a, a0222b, 
+    a02manager, remark, id, is_deleted, modify_user, modify_time, node_id, a0279, a0272, 
+    a0281, is_normal, operate_batch, a0201b_test
+  </sql>
+	<sql id="Blob_Column_List">
+    a0201a, time_stamp
+  </sql>
+
+
+	<!-- 查询a02中的每个单位前两名主要领导-->
+	<select id="selectMajorLeaderAutoFromA02" resultMap="BaseResultMap">
+		SELECT
+			<include refid="Base_Column_List"/>
+		FROM a02 a WHERE
+		(
+		SELECT count(1) FROM a02 b WHERE
+		a.a0201b=b.a0201b AND b.a0215b &lt;= a.a0215b
+		) &lt;= 2
+		ORDER BY a.a0201b
+	</select>
+
+	<select id="selectB0100ByA021b" parameterType="java.lang.String" resultType="java.lang.String">
+		select b01.b0100 from B01 b01 where b01.b0111 = #{a0201b}
+	</select>
+
+</mapper>

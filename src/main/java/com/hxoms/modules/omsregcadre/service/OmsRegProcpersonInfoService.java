@@ -21,7 +21,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     Object deleteRpinfo(String id);
 
-    List<OmsRegProcpersoninfo> insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
+    int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
 
     int selectCountGongAn(String dataType);
 
@@ -56,4 +56,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     PageInfo<OmsRegProcpersoninfo> getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) throws ParseException;
 
     Map<String, Object> selectStatisticsCount();
+
+    List<OmsRegProcpersoninfo> selectMergeList(String dataType);
 }

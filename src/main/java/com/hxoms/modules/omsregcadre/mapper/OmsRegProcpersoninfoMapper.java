@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
@@ -25,6 +26,8 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     List<StatisticsCountVo> selectIdentityCodeCount();
 
     List<StatisticsCountVo> selectAllFlagCount();
+
+    List<OmsRegProcpersoninfo> selectMergeList(String dataType);
 }
 
 

@@ -18,6 +18,12 @@ public class OmsRegRevokeapply {
     private String id;
 
     /**
+     * 登记备案id
+     */
+    @ColumnAnnotation(FieldName = "RF_ID",  FieldDescription="登记备案id")
+    private String rfId;
+
+    /**
      * 申请人
      */
     @ColumnAnnotation(FieldName = "A0100",  FieldDescription="申请人")
@@ -150,7 +156,13 @@ public class OmsRegRevokeapply {
     private String rfB0000;
 
     /**
-     * 脱密日期
+     * 退出方式
+     */
+    @ColumnAnnotation(FieldName = "EXIT_TYPE",  FieldDescription="退出方式")
+    private String exitType;
+
+    /**
+     * 退出日期
      */
     @ColumnAnnotation(FieldName = "EXIT_DATE",  FieldDescription="退出日期")
     private String exitDate;

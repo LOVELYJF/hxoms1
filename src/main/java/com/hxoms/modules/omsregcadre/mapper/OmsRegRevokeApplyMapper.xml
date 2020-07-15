@@ -3,6 +3,7 @@
 <mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
     <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RF_ID" jdbcType="VARCHAR" property="rfId" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
@@ -26,11 +27,12 @@
     <result column="STATUS" jdbcType="CHAR" property="status" />
     <result column="RF_B0000" jdbcType="VARCHAR" property="rfB0000" />
     <result column="EXIT_DATE" jdbcType="VARCHAR" property="exitDate" />
+    <result column="EXIT_TYPE" jdbcType="CHAR" property="exitType" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, CREATE_USER, CREATE_DATE, SURNAME, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE, 
     REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, 
-    SECRET_STATUS, SECRET_STARTDATE, SECRET_ENDDATE, APPLY_REASON, STATUS,RF_B0000,EXIT_DATE
+    SECRET_STATUS, SECRET_STARTDATE, SECRET_ENDDATE, APPLY_REASON, STATUS,RF_B0000,EXIT_DATE,EXIT_TYPE,RF_ID
   </sql>
 
   <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply"
