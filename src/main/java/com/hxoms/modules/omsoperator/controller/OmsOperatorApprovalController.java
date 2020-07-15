@@ -2,7 +2,6 @@ package com.hxoms.modules.omsoperator.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.service.OmsOperatorApprovalService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;

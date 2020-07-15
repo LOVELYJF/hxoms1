@@ -1,7 +1,6 @@
 package com.hxoms.modules.omsoperator.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 功能描述: <br>

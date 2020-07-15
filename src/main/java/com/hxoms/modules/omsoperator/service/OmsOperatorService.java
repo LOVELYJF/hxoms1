@@ -1,12 +1,10 @@
 package com.hxoms.modules.omsoperator.service;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OmsOperatorService {
     /**
@@ -47,7 +45,7 @@ public interface OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/5/8 14:40
      */
-    String revokeOperator(String operatorId,String handoverId);
+    String revokeOperator(String operatorId, String handoverId);
 
     /**
      * 功能描述: <br>
@@ -77,7 +75,7 @@ public interface OmsOperatorService {
      * @Author: 李逍遥
      * @Date: 2020/7/8 15:30
      */
-    PageInfo getAllOperator(Integer pageNum, Integer pageSize, String keyWord,List<String> state);
+    PageInfo getAllOperator(Integer pageNum, Integer pageSize, String keyWord, List<String> state);
 
     /**
      * 功能描述: <br>

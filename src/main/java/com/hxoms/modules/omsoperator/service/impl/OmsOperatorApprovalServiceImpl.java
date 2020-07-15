@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper;
 import com.hxoms.modules.omsoperator.service.OmsOperatorApprovalService;
 import com.hxoms.modules.sysUser.entity.CfUser;
