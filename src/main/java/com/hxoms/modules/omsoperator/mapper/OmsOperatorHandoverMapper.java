@@ -6,7 +6,6 @@ import com.hxoms.modules.omsoperator.entity.OmsPriDelayVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface OmsOperatorHandoverMapper {

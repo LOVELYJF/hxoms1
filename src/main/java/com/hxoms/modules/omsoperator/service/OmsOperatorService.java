@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsoperator.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
