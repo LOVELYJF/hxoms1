@@ -100,16 +100,6 @@ public interface CfUserMapper {
 
     /**
      * 功能描述: <br>
-     * 〈通过姓名或者状态列表查询经办人列表〉
-     * @Param: [name, state]
-     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
-     * @Author: 李逍遥
-     * @Date: 2020/5/7 16:11
-     */
-    List<CfUser> getOperatorByNameOrState(@Param("name") String name, @Param("state") List<String> state, @Param("orgIds") List<String> orgIds,@Param("userType") String userType);
-
-    /**
-     * 功能描述: <br>
      * 〈获取某个机构下的经办人〉
      * @Param: [orgId, userType]
      * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>

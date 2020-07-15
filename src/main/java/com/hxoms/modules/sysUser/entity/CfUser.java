@@ -114,6 +114,14 @@ public class CfUser {
     @ColumnAnnotation(FieldName = "Telephone",   FieldDescription="座机号")
     private String telephone;
 
+    @ColumnAnnotation(FieldName = "NATION",   FieldDescription="民族")
+    private String nation;
+
+    @ColumnAnnotation(FieldName = "BIRTH",   FieldDescription="出生日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date birth;
+
     @ColumnAnnotation(FieldName = "FINGERPRINT_1",   FieldDescription="指纹1(存储指纹BASE64数据)")
     private String fingerprint1;
 
@@ -366,6 +374,22 @@ public class CfUser {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone == null ? null : telephone.trim();
+    }
+
+    public String getNation() {
+        return nation;
+    }
+
+    public void setNation(String nation) {
+        this.nation = nation == null ? null : nation.trim();
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
     }
 
     public String getFingerprint1() {
