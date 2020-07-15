@@ -4,10 +4,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,39 +23,43 @@ public class OmsSensitiveMaintainController {
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
-	 * @param sensitiveLimitId
 	 * @return
 	 */
 	@GetMapping("/getCountryInfo")
-	public Result getCountryInfo(String nameZh,String sensitiveLimitId){
-		List<Country> list = omsSensitiveMaintainService.getCountryInfo(nameZh,sensitiveLimitId);
+	public Result getCountryInfo(String nameZh){
+		List<Country> list = omsSensitiveMaintainService.getCountryInfo(nameZh);
 		return Result.success(list);
 	}
 
 
 	/**
-	 * <b>增加敏感国家信息</b>
-	 * @param countryId
+	 * <b>功能描述: 查询限制性国家信息</b>
+	 * @Param: [sensitiveLimitId]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 20:10
+	 */
+	@GetMapping("/getSensitiveMaintain")
+	public Result getSensitiveMaintain(String sensitiveLimitId){
+		List<Integer> list = omsSensitiveMaintainService.getSensitiveMaintain(sensitiveLimitId);
+		return Result.success(list);
+	}
+
+
+
+	/**
+	 * <b>保存敏感国家信息</b>
+	 * @param countryIdList
 	 * @param sensitiveLimitId
 	 * @return
 	 */
 	@PostMapping("/addCountryInfo")
-	public Result addCountryInfo(Integer countryId,String sensitiveLimitId){
-		omsSensitiveMaintainService.addCountryInfo(countryId,sensitiveLimitId);
+	public Result addCountryInfo(@RequestParam(value = "countryIdList",required = false) List<Integer> countryIdList,
+	                             String sensitiveLimitId){
+		omsSensitiveMaintainService.addCountryInfo(countryIdList,sensitiveLimitId);
 		return Result.success();
 	}
 
-	/**
-	 * <b>删除敏感国家信息</b>
-	 * @param countryId
-	 * @param sensitiveLimitId
-	 * @return
-	 */
-	@PostMapping("/deleteCountryInfo")
-	public Result deleteCountryInfo(Integer countryId,String sensitiveLimitId){
-		omsSensitiveMaintainService.deleteCountryInfo(countryId,sensitiveLimitId);
-		return Result.success();
-	}
 
 }
 

@@ -17,6 +17,11 @@
     LAT, LON
   </sql>
 
+	<!-- 删除敏感国家信息 -->
+	<delete id="deleteSensitiveMaintain">
+		delete from oms_sensitive_maintain where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
+	</delete>
+
 	<select id="getCountryInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
 		select * from country
 		<where>
@@ -38,11 +43,9 @@
 		</where>
 	</select>
 
-	<insert id="addCountryInfo" parameterType="java.util.Map">
-		insert into oms_sensitive_maintain(country_id,sensitive_limit_id) values(#{countryId},#{sensitiveLimitId})
+	<!-- 保存限制性国家信息 -->
+	<insert id="addSensitiveMaintain">
+		insert into oms_sensitive_maintain(COUNTRY_ID,SENSITIVE_LIMIT_ID) values (#{id},#{sensitiveLimitId})
 	</insert>
 
-	<delete id="deleteCountryInfo" parameterType="java.util.Map">
-		delete from oms_sensitive_maintain where country_id=#{countryId} and sensitive_limit_id=#{sensitiveLimitId}
-	</delete>
 </mapper>

@@ -14,24 +14,26 @@ public interface OmsSensitiveMaintainService {
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
-	 * @param sensitiveLimitId
 	 * @return
 	 */
-	List<Country> getCountryInfo(String nameZh, String sensitiveLimitId);
+	List<Country> getCountryInfo(String nameZh);
 
 	/**
-	 * <b>增加敏感国家信息</b>
-	 * @param countryId
-	 * @param sensitiveLimitId
-	 * @return
+	 * <b>功能描述: 查询限制性国家信息</b>
+	 * @Param: [sensitiveLimitId]
+	 * @Return: java.util.List<java.lang.Integer>
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 20:10
 	 */
-	void addCountryInfo(Integer countryId, String sensitiveLimitId);
+	List<Integer> getSensitiveMaintain(String sensitiveLimitId);
 
 	/**
-	 * <b>删除敏感国家信息</b>
-	 * @param countryId
+	 * <b>保存敏感国家信息</b>
+	 * @param countryIdList
 	 * @param sensitiveLimitId
 	 * @return
 	 */
-	void deleteCountryInfo(Integer countryId, String sensitiveLimitId);
+	void addCountryInfo(List<Integer> countryIdList, String sensitiveLimitId);
+
+
 }

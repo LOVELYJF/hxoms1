@@ -1,12 +1,16 @@
 package com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.java2d.SurfaceDataProxy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,55 +26,60 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 
 	@Autowired
 	private CountryMapper countryMapper;
+	@Autowired
+	private OmsSensitiveLimitMapper omsSensitiveLimitMapper;
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
-	 * @param sensitiveLimitId
 	 * @return
 	 */
-	public List<Country> getCountryInfo(String nameZh, String sensitiveLimitId) {
+	public List<Country> getCountryInfo(String nameZh) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("nameZh", nameZh);
-		map.put("sensitiveLimitId",sensitiveLimitId);
 		List<Country> list = countryMapper.getCountryInfo(map);
 		return list;
 	}
 
 
 	/**
-	 * <b>增加敏感国家信息</b>
-	 * @param countryId
-	 * @param sensitiveLimitId
-	 * @return
+	 * <b>功能描述: 查询限制性国家信息</b>
+	 * @Param: [sensitiveLimitId]
+	 * @Return: java.util.List<java.lang.Integer>
+	 * @Author: luoshuai
+	 * @Date: 2020/7/14 20:11
 	 */
-	public void addCountryInfo(Integer countryId, String sensitiveLimitId) {
-		//首先查询该敏感国家是否存在
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("countryId", countryId);
-		map.put("sensitiveLimitId",sensitiveLimitId);
-		List<Map<String,Object>> list = countryMapper.selectSensitiveCountry(map);
-		if(list == null || list.size() < 1){
-			int country = countryMapper.addCountryInfo(map);
-			if(country < 1){
-				throw new CustomMessageException("添加失败");
-			}
+	public List<Integer> getSensitiveMaintain(String sensitiveLimitId) {
+		List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
+		if(list != null && list.size() > 0){
+			return list;
 		}
+		return new ArrayList<Integer>();
 	}
 
 
 	/**
-	 * <b>删除敏感国家信息</b>
-	 * @param countryId
+	 * <b>保存敏感国家信息</b>
+	 * @param countryIdList
 	 * @param sensitiveLimitId
 	 * @return
 	 */
-	public void deleteCountryInfo(Integer countryId, String sensitiveLimitId) {
+	public void addCountryInfo(List<Integer> countryIdList, String sensitiveLimitId) {
+
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("countryId", countryId);
 		map.put("sensitiveLimitId",sensitiveLimitId);
-		int country = countryMapper.deleteCountryInfo(map);
-		if(country < 1){
-			throw new CustomMessageException("删除失败");
+		//将当前的限制性国家删除
+		int count = countryMapper.deleteSensitiveMaintain(sensitiveLimitId);
+		if(count > 0){
+			for(Integer id : countryIdList){
+				map.put("id", id);
+				int result = countryMapper.addSensitiveMaintain(map);
+				if(result < 1){
+					throw new CustomMessageException("保存失败");
+				}
+			}
+		}else {
+			throw new CustomMessageException("操作失败");
 		}
 	}
+
 }

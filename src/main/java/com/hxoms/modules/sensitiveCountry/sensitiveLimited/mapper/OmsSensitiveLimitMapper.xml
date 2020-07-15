@@ -47,7 +47,12 @@
         </where>
     </select>
 
-    <insert id="addSensitiveLimit" parameterType="java.util.Map">
+
+	<select id="getSensitiveMaintain" resultType="java.lang.Integer">
+        select COUNTRY_ID from oms_sensitive_maintain where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
+    </select>
+
+	<insert id="addSensitiveLimit" parameterType="java.util.Map">
         insert into oms_sensitive_limit(SENSITIVE_ITEM,SENSITIVE_LIMIT_ID,PUB_PRI)
         values (#{sensitiveItem},#{sensitiveLimitId},#{pubPri})
     </insert>
