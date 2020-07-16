@@ -333,7 +333,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				response.reset();
 				response.setHeader("Content-disposition", "attachment; " +
 						"filename=" + new String( "立案人员信息表.xls".getBytes("utf-8"), "ISO8859-1" ));
-				response.setContentType("multipart/form-data");
+				response.setContentType("application/octet-stream");
 				wb.write(output);
 				output.close();
 			} catch (IOException e) {
