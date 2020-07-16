@@ -163,7 +163,9 @@ public class OmsFileServiceImpl implements OmsFileService {
             queryWrapperFile.eq("ID", omsFile.getFileId())
                     .select("RUN_SQL");
             OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
-            omsFileSql.setRunSql(omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID()));
+            if (!StringUtils.isBlank(omsFileSql.getRunSql())){
+                omsFileSql.setRunSql(omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID()));
+            }
             FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
             // 替换关键词
             if (fileReplaceVO != null){
@@ -273,9 +275,14 @@ public class OmsFileServiceImpl implements OmsFileService {
             //反射机制代替关键词
             Class clazz = t.getClass();
             try {
-                String value = (String) clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
-                omsFile.setFrontContent(omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value));
-                omsFile.setBankContent(omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value));
+                Object value = clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
+                if (!StringUtils.isBlank(omsFile.getFrontContent())){
+                    omsFile.setFrontContent(omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
+                }
+                if (!StringUtils.isBlank(omsFile.getBankContent())){
+                    omsFile.setBankContent(omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
+                }
+
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 throw new CustomMessageException("数据异常");
