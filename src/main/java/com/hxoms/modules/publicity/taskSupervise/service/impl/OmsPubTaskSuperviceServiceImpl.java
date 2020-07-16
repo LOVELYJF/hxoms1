@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseService {
@@ -224,8 +225,17 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
             throw new CustomMessageException("业务数据为空，无法办理催办业务！");
         int sqzt=Integer.parseInt(urgeParameterVO.getSqzt());
         //申请状态为已办结、待领证、已领证、撤销情况，不能办理催办业务。
-        if(sqzt>=28)
-            throw new CustomMessageException("备案申请状态为："+Constants.leader_business[sqzt]+"，无法办理催办业务！");
+        if(sqzt>=28){
+            String sqztName=null;
+            List<Integer> leader_business = Arrays.stream(Constants.leader_business).boxed().collect(Collectors.toList());
+            List<Integer> private_business = Arrays.stream(Constants.private_business).boxed().collect(Collectors.toList());
+            if(leader_business.contains(sqzt)){
+                sqztName=Constants.leader_businessName[leader_business.indexOf(sqzt)];
+            }else if(private_business.contains(sqzt)){
+                sqztName=Constants.private_businessName[private_business.indexOf(sqzt)];
+            }
+            throw new CustomMessageException("备案申请状态为："+sqztName+"，无法办理催办业务！");
+        }
         //获取模板
         String msgTemplate=taskSuperviseCfg.getJdcMsgTemplate();
         //设置参数
