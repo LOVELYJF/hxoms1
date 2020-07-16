@@ -212,7 +212,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					//家庭成员登记备案判断是否重复（根据身份证号码判断）
 					if(omsRegProcpersoninfoList != null && omsRegProcpersoninfoList.size() > 0){
 						for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
-							if(!omsRegProcpersonInfo.getIdnumber().equals(a36.getIdCard())){
+							if(!omsRegProcpersonInfo.getIdnumberGb().equals(a36.getIdCard())){
 								continue;
 							}else{
 								result = true;
@@ -252,7 +252,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						omsRegProcpersonInfo.setIdentityCode("9");
 						omsRegProcpersonInfo.setSecretLevel("非涉密");
 						omsRegProcpersonInfo.setRegisteResidence(a36.getHukouLocation());
-						omsRegProcpersonInfo.setIdnumber(a36.getIdCard());
+						omsRegProcpersonInfo.setIdnumberGb(a36.getIdCard());
 						omsRegProcpersonInfo.setWorkUnit(a36.getA3611());
 
 						//查询家庭成员政治面貌
@@ -337,7 +337,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 			List<String> idCardList = a36Mapper.selectIdCardList(a0100);
 			for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
 				boolean flag = false;
-				if(idCardList.contains(omsRegProcpersonInfo.getIdnumber())){
+				if(idCardList.contains(omsRegProcpersonInfo.getIdnumberGb())){
 					//修改备案人员信息，改为已撤销，未备案，未验收
 					omsRegProcpersonInfo.setInboundFlag("D");
 					omsRegProcpersonInfo.setRfStatus("0");
@@ -351,7 +351,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
 							//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 							for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
-								if(omsRegRevokeApply.getIdnumber().equals(omsRegProcpersonInfo.getIdnumber()) &&
+								if(omsRegRevokeApply.getIdnumber().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
 										omsRegRevokeApply.getStatus().equals("0")){
 									//撤销登记备案表中已经存在
 									flag = true;
@@ -370,7 +370,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
 							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
 							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
-							omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumber());
+							omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumberGb());
 							omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
 							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
 							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());

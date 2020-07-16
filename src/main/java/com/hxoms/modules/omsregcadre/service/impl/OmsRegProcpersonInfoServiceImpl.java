@@ -249,7 +249,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
             //身份账号与名称一致
-            if (gbData.getIdnumber().equals(gaData.getIdnumber()) && gbData.getName() .equals(gaData.getName())){
+            if (gbData.getIdnumberGb().equals(gaData.getIdnumberGa()) && gbData.getName() .equals(gaData.getName())){
                 //更新干部相关信息从公安数据中维护
                 OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
                 omsreginfo.setId(gbData.getId());
@@ -502,12 +502,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //登记备案为干部的身份证号集合
         List<String> gbidnumbers =null;
         for (int i=0;i<omsregList.size();i++){
-            gbidnumbers.add(omsregList.get(i).getIdnumber());
+            gbidnumbers.add(omsregList.get(i).getIdnumberGb());
         }
         //出国境导入数据集合
         for (OmsRegProcpersoninfo cgjdata :list){
             //登记备案中包含出入境
-            if (gbidnumbers.contains(cgjdata.getIdnumber())){
+            if (gbidnumbers.contains(cgjdata.getIdnumberGa())){
                 continue;
             }else{
                 //登记备案不中包含出入境
@@ -522,12 +522,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //出入境（公安）导入数据身份证号集合
         List<String> gaidnumbers =null;
         for (int i=0;i<list.size();i++){
-            gaidnumbers.add(list.get(i).getIdnumber());
+            gaidnumbers.add(list.get(i).getIdnumberGa());
         }
         //登记备案干部集合
         for (OmsRegProcpersoninfo gbdata :omsregList){
             //出入境包含登记备案
-            if (gbidnumbers.contains(gbdata.getIdnumber())){
+            if (gbidnumbers.contains(gbdata.getIdnumberGb())){
                 continue;
             }else{
                 //出入境不包含登记备案
@@ -649,15 +649,15 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setInboundFlag("U");
         //验收状态
         orpInfo.setCheckStatus("0");
-        //出生日期(干部档案)
-        orpInfo.setBirthDateSfz(simpleDateFormat.parse(birthDay));
-        //出生日期(干部档案)
+        //出生日期(身份证)
+        orpInfo.setBirthDate(simpleDateFormat.parse(birthDay));
+        //出生日期(干部)
         orpInfo.setBirthDate(simpleDateFormat.parse(a01.getA0107()));
         //拼音简称
         String py = PingYinUtil.getFirstSpell(a01.getA0101());
         orpInfo.setPy(py);
         //身份证号
-        orpInfo.setIdnumber(a01.getA0184());
+        orpInfo.setIdnumberGb(a01.getA0184());
         //查询A0100对应的退出管理退出方式录入在职状态
         orpInfo.setIncumbencyStatus(incumbencyStatus);
         //性别

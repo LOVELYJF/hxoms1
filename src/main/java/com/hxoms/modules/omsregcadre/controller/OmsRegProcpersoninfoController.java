@@ -6,18 +6,23 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,6 +34,8 @@ import java.util.Map;
 @RequestMapping("/omsRegProcpersonInfo")
 public class OmsRegProcpersoninfoController {
 
+    private final static String xls = "xls";
+    private final static String xlsx = "xlsx";
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
     @Autowired
@@ -90,7 +97,7 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/uploadOmsRegGongAn")
-    public Result uploadOmsRegGongAn() {
+    public Result uploadOmsRegGongAn(MultipartFile file) {
         // 读取Excel表格
         try{
             //查询是否存在公安数据
@@ -201,7 +208,7 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @GetMapping("/checkUploadRegRecord")
-    public Result checkUploadRegRecord(Date year) {
+    public Result checkUploadRegRecord(Date year,MultipartFile file) {
         // 读取Excel表格
         try{
             //登记备案大检查上传登记备案记录
@@ -242,25 +249,144 @@ public class OmsRegProcpersoninfoController {
         return Result.success(mrpinfoService.selectInfoByA0100(a0100));
     }
 
+
     /**
      * 上传公安数据
      * @return
      */
     @PostMapping("/readOmsDataGA")
-    private static List<OmsRegProcpersoninfo> readOmsDataGA() {
+    private static List<OmsRegProcpersoninfo> readOmsDataGA() throws IOException {
 
+        // 读取Excel文件
+        InputStream inputStream = new FileInputStream("D:/example.xls");
+        Workbook workbook = new HSSFWorkbook(inputStream);
+       /* //检查文件
+        checkFile(inputStream);
+        //获得Workbook工作薄对象
+        Workbook workbook = getWorkBook(inputStream);*/
+        //创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
+        //List<String[]> list = new ArrayList<String[]>();
         List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
-        HSSFWorkbook workbook = null;
-        try {
-            // 读取Excel文件
-            InputStream inputStream = new FileInputStream("D:/Users/Person/Desktop/example.xlsx");
-            workbook = new HSSFWorkbook(inputStream);
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (workbook != null) {
+            for (int sheetNum = 0; sheetNum < workbook.getNumberOfSheets(); sheetNum++) {
+                //获得当前sheet工作表
+                Sheet sheet = workbook.getSheetAt(sheetNum);
+                if (sheet == null) {
+                    continue;
+                }
+                //获得当前sheet的开始行
+                int firstRowNum = sheet.getFirstRowNum();
+                //获得当前sheet的结束行
+                int lastRowNum = sheet.getLastRowNum();
+                //循环除了第一行的所有行,去掉最后三行
+                for (int rowNum = firstRowNum + 3; rowNum <= lastRowNum - 3; rowNum++) {
+                    //获得当前行
+                    Row row = sheet.getRow(rowNum);
+                    if (row == null) {
+                        continue;
+                    }
 
-        // 循环工作表
+                    // 将单元格中的内容存入集合
+                    OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
+                    //姓
+                    Cell cell = row.getCell(1);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSurname(cell.getStringCellValue());
+
+                    cell = row.getCell(2);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setName(cell.getStringCellValue());
+
+                    cell = row.getCell(3);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+                    cell = row.getCell(4);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+                    cell = row.getCell(5);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+                    cell = row.getCell(6);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+                    cell = row.getCell(7);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+                    cell = row.getCell(8);
+                    if (cell == null) {
+                        continue;
+                    }
+                    orpInfo.setSex(cell.getStringCellValue());
+
+
+
+
+
+
+                    list.add(orpInfo);
+                }
+            }
+            workbook.close();
+        }
+        return list;
+    }
+
+    public static void checkFile(MultipartFile file) throws IOException {
+        //判断文件是否存在
+        if(null == file){
+            throw new FileNotFoundException("文件不存在！");
+        }
+        //获得文件名
+        String fileName = file.getOriginalFilename();
+        //判断文件是否是excel文件
+        if(!fileName.endsWith(xls) && !fileName.endsWith(xlsx)){
+            throw new IOException(fileName + "不是excel文件");
+        }
+    }
+
+    public static Workbook getWorkBook(MultipartFile file) {
+        //获得文件名
+        String fileName = file.getOriginalFilename();
+        //创建Workbook工作薄对象，表示整个excel
+        Workbook workbook = null;
+        try {
+            //获取excel文件的io流
+            InputStream is = file.getInputStream();
+            //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象
+            if(fileName.endsWith(xls)){
+                //2003
+                workbook = new HSSFWorkbook(is);
+            }else if(fileName.endsWith(xlsx)){
+                //2007
+                workbook = new XSSFWorkbook(is);
+            }
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        return workbook;
+    }
+
+
+   /*     // 循环工作表
         for (int numSheet = 0; numSheet < workbook.getNumberOfSheets(); numSheet++) {
             HSSFSheet hssfSheet = workbook.getSheetAt(numSheet);
             if (hssfSheet == null) {
@@ -368,7 +494,10 @@ public class OmsRegProcpersoninfoController {
             }
         }
         return list;
-    }
+    }*/
+
+
+
 
     /**
      *登记备案人员统计
@@ -384,8 +513,6 @@ public class OmsRegProcpersoninfoController {
             return Result.error("系统错误");
         }
     }
-
-
 
 
 }

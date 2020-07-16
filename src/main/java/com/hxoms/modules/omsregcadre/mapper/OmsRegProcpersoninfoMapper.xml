@@ -14,10 +14,12 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
-    <result column="BIRTH_DATE_SFZ" jdbcType="DATE" property="birthDateSfz" />
+    <result column="BIRTH_DATE_GB" jdbcType="DATE" property="birthDateGb" />
+    <result column="BIRTH_DATE_GA" jdbcType="DATE" property="birthDateGa" />
     <result column="NATION_CODE" jdbcType="VARCHAR" property="nationCode" />
     <result column="NATION_NAME" jdbcType="VARCHAR" property="nationName" />
-    <result column="IDNUMBER" jdbcType="CHAR" property="idnumber" />
+    <result column="IDNUMBER_GB" jdbcType="CHAR" property="idnumberGb" />
+    <result column="IDNUMBER_GA" jdbcType="CHAR" property="idnumberGa" />
     <result column="POLITICAL_AFFICODE" jdbcType="VARCHAR" property="politicalAfficode" />
     <result column="POLITICAL_AFFINAME" jdbcType="VARCHAR" property="politicalAffiname" />
     <result column="HEALTH_CODE" jdbcType="VARCHAR" property="healthCode" />
@@ -50,15 +52,16 @@
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
     <result column="PY" jdbcType="VARCHAR" property="py" />
     <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
+    <result column="EXIT_DATE" jdbcType="DATE" property="exitDate" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
-    SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ, NATION_CODE, NATION_NAME, IDNUMBER, POLITICAL_AFFICODE,
-    POLITICAL_AFFINAME, HEALTH_CODE, HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, 
-    WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_LEVEL, 
-    DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY, NF, FJGNF, XRXGW, 
-    LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME, CREATE_USER, MODIFY_TIME, 
-    MODIFY_USER, SORT_ID, PY, SECRET_POST
+    SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,IDNUMBER_GA, NATION_CODE, NATION_NAME,
+    IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFICODE,POLITICAL_AFFINAME, HEALTH_CODE, HEALTH,
+    REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER,
+    IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER,
+    LICENCE_IDENTITY, NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME,
+    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE
   </sql>
 
 
@@ -107,8 +110,8 @@
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
-              NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ,
-              NATION, IDNUMBER, POLITICAL_AFFI,
+              NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,BIRTH_DATE_GA,NATION_CODE,
+              NATION_NAME, IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFI,
               HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
               WORK_UNIT, POST_CODE, POST,
               PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
@@ -116,15 +119,17 @@
               MAIN_LEADER, LICENCE_IDENTITY, NF,
               FJGNF, XRXGW, LQGZ, DQGZ,
               REPLYOPINION, ABROADTIME, REASON,
-              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
+              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,
+              SORT_ID,PY,SECRET_POST,EXIT_DATE
     )
     values
     <foreach collection="list" index="index" item="item" separator=",">
       (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
       #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
-      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},#{birthDateSfz,jdbcType=DATE},
-      #{nation,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
+      #{birthDateGb,jdbcType=DATE},#{birthDateGa,jdbcType=DATE},#{nationCode,jdbcType=VARCHAR},
+      #{nationName,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
       #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
       #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
       #{personManager,jdbcType=VARCHAR}, #{identityCode,jdbcType=CHAR}, #{identity,jdbcType=VARCHAR},
@@ -133,7 +138,8 @@
       #{fjgnf,jdbcType=CHAR}, #{xrxgw,jdbcType=CHAR}, #{lqgz,jdbcType=CHAR}, #{dqgz,jdbcType=CHAR},
       #{replyopinion,jdbcType=CHAR}, #{abroadtime,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}
       #{createTime,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},
-      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},#{secretPost,jdbcType=VARCHAR}
+      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},
+      #{secretPost,jdbcType=VARCHAR},#{exitDate,jdbcType=DATE}
       )
     </foreach>
 

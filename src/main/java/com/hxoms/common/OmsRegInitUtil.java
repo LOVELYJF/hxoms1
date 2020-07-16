@@ -94,7 +94,7 @@ public class OmsRegInitUtil {
 
             List<String> surNameList = Arrays.asList(surname); //百家姓集合
 
-            String fuxing = name.substring(0, 2);
+            String fuxing = name.substring(0,2);
             if (name.length() > 3) {//超过三个字的名字   首先考虑是复姓
                 if (surNameList.contains(fuxing)) { //是复姓
                     flag = true;

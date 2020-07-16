@@ -43,15 +43,20 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（干部档案）")
+    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
-    @ColumnAnnotation(FieldName = "BIRTH_DATE_SFZ",   FieldDescription="出生日期（身份证）")
+    @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date birthDateSfz;
+    private Date birthDateGb;
+
+    @ColumnAnnotation(FieldName = "BIRTH_DATE_GA",   FieldDescription="出生日期（公安）")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date birthDateGa;
 
 
     @ColumnAnnotation(FieldName = "NATION_CODE",   FieldDescription="民族代码")
@@ -60,8 +65,11 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "NATION_NAME",   FieldDescription="民族")
     private String nationName;
 
-    @ColumnAnnotation(FieldName = "IDNUMBER",   FieldDescription="身份证号")
-    private String idnumber;
+    @ColumnAnnotation(FieldName = "IDNUMBER_GB",   FieldDescription="身份证号（干部）")
+    private String idnumberGb;
+
+    @ColumnAnnotation(FieldName = "IDNUMBER_GA",   FieldDescription="身份证号（公安）")
+    private String idnumberGa;
 
     @ColumnAnnotation(FieldName = "POLITICAL_AFFICODE",   FieldDescription="政治面貌代码")
     private String politicalAfficode;
@@ -174,6 +182,11 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "SECRET_POST",   FieldDescription="涉密岗位")
     private String secretPost;
 
+    @ColumnAnnotation(FieldName = "EXIT_DATE",   FieldDescription="辞职、退休等日期 ")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date exitDate;
+
     public String getId() {
         return id;
     }
@@ -270,12 +283,36 @@ public class OmsRegProcpersoninfo {
         this.birthDate = birthDate;
     }
 
-    public Date getBirthDateSfz() {
-        return birthDateSfz;
+    public Date getBirthDateGb() {
+        return birthDateGb;
     }
 
-    public void setBirthDateSfz(Date birthDateSfz) {
-        this.birthDateSfz = birthDateSfz;
+    public void setBirthDateGb(Date birthDateGb) {
+        this.birthDateGb = birthDateGb;
+    }
+
+    public Date getBirthDateGa() {
+        return birthDateGa;
+    }
+
+    public void setBirthDateGa(Date birthDateGa) {
+        this.birthDateGa = birthDateGa;
+    }
+
+    public String getIdnumberGb() {
+        return idnumberGb;
+    }
+
+    public void setIdnumberGb(String idnumberGb) {
+        this.idnumberGb = idnumberGb;
+    }
+
+    public String getIdnumberGa() {
+        return idnumberGa;
+    }
+
+    public void setIdnumberGa(String idnumberGa) {
+        this.idnumberGa = idnumberGa;
     }
 
     public String getNationCode() {
@@ -292,14 +329,6 @@ public class OmsRegProcpersoninfo {
 
     public void setNationName(String nationName) {
         this.nationName = nationName == null ? null : nationName.trim();
-    }
-
-    public String getIdnumber() {
-        return idnumber;
-    }
-
-    public void setIdnumber(String idnumber) {
-        this.idnumber = idnumber == null ? null : idnumber.trim();
     }
 
     public String getPoliticalAfficode() {
@@ -556,5 +585,13 @@ public class OmsRegProcpersoninfo {
 
     public void setSecretPost(String secretPost) {
         this.secretPost = secretPost == null ? null : secretPost.trim();
+    }
+
+    public Date getExitDate() {
+        return exitDate;
+    }
+
+    public void setExitDate(Date exitDate) {
+        this.exitDate = exitDate;
     }
 }
