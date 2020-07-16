@@ -15,7 +15,6 @@
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
     <result column="BIRTH_DATE_GB" jdbcType="DATE" property="birthDateGb" />
-    <result column="BIRTH_DATE_GA" jdbcType="DATE" property="birthDateGa" />
     <result column="NATION_CODE" jdbcType="VARCHAR" property="nationCode" />
     <result column="NATION_NAME" jdbcType="VARCHAR" property="nationName" />
     <result column="IDNUMBER_GB" jdbcType="CHAR" property="idnumberGb" />
@@ -57,7 +56,7 @@
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
     SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,IDNUMBER_GA, NATION_CODE, NATION_NAME,
-    IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFICODE,POLITICAL_AFFINAME, HEALTH_CODE, HEALTH,
+    IDNUMBER_GB, POLITICAL_AFFICODE,POLITICAL_AFFINAME, HEALTH_CODE, HEALTH,
     REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER,
     IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER,
     LICENCE_IDENTITY, NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME,
@@ -110,7 +109,7 @@
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
-              NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,BIRTH_DATE_GA,NATION_CODE,
+              NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,NATION_CODE,
               NATION_NAME, IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFI,
               HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
               WORK_UNIT, POST_CODE, POST,
@@ -128,7 +127,7 @@
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
       #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
-      #{birthDateGb,jdbcType=DATE},#{birthDateGa,jdbcType=DATE},#{nationCode,jdbcType=VARCHAR},
+      #{birthDateGb,jdbcType=DATE},#{nationCode,jdbcType=VARCHAR},
       #{nationName,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
       #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
       #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},

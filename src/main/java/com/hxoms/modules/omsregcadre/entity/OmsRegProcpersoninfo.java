@@ -43,7 +43,7 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证）")
+    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证（公安））")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
@@ -52,12 +52,6 @@ public class OmsRegProcpersoninfo {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDateGb;
-
-    @ColumnAnnotation(FieldName = "BIRTH_DATE_GA",   FieldDescription="出生日期（公安）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date birthDateGa;
-
 
     @ColumnAnnotation(FieldName = "NATION_CODE",   FieldDescription="民族代码")
     private String nationCode;
@@ -289,14 +283,6 @@ public class OmsRegProcpersoninfo {
 
     public void setBirthDateGb(Date birthDateGb) {
         this.birthDateGb = birthDateGb;
-    }
-
-    public Date getBirthDateGa() {
-        return birthDateGa;
-    }
-
-    public void setBirthDateGa(Date birthDateGa) {
-        this.birthDateGa = birthDateGa;
     }
 
     public String getIdnumberGb() {
