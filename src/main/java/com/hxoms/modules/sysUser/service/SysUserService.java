@@ -5,7 +5,12 @@ import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
 
-
+/**
+ * 功能描述: <br>
+ * 〈系统设置-用户管理〉
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:00
+ */
 public interface SysUserService {
     /**
      * 功能描述: <br>

@@ -16,7 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * 功能描述: <br>
+ * 〈系统设置-用户管理〉
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:01
+ */
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
@@ -45,7 +50,7 @@ public class SysUserServiceImpl implements SysUserService {
             UserInfo loginUser = UserInfoUtil.getUserInfo();
             orgId.add(loginUser.getOrgId());
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         List<CfUser> users = cfUserMapper.getSysUserList(keyWord, orgId);
         PageInfo info = new PageInfo(users);
         return info;
@@ -70,22 +75,21 @@ public class SysUserServiceImpl implements SysUserService {
         if (loginUser == null){
             throw new CustomMessageException("登录用户不能为空!");
         }
-        if (user.getUserState() == null || user.getUserState().equals("")){
-            user.setUserState("1");
+        if (user.getUserState() == null || "".equals(user.getUserState())){
+            user.setUserState(Constants.USER_STATUS[1]);
         }
         if (StringUilt.isStrOrnull(user.getUserId())) {
-            //更新用户（不用设置密码）
-            //修改用户（未设置，1、从前端传过来 2、后台获取目前登录人员角色，根据角色创建状态）
             user.setModifyUser(loginUser.getId());
-            //修改时间
             user.setModifyTime(new Date());
             cfUserMapper.updateByPrimaryKeySelective(user);
 
         } else {
-            //新增用户（给定初始密码）
-            //创建用户时，要判断登录名是否重复，并且在在非撤消和拒绝状态
-            //判断是否是经办人
-            if (user.getUserState().equals("6")){
+            /**
+             * 新增用户（给定初始密码）
+             * 创建用户时，要判断登录名是否重复，并且在在非撤消和拒绝状态
+             * 判断是否是经办人
+             */
+            if (user.getUserState().equals(Constants.USER_TYPES[6])){
                 throw new CustomMessageException("经办人请到经办人注册页面进行注册!");
             }
 
@@ -93,17 +97,13 @@ public class SysUserServiceImpl implements SysUserService {
             if(selectUser != null){
                 //判断状态
                 String userState = selectUser.getUserState();
-                if (userState.equals("2") || userState.equals("5")){
+                if (!userState.equals(Constants.USER_STATUS[2]) & !userState.equals(Constants.USER_STATUS[5])){
                     throw new CustomMessageException("登录名重复，请重新输入!");
                 }
             }
-            //设置ID
             user.setUserId(UUIDGenerator.getPrimaryKey());
-            //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
-            //创建人
             user.setCreator(loginUser.getId());
-            //创建时间
             user.setCreatetime(new Date());
             cfUserMapper.insertSelective(user);
 
@@ -169,13 +169,10 @@ public class SysUserServiceImpl implements SysUserService {
         }
         CfUser user = cfUserMapper.selectByPrimaryKey(userId);
         String selectPassword = user.getUserPassword();
-        //String selectPassword = cfUserMapper.selectPassword(userId);
         String password = UUIDGenerator.encryptPwd(newPassword);
         if (selectPassword.equals(password)){
             throw new CustomMessageException("新密码和原密码相同!");
         }
-        //待确认，是否需要添加修改人及修改时间
-
         cfUserMapper.updatePassword(userId,password);
     }
 
@@ -193,7 +190,6 @@ public class SysUserServiceImpl implements SysUserService {
             throw new CustomMessageException("参数为空!");
         }
         CfUser user = cfUserMapper.selectByPrimaryKey(userId);
-        //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }
@@ -214,13 +210,9 @@ public class SysUserServiceImpl implements SysUserService {
         if (userIds != null && userIds.size()>0) {
             for (String userId:userIds) {
                 CfUser user =  cfUserMapper.selectByPrimaryKey(userId);
-                //CfUser user = cfUserMapper.selectSysUserByUserId(userId);
                 if (user == null) {
                     throw new CustomMessageException("用户不存在!");
                 }
-                //待确认，是否需要添加修改用户及修改时间
-
-                //重置密码
                 String password = UUIDGenerator.encryptPwd(Constants.USER_PWD);
                 cfUserMapper.updatePassword(userId,password);
             }
