@@ -266,7 +266,7 @@
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
     SELECT
-    op.*,orp.IDNUMBER as idnumber
+    op.*,orp.IDNUMBER_GB as idnumber
     from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
     where op.b0100=#{b0100}
   </select>
