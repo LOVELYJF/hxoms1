@@ -288,7 +288,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			//合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
 			sheet.addMergedRegion(new CellRangeAddress(0,1,0,7));
 			//在sheet里创建第二行
-			HSSFRow row2=sheet.createRow(1);
+			HSSFRow row2=sheet.createRow(2);
 			//创建单元格并设置单元格内容
 			row2.createCell(0).setCellValue("序号");
 			row2.createCell(1).setCellValue("单位");
@@ -305,18 +305,18 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			//获得字体对象
 			HSSFFont font1 = wb.createFont();
 			//设置单元格字体大小
-			font1.setFontHeightInPoints((short) 13);
+			font1.setFontHeightInPoints((short) 12);
 			style1.setAlignment(HorizontalAlignment.LEFT); //居左
 			style1.setFont(font1);
 
 			HSSFRow row = null;
 			for(int i = 0; i < list.size(); i++){
-				row = sheet.createRow(i + 2);
+				row = sheet.createRow(i + 3);
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue(list.get(i).getWorkUnit());
 				row.createCell(2).setCellValue(list.get(i).getName());
 				row.createCell(3).setCellValue(list.get(i).getCasePost());
-				row.createCell(4).setCellValue(list.get(i).getCaseTime());
+				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getCaseTime()));
 				row.createCell(5).setCellValue(list.get(i).getCaseDocumentNo());
 				row.createCell(6).setCellValue((list.get(i).getDisciplinaryAction()).equals("1") ? "是" : "否");
 				row.createCell(7).setCellValue(list.get(i).getWhyCase());
@@ -332,8 +332,8 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				output = response.getOutputStream();
 				response.reset();
 				response.setHeader("Content-disposition", "attachment; " +
-						"filename=" + new String( "立案人员信息表.xls".getBytes("gb2312"), "ISO8859-1" ));
-				response.setContentType("application/msexcel");
+						"filename=" + new String( "立案人员信息表.xls".getBytes("utf-8"), "ISO8859-1" ));
+				response.setContentType("multipart/form-data");
 				wb.write(output);
 				output.close();
 			} catch (IOException e) {
