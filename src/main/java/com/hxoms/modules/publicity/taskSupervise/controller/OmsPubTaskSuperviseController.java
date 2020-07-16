@@ -96,8 +96,8 @@ public class OmsPubTaskSuperviseController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/6/28
      */
-    @PostMapping("/selectUrgeInfo")
-    public Result selectUrgeInfo(@RequestBody UrgeBusiness urgeBusiness) {
+    @GetMapping("/selectUrgeInfo")
+    public Result selectUrgeInfo(UrgeBusiness urgeBusiness) {
         try {
             omsPubTaskSuperviseService.selectUrgeInfo(urgeBusiness);
         } catch (Exception e) {
