@@ -14,19 +14,11 @@
   </resultMap>
   <resultMap id="ItemListResultMap" extends="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
     <collection property="omsSelfestimateItems" ofType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems">
-      <id column="ID" jdbcType="VARCHAR" property="id" />
+      <id column="itemID" jdbcType="VARCHAR" property="id" />
       <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
       <result column="CHECK_ITEM" jdbcType="VARCHAR" property="checkItem" />
       <result column="ENABLE" jdbcType="INTEGER" property="enable" />
-      <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-      <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-      <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
-      <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
     </collection>
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="FileListResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfFileVO">
-    <association column="CHECKFILE_ID" property="omsFile" select="com.hxoms.modules.file.mapper.OmsFileMapper.selectById">
-    </association>
   </resultMap>
   <sql id="Base_Column_List">
     ID, B0100, CHECKFILE_ID, FILENAME, TYPE, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
@@ -34,7 +26,7 @@
 
   <!--自评信息维护列表-->
   <select id="selectItemsList" parameterType="java.util.Map" resultMap="ItemListResultMap">
-      select *
+      select osf.*,osi.ID as itemID,osi.SELFFILE_ID,osi.CHECK_ITEM,osi.ENABLE
       from oms_self_file osf left join oms_selfestimate_items osi on osf.ID = osi.SELFFILE_ID
       where 1=1
       <if test="b0100 != null and b0100 != ''">
@@ -46,7 +38,7 @@
   </select>
 
   <!--自评文件列表-->
-  <select id="selectFileList" parameterType="java.util.Map" resultMap="FileListResultMap">
+  <select id="selectFileList" parameterType="java.util.Map" resultMap="ItemListResultMap">
     select
     <include refid="Base_Column_List"/>
     from oms_self_file
@@ -57,5 +49,23 @@
     <if test="type != null and type != ''">
       and TYPE = #{type}
     </if>
+    and CHECKFILE_ID in
+        (select FILE_ID from oms_create_file where TABLE_CODE = #{type} and APPLY_ID = #{applyId})
+  </select>
+
+  <!--添加文件列表-->
+  <select id="selectOmsFileList" parameterType="java.util.Map" resultType="java.util.Map">
+    select
+    FILE_NAME AS filename, id as fileId
+    from oms_file
+    where 1=1
+    <if test="b0100 != null and b0100 != ''">
+      and B0100 = #{b0100}
+    </if>
+    <if test="type != null and type != ''">
+      and TABLE_CODE = #{type}
+    </if>
+    and id not in
+    (select CHECKFILE_ID from oms_self_file where TYPE = #{type} and B0100 = #{b0100})
   </select>
 </mapper>

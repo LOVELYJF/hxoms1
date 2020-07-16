@@ -5,6 +5,7 @@ import com.hxoms.modules.selfestimate.entity.OmsSelfFileVO;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OmsSelfestimateItemsService {
     /**
@@ -40,9 +41,18 @@ public interface OmsSelfestimateItemsService {
     String deleteSelfFile(String id);
 
     /**
-     * 自评文件列表
+     * 自评结果列表
+     * @return
+     * @param type 因公 因私  延期回国
+     * @param applyId 申请id
+     * @param personType 操作人类型（经办人  干部监督处）
+     */
+    List<OmsSelfFileVO> selectFileList(String type, String applyId, String personType);
+
+    /**
+     * 添加文件列表
      * @return
      * @param type 因公 因私  延期回国
      */
-    List<OmsSelfFileVO> selectFileList(String type);
+    List<Map<String, String>> selectOmsFileList(String type);
 }

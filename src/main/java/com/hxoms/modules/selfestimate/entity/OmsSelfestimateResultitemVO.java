@@ -1,8 +1,5 @@
 package com.hxoms.modules.selfestimate.entity;
 
-import com.hxoms.modules.publicity.entity.PersonInfoVO;
-
-import java.util.List;
 
 /**
  * @desc: 自评结果项扩展类
