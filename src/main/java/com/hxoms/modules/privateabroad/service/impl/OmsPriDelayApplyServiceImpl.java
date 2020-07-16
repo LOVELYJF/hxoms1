@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.country.entity.Country;
+import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
@@ -33,6 +35,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
     @Autowired
     private OmsPriApplyService omsPriApplyService;
+    @Autowired
+    private CountryMapper countryMapper;
 
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -45,6 +49,13 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         List<OmsPriDelayApplyVO> omsPriDelayApplyVOS = omsPriDelayApplyMapper.selectOmsDelayApplyIPage(omsPriApplyIPageParam);
         //返回数据
         PageInfo<OmsPriDelayApplyVO> pageInfo = new PageInfo(omsPriDelayApplyVOS);
+        //去往国家
+        for (OmsPriDelayApplyVO item : pageInfo.getList()) {
+            QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
+            queryWrapper.in("ID", item.getOmsPriApplyVO().getGoCountry().split(","));
+            List<Country> countries = countryMapper.selectList(queryWrapper);
+            item.getOmsPriApplyVO().setCountries(countries);
+        }
         return pageInfo;
     }
 
@@ -106,7 +117,16 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数错误");
         }
-        OmsPriDelayApplyVO omsPriDelayApplyVO = (OmsPriDelayApplyVO) omsPriDelayApplyMapper.selectById(id);
+        OmsPriDelayApply omsPriDelayApply = omsPriDelayApplyMapper.selectById(id);
+        OmsPriDelayApplyVO omsPriDelayApplyVO = new OmsPriDelayApplyVO();
+        omsPriDelayApplyVO.setId(omsPriDelayApply.getId());
+        omsPriDelayApplyVO.setApplyId(omsPriDelayApply.getApplyId());
+        omsPriDelayApplyVO.setA0100(omsPriDelayApply.getA0100());
+        omsPriDelayApplyVO.setApplyStatus(omsPriDelayApply.getApplyStatus());
+        omsPriDelayApplyVO.setCancelReason(omsPriDelayApply.getCancelReason());
+        omsPriDelayApplyVO.setDelayReason(omsPriDelayApply.getDelayReason());
+        omsPriDelayApplyVO.setEstimateReturntime(omsPriDelayApply.getEstimateReturntime());
+        omsPriDelayApplyVO.setApplyTime(omsPriDelayApply.getApplyTime());
         if (omsPriDelayApplyVO == null){
             throw new CustomMessageException("数据错误");
         }

@@ -36,11 +36,11 @@
     </if>
     <if test="omsPriApplyIPageParam.name != null and omsPriApplyIPageParam.name != ''">
       and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.name},'%')
-      and rp.PY LIKE  CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+      or rp.PY LIKE  CONCAT('%',#{omsPriApplyIPageParam.name},'%')
     </if>
     <if test="omsPriApplyIPageParam.createUser != null and omsPriApplyIPageParam.createUser != ''">
       and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
-      and rp1.PY LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+      or rp1.PY LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
     </if>
     <if test="omsPriApplyIPageParam.applyStatus != null and omsPriApplyIPageParam.applyStatus != ''">
       and pa.APPLY_STATUS in

@@ -163,7 +163,7 @@ public class OmsFileServiceImpl implements OmsFileService {
             queryWrapperFile.eq("ID", omsFile.getFileId())
                     .select("RUN_SQL");
             OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
-            omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID());
+            omsFileSql.setRunSql(omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID()));
             FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
             // 替换关键词
             if (fileReplaceVO != null){
