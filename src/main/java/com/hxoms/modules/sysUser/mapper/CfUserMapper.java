@@ -106,7 +106,7 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/5/7 16:09
      */
-    List<CfUser> getSysUserListByParm(@Param("orgId") List<String> orgId, @Param("userType") String userType);
+    List<CfUser> getSysUserListByParm(@Param("orgId") List<String> orgId, @Param("userType") String userType,@Param("state") String state);
     /**
      * 功能描述: <br>
      * 〈通过身份证号、用户类型、状态,查找经办人〉

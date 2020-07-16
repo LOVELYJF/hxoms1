@@ -173,6 +173,9 @@
             <if test='userType != null and userType != ""'>
                 and user_type = #{userType}
             </if>
+            <if test="state != null and state != ''">
+              and user_state=#{state,jdbcType=CHAR}
+            </if>
         </where>
     </select>
     <select id="getOperatorByIdnumAndState" resultType="com.hxoms.modules.sysUser.entity.CfUser">
