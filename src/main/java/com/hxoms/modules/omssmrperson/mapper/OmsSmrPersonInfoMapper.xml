@@ -81,7 +81,7 @@
         <if test="personState !=null and personState !=''">
           AND t.PERSON_STATE = #{personState}
         </if>
-        <if test="idList !=null and idList !=''">
+        <if test="idList != null and idList.size >0">
           AND t.B0100 IN
           <foreach collection="idList" item="item" index="index" open="(" close=")" separator=",">
             #{item}

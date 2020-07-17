@@ -16,11 +16,13 @@ import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -230,12 +232,12 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return msg;
     }*/
     @Override
-    public List<OmsSmrPersonInfo> uploadSmrExcel(String filePath, String importYear, String b0100) {
+    public List<OmsSmrPersonInfo> uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
         String msg = "";
         int errOrgNum = 0;
         String userId = UserInfoUtil.getUserId();
         OmsSmrPersonInfo smrPersonInfo = new OmsSmrPersonInfo();
-        List<Map<String, Object>> list = readExcel(filePath);
+        List<Map<String, Object>> list = readExcel(file);
         List<OmsSmrPersonInfo> srpList = new ArrayList<OmsSmrPersonInfo>();
         if(list.size() == 0){
             msg = "选择的涉密人员统计表格式不正确，请下载模板后，按模板格式调整！";
@@ -340,7 +342,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         List<OmsSmrPersonInfo> list = smrPersonInfoMapper.selectSmrPersonInfo(param);
 
         //导出
-        if(list.size() < 1 || list == null){
+        if(list.size() < 1){
             throw new CustomMessageException("操作失败");
         }
         //创建HSSFWorkbook对象(excel的文档对象)
@@ -663,12 +665,13 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 读取到Excel表格的数据(导入用)
      * @return List<OmsSmrPersonInfo>
      */
-    public static List<Map<String, Object>> readExcel(String filePath) {
+    public static List<Map<String, Object>> readExcel(MultipartFile file) {
         List<Map<String, Object>> list = new ArrayList<>();
         HSSFWorkbook workbook = null;
         try {
             // 读取Excel文件
-            InputStream inputStream = new FileInputStream(filePath);
+            POIFSFileSystem inputStream = new POIFSFileSystem(file.getInputStream());
+            //InputStream inputStream = new FileInputStream(filePath);
             workbook = new HSSFWorkbook(inputStream);
             inputStream.close();
         } catch (Exception e) {

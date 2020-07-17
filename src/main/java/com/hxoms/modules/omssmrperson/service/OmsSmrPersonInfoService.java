@@ -2,6 +2,7 @@ package com.hxoms.modules.omssmrperson.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
@@ -23,7 +24,7 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //删除涉密人员信息
     Object deleteSmrPersonInfo(String id);
     //上传涉密人员统计表
-    List<OmsSmrPersonInfo> uploadSmrExcel(String filePath, String importYear, String b0100);
+    List<OmsSmrPersonInfo> uploadSmrExcel(MultipartFile file, String importYear, String b0100);
     //导出涉密人员信息列表
     boolean exportSmrPersonInfo( List<String> idList, OmsSmrPersonInfo smrPersonInfo, HttpServletResponse response);
     //获取漏报涉密人员机构

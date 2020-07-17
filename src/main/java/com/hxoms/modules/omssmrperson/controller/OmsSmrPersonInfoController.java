@@ -6,6 +6,7 @@ import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -75,10 +76,10 @@ public class OmsSmrPersonInfoController {
      * @param
      */
     @PostMapping("/uploadSmrExcel")
-    public Result uploadSmrExcel(String filePath, String importYear, String b0100) {
+    public Result uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
         try{
 
-            List<OmsSmrPersonInfo> result = smrPersonInfoService.uploadSmrExcel(filePath,importYear,b0100);
+            List<OmsSmrPersonInfo> result = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
             return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
