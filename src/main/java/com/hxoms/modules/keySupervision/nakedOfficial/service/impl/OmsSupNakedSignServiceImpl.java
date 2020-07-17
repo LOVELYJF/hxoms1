@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
@@ -250,7 +251,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			//合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
 			sheet.addMergedRegion(new CellRangeAddress(0,1,0,7));
 			//在sheet里创建第二行
-			HSSFRow row2=sheet.createRow(1);
+			HSSFRow row2=sheet.createRow(2);
 			//创建单元格并设置单元格内容
 			row2.createCell(0).setCellValue("序号");
 			row2.createCell(1).setCellValue("单位");
@@ -267,7 +268,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			//获得字体对象
 			HSSFFont font1 = wb.createFont();
 			//设置单元格字体大小
-			font1.setFontHeightInPoints((short) 13);
+			font1.setFontHeightInPoints((short) 12);
 			style1.setAlignment(HorizontalAlignment.LEFT);// 居左  
 			style1.setFont(font1);
 
@@ -278,7 +279,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				row.createCell(1).setCellValue(list.get(i).getWorkUnit());
 				row.createCell(2).setCellValue(list.get(i).getName());
 				row.createCell(3).setCellValue(list.get(i).getSex());
-				row.createCell(4).setCellValue(list.get(i).getBirthDate());
+				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
 				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals("1") ? "是" : "否");
@@ -292,12 +293,11 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			OutputStream output= null;
 			try {
 				output = response.getOutputStream();
-				response.reset();
-				response.setCharacterEncoding("UTF-8");
-				response.setHeader("Content-disposition", "attachment; " +
-						"filename=" + new String( "裸官信息表.xls".getBytes("gb2312"), "ISO8859-1" ));
-				response.setContentType("application/msexcel");
+				response.setContentType("application/vnd.ms-excel");
+				response.setHeader("Content-Disposition", "utf-8");
+
 				wb.write(output);
+				output.flush();
 				output.close();
 			} catch (IOException e) {
 				e.printStackTrace();
