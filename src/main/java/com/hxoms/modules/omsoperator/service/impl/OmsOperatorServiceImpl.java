@@ -444,9 +444,13 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (pageSize == null) {
             pageSize = 10;
         }
+        //获取当前登录人
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        ArrayList<String> orgIds = new ArrayList<>();
+        orgIds.add(loginUser.getOrgId());
         /** 设置传入页码，以及每页的大小  */
         PageHelper.startPage(pageNum, pageSize);
-        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,null,Constants.USER_TYPES[6],state);
+        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgIds,Constants.USER_TYPES[6],state);
         PageInfo info = new PageInfo(users);
         return info;
     }
@@ -468,11 +472,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        //获取当前登录人
-        UserInfo loginUser = UserInfoUtil.getUserInfo();
-        if (orgId == null || orgId.size() <= 0){
-            orgId.add(loginUser.getOrgId());
-        }
+
         /**  设置传入页码，以及每页的大小  */
         PageHelper.startPage(pageNum, pageSize);
         List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgId,Constants.USER_TYPES[6],state);

@@ -201,7 +201,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			//合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
 			sheet.addMergedRegion(new CellRangeAddress(0,1,0,8));
 			//在sheet里创建第二行
-			HSSFRow row2=sheet.createRow(1);
+			HSSFRow row2=sheet.createRow(2);
 			//创建单元格并设置单元格内容
 			row2.createCell(0).setCellValue("序号");
 			row2.createCell(1).setCellValue("单位");
@@ -219,7 +219,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			//获得字体对象
 			HSSFFont font1 = wb.createFont();
 			//设置单元格字体大小
-			font1.setFontHeightInPoints((short) 13);
+			font1.setFontHeightInPoints((short) 12);
 			style1.setAlignment(HorizontalAlignment.LEFT);// 居左  
 			style1.setFont(font1);
 
@@ -230,10 +230,10 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				row.createCell(1).setCellValue(list.get(i).getWorkUnit());
 				row.createCell(2).setCellValue(list.get(i).getName());
 				row.createCell(3).setCellValue(list.get(i).getViolationDisPost());
-				row.createCell(4).setCellValue(list.get(i).getViolationDisTime());
+				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getViolationDisTime()));
 				row.createCell(5).setCellValue(list.get(i).getViolationDocumentNo());
 				row.createCell(6).setCellValue(list.get(i).getInfluenceTime());
-				row.createCell(7).setCellValue(list.get(i).getViolationEndTime());
+				row.createCell(7).setCellValue(UtilDateTime.toDateString(list.get(i).getViolationEndTime()));
 				row.createCell(8).setCellValue(list.get(i).getDescription());
 				//设置单元格字体大小
 				for(int j = 0;j < 9;j++){
@@ -245,11 +245,11 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 			OutputStream output= null;
 			try {
 				output = response.getOutputStream();
-				response.reset();
-				response.setHeader("Content-disposition", "attachment;" +
-						"filename=" + new String( "违反外事纪律人员信息表.xls".getBytes("gb2312"), "ISO8859-1" ));
-				response.setContentType("application/msexcel");
+				response.setContentType("application/vnd.ms-excel");
+				response.setHeader("Content-Disposition", "utf-8");
+
 				wb.write(output);
+				output.flush();
 				output.close();
 			} catch (IOException e) {
 				e.printStackTrace();
