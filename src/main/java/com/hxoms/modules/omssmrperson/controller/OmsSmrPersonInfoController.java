@@ -4,17 +4,10 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
-import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +44,15 @@ public class OmsSmrPersonInfoController {
         }
     }
 
+    /**
+     * 导入涉密人员信息
+     * @param smrPersonInfoList
+     */
+    @PostMapping("/insertSmrPersonInfo")
+    public Result insertSmrPersonInfo(String importYear, String b0100,List<OmsSmrPersonInfo> smrPersonInfoList) {
+        return Result.success(smrPersonInfoService.insertSmrPersonInfo(importYear,b0100,smrPersonInfoList));
+    }
+
    /**
      * 修改涉密人员信息
      * @param smrPersonInfo
@@ -69,14 +71,14 @@ public class OmsSmrPersonInfoController {
         return Result.success(smrPersonInfoService.deleteSmrPersonInfo(id));
     }
 
-    /** 导入涉密人员数据
+    /** 上传涉密人员数据
      * @param
      */
     @PostMapping("/uploadSmrExcel")
-    public Result uploadSmrExcel(String filePath, String importYear, String B0100) {
+    public Result uploadSmrExcel(String filePath, String importYear, String b0100) {
         try{
-            String userId = UserInfoUtil.getUserId();
-            String result = smrPersonInfoService.uploadSmrExcel(filePath,importYear,B0100,userId);
+
+            List<OmsSmrPersonInfo> result = smrPersonInfoService.uploadSmrExcel(filePath,importYear,b0100);
             return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
@@ -86,12 +88,13 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出涉密人员基本信息
-     * @param list
+     * @param idList
+     * @param smrPersonInfo
      */
     @PostMapping("/exportSmrPersonInfo")
-    public Result exportSmrPersonInfo(@RequestBody(required = false) List<OmsSmrPersonInfo> list){
+    public Result exportSmrPersonInfo(@RequestParam(value = "idList",required = false) List<String> idList, OmsSmrPersonInfo smrPersonInfo){
         try{
-            boolean result = smrPersonInfoService.exportSmrPersonInfo(list,response);;
+            boolean result = smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo, this.response);;
             return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
@@ -156,6 +159,49 @@ public class OmsSmrPersonInfoController {
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导出失败");
+        }
+    }
+
+    /**
+     * 获取脱密期确认列表
+     */
+    @GetMapping("/getConfirmPeriodList")
+    public Result getConfirmPeriodList() {
+        try{
+            Map<String, Object> resultMap = smrPersonInfoService.getConfirmPeriodList();
+            return Result.success(resultMap);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    /**
+     * 批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
+     * @param smrPersonInfoList
+     */
+    @PostMapping("/updateSmrPersonList")
+    public Result updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList) {
+        try {
+            boolean result = smrPersonInfoService.updateSmrPersonList(smrPersonInfoList);
+            return Result.success(result);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    /**
+     * 获取涉密人员信息维护列表
+     */
+    @GetMapping("/getSmrMaintainList")
+    public Result getSmrMaintainList(OmsSmrPersonInfo smrPersonInfo) {
+        try{
+            Map<String, Object> resultMap = smrPersonInfoService.getSmrMaintainList(smrPersonInfo);
+            return Result.success(resultMap);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
         }
     }
 }
