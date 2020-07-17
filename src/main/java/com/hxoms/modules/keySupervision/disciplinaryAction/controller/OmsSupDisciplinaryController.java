@@ -96,10 +96,9 @@ public class OmsSupDisciplinaryController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getDisciplinaryInfoOut")
-	public Result getDisciplinaryInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public void getDisciplinaryInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                   OmsSupDisciplinary omsSupDisciplinary){
 		omsSupDisciplinaryService.getDisciplinaryInfoOut(idList,omsSupDisciplinary,response);
-		return Result.success();
 	}
 
 

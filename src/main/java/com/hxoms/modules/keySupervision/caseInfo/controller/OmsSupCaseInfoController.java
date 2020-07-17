@@ -108,9 +108,8 @@ public class OmsSupCaseInfoController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getCaseInfoOut")
-	public Result getCaseInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public void getCaseInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                           OmsSupCaseInfo omsSupCaseInfo){
 		omsSupCaseInfoService.getCaseInfoOut(idList,omsSupCaseInfo,response);
-		return Result.success();
 	}
 }
