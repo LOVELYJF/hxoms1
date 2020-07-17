@@ -41,7 +41,7 @@
         t.B0100,
         b.B0101,
         concat(r.SURNAME,r.NAME) as NAME,
-        r.SEX,
+        case r.SEX when '1' then '男' when '2' then '女' end sex,
         t.ID_CARD_NUMBER,
         t.A0141,
         t.POST,
