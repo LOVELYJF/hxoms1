@@ -134,6 +134,10 @@ public class Constants {
      */
     public static String[] USER_STATUS={"0","1","2","3","4","5","6","7","8"};
     /**
+     * 用户状态名称(0-注册;1-正常;2-撤销;3-监督处审核;4-处领导审批;5-拒绝;6-待撤销;7-暂停;8-身份认证;)
+     */
+    public static String[] USER_STATUSName={"注册","正常","撤销","监督处审核","处领导审批","拒绝","待撤销","暂停","身份认证"};
+    /**
      * 人员信息集
      */
     public static String PERSON_INFO = "person_infos";
