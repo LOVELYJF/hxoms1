@@ -39,7 +39,7 @@
         t.ID,
         t.A0100,
         t.B0100,
-        b.B0101,
+        (select b.b0101 from b01 b where t.b0100 = b.B0100) b0101,
         concat(r.SURNAME,r.NAME) as NAME,
         case r.SEX when '1' then '男' when '2' then '女' end sex,
         t.ID_CARD_NUMBER,
@@ -49,8 +49,8 @@
         t.SECRET_RELATED_POST,
         t.SECRET_RELATED_LEVEL,
         t.SECRET_REVIEW_DATE,
-        t.SECRET_RELATED_ORG,
-        t.MAX_SECRET_RELATED_ORG,
+        (select b.b0101 from b01 b where b.b0100 = t.SECRET_RELATED_ORG) SECRET_RELATED_ORG,
+        (select b.b0101 from b01 b where b.b0100 = t.MAX_SECRET_RELATED_ORG) MAX_SECRET_RELATED_ORG,
         t.MAX_SECRET_RELATED_LEVEL,
         t.MAX_FINISH_DATE,
         t.START_DATE,
@@ -61,7 +61,6 @@
     FROM
         oms_smr_personinfo t
         LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
-        LEFT JOIN b01 b on t.B0100 = b.B0100
     WHERE 1 = 1
         <if test="name !=null and name !=''">
           AND concat(r.SURNAME,r.NAME) like #{name}
