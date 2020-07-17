@@ -47,6 +47,8 @@ public class OmsPriApplyVO extends OmsPriApply{
     private OmsEntryexitRecord entryexitRecord;
     //国家列表
     private List<Country> countries;
+    //实际途径国家
+    private List<Country> realCountries;
 
     public String getName() {
         return name;
@@ -158,5 +160,13 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setCountries(List<Country> countries) {
         this.countries = countries;
+    }
+
+    public List<Country> getRealCountries() {
+        return realCountries;
+    }
+
+    public void setRealCountries(List<Country> realCountries) {
+        this.realCountries = realCountries;
     }
 }

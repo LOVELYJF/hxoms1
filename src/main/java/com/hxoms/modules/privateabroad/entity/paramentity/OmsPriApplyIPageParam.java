@@ -39,6 +39,8 @@ public class OmsPriApplyIPageParam {
     //状态
     private Integer[] applyStatus;
     private String applyStatusString;
+    //机构id
+    private String b0100;
 
     public Integer getPageNum() {
         return pageNum;
@@ -118,5 +120,13 @@ public class OmsPriApplyIPageParam {
 
     public void setApplyStatusString(String applyStatusString) {
         this.applyStatusString = applyStatusString;
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
     }
 }
