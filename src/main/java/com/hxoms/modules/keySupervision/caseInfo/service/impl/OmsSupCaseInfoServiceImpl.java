@@ -330,11 +330,11 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			OutputStream output= null;
 			try {
 				output = response.getOutputStream();
-				response.reset();
-				response.setHeader("Content-disposition", "attachment; " +
-						"filename=" + new String( "立案人员信息表.xls".getBytes("utf-8"), "ISO8859-1" ));
-				response.setContentType("application/octet-stream");
+				response.setContentType("application/vnd.ms-excel");
+				response.setHeader("Content-Disposition", "utf-8");
+
 				wb.write(output);
+				output.flush();
 				output.close();
 			} catch (IOException e) {
 				e.printStackTrace();

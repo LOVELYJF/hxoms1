@@ -69,6 +69,6 @@
         oms_smr_recordinfo t
         LEFT JOIN oms_smr_personinfo p ON t.ID_CARD_NUMBER = p.ID_CARD_NUMBER
     WHERE
-        t.IS_MATCHING = '1'
+        t.IS_MATCHING != '1'
   </select>
 </mapper>

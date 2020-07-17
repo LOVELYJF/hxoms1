@@ -92,8 +92,14 @@ public class OmsSmrPersonInfo {
     @ColumnAnnotation(FieldName = "BIRTHDAY",   FieldDescription="出生日期")
     private String birthDay;
 
+    @ColumnAnnotation(FieldName = "NATION",   FieldDescription="民族")
+    private String nation;
+
     @ColumnAnnotation(FieldName = "REMARK",   FieldDescription="备注")
     private String remark;
+
+    @ColumnAnnotation(FieldName = "MSG",   FieldDescription="返回消息")
+    private String msg;
 
     public String getId() {
         return id;
@@ -287,11 +293,27 @@ public class OmsSmrPersonInfo {
         this.birthDay = birthDay;
     }
 
+    public String getNation() {
+        return nation;
+    }
+
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
+
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }
