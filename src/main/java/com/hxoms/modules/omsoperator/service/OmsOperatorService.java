@@ -3,6 +3,7 @@ package com.hxoms.modules.omsoperator.service;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
@@ -124,4 +125,14 @@ public interface OmsOperatorService {
      * @Date: 2020/7/14 16:10
      */
     PageInfo getOperatorList(Integer pageNum, Integer pageSize, List<String> orgId, String keyWord, List<String> state);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人——基本数据流程统计〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/17 15:32
+     */
+    List<CountStatusResult> selectCountStatus(String orgId);
 }

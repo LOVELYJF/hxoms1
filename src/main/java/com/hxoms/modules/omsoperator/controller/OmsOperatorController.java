@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -174,5 +175,18 @@ public class OmsOperatorController {
     public Result getOperatorApprovalByUid(String userId){
         OmsOperatorApproval approval = operatorService.getOperatorApprovalByUid(userId);
         return Result.success(approval);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈经办人——基本数据流程统计〉
+     * @Param: [orgId 1、管理界面传当前登录机构的id。2、审核界面不用传]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/17 15:31
+     */
+    @GetMapping("/selectCountStatus")
+    public Result selectCountStatus(String orgId){
+        List<CountStatusResult> countStatusResults = operatorService.selectCountStatus(orgId);
+        return Result.success(countStatusResults);
     }
 }

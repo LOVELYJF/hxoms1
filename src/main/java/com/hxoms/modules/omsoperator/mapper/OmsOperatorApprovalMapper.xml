@@ -28,6 +28,32 @@
       from oms_operator_approval
       where OperatorId = #{userId,jdbcType=VARCHAR}
     </select>
+    <select id="selectCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
+        select "1.注册" as label, "0" as statusCode, count(0) as num from cf_user where user_state = "0"
+        <if test="orgId != null and orgId != ''">
+          and org_id = #{orgId}
+        </if>
+        union all
+        select "2.上报" as label, "0" as statusCode, count(0) as num from cf_user where user_state = "0"
+        <if test="orgId != null and orgId != ''">
+          and org_id = #{orgId}
+        </if>
+        union all
+        select "3.监督处审核" as label, "3" as statusCode, count(0) as num from cf_user where user_state = "3"
+        <if test="orgId != null and orgId != ''">
+          and org_id = #{orgId}
+        </if>
+        union all
+        select "4.处领导审核" as label, "4" as statusCode, count(0) as num from cf_user where user_state = "4"
+        <if test="orgId != null and orgId != ''">
+          and org_id = #{orgId}
+        </if>
+        union all
+        select "5.身份认证" as label, "8" as statusCode, count(0) as num from cf_user where user_state = "8"
+        <if test="orgId != null and orgId != ''">
+          and org_id = #{orgId}
+        </if>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_approval
     where ID = #{id,jdbcType=VARCHAR}

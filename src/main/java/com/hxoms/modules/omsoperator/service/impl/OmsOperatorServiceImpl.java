@@ -9,6 +9,7 @@ import com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper;
 import com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverMapper;
 import com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverSubformMapper;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
@@ -479,6 +480,20 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         PageInfo info = new PageInfo(users);
         return info;
     }
+    /**
+     * 功能描述: <br>
+     * 〈经办人——基本数据流程统计〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/17 15:32
+     */
+    @Override
+    public List<CountStatusResult> selectCountStatus(String orgId) {
+        List<CountStatusResult> countStatusResults = operatorApprovalMapper.selectCountStatus(orgId);
+        return countStatusResults;
+    }
+
     /**
      * 功能描述: <br>
      * 〈管理人员确定列表〉
