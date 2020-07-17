@@ -11,7 +11,7 @@ spring:
 #            driver-class-name: dm.jdbc.driver.DmDriver
       username: root
       password: 12345abcde
-      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
       #username: root
       #password: 123456
       #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
