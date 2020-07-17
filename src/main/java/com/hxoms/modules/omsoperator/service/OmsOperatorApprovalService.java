@@ -4,7 +4,14 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
-
+/**
+ * 功能描述: <br>
+ * 〈经办人审核，审批〉
+ * @Param:
+ * @Return:
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:06
+ */
 public interface OmsOperatorApprovalService {
     /**
      * 功能描述: <br>

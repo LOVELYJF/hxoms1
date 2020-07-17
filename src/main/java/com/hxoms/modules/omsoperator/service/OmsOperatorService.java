@@ -6,7 +6,14 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
-
+/**
+ * 功能描述: <br>
+ * 〈经办人管理〉
+ * @Param:
+ * @Return:
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:07
+ */
 public interface OmsOperatorService {
     /**
      * 功能描述: <br>

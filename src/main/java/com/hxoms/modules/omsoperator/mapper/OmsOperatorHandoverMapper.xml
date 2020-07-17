@@ -81,7 +81,7 @@
     <where>
       <if test="orgId != null and orgId != ''">
         AND cu.org_id = #{orgId,jdbcType=VARCHAR}
-        and a.HandoverStatus = '1'
+        and a.HandoverStatus = '0'
       </if>
     </where>
   </select>

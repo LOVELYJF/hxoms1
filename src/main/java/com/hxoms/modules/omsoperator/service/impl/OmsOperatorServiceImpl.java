@@ -22,6 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+/**
+ * 功能描述: <br>
+ * 〈经办人管理〉
+ * @Param:
+ * @Return:
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:07
+ */
 @Service
 public class OmsOperatorServiceImpl implements OmsOperatorService {
 
@@ -74,9 +82,9 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
             //设置用户类型
-            user.setUserType("6");
+            user.setUserType(Constants.USER_TYPES[6]);
             //设置用户状态
-            user.setUserState("0");
+            user.setUserState(Constants.USER_STATUS[0]);
             //创建人
             user.setCreator(loginUser.getId());
             //创建时间
@@ -113,8 +121,8 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             user.setModifyUser(loginUser.getId());
             //修改时间
             user.setModifyTime(new Date());
-            //将状态置为"待审批"
-            user.setUserState("4");
+            //将状态置为"监督处审核"
+            user.setUserState(Constants.USER_STATUS[3]);
             //更新经办人信息
             cfUserMapper.updateByPrimaryKeySelective(user);
         }else {
@@ -126,9 +134,9 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //设置初始密码
             user.setUserPassword(UUIDGenerator.encryptPwd(Constants.USER_PWD));
             //设置用户类型
-            user.setUserType("6");
-            //将状态置为"待审批"
-            user.setUserState("4");
+            user.setUserType(Constants.USER_TYPES[6]);
+            //将状态置为"监督处审核"
+            user.setUserState(Constants.USER_STATUS[3]);
             //创建人
             user.setCreator(loginUser.getId());
             //创建时间
@@ -140,11 +148,11 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         omsOperatorApproval.setId(UUIDGenerator.getPrimaryKey());
         // 经办人主键、
         omsOperatorApproval.setOperatorid(user.getUserId());
-        //步骤名称（1.干部监督处审批 2.部长审批）、
-        omsOperatorApproval.setStepname("干部监督处审批");
+        //步骤名称（1.监督处审核 2.处领导审批）、
+        omsOperatorApproval.setStepname("监督处审核");
         // 提交时间
         omsOperatorApproval.setSubmissiontime(new Date());
-        // 提交人（未设置，当前登录人）
+        // 提交人
         omsOperatorApproval.setSubmitter(loginUser.getId());
         //新增经办人审批信息
         operatorApprovalMapper.insertSelective(omsOperatorApproval);
@@ -180,10 +188,10 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     @Override
     public String revokeOperator(String operatorId,String handoverId) {
         String msc = "";
-        if (operatorId == null || operatorId.equals("")) {
+        if (operatorId == null || "".equals(operatorId)) {
             throw new CustomMessageException("请先选择经办人!");
         }
-        if (handoverId == null || handoverId.equals("")){
+        if (handoverId == null || "".equals(handoverId)){
             throw new CustomMessageException("接手人不能为空!");
         }
         //获取登录用户信息
@@ -192,23 +200,22 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         CfUser user = cfUserMapper.selectByPrimaryKey(operatorId);
         String userState = user.getUserState();
         //用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)
-        if (userState.equals("1")){
+        if (userState.equals(Constants.USER_STATUS[1])){
             //状态为正常时操作显示：【撤消】、【审批信息】，将状态置为“待撤消”，系统通知经办人：“请到经办人交接页面办理交接手续”
-           cfUserMapper.updateUserState(user.getUserId(),"6");
+           cfUserMapper.updateUserState(user.getUserId(),Constants.USER_STATUS[6]);
             msc ="请到经办人交接页面办理交接手续!";
-        } else if (userState.equals("3")){
+        } else if (userState.equals(Constants.USER_STATUS[3])){
             //状态为征求意见时操作显示：【撤消】，此操作直接将状态置为“撤消”，通知干部监督处：“经办人XXX的申请已被XXX单位撤消”
-            //cfUserMapper.updateUserState(user.getUserId(),"2");
+            cfUserMapper.updateUserState(user.getUserId(),Constants.USER_STATUS[2]);
             //需要当前操作人ID(未设置)
             msc = "经办人"+user.getUserName()+"的申请已被"+loginUser.getOrgName()+"单位撤消!";
-        }else if (userState.equals("4")){
+        }else if (userState.equals(Constants.USER_STATUS[4])){
             //状态为待审批时操作显示：【撤消】、【打印申请表】，此操作直接将状态置为“撤消”，通知干部监督处：“经办人XXX的申请已被XXX单位撤消”
-           // cfUserMapper.updateUserState(user.getUserId(),"2");
+            cfUserMapper.updateUserState(user.getUserId(),Constants.USER_STATUS[2]);
             //需要当前操作人ID(未设置)
             msc = "经办人"+user.getUserName()+"的申请已被"+loginUser.getOrgName()+"单位撤消!";
         }
         //查询该经办人未完成的业务(往交接主表插入数据、查出数据后插入交接子表)
-        // 交接业务1.证照领取,2.因公出国（境）,3.因私出国（境），4.延期回国，5.撤销登记备案
         /**证照*/
         //TODO
         /**因公出国境*/
@@ -219,31 +226,53 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 String primaryKey = UUIDGenerator.getPrimaryKey();
                 Date date = new Date();
                 OmsOperatorHandover omsOperatorHandover = new OmsOperatorHandover();
-                omsOperatorHandover.setId(primaryKey);//主键
-                omsOperatorHandover.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandover.setOperatorid(operatorId);//经办人主键
-                omsOperatorHandover.setHandovertime(date);//交接时间
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));//交接状态
+                //主键
+                omsOperatorHandover.setId(primaryKey);
+                //接手人ID
+                omsOperatorHandover.setHandoverid(handoverId);
+                //经办人主键
+                omsOperatorHandover.setOperatorid(operatorId);
+                //交接时间
+                omsOperatorHandover.setHandovertime(date);
+                //交接状态
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                omsOperatorHandoverSubform.setId(primaryKey);//交接子表主键
-                omsOperatorHandoverSubform.setHandoverformid(primaryKey);//交接表主表主键
-                omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());//业务主键
-                omsOperatorHandoverSubform.setBusinesstype("2");//业务类别
-                omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());//人员主键
-                omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());//姓名
-                omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());//性别
-                omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());//出生日期
-                omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());//身份证号
-                omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());//政治面貌
-                omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());//工作单位
-                omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());//职务（级）
-                omsOperatorHandoverSubform.setHandovertime(date);//交接时间
-                omsOperatorHandoverSubform.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());//出国（境）时间
-                omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());//入境时间
-                omsOperatorHandoverSubform.setExplain(omsPubApplyVo.getCfrw());//说明
+                //交接子表主键
+                omsOperatorHandoverSubform.setId(primaryKey);
+                //交接表主表主键
+                omsOperatorHandoverSubform.setHandoverformid(primaryKey);
+                //业务主键
+                omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
+                //业务类别
+                omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[1]);
+                //人员主键
+                omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());
+                //姓名
+                omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());
+                //性别
+                omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());
+                //出生日期
+                omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());
+                //身份证号
+                omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());
+                //政治面貌
+                omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());
+                //工作单位
+                omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());
+                //职务（级）
+                omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
+                //交接时间
+                omsOperatorHandoverSubform.setHandovertime(date);
+                //接手人ID
+                omsOperatorHandoverSubform.setHandoverid(handoverId);
+                //出国（境）时间
+                omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());
+                //入境时间
+                omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
+                //说明
+                omsOperatorHandoverSubform.setExplain(omsPubApplyVo.getCfrw());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -255,31 +284,53 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 String primaryKey = UUIDGenerator.getPrimaryKey();
                 Date date = new Date();
                 OmsOperatorHandover omsOperatorHandover = new OmsOperatorHandover();
-                omsOperatorHandover.setId(primaryKey);//主键
-                omsOperatorHandover.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandover.setOperatorid(operatorId);//经办人主键
-                omsOperatorHandover.setHandovertime(date);//交接时间
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));//交接状态
+                //主键
+                omsOperatorHandover.setId(primaryKey);
+                //接手人ID
+                omsOperatorHandover.setHandoverid(handoverId);
+                //经办人主键
+                omsOperatorHandover.setOperatorid(operatorId);
+                //交接时间
+                omsOperatorHandover.setHandovertime(date);
+                //交接状态
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                omsOperatorHandoverSubform.setId(primaryKey);//交接子表主键
-                omsOperatorHandoverSubform.setHandoverformid(primaryKey);//交接表主表主键
-                omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());//业务主键
-                omsOperatorHandoverSubform.setBusinesstype("3");//业务类别
-                omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getA0100());//人员主键
-                omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());//姓名
-                omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());//性别
-                omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());//出生日期
-                omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());//身份证号
-                omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());//政治面貌
-                omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());//工作单位
-                omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());//职务（级）
-                omsOperatorHandoverSubform.setHandovertime(date);//交接时间
-                omsOperatorHandoverSubform.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());//出国（境）时间
-                omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());//入境时间
-                omsOperatorHandoverSubform.setExplain(omsPriApplyVO.getAbroadReasons());//说明
+                //交接子表主键
+                omsOperatorHandoverSubform.setId(primaryKey);
+                //交接表主表主键
+                omsOperatorHandoverSubform.setHandoverformid(primaryKey);
+                //业务主键
+                omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
+                //业务类别
+                omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
+                //人员主键
+                omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getA0100());
+                //姓名
+                omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
+                //性别
+                omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());
+                //出生日期
+                omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());
+                //身份证号
+                omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());
+                //政治面貌
+                omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());
+                //工作单位
+                omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());
+                //职务（级）
+                omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
+                //交接时间
+                omsOperatorHandoverSubform.setHandovertime(date);
+                //接手人ID
+                omsOperatorHandoverSubform.setHandoverid(handoverId);
+                //出国（境）时间
+                omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());
+                //入境时间
+                omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
+                //说明
+                omsOperatorHandoverSubform.setExplain(omsPriApplyVO.getAbroadReasons());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -291,29 +342,49 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 String primaryKey = UUIDGenerator.getPrimaryKey();
                 Date date = new Date();
                 OmsOperatorHandover omsOperatorHandover = new OmsOperatorHandover();
-                omsOperatorHandover.setId(primaryKey);//主键
-                omsOperatorHandover.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandover.setOperatorid(operatorId);//经办人主键
-                omsOperatorHandover.setHandovertime(date);//交接时间
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));//交接状态
+                //主键
+                omsOperatorHandover.setId(primaryKey);
+                //接手人ID
+                omsOperatorHandover.setHandoverid(handoverId);
+                //经办人主键
+                omsOperatorHandover.setOperatorid(operatorId);
+                //交接时间
+                omsOperatorHandover.setHandovertime(date);
+                //交接状态
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                omsOperatorHandoverSubform.setId(primaryKey);//交接子表主键
-                omsOperatorHandoverSubform.setHandoverformid(primaryKey);//交接表主表主键
-                omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());//业务主键
-                omsOperatorHandoverSubform.setBusinesstype("4");//业务类别
-                omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getA0100());//人员主键
-                omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());//姓名
-                omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());//性别
-                omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());//身份证号
-                omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());//工作单位
-                omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());//职务（级）
-                omsOperatorHandoverSubform.setHandovertime(date);//交接时间
-                omsOperatorHandoverSubform.setHandoverid(handoverId);//接手人ID
-                omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());//出国（境）时间
-                omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());//入境时间
-                omsOperatorHandoverSubform.setExplain(omsPriDelayVO.getDelayReason());//说明
+                //交接子表主键
+                omsOperatorHandoverSubform.setId(primaryKey);
+                //交接表主表主键
+                omsOperatorHandoverSubform.setHandoverformid(primaryKey);
+                //业务主键
+                omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
+                //业务类别
+                omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
+                //人员主键
+                omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getA0100());
+                //姓名
+                omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
+                //性别
+                omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());
+                //身份证号
+                omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());
+                //工作单位
+                omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());
+                //职务（级）
+                omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
+                //交接时间
+                omsOperatorHandoverSubform.setHandovertime(date);
+                //接手人ID
+                omsOperatorHandoverSubform.setHandoverid(handoverId);
+                //出国（境）时间
+                omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());
+                //入境时间
+                omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
+                //说明
+                omsOperatorHandoverSubform.setExplain(omsPriDelayVO.getDelayReason());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -332,7 +403,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public OmsOperatorApproval getOperatorApprovalByUid(String userId) {
-        if (userId == null) {
+        if (userId == null || "".equals(userId)) {
             throw new CustomMessageException("参数为空！");
         }
         OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(userId);
@@ -349,7 +420,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public List<OmsOperatorHandoverSubformVO>  getOperatorHandoverByUid(String userId) {
-        if (userId == null) {
+        if (userId == null || "".equals(userId)) {
             throw new CustomMessageException("参数为空！");
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByUserId(userId);
@@ -373,8 +444,9 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
-        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,null,"6",state);
+        /** 设置传入页码，以及每页的大小  */
+        PageHelper.startPage(pageNum, pageSize);
+        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,null,Constants.USER_TYPES[6],state);
         PageInfo info = new PageInfo(users);
         return info;
     }
@@ -401,8 +473,9 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (orgId == null || orgId.size() <= 0){
             orgId.add(loginUser.getOrgId());
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
-        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgId,"6",state);
+        /**  设置传入页码，以及每页的大小  */
+        PageHelper.startPage(pageNum, pageSize);
+        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgId,Constants.USER_TYPES[6],state);
         PageInfo info = new PageInfo(users);
         return info;
     }
@@ -434,18 +507,18 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void confirmDelivery(String handoverformid) {
-        if (handoverformid == null || handoverformid.equals("")){
+        if (handoverformid == null || "".equals(handoverformid)){
             throw new CustomMessageException("参数为空!");
         }
         //获取当前登录人
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         OmsOperatorHandover omsOperatorHandover = operatorHandoverMapper.selectByPrimaryKey(handoverformid);
         //更改状态为完成
-        omsOperatorHandover.setHandoverstatus("2");
+        omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[1]));
         operatorHandoverMapper.updateByPrimaryKeySelective(omsOperatorHandover);
         //更改经办人状态为撤销
         CfUser user = cfUserMapper.selectByPrimaryKey(omsOperatorHandover.getOperatorid());
-        user.setUserState("2");
+        user.setUserState(Constants.USER_STATUS[2]);
         user.setModifyUser(loginUser.getId());
         user.setModifyTime(new Date());
         cfUserMapper.updateByPrimaryKeySelective(user);
@@ -462,21 +535,21 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public void suspendHandover(String handoverformid) {
-        if (handoverformid == null || handoverformid.equals("")){
+        if (handoverformid == null || "".equals(handoverformid)){
             throw new CustomMessageException("参数为空!");
         }
         //获取当前登录人
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         OmsOperatorHandover omsOperatorHandover = operatorHandoverMapper.selectByPrimaryKey(handoverformid);
         //更改状态为撤销
-        omsOperatorHandover.setHandoverstatus("3");
+        omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[2]));
         operatorHandoverMapper.updateByPrimaryKeySelective(omsOperatorHandover);
         operatorHandoverMapper.deleteByPrimaryKey(omsOperatorHandover.getId());
         omsOperatorHandoverSubformMapper.deleteByPrimaryKey(omsOperatorHandover.getId());
         //更改经办人状态
         CfUser user = cfUserMapper.selectByPrimaryKey(omsOperatorHandover.getOperatorid());
        //将该经办人状态更改为正常
-        user.setUserState("1");
+        user.setUserState(Constants.USER_STATUS[1]);
         user.setModifyUser(loginUser.getId());
         user.setModifyTime(new Date());
         cfUserMapper.updateByPrimaryKeySelective(user);
@@ -497,21 +570,21 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if(selectUser != null){
             //判断状态
             String userState = selectUser.getUserState();
-            if (userState.equals("2") || userState.equals("5")){
+            if (!userState.equals(Constants.USER_STATUS[2]) & !userState.equals(Constants.USER_STATUS[5])){
                 throw new CustomMessageException("登录账号已经存在!");
             }
         }
         //2、一个机构下只允许有2个经办人,用户类型为 6经办人
         ArrayList<String> orgId = new ArrayList<>();
         orgId.add(user.getOrgId());
-        List<CfUser> sysUserList = cfUserMapper.getSysUserListByParm(orgId,"6");
+        List<CfUser> sysUserList = cfUserMapper.getSysUserListByParm(orgId,Constants.USER_TYPES[6],Constants.USER_STATUS[1]);
         if (sysUserList.size() >= 2){
             throw new CustomMessageException("您单位已有2名经办人，如须增加，请单独向干部监督处申请!");
         }
         ///3、检测该经办人是否在别的单位也注册成为了激活状态的经办人身份，如果有，提醒管理员：
         // “经办人XXX在XXX单位也是经办人，并处于正常办理业务状态，在XXX单位撤消他的经办人身份前，贵单位不能将其注册为经办人”
         //通过身份证号、用户类型、状态查找经办人
-        CfUser operator = cfUserMapper.getOperatorByIdnumAndState(user.getIdnumber(),"6","1");
+        CfUser operator = cfUserMapper.getOperatorByIdnumAndState(user.getIdnumber(),Constants.USER_TYPES[6],Constants.USER_STATUS[1]);
         if (operator != null && !user.getOrgId().equals(operator.getOrgId())){
             throw new CustomMessageException("经办人"+operator.getUserName()+"在"+operator.getOrgName()+"单位也是经办人，并处于正常办理业务状态，在"+operator.getOrgName()+"单位撤消他的经办人身份前，贵单位不能将其注册为经办人!");
         }

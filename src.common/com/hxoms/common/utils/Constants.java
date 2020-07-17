@@ -125,9 +125,14 @@ public class Constants {
      */
     public static String LEADER_TYPE = "LeaderType";
     /**
-     * 用户类型(0-管理员;1-普通用户)
+     * 用户类型(0-系统管理员、1-超级管理员、2-安全保密管理员、3-安全审计管理员、4-各单位管理员、5-监督处工作人员、6-经办人、7-组织部相关处室、
+     *          8-省外办、9-统战部（港澳办）、10-统战部（台办）、11-省保密局、12-省纪委、13-部领导、14-其他)
      */
-    public static String[] USER_TYPES = {"0", "1"};
+    public static String[] USER_TYPES = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14"};
+    /**
+     * 用户状态(0-注册;1-正常;2-撤销;3-监督处审核;4-处领导审批;5-拒绝;6-待撤销;7-暂停;8-身份认证;)
+     */
+    public static String[] USER_STATUS={"0","1","2","3","4","5","6","7","8"};
     /**
      * 人员信息集
      */
@@ -164,7 +169,7 @@ public class Constants {
     public  static String[] public_businessName ={"未下发","草稿","带材料审核"};
 
     /**
-     *调整期干部状态
+     *调整期干部状态{0-调整期,1-调整完成}
      *
      */
     public static int[] mobilizing_business={0,1};
@@ -174,10 +179,15 @@ public class Constants {
      */
     public static String[] mobilizing_businessName={"调整期","调整完成"};
     /**
-     *经办人交接状态
+     *经办人交接状态{0-代办,1-完成,2-撤销}
      *
      */
-    public static int[] handover_business={1,2,3};
+    public static int[] handover_business={0,1,2};
+    /**
+     *经办人交接业务类别{0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案}
+     *
+     */
+    public static String[] handover_type={"0","1","2","3","4"};
     /**
      *经办人交接状态名称
      *

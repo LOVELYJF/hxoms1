@@ -17,7 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * 功能描述: <br>
+ * 〈经办人审核，审批〉
+ * @Param:
+ * @Return:
+ * @Author: 李逍遥
+ * @Date: 2020/7/16 20:06
+ */
 @Service
 public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalService {
 
