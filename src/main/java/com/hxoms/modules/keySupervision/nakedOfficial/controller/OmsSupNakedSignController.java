@@ -81,10 +81,9 @@ public class OmsSupNakedSignController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getNakedOfficialInfoOut")
-	public Result getNakedOfficialInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public void getNakedOfficialInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                    OmsSupNakedSign omsSupNakedSign){
 		omsNakedOfficialService.getNakedOfficialOut(idList,omsSupNakedSign,response);
-		return Result.success();
 	}
 
 

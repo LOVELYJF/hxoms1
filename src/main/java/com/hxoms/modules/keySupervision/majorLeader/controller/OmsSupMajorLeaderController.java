@@ -81,10 +81,9 @@ public class OmsSupMajorLeaderController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getMajorLeaderInfoOut")
-	public Result getMajorLeaderInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public void getMajorLeaderInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                  OmsSupMajorLeader omsSupMajorLeader){
 		omsSupMajorLeaderService.getMajorLeaderInfoOut(idList,omsSupMajorLeader,response);
-		return Result.success();
 	}
 
 }

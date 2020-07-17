@@ -80,9 +80,8 @@ public class OmsSupDissmissedController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getDismissedInfoOut")
-	public Result getDismissedInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public void getDismissedInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                OmsSupDismissed omsSupDismissed){
 		omsSupDismissedService.getDismissedInfoOut(idList,omsSupDismissed,response);
-		return Result.success();
 	}
 }
