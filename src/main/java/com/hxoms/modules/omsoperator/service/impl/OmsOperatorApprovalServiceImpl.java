@@ -3,6 +3,7 @@ package com.hxoms.modules.omsoperator.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
@@ -48,13 +49,22 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
-        //页面打开时，网格中显示“待审批”和“征求意见”的经办人。
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         List<String> states = new ArrayList<>();
-        states.add("3");
-        states.add("4");
-        String userType = "6";
-        List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgIds,userType,states);
+        List<CfUser> users = null;
+        //判断当前登录人身份
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        String loginUserType = loginUser.getUserType();
+        if (loginUserType.equals(Constants.USER_TYPES[5])){
+            //显示监督处审核状态的数据
+            states.add(Constants.USER_STATUS[3]);
+            users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
+        }else if (loginUserType.equals(Constants.USER_TYPES[13])){
+            //显示处领导审批状态的数据
+            states.add(Constants.USER_STATUS[4]);
+            users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
+        }
         if (users == null){
             throw new CustomMessageException("无经办人信息!");
         }
@@ -71,10 +81,10 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      */
     @Override
     public CfUser getOperatorByIdCard(String idnumber) {
-        if (idnumber == null ||idnumber.equals("")){
+        if (idnumber == null || "".equals(idnumber)){
             throw new CustomMessageException("身份证号为空!");
         }
-        CfUser operator = cfUserMapper.getOperatorApprovalByIdCard(idnumber,"","6");
+        CfUser operator = cfUserMapper.getOperatorApprovalByIdCard(idnumber,"",Constants.USER_TYPES[6]);
         if (operator == null){
             throw new CustomMessageException("未匹配到经办人!");
         }
@@ -98,9 +108,9 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         }
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        // 点击【通过】按钮，将经办人申请的状态置为“登记指纹”
+        // 点击【通过】按钮，将经办人申请的状态置为“正常”
         // 并将身份证的户口所在地、签发机关、有效期开始时间、有效期结束时间、身份证物理ID写入用户表中。
-        operator.setUserState("1");
+        operator.setUserState(Constants.USER_STATUS[1]);
         cfUserMapper.updateByPrimaryKeySelective(operator);
         //获取审批对象
         OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operator.getUserId());
@@ -124,14 +134,14 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void refuseToApproval(String operatorId) {
-        if (operatorId == null || operatorId.equals("")){
+        if (operatorId == null || "".equals(operatorId)){
             throw new CustomMessageException("经办人为空!");
         }
         //点击【不通过】按钮，将经办人申请的状态置为“拒绝”。
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         CfUser operator = cfUserMapper.selectByPrimaryKey(operatorId);
-        operator.setUserState("5");
+        operator.setUserState(Constants.USER_STATUS[5]);
         cfUserMapper.updateByPrimaryKeySelective(operator);
         //获取审批对象
         OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operatorId);
@@ -156,24 +166,36 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void agreeToApprovalById(String operatorId) {
-        if (operatorId == null || operatorId.equals("")){
+        if (operatorId == null || "".equals(operatorId)){
             throw new CustomMessageException("参数为空!");
         }
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        // 点击【通过】按钮，将经办人申请的状态置为“登记指纹”
         CfUser operator = cfUserMapper.selectByPrimaryKey(operatorId);
-        operator.setUserState("8");
-        cfUserMapper.updateByPrimaryKeySelective(operator);
         //获取审批对象
-        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operator.getUserId());
+        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operatorId);
         if (approval == null){
             throw new CustomMessageException("此经办人无审批信息!");
         }
-        approval.setApprovalopinion("同意");
-        approval.setApprover(loginUser.getUserName());
-        approval.setApprovaldate(new Date());
-        operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        //判断审批人身份
+        String loginUserType = loginUser.getUserType();
+        if (loginUserType.equals(Constants.USER_TYPES[5])){
+            //将状态更改为处领导审批
+            operator.setUserState(Constants.USER_STATUS[4]);
+            cfUserMapper.updateByPrimaryKeySelective(operator);
+            approval.setApprovalopinion("同意");
+            approval.setApprover(loginUser.getUserName());
+            approval.setApprovaldate(new Date());
+            operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        }else if (loginUserType.equals(Constants.USER_TYPES[13])){
+            //将状态改为身份认证
+            operator.setUserState(Constants.USER_STATUS[8]);
+            cfUserMapper.updateByPrimaryKeySelective(operator);
+            approval.setApprovalresult("同意");
+            approval.setApprover(loginUser.getUserName());
+            approval.setApprovaldate(new Date());
+            operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        }
     }
 
     /**
