@@ -25,12 +25,12 @@ public class OmsSmrOldInfoController {
 
     /**
      * 获取涉密人员原涉密信息列表
-     * @param smrOldInfo
+     * @param A0100
      */
-    @GetMapping("/getSmrOldInfo")
-    public Result getSmrOldInfo(Page page, OmsSmrOldInfo smrOldInfo) {
+    @GetMapping("/getSmrOldInfoById")
+    public Result getSmrOldInfoById(String A0100) {
         try{
-            IPage<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoList(page,smrOldInfo);
+            IPage<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(A0100);
             return Result.success(oldInfoList);
         }catch (Exception e) {
             e.printStackTrace();

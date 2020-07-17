@@ -16,12 +16,10 @@ import java.text.ParseException;
 public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, OmsSmrOldInfo> implements OmsSmrOldInfoService {
 
 
-    @Autowired private OmsSmrOldInfoMapper smrOldInfoMapper;
-
     @Override
-    public IPage<OmsSmrOldInfo> getSmrOldInfoList(Page page, OmsSmrOldInfo smrOldInfo) throws ParseException {
-        if(!StringUtils.isBlank(smrOldInfo.getA0100())){
-            return baseMapper.getSmrOldInfoList(page,smrOldInfo);
+    public IPage<OmsSmrOldInfo> getSmrOldInfoById(String A0100) throws ParseException {
+        if(!StringUtils.isBlank(A0100)){
+            return baseMapper.getSmrOldInfoList(A0100);
         }else{
             return null;
         }
@@ -29,7 +27,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
 
     @Override
     public Object insert(OmsSmrOldInfo smrOldInfo) {
-        return null;
+        return baseMapper.insert(smrOldInfo);
     }
 
     @Override
