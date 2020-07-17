@@ -84,8 +84,9 @@ public class OmsSupViolationDisciplineController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/getViolationDisciplineInfoOut")
-	public void getViolationDisciplineInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
+	public Result getViolationDisciplineInfoOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                          OmsSupViolationDiscipline omsSupViolationDiscipline){
 		omsSupViolationDisciplineService.getViolationDisciplineInfoOut(idList,omsSupViolationDiscipline,response);
+		return Result.success();
 	}
 }
