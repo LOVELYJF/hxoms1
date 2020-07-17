@@ -33,9 +33,9 @@ public class OmsOperatorHandoverSubform {
     private String businessid;
 
     /**
-     * 业务类别（1.证照领取 2.因公出国（境） 3.因私出国（境））
+     * 业务类别（0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案）
      */
-    @ColumnAnnotation(FieldName = "BusinessType",  FieldDescription="业务类别（1.证照领取,2.因公出国（境）,3.因私出国（境），4.延期回国，5.撤销登记备案）")
+    @ColumnAnnotation(FieldName = "BusinessType",  FieldDescription="业务类别（0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案）")
     private String businesstype;
 
     /**
