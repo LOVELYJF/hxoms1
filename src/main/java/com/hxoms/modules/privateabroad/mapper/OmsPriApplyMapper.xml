@@ -94,6 +94,9 @@
     <if test="params.applyStartTime != null and params.applyStopTime != null">
       and pa.APPLY_TIME &gt; #{params.applyStartTime} and pa.APPLY_TIME &lt; #{params.applyStopTime}
     </if>
+    <if test="params.b0100 != null and params.b0100 != ''">
+      and pa.b0100 like CONCAT(#{params.b0100},'%')
+    </if>
     <if test="params.abroadStartTime != null and params.abroadEndTime != null">
       and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
     </if>
@@ -132,7 +135,7 @@
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           op.b0100 as b0100,
+           op.b0111 as b0100,
            orp.HEALTH as health,
            orp.LICENCE_IDENTITY as paper
     from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100

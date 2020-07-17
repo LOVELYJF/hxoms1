@@ -72,9 +72,17 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         //查询途径国家
         for (OmsPriApplyVO item : pageInfo.getList()) {
             QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
-            queryWrapper.in("ID", item.getGoCountry().split(","));
-            List<Country> countries = countryMapper.selectList(queryWrapper);
-            item.setCountries(countries);
+            if (!StringUtils.isBlank(item.getRealGoCountry())){
+                queryWrapper.in("id", item.getGoCountry().split(","));
+                List<Country> countries = countryMapper.selectList(queryWrapper);
+                item.setCountries(countries);
+            }
+            //实际途径国家
+            if (!StringUtils.isBlank(item.getRealGoCountry())){
+                queryWrapper.clear();
+                queryWrapper.in("ID", item.getRealGoCountry().split(","));
+                item.setRealCountries(countryMapper.selectList(queryWrapper));
+            }
         }
         return pageInfo;
     }
@@ -148,30 +156,26 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             queryWrapper.eq("APPLY_ID", omsPriApply.getId());
             omsPriTogetherpersonMapper.delete(queryWrapper);
         }
-        int result = 0;
         //随行人员信息保存
         for (OmsPriTogetherperson omsPriTogetherperson : omsPriTogetherpersonList) {
             omsPriTogetherperson.setId(UUIDGenerator.getPrimaryKey());
             omsPriTogetherperson.setApplyId(omsPriApply.getId());
             omsPriTogetherperson.setCreateTime(new Date());
             omsPriTogetherperson.setCreateUser(userInfo.getId());
-            result = omsPriTogetherpersonMapper.insert(omsPriTogetherperson);
-        }
-        if (result < 1){
-            throw new CustomMessageException("申请失败");
+            int result = omsPriTogetherpersonMapper.insert(omsPriTogetherperson);
+            if (result < 1){
+                throw new CustomMessageException("申请失败");
+            }
         }
         return omsPriApply.getId();
     }
 
     @Override
     public String deletePriApply(String id) {
-        //只能删除草稿状态的
-        QueryWrapper<OmsPriApply> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("applyStatus", Constants.private_business[0]);  //草稿
-        queryWrapper.eq("id", id);
-        int count = omsPriApplyMapper.selectCount(queryWrapper);
-        if (count == 0){
-            throw new CustomMessageException("只能删除草稿");
+        //只能删除未上报的
+        OmsPriApply omsPriApply = omsPriApplyMapper.selectById(id);
+        if (omsPriApply.getApplyStatus() > Constants.private_business[4]){
+            throw new CustomMessageException("此申请不能删除");
         }
         if (omsPriApplyMapper.deleteById(id) < 1){
             throw new CustomMessageException("删除失败");
@@ -239,9 +243,17 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         omsPriApplyVO.setCfCertificates(cfCertificates);
         //国家列表
         QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
-        countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
-        List<Country> countries = countryMapper.selectList(countryQueryWrapper);
-        omsPriApplyVO.setCountries(countries);
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
+            countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
+            List<Country> countries = countryMapper.selectList(countryQueryWrapper);
+            omsPriApplyVO.setCountries(countries);
+        }
+        //实际途径国家
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
+            countryQueryWrapper.clear();
+            countryQueryWrapper.in("ID", omsPriApplyVO.getRealGoCountry().split(","));
+            omsPriApplyVO.setRealCountries(countryMapper.selectList(countryQueryWrapper));
+        }
         return omsPriApplyVO;
     }
 

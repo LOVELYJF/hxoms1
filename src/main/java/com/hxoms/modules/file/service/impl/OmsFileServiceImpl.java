@@ -276,10 +276,10 @@ public class OmsFileServiceImpl implements OmsFileService {
             Class clazz = t.getClass();
             try {
                 Object value = clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
-                if (!StringUtils.isBlank(omsFile.getFrontContent())){
+                if (!StringUtils.isBlank(omsFile.getFrontContent()) && value != null){
                     omsFile.setFrontContent(omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
                 }
-                if (!StringUtils.isBlank(omsFile.getBankContent())){
+                if (!StringUtils.isBlank(omsFile.getBankContent()) && value != null){
                     omsFile.setBankContent(omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
                 }
 
