@@ -1,7 +1,6 @@
 package com.hxoms.modules.omssmrperson.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
