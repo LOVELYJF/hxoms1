@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.service.impl;
 
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.modules.passportCard.service.VerificationUserService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.mapper.CfUserMapper;
@@ -24,7 +25,7 @@ public class VerificationUserServiceImpl implements VerificationUserService {
     @Override
     public CfUser verificationIdNum(String idNum) {
 
-       CfUser cfUser= cfUserMapper.getOperatorApprovalByIdCard(idNum,"1","6");
+       CfUser cfUser= cfUserMapper.getOperatorApprovalByIdCard(idNum, Constants.USER_STATUS[1],Constants.USER_TYPES[6]);
 
         if (cfUser == null){
 
