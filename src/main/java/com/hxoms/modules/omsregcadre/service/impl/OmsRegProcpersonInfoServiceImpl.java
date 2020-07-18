@@ -193,7 +193,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list) {
-        List<OmsRegProcpersoninfo> mepinfoList = null;
         int con = 0;
         //批量添加的方法
         int count = 30;
@@ -637,8 +636,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
         //查询机构id
         if (!StringUtils.isBlank(a0201b)){
-            String b0100 = a02Mapper.selectB0100ByA021b(a0201b);
-            orpInfo.setRfB0000(b0100);
+            orpInfo.setRfB0000(a0201b);
         }
         orpInfo.setA0100(a01.getA0100());
         //数据类型  1.干部    2 公安
@@ -673,6 +671,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //身份情况 1.省管干部
         orpInfo.setIdentityCode("1");
         orpInfo.setIdentity("省管干部");
+        //工作单位
+        orpInfo.setWorkUnit(a01.getA0192a());
         //人事主管单位
         orpInfo.setPersonManager("海南省委组织部");
         orpInfo.setCreateTime(new Date());
