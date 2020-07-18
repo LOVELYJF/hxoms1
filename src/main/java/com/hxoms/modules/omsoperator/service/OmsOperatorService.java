@@ -6,6 +6,7 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 /**
  * 功能描述: <br>
@@ -135,4 +136,14 @@ public interface OmsOperatorService {
      * @Date: 2020/7/17 15:32
      */
     List<CountStatusResult> selectCountStatus(String orgId);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人名单导出〉
+     * @Param: [keyWord, orgId, state]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/17 19:30
+     */
+    void exportOperator(String keyWord, List<String> orgId, List<String> state, HttpServletResponse response);
 }

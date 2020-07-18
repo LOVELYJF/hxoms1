@@ -10,6 +10,7 @@ import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -188,5 +189,18 @@ public class OmsOperatorController {
     public Result selectCountStatus(String orgId){
         List<CountStatusResult> countStatusResults = operatorService.selectCountStatus(orgId);
         return Result.success(countStatusResults);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈经办人名单导出〉
+     * @Param: [keyWord, orgId, state]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/17 19:30
+     */
+    @PostMapping("/exportOperator")
+    public void exportOperator(String keyWord,@RequestParam(value ="orgId",required = false) List<String> orgId,
+                                 @RequestParam(value ="state",required = false) List<String> state, HttpServletResponse response){
+        operatorService.exportOperator(keyWord,orgId,state,response);
     }
 }
