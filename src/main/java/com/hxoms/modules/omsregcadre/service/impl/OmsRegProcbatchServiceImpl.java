@@ -3,6 +3,7 @@ package com.hxoms.modules.omsregcadre.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchMapper;
@@ -85,6 +86,13 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
     @Override
     public List<String> getHistoryBatch() {
         return baseMapper.getHistoryBatch();
+    }
+
+    @Override
+    public ExcelModelORPinfo selectWbaByOrpbatch() {
+        //查询待备案批次
+        ExcelModelORPinfo regbatch = baseMapper.selectWbaByOrpbatch();
+        return regbatch;
     }
 
 

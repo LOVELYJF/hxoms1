@@ -39,6 +39,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private OmsRegProcbatchMapper regProcbatchMapper;
     @Autowired
+    private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
+    @Autowired
     private OmsRegRevokeApplyMapper revokeApplyMapper;
     @Autowired
     private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
@@ -58,11 +60,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         List<String> a0100str = baseMapper.selectRegProcpersonInfo();
         List<OmsRegProcpersoninfo> mepinfoList = null;
         //查询干部信息总库干部信息
-        /*QueryWrapper<A01Entity> queryWrapper = new QueryWrapper<A01Entity>();
-        queryWrapper.in("is_deleted","0");
-        List<A01Entity> a01list = a01Mapper.selectList(null);*/
-
-        List<A01Entity> a01list = a01Mapper.selectA01Data();
+        QueryWrapper<A01Entity> a01qw = new QueryWrapper<A01Entity>();
+        a01qw.in("A0165","02");
+        a01qw.in("is_deleted","0");
+        List<A01Entity> a01list = a01Mapper.selectList(a01qw);
         int con =0;
         OmsRegProcpersoninfo orpInfo = null;
         if(a01list != null && a0100str != null){
@@ -73,7 +74,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                      QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
                      queryWrapper.eq("A0100", a01.getA0100());
                      orpInfo.setModifyTime(new Date());
-                    con = baseMapper.update(orpInfo,queryWrapper);
+                     con = baseMapper.update(orpInfo,queryWrapper);
                  }else{//不包含直接新增
                      //备案状态
                      orpInfo.setRfStatus("0");
@@ -193,7 +194,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list) {
-        List<OmsRegProcpersoninfo> mepinfoList = null;
         int con = 0;
         //批量添加的方法
         int count = 30;
@@ -217,6 +217,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     public List<OmsRegProcpersoninfo> selectMergeList(String dataType) {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
         return  baseMapper.selectMergeList(dataType);
+    }
+
+    @Override
+    public List<ExcelModelORPinfo> selectListById(String idStr) {
+        String id = idStr.split(",").toString();
+        return baseMapper.selectListById(id);
     }
 
     /**
@@ -472,13 +478,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return
      */
     @Override
-    public List<OmsRegProcpersoninfo> selectPersonByBatchNo(String batchNo) {
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        queryWrapper.eq("BATCH_NO",batchNo);
-        return baseMapper.selectList(queryWrapper);
+    public List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo) {
+        QueryWrapper<OmsRegProcbatchPerson> qw = new QueryWrapper<OmsRegProcbatchPerson>();
+        qw.eq("BATCH_ID",batchNo);
+        return regProcbatchPersonMapper.selectList(qw);
     }
-
-
 
     /**
      * 登记备案大检查，上传登记备案记录 并查询未备案列表人员
@@ -637,8 +641,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
         //查询机构id
         if (!StringUtils.isBlank(a0201b)){
-            String b0100 = a02Mapper.selectB0100ByA021b(a0201b);
-            orpInfo.setRfB0000(b0100);
+            orpInfo.setRfB0000(a0201b);
         }
         orpInfo.setA0100(a01.getA0100());
         //数据类型  1.干部    2 公安
@@ -673,6 +676,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //身份情况 1.省管干部
         orpInfo.setIdentityCode("1");
         orpInfo.setIdentity("省管干部");
+        //工作单位
+        orpInfo.setWorkUnit(a01.getA0192a());
         //人事主管单位
         orpInfo.setPersonManager("海南省委组织部");
         orpInfo.setCreateTime(new Date());

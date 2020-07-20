@@ -7,12 +7,6 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
-import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
-import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
-import com.hxoms.modules.keySupervision.dismissed.entity.OmsSupDismissed;
-import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
-import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
-import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
@@ -23,6 +17,7 @@ import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriTogetherpersonMapper;
+import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -56,6 +51,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
     @Autowired
     private CountryMapper countryMapper;
+    @Autowired
+    private OmsAbroadApprovalService omsAbroadApprovalService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -189,10 +186,15 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             throw new CustomMessageException("参数错误");
         }
         OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(omsPriApply.getId());
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         if (Constants.private_business[7] == omsPriApply.getApplyStatus()){
             //撤销
-
+            omsAbroadApproval.setStepCode(Constants.private_business[7]);
+            omsAbroadApproval.setStepName(Constants.private_businessName[7]);
         } else if(Constants.private_business[0] == omsPriApply.getApplyStatus()){
+            omsAbroadApproval.setStepCode(Constants.private_business[0]);
+            omsAbroadApproval.setStepName("撤回");
             //撤回
             if (omsPriApplyDestail.getApplyStatus() > 20){
                 throw new CustomMessageException("不能撤回");
@@ -202,6 +204,30 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (updateStatus < 1){
             throw new CustomMessageException("操作失败");
         }
+        if (omsPriApply.getApplyStatus() > 1 || omsPriApply.getApplyStatus() <= 5){
+            int status = omsPriApply.getApplyStatus() - 1;
+            omsAbroadApproval.setStepCode(status);
+            for (int i = 1; i < 5; i++){
+                if (Constants.private_business[i] == status){
+                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
+                    break;
+                }
+            }
+        } else if (omsPriApply.getApplyStatus() == 20){
+            omsAbroadApproval.setStepCode(Constants.private_business[4]);
+            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
+        }
+
+        //添加步骤
+        omsAbroadApproval.setApplyId(omsPriApply.getId());
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getId());
+        omsAbroadApproval.setSubmitTime(new Date());
+        omsAbroadApproval.setSubmitUser(userInfo.getId());
+        omsAbroadApproval.setApprovalResult("1");
+        omsAbroadApproval.setApprovalAdvice("通过");
+        omsAbroadApproval.setType(Constants.oms_business[1]);
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
         return "操作成功";
     }
 

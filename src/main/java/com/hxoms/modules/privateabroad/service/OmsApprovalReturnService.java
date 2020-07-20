@@ -24,4 +24,12 @@ public interface OmsApprovalReturnService {
      * @return
      */
     PageInfo<OmsApprovalReturnVO> selectPriApprovalReturnPagelist(OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam);
+
+    /**
+     * 查询回收登记详情
+     * @param applyId
+     * @return
+     * @throws Exception
+     */
+    OmsApprovalReturn selectPriApprovalReturnDestail(String applyId);
 }

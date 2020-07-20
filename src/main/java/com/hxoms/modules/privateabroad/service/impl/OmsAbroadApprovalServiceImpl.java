@@ -8,6 +8,8 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.mapper.OmsAbroadApprovalMapper;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
+import com.hxoms.modules.sysUser.entity.CfUser;
+import com.hxoms.modules.sysUser.mapper.CfUserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import java.util.List;
 public class OmsAbroadApprovalServiceImpl implements OmsAbroadApprovalService {
     @Autowired
     private OmsAbroadApprovalMapper omsAbroadApprovalMapper;
+    @Autowired
+    private CfUserMapper cfUserMapper;
 
     @Override
     public List<OmsAbroadApproval> selectOmsAbroadApprovalList(String applyId, String type) {
@@ -33,8 +37,20 @@ public class OmsAbroadApprovalServiceImpl implements OmsAbroadApprovalService {
         }
         QueryWrapper<OmsAbroadApproval> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("APPLY_ID", applyId)
-                .eq("TYPE", type);
+                .eq("TYPE", type)
+                .orderByDesc("STEP_CODE");
         List<OmsAbroadApproval> omsAbroadApprovals = omsAbroadApprovalMapper.selectList(queryWrapper);
+        //查询经办人和审批人
+        for (OmsAbroadApproval omsAbroadApproval : omsAbroadApprovals){
+            CfUser submit = cfUserMapper.selectByPrimaryKey(omsAbroadApproval.getSubmitUser());
+            if (submit != null){
+                omsAbroadApproval.setSubmitUser(submit.getUserName());
+            }
+            CfUser approval = cfUserMapper.selectByPrimaryKey(omsAbroadApproval.getApprovalUser());
+            if (approval != null){
+                omsAbroadApproval.setApprovalUser(approval.getUserName());
+            }
+        }
         return omsAbroadApprovals;
     }
 

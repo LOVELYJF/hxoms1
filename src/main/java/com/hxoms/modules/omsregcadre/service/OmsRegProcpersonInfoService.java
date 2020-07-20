@@ -2,9 +2,7 @@ package com.hxoms.modules.omsregcadre.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
-import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
+import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 
 import java.text.ParseException;
@@ -33,7 +31,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     PageInfo<OmsRegProcpersoninfo> getRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    List<OmsRegProcpersoninfo> selectPersonByBatchNo(String batchNo);
+    List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo);
 
     int checkUploadRegRecord(List<OmsRegProcpersoninfo> list);
 
@@ -58,4 +56,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     Map<String, Object> selectStatisticsCount();
 
     List<OmsRegProcpersoninfo> selectMergeList(String dataType);
+
+    List<ExcelModelORPinfo> selectListById(String idStr);
 }
