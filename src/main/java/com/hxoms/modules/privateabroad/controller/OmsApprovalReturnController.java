@@ -59,4 +59,16 @@ public class OmsApprovalReturnController {
         PageInfo<OmsApprovalReturnVO> omsApprovalReturnVOPageInfo = omsApprovalReturnService.selectPriApprovalReturnPagelist(omsPriApprovalReturnIPageParam);
         return Result.success(omsApprovalReturnVOPageInfo);
     }
+
+    /**
+     * 查询回收登记详情
+     * @param applyId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/selectPriApprovalReturnDestail")
+    public Result selectPriApprovalReturnDestail(String applyId) throws Exception {
+        OmsApprovalReturn omsApprovalReturn = omsApprovalReturnService.selectPriApprovalReturnDestail(applyId);
+        return Result.success(omsApprovalReturn);
+    }
 }

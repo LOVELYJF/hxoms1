@@ -1,13 +1,17 @@
 package com.hxoms.modules.privateabroad.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.country.entity.Country;
+import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.privateabroad.entity.OmsApprovalReturn;
 import com.hxoms.modules.privateabroad.entity.OmsApprovalReturnVO;
+import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApprovalReturnIPageParam;
 import com.hxoms.modules.privateabroad.mapper.OmsApprovalReturnMapper;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
@@ -28,6 +32,8 @@ import java.util.List;
 public class OmsApprovalReturnServiceImpl implements OmsApprovalReturnService {
     @Autowired
     private OmsApprovalReturnMapper omsApprovalReturnMapper;
+    @Autowired
+    private CountryMapper countryMapper;
 
     @Override
     public String savePriApprovalReturn(OmsApprovalReturn omsApprovalReturn) {
@@ -76,6 +82,31 @@ public class OmsApprovalReturnServiceImpl implements OmsApprovalReturnService {
         List<OmsApprovalReturnVO> omsApprovalReturnVOS = omsApprovalReturnMapper.selectPriApprovalReturnPagelist(omsPriApprovalReturnIPageParam);
         //返回数据
         PageInfo<OmsApprovalReturnVO> pageInfo = new PageInfo(omsApprovalReturnVOS);
+        //查询途径国家
+        for (OmsApprovalReturnVO item : pageInfo.getList()) {
+            QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
+            if (!StringUtils.isBlank(item.getOmsPriApplyVO().getRealGoCountry())){
+                queryWrapper.in("id", item.getOmsPriApplyVO().getGoCountry().split(","));
+                List<Country> countries = countryMapper.selectList(queryWrapper);
+                item.getOmsPriApplyVO().setCountries(countries);
+            }
+        }
         return pageInfo;
+    }
+
+    @Override
+    public OmsApprovalReturn selectPriApprovalReturnDestail(String applyId) {
+        if (StringUtils.isBlank(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        QueryWrapper<OmsApprovalReturn> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("ID","APPLY_ID","RETURN_TIME","RETURN_USER", "RETURN_DESC")
+                .eq("APPLY_ID", applyId);
+        OmsApprovalReturn omsApprovalReturn = omsApprovalReturnMapper.selectOne(queryWrapper);
+        if (omsApprovalReturn == null){
+            omsApprovalReturn = new OmsApprovalReturn();
+            omsApprovalReturn.setApplyId(applyId);
+        }
+        return omsApprovalReturn;
     }
 }

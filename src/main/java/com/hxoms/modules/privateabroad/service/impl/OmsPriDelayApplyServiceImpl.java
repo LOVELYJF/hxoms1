@@ -7,12 +7,14 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
+import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.privateabroad.service.OmsPriDelayApplyService;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -37,6 +39,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     private OmsPriApplyService omsPriApplyService;
     @Autowired
     private CountryMapper countryMapper;
+    @Autowired
+    private OmsAbroadApprovalService omsAbroadApprovalService;
 
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -92,6 +96,39 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         if (omsPriDelayApplyMapper.updateById(omsPriDelayApply) < 1){
             throw new CustomMessageException("操作失败");
         }
+        //添加步骤
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
+        omsAbroadApproval.setApplyId(omsPriDelayApply.getId());
+        if (omsPriDelayApply.getApplyStatus() > 1 || omsPriDelayApply.getApplyStatus() <= 5){
+            for (int i = 0; i < Constants.private_business.length; i++){
+                int status = omsPriDelayApply.getApplyStatus() - 1;
+                omsAbroadApproval.setStepCode(status);
+                if (i == status){
+                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
+                    break;
+                }
+            }
+        } else if (omsPriDelayApply.getApplyStatus() == 20){
+            omsAbroadApproval.setStepCode(Constants.private_business[4]);
+            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
+        } else if (Constants.private_business[7] == omsPriDelayApply.getApplyStatus()){
+            //撤销
+            omsAbroadApproval.setStepCode(Constants.private_business[7]);
+            omsAbroadApproval.setStepName(Constants.private_businessName[7]);
+        } else if(Constants.private_business[0] == omsPriDelayApply.getApplyStatus()){
+            omsAbroadApproval.setStepCode(Constants.private_business[0]);
+            omsAbroadApproval.setStepName("撤回");
+        }
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setSubmitTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getId());
+        omsAbroadApproval.setApprovalResult("1");
+        omsAbroadApproval.setSubmitUser(userInfo.getId());
+        omsAbroadApproval.setApprovalAdvice("通过");
+        omsAbroadApproval.setType(Constants.oms_business[2]);
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
         return "操作成功";
     }
 
