@@ -30,13 +30,13 @@
     <result column="EXIT_TYPE" jdbcType="CHAR" property="exitType" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, A0100, CREATE_USER, CREATE_DATE, SURNAME, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE,
-    REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
+    ID, A0100, CREATE_USER, CREATE_DATE, SURNAME, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE, 
+    REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, 
     SECRET_STATUS, SECRET_STARTDATE, SECRET_ENDDATE, APPLY_REASON, STATUS,RF_B0000,EXIT_DATE,EXIT_TYPE,RF_ID
   </sql>
 
-  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply"
-          resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApply">
+  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply"
+          resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
     SELECT * from oms_reg_revokeapply
     WHERE 1=1
     <if test="revokeapply.name!=null and revokeapply.name!=''">

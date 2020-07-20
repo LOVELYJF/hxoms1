@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ public class CfUser {
     @ColumnAnnotation(FieldName = "user_id",   FieldDescription="用户id")
     private String userId;
 
+    @ApiModelProperty("用户名")
     @ColumnAnnotation(FieldName = "user_name",   FieldDescription="经办人真实姓名")
     private String userName;
 

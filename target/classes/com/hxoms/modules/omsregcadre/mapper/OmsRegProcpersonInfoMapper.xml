@@ -14,10 +14,11 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
-    <result column="BIRTH_DATE_SFZ" jdbcType="DATE" property="birthDateSfz" />
+    <result column="BIRTH_DATE_GB" jdbcType="DATE" property="birthDateGb" />
     <result column="NATION_CODE" jdbcType="VARCHAR" property="nationCode" />
     <result column="NATION_NAME" jdbcType="VARCHAR" property="nationName" />
-    <result column="IDNUMBER" jdbcType="CHAR" property="idnumber" />
+    <result column="IDNUMBER_GB" jdbcType="CHAR" property="idnumberGb" />
+    <result column="IDNUMBER_GA" jdbcType="CHAR" property="idnumberGa" />
     <result column="POLITICAL_AFFICODE" jdbcType="VARCHAR" property="politicalAfficode" />
     <result column="POLITICAL_AFFINAME" jdbcType="VARCHAR" property="politicalAffiname" />
     <result column="HEALTH_CODE" jdbcType="VARCHAR" property="healthCode" />
@@ -50,15 +51,16 @@
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
     <result column="PY" jdbcType="VARCHAR" property="py" />
     <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
+    <result column="EXIT_DATE" jdbcType="DATE" property="exitDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE,
-    SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ, NATION_CODE, NATION_NAME, IDNUMBER, POLITICAL_AFFICODE,
-    POLITICAL_AFFINAME, HEALTH_CODE, HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
-    WORK_UNIT, POST_CODE, POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_LEVEL,
-    DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER, LICENCE_IDENTITY, NF, FJGNF, XRXGW,
-    LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME, CREATE_USER, MODIFY_TIME,
-    MODIFY_USER, SORT_ID, PY, SECRET_POST
+    ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
+    SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,IDNUMBER_GA, NATION_CODE, NATION_NAME,
+    IDNUMBER_GB, POLITICAL_AFFICODE,POLITICAL_AFFINAME, HEALTH_CODE, HEALTH,
+    REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER,
+    IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER,
+    LICENCE_IDENTITY, NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME,
+    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE
   </sql>
 
 
@@ -107,8 +109,8 @@
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
-              NAME, SEX, BIRTH_DATE, BIRTH_DATE_SFZ,
-              NATION, IDNUMBER, POLITICAL_AFFI,
+              NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,NATION_CODE,
+              NATION_NAME, IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFI,
               HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
               WORK_UNIT, POST_CODE, POST,
               PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
@@ -116,15 +118,17 @@
               MAIN_LEADER, LICENCE_IDENTITY, NF,
               FJGNF, XRXGW, LQGZ, DQGZ,
               REPLYOPINION, ABROADTIME, REASON,
-              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,SORT_ID,PY,SECRET_POST
+              CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,
+              SORT_ID,PY,SECRET_POST,EXIT_DATE
     )
     values
     <foreach collection="list" index="index" item="item" separator=",">
       (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
       #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
       #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
-      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},#{birthDateSfz,jdbcType=DATE},
-      #{nation,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
+      #{birthDateGb,jdbcType=DATE},#{nationCode,jdbcType=VARCHAR},
+      #{nationName,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
       #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
       #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
       #{personManager,jdbcType=VARCHAR}, #{identityCode,jdbcType=CHAR}, #{identity,jdbcType=VARCHAR},
@@ -133,11 +137,82 @@
       #{fjgnf,jdbcType=CHAR}, #{xrxgw,jdbcType=CHAR}, #{lqgz,jdbcType=CHAR}, #{dqgz,jdbcType=CHAR},
       #{replyopinion,jdbcType=CHAR}, #{abroadtime,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}
       #{createTime,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},
-      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},#{secretPost,jdbcType=VARCHAR}
+      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},
+      #{secretPost,jdbcType=VARCHAR},#{exitDate,jdbcType=DATE}
       )
     </foreach>
 
 	</insert>
 
+    <select id="selectInboudFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
+      SELECT
+        T_Status.CODE,
+        T_Status.NAM                                                  E,
+        IFNULL(T_Main.Cnt, '0') VALUE
+      FROM
+        (
+          SELECT * FROM (
+                SELECT 'U' code, '新增' name
+              UNION
+                SELECT 'I' code, '修改' name
+              UNION
+                SELECT 'D' code, '撤销' name
+            ) T_Status
+        ) T_Status
+        LEFT JOIN (
+          SELECT INBOUND_FLAG, Count(INBOUND_FLAG) Cnt
+          FROM oms_reg_procpersoninfo  GROUP BY  INBOUND_FLAG
+        ) T_Main ON T_Main.INBOUND_FLAG = T_Status.code
+    </select>
+
+    <select id="selectIdentityCodeCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
+      SELECT
+        T_Status.CODE,
+        T_Status.NAME,
+        IFNULL(T_Main.Cnt, '0') VALUE
+      FROM
+        (
+        SELECT * FROM (
+              SELECT '1' code, '省管干部' name
+            UNION
+              SELECT '2' code, '科级以上公务员' name
+            UNION
+              SELECT '3' code, '涉密人员' name
+            UNION
+              SELECT '4' code, '重要岗位人' name
+            UNION
+              SELECT '5' code, '重点监管人员' name
+            UNION
+              SELECT '9' code, '其他人员' name
+            ) T_Status
+        ) T_Status
+        LEFT JOIN (
+        SELECT IDENTITY_CODE, Count(IDENTITY_CODE) Cnt
+        FROM oms_reg_procpersoninfo  GROUP BY  IDENTITY_CODE
+        ) T_Main ON T_Main.IDENTITY_CODE = T_Status.code
+
+    </select>
+
+  <select id="selectAllFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
+    select
+      count(orp.MAIN_LEADER=1) as acount,-- 主要领导
+      count(orp.NF='1') as bcount,-- 裸官
+      count(orp.SECRET_LEVEL=3)as count,-- 核心涉密人员
+      count(orp.SECRET_LEVEL=2) as dcount,-- 一般涉密人员
+      count(orp.REPLYOPINION=1)as ecount,-- 纪委不回复意见人员1是，0否
+      count(orp.LQGZ=1)as fcount, -- 离琼挂职
+      count(orp.DQGZ=1)as gcount, -- 到琼挂职
+      (select count(1) from oms_reg_procpersoninfo orp left join oms_sup_suspend_person oss on orp.A0100 = oss.A0100 where oss.status=0)as hcount  -- 锁定出国
+    from oms_reg_procpersoninfo orp
+  </select>
+
+
+  <select id="selectMergeList" resultMap="BaseResultMap">
+    select * from oms_reg_procpersoninfo where 1=1
+    and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
+    <if test="dataType!=null and dataType!=''">
+      and DATA_TYPE=#{dataType}
+    </if>
+  </select>
 
 </mapper>

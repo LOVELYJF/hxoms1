@@ -136,6 +136,7 @@
 			GETDICTITEM('07',a.a0141,'0') as 'politicalAffi',
 			a2.A0215A as 'a0215a',
 			a2.a0221 as 'A0221',
+			b.B0100 as 'b0100',
 			b.B0101 as 'b0101'
 		from  a01 a
 		inner join a02 a2 on a.a0100=a2.a0100
@@ -162,6 +163,35 @@
 	<select id="selectLeaderInfoData" parameterType="java.lang.String" resultType="com.hxoms.support.leaderInfo.util.LowerKeyMap">
     select * from ${tablecode} where a0100 = #{id,jdbcType=VARCHAR}
   </select>
+
+	<!-- 查询人员信息 -->
+	<select id="selectPersonInfoForfamily" parameterType="java.util.Map" resultType="java.util.Map">
+		select
+			a.a0100 as 'a0100',
+			b.b0101 as 'b0101',
+			a.A0101 as 'a0101',
+			GETDICTITEM('02',a.a0104,'0') as 'a0104',
+			orp.BIRTH_DATE as 'birthDate',
+			a.a0111a,
+			a.a0141,
+			GETDICTITEM('16',a02.a0255,'0') as 'a0255',
+			a02.A0215A as 'post'
+		from a01 a
+		join a02 a02  on a.a0100 = a02.a0100
+		join b01 b  on a02.a0201b = b.b0111
+		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
+		<where>
+			<trim suffixOverrides="and">
+				<if test="idList != null">b.B0100 in
+					<foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+						#{item}
+					</foreach>
+					and
+				</if>
+				<if test="name != null">a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%') and </if>
+			</trim>
+		</where>
+	</select>
 
 
 	<!--查询家庭成员-->
