@@ -1,9 +1,12 @@
 package com.hxoms.modules.publicity.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hxoms.modules.keySupervision.familyMember.entity.A36;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class OmsPubApplyVO extends OmsPubApply {
     private String name;
@@ -17,6 +20,10 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String b0101;
 
     private String idnumber;
+    //涉密信息集合
+    private List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
+    //主要家庭人员信息
+    private List<A36> a36List;
 
     public String getB0101() {
         return b0101;
@@ -56,5 +63,21 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setIdnumber(String idnumber) {
         this.idnumber = idnumber;
+    }
+
+    public List<OmsSmrOldInfoVO> getOmsSmrOldInfoVOS() {
+        return omsSmrOldInfoVOS;
+    }
+
+    public void setOmsSmrOldInfoVOS(List<OmsSmrOldInfoVO> omsSmrOldInfoVOS) {
+        this.omsSmrOldInfoVOS = omsSmrOldInfoVOS;
+    }
+
+    public List<A36> getA36List() {
+        return a36List;
+    }
+
+    public void setA36List(List<A36> a36List) {
+        this.a36List = a36List;
     }
 }

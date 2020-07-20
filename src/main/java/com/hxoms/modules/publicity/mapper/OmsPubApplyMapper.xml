@@ -273,8 +273,8 @@
     <select id="selectBasePersonInfo" resultType="java.util.Map">
         select distinct concat(p.SURNAME,p.NAME) as NAME
         ,p.SEX
-        ,p.BIRTH_DATE
-        ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
+        ,p.BIRTH_DATE_GB
+        ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE_GB,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
         ,p.POLITICAL_AFFINAME
         ,p.HEALTH
         ,p.A0100
@@ -491,5 +491,6 @@
             </if>
         </where>
     </select>
+
 
 </mapper>

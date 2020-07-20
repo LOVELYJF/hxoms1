@@ -2,6 +2,7 @@ package com.hxoms.modules.publicity.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
@@ -95,4 +96,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/7/10 9:04
      */
     List<OmsPubApplyVO> selectPubAllyByStatusAndName(@Param("createUser") String createUser,@Param("sqzt") int sqzt);
+
+
+
 }

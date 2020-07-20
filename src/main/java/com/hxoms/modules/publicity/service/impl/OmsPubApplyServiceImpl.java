@@ -12,6 +12,10 @@ import com.hxoms.modules.b01temp.entity.OmsB01Temp;
 import com.hxoms.modules.b01temp.mapper.OmsB01TempMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.keySupervision.familyMember.entity.A36;
+import com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper;
+import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitService;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
@@ -44,6 +48,10 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     private OmsPubGroupPreApprovalMapper omsPubGroupPreApprovalMapper;
     @Autowired
     private OmsPubApplyChangeMapper omsPubApplyChangeMapper;
+    @Autowired
+    private A36Mapper a36Mapper;
+    @Autowired
+    private OmsSupPatrolUnitService omsSupPatrolUnitService;
     @Override
     public List<PersonInfoVO> selectPersonListByOrg(String b0100) {
         return omsPubApplyMapper.selectPersonListByOrg(b0100);
@@ -93,13 +101,23 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApply.setZjcgqk(sb.toString());
         }
         //获取涉密信息
-
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("a0100", a0100);
+        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
+        omsPubApply.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //获取负面信息
-        //TODO
+        //String result = omsConditionService.selectNegativeInfo(a0100,omsPubApply.getCgsj());
+        //omsPubApply.setFmxx(result);
         //单位接收巡视
-        //TODO
+        //boolean patrolUnit = omsSupPatrolUnitService.getPatrolUnit(omsPubApply.getB0100(), omsPubApply.getCgsj());
+//        if (patrolUnit){
+//            omsPubApply.setDwjsxs("1");
+//        }else {
+//            omsPubApply.setDwjsxs("0");
+//        }
         //主要家庭人员信息
-        //TODO
+        List<A36> list = a36Mapper.selectFamilyMember(a0100);
+        omsPubApply.setA36List(list);
         return omsPubApply;
     }
 
