@@ -249,6 +249,18 @@
             <version>1.9.1</version>
         </dependency>
 
+         <!--Excel包-->
+        <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
+         <dependency>
+            <groupId>com.alibaba</groupId>
+             <artifactId>easyexcel</artifactId>
+             <version>1.1.2-beta5</version>
+         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+        </dependency>
     </dependencies>
 
     <build>

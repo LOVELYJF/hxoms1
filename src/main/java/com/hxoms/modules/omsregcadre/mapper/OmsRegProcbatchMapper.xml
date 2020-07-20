@@ -6,6 +6,8 @@
     <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
+    <result column="RF_ID" jdbcType="VARCHAR" property="rfId" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="RF_UNNIT" jdbcType="VARCHAR" property="rfUnnit" />
     <result column="RF_UCONTACTS" jdbcType="VARCHAR" property="rfUcontacts" />
     <result column="RF_UPHONE" jdbcType="VARCHAR" property="rfUphone" />
@@ -17,17 +19,19 @@
     <result column="SUBMIT_TIME" jdbcType="TIMESTAMP" property="submitTime" />
     <result column="SUBMIT_PERSON" jdbcType="VARCHAR" property="submitPerson" />
     <result column="STATUS" jdbcType="CHAR" property="status" />
-    <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
-    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
-    <result column="SORT_ID" jdbcType="VARCHAR" property="sortId" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, CREATE_DATE, CREATE_USER, BATCH_NO, RF_UNNIT, RF_UCONTACTS, RF_UPHONE, SUBMIT_UB0000, 
     SUBMIT_UNAME, SUBMIT_UCATEGORY, SUBMIT_UCONTACTS, SUBMIT_PHONE, SUBMIT_TIME, SUBMIT_PERSON, 
-    STATUS,MODIFY_TIME,MODIFY_USER,SORT_ID
+    STATUS
   </sql>
 
   <select id="getHistoryBatch" resultType="java.lang.String">
     select BATCH_NO batchNo from oms_reg_procbatch
+  </select>
+
+  <select id="selectWbaByOrpbatch" resultType="com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo">
+      select * from oms_reg_procbatch where STATUS = '0'
   </select>
 </mapper>

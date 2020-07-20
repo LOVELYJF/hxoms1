@@ -3,9 +3,10 @@
 <mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson">
     <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RF_ID" jdbcType="VARCHAR" property="rfId" />
     <result column="BATCH_ID" jdbcType="VARCHAR" property="batchId" />
-    <result column="SURNAME" jdbcType="VARCHAR" property="surname" />
     <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="SURNAME" jdbcType="VARCHAR" property="surname" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
@@ -23,12 +24,12 @@
     <result column="SECRET_DATE" jdbcType="DATE" property="secretDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, BATCH_ID, SURNAME, A0100, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE, 
+    ID, RF_ID,BATCH_ID, SURNAME, A0100, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE,
     REGISTE_RESIDENCE, WORK_UNIT, SECRET_TERM, POST, POST_CODE, PERSON_MANAGER, IDENTITY_CODE, 
     IDENTITY, SECRET_STATUS, SECRET_DATE
   </sql>
 
   <select id="selectA0100s"  parameterType="java.lang.String" resultType="java.lang.String">
-      select A0100 from oms_reg_procbatchperson where BATCH_ID = #{batchId}
+      select A0100 from oms_reg_procbatch_person where BATCH_ID = #{batchId}
   </select>
 </mapper>

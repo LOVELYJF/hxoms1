@@ -37,6 +37,20 @@ public class OmsRegProcbatch {
     private String batchNo;
 
     /**
+     * 登记备案id
+     */
+    @ColumnAnnotation(FieldName = "RF_ID",  FieldDescription="登记备案id")
+    private String rfId;
+
+
+    /**
+     * 人员编号
+     */
+    @ColumnAnnotation(FieldName = "A0100",  FieldDescription="人员编号")
+    private String a0100;
+
+
+    /**
      * 登记备案单位
      */
     @ColumnAnnotation(FieldName = "RF_UNNIT",  FieldDescription="登记备案单位")
@@ -342,4 +356,19 @@ public class OmsRegProcbatch {
         this.status = status == null ? null : status.trim();
     }
 
+    public String getRfId() {
+        return rfId;
+    }
+
+    public void setRfId(String rfId) {
+        this.rfId = rfId;
+    }
+
+    public String getA0100() {
+        return a0100;
+    }
+
+    public void setA0100(String a0100) {
+        this.a0100 = a0100;
+    }
 }

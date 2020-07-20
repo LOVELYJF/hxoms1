@@ -94,7 +94,7 @@
     SELECT
       info.SURNAME,
       info.NAME,
-      info.A0100,
+      info.A0100
     FROM oms_reg_procpersoninfo info
            LEFT JOIN oms_smr_personinfo smr on info.A0100 = smr.A0100
            LEFT JOIN a01 a1 on info.A0100 = a1.a0100
@@ -214,6 +214,10 @@
     <if test="dataType!=null and dataType!=''">
       and DATA_TYPE=#{dataType}
     </if>
+  </select>
+
+  <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo" parameterType="java.lang.String">
+    select * from oms_reg_procpersoninfo where id in(#{id})
   </select>
 
 </mapper>

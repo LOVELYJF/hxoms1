@@ -22,18 +22,23 @@ public class OmsRegProcbatchPerson {
      */
     @ColumnAnnotation(FieldName = "BATCH_ID",  FieldDescription="批次表主键")
     private String batchId;
-
     /**
-     * 姓
+     * 批次表主键
      */
-    @ColumnAnnotation(FieldName = "SURNAME",  FieldDescription="姓")
-    private String surname;
+    @ColumnAnnotation(FieldName = "RF_ID",  FieldDescription="登记备案表主键")
+    private String rfId;
 
     /**
      * 申请人
      */
     @ColumnAnnotation(FieldName = "A0100",  FieldDescription="申请人")
     private String a0100;
+
+    /**
+     * 姓
+     */
+    @ColumnAnnotation(FieldName = "SURNAME",  FieldDescription="姓")
+    private String surname;
 
     /**
      * 名
@@ -427,5 +432,13 @@ public class OmsRegProcbatchPerson {
      */
     public void setSecretDate(Date secretDate) {
         this.secretDate = secretDate;
+    }
+
+    public String getRfId() {
+        return rfId;
+    }
+
+    public void setRfId(String rfId) {
+        this.rfId = rfId;
     }
 }

@@ -1,10 +1,8 @@
 package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
-import com.google.common.cache.Cache;
-import com.hxoms.common.OmsRegInitUtil;
-import com.hxoms.common.util.GuavaCache;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
@@ -29,10 +27,7 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/omsRegProcpersonInfo")
@@ -196,7 +191,7 @@ public class OmsRegProcpersoninfoController {
     @GetMapping("/selectPersonByBatchNo")
     public Result selectPersonByBatchNo(String batchNo) {
         try{
-            List<OmsRegProcpersoninfo> personlist = mrpinfoService.selectPersonByBatchNo(batchNo);
+            List<OmsRegProcbatchPerson> personlist = mrpinfoService.selectPersonByBatchNo(batchNo);
             return Result.success(personlist);
         }catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +204,7 @@ public class OmsRegProcpersoninfoController {
      * @param
      * @return
      */
-    @GetMapping("/checkUploadRegRecord")
+    @PostMapping("/checkUploadRegRecord")
     public Result checkUploadRegRecord(Date year,MultipartFile file) {
         // 读取Excel表格
         try{
@@ -544,6 +539,32 @@ public class OmsRegProcpersoninfoController {
     }*/
 
 
+    /**
+     * 导出
+     *
+     * @return
+     * @throws Exception
+     */
+    /*public Result exportToExcel(String idStr) throws Exception {
+        List<OmsRegProcpersoninfo> list = mrpinfoService.selectListById(idStr);
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        try {
+
+            // session 用户信息
+            UserInfo userInfo = CommonCode.getUserInfo(getRequest());
+
+            paramMap.put("uAreacode", userInfo.getuAreacode());
+            list = a01Service.findA01InformationList(paramMap);
+            String titlels = getParameter("titlels");
+            String colsls = getParameter("colsls");
+            ExcelUtil.exportInfo(titlels, colsls, list, getResponse(), "干部人员信息", "干部人员信息");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }*/
 
 
     /**
