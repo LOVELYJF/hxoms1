@@ -12,11 +12,23 @@
     <result column="PATROL_START_TIME_QUERY" jdbcType="DATE" property="patrolStartTimeQuery" />
     <result column="PATROL_END_TIME_QUERY" jdbcType="DATE" property="patrolEndTimeQuery" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, MODIFY_USER, MODIFY_TIME, B0100, UNIT, PATROL_START_TIME, PATROL_END_TIME, PATROL_START_TIME_QUERY,
     PATROL_END_TIME_QUERY,CREATE_USER,CREATE_TIME
   </sql>
+
+
+	<select id="getPatrolUnit"
+	        resultType="com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit">
+      SELECT
+      *
+      FROM
+      oms_sup_patrol_unit
+      WHERE
+      b0100 = #{b0100}
+      AND PATROL_START_TIME &lt;= #{cgsj} AND PATROL_END_TIME &gt;= #{cgsj}
+    </select>
 
 </mapper>

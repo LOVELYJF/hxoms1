@@ -107,4 +107,22 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 			throw new CustomMessageException("删除被巡视单位失败");
 		}
 	}
+
+
+	/**
+	 * <b>查询单位是否被巡视</b>
+	 * @param b0100
+	 * @param cgsj
+	 * @return
+	 */
+	public boolean getPatrolUnit(String b0100, Date cgsj) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("b0100", b0100);
+		map.put("cgsj", cgsj);
+		OmsSupPatrolUnit omsSupPatrolUnit = omsSupPatrolUnitMapper.getPatrolUnit(map);
+		if(omsSupPatrolUnit == null){
+			return false;
+		}
+		return true;
+	}
 }

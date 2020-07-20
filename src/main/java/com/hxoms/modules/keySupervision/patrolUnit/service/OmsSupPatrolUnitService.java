@@ -3,6 +3,8 @@ package com.hxoms.modules.keySupervision.patrolUnit.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit;
 
+import java.util.Date;
+
 
 /**
  * <b>被巡视单位信息业务层接口</b>
@@ -42,4 +44,13 @@ public interface OmsSupPatrolUnitService {
 	 * @return
 	 */
 	void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit);
+
+
+	/**
+	 * <b>查询单位是否被巡视</b>
+	 * @param b0100
+	 * @param cgsj
+	 * @return
+	 */
+	boolean getPatrolUnit(String b0100, Date cgsj);
 }
