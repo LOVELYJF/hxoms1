@@ -243,7 +243,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //交接时间
                 omsOperatorHandover.setHandovertime(date);
                 //交接状态
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
@@ -280,7 +280,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //入境时间
                 omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
                 //说明
-                omsOperatorHandoverSubform.setExplain(omsPubApplyVo.getCfrw());
+                omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -301,7 +301,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //交接时间
                 omsOperatorHandover.setHandovertime(date);
                 //交接状态
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
@@ -338,7 +338,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //入境时间
                 omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
                 //说明
-                omsOperatorHandoverSubform.setExplain(omsPriApplyVO.getAbroadReasons());
+                omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -359,7 +359,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //交接时间
                 omsOperatorHandover.setHandovertime(date);
                 //交接状态
-                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[0]));
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
                 // 查出数据后插入交接子表
                 OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
@@ -392,7 +392,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //入境时间
                 omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
                 //说明
-                omsOperatorHandoverSubform.setExplain(omsPriDelayVO.getDelayReason());
+                omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
                 omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
             }
         }
@@ -606,6 +606,111 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             }
         }
 
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面展示〉
+     * @Param: [operatorId]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 15:22
+     */
+    @Override
+    public List<OmsOperatorHandoverSubformVO> getOperatorHandoverByOperatorId(String operatorId) {
+        if (operatorId == null || "".equals(operatorId)) {
+            throw new CustomMessageException("参数为空！");
+        }
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByOperatorId(operatorId,String.valueOf(Constants.handover_business[3]));
+        return omsOperatorHandoverSubformVOS;
+    }
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面下一步〉
+     * @Param: [omsOperatorHandoverSubforms]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:05
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void nextByOperator(List<OmsOperatorHandoverSubform> omsOperatorHandoverSubforms) {
+        String id = null;
+        //跟新交接子表内容
+        if (omsOperatorHandoverSubforms != null && omsOperatorHandoverSubforms.size() > 0){
+            for (OmsOperatorHandoverSubform omsOperatorHandoverSubform:omsOperatorHandoverSubforms) {
+                Date exitdate = omsOperatorHandoverSubform.getExitdate();
+                omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                id = omsOperatorHandoverSubform.getHandoverformid();
+            }
+        }
+        //更新交接主表状态
+        OmsOperatorHandover omsOperatorHandover = omsOperatorHandoverMapper.selectByPrimaryKey(id);
+        if (omsOperatorHandover == null){
+            throw new CustomMessageException("无交接记录");
+        }
+        omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[4]));
+        omsOperatorHandoverMapper.updateByPrimaryKeySelective(omsOperatorHandover);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面展示〉
+     * @Param: [handoverId]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:21
+     */
+    @Override
+    public List<OmsOperatorHandoverSubformVO> getOperatorHandoverByhandoverId(String handoverId) {
+        if (handoverId == null || "".equals(handoverId)) {
+            throw new CustomMessageException("参数为空！");
+        }
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByHandoverId(handoverId,String.valueOf(Constants.handover_business[4]));
+        return omsOperatorHandoverSubformVOS;
+
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面下一步〉
+     * @Param: [handoverformid]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:28
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void nextByHandover(String handoverformid) {
+        if (handoverformid == null || "".equals(handoverformid)){
+            throw new CustomMessageException("参数为空!");
+        }
+        //更新交接主表状态
+        OmsOperatorHandover omsOperatorHandover = omsOperatorHandoverMapper.selectByPrimaryKey(handoverformid);
+        if (omsOperatorHandover == null){
+            throw new CustomMessageException("无交接记录");
+        }
+        omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[5]));
+        omsOperatorHandoverMapper.updateByPrimaryKeySelective(omsOperatorHandover);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接流程统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 18:10
+     */
+    @Override
+    public List<CountStatusResult> selectCountStatusByHandover(String orgId) {
+        if (orgId == null || "".equals(orgId)){
+            //获取当前登录人
+            UserInfo loginUser = UserInfoUtil.getUserInfo();
+            orgId = loginUser.getOrgId();
+        }
+        List<CountStatusResult> countStatusResults = operatorApprovalMapper.selectCountStatusByHandover(orgId);
+        return countStatusResults;
     }
 
     /**

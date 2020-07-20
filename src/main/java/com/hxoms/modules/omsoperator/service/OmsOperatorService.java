@@ -2,6 +2,7 @@ package com.hxoms.modules.omsoperator.service;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
@@ -146,4 +147,55 @@ public interface OmsOperatorService {
      * @Date: 2020/7/17 19:30
      */
     void exportOperator(String keyWord, List<String> orgId, List<String> state, HttpServletResponse response);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面展示〉
+     * @Param: [operatorId]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 15:21
+     */
+    List<OmsOperatorHandoverSubformVO> getOperatorHandoverByOperatorId(String operatorId);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面下一步〉
+     * @Param: [omsOperatorHandoverSubforms]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:05
+     */
+    void nextByOperator(List<OmsOperatorHandoverSubform> omsOperatorHandoverSubforms);
+
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面展示〉
+     * @Param: [handoverId]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:20
+     */
+    List<OmsOperatorHandoverSubformVO> getOperatorHandoverByhandoverId(String handoverId);
+
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面下一步〉
+     * @Param: [handoverformid]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:28
+     */
+    void nextByHandover(String handoverformid);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接流程统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 18:08
+     */
+    List<CountStatusResult> selectCountStatusByHandover(String orgId);
+
 }

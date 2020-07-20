@@ -18,13 +18,13 @@
     <result column="HandoverId" jdbcType="VARCHAR" property="handoverid" />
     <result column="ExitDate" jdbcType="DATE" property="exitdate" />
     <result column="EntryDate" jdbcType="DATE" property="entrydate" />
-    <result column="Explain" jdbcType="VARCHAR" property="explain" />
-    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="SM" jdbcType="VARCHAR" property="sm" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, HandoverFormID, BusinessId, BusinessType, A0100, Name, Sex, Birthday, IDCard, 
-    PoliticsStatus, Company, Duty, HandoverTime, HandoverId, ExitDate, EntryDate, Explain, 
-    Remark
+    PoliticsStatus, Company, Duty, HandoverTime, HandoverId, ExitDate, EntryDate, SM,
+    BZ
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -42,13 +42,13 @@
       Sex, Birthday, IDCard, PoliticsStatus, 
       Company, Duty, HandoverTime, 
       HandoverId, ExitDate, EntryDate, 
-      Explain, Remark)
+      SM, BZ)
     values (#{id,jdbcType=VARCHAR}, #{handoverformid,jdbcType=VARCHAR}, #{businessid,jdbcType=VARCHAR}, 
       #{businesstype,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{idcard,jdbcType=CHAR}, #{politicsstatus,jdbcType=VARCHAR}, 
       #{company,jdbcType=VARCHAR}, #{duty,jdbcType=VARCHAR}, #{handovertime,jdbcType=DATE}, 
       #{handoverid,jdbcType=VARCHAR}, #{exitdate,jdbcType=DATE}, #{entrydate,jdbcType=DATE}, 
-      #{explain,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+      #{sm,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
     insert into oms_operator_handover_subform
@@ -101,11 +101,11 @@
       <if test="entrydate != null">
         EntryDate,
       </if>
-      <if test="explain != null">
-        Explain,
+      <if test="SM != null">
+        SM,
       </if>
-      <if test="remark != null">
-        Remark,
+      <if test="bz != null">
+        BZ,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -157,11 +157,11 @@
       <if test="entrydate != null">
         #{entrydate,jdbcType=DATE},
       </if>
-      <if test="explain != null">
-        #{explain,jdbcType=VARCHAR},
+      <if test="SM != null">
+        #{sm,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -213,11 +213,11 @@
       <if test="entrydate != null">
         EntryDate = #{entrydate,jdbcType=DATE},
       </if>
-      <if test="explain != null">
-        Explain = #{explain,jdbcType=VARCHAR},
+      <if test="sm != null">
+        SM = #{sm,jdbcType=VARCHAR},
       </if>
-      <if test="remark != null">
-        Remark = #{remark,jdbcType=VARCHAR},
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
@@ -239,8 +239,8 @@
       HandoverId = #{handoverid,jdbcType=VARCHAR},
       ExitDate = #{exitdate,jdbcType=DATE},
       EntryDate = #{entrydate,jdbcType=DATE},
-      Explain = #{explain,jdbcType=VARCHAR},
-      Remark = #{remark,jdbcType=VARCHAR}
+      SM = #{sm,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

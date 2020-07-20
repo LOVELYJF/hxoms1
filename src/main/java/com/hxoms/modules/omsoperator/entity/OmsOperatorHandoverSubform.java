@@ -121,14 +121,14 @@ public class OmsOperatorHandoverSubform {
     /**
      * 说明
      */
-    @ColumnAnnotation(FieldName = "Explain",  FieldDescription="说明")
-    private String explain;
+    @ColumnAnnotation(FieldName = "SM",  FieldDescription="说明")
+    private String sm;
 
     /**
      * 备注
      */
-    @ColumnAnnotation(FieldName = "Remark",  FieldDescription="备注")
-    private String remark;
+    @ColumnAnnotation(FieldName = "BZ",  FieldDescription="备注")
+    private String bz;
 
     /**
      * 交接子表主键
@@ -386,35 +386,20 @@ public class OmsOperatorHandoverSubform {
         this.entrydate = entrydate;
     }
 
-    /**
-     * 说明
-     * @return Explain 说明
-     */
-    public String getExplain() {
-        return explain;
+
+    public String getSm() {
+        return sm;
     }
 
-    /**
-     * 说明
-     * @param explain 说明
-     */
-    public void setExplain(String explain) {
-        this.explain = explain == null ? null : explain.trim();
+    public void setSm(String sm) {
+        this.sm = sm;
     }
 
-    /**
-     * 备注
-     * @return Remark 备注
-     */
-    public String getRemark() {
-        return remark;
+    public String getBz() {
+        return bz;
     }
 
-    /**
-     * 备注
-     * @param remark 备注
-     */
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
+    public void setBz(String bz) {
+        this.bz = bz;
     }
 }

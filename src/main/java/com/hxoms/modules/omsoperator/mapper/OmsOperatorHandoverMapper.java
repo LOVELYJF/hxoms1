@@ -32,4 +32,8 @@ public interface OmsOperatorHandoverMapper {
     /** 管理人员确定列表*/
     List<OmsOperatorHandoverSubformVO> getAllOperatorHandoverByOrgid(@Param("orgId") String orgId);
 
+    /** 经办人交接页面展示  */
+    List<OmsOperatorHandoverSubformVO> selectByOperatorId(@Param("operatorId") String operatorId, @Param("handoverStatus") String handoverStatus);
+    /** 接手人确认页面展示 */
+    List<OmsOperatorHandoverSubformVO> selectByHandoverId(@Param("handoverId") String handoverId, @Param("handoverStatus") String handoverStatus);
 }
