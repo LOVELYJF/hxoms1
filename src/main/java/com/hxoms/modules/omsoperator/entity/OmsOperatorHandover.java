@@ -41,9 +41,9 @@ public class OmsOperatorHandover {
     private Date handovertime;
 
     /**
-     * 交接状态（0待办、1完成、2撤消）
+     * 交接状态（0待办、1完成、2撤消、3经办人交接、4接手人确认、5管理员确认）
      */
-    @ColumnAnnotation(FieldName = "HandoverStatus",  FieldDescription="交接状态（0待办、1完成、2撤消）")
+    @ColumnAnnotation(FieldName = "HandoverStatus",  FieldDescription="交接状态（0待办、1完成、2撤消、3经办人交接、4接手人确认、5管理员确认）")
     private String handoverstatus;
 
     /**

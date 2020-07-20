@@ -81,11 +81,41 @@
     <where>
       <if test="orgId != null and orgId != ''">
         AND cu.org_id = #{orgId,jdbcType=VARCHAR}
-        and a.HandoverStatus = '0'
+        and a.HandoverStatus = '5'
       </if>
     </where>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <select id="selectByOperatorId"
+          resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO">
+    SELECT b.* ,a.HandoverStatus as handoverStatus
+    FROM oms_operator_handover a
+    INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
+    <where>
+      <if test="operatorId != null and operatorId!= '' ">
+        and a.OperatorId = #{operatorId,jdbcType=VARCHAR}
+      </if>
+      <if test="handoverStatus != null and handoverStatus != '' ">
+        and a.HandoverStatus = #{handoverStatus}
+      </if>
+    </where>
+
+
+  </select>
+    <select id="selectByHandoverId"
+            resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO">
+      SELECT b.* ,a.HandoverStatus as handoverStatus
+      FROM oms_operator_handover a
+      INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
+      <where>
+      <if test="handoverId != null and handoverId!= '' ">
+        and a.HandoverId = #{handoverId,jdbcType=VARCHAR}
+      </if>
+      <if test="handoverStatus != null and handoverStatus != '' ">
+        and a.HandoverStatus = #{handoverStatus}
+      </if>
+      </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_handover
     where ID = #{id,jdbcType=VARCHAR}
   </delete>

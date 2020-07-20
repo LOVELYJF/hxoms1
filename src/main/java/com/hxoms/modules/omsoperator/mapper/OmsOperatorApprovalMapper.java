@@ -31,4 +31,13 @@ public interface OmsOperatorApprovalMapper {
     List<CountStatusResult> selectCountStatus(@Param("orgId") String orgId);
 
 
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接流程统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 18:10
+     */
+    List<CountStatusResult> selectCountStatusByHandover(String orgId);
 }

@@ -3,6 +3,7 @@ package com.hxoms.modules.omsoperator.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
@@ -125,6 +126,71 @@ public class OmsOperatorController {
         return Result.success(omsOperatorHandoverSubformVOS);
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面展示〉
+     * @Param: [operatorId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 15:20
+     */
+    @GetMapping("/getOperatorHandoverByOperatorId")
+    public Result getOperatorHandoverByOperatorId(String operatorId){
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorService.getOperatorHandoverByOperatorId(operatorId);
+        return Result.success(omsOperatorHandoverSubformVOS);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接页面下一步〉
+     * @Param: [omsOperatorHandoverSubforms]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:04
+     */
+    @PostMapping("/nextByOperator")
+    public Result nextByOperator(@RequestBody List<OmsOperatorHandoverSubform> omsOperatorHandoverSubforms){
+        operatorService.nextByOperator(omsOperatorHandoverSubforms);
+        return Result.success();
+    }
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面展示〉
+     * @Param: [handoverId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:18
+     */
+    @GetMapping("/getOperatorHandoverByhandoverId")
+    public Result getOperatorHandoverByhandoverId(String handoverId){
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorService.getOperatorHandoverByhandoverId(handoverId);
+        return Result.success(omsOperatorHandoverSubformVOS);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈接手人确认页面下一步〉
+     * @Param: [handoverformid]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 16:27
+     */
+    @PostMapping("/nextByHandover")
+    public Result nextByHandover(String handoverformid){
+        operatorService.nextByHandover(handoverformid);
+        return Result.success();
+    }
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接流程统计〉
+     * @Param: [orgId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/20 18:08
+     */
+    @GetMapping("/selectCountStatusByHandover")
+    public Result selectCountStatusByHandover(String orgId){
+        List<CountStatusResult> countStatusResults = operatorService.selectCountStatusByHandover(orgId);
+        return Result.success(countStatusResults);
+    }
     /**
      * 功能描述: <br>
      * 〈管理员确认列表〉

@@ -183,10 +183,15 @@ public class Constants {
      */
     public static String[] mobilizing_businessName={"调整期","调整完成"};
     /**
-     *经办人交接状态{0-代办,1-完成,2-撤销}
+     *经办人交接状态{0待办、1完成、2撤消、3经办人交接、4接手人确认、5管理员确认}
      *
      */
-    public static int[] handover_business={0,1,2};
+    public static int[] handover_business={0,1,2,3,4,5};
+    /**
+     *因公出国境是否下达{0-未下达,1-已下达}
+     *
+     */
+    public static int[] pub_business={0,1};
     /**
      *经办人交接业务类别{0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案}
      *
