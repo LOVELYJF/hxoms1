@@ -26,44 +26,55 @@ public class OmsSupMajorLeader {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
 
+    @ApiModelProperty("干部主键")
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部主键")
     private String a0100;
 
+    @ApiModelProperty("工作单位")
     @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
     private String workUnit;
 
+    @ApiModelProperty("姓名")
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
 
+    @ApiModelProperty("拼音")
     @ColumnAnnotation(FieldName = "PINYIN",   FieldDescription="拼音")
     private String pinyin;
 
+    @ApiModelProperty("性别")
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
     private String sex;
 
+    @ApiModelProperty("出生日期")
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
+    @ApiModelProperty("政治面貌")
     @ColumnAnnotation(FieldName = "POLITICAL_AFFI",   FieldDescription="政治面貌")
     private String politicalAffi;
 
+    @ApiModelProperty("职务")
     @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务")
     private String post;
 
+    @ApiModelProperty("职级")
     @ColumnAnnotation(FieldName = "RANK",   FieldDescription="职级")
     private String rank;
 
-
+    @ApiModelProperty("创建人")
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
 
+    @ApiModelProperty("创建时间")
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
+    @ApiModelProperty("单位主键")
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="单位主键")
     private String b0100;
 

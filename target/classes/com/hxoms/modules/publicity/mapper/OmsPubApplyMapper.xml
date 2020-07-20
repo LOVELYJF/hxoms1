@@ -59,10 +59,10 @@
         <result column="BAH" jdbcType="VARCHAR" property="bah" />
     </resultMap>
     <sql id="Base_Column_List">
-    ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ,
-    NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ, SDGJ, TLSJ, CFRW,
-    CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ,
-    SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY,
+    ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ, 
+    NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ, SDGJ, TLSJ, CFRW, 
+    CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ, 
+    SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY, 
     SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
     BAH
   </sql>
@@ -266,16 +266,16 @@
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
     SELECT
-    *
-    FROM  OMS_PERSONINFO P
-    where p.b0100=#{b0100}
+    op.*,orp.IDNUMBER as idnumber
+    from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
+    where op.b0100=#{b0100}
   </select>
     <select id="selectBasePersonInfo" resultType="java.util.Map">
         select distinct concat(p.SURNAME,p.NAME) as NAME
         ,p.SEX
         ,p.BIRTH_DATE
         ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
-        ,p.POLITICAL_AFFI
+        ,p.POLITICAL_AFFINAME
         ,p.HEALTH
         ,p.A0100
         ,p.SECRET_LEVEL
@@ -319,8 +319,8 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION
-        ,oms_reg_procpersoninfo.POLITICAL_AFFI
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -344,6 +344,152 @@
         on o.a0100=r.a0100
         inner join b01 b on o.b0100=b.b0100
         where o.id=#{id}
+    </select>
+    <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.ID
+        ,oms_pub_apply.CGSJ
+        ,oms_pub_apply.HGSJ
+        ,oms_pub_apply.CFRW
+        ,oms_pub_apply.SDGJ
+        ,oms_pub_apply.CFSY
+        ,oms_pub_apply.JOB
+        ,oms_pub_apply.CREATE_TIME
+        ,oms_pub_apply.SMDJ
+        ,oms_pub_apply.FMXX
+        ,oms_pub_apply.SFBG
+        ,oms_pub_apply.sflg
+        ,oms_pub_apply.sfzyld
+        ,oms_pub_apply.SFZYLD
+        ,oms_pub_apply.SQZT
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        from oms_pub_apply
+        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+              <if test="sqzt != null and sqzt.size>0">
+                  and oms_pub_apply.SQZT in
+                    <foreach collection="sqzt" item="sqzt" separator="," open="(" close=")">
+                        #{sqzt}
+                    </foreach>
+              </if>
+            <if test="name != null and name!= ''">
+                and concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) like CONCAT('%',#{name},'%')
+            </if>
+            <if test="cgsj != null and  cgsj != ''">
+                <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+            <if test="hgsj != null and  hgsj != ''">
+                <![CDATA[ and oms_pub_apply.HGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+            <if test="ztdw != null and ztdw!= ''">
+                and oms_pub_apply.ZTDW = #{ztdw}
+            </if>
+            <if test="pwh != null and pwh != ''">
+                and oms_pub_apply.pwh like CONCAT('%',#{pwh},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectPubApplyListByPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.ID
+        ,oms_pub_apply.CGSJ
+        ,oms_pub_apply.HGSJ
+        ,oms_pub_apply.CFRW
+        ,oms_pub_apply.SDGJ
+        ,oms_pub_apply.CFSY
+        ,oms_pub_apply.JOB
+        ,oms_pub_apply.CREATE_TIME
+        ,oms_pub_apply.SMDJ
+        ,oms_pub_apply.FMXX
+        ,oms_pub_apply.SFBG
+        ,oms_pub_apply.sflg
+        ,oms_pub_apply.sfzyld
+        ,oms_pub_apply.SFZYLD
+        ,oms_pub_apply.SQZT
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        from oms_pub_apply
+        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+            <if test="pwh != null and pwh !=''">
+                and oms_pub_apply.PWH = #{pwh}
+            </if>
+        </where>
+    </select>
+    <select id="selectByYSPId" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.ID
+        ,oms_pub_apply.CGSJ
+        ,oms_pub_apply.HGSJ
+        ,oms_pub_apply.CFRW
+        ,oms_pub_apply.SDGJ
+        ,oms_pub_apply.CFSY
+        ,oms_pub_apply.JOB
+        ,oms_pub_apply.CREATE_TIME
+        ,oms_pub_apply.SMDJ
+        ,oms_pub_apply.FMXX
+        ,oms_pub_apply.SFBG
+        ,oms_pub_apply.sflg
+        ,oms_pub_apply.sfzyld
+        ,oms_pub_apply.SFZYLD
+        ,oms_pub_apply.SQZT
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.IDNUMBER
+        from oms_pub_apply
+        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+            <if test="yspId != null and yspId != ''">
+                and oms_pub_apply.YSP_ID = #{yspId}
+            </if>
+        </where>
+    </select>
+    <select id="selectPubAllyByStatusAndName" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.ID
+        ,oms_pub_apply.CGSJ
+        ,oms_pub_apply.HGSJ
+        ,oms_pub_apply.CFRW
+        ,oms_pub_apply.SDGJ
+        ,oms_pub_apply.CFSY
+        ,oms_pub_apply.JOB
+        ,oms_pub_apply.CREATE_TIME
+        ,oms_pub_apply.SMDJ
+        ,oms_pub_apply.FMXX
+        ,oms_pub_apply.SFBG
+        ,oms_pub_apply.sflg
+        ,oms_pub_apply.sfzyld
+        ,oms_pub_apply.SFZYLD
+        ,oms_pub_apply.SQZT
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        from oms_pub_apply
+        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+            <if test="createUser != null and createUser != ''">
+                and oms_pub_apply.CREATE_USER = #{createUser}
+            </if>
+            <if test="sqzt != null">
+                and oms_pub_apply.SQZT <![CDATA[<>]]> #{sqzt}
+            </if>
+        </where>
     </select>
 
 </mapper>

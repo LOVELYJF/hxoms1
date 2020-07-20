@@ -190,6 +190,54 @@
   </select>
 
   <update id="updateSmrPersonList" parameterType="java.util.List">
-    select 1+1 from dual
+      update oms_smr_personinfo
+      <set>
+          <if test="isDeleted != null">
+              IS_DELETED = #{isDeleted,jdbcType=CHAR},
+          </if>
+          <if test="modifyUser != null">
+              MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+          </if>
+          <if test="modifyTime != null">
+              MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="timeStamp != null">
+              TIME_STAMP = #{timeStamp,jdbcType=VARBINARY},
+          </if>
+          <if test="nodeId != null">
+              NODE_ID = #{nodeId,jdbcType=VARCHAR},
+          </if>
+          <if test="title != null">
+              TITLE = #{title,jdbcType=VARCHAR},
+          </if>
+          <if test="messageNumber != null">
+              MESSAGE_NUMBER = #{messageNumber,jdbcType=VARCHAR},
+          </if>
+          <if test="message != null">
+              MESSAGE = #{message,jdbcType=VARCHAR},
+          </if>
+          <if test="ngr != null">
+              NGR = #{ngr,jdbcType=VARCHAR},
+          </if>
+          <if test="ngsj != null">
+              NGSJ = #{ngsj,jdbcType=VARCHAR},
+          </if>
+          <if test="fwsj != null">
+              FWSJ = #{fwsj,jdbcType=VARCHAR},
+          </if>
+          <if test="zsdw != null">
+              ZSDW = #{zsdw,jdbcType=VARCHAR},
+          </if>
+          <if test="csdw != null">
+              CSDW = #{csdw,jdbcType=VARCHAR},
+          </if>
+          <if test="cfdw != null">
+              CFDW = #{cfdw,jdbcType=VARCHAR},
+          </if>
+          <if test="fwlx != null">
+              FWLX = #{fwlx,jdbcType=VARCHAR},
+          </if>
+      </set>
+      where ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
