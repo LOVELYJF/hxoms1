@@ -107,6 +107,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsSupNakedSign.setPoliticalAffi((String) list.get(0).get("politicalAffi"));
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
 			omsSupNakedSign.setXzxgw("0");
+			omsSupNakedSign.setFjgnf("0");
 			omsSupNakedSign.setCreateTime(new Date());
 			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案库中查询人员的身份证出生日期
@@ -121,8 +122,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 				omsRegProcpersonInfo.setNf("1");
 
-				//默认在非限入性岗位
 				omsRegProcpersonInfo.setXrxgw("0");
+				//默认在非限入性岗位
+				omsRegProcpersonInfo.setFjgnf("0");
 				omsRegProcpersonInfo.setModifyTime(new Date());
 				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -139,7 +141,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 
 
 	/**
-	 * <b>修改限制性岗位信息</b>
+	 * <b>修改限制性岗位信息和家属是否受监管信息</b>
 	 * @param omsSupNakedSign
 	 * @return
 	 */
@@ -155,6 +157,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			//将裸官信息在备案表中进行同步更新
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setXrxgw(omsSupNakedSign.getXzxgw());
+			omsRegProcpersonInfo.setFjgnf(omsSupNakedSign.getFjgnf());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案表中进行更新登记备案信息
@@ -184,6 +187,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
 			omsRegProcpersonInfo.setNf("0");
 			omsRegProcpersonInfo.setXrxgw("0");
+			omsRegProcpersonInfo.setFjgnf("0");
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 

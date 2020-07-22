@@ -74,6 +74,10 @@ public class OmsSupNakedSign {
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="单位主键")
     private String b0100;
 
+    @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官")
+    private String fjgnf;
+
+
     public String getId() {
         return id;
     }
@@ -216,5 +220,13 @@ public class OmsSupNakedSign {
 
     public void setB0100(String b0100) {
         this.b0100 = b0100 == null ? null : b0100.trim();
+    }
+
+    public String getFjgnf() {
+        return fjgnf;
+    }
+
+    public void setFjgnf(String fjgnf) {
+        this.fjgnf = fjgnf;
     }
 }
