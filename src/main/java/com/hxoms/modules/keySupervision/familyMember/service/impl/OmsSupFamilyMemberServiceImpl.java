@@ -245,8 +245,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						//生成备案人员主键
 						omsRegProcpersonInfo.setId(UUIDGenerator.getPrimaryKey());
 						omsRegProcpersonInfo.setInboundFlag("U");
-						omsRegProcpersonInfo.setRfStatus("1");
-						omsRegProcpersonInfo.setCheckStatus("1");
+						omsRegProcpersonInfo.setRfStatus("0");
+						omsRegProcpersonInfo.setCheckStatus("0");
 						omsRegProcpersonInfo.setIncumbencyStatus("1");
 						omsRegProcpersonInfo.setIdentity("其他人员");
 						omsRegProcpersonInfo.setIdentityCode("9");
