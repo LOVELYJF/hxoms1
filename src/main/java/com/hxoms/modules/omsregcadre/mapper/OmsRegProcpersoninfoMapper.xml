@@ -217,7 +217,10 @@
   </select>
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo" parameterType="java.lang.String">
-    select * from oms_reg_procpersoninfo where id in(#{id})
+    select * from oms_reg_procpersoninfo where 1=1
+    <if test="id!=null and id!=''">
+      and id in(#{id})
+    </if>
   </select>
 
 </mapper>

@@ -117,6 +117,11 @@ public class OmsRegProcbatch {
     private String status;
 
     /**
+     * 状态
+     */
+    @ColumnAnnotation(FieldName = "REMARK",  FieldDescription="备注")
+    private String remark;
+    /**
      * 主键
      * @return ID 主键
      */
@@ -370,5 +375,13 @@ public class OmsRegProcbatch {
 
     public void setA0100(String a0100) {
         this.a0100 = a0100;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

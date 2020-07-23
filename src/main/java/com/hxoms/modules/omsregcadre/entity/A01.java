@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.IgnoreLogAnnotation;
@@ -11,7 +12,7 @@ import java.util.Date;
  * a01
  */
 @TableAnnotation(TableName = "a01", TableDescription="人员基本信息表")
-public class A01Entity {
+public class A01 {
     /**
      *
      */
@@ -514,6 +515,7 @@ public class A01Entity {
     /**
      *
      */
+    @TableField(value = "age_2")
     @ColumnAnnotation(FieldName = "age_2",  FieldDescription="")
     private String age2;
 

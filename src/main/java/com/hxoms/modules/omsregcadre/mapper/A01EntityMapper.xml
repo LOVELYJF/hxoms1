@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.omsregcadre.mapper.A01EntityMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.A01Entity">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.A01">
     <id column="A0100" jdbcType="VARCHAR" property="a0100" />
     <result column="A0101" jdbcType="VARCHAR" property="a0101" />
     <result column="A0102" jdbcType="VARCHAR" property="a0102" />

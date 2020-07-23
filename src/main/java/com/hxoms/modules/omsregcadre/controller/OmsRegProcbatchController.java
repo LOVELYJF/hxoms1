@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsregcadre.controller;
 
 import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,16 @@ public class OmsRegProcbatchController {
     @PostMapping("/startOmsReg")
     public Result startOmsReg(OmsRegProcbatch regProcbatch) {
         return Result.success(orpbatchService.startOmsReg(regProcbatch));
+    }
+
+    /**
+     * 新增
+     * @param regProcbatch
+     * @return
+     */
+    @PostMapping("/insertProcbatch")
+    public Result insertProcbatch(OmsRegProcbatch regProcbatch) {
+        return Result.success(orpbatchService.insertProcbatch(regProcbatch));
     }
 
 
