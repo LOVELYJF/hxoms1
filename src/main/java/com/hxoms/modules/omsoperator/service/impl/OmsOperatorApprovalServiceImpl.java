@@ -66,6 +66,9 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             states.add(Constants.USER_STATUS[4]);
             users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
         }else if (loginUserType.equals(Constants.USER_TYPES[0])){
+            states.add(Constants.USER_STATUS[3]);
+            states.add(Constants.USER_STATUS[4]);
+            states.add(Constants.USER_STATUS[8]);
             users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
         }
         if (users == null){
