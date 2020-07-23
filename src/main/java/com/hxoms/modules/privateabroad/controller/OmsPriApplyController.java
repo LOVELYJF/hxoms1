@@ -146,4 +146,14 @@ public class OmsPriApplyController {
         String result = omsPriApplyService.saveAbroadState(omsPriApply);
         return Result.success().setMsg(result);
     }
+
+    /**
+     * 撤销人员统计
+     * @return
+     */
+    @GetMapping("/countCancelPriApply")
+    public Result countCancelPriApply(OmsPriApplyIPageParam omsPriApplyIPageParam){
+        List<Map<String, Object>> countStatusResults = omsPriApplyService.countCancelPriApply(omsPriApplyIPageParam);
+        return Result.success(countStatusResults);
+    }
 }

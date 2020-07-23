@@ -127,7 +127,7 @@
            orp.POLITICAL_AFFINAME as politicalOutlook,
            orp.POST as postrank,
            orp.REGISTE_RESIDENCE as registeResidence,
-           op.B0101 as b0101,
+           orp.WORK_UNIT as b0101,
            ifnull(orp.SECRET_LEVEL,0) as classificationLevel,
            orp.DECRYPT_STARTDATE as declassificaStarttime,
            orp.DECRYPT_ENDDATE as declassificaEndtime,
@@ -135,10 +135,10 @@
            orp.MAIN_LEADER as isLeaders,
            orp.nf as isLuoguan,
            orp.fjgnf as isSpouseandchildrenSupervise,
-           op.b0111 as b0100,
+           orp.RF_B0000 as b0100,
            orp.HEALTH as health,
            orp.LICENCE_IDENTITY as paper
-    from oms_reg_procpersoninfo orp right join oms_personinfo op on orp.a0100=op.a0100
+    from oms_reg_procpersoninfo orp left join oms_personinfo op on orp.a0100=op.a0100
     where 1=1
       and op.A0100 = #{a0100} and op.b0100 = #{b0100}
   </select>
@@ -185,5 +185,42 @@
       select pri.*,entryexit.* from oms_pri_apply pri
           left join oms_entryexit_record entryexit
           on pri.ID = entryexit.PRIAPPLY_ID
+  </select>
+<!--撤销申请人员统计-->
+  <select id="selectCancelInfor" parameterType="com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam" resultType="java.util.Map">
+    select a0100 as a0100, WORK_UNIT as b0101,RF_B0000 AS b0111, CONCAT( IFNULL(SURNAME, ''), IFNULL(NAME, '') ) AS name, POST AS post from oms_reg_procpersoninfo where a0100 in
+    (
+      select A0100 from oms_pri_apply where apply_status = 31
+      <if test="params.b0100 != null and params.b0100 != ''">
+        and b0100 like CONCAT(#{params.b0100},'%')
+      </if>
+      <if test="params.abroadStartTime != null and params.abroadEndTime != null">
+        and ABROAD_TIME &gt; #{params.abroadStartTime} and ABROAD_TIME &lt; #{params.abroadEndTime}
+      </if>
+      GROUP BY a0100
+    ) ORDER BY RF_B0000
+  </select>
+  <!--因私撤销统计-->
+  <select id="cancelCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1) from oms_pri_apply
+    where id in
+      (select apply_id from
+        (select oaa.apply_id,step_code from oms_abroad_approval oaa LEFT JOIN oms_pri_apply opa on oaa.apply_id = opa.id
+        where oaa.type = 'oms_pri_apply' and oaa.step_code != 31
+        ORDER BY oaa.step_code desc  limit 0,1) a
+        where 1=1
+        <if test="step != null and step == 'a1'">
+          and step_code &lt; 23
+        </if>
+        <if test="step != null and step == 'b1'">
+          and step_code = 23
+        </if>
+        <if test="step != null and step == 'c1'">
+          and step_code = 24
+        </if>
+        <if test="step != null and step == 'd1'">
+          and step_code &gt; 24 and step_code &lt; 30
+        </if>
+    ) and apply_status = 31 and a0100=#{a0100}
   </select>
 </mapper>

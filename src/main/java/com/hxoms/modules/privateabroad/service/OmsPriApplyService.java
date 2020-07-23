@@ -76,4 +76,9 @@ public interface OmsPriApplyService {
      * @return
      */
     String saveAbroadState(OmsPriApply omsPriApply);
+    /**
+     * 撤销人员统计
+     * @return
+     */
+    List<Map<String, Object>> countCancelPriApply(OmsPriApplyIPageParam omsPriApplyIPageParam);
 }
