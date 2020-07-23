@@ -3,14 +3,16 @@ package com.hxoms.modules.omsregcadre.controller;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
+import com.hxoms.common.utils.DomainObjectUtil;
 import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,14 +27,21 @@ public class OmsRegExportController {
     @Autowired
     private OmsRegProcbatchService orpbatchService;
 
-    public void  ExportTest(String idStr) throws IOException {
+
+    @PostMapping("/exportRfInfo")
+    public void  exportRfInfo(String idStr) throws IOException {
+
+        HttpServletResponse response = DomainObjectUtil.getResponse();
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "utf-8");
+        OutputStream outputStream = response.getOutputStream();
+
         //指定文件输出位置
-        OutputStream outputStream =new FileOutputStream("H:/excel/file/myexcel3.xlsx");
         ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
         //将要输出的内容填充到Sheet里
         Sheet sheet =new Sheet(1,0, ExcelModelORPinfo.class );
         //设置sheet表名
-        sheet.setSheetName("my_three_excel");
+        //sheet.setSheetName("my_excel");
         /**
          * 写数据到Write上下文中
          * 第一个参数：要写入的内容
@@ -73,6 +82,35 @@ public class OmsRegExportController {
             list.add(excelMode);
         }
         return list;
+    }
+
+
+
+
+
+
+    @PostMapping("/exportZzCrjInfo")
+    public void  exportZzCrjInfo(String idStr) throws IOException {
+
+        HttpServletResponse response = DomainObjectUtil.getResponse();
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "utf-8");
+        OutputStream outputStream = response.getOutputStream();
+
+        //指定文件输出位置
+        ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
+        //将要输出的内容填充到Sheet里
+        Sheet sheet =new Sheet(1,0, ExcelModelORPinfo.class );
+        //设置sheet表名
+        //sheet.setSheetName("my_excel");
+        /**
+         * 写数据到Write上下文中
+         * 第一个参数：要写入的内容
+         * 第二个参数：要写入的sheet目标
+         */
+        excelWriter.write(createModelList(idStr),sheet);
+        excelWriter.finish();
+        outputStream.close();
     }
 }
 

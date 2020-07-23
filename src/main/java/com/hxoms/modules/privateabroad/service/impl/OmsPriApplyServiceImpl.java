@@ -26,7 +26,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 /**
@@ -94,6 +93,9 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         paramMap1.put("b0100", b0100);
         //查询用户基本信息
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(paramMap1);
+        if (omsPriApplyVO == null){
+            throw new CustomMessageException("该干部未备案");
+        }
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", a0100);
@@ -325,7 +327,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
-        //约束消息检查
+        //约束消息提醒
         omsConditionService.remindCondition(applyId, type);
         return "操作成功";
     }
@@ -342,5 +344,71 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             throw new CustomMessageException("操作失败");
         }
         return "操作成功";
+    }
+
+    @Override
+    public List<Map<String, Object>> countCancelPriApply(OmsPriApplyIPageParam omsPriApplyIPageParam) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        List<Map<String, Object>> cancelInfor = omsPriApplyMapper.selectCancelInfor(omsPriApplyIPageParam);
+        if (cancelInfor != null && cancelInfor.size() > 0){
+            Map<String, String> params = new HashMap<>();
+            int acount = 0, bcount = 0, ccount = 0, dcount = 0;
+            int aall = 0, ball = 0, call = 0, dall = 0;
+            for (int i = 0; i<cancelInfor.size(); i++) {
+                Map<String, Object> item = cancelInfor.get(i);
+                params.put("step", "a1");//审核意见之前
+                params.put("a0100", (String) item.get("a0100"));
+                int a = omsPriApplyMapper.cancelCount(params);
+                item.put("a", a);
+                params.put("step", "b1");//作出审核意见
+                int b = omsPriApplyMapper.cancelCount(params);
+                item.put("b", b);
+                params.put("step", "c1");//处领导审核
+                int c = omsPriApplyMapper.cancelCount(params);
+                item.put("c", c);
+                params.put("step", "d1");//部领导审批
+                int d = omsPriApplyMapper.cancelCount(params);
+                item.put("d", d);
+                result.add(item);
+                acount += a; bcount += b; ccount += c; dcount += d;
+                aall += a; ball += b; call += c; dall += d;
+                if (i == cancelInfor.size()-1){
+                    //不同插入合计
+                    Map<String, Object> count = new HashMap<>();
+                    count.put("b0101", item.get("b0101"));
+                    count.put("post", "合计");
+                    count.put("a", acount);
+                    count.put("b", bcount);
+                    count.put("c", ccount);
+                    count.put("d", dcount);
+                    result.add(count);
+                    acount = 0; bcount = 0; ccount = 0; dcount = 0;
+                }else{
+                    if (!item.get("b0111").equals(cancelInfor.get(i+1).get("b0111"))){
+                        //不同插入合计
+                        Map<String, Object> count = new HashMap<>();
+                        count.put("b0101", item.get("b0101"));
+                        count.put("post", "合计");
+                        count.put("a", acount);
+                        count.put("b", bcount);
+                        count.put("c", ccount);
+                        count.put("d", dcount);
+                        result.add(count);
+                        acount = 0; bcount = 0; ccount = 0; dcount = 0;
+                    }
+                }
+            }
+            //插入总合计
+            Map<String, Object> count = new HashMap<>();
+            count.put("post", "总计");
+            count.put("a", aall);
+            count.put("b", ball);
+            count.put("c", call);
+            count.put("d", dall);
+            result.add(count);
+        }else{
+            return result;
+        }
+        return result;
     }
 }

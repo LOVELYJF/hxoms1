@@ -48,13 +48,13 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         //省管干部登记备案查询
         List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
-        List<A01Entity> a01list = a01Mapper.selectList(null);
+        List<A01> a01list = a01Mapper.selectList(null);
         List<String> a0100s =null;
         for (int i=0;i<reginfolist.size();i++){
             a0100s.add(reginfolist.get(i).getA0100());
         }
         OmsRegProcpersoninfo orpInfo = null;
-        for (A01Entity a01:a01list) {
+        for (A01 a01:a01list) {
             if (a0100s.contains(a01.getA0100())) {
                 //获取当前a0100对应的下标
                 int index = a0100s.indexOf(a01.getA0100());

@@ -122,7 +122,7 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "MAIN_LEADER",   FieldDescription="是否主要领导 1主要领导，0非主要领导")
     private String mainLeader;
 
-    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况 1护照、2港澳通行证、4台湾通行证，多个通行证用或运算表达，如果有前两个，值为3，如果全有，值为7，证照每次变动都自动更新此列")
+    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况0查询中、 1护照、2港澳通行证、4台湾通行证，多个通行证用或运算表达，如果有前两个，值为3，如果全有，值为7，证照每次变动都自动更新此列")
     private Integer licenceIdentity;
 
     @ColumnAnnotation(FieldName = "NF",   FieldDescription="是否为裸官0-不是 1-是")

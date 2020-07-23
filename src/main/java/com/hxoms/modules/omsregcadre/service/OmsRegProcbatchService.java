@@ -15,5 +15,7 @@ public interface OmsRegProcbatchService  extends IService<OmsRegProcbatch> {
     List<String> getHistoryBatch();
 
     ExcelModelORPinfo selectWbaByOrpbatch();
+
+    Object insertProcbatch(OmsRegProcbatch regProcbatch);
 }
 

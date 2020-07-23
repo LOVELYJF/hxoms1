@@ -45,4 +45,16 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
     List<CountStatusResult> selectCountStatus();
 
     List<OmsPriApplyVO> selectComparisionList();
+
+    /**
+     * 撤销申请人员统计
+     * @return
+     */
+    List<Map<String, Object>> selectCancelInfor(@Param("params") OmsPriApplyIPageParam params);
+
+    /**
+     * 因私撤销统计
+     * @return
+     */
+    Integer cancelCount(Map<String, String> paramMap);
 }
