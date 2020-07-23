@@ -59,6 +59,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         if (loginUserType.equals(Constants.USER_TYPES[5])){
             //显示监督处审核状态的数据
             states.add(Constants.USER_STATUS[3]);
+            states.add(Constants.USER_STATUS[8]);
             users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
         }else if (loginUserType.equals(Constants.USER_TYPES[13])){
             //显示处领导审批状态的数据
