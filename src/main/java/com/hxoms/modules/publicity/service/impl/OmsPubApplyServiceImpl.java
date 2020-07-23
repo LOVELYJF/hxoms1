@@ -39,19 +39,19 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Autowired
     private OrgService orgService;
     @Autowired
-    private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
-    @Autowired
     private OmsB01TempMapper omsB01TempMapper;
-    @Autowired
-    private OmsConditionService omsConditionService;
     @Autowired
     private OmsPubGroupPreApprovalMapper omsPubGroupPreApprovalMapper;
     @Autowired
     private OmsPubApplyChangeMapper omsPubApplyChangeMapper;
     @Autowired
-    private A36Mapper a36Mapper;
+    private OmsConditionService omsConditionService;
     @Autowired
     private OmsSupPatrolUnitService omsSupPatrolUnitService;
+    @Autowired
+    private A36Mapper a36Mapper;
+    @Autowired
+    private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Override
     public List<PersonInfoVO> selectPersonListByOrg(String b0100) {
         return omsPubApplyMapper.selectPersonListByOrg(b0100);
@@ -66,11 +66,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setA0100((String) personInfo.get("A0100"));//主键
         omsPubApply.setB0100((String) personInfo.get("B0100"));//工作单位
         omsPubApply.setB0101((String) personInfo.get("B0101"));//机构名称
-        omsPubApply.setBirthDate((Date) personInfo.get("BIRTH_DATE"));//出生年月
+        omsPubApply.setBirthDate((Date) personInfo.get("BIRTH_DATE_GB"));//出生年月
         omsPubApply.setAge((String) personInfo.get("AGE"));//年龄
         omsPubApply.setSex((String) personInfo.get("SEX"));//性别
         omsPubApply.setHealth((String) personInfo.get("HEALTH"));//健康状况
-        omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFI"));//政治面貌
+        omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));//政治面貌
         omsPubApply.setJob((String) personInfo.get("JOB"));//职务
         omsPubApply.setSfsmry("0");//是否为涉密人员
         String smdj = (String) personInfo.get("SECRET_LEVEL");
@@ -100,24 +100,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             }
             omsPubApply.setZjcgqk(sb.toString());
         }
-        //获取涉密信息
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100", a0100);
-        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
-        omsPubApply.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
-        //获取负面信息
-        //String result = omsConditionService.selectNegativeInfo(a0100,omsPubApply.getCgsj());
-        //omsPubApply.setFmxx(result);
-        //单位接收巡视
-        //boolean patrolUnit = omsSupPatrolUnitService.getPatrolUnit(omsPubApply.getB0100(), omsPubApply.getCgsj());
-//        if (patrolUnit){
-//            omsPubApply.setDwjsxs("1");
-//        }else {
-//            omsPubApply.setDwjsxs("0");
-//        }
-        //主要家庭人员信息
-        List<A36> list = a36Mapper.selectFamilyMember(a0100);
-        omsPubApply.setA36List(list);
+
         return omsPubApply;
     }
 
@@ -267,7 +250,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String name = omsPubApplyQueryParam.getName();
         /** 通知书文号*/
         String pwh = omsPubApplyQueryParam.getPwh();
-        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh);
+        /** 机构id*/
+        String b0100 = omsPubApplyQueryParam.getB0100();
+        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);
         PageInfo info = new PageInfo(list);
         return info;
     }
@@ -610,6 +595,34 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
         }
         return OmsPubGroupPreApproval;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取负面信息、家庭主要成员、单位是否接收巡视等信息〉
+     * @Param: [b0100, a0100, cgsj]
+     * @Return: com.hxoms.modules.publicity.entity.OtherPubApply
+     * @Author: 李逍遥
+     * @Date: 2020/7/21 9:42
+     */
+    @Override
+    public OtherPubApply getOtherPubApply(String b0100, String a0100, Date cgsj) {
+        OtherPubApply otherPubApply = new OtherPubApply();
+        //获取涉密信息
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("a0100", a0100);
+        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
+        otherPubApply.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
+        //获取负面信息
+        String result = omsConditionService.selectNegativeInfo(a0100,cgsj);
+        otherPubApply.setFmxx(result);
+        //单位接收巡视
+        boolean patrolUnit = omsSupPatrolUnitService.getPatrolUnit(b0100, cgsj);
+        otherPubApply.setPatrolUnit(patrolUnit);
+        //主要家庭成员信息
+        List<A36> a36s = a36Mapper.selectFamilyMember(a0100);
+        otherPubApply.setA36List(a36s);
+        return otherPubApply;
     }
 
     /** 封装方法——封装干教人员信息*/

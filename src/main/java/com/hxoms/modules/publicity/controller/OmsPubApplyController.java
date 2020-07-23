@@ -5,11 +5,13 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,17 +64,18 @@ public class OmsPubApplyController {
         OmsPubApplyVO omsPubApply = omsPubApplyService.selectPubApplyPersonInfo(b0100, a0100);
         return Result.success(omsPubApply);
     }
-
     /**
-     * 新增备案申请
-     *
-     * @author sunqian
-     * @date 2020/4/26 17:21
+     * 功能描述: <br>
+     * 〈获取负面信息、家庭主要成员、单位是否接收巡视等信息〉
+     * @Param: [b0100, a0100, cgsj]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/21 9:26
      */
-    @PostMapping("/insertOrUpdatePubApply")
-    public Result insertOrUpdatePubApply(OmsPubApply omsPubApply) throws Exception {
-        String result = omsPubApplyService.insertOrUpdatePubApply(omsPubApply);
-        return Result.success().setMsg(result);
+    @GetMapping("/getOtherPubApply")
+    public Result getOtherPubApply(String b0100, String a0100,@DateTimeFormat(pattern = "yyyy.MM.dd") Date cgsj){
+        OtherPubApply otherPubApply = omsPubApplyService.getOtherPubApply(b0100,a0100,cgsj);
+        return Result.success(otherPubApply);
     }
 
     /**
@@ -86,7 +89,6 @@ public class OmsPubApplyController {
         List<OmsPubApply> list = omsPubApplyService.selectPubApplyList();
         return Result.success(list);
     }
-
     /**
      * 功能描述: <br>
      * 〈根据条件查询备案申请列表〉
@@ -100,7 +102,17 @@ public class OmsPubApplyController {
         PageInfo info = omsPubApplyService.getPubAppListByCondition(omsPubApplyQueryParam);
         return Result.success(info);
     }
-
+    /**
+     * 新增备案申请
+     *
+     * @author sunqian
+     * @date 2020/4/26 17:21
+     */
+    @PostMapping("/insertOrUpdatePubApply")
+    public Result insertOrUpdatePubApply(OmsPubApply omsPubApply) throws Exception {
+        String result = omsPubApplyService.insertOrUpdatePubApply(omsPubApply);
+        return Result.success().setMsg(result);
+    }
     /**
      * 功能描述: <br>
      * 〈根据id删除申请人员〉

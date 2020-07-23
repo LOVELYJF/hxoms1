@@ -57,6 +57,7 @@
         <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
         <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
         <result column="BAH" jdbcType="VARCHAR" property="bah" />
+        <result column="SFXD" jdbcType="INTEGER" property="sfxd" />
     </resultMap>
     <sql id="Base_Column_List">
     ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ, 
@@ -64,7 +65,7 @@
     CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ, 
     SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY, 
     SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
-    BAH
+    BAH, SFXD
   </sql>
     <update id="repealAllPubApplyByPwh">
         update OMS_PERSONINFO p
@@ -165,6 +166,9 @@
             <if test="cgspdw != null">
                 CGSPDW = #{cgspdw,jdbcType=VARCHAR},
             </if>
+            <if test="pwh != null">
+                PWH = #{pwh,jdbcType=VARCHAR},
+            </if>
             <if test="zypwh != null">
                 ZYPWH = #{zypwh,jdbcType=VARCHAR},
             </if>
@@ -251,6 +255,9 @@
             </if>
             <if test="bah != null">
                 BAH = #{bah,jdbcType=VARCHAR},
+            </if>
+            <if test="sfxd != null">
+                SFXD = #{sfxd,jdbcType=INTEGER},
             </if>
         </set>
         where PWH = #{pwh,jdbcType=VARCHAR}
@@ -347,30 +354,15 @@
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
-        <where>
+        where oms_pub_apply.SFXD = '1'
               <if test="sqzt != null and sqzt.size>0">
                   and oms_pub_apply.SQZT in
                     <foreach collection="sqzt" item="sqzt" separator="," open="(" close=")">
@@ -392,7 +384,9 @@
             <if test="pwh != null and pwh != ''">
                 and oms_pub_apply.pwh like CONCAT('%',#{pwh},'%')
             </if>
-        </where>
+            <if test="b0100 != null and b0100 != ''">
+                and oms_pub_apply.b0100 = #{b0100}
+            </if>
     </select>
     <select id="selectPubApplyListByPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select

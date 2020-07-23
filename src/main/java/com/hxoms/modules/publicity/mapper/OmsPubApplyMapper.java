@@ -66,7 +66,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/6/28 10:15
      */
-    List<OmsPubApplyVO> getPubAppListByCondition(@Param("sqzt") List<String> status, @Param("name") String name, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj, @Param("ztdw") String ztdw, @Param("pwh") String pwh);
+    List<OmsPubApplyVO> getPubAppListByCondition(@Param("sqzt") List<String> status, @Param("name") String name, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj, @Param("ztdw") String ztdw, @Param("pwh") String pwh,@Param("b0100") String b0100);
 
     /**
      * 功能描述: <br>

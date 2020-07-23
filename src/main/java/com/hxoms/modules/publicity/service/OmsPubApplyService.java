@@ -3,6 +3,7 @@ package com.hxoms.modules.publicity.service;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.publicity.entity.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OmsPubApplyService {
@@ -149,4 +150,14 @@ public interface OmsPubApplyService {
      * @Date: 2020/7/7 17:47
      */
     OmsPubGroupPreApprovalVO getPubGroupPreApprovalById(String id);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取负面信息、家庭主要成员、单位是否接收巡视等信息〉
+     * @Param: [b0100, a0100, cgsj]
+     * @Return: com.hxoms.modules.publicity.entity.OtherPubApply
+     * @Author: 李逍遥
+     * @Date: 2020/7/21 9:42
+     */
+    OtherPubApply getOtherPubApply(String b0100, String a0100, Date cgsj);
 }

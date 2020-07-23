@@ -37,6 +37,8 @@ public class OmsPubApplyQueryParam {
     private String pwh;
     /** 团组名称*/
     private String tzmc;
+    /** 机构id */
+    private String b0100;
     public String getPwh() {
         return pwh;
     }
@@ -107,5 +109,13 @@ public class OmsPubApplyQueryParam {
 
     public void setTzmc(String tzmc) {
         this.tzmc = tzmc;
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100;
     }
 }

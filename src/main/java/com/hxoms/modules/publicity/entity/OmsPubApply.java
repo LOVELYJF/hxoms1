@@ -153,7 +153,7 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "FMXX",   FieldDescription="负面信息")
     private String fmxx;
 
-    @ColumnAnnotation(FieldName = "DWJSXS",   FieldDescription="单位正在接受巡视")
+    @ColumnAnnotation(FieldName = "DWJSXS",   FieldDescription="单位正在接受巡视（1-是，0-否）")
     private String dwjsxs;
 
     @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
@@ -195,6 +195,9 @@ public class OmsPubApply {
 
     @ColumnAnnotation(FieldName = "BAH",   FieldDescription="备案号")
     private String bah;
+
+    @ColumnAnnotation(FieldName = "SFXD",   FieldDescription="是否下达（0-否，1-是）")
+    private Integer sfxd;
 
     public String getId() {
         return id;
@@ -634,5 +637,13 @@ public class OmsPubApply {
 
     public void setBah(String bah) {
         this.bah = bah == null ? null : bah.trim();
+    }
+
+    public Integer getSfxd() {
+        return sfxd;
+    }
+
+    public void setSfxd(Integer sfxd) {
+        this.sfxd = sfxd;
     }
 }
