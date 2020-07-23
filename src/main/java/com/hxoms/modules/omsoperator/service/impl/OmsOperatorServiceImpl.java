@@ -715,6 +715,33 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
 
     /**
      * 功能描述: <br>
+     * 〈经办人交接流程页面展示〉
+     * @Param: [orgId]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/7/23 14:51
+     */
+    @Override
+    public PageInfo getAllOperatorHandoverByOrgId(Integer pageNum, Integer pageSize,String orgId) {
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        if (orgId == null || "".equals(orgId)){
+            //获取登录用户信息
+            UserInfo loginUser = UserInfoUtil.getUserInfo();
+            orgId = loginUser.getOrgId();
+        }
+        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        List<LinkedHashMap<String, Object>> list = operatorApprovalMapper.getAllOperatorHandoverByOrgId(orgId);
+        PageInfo info = new PageInfo(list);
+        return info;
+    }
+
+    /**
+     * 功能描述: <br>
      * 〈管理人员确定列表〉
      * @Param: []
      * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>

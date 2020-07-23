@@ -61,12 +61,12 @@
         and cf.org_id = #{orgId}
       </if>
       union all
-      select "2.经办人交接" as label, "3" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "3"
+      select "2.经办人交接" as label, "3" as statusCode, o.OperatorId, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "3"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
       union all
-      select "3.接手人确认" as label, "4" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "4"
+      select "3.接手人确认" as label, "4" as statusCode, o.HandoverId,count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "4"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
@@ -75,6 +75,27 @@
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
+    </select>
+    <select id="getAllOperatorHandoverByOrgId" resultType="java.util.LinkedHashMap">
+      SELECT oh.OperatorId,
+             oh.HandoverId,
+             cu.user_name,
+             cu.SEX,
+             cu.NATION,
+             cu.IDNUMBER,
+             cu.Duty,
+             cu.user_mobile,
+             cu.POLITICAL_AFFI,
+             cu.MAC,
+             oh.HandoverStatus
+      FROM cf_user cu
+      INNER JOIN oms_operator_handover oh ON cu.user_id = oh.OperatorId
+      <where>
+        <if test="orgId != null and orgId != ''">
+          and cu.org_id = #{orgId}
+        </if>
+      </where>
+
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_approval

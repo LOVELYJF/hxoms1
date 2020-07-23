@@ -65,6 +65,8 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             //显示处领导审批状态的数据
             states.add(Constants.USER_STATUS[4]);
             users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
+        }else if (loginUserType.equals(Constants.USER_TYPES[0])){
+            users = cfUserMapper.getOperatorApprovalList(keyWord, orgIds, Constants.USER_TYPES[6], states);
         }
         if (users == null){
             throw new CustomMessageException("无经办人信息!");

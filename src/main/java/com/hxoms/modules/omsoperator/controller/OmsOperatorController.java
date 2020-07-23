@@ -206,6 +206,19 @@ public class OmsOperatorController {
     }
     /**
      * 功能描述: <br>
+     * 〈经办人交接流程页面展示〉
+     * @Param: [orgId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/23 14:51
+     */
+    @GetMapping("/getAllOperatorHandoverByOrgId")
+    public Result getAllOperatorHandoverByOrgId(Integer pageNum, Integer pageSize,String orgId){
+        PageInfo info = operatorService.getAllOperatorHandoverByOrgId(pageNum,pageSize,orgId);
+        return Result.success(info.getList()).setTotal(info.getTotal());
+    }
+    /**
+     * 功能描述: <br>
      * 〈确认交接完成〉
      * @Param: [handoverformid]
      * @Return: com.hxoms.common.utils.Result

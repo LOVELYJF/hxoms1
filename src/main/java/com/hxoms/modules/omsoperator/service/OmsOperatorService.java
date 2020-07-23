@@ -198,4 +198,13 @@ public interface OmsOperatorService {
      */
     List<CountStatusResult> selectCountStatusByHandover(String orgId);
 
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接流程页面展示〉
+     * @Param: [orgId]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/7/23 14:51
+     */
+    PageInfo getAllOperatorHandoverByOrgId(Integer pageNum, Integer pageSize,String orgId);
 }
