@@ -185,12 +185,23 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>对家庭成员进行登记备案</b>
+	 * <b>保存家庭成员并登记备案</b>
 	 * @param list
 	 * @return
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addToRegistration(List<A36> list) {
+		//保存家庭成员
+		for(A36 a36 : list){
+			a36.setModifyTime(new Date());
+			a36.setModifyUser(UserInfoUtil.getUserInfo().getId());
+			QueryWrapper<A36> queryWrapper = new QueryWrapper<A36>();
+			queryWrapper.eq("a3600", a36.getA3600());
+			int count = a36Mapper.update(a36, queryWrapper);
+			if(count < 1){
+				throw new CustomMessageException("更新保存家庭成员信息失败");
+			}
+		}
 
 		//查询备案表中的所有家庭成员
 		QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -208,7 +219,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
 
 				//限制性岗位的裸官家属可登记备案
-				if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1")){
+				if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1") && omsSupNakedSign.getFjgnf().equals("1")){
 					//家庭成员登记备案判断是否重复（根据身份证号码判断）
 					if(omsRegProcpersoninfoList != null && omsRegProcpersoninfoList.size() > 0){
 						for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
@@ -245,8 +256,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						//生成备案人员主键
 						omsRegProcpersonInfo.setId(UUIDGenerator.getPrimaryKey());
 						omsRegProcpersonInfo.setInboundFlag("U");
-						omsRegProcpersonInfo.setRfStatus("1");
-						omsRegProcpersonInfo.setCheckStatus("1");
+						omsRegProcpersonInfo.setRfStatus("0");
+						omsRegProcpersonInfo.setCheckStatus("0");
 						omsRegProcpersonInfo.setIncumbencyStatus("1");
 						omsRegProcpersonInfo.setIdentity("其他人员");
 						omsRegProcpersonInfo.setIdentityCode("9");
@@ -301,7 +312,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper1);
 					}
 				}else {
-					throw new CustomMessageException("裸官在限制性岗位，家属才能备案");
+					throw new CustomMessageException("在限制性岗位且家属受监管的裸官家属才能备案");
 				}
 			}
 		}else {
