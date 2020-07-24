@@ -73,6 +73,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				.in(idList != null && idList.size() > 0,"B0100", idList)
 				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
 						"XZXGW", omsSupNakedSign.getXzxgw())
+				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+						"FJGNF",omsSupNakedSign.getFjgnf())
 		        .like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 				        "NAME", omsSupNakedSign.getName())
 				.or()
@@ -217,6 +219,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				.in(idList != null && idList.size() > 0,"B0100", idList)
 				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
 						"XZXGW", omsSupNakedSign.getXzxgw())
+				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+						"FJGNF",omsSupNakedSign.getFjgnf())
 				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
 				.or()
