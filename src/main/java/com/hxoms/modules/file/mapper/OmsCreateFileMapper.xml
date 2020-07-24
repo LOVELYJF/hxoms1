@@ -13,10 +13,12 @@
     <result column="SEAL_DESC" jdbcType="VARCHAR" property="sealDesc" />
     <result column="IS_SEALHANDLE" jdbcType="CHAR" property="isSealhandle" />
     <result column="CHECK_ADVICES" jdbcType="VARCHAR" property="checkAdvices" />
+    <result column="ISFILE_LIST" jdbcType="CHAR" property="isfileList" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.file.entity.OmsCreateFile">
     <result column="FRONT_CONTENT" jdbcType="LONGVARCHAR" property="frontContent" />
@@ -24,7 +26,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, FILE_ID, APPLY_ID, FILE_NAME, FILE_SHORTNAME, FILE_TYPE, TABLE_CODE, IS_EDIT, 
-    SEAL_DESC, IS_SEALHANDLE, CHECK_ADVICES, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER
+    SEAL_DESC, IS_SEALHANDLE, CHECK_ADVICES, ISFILE_LIST, CREATE_TIME, CREATE_USER, MODIFY_TIME, 
+    MODIFY_USER, SORT_ID
   </sql>
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT

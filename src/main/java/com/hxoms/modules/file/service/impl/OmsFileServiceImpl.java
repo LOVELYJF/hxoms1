@@ -94,7 +94,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("B0100", b01.getB0100())
                 .in("FILE_TYPE",fileType)
-                .orderByAsc("CREATE_TIME");
+                .orderByAsc("SORT_ID");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
         if (omsFiles == null || omsFiles.size() < 1) {
             //初始化机构文件
@@ -104,7 +104,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     .and(wrapper->wrapper.eq("B0100", "")
                             .or()
                             .isNull("B0100"))
-                    .orderByAsc("CREATE_TIME");
+                    .orderByAsc("SORT_ID");
             List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
             if (omsFileSystem != null && omsFileSystem.size() > 0) {
                 //插入
@@ -145,6 +145,8 @@ public class OmsFileServiceImpl implements OmsFileService {
                     omsCreateFile.setTableCode(omsFile.getTableCode());
                     omsCreateFile.setIsEdit(omsFile.getIsEdit());
                     omsCreateFile.setSealDesc(omsFile.getSealDesc());
+                    omsCreateFile.setIsfileList(omsFile.getIsfileList());
+                    omsCreateFile.setSortId(omsFile.getSortId());
                     //替换关键词
                     replaceFile(omsFile, applyId, tableCode);
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());

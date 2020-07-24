@@ -40,6 +40,12 @@ public class OmsFile {
     @ColumnAnnotation(FieldName = "RUN_SQL",   FieldDescription="执行sql")
     private String runSql;
 
+    @ColumnAnnotation(FieldName = "PRINT_NUM",   FieldDescription="打印份数")
+    private Integer printNum;
+
+    @ColumnAnnotation(FieldName = "ISFILE_LIST",   FieldDescription="是否加入材料清单")
+    private String isfileList;
+
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -55,6 +61,9 @@ public class OmsFile {
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     private String modifyUser;
+
+    @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
+    private Integer sortId;
 
     @ColumnAnnotation(FieldName = "FRONT_CONTENT",   FieldDescription="可编辑文件（正面，第一页）")
     private String frontContent;
@@ -142,6 +151,22 @@ public class OmsFile {
         this.runSql = runSql == null ? null : runSql.trim();
     }
 
+    public Integer getPrintNum() {
+        return printNum;
+    }
+
+    public void setPrintNum(Integer printNum) {
+        this.printNum = printNum;
+    }
+
+    public String getIsfileList() {
+        return isfileList;
+    }
+
+    public void setIsfileList(String isfileList) {
+        this.isfileList = isfileList == null ? null : isfileList.trim();
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -172,6 +197,14 @@ public class OmsFile {
 
     public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser == null ? null : modifyUser.trim();
+    }
+
+    public Integer getSortId() {
+        return sortId;
+    }
+
+    public void setSortId(Integer sortId) {
+        this.sortId = sortId;
     }
 
     public String getFrontContent() {
