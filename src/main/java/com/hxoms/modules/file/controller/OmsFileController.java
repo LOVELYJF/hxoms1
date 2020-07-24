@@ -27,11 +27,13 @@ public class OmsFileController {
     /**
      * 文件列表
      * @param tableCode 类型（因公 因私 延期回国）
+     * @param a0100 出国人
+     * @param applyId 申请id
      * @return
      */
     @GetMapping("/selectFileListByCode")
-    public Result selectFileListByCode(String tableCode, String a0100) {
-        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode, a0100);
+    public Result selectFileListByCode(String tableCode, String a0100, String applyId) {
+        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode, a0100, applyId);
         return Result.success(list);
     }
 
@@ -70,8 +72,8 @@ public class OmsFileController {
      * @param fileId 文件id
      */
     @GetMapping("/selectFileDestailNew")
-    public Result selectFileDestailNew(String fileId){
-        OmsFile omsFile = omsFileService.selectFileDestailNew(fileId);
+    public Result selectFileDestailNew(String fileId, String applyId, String tableCode){
+        OmsFile omsFile = omsFileService.selectFileDestailNew(fileId, applyId, tableCode);
         return Result.success(omsFile);
     }
 }

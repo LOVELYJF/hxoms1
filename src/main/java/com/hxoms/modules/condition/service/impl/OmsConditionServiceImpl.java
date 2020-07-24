@@ -264,7 +264,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             for (OmsReplaceKeywords item : omsReplaceKeywords) {
                 try {
                     String value = (String) clazz.getDeclaredMethod(item.getReplaceField()).invoke(conditionReplaceVO);
-                    sql = sql.replaceAll(item.getKeyword(), value);
+                    sql = sql.replace(item.getKeyword(), value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                     throw new CustomMessageException("数据异常");

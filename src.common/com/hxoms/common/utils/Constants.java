@@ -203,7 +203,7 @@ public class Constants {
      */
     public static String[] handover_businessName={"代办","完成","撤销"};
     /**
-     * 因私 业务
+     * 因私 业务 (签字盖章弃用)
      *
      */
     public  static int[] private_business ={1,2,3,4,5,29,30,31};

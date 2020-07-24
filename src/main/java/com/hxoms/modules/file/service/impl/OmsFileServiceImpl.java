@@ -9,6 +9,7 @@ import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
@@ -49,34 +50,38 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
     @Autowired
     private B01Mapper b01Mapper;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public List<OmsFile> selectFileListByCode(String tableCode, String a0100) {
+    public List<OmsFile> selectFileListByCode(String tableCode, String a0100, String applyId) {
         if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(a0100)){
             throw new CustomMessageException("参数错误");
         }
         List<String> fileType = new ArrayList<>();
         fileType.add("1"); //系统
-        //涉密信息
-        QueryWrapper<OmsRegProcpersoninfo> omsPersoninfo = new QueryWrapper<>();
-        omsPersoninfo.eq("A0100", a0100)
-                .eq("secret_level", "0");
-        int sercetCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
-        if (sercetCount > 0){
-            //非涉密
-            fileType.add("2");
-        }else{
-            fileType.add("3");
-            //TODO 涉密人员（原单位脱密期人员）
-        }
-        //是否主要领导
-        omsPersoninfo.clear();
-        omsPersoninfo.eq("A0100", a0100)
-                .eq("MAIN_LEADER", "1");
-        int omsPersoninfoCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
-        if (omsPersoninfoCount > 0){
-            fileType.add("5"); //主要领导
+        if(Constants.oms_business[1].equals(tableCode)){
+            //涉密信息
+            QueryWrapper<OmsRegProcpersoninfo> omsPersoninfo = new QueryWrapper<>();
+            omsPersoninfo.eq("A0100", a0100)
+                    .eq("secret_level", "0");
+            int sercetCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
+            if (sercetCount > 0){
+                //非涉密
+                fileType.add("2");
+            }else{
+                fileType.add("3");
+                //TODO 涉密人员（原单位脱密期人员）
+            }
+            //是否主要领导
+            omsPersoninfo.clear();
+            omsPersoninfo.eq("A0100", a0100)
+                    .eq("MAIN_LEADER", "1");
+            int omsPersoninfoCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
+            if (omsPersoninfoCount > 0){
+                fileType.add("5"); //主要领导
+            }
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
@@ -119,7 +124,33 @@ public class OmsFileServiceImpl implements OmsFileService {
                     //延期回国
                     omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + b01.getB0100());
                 }
-                return omsFileSystem;
+                omsFiles = omsFileSystem;
+            }
+        }
+        //生成文件
+        if (!StringUtils.isBlank(applyId)){
+            QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+            createFile.eq("TABLE_CODE", tableCode)
+                    .eq("APPLY_ID", applyId);
+            int count = omsCreateFileMapper.selectCount(createFile);
+            //没有生成时生成文件
+            if (count < 1){
+                for (OmsFile omsFile : omsFiles){
+                    OmsCreateFile omsCreateFile = new OmsCreateFile();
+                    omsCreateFile.setFileId(omsFile.getId());
+                    omsCreateFile.setApplyId(applyId);
+                    omsCreateFile.setFileName(omsFile.getFileName());
+                    omsCreateFile.setFileShortname(omsFile.getFileShortname());
+                    omsCreateFile.setFileType(omsFile.getFileType());
+                    omsCreateFile.setTableCode(omsFile.getTableCode());
+                    omsCreateFile.setIsEdit(omsFile.getIsEdit());
+                    omsCreateFile.setSealDesc(omsFile.getSealDesc());
+                    //替换关键词
+                    replaceFile(omsFile, applyId, tableCode);
+                    omsCreateFile.setFrontContent(omsFile.getFrontContent());
+                    omsCreateFile.setBankContent(omsFile.getBankContent());
+                    omsCreateFileService.insertOrUpdate(omsCreateFile);
+                }
             }
         }
         return omsFiles;
@@ -158,20 +189,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             result.put("omsFile", omsFile);
             result.put("omsReplaceKeywordList", omsReplaceKeywordList);
         } else if("0".equals(abroadFileDestailParams.getIsEdit())){
-            //查询sql
-            queryWrapperFile.clear();
-            queryWrapperFile.eq("ID", omsFile.getFileId())
-                    .select("RUN_SQL");
-            OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
-            if (!StringUtils.isBlank(omsFileSql.getRunSql())){
-                omsFileSql.setRunSql(omsFileSql.getRunSql().replaceAll("@applyId", abroadFileDestailParams.getApplyID()));
-            }
-            FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
-            // 替换关键词
-            if (fileReplaceVO != null){
-                replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
-            }
-            result.put("omsFile", omsFile);
             //查询生成的文件
             QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
             createFile.eq("FILE_ID", abroadFileDestailParams.getFileId())
@@ -179,6 +196,23 @@ public class OmsFileServiceImpl implements OmsFileService {
                     .eq("APPLY_ID", abroadFileDestailParams.getApplyID());
             OmsCreateFile omsCreateFile = omsCreateFileMapper.selectOne(createFile);
             result.put("omsCreateFile", omsCreateFile);
+            //如果生成文件为空，查询文件
+            if (omsCreateFile == null){
+                //查询sql
+                queryWrapperFile.clear();
+                queryWrapperFile.eq("ID", omsFile.getFileId())
+                        .select("RUN_SQL");
+                OmsFile omsFileSql = omsFileMapper.selectOne(queryWrapperFile);
+                if (!StringUtils.isBlank(omsFileSql.getRunSql())){
+                    omsFileSql.setRunSql(omsFileSql.getRunSql().replace("@applyId", abroadFileDestailParams.getApplyID()));
+                }
+                FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFileSql.getRunSql());
+                // 替换关键词
+                if (fileReplaceVO != null){
+                    replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
+                }
+            }
+            result.put("omsFile", omsFile);
         }
         return result;
     }
@@ -256,11 +290,37 @@ public class OmsFileServiceImpl implements OmsFileService {
     }
 
     @Override
-    public OmsFile selectFileDestailNew(String fileId) {
-        if (StringUtils.isEmpty(fileId)){
+    public OmsFile selectFileDestailNew(String fileId, String applyId, String tableCode) {
+        if (StringUtils.isEmpty(fileId) || StringUtils.isBlank(applyId)){
             throw new CustomMessageException("参数错误");
         }
-        return omsFileMapper.selectById(fileId);
+        OmsFile omsFile = omsFileMapper.selectById(fileId);
+        replaceFile(omsFile, applyId, tableCode);
+        return omsFile;
+    }
+
+    /**
+     * 替换关键词信息准备
+     * @param omsFile
+     * @param applyId
+     * @param tableCode
+     */
+    private void replaceFile(OmsFile omsFile, String applyId, String tableCode){
+        //查询关键字
+        QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+        queryWrapperKeyword.eq("TYPE", tableCode)
+                .eq("FILE_ID", omsFile.getFileId());
+        List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+
+        //替换关键词
+        if (!StringUtils.isBlank(omsFile.getRunSql())){
+            omsFile.setRunSql(omsFile.getRunSql().replace("@applyId", applyId));
+        }
+        FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFile.getRunSql());
+        // 替换关键词
+        if (fileReplaceVO != null){
+            replaceKeywordsDestail(fileReplaceVO, omsReplaceKeywordList, omsFile);
+        }
     }
 
     /**
@@ -277,10 +337,10 @@ public class OmsFileServiceImpl implements OmsFileService {
             try {
                 Object value = clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
                 if (!StringUtils.isBlank(omsFile.getFrontContent()) && value != null){
-                    omsFile.setFrontContent(omsFile.getFrontContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
+                    omsFile.setFrontContent(omsFile.getFrontContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
                 }
                 if (!StringUtils.isBlank(omsFile.getBankContent()) && value != null){
-                    omsFile.setBankContent(omsFile.getBankContent().replaceAll(omsReplaceKeywords.getKeyword(), value.toString()));
+                    omsFile.setBankContent(omsFile.getBankContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
                 }
 
             } catch (IllegalAccessException e) {
