@@ -100,7 +100,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             //初始化机构文件
             queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
-                    .in("FILE_TYPE",fileType)
                     .and(wrapper->wrapper.eq("B0100", "")
                             .or()
                             .isNull("B0100"))
@@ -124,8 +123,13 @@ public class OmsFileServiceImpl implements OmsFileService {
                     //延期回国
                     omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + b01.getB0100());
                 }
-                omsFiles = omsFileSystem;
             }
+            //重新查询
+            queryWrapper.eq("TABLE_CODE", tableCode)
+                    .eq("B0100", b01.getB0100())
+                    .in("FILE_TYPE",fileType)
+                    .orderByAsc("SORT_ID");
+            omsFiles = omsFileMapper.selectList(queryWrapper);
         }
         //生成文件
         if (!StringUtils.isBlank(applyId)){
@@ -147,6 +151,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     omsCreateFile.setSealDesc(omsFile.getSealDesc());
                     omsCreateFile.setIsfileList(omsFile.getIsfileList());
                     omsCreateFile.setSortId(omsFile.getSortId());
+                    omsCreateFile.setPrintNum(omsFile.getPrintNum());
                     //替换关键词
                     replaceFile(omsFile, applyId, tableCode);
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());

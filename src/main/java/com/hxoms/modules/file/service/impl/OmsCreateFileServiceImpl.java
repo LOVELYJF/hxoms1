@@ -31,7 +31,9 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
             throw new CustomMessageException("参数错误");
         }
         QueryWrapper<OmsCreateFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("ID","FILE_ID","APPLY_ID","IS_EDIT", "IS_SEALHANDLE","CHECK_ADVICES","SEAL_DESC","FILE_NAME","FILE_SHORTNAME")
+        queryWrapper.select("ID","FILE_ID","APPLY_ID","IS_EDIT",
+                "IS_SEALHANDLE","CHECK_ADVICES","SEAL_DESC","FILE_NAME",
+                "FILE_SHORTNAME","FRONT_CONTENT","BANK_CONTENT","PRINT_NUM")
                 .eq("TABLE_CODE", tableCode)
                 .eq("APPLY_ID", applyId)
                 .eq("ISFILE_LIST", "1")

@@ -43,6 +43,9 @@ public class OmsCreateFile {
     @ColumnAnnotation(FieldName = "CHECK_ADVICES",   FieldDescription="审核意见")
     private String checkAdvices;
 
+    @ColumnAnnotation(FieldName = "PRINT_NUM",   FieldDescription="打印份数")
+    private Integer printNum;
+
     @ColumnAnnotation(FieldName = "ISFILE_LIST",   FieldDescription="是否加入材料清单")
     private String isfileList;
 
@@ -157,6 +160,14 @@ public class OmsCreateFile {
 
     public void setCheckAdvices(String checkAdvices) {
         this.checkAdvices = checkAdvices == null ? null : checkAdvices.trim();
+    }
+
+    public Integer getPrintNum() {
+        return printNum;
+    }
+
+    public void setPrintNum(Integer printNum) {
+        this.printNum = printNum;
     }
 
     public String getIsfileList() {
