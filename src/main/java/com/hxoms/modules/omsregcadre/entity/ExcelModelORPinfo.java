@@ -48,6 +48,7 @@ public class ExcelModelORPinfo extends BaseRowModel {
         this.no = no;
     }
 
+
     public String getSurname() {
         return surname;
     }
