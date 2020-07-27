@@ -30,6 +30,7 @@ import java.util.*;
 public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersoninfoMapper, OmsRegProcpersoninfo> implements  OmsRegProcpersonInfoService {
 
 
+
     @Autowired
     private Environment environment;
     @Autowired

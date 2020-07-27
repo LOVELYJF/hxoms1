@@ -13,6 +13,7 @@ import java.util.Map;
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersoninfo> {
 
 
+
     Object insertRpinfo(OmsRegProcpersoninfo orpInfo);
 
     Object updateRpinfo(OmsRegProcpersoninfo orpInfo);
