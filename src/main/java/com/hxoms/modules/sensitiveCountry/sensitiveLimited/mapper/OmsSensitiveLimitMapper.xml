@@ -41,8 +41,8 @@
         <where>
             <trim suffixOverrides="and">
                 <if test="pubPri != null">PUB_PRI=#{pubPri} and </if>
-                <if test="sensitiveItem != null">SENSITIVE_ITEM=#{sensitiveItem} and </if>
                 <if test="sensitiveLimitId != null">SENSITIVE_LIMIT_ID=#{sensitiveLimitId} and </if>
+                <if test="sensitiveItem != null">SENSITIVE_ITEM=#{sensitiveItem} and </if>
             </trim>
         </where>
     </select>
@@ -60,10 +60,18 @@
 
     <delete id="deleteSensitiveLimit" parameterType="java.util.Map">
         delete from oms_sensitive_limit
-        where SENSITIVE_ITEM=#{sensitiveItem}
-        and SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
-        and PUB_PRI=#{pubPri}
+        <where>
+            <trim suffixOverrides="and">
+                <if test="sensitiveItem != null">SENSITIVE_ITEM in
+                    <foreach collection="sensitiveItem" item="item" index="index" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                    and
+                </if>
+                <if test="sensitiveLimitId != null">SENSITIVE_LIMIT_ID=#{sensitiveLimitId} and </if>
+                <if test="pubPri != null">PUB_PRI=#{pubPri} and </if>
+            </trim>
+        </where>
     </delete>
-
 
 </mapper>

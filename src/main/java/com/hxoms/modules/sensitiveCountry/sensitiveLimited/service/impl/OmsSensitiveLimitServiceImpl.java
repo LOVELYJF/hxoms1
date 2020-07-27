@@ -76,20 +76,26 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
-	public void addSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri) {
-		//查询添加的限制性内容是否已经存在
+	public void addSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri) {
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("sensitiveItem", sensitiveItem);
 		map.put("sensitiveLimitId", sensitiveLimitId);
 		map.put("pubPri", pubPri);
-		List<Map<String,String>> omsSensitiveList = omsSensitiveLimitMapper.selectOmsSensitive(map);
-		if(omsSensitiveList.size() < 1 || omsSensitiveList == null){
-			int count = omsSensitiveLimitMapper.addSensitiveLimit(map);
-			if(count < 1){
-				throw new CustomMessageException("添加失败");
+
+		if(sensitiveItem != null && sensitiveItem.size() > 0){
+			for(String item : sensitiveItem){
+				map.put("sensitiveItem", item);
+				List<Map<String,String>> omsSensitiveList = omsSensitiveLimitMapper.selectOmsSensitive(map);
+				if(omsSensitiveList.size() < 1 || omsSensitiveList == null){
+					int count = omsSensitiveLimitMapper.addSensitiveLimit(map);
+					if(count < 1){
+						throw new CustomMessageException("添加失败");
+					}
+				}else {
+					throw new CustomMessageException("添加的内容有重复");
+				}
 			}
 		}else {
-			throw new CustomMessageException("添加的内容已经存在");
+			throw new CustomMessageException("请选择要添加的项");
 		}
 	}
 
@@ -100,7 +106,7 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
-	public void deleteSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri) {
+	public void deleteSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("sensitiveItem", sensitiveItem);
 		map.put("sensitiveLimitId", sensitiveLimitId);

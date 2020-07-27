@@ -54,7 +54,7 @@ public class OmsSensitiveLimitController {
 	 * @return
 	 */
 	@PostMapping("/addSensitiveLimit")
-	public Result addSensitiveCountryLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
+	public Result addSensitiveCountryLimit(@RequestParam(value = "sensitiveItem",required = true) List<String> sensitiveItem,
 	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
 	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
 		omsSensitiveLimitService.addSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
@@ -70,7 +70,7 @@ public class OmsSensitiveLimitController {
 	 * @return
 	 */
 	@PostMapping("/deleteSensitiveLimit")
-	public Result deleteSensitiveLimit(@RequestParam(value = "sensitiveItem",required = true) String sensitiveItem,
+	public Result deleteSensitiveLimit(@RequestParam(value = "sensitiveItem",required = true) List<String> sensitiveItem,
 	                                       @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId,
 	                                       @RequestParam(value = "pubPri",required = true) String pubPri){
 		omsSensitiveLimitService.deleteSensitiveLimit(sensitiveItem, sensitiveLimitId, pubPri);
