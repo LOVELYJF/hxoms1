@@ -64,7 +64,7 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
         regProcbatch.setId(UUIDGenerator.getPrimaryKey());
         //组织机构代码加yyyyMMdd
         String rfB0000 = regProcbatch.getRfB0000();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
         String day = sdf.format(new Date());
         regProcbatch.setBatchNo(rfB0000+day);
         regProcbatch.setSubmitTime(new Date());
