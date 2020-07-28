@@ -8,6 +8,7 @@ import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLi
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,6 +75,7 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 	 * @param sensitiveLimitId
 	 * @return
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void addCountryInfo(List<Integer> countryIdList, String sensitiveLimitId) {
 		//查询当前限制性对应的内容有哪些
 		List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
