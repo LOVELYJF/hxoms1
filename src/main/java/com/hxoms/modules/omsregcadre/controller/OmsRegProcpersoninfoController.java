@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
@@ -14,10 +15,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -102,8 +100,8 @@ public class OmsRegProcpersoninfoController {
             //查询是否存在公安数据
             String dataType="2";
             int count = mrpinfoService.selectCountGongAn(dataType);
-            if (count < 0){
-                List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA();
+            if (count < 1){
+                List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA(file);
                 /*//获取缓存
                 Cache<String,Object> cache = GuavaCache.getCache();
                 cache.put("uploadOmsRegGongAnlist", uploadOmsRegGongAnlist);*/
@@ -209,7 +207,7 @@ public class OmsRegProcpersoninfoController {
         // 读取Excel表格
         try{
             //登记备案大检查上传登记备案记录
-            List<OmsRegProcpersoninfo> list = readOmsDataGA();
+            List<OmsRegProcpersoninfo> list = readOmsDataGA(file);
             //查询年度列表
             List<OmsRegYearcheckInfo> yearList = mrpinfoService.queryYearList(list);
 
@@ -252,15 +250,15 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/readOmsDataGA")
-    private static List<OmsRegProcpersoninfo> readOmsDataGA() throws IOException, ParseException {
+    private static List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");//注意月份是MM
-        // 读取Excel文件
+        /*// 读取Excel文件
         InputStream inputStream = new FileInputStream("D:/example.xls");
-        Workbook workbook = new HSSFWorkbook(inputStream);
-        /*//检查文件
+        Workbook workbook = new HSSFWorkbook(inputStream);*/
+        //检查文件
         checkFile(file);
         //获得Workbook工作薄对象
-        Workbook workbook = getWorkBook(file);*/
+        Workbook workbook = getWorkBook(file);
         //创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
         //List<String[]> list = new ArrayList<String[]>();
         List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
@@ -580,6 +578,44 @@ public class OmsRegProcpersoninfoController {
             e.printStackTrace();
             return Result.error("系统错误");
         }
+    }
+
+    /**
+     * 获取出国境职务树
+     * @return
+     */
+    @GetMapping("/selectBaseInfoTree")
+    public Result selectCGJPostTree(String dictCode) {
+        return Result.success(mrpinfoService.selectCGJPostTree(dictCode));
+    }
+
+    /**
+     * 获取干综职务树
+     * @return
+     */
+    @GetMapping("/selectGZPostTree")
+    public Result selectGZPostTree() {
+        return Result.success(mrpinfoService.selectGZPostTree());
+    }
+
+    /**
+     * 新增配置信息
+     * @author lijiaojiao
+     * @date 2020/07/27 14:01
+     */
+    @PostMapping("/insertBaseInfoConfig")
+    public Result insertBaseInfoConfig(@RequestBody List<OmsBaseinfoConfig> list) {
+        return Result.success(mrpinfoService.insertBaseInfoConfig(list));
+    }
+
+    /**
+     * 删除配置信息
+     * @author lijiaojiao
+     * @date 2020/07/27 14:01
+     */
+    @PostMapping("/deleteBaseInfoConfig")
+    public Result deleteBaseInfoConfig(String infoIds) {
+        return Result.success(mrpinfoService.deleteBaseInfoConfig(infoIds));
     }
 
 

@@ -181,6 +181,11 @@ public class OmsRegProcpersoninfo {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date exitDate;
 
+    @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="备案完成时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date finishTime;
+
     public String getId() {
         return id;
     }
@@ -580,4 +585,14 @@ public class OmsRegProcpersoninfo {
     public void setExitDate(Date exitDate) {
         this.exitDate = exitDate;
     }
+
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
+    }
+
+
 }

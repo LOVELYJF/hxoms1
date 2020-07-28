@@ -4,10 +4,16 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.hxoms.common.utils.DomainObjectUtil;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +34,13 @@ public class OmsRegExportController {
     private OmsRegProcbatchService orpbatchService;
 
 
+    /**
+     * 下载 省管干部登记备案表
+     * @param idStr
+     * @throws IOException
+     */
     @PostMapping("/exportRfInfo")
+    @Transactional(rollbackFor=Exception.class)
     public void  exportRfInfo(String idStr) throws IOException {
 
         HttpServletResponse response = DomainObjectUtil.getResponse();
@@ -55,31 +67,37 @@ public class OmsRegExportController {
 
     private List<ExcelModelORPinfo> createModelList (String idStr){
         List<ExcelModelORPinfo> list = new ArrayList<>();
+        List<OmsRegProcbatchPerson> orpbplist = new  ArrayList<>();
         //查询登记备案信息根据备案id
-        List<ExcelModelORPinfo> rflist = mrpinfoService.selectListById(idStr);
+        List<OmsRegProcpersoninfo> rflist = mrpinfoService.selectListById(idStr);
         //查询批次相关信息
-        ExcelModelORPinfo batchinfo = orpbatchService.selectWbaByOrpbatch();
+        OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
         for(int i=0; i<rflist.size();i++){
-            ExcelModelORPinfo info = rflist.get(i);
+            OmsRegProcpersoninfo info = rflist.get(i);
+            OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
+            //为批次人员表复制相同字段的数据
+            BeanUtils.copyProperties(rflist, batchperson);
+            batchperson.setId(UUIDGenerator.getPrimaryKey());
+            batchperson.setRfId(info.getId());
+            batchperson.setBatchId(batchinfo.getBatchNo());
+            orpbplist.add(batchperson);
+            //为excel录入数据
             ExcelModelORPinfo excelMode = new ExcelModelORPinfo();
             //登记备案信息录入
+            BeanUtils.copyProperties(info, excelMode);
             excelMode.setNo(i);
-            excelMode.setSurname(info.getSurname());
-            excelMode.setName(info.getName());
-            excelMode.setSex(info.getSex());
-            excelMode.setIdnumberGb(info.getIdnumberGb());
-            excelMode.setRegisteResidenceCode(info.getRegisteResidenceCode());
-            excelMode.setInboundFlag(info.getInboundFlag());
-            excelMode.setWorkUnit(info.getWorkUnit());
-            excelMode.setPostCode(info.getPostCode());
-            excelMode.setPersonManager(info.getPersonManager());
             //批次相关信息录入
-            excelMode.setSubmitUb0000(batchinfo.getSubmitUb0000());
-            excelMode.setSurname(batchinfo.getSurname());
-            excelMode.setSubmitUcategory(batchinfo.getSubmitUcategory());
-            excelMode.setSubmitUcontacts(batchinfo.getSubmitUcontacts());
-            excelMode.setSubmitPhone(batchinfo.getSubmitPhone());
+            BeanUtils.copyProperties(batchinfo, excelMode);
             list.add(excelMode);
+        }
+        int con = orpbatchService.batchinsertInfo(orpbplist);
+        if (con > 0){
+            //修改批次表备案状态0未备案，1已备案，2已确认
+            batchinfo.setStatus("1");
+            int con1 = orpbatchService.updateOrpbatch(batchinfo);
+            if (con1 > 0){
+                mrpinfoService.updateRegProcpersoninfo(idStr);
+            }
         }
         return list;
     }

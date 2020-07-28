@@ -287,4 +287,11 @@
     <select id="selectSysdictItemListByDictCode" resultMap="BaseResultMap">
         select * from sys_dict_item where dict_code=#{dictCode} and is_use='1' order by orderindex
     </select>
+
+    <select id="getDictInfoByDictCodeAndGl" resultType="java.util.Map" parameterType="java.util.Map">
+        select item_code as "id",parent_item_code as "pId",item_name as "name",is_leaf as "isParent"
+        from SYS_DICT_ITEM t where IS_USE='1' and DICT_CODE = #{dictCode} and ITEM_CODE NOT IN(
+            select INFO_ID from oms_baseinfo_config where PARENT_ID is not NULL and PARENT_ID!=''
+        )
+    </select>
 </mapper>

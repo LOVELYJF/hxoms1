@@ -6,8 +6,7 @@
     <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
-    <result column="RF_ID" jdbcType="VARCHAR" property="rfId" />
-    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="RF_B0000" jdbcType="VARCHAR" property="rfB0000" />
     <result column="RF_UNNIT" jdbcType="VARCHAR" property="rfUnnit" />
     <result column="RF_UCONTACTS" jdbcType="VARCHAR" property="rfUcontacts" />
     <result column="RF_UPHONE" jdbcType="VARCHAR" property="rfUphone" />
@@ -23,7 +22,7 @@
 
   </resultMap>
   <sql id="Base_Column_List">
-    ID, CREATE_DATE, CREATE_USER, BATCH_NO, RF_UNNIT, RF_UCONTACTS, RF_UPHONE, SUBMIT_UB0000, 
+    ID, CREATE_DATE, CREATE_USER, BATCH_NO, RF_B0000,RF_UNNIT, RF_UCONTACTS, RF_UPHONE, SUBMIT_UB0000,
     SUBMIT_UNAME, SUBMIT_UCATEGORY, SUBMIT_UCONTACTS, SUBMIT_PHONE, SUBMIT_TIME, SUBMIT_PERSON, 
     STATUS,REMARK
   </sql>
@@ -32,7 +31,9 @@
     select BATCH_NO batchNo from oms_reg_procbatch
   </select>
 
-  <select id="selectWbaByOrpbatch" resultType="com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo">
+  <select id="selectWbaByOrpbatch" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch">
       select * from oms_reg_procbatch where STATUS = '0'
   </select>
+
+
 </mapper>

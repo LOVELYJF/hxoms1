@@ -39,6 +39,12 @@ public class ExcelModelORPinfo extends BaseRowModel {
     private String submitPhone;
     @ExcelProperty(value = "入库批号" ,index = 15)
     private String rkph;
+    @ExcelProperty(value = "报备单位名称" ,index = 16)
+    private String rfUnnit;
+    @ExcelProperty(value = "联系人" ,index = 17)
+    private String rfUcontacts;
+    @ExcelProperty(value = "联系电话 " ,index = 18)
+    private String rfUphone;
 
     public int getNo() {
         return no;
@@ -167,5 +173,29 @@ public class ExcelModelORPinfo extends BaseRowModel {
 
     public void setRkph(String rkph) {
         this.rkph = rkph;
+    }
+
+    public String getRfUnnit() {
+        return rfUnnit;
+    }
+
+    public void setRfUnnit(String rfUnnit) {
+        this.rfUnnit = rfUnnit;
+    }
+
+    public String getRfUcontacts() {
+        return rfUcontacts;
+    }
+
+    public void setRfUcontacts(String rfUcontacts) {
+        this.rfUcontacts = rfUcontacts;
+    }
+
+    public String getRfUphone() {
+        return rfUphone;
+    }
+
+    public void setRfUphone(String rfUphone) {
+        this.rfUphone = rfUphone;
     }
 }
