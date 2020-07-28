@@ -9,6 +9,7 @@ package com.hxoms.modules.omsoperator.entity;
  */
 public class OmsOperatorHandoverSubformVO extends OmsOperatorHandoverSubform{
 
+
     //交接人姓名
     private String operatorName;
     //接手人姓名

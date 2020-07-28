@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.tree.Tree;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersoninfo> {
+
 
 
     Object insertRpinfo(OmsRegProcpersoninfo orpInfo);
@@ -57,5 +59,15 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     List<OmsRegProcpersoninfo> selectMergeList(String dataType);
 
-    List<ExcelModelORPinfo> selectListById(String idStr);
+    List<OmsRegProcpersoninfo> selectListById(String idStr);
+
+    int updateRegProcpersoninfo(String idStr);
+
+    List<Map<String, Object>> selectGZPostTree();
+
+    List<Tree> selectCGJPostTree(String dictCode);
+
+    int insertBaseInfoConfig(List<OmsBaseinfoConfig> list);
+
+    int deleteBaseInfoConfig(String infoIds);
 }

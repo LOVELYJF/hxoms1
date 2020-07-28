@@ -8,6 +8,7 @@ import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper;
@@ -16,6 +17,7 @@ import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,7 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
         //查询是否有未备案批次
         int count = baseMapper.selectCount(queryWrapper);
         if (count > 0){
-            throw new CustomMessageException(" throw new CustomMessageException(\"当前无可初始化的干部数据\");");
+            throw new CustomMessageException("已经存在未确定备案完成的批次不能启动新的批次");
         }else{
             UserInfo user = UserInfoUtil.getUserInfo();
             regProcbatch.setRfUcontacts(user.getUserName());
@@ -55,6 +57,48 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
     }
 
+    @Override
+    public Object insertProcbatch(OmsRegProcbatch regProcbatch) {
+        UserInfo user = UserInfoUtil.getUserInfo();
+        //创建批次
+        regProcbatch.setId(UUIDGenerator.getPrimaryKey());
+        //组织机构代码加yyyyMMdd
+        String rfB0000 = regProcbatch.getRfB0000();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String day = sdf.format(new Date());
+        regProcbatch.setBatchNo(rfB0000+day);
+        regProcbatch.setSubmitTime(new Date());
+        regProcbatch.setCreateUser(user.getId());
+        regProcbatch.setCreateDate(new Date());
+        return baseMapper.insert(regProcbatch);
+
+    }
+
+    @Override
+    public int batchinsertInfo(List<OmsRegProcbatchPerson> orpbplist) {
+        int con=0;
+        //批量添加的方法
+        int count = 30;
+        int n1 = orpbplist.size() / count;
+        int n2 = orpbplist.size() % count;
+        if (n2 > 0) {
+            n1 = n1 + 1;
+        }
+        for (int j = 0; j < n1; j++) {
+            if ((j + 1) * count > orpbplist.size()) {
+                //批量保存
+                con = regbatchPersonMapper.batchinsertInfo(orpbplist.subList(j * count, orpbplist.size()));
+            } else {
+                con = regbatchPersonMapper.batchinsertInfo(orpbplist.subList(j * count, (j + 1) * count));
+            }
+        }
+        return con;
+    }
+
+    @Override
+    public int updateOrpbatch(OmsRegProcbatch batchinfo) {
+        return baseMapper.updateById(batchinfo);
+    }
 
 
     @Override
@@ -93,22 +137,12 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
     }
 
     @Override
-    public ExcelModelORPinfo selectWbaByOrpbatch() {
+    public OmsRegProcbatch selectWbaByOrpbatch() {
         //查询待备案批次
-        ExcelModelORPinfo regbatch = baseMapper.selectWbaByOrpbatch();
+        OmsRegProcbatch regbatch = baseMapper.selectWbaByOrpbatch();
         return regbatch;
     }
 
-    @Override
-    public Object insertProcbatch(OmsRegProcbatch regProcbatch) {
-        //创建批次
-        regProcbatch.setId(UUIDGenerator.getPrimaryKey());
-        //组织机构代码加yyyyMMdd
-        regProcbatch.setBatchNo(regProcbatch.getBatchNo());
-        regProcbatch.setCreateUser("");
-        regProcbatch.setCreateDate(new Date());
-        return baseMapper.insert(regProcbatch);
-    }
 
 
 }

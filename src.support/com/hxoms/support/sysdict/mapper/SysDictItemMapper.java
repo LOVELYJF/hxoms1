@@ -154,4 +154,6 @@ public interface SysDictItemMapper {
      * @return
      */
     String selectPoliticalAffiByCode(String a3627);
+
+    List<Map<String, Object>> getDictInfoByDictCodeAndGl(Map<String, String> params);
 }

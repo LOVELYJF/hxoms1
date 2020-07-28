@@ -4,17 +4,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.tree.Tree;
+import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.majorLeader.entity.A02;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.util.*;
 public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersoninfoMapper, OmsRegProcpersoninfo> implements  OmsRegProcpersonInfoService {
 
 
+
     @Autowired
     private Environment environment;
     @Autowired
@@ -39,8 +41,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private A02Mapper a02Mapper;
     @Autowired
-    private OmsRegProcbatchMapper regProcbatchMapper;
-    @Autowired
     private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
     @Autowired
     private OmsRegRevokeApplyMapper revokeApplyMapper;
@@ -48,6 +48,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
+    @Autowired
+    private OmsBaseinfoConfigMapper omsBaseinfoConfigMapper;
+    @Autowired
+    private SysDictItemMapper sysDictItemMapper;
+
 
     /**
      * 初始化登记备案信息
@@ -151,6 +156,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Object insertRpinfo(OmsRegProcpersoninfo orpInfo) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         orpInfo.setId(UUIDGenerator.getPrimaryKey());
         orpInfo.setCreateTime(new Date());
         return baseMapper.insert(orpInfo);
@@ -222,8 +228,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<ExcelModelORPinfo> selectListById(String idStr) {
-        List<ExcelModelORPinfo> list = new ArrayList<>();
+    public List<OmsRegProcpersoninfo> selectListById(String idStr) {
+        List<OmsRegProcpersoninfo> list = new ArrayList<>();
         if (idStr!=null){
             String id = idStr.split(",").toString();
             list = baseMapper.selectListById(id);
@@ -232,6 +238,25 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         }
         return list;
     }
+
+    @Override
+    public int updateRegProcpersoninfo(String idStr) {
+        List<OmsRegProcpersoninfo> list = new ArrayList<>();
+        OmsRegProcpersoninfo info = new OmsRegProcpersoninfo();
+        info.setRfStatus("1");
+        int con = 0;
+        if (idStr!=null){
+            String id = idStr.split(",").toString();
+            info.setId(id);
+            con = baseMapper.updateRegProcpersoninfo(info);
+        }else{
+            con = baseMapper.updateRegProcpersoninfo(info);
+        }
+        return con;
+    }
+
+
+
 
     /**
      * 查询当前存在的公安数据记录
@@ -321,12 +346,15 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             //备案状态
             queryWrapper.eq("RF_STATUS",personInfoIPagParam.getRfStatus());
         }
-        if (!StringUtils.isBlank(personInfoIPagParam.getCheckStatus())){
-            //备案状态
-            queryWrapper.eq("RF_STATUS",personInfoIPagParam.getRfStatus());
+        if (!StringUtils.isBlank(personInfoIPagParam.getRfB0000())){
+            //机构代码
+            queryWrapper.eq("RF_B0000",personInfoIPagParam.getRfB0000());
         }
-        //验收状态为待验收
-        queryWrapper.eq("CHECK_STATUS","0");
+        if (!StringUtils.isBlank(personInfoIPagParam.getCheckStatus())){
+            //验收状态为待验收
+            queryWrapper.eq("CHECK_STATUS","0");
+        }
+
         //排序  姓 名 工作单位
         queryWrapper.orderByAsc("SURNAME","NAME","WORK_UNIT");
         pageInfo = new PageInfo(baseMapper.selectList(queryWrapper));;
@@ -372,6 +400,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                         QueryWrapper<OmsRegRevokeapply> queryinfo = new QueryWrapper<OmsRegRevokeapply>();
                         queryinfo.eq("RF_ID",orpi.getId());
                         OmsRegRevokeapply apply = revokeApplyMapper.selectOne(queryinfo);
+                        //撤销登记备案申请状态已审批并且入库标识为撤销
                         if (apply.getStatus().equals("2") && orpi.getInboundFlag()!="D"){
                             //入库标识  新增U  修改I  撤消D
                             omsreginfo.setInboundFlag("D");
@@ -443,42 +472,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     public PageInfo<OmsRegProcpersoninfo> getRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam) {
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         PageInfo<OmsRegProcpersoninfo> pageInfo = null;
         //分页
         PageUtil.pageHelp(personInfoIPagParam.getPageNum(), personInfoIPagParam.getPageSize());
-        if (!StringUtils.isBlank(personInfoIPagParam.getSecretLevel())){
-            //查询条件涉密等级
-            queryWrapper.eq("SECRET_LEVEL",personInfoIPagParam.getSecretLevel());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getIdentityCode())){
-            //身份情况
-            queryWrapper.eq("IDENTITY_CODE",personInfoIPagParam.getIdentityCode());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getIncumbencyStatus())){
-            //在职状态
-            queryWrapper.eq("INCUMBENCY_STATUS",personInfoIPagParam.getIncumbencyStatus());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getInboundFlag())){
-            //入库状态
-            queryWrapper.eq("INBOUND_FLAG",personInfoIPagParam.getInboundFlag());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getRfStatus())){
-            //备案状态
-            queryWrapper.eq("RF_STATUS",personInfoIPagParam.getRfStatus());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getCheckStatus())){
-            //验收状态
-            queryWrapper.eq("CHECK_STATUS",personInfoIPagParam.getCheckStatus());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getPost())){
-            //职务职称
-            queryWrapper.eq("POST",personInfoIPagParam.getPost());
-        }
-        //排序  姓 名 工作单位
-        queryWrapper.orderByAsc("SURNAME","NAME","WORK_UNIT");
         //返回数据
-        pageInfo = new PageInfo(baseMapper.selectList(queryWrapper));;
+        pageInfo = new PageInfo(baseMapper.selectRegPersonInfoList(personInfoIPagParam));
         return pageInfo;
 
     }
@@ -762,7 +760,51 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         OmsRegProcpersoninfo omsRegProcpersonInfo = omsRegProcpersonInfoMapper.selectOne(queryWrapper);
         return omsRegProcpersonInfo.getBirthDate();
     }
+    /**
+     * 查询出国境机构树
+     * @return
+     */
+    @Override
+    public List<Tree> selectCGJPostTree(String dictCode) {
+        List<Tree> treeList = TreeUtil.listToTreeJson(omsBaseinfoConfigMapper.selectCGJPostTree(dictCode));
+        return treeList;
+    }
 
+    /**
+     * 查询干综机构树
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> selectGZPostTree() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("dictCode", "ZB08");
+        //干综职务list
+        List<Map<String, Object>> cgjlist = sysDictItemMapper.getDictInfoByDictCodeAndGl(params);
+        return cgjlist;
+    }
+
+    /**
+     * 新增配置信息
+     * @param list
+     * @return
+     */
+    @Override
+    public int insertBaseInfoConfig(List<OmsBaseinfoConfig> list) {
+        for (OmsBaseinfoConfig omsBaseinfoConfig: list){
+            omsBaseinfoConfig.setId(UUIDGenerator.getPrimaryKey());
+        }
+        return omsBaseinfoConfigMapper.insertBatchList(list);
+    }
+
+    /**
+     * 删除配置信息
+     * @param infoIds
+     * @return
+     */
+    @Override
+    public int deleteBaseInfoConfig(String infoIds) {
+        return omsBaseinfoConfigMapper.deleteBaseInfoConfig(infoIds.split(","));
+    }
 
 
 }

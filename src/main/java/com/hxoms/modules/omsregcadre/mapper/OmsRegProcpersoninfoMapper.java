@@ -1,10 +1,9 @@
 package com.hxoms.modules.omsregcadre.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -30,7 +29,11 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<OmsRegProcpersoninfo> selectMergeList(String dataType);
 
-    List<ExcelModelORPinfo> selectListById(String id);
+    List<OmsRegProcpersoninfo> selectListById(String id);
+
+    List<OmsRegProcpersoninfo> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
+
+    int updateRegProcpersoninfo(OmsRegProcpersoninfo info);
 }
 
 

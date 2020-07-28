@@ -23,6 +23,7 @@
     <result column="SECRET_STATUS" jdbcType="CHAR" property="secretStatus" />
     <result column="SECRET_DATE" jdbcType="DATE" property="secretDate" />
   </resultMap>
+
   <sql id="Base_Column_List">
     ID, RF_ID,BATCH_ID, SURNAME, A0100, NAME, SEX, BIRTH_DATE, IDNUMBER, REGISTE_RESIDENCE_CODE,
     REGISTE_RESIDENCE, WORK_UNIT, SECRET_TERM, POST, POST_CODE, PERSON_MANAGER, IDENTITY_CODE, 
@@ -32,4 +33,25 @@
   <select id="selectA0100s"  parameterType="java.lang.String" resultType="java.lang.String">
       select A0100 from oms_reg_procbatch_person where BATCH_ID = #{batchId}
   </select>
+
+  <insert id="batchinsertInfo" parameterType="list">
+    insert into oms_reg_procbatch_person (
+        ID, RF_ID,BATCH_ID, SURNAME, A0100, NAME, SEX, BIRTH_DATE,
+        IDNUMBER,REGISTE_RESIDENCE_CODE,REGISTE_RESIDENCE,
+        WORK_UNIT, SECRET_TERM, POST, POST_CODE, PERSON_MANAGER,
+        IDENTITY_CODE,IDENTITY, SECRET_STATUS, SECRET_DATE
+        )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.id,jdbcType=VARCHAR},#{item.rfId,jdbcType=VARCHAR},#{item.batchId,jdbcType=VARCHAR},
+      #{item.a0100,jdbcType=VARCHAR},#{item.surname,jdbcType=VARCHAR},#{item.name,jdbcType=VARCHAR},
+      #{item.sex,jdbcType=VARCHAR},#{item.birthDate,jdbcType=DATE},#{item.idnumber,jdbcType=VARCHAR},
+      #{item.registeResidenceCode,jdbcType=VARCHAR},#{item.registeResidence,jdbcType=VARCHAR},
+      #{item.workUnit,jdbcType=VARCHAR}, #{item.secretTerm,jdbcType=VARCHAR},#{item.post,jdbcType=VARCHAR},
+      #{item.postCode,jdbcType=VARCHAR}, #{item.personManager,jdbcType=VARCHAR},
+      #{item.identityCode,jdbcType=VARCHAR},#{item.identity,jdbcType=VARCHAR},
+      #{item.secretStatus,jdbcType=CHAR},#{item.secretDate,jdbcType=DATE}
+      )
+    </foreach>
+  </insert>
 </mapper>

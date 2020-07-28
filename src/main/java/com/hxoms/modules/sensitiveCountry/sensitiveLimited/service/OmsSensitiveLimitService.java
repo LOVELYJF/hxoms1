@@ -31,7 +31,7 @@ public interface OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
-	void addSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri);
+	void addSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri);
 
 
 	/**
@@ -40,7 +40,7 @@ public interface OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
-	void deleteSensitiveLimit(String sensitiveItem, String sensitiveLimitId, String pubPri);
+	void deleteSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri);
 
 
 
