@@ -358,7 +358,7 @@
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
-        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -376,7 +376,7 @@
                 <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
             <if test="hgsj != null and  hgsj != ''">
-                <![CDATA[ and oms_pub_apply.HGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+                <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
             <if test="ztdw != null and ztdw!= ''">
                 and oms_pub_apply.ZTDW = #{ztdw}
@@ -484,6 +484,19 @@
                 and oms_pub_apply.SQZT <![CDATA[<>]]> #{sqzt}
             </if>
         </where>
+    </select>
+    <select id="selectPubCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
+        select "1.填写申请" as label, 1 as statusCode, count(0) as num from oms_pub_apply where SQZT = 1 and SFXD = 1
+        union all
+        select "2.生成材料" as label, 2 as statusCode, count(0) as num from oms_pub_apply where SQZT = 2 and SFXD = 1
+        union all
+        select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pub_apply where SQZT = 3 and SFXD = 1
+        union all
+        select "4.签字盖章" as label, 4 as statusCode, count(0) as num from oms_pub_apply where SQZT = 4 and SFXD = 1
+        union all
+        select "5.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
+        union all
+        select "6.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
     </select>
 
 

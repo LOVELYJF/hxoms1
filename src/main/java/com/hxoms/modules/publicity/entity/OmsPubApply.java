@@ -82,7 +82,7 @@ public class OmsPubApply {
     private Date hgsj;
 
     @ColumnAnnotation(FieldName = "SDGJ",   FieldDescription="所到国境")
-    private String sdgj;
+        private String sdgj;
 
     @ColumnAnnotation(FieldName = "TLSJ",   FieldDescription="在外停留时间")
     private String tlsj;

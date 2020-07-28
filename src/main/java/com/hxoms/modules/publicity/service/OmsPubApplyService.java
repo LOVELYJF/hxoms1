@@ -1,6 +1,7 @@
 package com.hxoms.modules.publicity.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 
 import java.util.Date;
@@ -29,7 +30,7 @@ public interface OmsPubApplyService {
      * @author sunqian
      * @date 2020/4/26 17:22
      */
-    String insertOrUpdatePubApply(OmsPubApply omsPubApply);
+    String insertPubApply(OmsPubApply omsPubApply);
 
     /**
      *
@@ -160,4 +161,14 @@ public interface OmsPubApplyService {
      * @Date: 2020/7/21 9:42
      */
     OtherPubApply getOtherPubApply(String b0100, String a0100, Date cgsj);
+
+    /**
+     * 功能描述: <br>
+     * 〈因公备案申请步骤统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/27 15:04
+     */
+    List<CountStatusResult> selectPubCountStatus();
 }

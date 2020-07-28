@@ -17,6 +17,7 @@ import com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper;
 import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
@@ -106,7 +107,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertOrUpdatePubApply(OmsPubApply omsPubApply) {
+    public String insertPubApply(OmsPubApply omsPubApply) {
         if (StringUtils.isBlank(omsPubApply.getA0100())) {
             throw new CustomMessageException("请先选择申请的干部");
         }
@@ -122,39 +123,33 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //创建时间
             omsPubApply.setCreateTime(new Date());
             //申请状态
-            omsPubApply.setSqzt(0);
-            //如果是琼赴台，往预备案表插入数据
-            if (omsPubApply.getPwh().contains("琼台赴")){
-                OmsPubGroupPreApproval selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(omsPubApply.getPwh());
-                if (selectOmsPubGroupPreApproval == null) {
-                    OmsPubGroupPreApproval omsPubGroupPreApproval = new OmsPubGroupPreApproval();
-                    //将台办通知书文号作为主键
-                    omsPubGroupPreApproval.setId(omsPubApply.getPwh());
-                    //出境时间、
-                    omsPubGroupPreApproval.setCgsj(omsPubApply.getCgsj());
-                    // 入境时间、
-                    omsPubGroupPreApproval.setHgsj(omsPubApply.getHgsj());
-                    // 任务、
-                    omsPubGroupPreApproval.setCfrw(omsPubApply.getCfrw());
-                    // 事由
-                    omsPubGroupPreApproval.setCfsy(omsPubApply.getCfsy());
-                    //创建人
-                    omsPubGroupPreApproval.setCreateUser(loginUser.getId());
-                    //创建时间
-                    omsPubGroupPreApproval.setCreateTime(new Date());
-                    //申请状态
-                    omsPubGroupPreApproval.setSqzt(omsPubApply.getSqzt());
-                    omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
-                }
-            }
+            omsPubApply.setSqzt(Constants.private_business[0]);
+            //是否下达(1-是,0-否)
+            omsPubApply.setSfxd(1);
+//            //如果是琼赴台，往预备案表插入数据
+//            if (omsPubApply.getPwh().contains("琼台赴")){
+//                OmsPubGroupPreApproval selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(omsPubApply.getPwh());
+//                if (selectOmsPubGroupPreApproval == null) {
+//                    OmsPubGroupPreApproval omsPubGroupPreApproval = new OmsPubGroupPreApproval();
+//                    //将台办通知书文号作为主键
+//                    omsPubGroupPreApproval.setId(omsPubApply.getPwh());
+//                    //出境时间、
+//                    omsPubGroupPreApproval.setCgsj(omsPubApply.getCgsj());
+//                    // 入境时间、
+//                    omsPubGroupPreApproval.setHgsj(omsPubApply.getHgsj());
+//                    // 任务、
+//                    omsPubGroupPreApproval.setCfrw(omsPubApply.getCfrw());
+//                    // 事由
+//                    omsPubGroupPreApproval.setCfsy(omsPubApply.getCfsy());
+//                    //创建人
+//                    omsPubGroupPreApproval.setCreateUser(loginUser.getId());
+//                    //创建时间
+//                    omsPubGroupPreApproval.setCreateTime(new Date());
+//                    omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
+//                }
+//            }
             omsPubApplyMapper.insert(omsPubApply);
-        } else {
-            primaryKey = omsPubApply.getId();
-            omsPubApplyMapper.updateById(omsPubApply);
         }
-        //        int i = omsPubApplyMapper.excuteSelectSql("select count(1) from oms_pub_apply where id='" + primaryKey + "'");
-        //特殊情况处理
-
         //判断校验类型
         result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
         if (StringUtils.isBlank(result)) {
@@ -623,6 +618,20 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         List<A36> a36s = a36Mapper.selectFamilyMember(a0100);
         otherPubApply.setA36List(a36s);
         return otherPubApply;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈因公备案申请步骤统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/27 15:04
+     */
+    @Override
+    public List<CountStatusResult> selectPubCountStatus() {
+        List<CountStatusResult> countStatusResults = omsPubApplyMapper.selectPubCountStatus();
+        return countStatusResults;
     }
 
     /** 封装方法——封装干教人员信息*/

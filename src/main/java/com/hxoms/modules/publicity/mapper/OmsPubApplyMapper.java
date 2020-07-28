@@ -98,5 +98,13 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
     List<OmsPubApplyVO> selectPubAllyByStatusAndName(@Param("createUser") String createUser,@Param("sqzt") int sqzt);
 
 
-
+    /**
+     * 功能描述: <br>
+     * 〈因公备案申请步骤统计〉
+     * @Param: [orgId]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
+     * @Author: 李逍遥
+     * @Date: 2020/7/27 15:06
+     */
+    List<CountStatusResult> selectPubCountStatus();
 }

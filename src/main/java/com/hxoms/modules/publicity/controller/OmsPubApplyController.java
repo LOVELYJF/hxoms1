@@ -2,6 +2,7 @@ package com.hxoms.modules.publicity.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,14 +104,27 @@ public class OmsPubApplyController {
         return Result.success(info);
     }
     /**
+     * 功能描述: <br>
+     * 〈因公备案申请步骤统计〉
+     * @Param: [orgId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/27 15:04
+     */
+    @GetMapping("/selectPubCountStatus")
+    public Result selectPubCountStatus(){
+        List<CountStatusResult> countStatusResults = omsPubApplyService.selectPubCountStatus();
+        return Result.success(countStatusResults);
+    }
+    /**
      * 新增备案申请
      *
      * @author sunqian
      * @date 2020/4/26 17:21
      */
-    @PostMapping("/insertOrUpdatePubApply")
-    public Result insertOrUpdatePubApply(OmsPubApply omsPubApply) throws Exception {
-        String result = omsPubApplyService.insertOrUpdatePubApply(omsPubApply);
+    @PostMapping("/insertPubApply")
+    public Result insertPubApply(OmsPubApply omsPubApply) throws Exception {
+        String result = omsPubApplyService.insertPubApply(omsPubApply);
         return Result.success().setMsg(result);
     }
     /**
