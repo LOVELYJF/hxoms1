@@ -1,0 +1,7 @@
+
+# 批次前缀
+batch.prefix=HNSW
+#时间格式选择器
+selectordate.formatter=yyyyMMdd
+# 步长 入 001 步长为3    001001 步长 为6  同一天 步可能 建批次超过 1w个吧，先设为 步长 为3
+step.length=3
