@@ -798,12 +798,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     /**
      * 删除配置信息
-     * @param infoIds
+     * @param Ids
      * @return
      */
     @Override
-    public int deleteBaseInfoConfig(String infoIds) {
-        return omsBaseinfoConfigMapper.deleteBaseInfoConfig(infoIds.split(","));
+    public int deleteBaseInfoConfig(List<String> Ids) {
+        return omsBaseinfoConfigMapper.deleteBatchIds(Ids);
     }
 
 
