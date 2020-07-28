@@ -2,6 +2,7 @@ package com.hxoms.modules.sensitiveCountry.sensitiveMaintain.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.country.entity.Country;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,17 @@ public class OmsSensitiveMaintainController {
 
 	@Autowired
 	private OmsSensitiveMaintainService omsSensitiveMaintainService;
+	/**
+	 * <b>查询限制性信息</b>
+	 * @return
+	 */
+	@GetMapping("/getOmsSensitiveLimit")
+	public Result getOmsSensitiveLimit(){
+		List<OmsSensitiveLimit> list = omsSensitiveMaintainService.getOmsSensitiveLimit();
+		return Result.success(list);
+	}
+
+
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh

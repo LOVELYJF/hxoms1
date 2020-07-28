@@ -3,6 +3,7 @@ package com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.impl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,18 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 	private CountryMapper countryMapper;
 	@Autowired
 	private OmsSensitiveLimitMapper omsSensitiveLimitMapper;
+
+	/**
+	 * <b>查询限制性信息</b>
+	 * @return
+	 */
+	public List<OmsSensitiveLimit> getOmsSensitiveLimit() {
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("dictCode", "MGGJ");
+		List<OmsSensitiveLimit> list = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
+		return list;
+	}
+
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh

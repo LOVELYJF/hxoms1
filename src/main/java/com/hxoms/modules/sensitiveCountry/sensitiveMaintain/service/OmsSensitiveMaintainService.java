@@ -1,6 +1,7 @@
 package com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service;
 
 import com.hxoms.modules.country.entity.Country;
+import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 
 import java.util.List;
 
@@ -10,6 +11,12 @@ import java.util.List;
  * @date 2020/06/28
  */
 public interface OmsSensitiveMaintainService {
+
+	/**
+	 * <b>查询限制性信息</b>
+	 * @return
+	 */
+	List<OmsSensitiveLimit> getOmsSensitiveLimit();
 
 	/**
 	 * <b>查询国家信息</b>
