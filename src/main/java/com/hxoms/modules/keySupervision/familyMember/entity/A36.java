@@ -94,6 +94,9 @@ public class A36 {
     @ColumnAnnotation(FieldName = "time_stamp",   FieldDescription="")
     private byte[] timeStamp;
 
+    @ColumnAnnotation(FieldName = "is_abroad",   FieldDescription="是否在国境外")
+    private String isAbroad;
+
     public String getA3600() {
         return a3600;
     }
@@ -292,5 +295,13 @@ public class A36 {
 
     public void setTimeStamp(byte[] timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public String getIsAbroad() {
+        return isAbroad;
+    }
+
+    public void setIsAbroad(String isAbroad) {
+        this.isAbroad = isAbroad == null ? null : isAbroad.trim();
     }
 }
