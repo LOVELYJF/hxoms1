@@ -165,26 +165,6 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 
 	/**
-	 * <b>更新保存家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	@Transactional(rollbackFor=Exception.class)
-	public void updateFamilyMemberInfo(List<A36> list) {
-		for(A36 a36 : list){
-			a36.setModifyTime(new Date());
-			a36.setModifyUser(UserInfoUtil.getUserInfo().getId());
-			QueryWrapper<A36> queryWrapper = new QueryWrapper<A36>();
-			queryWrapper.eq("a3600", a36.getA3600());
-			int count = a36Mapper.update(a36, queryWrapper);
-			if(count < 1){
-				throw new CustomMessageException("更新保存家庭成员信息失败");
-			}
-		}
-	}
-
-
-	/**
 	 * <b>保存家庭成员并登记备案</b>
 	 * @param list
 	 * @return

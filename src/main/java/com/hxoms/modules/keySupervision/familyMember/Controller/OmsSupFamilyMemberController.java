@@ -110,17 +110,6 @@ public class OmsSupFamilyMemberController {
 	}
 
 
-	/**
-	 * <b>更新家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	@PostMapping("/updateFamilyMemberInfo")
-	private Result updateFamilyMemberInfo(@RequestBody List<A36> list){
-		omsSupFamilyMemberService.updateFamilyMemberInfo(list);
-		return Result.success();
-	}
-
 
 	/**
 	 * <b>对家庭成员进行登记备案</b>

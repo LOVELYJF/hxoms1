@@ -52,13 +52,6 @@ public interface OmsSupFamilyMemberService {
 
 
 	/**
-	 * <b>更新家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	void updateFamilyMemberInfo(List<A36> list);
-
-	/**
 	 * <b>对家庭成员进行登记备案</b>
 	 * @param list
 	 * @return
