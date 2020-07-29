@@ -69,5 +69,5 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     int insertBaseInfoConfig(List<OmsBaseinfoConfig> list);
 
-    int deleteBaseInfoConfig(String infoIds);
+    int deleteBaseInfoConfig(List<String> Ids);
 }

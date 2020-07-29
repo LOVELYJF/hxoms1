@@ -22,7 +22,7 @@
     ID, INFO_ID, PARENT_ID, INFO_NAME, DICT_CODE
   </sql>
   <select id="selectCGJPostTree" parameterType="java.lang.String" resultType="com.hxoms.common.tree.Tree">
-    select INFO_ID as "id",PARENT_ID as "pId",INFO_NAME as "label" from oms_baseinfo_config
+    select ID as "tableId",INFO_ID as "id",PARENT_ID as "pId",INFO_NAME as "label" from oms_baseinfo_config
     WHERE DICT_CODE =#{dictCode} ORDER BY INFO_ID
   </select>
 
@@ -41,10 +41,4 @@
   </insert>
 
 
-  <delete id="deleteBaseInfoConfig" parameterType="java.util.List" >
-      delete from oms_baseinfo_config where INFO_ID in
-      <foreach collection="list" item="infoId" index="no" open="(" separator="," close=")">
-          #{infoId}
-      </foreach>
-  </delete>
 </mapper>

@@ -614,8 +614,8 @@ public class OmsRegProcpersoninfoController {
      * @date 2020/07/27 14:01
      */
     @PostMapping("/deleteBaseInfoConfig")
-    public Result deleteBaseInfoConfig(String infoIds) {
-        return Result.success(mrpinfoService.deleteBaseInfoConfig(infoIds));
+    public Result deleteBaseInfoConfig(@RequestBody List<String> Ids) {
+        return Result.success(mrpinfoService.deleteBaseInfoConfig(Ids));
     }
 
 

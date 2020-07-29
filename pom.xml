@@ -215,6 +215,14 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--用于自测 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+
+        </dependency>
+
         <!--中文汉字转化为拼音-->
         <dependency>
             <groupId>com.belerweb</groupId>

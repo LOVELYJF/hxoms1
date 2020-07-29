@@ -8,6 +8,7 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,6 +77,7 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void addSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("sensitiveLimitId", sensitiveLimitId);
@@ -106,6 +108,7 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 	 * @param sensitiveLimitId
 	 * @param pubPri
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void deleteSensitiveLimit(List<String> sensitiveItem, String sensitiveLimitId, String pubPri) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("sensitiveItem", sensitiveItem);

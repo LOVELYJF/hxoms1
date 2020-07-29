@@ -1,0 +1,2042 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper">
+
+
+	<sql id="statusNameSql">
+
+		(
+		select '业务办理' as statusName, '20' as applyStatus,'0' as num  union
+		select '征求意见' as statusName, '21' as applyStatus,'0' as num  union
+		select '记录意见' as statusName, '22' as applyStatus,'0' as num  union
+		select '做成审核意见' as statusName, '23' as applyStatus,'0' as num  union
+		select '处领导审批' as statusName, '24' as applyStatus,'0' as num  union
+		select '部领导审批' as statusName, '25' as applyStatus,'0' as num  union
+		select '核实批件' as statusName, '26' as applyStatus,'0' as num  union
+		select '制作备案表' as statusName, '27' as applyStatus,'0' as num
+		) b
+
+	</sql>
+  <!-- 业务 办理 个 业务流程状态 -->
+	<sql id="yewubanli_pub_condition" >
+
+		where pua.APPLY_STATUS = '4'
+
+	</sql>
+
+	<sql id="yewubanli_pri_condition" >
+
+		where pri.APPLY_STATUS = '5'
+
+	</sql>
+
+	<sql id="yewubanli_pri_delay_condition" >
+
+		where prda.APPLY_STATUS = '5'
+
+	</sql>
+
+    <select id="selectBusinessUser" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
+		SELECT
+		*  from (
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+		pua.SQZT   as applyStatus,    # 业务 流程状态
+		b.b0101 AS department,  # "部门名称"
+		a.a0101 AS userName, # 人员名称
+		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		"因公" AS businessType,  # 申请类型
+		"oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+		pua.JOB AS job,   #职务
+		pua.CREATE_TIME AS applyTime,   # 申请日期
+		pua.SMDJ AS secretLevel,  # 涉密等级
+		pua.YTMJSSJ1 AS declassificaEndTime,  # 脱密结束日期
+		pua.SFLG AS sflg,  # 是否裸官
+		mrp.IDENTITY AS identity, #身份类别
+		pua.SFZYLD as sfzyld,  # 主要领导
+		pua.FMXX AS fmxx # 负面信息
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		UNION
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+		pra.APPLY_STATUS as applyStatus,
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'因私' AS businessType,  # 申请类型
+		'oms_pri_apply' as type, #申请类型 表的名称 约束性条件 会用到
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld, # 主要领导
+
+		pra.NEGATIVE_INFO fmxx # 负面信息
+		FROM
+		oms_pri_apply pra
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+		UNION
+
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+		pra.APPLY_STATUS as applyStatus,
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'延期' AS businessType,  # 申请类型
+	    'oms_pri_delay_apply'   as   type,                  # 申请类型 表的名称 约束性条件 会用到
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld , # 主要领导
+
+		pra.NEGATIVE_INFO fmxx # 负面信息
+		FROM
+		oms_pri_delay_apply  prda
+		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+		) temp
+
+		<where>
+
+			applyStatus = #{applyStatus}   # 查询 所以 业务流程 走到 业务受理模块
+
+		<if test="leaderBtachId !=null and leaderBtachId !='' ">
+
+			and batchId = #{leaderBtachId}
+
+		</if>
+
+		</where>
+
+		ORDER BY
+		  abroadTime
+    </select>
+
+	<!--<where>-->
+
+		<!--<if test="leaderBtachId !=null and leaderBtachId !='' ">-->
+
+		<!--</if>-->
+
+	<!--</where>-->
+
+
+	<select id="selectMaterialReviewBusinessUser" resultType="java.util.LinkedHashMap">
+
+		SELECT
+				*  from (
+						SELECT
+							   pua.id AS id,   # 业务id
+							   pua.leader_batch_id as batchId, # 批次id
+							   pua.SQZT   as applyStatus,    # 业务 流程状态
+							   b.b0101 AS department,  # "部门名称"
+							   a.a0101 AS userName, # 人员名称
+							   pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+							   pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+							   pua.CFRW AS cfrw,  #  出访任务
+							   "因公" AS businessType,  # 申请类型
+							   "oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
+							   pua.CGSPDW AS cgspdw, # 审批单位
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+							   pua.JOB AS job,   #职务
+							   pua.CREATE_TIME AS applyTime,   # 申请日期
+							   pua.SMDJ AS secretLevel,  # 涉密等级
+							   pua.YTMJSSJ1 AS declassificaEndTime,  # 脱密结束日期
+							   pua.SFLG AS sflg,  # 是否裸官
+							   mrp.IDENTITY AS identity, #身份类别
+							   pua.SFZYLD as sfzyld,  # 主要领导
+							   pua.FMXX AS fmxx, # 负面信息
+							   pua.SFZQJWYJ    , # 征求意见
+							   pua.JWJL        , # 纪委意见
+							   pua.CLSHSFTG    , # 材料审核
+							   pua.SFBG        # 是否变更
+						FROM
+							 oms_pub_apply pua
+								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+						UNION
+						SELECT
+							   pra.id AS id, # 业务id
+
+							   pra.leader_batch_id as batchId, # 批次id
+
+							   pra.APPLY_STATUS as applyStatus,
+
+							   b.b0101 AS department, 	# "部门名称"
+
+							   a.a0101 AS userName, # 人员名称
+
+							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+							   "无" AS cfrw,    #出访任务
+
+							   '因私' AS businessType,  # 申请类型
+							   'oms_pri_apply' as type, #申请类型 表的名称 约束性条件 会用到
+
+							   "无" AS cgspdw,  # 审批单位
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+
+							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+							   pra.POSTRANK AS job, #职务
+
+							   pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+							   pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+							   mrp.IDENTITY AS identity, #身份类别
+
+							   pra.IS_LEADERS as sfzyld, # 主要领导
+
+							   pra.NEGATIVE_INFO fmxx, # 负面信息
+							   pra.SFZQJWYJ  as sfzqjwyj   , # 征求意见
+							   pra.JWJL   as jwjl     , # 纪委意见
+							   pra.CLSHSFTG as clshsftg    , # 材料审核
+							   '是否变更'  as sfbg      # 是否变更
+						FROM
+							 oms_pri_apply pra
+								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+						UNION
+
+						SELECT
+							   pra.id AS id, # 业务id
+
+							   pra.leader_batch_id as batchId, # 批次id
+
+							   pra.APPLY_STATUS as applyStatus,
+
+							   b.b0101 AS department, 	# "部门名称"
+
+							   a.a0101 AS userName, # 人员名称
+
+							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+							   "无" AS cfrw,    #出访任务
+
+							   '延期' AS businessType,  # 申请类型
+							   'oms_pri_delay_apply'   as   type,                  # 申请类型 表的名称 约束性条件 会用到
+
+							   "无" AS cgspdw,  # 审批单位
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+
+							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+							   pra.POSTRANK AS job, #职务
+
+							   pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+							   pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+							   mrp.IDENTITY AS identity, #身份类别
+
+							   pra.IS_LEADERS as sfzyld , # 主要领导
+
+							   pra.NEGATIVE_INFO fmxx, # 负面信息
+							   prda.SFZQJWYJ  as sfzqjwyj   , # 征求意见
+							   prda.JWJL      as jwjl  , # 纪委意见
+							   prda.CLSHSFTG  as clshsftg  , # 材料审核
+							   '是否变更'      as sfbg       # 是否变更
+
+						FROM
+							 oms_pri_delay_apply  prda
+								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+						) temp
+		# 业务受理 或 征求纪委意见 或 纪委意见填写
+		where applyStatus IN ('20','21','22')
+
+	</select>
+
+
+	<select id="selectMaxStatusByBatchId" parameterType="java.lang.String" resultType="Integer">
+
+		SELECT
+
+			   max(status) as maxStaus
+
+		FROM(
+
+			select APPLY_STATUS  as status from oms_pub_apply
+
+			where leader_batch_id = #{batchId}
+
+			UNION
+
+			select APPLY_STATUS status from oms_pri_apply
+
+			where leader_batch_id = #{batchId}
+
+			UNION
+
+			select APPLY_STATUS status from oms_pri_delay_apply
+
+			where leader_batch_id =#{batchId} ) t
+
+	</select>
+
+	<select id="selectLeaderBatchIdByBussinessIds" resultType="com.hxoms.common.LowerKeyMapTest">
+
+		SELECT
+				DISTINCT batchid
+
+		FROM (
+
+			 select id, leader_batch_id as batchid  from oms_pub_apply
+
+			 union
+
+			 select  id,leader_batch_id  from oms_pri_apply
+			 UNION
+			 select id, leader_batch_id  from oms_pri_delay_apply
+			 ) temp  where  temp.id in
+
+		<foreach item="item" index="index" collection="array" open="("  close=")" separator=",">
+			#{item}
+		</foreach>
+
+	</select>
+
+	<select id="selectStatusByBatchId" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
+
+
+		SELECT
+			   status
+		from(
+			select APPLY_STATUS  as status from oms_pub_apply
+
+			where leader_batch_id = #{batchId}
+
+			UNION
+
+			select APPLY_STATUS status from oms_pri_apply
+
+			where leader_batch_id = #{batchId}
+
+			UNION
+
+			select APPLY_STATUS status from oms_pri_delay_apply
+
+			where leader_batch_id =#{batchId}
+			)temp group by  STATUS
+
+		order by status desc
+
+	</select>
+
+
+
+
+	<select id="selectBusinessFlowWithASNum" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
+
+		SELECT
+			   b.statusName, -- 业务名称
+			   IFNULL(a.num,b.num)  -- 业务数量
+		from(
+			select *,count(1) as num from (
+		    SELECT pua.APPLY_STATUS as applyStatus from oms_pub_apply  pua where pua.leader_batch_id is not null
+		    UNION
+            select pra.APPLY_STATUS as applyStatus from oms_pri_apply pra where pra.leader_batch_id is not NULL
+		    UNION
+		    select prda.APPLY_STATUS applyStatus from oms_pri_delay_apply prda where prda.leader_batch_id is not null
+			 ) temp  group by applyStatus ) a RIGHT JOIN (
+				select '业务办理' as statusName, '20' as applyStatus,'0' as num  union
+			  	select '征求意见' as statusName, '21' as applyStatus,'0' as num  union
+				select '记录意见' as statusName, '22' as applyStatus,'0' as num  union
+				select '做成审核意见' as statusName, '23' as applyStatus,'0' as num  union
+				select '处领导审批' as statusName, '24' as applyStatus,'0' as num  union
+			  	select '部领导审批' as statusName, '25' as applyStatus,'0' as num  union
+				select '核实批件' as statusName, '26' as applyStatus,'0' as num  union
+			  	select '制作备案表' as statusName, '27' as applyStatus,'0' as num
+			  	) b  on  a.applyStatus = b.applyStatus
+	</select>
+
+
+	<select id="selectLeaderBatch" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+		select leb.name as name , -- 批次号
+			   leb.accept_date as acceptDate, -- 受理时间
+			   leb.create_user as createUser, -- 创建人 ==？受理人
+			   b.statusName as status,    --   状态
+		      if(leb.master_status <![CDATA[<=]]> 20,'edit','noedit') as isdelete -- edit 可编辑，
+		from oms_leader_batch leb left join
+	    <include refid="statusNameSql"/>
+		on leb.master_status = b.applyStatus
+		<where>
+			<if test="name != null and name != ''">
+				and leb.name = #{name,jdbcType=VARCHAR}
+			</if>
+
+			<if test="beginDate !=null">
+
+				and leb.accept_daate <![CDATA[>=]]> #{beginDate} and leb.accept_date <![CDATA[<=]]> #{endDate}
+
+			</if>
+
+			<if test="acceptUser != null and acceptUser !='' ">
+
+				and leb.create_user = #{acceptUser}
+			</if>
+
+		</where>
+
+	</select>
+
+	<select id="selectJiweiApply" resultType="java.util.LinkedHashMap">
+		SELECT
+		*  from (
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department,  # "部门名称"
+		a.a0101 AS userName, # 人员名称
+		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		TIMESTAMPDIFF(DAY,now(),pua.CGSJ) as daynums, #  距离 出境天数
+		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		"因公" AS businessType,  # 申请类型
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+		pua.JOB AS job,   #职务
+		"暂无" AS applyTime,   # 申请日期
+		pua.SMDJ AS secretLevel,  # 涉密等级
+		"暂无" AS declassificaEndTime,  # 脱密结束日期
+		pua.SFLG AS sflg,  # 是否裸官
+		mrp.IDENTITY AS identity, #身份类别
+		pua.SFZYLD as sfzyld,  # 主要领导
+		pua.FMXX AS fmxx, # 负面信息
+		pua.SFBG as sfbg, # 是否变更
+		pua.SFZQJWYJ,    # 是否需要征求纪委意见
+		pua.SCZQJWYJSJ, # 上次 征求 时间
+		case when pua.JWJL =1 then '同意' when pua.JWJL = 2 then '不同意'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+		AS jwjl, # 纪委结论
+
+		case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
+		AS clshsftg # 材料审核是否通过
+
+
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		UNION
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'因私' AS businessType,  # 申请类型
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld, # 主要领导
+
+		pra.NEGATIVE_INFO fmxx, # 负面信息
+		"是否变更" as sfbg, # 是否变更
+		pra.SFZQJWYJ,    # 是否需要征求纪委意见
+		pra.SCZQJWYJSJ, # 上次 征求 时间
+		case when pra.JWJL =1 then '同意' when pra.JWJL = 2 then '不同意'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+		AS jwjl, # 纪委结论
+
+		case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
+		AS clshsftg # 材料审核是否通过
+
+		FROM
+		oms_pri_apply pra
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+		UNION
+
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'延期' AS businessType,  # 申请类型
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld , # 主要领导
+
+		pra.NEGATIVE_INFO fmxx, # 负面信息
+		"是否变更" as sfbg, # 是否变更
+		prda.SFZQJWYJ,    # 是否需要征求纪委意见
+		prda.SCZQJWYJSJ, # 上次 征求 时间
+		case when prda.JWJL =1 then '同意' when prda.JWJL = 2 then '不同意'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
+		AS jwjl, # 纪委结论
+
+		case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
+		AS clshsftg # 材料审核是否通过
+
+		FROM
+		oms_pri_delay_apply  prda
+		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+		) temp
+
+		where temp.clshsftg <![CDATA[ <> ]]> ''
+
+
+	</select>
+
+	<select id="selectJiweiWriteApply"  resultType="java.util.LinkedHashMap">
+
+		SELECT
+				*  from (
+						SELECT
+							   pua.id AS id,   # 业务id
+							   pua.leader_batch_id as batchId, # 批次id
+
+							   b.b0101 AS department,  # "部门名称"
+							   a.a0101 AS userName, # 人员名称
+							   pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+							   TIMESTAMPDIFF(DAY,now(),pua.CGSJ) as daynums, #  距离 出境天数
+							   pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+							   pua.CFRW AS cfrw,  #  出访任务
+							   "因公" AS businessType,  # 申请类型
+							   pua.CGSPDW AS cgspdw, # 审批单位
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+							   pua.JOB AS job,   #职务
+							   "暂无" AS applyTime,   # 申请日期
+							   pua.SMDJ AS secretLevel,  # 涉密等级
+							   "暂无" AS declassificaEndTime,  # 脱密结束日期
+							   pua.SFLG AS sflg,  # 是否裸官
+							   mrp.IDENTITY AS identity, #身份类别
+							   pua.SFZYLD as sfzyld,  # 主要领导
+							   pua.FMXX AS fmxx, # 负面信息
+							   pua.SFBG as sfbg, # 是否变更
+							   pua.SFZQJWYJ,    # 是否需要征求纪委意见
+							   pua.SCZQJWYJSJ, # 上次 征求 时间
+							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+								AS jwjl # 纪委意见
+
+								--          case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
+								--          AS clshsftg # 材料审核是否通过
+
+
+						FROM
+							 oms_pub_apply pua
+								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+						UNION
+						SELECT
+							   pra.id AS id, # 业务id
+
+							   pra.leader_batch_id as batchId, # 批次id
+
+
+							   b.b0101 AS department, 	# "部门名称"
+
+							   a.a0101 AS userName, # 人员名称
+
+							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
+
+							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+							   "无" AS cfrw,    #出访任务
+
+							   '因私' AS businessType,  # 申请类型
+
+							   "无" AS cgspdw,  # 审批单位
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+
+							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+							   pra.POSTRANK AS job, #职务
+
+							   pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+							   pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+							   mrp.IDENTITY AS identity, #身份类别
+
+							   pra.IS_LEADERS as sfzyld, # 主要领导
+
+							   pra.NEGATIVE_INFO fmxx, # 负面信息
+							   "是否变更" as sfbg, # 是否变更
+							   pra.SFZQJWYJ,    # 是否需要征求纪委意见
+							   pra.SCZQJWYJSJ, # 上次 征求 时间
+							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+								AS jwjl # 材料审核是否通过
+
+								--           case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
+								--           AS clshsftg # 材料审核是否通过
+
+						FROM
+							 oms_pri_apply pra
+								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+						UNION
+
+						SELECT
+							   pra.id AS id, # 业务id
+
+							   pra.leader_batch_id as batchId, # 批次id
+
+							   b.b0101 AS department, 	# "部门名称"
+
+							   a.a0101 AS userName, # 人员名称
+
+							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
+
+							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+							   "无" AS cfrw,    #出访任务
+
+							   '延期' AS businessType,  # 申请类型
+
+							   "无" AS cgspdw,  # 审批单位
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+
+							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+							   pra.POSTRANK AS job, #职务
+
+							   pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+							   pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+							   mrp.IDENTITY AS identity, #身份类别
+
+							   pra.IS_LEADERS as sfzyld , # 主要领导
+
+							   pra.NEGATIVE_INFO fmxx, # 负面信息
+							   "是否变更" as sfbg, # 是否变更
+							   prda.SFZQJWYJ,    # 是否需要征求纪委意见
+							   prda.SCZQJWYJSJ, # 上次 征求 时间
+							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
+								AS jwjl # 材料审核是否通过
+								--
+								--           case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
+								--           AS clshsftg # 材料审核是否通过
+
+						FROM
+							 oms_pri_delay_apply  prda
+								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+						) temp
+
+		where temp.SFZQJWYJ =1   # 纪委意见 这步 填写 必须上一步 要 征求过纪委意
+
+	</select>
+
+	<select id="selectPrivateApplyManager" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+  	SELECT
+	 pra.id AS id, # 业务id
+
+	 pra.leader_batch_id as batchId, # 批次id
+
+
+	 b.b0101 AS department, 	# "部门名称"
+
+	 a.a0101 AS userName, # 人员名称
+
+	 pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+	 pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+	 pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+	 "无" AS cfrw,    #出访任务
+
+	 '因私' AS businessType,  # 申请类型
+
+	 "无" AS cgspdw,  # 审批单位
+
+	 IF (
+		   a.A0104 NOT IN ('1', '2'),
+		   '未知',
+		   IF (a.A0104 = 1, '男', '女')
+			   ) AS sex,  # 性别
+
+	 mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+	 pra.POSTRANK AS job, #职务
+
+	 pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+	 pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+	 pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+	 pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+	 mrp.IDENTITY AS identity, #身份类别
+
+	 pra.IS_LEADERS as sfzyld , # 主要领导
+
+	 pra.NEGATIVE_INFO fmxx # 负面信息
+	 FROM
+	 oms_pri_apply pra
+	 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+	 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+	 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+	 left join ( select
+	 apply_id as applyId,
+	 min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
+	 min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as '处领导意见',
+	 min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as '部领导意见'
+	 from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pra.id = opinionTemp.applyId
+
+     <where>
+
+		 <if test="applyBeginDate != null and applyEndDate != null ">
+
+			 and pra.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pra.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
+
+		 </if>
+
+		 <if test="goabroadBeginDate != null and goabroadEndDate != null ">
+
+			 and pra.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pra.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
+
+		 </if>
+
+		 <if test="operatorUser != null and operatorUser != '' ">
+
+           and pra.CREATE_USER like concat('%',#{operatorUser},'%')
+
+		 </if>
+
+
+	 </where>
+
+
+	</select>
+
+
+
+	<select id="selectPulicApplyManager" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+
+
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department,  # "部门名称"
+		a.a0101 AS userName, # 人员名称
+		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		"因公" AS businessType,  # 申请类型
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+		pua.JOB AS job,   #职务
+		"暂无" AS applyTime,   # 申请日期
+		pua.SMDJ AS secretLevel,  # 涉密等级
+		"暂无" AS declassificaEndTime,  # 脱密结束日期
+		pua.SFLG AS sflg,  # 是否裸官
+		mrp.IDENTITY AS identity, #身份类别
+		pua.SFZYLD as sfzyld,  # 主要领导
+		pua.FMXX AS fmxx, # 负面信息
+		pua.clshsftg  as  clshsftg, # 材料审核
+		opinionTemp.cadresupervisionOpinion as  cadresupervisionOpinion, # 干部监督处意见
+		opinionTemp.cadresupervisionOpinion as  chulingdaoOpinion, # 处领导意见
+		opinionTemp.bulingdaoOpinion as  bulingdaoOpinion, # 部领导意见
+		pua.ZZJL  as zzjl       # 最终结论
+
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		left join ( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
+
+
+
+		<where>
+
+			<if test="applyBeginDate != null and applyEndDate != null ">
+
+				and pua.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pua.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
+
+			</if>
+
+			<if test="goabroadBeginDate != null and goabroadEndDate != null ">
+
+				and pua.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pua.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
+
+			</if>
+
+			<if test="operatorUser != null and operatorUser != '' ">
+
+				and pua.CREATE_USER like concat('%',#{operatorUser},'%')
+
+			</if>
+
+
+		</where>
+
+
+	</select>
+
+
+
+	<select id="selectPridelayApplyManager" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'延期' AS businessType,  # 申请类型
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld, # 主要领导
+
+		pra.NEGATIVE_INFO fmxx # 负面信息
+		FROM
+		oms_pri_delay_apply  prda
+		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+		left join ( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on prda.id = opinionTemp.applyId
+
+		<where>
+
+			<if test="applyBeginDate != null and applyEndDate != null ">
+
+				and pua.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pua.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
+
+			</if>
+
+			<if test="goabroadBeginDate != null and goabroadEndDate != null ">
+
+				and pua.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pua.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
+
+			</if>
+
+			<if test="operatorUser != null and operatorUser != '' ">
+
+				and pua.CREATE_USER like concat('%',#{operatorUser},'%')
+
+			</if>
+
+
+		</where>
+
+
+	</select>
+
+
+	<select id="selectjieweiOpinionCase" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+		select
+
+			   temp.`因公`,
+			   sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
+			   '同意' as '同意',
+			   sum(case when jio.feedback_verdict = 1 then 1 else 0 end ) as num1,
+			   '不同意' as '不同意',
+			   sum(case when jio.feedback_verdict = 2 then 1 else 0 end ) as num2,
+			   '不回复' as '不回复',
+			   sum(case when jio.feedback_verdict = 3 then 1 else 0 end ) as num3
+
+
+		FROM
+			 (
+			 select '因公' as '因公',ifnull(a.jiwei_opinion_id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+
+			 UNION ALL
+
+			 select '因私' as '因私',ifnull(a.jiwei_opinion_id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
+			 ) temp left join oms_jiwei_opinion jio on temp.applyId =jio.id  group by temp.`因公`
+		union all
+		select
+
+			   '合计' as '合计',
+			   sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
+			   '同意' as '同意',
+			   sum(case when jio.feedback_verdict = 1 then 1 else 0 end ) as num1,
+			   '不同意' as '不同意',
+			   sum(case when jio.feedback_verdict = 2 then 1 else 0 end ) as num2,
+			   '不回复' as '不回复',
+			   sum(case when jio.feedback_verdict = 3 then 1 else 0 end ) as num3
+
+
+		FROM
+			 (
+			 select '因公' as '因公',ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+
+			 UNION ALL
+
+			 select '因私' as '因私',ifnull(a.id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
+			 ) temp left join oms_jiwei_opinion jio on temp.applyId =jio.id
+
+	</select>
+
+
+
+	<select id="selectjieweiOpinionDetail" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
+
+		SELECT
+				*  from (
+						SELECT
+							   pua.id AS id,   # 业务id
+							   pua.leader_batch_id as batchId, # 批次id
+
+							   b.b0101 AS department,  # "部门名称"
+							   a.a0101 AS userName, # 人员名称
+							   "因公" AS businessType,  # 申请类型
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+								-- 			 mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
+							   pua.JOB AS job,   #职务
+							   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
+
+
+
+						FROM
+							 oms_pub_apply pua
+								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 left join oms_jiwei_opinion jio on pua.jiwei_opinion_id=jio.id
+						UNION
+						SELECT
+							   pra.id AS id, # 业务id
+
+							   pra.leader_batch_id as batchId, # 批次id
+
+
+							   b.b0101 AS department, 	# "部门名称"
+
+							   a.a0101 AS userName, # 人员名称
+
+
+
+							   '因私' AS businessType,  # 申请类型
+
+								-- 	 "无" AS cgspdw,  # 审批单位
+
+							   IF (
+								   a.A0104 NOT IN ('1', '2'),
+								   '未知',
+								   IF (a.A0104 = 1, '男', '女')
+									   ) AS sex,  # 性别
+
+							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+								-- 	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+							   pra.POSTRANK AS job, #职务
+							   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
+
+
+						FROM
+							 oms_pri_apply pra
+								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
+								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 left join oms_jiwei_opinion jio  on pra.jiwei_opinion_id =jio.id
+
+
+						) temp
+
+	</select>
+
+
+	<select id="selectAuditOpinion" parameterType="com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo" resultType="java.util.LinkedHashMap">
+
+# 		SELECT
+# 		*  from (
+# 		SELECT
+# 		pua.id AS id,   # 业务id
+# 		pua.leader_batch_id as batchId, # 批次id
+#
+# 		b.b0101 AS department,  # "部门名称"
+# 		a.a0101 AS userName, # 人员名称
+# 		pua.CGSJ AS cgsj,  # 出国时间 == 出境日期
+# 		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+# 		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+# 		pua.CFRW AS cfrw,  #  出访任务
+# 		"因公" AS businessType,  # 申请类型
+# 		pua.CGSPDW AS cgspdw, # 审批单位
+# 		"材料审核" as materialsCheck, # 材料审核
+# 		(case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+# 		(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
+# 		IF (
+# 		a.A0104 NOT IN ('1', '2'),
+# 		'未知',
+# 		IF (a.A0104 = 1, '男', '女')
+# 		) AS sex,  # 性别
+# 		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+# 		mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
+# 		pua.JOB AS job,   #职务
+# 		"暂无" AS applyTime,   # 申请日期
+# 		pua.SMDJ AS secretLevel,  # 涉密等级
+# 		"暂无" AS declassificaEndTime,  # 脱密结束日期
+# 		pua.SFLG AS sflg,  # 是否裸官
+# 		mrp.IDENTITY AS identity, #身份类别
+# 		pua.SFZYLD as sfzyld,  # 主要领导
+# 		pua.FMXX AS fmxx, # 负面信息
+# 		pua.SFBG as sfbg # 是否变更
+# 		FROM
+# 		oms_pub_apply pua
+# 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+# 		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+# 		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+# 		LEFT JOIN oms_jiwei_opinion jio on pua.jiwei_opinion_id = jio.id  # 纪委意见
+# 		left join oms_abroad_approval  aba on pua.id = aba.APPLY_ID      # 干部监督处 意见
+# 		UNION
+# 		SELECT
+# 		pra.id AS id, # 业务id
+#
+# 		pra.leader_batch_id as batchId, # 批次id
+#
+#
+# 		b.b0101 AS department, 	# "部门名称"
+#
+# 		a.a0101 AS userName, # 人员名称
+#
+# 		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+#
+# 		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+#
+# 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+#
+# 		"无" AS cfrw,    #出访任务
+#
+# 		'因私' AS businessType,  # 申请类型
+#
+# 		"无" AS cgspdw,  # 审批单位
+# 		"材料审核" as materialsCheck, # 材料审核
+# 		(case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+# 		(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
+#
+# 		IF (
+# 		a.A0104 NOT IN ('1', '2'),
+# 		'未知',
+# 		IF (a.A0104 = 1, '男', '女')
+# 		) AS sex,  # 性别
+#
+# 		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+#
+# 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+#
+# 		pra.POSTRANK AS job, #职务
+#
+# 		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+#
+# 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+#
+# 		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+#
+# 		pra.IS_LUOGUAN AS sflg, # 是否裸官
+#
+# 		mrp.IDENTITY AS identity, #身份类别
+#
+# 		pra.IS_LEADERS, # 主要领导
+#
+# 		pra.NEGATIVE_INFO fmxx, # 负面信息
+# 		"因私不显示" as sfbg # 是否变更
+# 		FROM
+# 		oms_pri_apply pra
+# 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+# 		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+# 		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+#
+# 		LEFT JOIN oms_jiwei_opinion jio on pra.jiwei_opinion_id = jio.id  # 纪委意见
+# 		left join oms_abroad_approval  aba on pra.id = aba.APPLY_ID      # 干部监督处 意见
+#
+# 		UNION
+#
+# 		SELECT
+# 		pra.id AS id, # 业务id
+#
+# 		pra.leader_batch_id as batchId, # 批次id
+#
+# 		b.b0101 AS department, 	# "部门名称"
+#
+# 		a.a0101 AS userName, # 人员名称
+#
+# 		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+#
+# 		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+#
+# 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+#
+# 		"无" AS cfrw,    #出访任务
+#
+# 		'延期' AS businessType,  # 申请类型
+#
+# 		"无" AS cgspdw,  # 审批单位
+# 		"材料审核" as materialsCheck, # 材料审核
+# 		( case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else  '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+# 		(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
+#
+# 		IF (
+# 		a.A0104 NOT IN ('1', '2'),
+# 		'未知',
+# 		IF (a.A0104 = 1, '男', '女')
+# 		) AS sex,  # 性别
+#
+# 		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+#
+# 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+#
+# 		pra.POSTRANK AS job, #职务
+#
+# 		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+#
+# 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+#
+# 		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+#
+# 		pra.IS_LUOGUAN AS sflg, # 是否裸官
+#
+# 		mrp.IDENTITY AS identity, #身份类别
+#
+# 		pra.IS_LEADERS, # 主要领导
+#
+# 		pra.NEGATIVE_INFO fmxx, # 负面信息
+# 		"延期不显示" as sfbg # 是否变更
+# 		FROM
+# 		oms_pri_delay_apply  prda
+# 		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+# 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+# 		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+# 		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+# 		LEFT JOIN oms_jiwei_opinion jio on prda.jiwei_opinion_id = jio.id  # 纪委意见
+# 		left join oms_abroad_approval  aba on prda.id = aba.APPLY_ID      # 干部监督处 意见
+# 		) temp
+
+
+	   <if test="bussinessType!=null and bussinessType !='' and bussinessType ='1' " >
+	   # 因公出国
+	  #  and temp.businessType = '因公'
+
+		   SELECT
+		   pua.id AS id,   # 业务id
+		   pua.leader_batch_id as batchId, # 批次id
+
+		   b.b0101 AS department,  # "部门名称"
+		   a.a0101 AS userName, # 人员名称
+		   pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		   pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		   pua.CFRW AS cfrw,  #  出访任务
+		   "因公" AS businessType,  # 申请类型
+		   pua.CGSPDW AS cgspdw, # 审批单位
+		   "材料审核" as materialsCheck, # 材料审核
+		   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
+		   IF (
+		   a.A0104 NOT IN ('1', '2'),
+		   '未知',
+		   IF (a.A0104 = 1, '男', '女')
+		   ) AS sex,  # 性别
+		   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		   mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
+		   pua.JOB AS job,   #职务
+		   "暂无" AS applyTime,   # 申请日期
+		   pua.SMDJ AS secretLevel,  # 涉密等级
+		   "暂无" AS declassificaEndTime,  # 脱密结束日期
+		   pua.SFLG AS sflg,  # 是否裸官
+		   mrp.IDENTITY AS identity, #身份类别
+		   pua.SFZYLD as sfzyld,  # 主要领导
+		   pua.FMXX AS fmxx, # 负面信息
+		   pua.SFBG as sfbg # 是否变更
+		   FROM
+		   oms_pub_apply pua
+		   LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		   LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		   LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		   LEFT JOIN oms_jiwei_opinion jio on pua.jiwei_opinion_id = jio.id  # 纪委意见
+		   left join oms_abroad_approval  aba on pua.id = aba.APPLY_ID and aba.STEP_CODE = '23'     # 干部监督处 意见
+
+	   </if>
+
+	   <if test="bussinessType!=null and bussinessType !='' and bussinessType ='2' " >
+	   # 因私出国
+	  #  and temp.businessType = '因私'
+		   SELECT
+
+
+		   pra.id AS id, # 业务id
+
+		   pra.leader_batch_id as batchId, # 批次id
+
+
+		   b.b0101 AS department, 	# "部门名称"
+
+		   a.a0101 AS userName, # 人员名称
+
+		   "无" AS cfrw,    #出访任务
+
+		   '因私' AS businessType,  # 申请类型
+
+		   "无" AS cgspdw,  # 审批单位
+
+		   IF (
+		   a.A0104 NOT IN ('1', '2'),
+		   '未知',
+		   IF (a.A0104 = 1, '男', '女')
+		   ) AS sex,  # 性别
+
+		   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		   pra.POSTRANK AS job, #职务
+
+		   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		   pra.ABROAD_REASONS as abrodaReasons, # 事由
+
+
+
+		   "材料审核" as materialsCheck, # 材料审核
+		   ( case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else  '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
+
+		   "材料清单" as    , # 材料清单
+
+		   -- 			 pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		   pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		   mrp.IDENTITY AS identity, #身份类别
+
+		   pra.IS_LEADERS as sfzyld, # 主要领导
+
+		   pra.NEGATIVE_INFO fmxx # 负面信息
+
+
+
+
+
+
+
+		   FROM
+		   oms_pri_apply pra
+		   LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		   LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		   LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+		   LEFT JOIN oms_jiwei_opinion jio on pra.jiwei_opinion_id = jio.id  # 纪委意见
+		   left join oms_abroad_approval  aba on pra.id = aba.APPLY_ID  and aba.STEP_CODE = '23'    # 干部监督处 意见
+
+	   </if>
+
+	   <if test="bussinessType!=null and bussinessType !='' and bussinessType ='3' " >
+	   # 延期出国
+	   # and temp.businessType = '延期'
+
+		   SELECT
+		   pra.id AS id, # 业务id
+
+		   pra.leader_batch_id as batchId, # 批次id
+
+		   b.b0101 AS department, 	# "部门名称"
+
+		   a.a0101 AS userName, # 人员名称
+
+
+
+		   IF (
+		   a.A0104 NOT IN ('1', '2'),
+		   '未知',
+		   IF (a.A0104 = 1, '男', '女')
+		   ) AS sex,  # 性别
+
+		   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		   pra.POSTRANK AS job, #职务
+
+		   pra.APPLY_TIME as delayApplyTime, # 延期申请时间
+		   prda.DELAY_REASON as delayReson, #  延期 入境原因
+
+		   -- 	   pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		   -- 		   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+		   "材料审核" as materialsCheck, # 材料审核
+		   ( case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else  '暂无数据'  end ) as jiweiOpinion, # 纪委意见
+		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
+
+		   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		   pra.ABROAD_REASONS as abrodaReasons # 事由
+		   FROM
+		   oms_pri_delay_apply  prda
+		   LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		   LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		   LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		   LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+		   LEFT JOIN oms_jiwei_opinion jio on prda.jiwei_opinion_id = jio.id  # 纪委意见
+		   left join oms_abroad_approval  aba on prda.id = aba.APPLY_ID  and aba.STEP_CODE = '23'     # 干部监督处 意见
+
+	   </if>
+
+	</select>
+
+
+	<select id="selectChuZhangApprover" parameterType="com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo" resultType="java.util.LinkedHashMap">
+
+        SELECT
+
+        *  from (
+
+        SELECT
+        pua.id AS id,   # 业务id
+        pua.leader_batch_id as batchId, # 批次id
+
+        b.b0101 AS department,  # "部门名称"
+        a.a0101 AS userName, # 人员名称
+        pua.CGSJ AS cgsj,  # 出国时间 == 出境日期
+        pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+        pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+        pua.CFRW AS cfrw,  #  出访任务
+        mrp.INCUMBENCY_STATUS as incumbencyStatus, # 在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它
+        "因公" AS businessType,  # 申请类型
+        -- 		   pua.CGSPDW AS cgspdw, # 审批单位
+        case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+        case pua.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+        CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+        "查看" as materialsList, # 材料清单
+
+
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
+        mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+        mrp.POLITICAL_AFFINAME AS politicalAffi,  # 政治面貌
+        pua.JOB AS job,   #职务
+        "暂无" AS applyTime,   # 申请日期
+        pua.SMDJ AS secretLevel,  # 涉密等级
+        "暂无" AS declassificaEndTime,  # 脱密结束日期
+        pua.SFLG AS sflg,  # 是否裸官
+        mrp.IDENTITY AS identity, #身份类别
+        pua.SFZYLD as sfzyld,  # 主要领导
+        pua.FMXX AS fmxx, # 负面信息
+        pua.SFBG as sfbg # 是否变更
+        FROM
+        oms_pub_apply pua
+        LEFT JOIN b01 b ON pua.b0100 = b.b0100
+        LEFT JOIN a01 a ON pua.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+        UNION
+        SELECT
+        pra.id AS id, # 业务id
+
+        pra.leader_batch_id as batchId, # 批次id
+
+
+        b.b0101 AS department, 	# "部门名称"
+
+        a.a0101 AS userName, # 人员名称
+
+        pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+        pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+        "无" AS cfrw,    #出访任务
+        mrp.INCUMBENCY_STATUS as incumbencyStatus, # 在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它
+
+        '因私' AS businessType,  # 申请类型
+
+        -- 	   "无" AS cgspdw,  # 审批单位
+        case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+        case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+        CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+        "查看" as materialsList, # 材料清单
+
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
+
+        mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+        pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+        pra.POSTRANK AS job, #职务
+
+        pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+        pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+        pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+        pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+        mrp.IDENTITY AS identity, #身份类别
+
+        pra.IS_LEADERS as sfzyld, # 主要领导
+
+        pra.NEGATIVE_INFO fmxx, # 负面信息
+
+        '是否变更' as sfbg # 是否变更
+
+        FROM
+        oms_pri_apply pra
+        LEFT JOIN b01 b ON pra.b0100 = b.b0100
+        LEFT JOIN a01 a ON pra.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+        UNION
+
+        SELECT
+        pra.id AS id, # 业务id
+
+        pra.leader_batch_id as batchId, # 批次id
+
+        b.b0101 AS department, 	# "部门名称"
+
+        a.a0101 AS userName, # 人员名称
+
+        pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+        pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+        pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+
+        "无" AS cfrw,    #出访任务
+        mrp.INCUMBENCY_STATUS as incumbencyStatus, # 在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它
+
+        '延期' AS businessType,  # 申请类型
+
+        -- 	   "无" AS cgspdw,  # 审批单位
+        case prda.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+        case prda.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+        CASE prda.ZZJL    when 1 then '通过'  when 2  then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+        "查看" as materialsList, # 材料清单
+
+
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
+
+        mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+        pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+        pra.POSTRANK AS job, #职务
+
+        pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+        pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+        pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+        pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+        mrp.IDENTITY AS identity, #身份类别
+
+        pra.IS_LEADERS as sfzyld, # 主要领导
+
+        pra.NEGATIVE_INFO fmxx, # 负面信息
+        '是否变更' as sfbg # 是否变更
+        FROM
+        oms_pri_delay_apply  prda
+        LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+        LEFT JOIN b01 b ON pra.b0100 = b.b0100
+        LEFT JOIN a01 a ON pra.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+        ) temp
+
+        where temp.clshsftg <![CDATA[ <> ]]> '暂无数据' and temp.jdcjl <![CDATA[ <> ]]> '暂无数据'   #  到处领导 审批 必须前面 的流程都要走过
+
+        ORDER BY
+        cgsj # 按照出境时间 升序排序
+
+
+
+    </select>
+
+
+	<select id="selectBuZhangApprover" parameterType="com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo" resultType="java.util.LinkedHashMap">
+
+		SELECT
+
+		*  from (
+
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department,  # "部门名称"
+		a.a0101 AS userName, # 人员名称
+		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		"因公" AS businessType,  # 申请类型
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+		pua.JOB AS job,   #职务
+		"暂无" AS applyTime,   # 申请日期
+		pua.SMDJ AS secretLevel,  # 涉密等级
+		"暂无" AS declassificaEndTime,  # 脱密结束日期
+		pua.SFLG AS sflg,  # 是否裸官
+		mrp.IDENTITY AS identity, #身份类别
+		pua.SFZYLD as sfzyld,  # 主要领导
+		pua.FMXX AS fmxx, # 负面信息
+		case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+		case pua.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+		opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+		opinionTemp.chulingdaoOpinion, # 处领导意见
+		opinionTemp.bulingdaoOpinion,  # 部领导意见
+		CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+		pua.SFBG as sfbg # 是否变更
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		left join( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
+
+		where     opinionTemp.chulingdaoOpinion <![CDATA[ <> ]]> '暂无数据'            # 因公 部长 审批
+		UNION
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'因私' AS businessType,  # 申请类型
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld, # 主要领导
+
+		pra.NEGATIVE_INFO fmxx, # 负面信息
+		case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+		case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+		opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+		opinionTemp.chulingdaoOpinion, # 处领导意见
+		opinionTemp.bulingdaoOpinion,  # 部领导意见
+		CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+		"是否变更" as sfbg # 是否变更
+
+		FROM
+		oms_pri_apply pra
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+		left join ( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无数据'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无数据'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无数据'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pra.id = opinionTemp.applyId
+
+		where opinionTemp.chulingdaoOpinion <![CDATA[ <> ]]> '暂无数据'  AND pra.APPLY_STATUS <![CDATA[ <> ]]> '28'  # 因为 因私 退休 处长 审批 同学后 以班级 不需部长审批
+
+		UNION
+
+		SELECT
+		pra.id AS id, # 业务id
+
+		pra.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department, 	# "部门名称"
+
+		a.a0101 AS userName, # 人员名称
+
+		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+
+		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+
+		pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+
+		"无" AS cfrw,    #出访任务
+
+		'延期' AS businessType,  # 申请类型
+
+		"无" AS cgspdw,  # 审批单位
+
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+
+		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+
+		pra.POSTRANK AS job, #职务
+
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+
+		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
+
+		mrp.IDENTITY AS identity, #身份类别
+
+		pra.IS_LEADERS as sfzyld , # 主要领导
+
+		pra.NEGATIVE_INFO fmxx, # 负面信息
+		case prda.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+		case prda.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+		opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+		opinionTemp.chulingdaoOpinion, # 处领导意见
+		opinionTemp.bulingdaoOpinion,  # 部领导意见
+		CASE prda.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+		"是否变更" as sfbg # 是否变更
+		FROM
+		oms_pri_delay_apply  prda
+		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+		left join ( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无数据'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无数据'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无数据'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on prda.id = opinionTemp.applyId
+
+		where opinionTemp.chulingdaoOpinion <![CDATA[ <> ]]> '暂无数据'  # 因私流程 部长审批
+
+		) temp
+
+		ORDER BY
+		abroadTime # 按照出境时间 升序排序
+
+
+	</select>
+
+
+
+	<select id="selectInstructionsVerify" parameterType="com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo" resultType="java.util.LinkedHashMap">
+
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+
+		b.b0101 AS department,  # "部门名称"
+		a.a0101 AS userName, # 人员名称
+		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
+		TLSJ,  # 停留时间
+		pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		pua.PWH  as pwh,   #批文
+	   "因公" AS businessType,  # 申请类型
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		a.A0104 NOT IN ('1', '2'),
+		'未知',
+		IF (a.A0104 = 1, '男', '女')
+		) AS sex,  # 性别
+		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+
+		pua.JOB AS job,   #职务
+
+
+		pua.SFBG as sfbg # 是否变更
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		left join( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
+
+		where     opinionTemp.bulingdaoOpinion <![CDATA[ <> ]]> '暂无答复'            # 因公 批件核实
+
+
+	</select>
+
+
+
+
+</mapper>

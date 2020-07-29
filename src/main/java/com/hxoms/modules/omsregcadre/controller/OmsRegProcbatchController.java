@@ -55,7 +55,6 @@ public class OmsRegProcbatchController {
      * @return
      */
     @GetMapping("/getHistoryBatch")
-    @RequestMapping
     public Result getHistoryBatch() {
         try{
             List<String> historybatchList = orpbatchService.getHistoryBatch();
