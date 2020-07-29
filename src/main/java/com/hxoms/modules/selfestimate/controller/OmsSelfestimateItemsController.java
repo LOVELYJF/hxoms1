@@ -4,6 +4,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.selfestimate.entity.OmsSelfFile;
 import com.hxoms.modules.selfestimate.entity.OmsSelfFileVO;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems;
+import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO;
 import com.hxoms.modules.selfestimate.service.OmsSelfestimateItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class OmsSelfestimateItemsController {
      */
     @GetMapping("/selectItemList")
     public Result selectItemList(String type) throws Exception {
-        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectItemsList(type);
-        return Result.success(omsSelfFileVOS);
+        List<OmsSelfFile> omsSelfFile = omsSelfestimateItemsService.selectItemsList(type);
+        return Result.success(omsSelfFile);
     }
 
     /**
@@ -109,4 +110,29 @@ public class OmsSelfestimateItemsController {
         return Result.success(result);
     }
 
+    /**
+     * 自评项目维护列表
+     * @return
+     * @param selffileId 自评材料清单id
+     * @throws Exception
+     */
+    @GetMapping("/selectSelfItemList")
+    public Result selectSelfItemList(String selffileId) throws Exception {
+        List<OmsSelfestimateItems> omsSelfestimateItems = omsSelfestimateItemsService.selectSelfItemList(selffileId);
+        return Result.success(omsSelfestimateItems);
+    }
+
+    /**
+     * 自评结果项列表
+     * @return
+     * @param applyId 自评id
+     * @param applyId 申请id
+     * @param personType 操作人类型（经办人  干部监督处）
+     * @throws Exception
+     */
+    @GetMapping("/selectFileItemsList")
+    public Result selectFileItemsList(String type, String selffileId, String applyId, String personType) throws Exception {
+        OmsSelfFileVO omsSelfFileVO = omsSelfestimateItemsService.selectFileItemsList(type, selffileId, applyId, personType);
+        return Result.success(omsSelfFileVO);
+    }
 }

@@ -7,6 +7,7 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.passportCard.entity.CfCertificate;
@@ -52,6 +53,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private CountryMapper countryMapper;
     @Autowired
     private OmsAbroadApprovalService omsAbroadApprovalService;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -103,11 +106,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
-        QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-        cfCertificate.eq("A0100", a0100)
-                .eq("IS_VALID", 0);
-        List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
-        omsPriApplyVO.setCfCertificates(cfCertificates);
+        if (omsPriApplyVO.getPaper() != null && omsPriApplyVO.getPaper() == 16){
+            //非省委管理证照
+            omsPriApplyVO.setDescription("非省委管理证照");
+        }else{
+            QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
+            cfCertificate.eq("A0100", a0100)
+                    .eq("IS_VALID", 0);
+            List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+            omsPriApplyVO.setCfCertificates(cfCertificates);
+        }
         //约束条件
         /*List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, Constants.oms_business[1]);
         omsPriApplyVO.setCondition(condition);*/
@@ -154,6 +162,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             QueryWrapper<OmsPriTogetherperson> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("APPLY_ID", omsPriApply.getId());
             omsPriTogetherpersonMapper.delete(queryWrapper);
+            //删除生成文件
+            omsCreateFileService.deleteCreateFile(Constants.oms_business[1], omsPriApply.getId());
         }
         //随行人员信息保存
         for (OmsPriTogetherperson omsPriTogetherperson : omsPriTogetherpersonList) {

@@ -133,8 +133,11 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT_NUM",   FieldDescription="港澳通行证号")
     private String hongkongandmacaoPassportNum;
 
-    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_VISA",   FieldDescription="港澳签注(1一次、2多次)")
-    private Integer hongkongandmacaoVisa;
+    @ColumnAnnotation(FieldName = "MACAO_VISA",   FieldDescription="澳门签注")
+    private Integer macaoVisa;
+
+    @ColumnAnnotation(FieldName = "HONGKONG_VISA",   FieldDescription="香港签注(1一次、2多次)")
+    private Integer hongkongVisa;
 
     @ColumnAnnotation(FieldName = "TAIWAN_PASSPORT",   FieldDescription="台湾通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer taiwanPassport;
@@ -482,12 +485,20 @@ public class OmsPriApply {
         this.hongkongandmacaoPassportNum = hongkongandmacaoPassportNum == null ? null : hongkongandmacaoPassportNum.trim();
     }
 
-    public Integer getHongkongandmacaoVisa() {
-        return hongkongandmacaoVisa;
+    public Integer getMacaoVisa() {
+        return macaoVisa;
     }
 
-    public void setHongkongandmacaoVisa(Integer hongkongandmacaoVisa) {
-        this.hongkongandmacaoVisa = hongkongandmacaoVisa;
+    public void setMacaoVisa(Integer macaoVisa) {
+        this.macaoVisa = macaoVisa;
+    }
+
+    public Integer getHongkongVisa() {
+        return hongkongVisa;
+    }
+
+    public void setHongkongVisa(Integer hongkongVisa) {
+        this.hongkongVisa = hongkongVisa;
     }
 
     public Integer getTaiwanPassport() {
