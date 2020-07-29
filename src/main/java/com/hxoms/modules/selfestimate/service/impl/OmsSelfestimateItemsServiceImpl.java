@@ -6,6 +6,8 @@ import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
@@ -49,6 +51,8 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
     private OmsSelfestimateResultitemMapper omsSelfestimateResultitemMapper;
     @Autowired
     private OmsPriApplyMapper omsPriApplyMapper;
+    @Autowired
+    private OmsFileMapper omsFileMapper;
 
     @Override
     public List<OmsSelfFile> selectItemsList(String type) {
@@ -148,6 +152,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         return "删除成功";
     }
 
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public List<OmsSelfFileVO> selectFileList(String type, String applyId, String personType) {
         if (StringUtils.isEmpty(type) || StringUtils.isBlank(applyId)){
@@ -157,6 +162,14 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+        //查询自评项目是否初始化
+        QueryWrapper<OmsSelfFile> wrapper = new QueryWrapper<>();
+        wrapper.eq("B0100", b01.getB0100())
+                .eq("TYPE", type);
+        if (omsSelfFileMapper.selectCount(wrapper) < 1){
+            //初始化
+            initOmsSelfEstimate(type, b01.getB0100());
+        }
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("b0100", b01.getB0100());
         paramMap.put("type", type);
@@ -220,5 +233,38 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         List<OmsSupMajorLeader> omsSupMajorLeaders = omsSupMajorLeaderMapper.selectList(wrapper);
         omsSelfFileVO.setPersonInfoVOS(omsSupMajorLeaders);
         return omsSelfFileVO;
+    }
+
+    /**
+     * 初始化自评项目
+     * @param type 类型（因公，因私）
+     */
+    private void initOmsSelfEstimate(String type, String b0100){
+        QueryWrapper<OmsSelfFile> wrapper = new QueryWrapper<>();
+        //初始化
+        wrapper.isNull("B0100")
+                .eq("TYPE", type);
+        List<OmsSelfFile> omsSelfFiles = omsSelfFileMapper.selectList(wrapper);
+        for (OmsSelfFile omsSelfFile : omsSelfFiles){
+            //查询自评项目
+            QueryWrapper<OmsSelfestimateItems> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("SELFFILE_ID", omsSelfFile.getId());
+            List<OmsSelfestimateItems> omsSelfestimateItems = omsSelfestimateItemsMapper.selectList(queryWrapper);
+            omsSelfFile.setId(UUIDGenerator.getPrimaryKey());
+            omsSelfFile.setB0100(b0100);
+            omsSelfFile.setCreateTime(new Date());
+            //查询文件id
+            QueryWrapper<OmsFile> omsFileQueryWrapper = new QueryWrapper<>();
+            omsFileQueryWrapper.eq("B0100", b0100)
+                    .eq("FILE_ID", omsSelfFile.getCheckfileId());
+            OmsFile omsFile = omsFileMapper.selectOne(omsFileQueryWrapper);
+            omsSelfFile.setCheckfileId(omsFile.getId());
+            omsSelfFileMapper.insert(omsSelfFile);
+            for (OmsSelfestimateItems omsSelfestimateItems1 : omsSelfestimateItems){
+                omsSelfestimateItems1.setId(UUIDGenerator.getPrimaryKey());
+                omsSelfestimateItems1.setSelffileId(omsSelfFile.getId());
+                omsSelfestimateItemsMapper.insert(omsSelfestimateItems1);
+            }
+        }
     }
 }
