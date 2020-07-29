@@ -141,12 +141,10 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	/**
 	 * <b>根据人员主键查询家庭成员信息(配偶子女)</b>
 	 * @param a0100
-	 * @param page
 	 * @return
 	 */
-	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
+	public List<A36> getFamilyMember(String a0100) {
 
-		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		//根据身份证号码切割得到出生日期
 		if(list != null && list.size() > 0){
@@ -155,12 +153,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				a36.setA3607(birthdate);
 			}
 		}
-
-		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
-		page.setRecords(list);
-		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
-		return page;
+		return list;
 	}
 
 
