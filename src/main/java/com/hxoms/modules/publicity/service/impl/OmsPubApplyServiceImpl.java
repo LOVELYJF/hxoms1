@@ -123,7 +123,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //创建时间
             omsPubApply.setCreateTime(new Date());
             //申请状态
-            omsPubApply.setSqzt(Constants.private_business[0]);
+            omsPubApply.setSqzt(Constants.private_business[1]);
             //是否下达(1-是,0-否)
             omsPubApply.setSfxd(1);
 //            //如果是琼赴台，往预备案表插入数据
@@ -153,7 +153,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //判断校验类型
         result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
         if (StringUtils.isBlank(result)) {
-            result = "保存成功";
+            result = omsPubApply.getId();
         }
         return result;
     }
@@ -192,6 +192,14 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         return applyList;
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈根据id查询申请记录〉
+     * @Param: [id]
+     * @Return: com.hxoms.modules.publicity.entity.OmsPubApply
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 10:30
+     */
     @Override
     public OmsPubApply selectPubApplyById(String id) {
         return omsPubApplyMapper.selectById(id);
@@ -208,7 +216,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void deletePubApplyById(String id) {
-        if (id == null || id.equals("")){
+        if (id == null || "".equals(id)){
             throw new CustomMessageException("参数为空!");
         }
         omsPubApplyMapper.deletePubApplyById(id);
@@ -306,37 +314,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     /**
      * 功能描述: <br>
-     * 〈获取台办变更前信息〉
-     * @Param: [pwh]
-     * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
-     * @Author: 李逍遥
-     * @Date: 2020/7/3 11:46
-     */
-    @Override
-    public OmsPubApplyChange getPubApplyChangeByPwh(String pwh) {
-        if (pwh == null || pwh.equals("")){
-            throw new CustomMessageException("参数为空!");
-        }
-        OmsPubApplyChange omsPubApplyChange = new OmsPubApplyChange();
-        //通过批文号查询预备案信息
-        OmsPubGroupPreApproval omsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(pwh);
-        if (omsPubGroupPreApproval != null){
-            //备案ID
-            omsPubApplyChange.setBaId(pwh);
-            //原出国时间
-            omsPubApplyChange.setYcgsj(omsPubGroupPreApproval.getCgsj());
-            //原入境时间、
-            omsPubApplyChange.setYhgsj(omsPubGroupPreApproval.getHgsj());
-            // 原出访任务、
-            omsPubApplyChange.setYcfrw(omsPubGroupPreApproval.getCfrw());
-            // 原出访事由
-            omsPubApplyChange.setYcfsy(omsPubGroupPreApproval.getCfsy());
-        }
-        return omsPubApplyChange;
-    }
-
-    /**
-     * 功能描述: <br>
      * 〈保存台办变更后信息〉
      * @Param: [omsPubApplyChange]
      * @Return: void
@@ -356,25 +333,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApplyChange.setModifyUser(loginUser.getId());
         omsPubApplyChange.setModifyTime(new Date());
         omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
-        // 更新预备案申请表、
-        OmsPubGroupPreApproval omsPubGroupPreApproval = new OmsPubGroupPreApproval();
-        //备案号
-        omsPubGroupPreApproval.setId(omsPubApplyChange.getBaId());
-        //现出国时间
-        omsPubGroupPreApproval.setCgsj(omsPubApplyChange.getXcgsj());
-        //现回国时间
-        omsPubGroupPreApproval.setHgsj(omsPubApplyChange.getXhgsj());
-        //现出访任务
-        omsPubGroupPreApproval.setCfrw(omsPubApplyChange.getXcfrw());
-        //现出访事由
-        omsPubGroupPreApproval.setCfsy(omsPubApplyChange.getXcfsy());
-        //现申请状态
-        omsPubGroupPreApproval.setSqzt(omsPubApplyChange.getSqzt());
-        omsPubGroupPreApprovalMapper.updateByPrimaryKeySelective(omsPubGroupPreApproval);
+
         // 更新备案申请表
-        OmsPubApply omsPubApply = new OmsPubApply();
-        //批文号
-        omsPubApply.setPwh(omsPubApplyChange.getBaId());
+        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(omsPubApplyChange.getBaId());
         //现出国时间、
         omsPubApply.setCgsj(omsPubApplyChange.getXcgsj());
         // 现回国时间、
@@ -387,25 +348,28 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setModifyTime(new Date());
         // 修改人、
         omsPubApply.setModifyUser(loginUser.getId());
-        // 修改时申请状态
-        omsPubApply.setSqzt(omsPubApplyChange.getSqzt());
-        omsPubApplyMapper.updateByPwh(omsPubApply);
+        // 是否变更
+        omsPubApply.setSfbg("1");
+        //申请状态
+        //TODO
+        omsPubApplyMapper.updateById(omsPubApply);
+        //omsPubApplyMapper.updateByPwh(omsPubApply);
     }
 
     /**
      * 功能描述: <br>
-     * 〈通过批文号获取变更前后信息〉
+     * 〈通过id获取变更前后信息〉
      * @Param: [pwh]
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:08
      */
     @Override
-    public OmsPubApplyChange getPubApplyChange(String pwh) {
-        if (pwh == null || pwh.equals("")){
+    public OmsPubApplyChange getPubApplyChange(String id) {
+        if (id == null || "".equals(id)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(pwh);
+        OmsPubApplyChange omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
         return omsPubApplyChange;
     }
 
@@ -632,6 +596,62 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     public List<CountStatusResult> selectPubCountStatus() {
         List<CountStatusResult> countStatusResults = omsPubApplyMapper.selectPubCountStatus();
         return countStatusResults;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈因公下一步操作根据id更改状态〉
+     * @Param: [id]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 9:48
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void updateSQZTById(String id) {
+        if (id == null ||"".equals(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
+        if (omsPubApply == null){
+            throw new CustomMessageException("申请记录为空");
+        }
+        Integer sqzt = omsPubApply.getSqzt();
+        if (sqzt == Constants.private_business[0]){
+            //更改为生成材料1
+            sqzt = Constants.private_business[1];
+        } else if (sqzt == Constants.private_business[1]){
+            //更改为打印材料清单 2
+            sqzt = Constants.private_business[2];
+        }else if (sqzt == Constants.private_business[2]){
+            //更改为签字盖章 3
+            sqzt = Constants.private_business[3];
+        }else if (sqzt == Constants.private_business[3]){
+            //更改为自评 4
+            sqzt = Constants.private_business[4];
+        }else if (sqzt == Constants.private_business[4]){
+            //更改为业务办理
+            sqzt = Constants.leader_business[0];
+        }
+        omsPubApply.setSqzt(sqzt);
+        omsPubApplyMapper.updateById(omsPubApply);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈台办获取相同批文号的人员〉
+     * @Param: [pwh]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 17:31
+     */
+    @Override
+    public List<OmsPubApplyVO> getPubApplyByPwh(String pwh) {
+        if (StringUtils.isBlank(pwh)){
+            throw new CustomMessageException("参数为空!");
+        }
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
+        return omsPubApplyVOS;
     }
 
     /** 封装方法——封装干教人员信息*/

@@ -40,6 +40,14 @@ public interface OmsPubApplyService {
      */
     List<OmsPubApply> selectPubApplyList();
 
+    /**
+     * 功能描述: <br>
+     * 〈根据id查询申请记录〉
+     * @Param: [id]
+     * @Return: com.hxoms.modules.publicity.entity.OmsPubApply
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 10:29
+     */
     OmsPubApply selectPubApplyById(String id);
 
     /**
@@ -82,15 +90,6 @@ public interface OmsPubApplyService {
      */
     void repealPubApplyById(String id, String cxyy);
 
-    /**
-     * 功能描述: <br>
-     * 〈获取台办变更前信息〉
-     * @Param: [pwh]
-     * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
-     * @Author: 李逍遥
-     * @Date: 2020/7/3 11:30
-     */
-    OmsPubApplyChange getPubApplyChangeByPwh(String pwh);
 
     /**
      * 功能描述: <br>
@@ -104,13 +103,13 @@ public interface OmsPubApplyService {
 
     /**
      * 功能描述: <br>
-     * 〈通过批文号获取变更前后信息〉
-     * @Param: [pwh]
+     * 〈通过id获取变更前后信息〉
+     * @Param: [id]
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:06
      */
-    OmsPubApplyChange getPubApplyChange(String pwh);
+    OmsPubApplyChange getPubApplyChange(String id);
 
     /**
      * 功能描述: <br>
@@ -171,4 +170,24 @@ public interface OmsPubApplyService {
      * @Date: 2020/7/27 15:04
      */
     List<CountStatusResult> selectPubCountStatus();
+
+    /**
+     * 功能描述: <br>
+     * 〈因公下一步操作根据id更改状态〉
+     * @Param: [id]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 9:48
+     */
+    void updateSQZTById(String id);
+
+    /**
+     * 功能描述: <br>
+     * 〈台办获取相同批文号的人员〉
+     * @Param: [pwh]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 17:30
+     */
+    List<OmsPubApplyVO> getPubApplyByPwh(String pwh);
 }
