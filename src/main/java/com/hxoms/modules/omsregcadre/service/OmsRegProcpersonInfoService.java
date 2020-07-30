@@ -57,7 +57,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     Map<String, Object> selectStatisticsCount();
 
-    List<OmsRegProcpersoninfo> selectMergeList(String dataType);
+    List<OmsRegProcpersoninfo> selectMergeList();
 
     List<OmsRegProcpersoninfo> selectListById(String idStr);
 

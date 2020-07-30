@@ -2,11 +2,14 @@ package com.hxoms.modules.omsregcadre.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,20 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("/OmsRegRevokeApply")
+@RequestMapping("/omsRegRevokeApply")
 public class OmsRegRevokeApplyController {
     @Autowired
     private OmsRegRevokeApplyService revokeApplyService;
 
     /**
      * 查询申请撤销登记备案列表
-     * @param revokeApply
+     * @param revokeApplyIPagParam
      * @return
      */
-    @PostMapping("/queryRevokeApplyList")
-    public Result queryRevokeApplyList(Page page) {
+    @GetMapping("/queryRevokeApplyList")
+    public Result queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
         try {
-            IPage<OmsRegRevokeapply> revokeApplyList = revokeApplyService.queryRevokeApplyList(page);
+            PageInfo<OmsRegRevokeapply> revokeApplyList = revokeApplyService.queryRevokeApplyList(revokeApplyIPagParam);
             return Result.success(revokeApplyList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,35 +58,37 @@ public class OmsRegRevokeApplyController {
      * @return
      */
     @PostMapping("/insertRevokeRegPerson")
-    public Result insertRevokeRegPerson(OmsRegProcpersoninfo regProcpersonInfo) throws ParseException {
-        return Result.success(revokeApplyService.insertRevokeRegPerson(regProcpersonInfo));
+    public Result insertRevokeRegPerson(OmsRegRevokeapply revokeApply){
+        return Result.success(revokeApplyService.insertRevokeRegPerson(revokeApply));
     }
 
+
     /**
-     * 撤销备案申请
+     * 搜索撤销登记备案人员根据姓名，身份证号码
+     * @return
+     * @throws ParseException
+     */
+    @GetMapping("/searchRevokeRegPersonList")
+    public Result searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo){
+        return Result.success(revokeApplyService.searchRevokeRegPersonList(regProcpersonInfo));
+    }
+
+
+    /**
+     * 修改备案申请状态
+     * 1.申请 2.受理 3.撤销 4.已备案 5.处领导审批 6.部领导审批 7.拒批
      * @param revokeApply
      * @return
      * @throws ParseException
      */
-    @PostMapping("/revokeRegApply")
-    public Result revokeRegApply(OmsRegRevokeapply revokeApply) throws ParseException {
-        return Result.success(revokeApplyService.revokeRegApply(revokeApply));
+    @PostMapping("/updateApplyStatus")
+    public Result updateApplyStatus(OmsRegRevokeapply revokeApply){
+        return Result.success(revokeApplyService.updateApplyStatus(revokeApply));
     }
 
 
     /**
-     * 报处长审批
-     * @param revokeApply
-     * @return
-     * @throws ParseException
-     */
-    @PostMapping("/reportLeaderApply")
-    public Result reportLeaderApply(OmsRegRevokeapply revokeApply) throws ParseException {
-        return Result.success(revokeApplyService.reportLeaderApply(revokeApply));
-    }
-
-
-    /**
+     * 录入部领导审批结果
      * 审批撤销备案人员(同意，不同意)
      * @param
      * @return

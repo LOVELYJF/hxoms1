@@ -335,7 +335,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
 							//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 							for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
-								if(omsRegRevokeApply.getIdnumber().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
+								if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
 										omsRegRevokeApply.getStatus().equals("0")){
 									//撤销登记备案表中已经存在
 									flag = true;
@@ -354,7 +354,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
 							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
 							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
-							omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumberGb());
+							omsRegRevokeApply.setIdnumberGb(omsRegProcpersonInfo.getIdnumberGb());
 							omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
 							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
 							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());

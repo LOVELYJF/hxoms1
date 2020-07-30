@@ -1,25 +1,26 @@
 package com.hxoms.modules.omsregcadre.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApproval;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 
 import java.text.ParseException;
 
 public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
 
-    IPage<OmsRegRevokeapply> queryRevokeApplyList(Page page);
+    PageInfo<OmsRegRevokeapply> queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam);
 
     Object searchRevokeRegPerson() throws ParseException;
 
-    Object insertRevokeRegPerson(OmsRegProcpersoninfo regProcpersonInfo) throws ParseException;
+    int insertRevokeRegPerson(OmsRegRevokeapply revokeApply);
 
     Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds);
 
-    Object revokeRegApply(OmsRegRevokeapply revokeApply) throws ParseException;
+    Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 
-    Object reportLeaderApply(OmsRegRevokeapply revokeApply);
+    Object updateApplyStatus(OmsRegRevokeapply revokeApply);
 }

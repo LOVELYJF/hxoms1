@@ -57,7 +57,7 @@ public class OmsRegRevokeApproval {
     /**
      * 审批结论
      */
-    @ColumnAnnotation(FieldName = "APPROVAL_CONCLUSION",  FieldDescription="审批结论")
+    @ColumnAnnotation(FieldName = "APPROVAL_CONCLUSION",  FieldDescription="审批结论 1同意  2不同意")
     private String approvalConclusion;
 
     /**
