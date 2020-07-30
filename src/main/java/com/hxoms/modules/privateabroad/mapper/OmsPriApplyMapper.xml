@@ -220,4 +220,13 @@
         </if>
     ) and apply_status = 31 and a0100=#{a0100}
   </select>
+  <select id="selectVisaSettingByCode" parameterType="java.util.Map" resultType="java.util.Map">
+      select INFO_ID AS infoId, INFO_NAME AS infoName from oms_baseinfo_config where 1=1
+      <if test="infoId != null">
+          and PARENT_ID = #{infoId}
+      </if>
+      <if test="dictCode != null">
+          and DICT_CODE = #{dictCode}
+      </if>
+  </select>
 </mapper>

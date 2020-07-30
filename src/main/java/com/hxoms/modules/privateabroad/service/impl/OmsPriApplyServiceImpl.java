@@ -422,4 +422,21 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         return result;
     }
+
+    @Override
+    public Map<String, Object> selectVisaSettingByCode(String infoId) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
+        params.put("infoId", infoId);
+        params.put("dictCode", "TAIWAN");
+        List<Map<String, String>> taiwan = omsPriApplyMapper.selectVisaSettingByCode(params);
+        params.put("dictCode", "HONGKONG");
+        List<Map<String, String>> hongkong = omsPriApplyMapper.selectVisaSettingByCode(params);
+        params.put("dictCode", "MAKAO");
+        List<Map<String, String>> makao = omsPriApplyMapper.selectVisaSettingByCode(params);
+        result.put("taiwan", taiwan);
+        result.put("hongkong", hongkong);
+        result.put("makao", makao);
+        return result;
+    }
 }
