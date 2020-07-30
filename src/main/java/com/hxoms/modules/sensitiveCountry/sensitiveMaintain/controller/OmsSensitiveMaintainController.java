@@ -66,7 +66,7 @@ public class OmsSensitiveMaintainController {
 	 * @return
 	 */
 	@PostMapping("/addCountryInfo")
-	public Result addCountryInfo(@RequestParam(value = "countryIdList",required = false) List<Integer> countryIdList,
+	public Result addCountryInfo(@RequestParam(value = "countryIdList",required = false) List<String> countryIdList,
 	                             @RequestParam(value = "sensitiveLimitId",required = true) String sensitiveLimitId){
 		omsSensitiveMaintainService.addCountryInfo(countryIdList,sensitiveLimitId);
 		return Result.success();
