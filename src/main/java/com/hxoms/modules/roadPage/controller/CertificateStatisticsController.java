@@ -1,7 +1,7 @@
 package com.hxoms.modules.roadPage.controller;
 
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.roadPage.entity.PersonnelPageParam;
 import com.hxoms.modules.roadPage.service.CertificateStatisticsService;
 import io.swagger.annotations.ApiOperation;

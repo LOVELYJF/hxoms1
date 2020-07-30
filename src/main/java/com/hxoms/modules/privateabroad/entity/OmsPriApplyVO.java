@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
-import com.hxoms.modules.passportCard.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;

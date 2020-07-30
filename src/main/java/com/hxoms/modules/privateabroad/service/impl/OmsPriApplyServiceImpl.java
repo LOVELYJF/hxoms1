@@ -10,8 +10,8 @@ import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
-import com.hxoms.modules.passportCard.entity.CfCertificate;
-import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.*;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
@@ -27,6 +27,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 /**
