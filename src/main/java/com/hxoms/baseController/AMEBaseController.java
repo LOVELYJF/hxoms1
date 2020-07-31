@@ -125,7 +125,6 @@ public class AMEBaseController {
 
     public Method pottinParameter(ExcelBaseEntity entity){
         Class<? extends AMEBaseController> clazz = this.getClass();
-
         Method method = getMethod(clazz, entity.getMethodName());
         if(method!=null){
             setParameters(method,entity);

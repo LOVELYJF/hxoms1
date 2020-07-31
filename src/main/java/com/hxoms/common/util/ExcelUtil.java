@@ -189,7 +189,6 @@ public class ExcelUtil {
     }
 
     public static void setCellStyle(Workbook workbook, Cell cell, int rowno) {
-
         CellStyle cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
         if (rowno == 0) {
@@ -200,6 +199,5 @@ public class ExcelUtil {
             cell.setCellStyle(cellStyle);
         }
     }
-
 }
 

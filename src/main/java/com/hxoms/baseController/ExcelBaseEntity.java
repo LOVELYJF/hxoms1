@@ -2,8 +2,7 @@ package com.hxoms.baseController;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ExcelBaseEntity{
 
