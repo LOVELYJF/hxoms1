@@ -285,11 +285,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 * @Date: 2020/7/14 9:28
 	 */
 	public OmsSupDisciplinary getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary) {
-		//计算影响期
-		SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
-		omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
-		omsSupDisciplinary.setDisciplinaryEndTime(date);
-		return omsSupDisciplinary;
+		if(!omsSupDisciplinary.getDisciplinaryType().equals("bcd9a45954d84fd0af3f98153521de44")){
+			//计算影响期
+			SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
+			omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+			Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
+			omsSupDisciplinary.setDisciplinaryEndTime(date);
+			return omsSupDisciplinary;
+		}
+		return new OmsSupDisciplinary();
 	}
 }
