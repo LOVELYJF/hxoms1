@@ -1,14 +1,18 @@
 package com.hxoms.common.util;
 
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ooxml.POIXMLDocument;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
+import java.io.*;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +75,6 @@ public class ExcelUtil {
 
     /**
      * 数据封装
-     *
      * @param data        Excel数据
      * @param columnValue Excel表头标题
      * @return
@@ -120,8 +123,7 @@ public class ExcelUtil {
     }
 
     /**
-     * 导出2003版Excel
-     *
+     * 导出2003版本以下的Excel
      * @param data        导出的数据
      * @param columnValue 表头标题 传入方如：[{"字段":"中文描述"}] 字段必须和查询出来的字段一至，字段不区分大小写
      */
@@ -153,8 +155,7 @@ public class ExcelUtil {
     }
 
     /**
-     * 导出2007版Excel
-     *
+     * 导出2007版本以上的Excel
      * @param data        导出的数据
      * @param columnValue 表头标题 传入方如：[{"字段":"中文描述"}] 字段必须和查询出来的字段一至，字段不区分大小写
      */
@@ -188,6 +189,12 @@ public class ExcelUtil {
         return workbook;
     }
 
+    /**
+     * 设置样式
+     * @param workbook
+     * @param cell
+     * @param rowno 行号
+     */
     public static void setCellStyle(Workbook workbook, Cell cell, int rowno) {
         CellStyle cellStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -199,5 +206,164 @@ public class ExcelUtil {
             cell.setCellStyle(cellStyle);
         }
     }
+
+    /**
+     * 解析2007Excel 版本以上
+     * @param path 文件绝对路径
+     * @return
+     */
+    public static String[][] read07Excel(String path) {
+        String[][] values = null;
+        OPCPackage opcPackage = null;
+        Workbook workbook = null;
+        try {
+            opcPackage = POIXMLDocument.openPackage(path);
+            workbook = new XSSFWorkbook(opcPackage);
+            if (workbook == null) return null;
+
+            Sheet sheet = workbook.getSheetAt(0);
+            if (sheet == null) return null;
+
+            Row row = sheet.getRow(0);
+            if (row == null) return null;
+
+            int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+            int physicalNumberOfCells = row.getPhysicalNumberOfCells();
+            values = new String[physicalNumberOfRows][physicalNumberOfCells];
+
+            for (int i = 0; i < physicalNumberOfRows; i++) {
+                row = sheet.getRow(i);
+                if (row == null) continue;
+
+                for (int j = 0; j < physicalNumberOfCells; j++) {
+                    Cell cell = row.getCell(j);
+                    if (cell == null) continue;
+
+                    CellType cellType = cell.getCellType();
+                    switch (cellType) {
+                        case _NONE:
+                            values[i][j] = "";
+                            break;
+                        case STRING:
+                            values[i][j] = cell.getStringCellValue();
+                            break;
+                        case BLANK:
+                            values[i][j] = "";
+                            break;
+                        case BOOLEAN:
+                            boolean booleanCellValue = cell.getBooleanCellValue();
+                            values[i][j] = String.valueOf(booleanCellValue);
+                            break;
+                        case ERROR:
+                            values[i][j] = "";
+                            break;
+                        case NUMERIC:
+                            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                String format = simpleDateFormat.format(cell.getDateCellValue());
+                                values[i][j] = format;
+                            } else {
+                                double numericCellValue = cell.getNumericCellValue();
+                                values[i][j] = String.valueOf(numericCellValue);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return values;
+    }
+
+    /**
+     * 解析2003Excel版本以下
+     * @param path 文件绝对路径
+     * @return
+     */
+    public static String[][] read03Excel(String path) {
+        FileInputStream fileInputStream = null;
+        String[][] values = null;
+        try {
+            fileInputStream = new FileInputStream(path);
+            Workbook workbook = new HSSFWorkbook(fileInputStream);
+
+            Sheet sheetAt = workbook.getSheetAt(0);
+            if (sheetAt == null) return null;
+
+            Row row = sheetAt.getRow(0);
+            if (row == null) return null;
+
+            int physicalNumberOfRows = sheetAt.getPhysicalNumberOfRows();
+            int physicalNumberOfCells = row.getPhysicalNumberOfCells();
+            values = new String[physicalNumberOfRows][physicalNumberOfCells];
+
+            for (int i = 0; i < physicalNumberOfRows; i++) {
+                row = sheetAt.getRow(i);
+                if (row == null) continue;
+
+                for (int j = 0; j < physicalNumberOfCells; j++) {
+                    Cell cell = row.getCell(j);
+                    if (cell == null) continue;
+
+                    CellType cellType = cell.getCellType();
+                    switch (cellType) {
+                        case _NONE:
+                            values[i][j] = "";
+                            break;
+                        case BLANK:
+                            values[i][j] = "";
+                            break;
+                        case ERROR:
+                            values[i][j] = "";
+                            break;
+                        case BOOLEAN:
+                            values[i][j] = String.valueOf(cell.getBooleanCellValue());
+                            break;
+                        case STRING:
+                            values[i][j] = cell.getStringCellValue();
+                            break;
+                        case NUMERIC:
+                            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                String format = simpleDateFormat.format(cell.getDateCellValue());
+                                values[i][j] = format;
+                            } else {
+                                double numericCellValue = cell.getNumericCellValue();
+                                values[i][j] = String.valueOf(numericCellValue);
+                            }
+                        default:break;
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.err.println("文个路径不对");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(fileInputStream!=null){
+                    fileInputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return values;
+    }
+
+
+
+
+    public static void main(String[] args) {
+
+        String path = "D:/2020-07-03.xlsx";
+        String[][] values = read07Excel(path);
+
+    }
+
 }
 
