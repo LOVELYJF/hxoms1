@@ -3,6 +3,7 @@ package com.hxoms.modules.selfestimate.service;
 import com.hxoms.modules.selfestimate.entity.OmsSelfFile;
 import com.hxoms.modules.selfestimate.entity.OmsSelfFileVO;
 import com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems;
+import com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public interface OmsSelfestimateItemsService {
      * 自评信息维护列表
      * @return
      */
-    List<OmsSelfFileVO> selectItemsList(String type);
+    List<OmsSelfFile> selectItemsList(String type);
     /**
      * 自评项目添加修改
      * @return
@@ -55,4 +56,20 @@ public interface OmsSelfestimateItemsService {
      * @param type 因公 因私  延期回国
      */
     List<Map<String, String>> selectOmsFileList(String type);
+
+    /**
+     * 自评项目维护列表
+     * @return
+     * @param selffileId 自评材料清单id
+     */
+    List<OmsSelfestimateItems> selectSelfItemList(String selffileId);
+
+    /**
+     * 自评结果项列表
+     * @return
+     * @param applyId 自评id
+     * @param applyId 申请id
+     * @param personType 操作人类型（经办人  干部监督处）
+     */
+    OmsSelfFileVO selectFileItemsList(String type, String selffileId, String applyId, String personType);
 }

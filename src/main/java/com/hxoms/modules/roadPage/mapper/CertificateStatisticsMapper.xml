@@ -34,8 +34,8 @@
     </select>
 
 
-    <select id="getListCfCertificate" parameterType="com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam"
-                                  resultType="com.hxoms.modules.passportCard.entity.CfCertificate">
+    <select id="getListCfCertificate" parameterType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam"
+                                  resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
         select * from cf_certificate cc
         <where>
             <if test="zjlx!=null and zjlx>0">

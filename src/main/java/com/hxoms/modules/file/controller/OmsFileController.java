@@ -76,4 +76,5 @@ public class OmsFileController {
         OmsFile omsFile = omsFileService.selectFileDestailNew(fileId, applyId, tableCode);
         return Result.success(omsFile);
     }
+
 }

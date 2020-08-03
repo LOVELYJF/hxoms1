@@ -81,4 +81,11 @@ public interface OmsPriApplyService {
      * @return
      */
     List<Map<String, Object>> countCancelPriApply(OmsPriApplyIPageParam omsPriApplyIPageParam);
+
+    /**
+     * 签注配置查询
+     * @param infoId 出国理由编码
+     * @return
+     */
+    Map<String, Object> selectVisaSettingByCode(String infoId);
 }

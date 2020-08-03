@@ -18,7 +18,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,9 +115,15 @@ public class OmsRegProcpersoninfoController {
         }
     }
 
+
+    /**
+     * 手工匹配列表查询
+     * 显示待备案干部数据 和 在职状态为“未匹配”的公安数据
+     * @return
+     */
     @PostMapping("/selectMergeList")
-    public Result selectMergeList(String dataType){
-        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList(dataType);
+    public Result selectMergeList(){
+        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList();
         return Result.success(list);
     }
 
@@ -198,19 +203,20 @@ public class OmsRegProcpersoninfoController {
     }
 
 
+
     /* 大检查上传登记备案记录(出入境（公安）)
      * @param
      * @return
      */
     @PostMapping("/checkUploadRegRecord")
     public Result checkUploadRegRecord(Date year,MultipartFile file) {
+        Map<String, Object> map = new HashMap<String, Object>();
         // 读取Excel表格
         try{
             //登记备案大检查上传登记备案记录
             List<OmsRegProcpersoninfo> list = readOmsDataGA(file);
             //查询年度列表
             List<OmsRegYearcheckInfo> yearList = mrpinfoService.queryYearList(list);
-
             // 匹配未备案人员 新增到大检查表中
             int con = mrpinfoService.checkUploadRegRecord(list);
             List<OmsRegYearcheckInfo> yearcheckinfoList = null;
@@ -218,7 +224,9 @@ public class OmsRegProcpersoninfoController {
                 //查询大检查中未备案人员列表（可根据年度进行查询）
                 yearcheckinfoList = mrpinfoService.queryYearCheckList(year);
             }
-            return Result.success(yearcheckinfoList);
+            map.put("yearcheckinfoList",yearcheckinfoList);
+            map.put("yearList",yearList);
+            return Result.success(map);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -426,115 +434,6 @@ public class OmsRegProcpersoninfoController {
     }
 
 
-   /*     // 循环工作表
-        for (int numSheet = 0; numSheet < workbook.getNumberOfSheets(); numSheet++) {
-            HSSFSheet hssfSheet = workbook.getSheetAt(numSheet);
-            if (hssfSheet == null) {
-                continue;
-            }
-            // 循环行
-            for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
-                HSSFRow hssfRow = hssfSheet.getRow(rowNum);
-                if (hssfRow == null) {
-                    continue;
-                }
-
-                // 将单元格中的内容存入集合
-                OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
-                //姓名
-                HSSFCell cell = hssfRow.getCell(1);
-                if (cell == null) {
-                    continue;
-                }
-
-                //是否复姓。拆除
-                boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(cell.getStringCellValue());
-                if (isCompoundSurname){//是
-                    orpInfo.setSurname(cell.getStringCellValue().substring(0,2));//姓
-                    orpInfo.setName(cell.getStringCellValue().substring(2,cell.getStringCellValue().length()));//名
-                }else{
-                    orpInfo.setSurname(cell.getStringCellValue().substring(0,1));
-                    orpInfo.setName(cell.getStringCellValue().substring(1,cell.getStringCellValue().length()));
-                }
-
-                //性别
-                cell = hssfRow.getCell(2);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setSex(cell.getStringCellValue());
-
-                //出生日期
-                cell = hssfRow.getCell(3);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setBirthDateSfz(cell.getDateCellValue());
-
-                //身份证号
-                cell = hssfRow.getCell(4);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setIdnumber(cell.getStringCellValue());
-
-                //户口所在地
-                cell = hssfRow.getCell(5);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setRegisteResidence(cell.getStringCellValue());
-
-                //入库标识
-                cell = hssfRow.getCell(6);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setInboundFlag(cell.getStringCellValue());
-
-                //工作单位
-                cell = hssfRow.getCell(7);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setWorkUnit(cell.getStringCellValue());
-
-
-                //职务（级）或职称
-                cell = hssfRow.getCell(8);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setPost(cell.getStringCellValue());
-
-
-                //人事主管单位
-                cell = hssfRow.getCell(9);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setPersonManager(cell.getStringCellValue());
-
-                //身份情况代码
-                cell = hssfRow.getCell(10);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setIdentityCode(cell.getStringCellValue());
-
-
-                //身份情况
-                cell = hssfRow.getCell(11);
-                if (cell == null) {
-                    continue;
-                }
-                orpInfo.setIdentity(cell.getStringCellValue());
-
-                list.add(orpInfo);
-            }
-        }
-        return list;
-    }*/
 
 
     /**

@@ -57,4 +57,11 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     Integer cancelCount(Map<String, String> paramMap);
+
+    /**
+     * 签注配置查询
+     * @param params
+     * @return
+     */
+    List<Map<String, String>> selectVisaSettingByCode(Map<String, String> params);
 }

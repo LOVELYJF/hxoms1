@@ -40,7 +40,7 @@ public interface OmsSensitiveMaintainService {
 	 * @param sensitiveLimitId
 	 * @return
 	 */
-	void addCountryInfo(List<Integer> countryIdList, String sensitiveLimitId);
+	void addCountryInfo(List<String> countryIdList, String sensitiveLimitId);
 
 
 }

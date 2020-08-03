@@ -22,4 +22,12 @@ public interface OmsCreateFileService {
      *
      */
     OmsCreateFile insertOrUpdate(OmsCreateFile omsCreateFile);
+
+    /**
+     * 批量删除生成文件
+     * @param tableCode
+     * @param applyId
+     * @return
+     */
+    String deleteCreateFile(String tableCode, String applyId);
 }

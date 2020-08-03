@@ -1,3 +1,4 @@
+/*
 package com.hxoms.modules.leaderSupervision.test;
 
 import com.hxoms.modules.leaderSupervision.config.StatusConvertLinkMap;
@@ -11,7 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+*/
+/*
 public class LeaderSupersivisionTest {
 
 //    @Autowired
@@ -188,3 +190,4 @@ public class LeaderSupersivisionTest {
 
 
 }
+*/

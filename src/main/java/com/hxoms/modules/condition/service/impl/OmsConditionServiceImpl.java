@@ -159,11 +159,11 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             //检验条件
             for (OmsCondition omsCondition : omsConditions) {
                 Map<String, String> map = new HashMap<>();
-                //条件标题
-                map.put("title", omsCondition.getName());
-                map.put("desc", omsCondition.getDescription());
                 //替换关键词，执行sql
                 String fit = handleSql(conditionReplaceVO, omsCondition, omsReplaceKeywords);
+                //条件标题
+                map.put("desc", omsCondition.getDescription());
+                map.put("title", omsCondition.getName());
                 map.put("isFit" , fit);
                 result.add(map);
             }
@@ -258,6 +258,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
      */
     private String handleSql(ConditionReplaceVO conditionReplaceVO, OmsCondition omsCondition, List<OmsReplaceKeywords> omsReplaceKeywords){
         String sql = omsCondition.getSqlContent();
+        int count = 1;
         if (!StringUtils.isBlank(sql)) {
             //替换关键词
             Class clazz = conditionReplaceVO.getClass();
@@ -276,26 +277,25 @@ public class OmsConditionServiceImpl implements OmsConditionService {
                     throw new CustomMessageException("数据异常");
                 }
             }
-            int count = omsConditionMapper.excuteSelectSql(sql);
-            //替换描述中
-            if (Constants.OMS_CONDITION_SETTINGTYPE[1].equals(omsCondition.getSettingType())){
-                //获取setting
-                List<OmsSetting> settings = omsSettingService.getSettingCache();
-                for (OmsSetting omsSetting : settings) {
-                    if (omsSetting.getSettingCode().equals(omsCondition.getSettingCode())){
-                        omsCondition.setName(omsCondition.getName().replace(omsCondition.getSettingCode(), omsSetting.getSettingValue()));
-                        break;
-                    }
+            count = omsConditionMapper.excuteSelectSql(sql);
+        }
+        //替换描述中
+        if (Constants.OMS_CONDITION_SETTINGTYPE[1].equals(omsCondition.getSettingType())){
+            //获取setting
+            List<OmsSetting> settings = omsSettingService.getSettingCache();
+            for (OmsSetting omsSetting : settings) {
+                if (omsSetting.getSettingCode().equals(omsCondition.getSettingCode())){
+                    omsCondition.setName(omsCondition.getName().replace(omsCondition.getSettingCode(), omsSetting.getSettingValue()));
+                    break;
                 }
             }
-            if (count > 0) {
-                //不符合条件
-                return "0";
-            }else{
-                //符合条件
-                return "1";
-            }
         }
-        return "0";
+        if (count > 0) {
+            //不符合条件
+            return "0";
+        }else{
+            //符合条件
+            return "1";
+        }
     }
 }

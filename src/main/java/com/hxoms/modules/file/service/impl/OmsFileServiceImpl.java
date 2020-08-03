@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -343,11 +344,23 @@ public class OmsFileServiceImpl implements OmsFileService {
             Class clazz = t.getClass();
             try {
                 Object value = clazz.getDeclaredMethod(omsReplaceKeywords.getReplaceField()).invoke(t);
-                if (!StringUtils.isBlank(omsFile.getFrontContent()) && value != null){
-                    omsFile.setFrontContent(omsFile.getFrontContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
+                if (Date.class.isInstance(value) && value != null){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+                    value = sdf.format(value);
                 }
-                if (!StringUtils.isBlank(omsFile.getBankContent()) && value != null){
-                    omsFile.setBankContent(omsFile.getBankContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
+                if (!StringUtils.isBlank(omsFile.getFrontContent())){
+                    if (value != null){
+                        omsFile.setFrontContent(omsFile.getFrontContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
+                    }else{
+                        omsFile.setFrontContent(omsFile.getFrontContent().replace(omsReplaceKeywords.getKeyword(), ""));
+                    }
+                }
+                if (!StringUtils.isBlank(omsFile.getBankContent())){
+                    if (value != null){
+                        omsFile.setBankContent(omsFile.getBankContent().replace(omsReplaceKeywords.getKeyword(), value.toString()));
+                    }else{
+                        omsFile.setBankContent(omsFile.getBankContent().replace(omsReplaceKeywords.getKeyword(), ""));
+                    }
                 }
 
             } catch (IllegalAccessException e) {

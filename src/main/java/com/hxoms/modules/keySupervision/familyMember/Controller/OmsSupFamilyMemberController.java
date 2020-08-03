@@ -99,27 +99,15 @@ public class OmsSupFamilyMemberController {
 	/**
 	 * <b>查询家庭成员信息</b>
 	 * @param a0100
-	 * @param page
 	 * @return
 	 */
 	@GetMapping("/getFamilyMemberInfo")
-	public Result getFamilyMemberInfo(Page<A36> page, String a0100){
-		page = omsSupFamilyMemberService.getFamilyMember(page, a0100);
-		return Result.success(page);
+	public Result getFamilyMemberInfo(String a0100){
+		List<A36> list = omsSupFamilyMemberService.getFamilyMember(a0100);
+		return Result.success(list);
 
 	}
 
-
-	/**
-	 * <b>更新家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	@PostMapping("/updateFamilyMemberInfo")
-	private Result updateFamilyMemberInfo(@RequestBody List<A36> list){
-		omsSupFamilyMemberService.updateFamilyMemberInfo(list);
-		return Result.success();
-	}
 
 
 	/**

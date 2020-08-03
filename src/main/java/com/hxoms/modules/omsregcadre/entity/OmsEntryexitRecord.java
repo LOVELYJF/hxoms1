@@ -13,11 +13,11 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国审批id")
-    private String priapplyId;
-
-    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
+    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="")
     private String b0100;
+
+    @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国申请记录id")
+    private String priapplyId;
 
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -33,11 +33,14 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源")
     private String dataSource;
 
+    @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息ID")
+    private String omsId;
+
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "OGE_STATUS",   FieldDescription="出入境状态 出1，入2")
-    private String ogeStatus;
+    private Integer ogeStatus;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
@@ -54,9 +57,9 @@ public class OmsEntryexitRecord {
     private String nationality;
 
     @ColumnAnnotation(FieldName = "ID_TYPE",   FieldDescription="证件种类")
-    private String idType;
+    private Integer idType;
 
-    @ColumnAnnotation(FieldName = "ID_NUMBER",   FieldDescription="证件号")
+    @ColumnAnnotation(FieldName = "ID_NUMBER",   FieldDescription="证件号码")
     private String idNumber;
 
     @ColumnAnnotation(FieldName = "DESTINATION",   FieldDescription="前往地")
@@ -70,6 +73,9 @@ public class OmsEntryexitRecord {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeDate;
 
+    @ColumnAnnotation(FieldName = "OGE_TIME",   FieldDescription="出入境时间")
+    private String ogeTime;
+
     @ColumnAnnotation(FieldName = "VALID_UNTIL",   FieldDescription="证件有效期至")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -79,15 +85,7 @@ public class OmsEntryexitRecord {
     private String visitingTasks;
 
     @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
-    private String comparisionResult;
-
-    public String getComparisionResult() {
-        return comparisionResult;
-    }
-
-    public void setComparisionResult(String comparisionResult) {
-        this.comparisionResult = comparisionResult;
-    }
+    private String comparisonResult;
 
     public String getId() {
         return id;
@@ -95,6 +93,22 @@ public class OmsEntryexitRecord {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getB0100() {
+        return b0100;
+    }
+
+    public void setB0100(String b0100) {
+        this.b0100 = b0100 == null ? null : b0100.trim();
+    }
+
+    public String getPriapplyId() {
+        return priapplyId;
+    }
+
+    public void setPriapplyId(String priapplyId) {
+        this.priapplyId = priapplyId == null ? null : priapplyId.trim();
     }
 
     public Date getImportTime() {
@@ -129,6 +143,14 @@ public class OmsEntryexitRecord {
         this.dataSource = dataSource == null ? null : dataSource.trim();
     }
 
+    public String getOmsId() {
+        return omsId;
+    }
+
+    public void setOmsId(String omsId) {
+        this.omsId = omsId == null ? null : omsId.trim();
+    }
+
     public String getA0100() {
         return a0100;
     }
@@ -137,12 +159,12 @@ public class OmsEntryexitRecord {
         this.a0100 = a0100 == null ? null : a0100.trim();
     }
 
-    public String getOgeStatus() {
+    public Integer getOgeStatus() {
         return ogeStatus;
     }
 
-    public void setOgeStatus(String ogeStatus) {
-        this.ogeStatus = ogeStatus == null ? null : ogeStatus.trim();
+    public void setOgeStatus(Integer ogeStatus) {
+        this.ogeStatus = ogeStatus;
     }
 
     public String getName() {
@@ -177,12 +199,12 @@ public class OmsEntryexitRecord {
         this.nationality = nationality == null ? null : nationality.trim();
     }
 
-    public String getIdType() {
+    public Integer getIdType() {
         return idType;
     }
 
-    public void setIdType(String idType) {
-        this.idType = idType == null ? null : idType.trim();
+    public void setIdType(Integer idType) {
+        this.idType = idType;
     }
 
     public String getIdNumber() {
@@ -217,6 +239,14 @@ public class OmsEntryexitRecord {
         this.ogeDate = ogeDate;
     }
 
+    public String getOgeTime() {
+        return ogeTime;
+    }
+
+    public void setOgeTime(String ogeTime) {
+        this.ogeTime = ogeTime == null ? null : ogeTime.trim();
+    }
+
     public Date getValidUntil() {
         return validUntil;
     }
@@ -233,19 +263,11 @@ public class OmsEntryexitRecord {
         this.visitingTasks = visitingTasks == null ? null : visitingTasks.trim();
     }
 
-    public String getB0100() {
-        return b0100;
+    public String getComparisonResult() {
+        return comparisonResult;
     }
 
-    public void setB0100(String b0100) {
-        this.b0100 = b0100;
-    }
-
-    public String getPriapplyId() {
-        return priapplyId;
-    }
-
-    public void setPriapplyId(String priapplyId) {
-        this.priapplyId = priapplyId;
+    public void setComparisonResult(String comparisonResult) {
+        this.comparisonResult = comparisonResult == null ? null : comparisonResult.trim();
     }
 }

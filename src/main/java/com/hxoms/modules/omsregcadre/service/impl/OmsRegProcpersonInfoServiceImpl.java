@@ -222,9 +222,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<OmsRegProcpersoninfo> selectMergeList(String dataType) {
+    public List<OmsRegProcpersoninfo> selectMergeList() {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
-        return  baseMapper.selectMergeList(dataType);
+        return  baseMapper.selectMergeList();
     }
 
     @Override
@@ -490,7 +490,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo) {
         QueryWrapper<OmsRegProcbatchPerson> qw = new QueryWrapper<OmsRegProcbatchPerson>();
-        qw.eq("BATCH_ID",batchNo);
+        if (!StringUtils.isBlank(batchNo)){
+            qw.eq("BATCH_ID",batchNo);
+        }
         return regProcbatchPersonMapper.selectList(qw);
     }
 
@@ -583,6 +585,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo) {
+        //在职状态为“免职”或 管理状态为“中管干部”或退出方式为“调出”的，且撤销登记备案表中不存在的（排除已备案状态）。
         //查询符合撤销登记备案的人员信息（1.免职人员 2.脱密结束时间 < 当前时间）
         return baseMapper.selectPersonAndAllowRevoke(msRegProcpersonInfo);
     }

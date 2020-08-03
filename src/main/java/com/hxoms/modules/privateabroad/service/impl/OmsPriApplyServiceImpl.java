@@ -7,10 +7,11 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
-import com.hxoms.modules.passportCard.entity.CfCertificate;
-import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.*;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 /**
@@ -52,6 +54,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private CountryMapper countryMapper;
     @Autowired
     private OmsAbroadApprovalService omsAbroadApprovalService;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -103,11 +107,16 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
-        QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-        cfCertificate.eq("A0100", a0100)
-                .eq("IS_VALID", 0);
-        List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
-        omsPriApplyVO.setCfCertificates(cfCertificates);
+        if (omsPriApplyVO.getPaper() != null && omsPriApplyVO.getPaper() == 16){
+            //非省委管理证照
+            omsPriApplyVO.setDescription("非省委管理证照");
+        }else{
+            QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
+            cfCertificate.eq("A0100", a0100)
+                    .eq("IS_VALID", 0);
+            List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+            omsPriApplyVO.setCfCertificates(cfCertificates);
+        }
         //约束条件
         /*List<Map<String, String>> condition = omsConditionService.checkConditionByA0100(a0100, Constants.oms_business[1]);
         omsPriApplyVO.setCondition(condition);*/
@@ -154,6 +163,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             QueryWrapper<OmsPriTogetherperson> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("APPLY_ID", omsPriApply.getId());
             omsPriTogetherpersonMapper.delete(queryWrapper);
+            //删除生成文件
+            omsCreateFileService.deleteCreateFile(Constants.oms_business[1], omsPriApply.getId());
         }
         //随行人员信息保存
         for (OmsPriTogetherperson omsPriTogetherperson : omsPriTogetherpersonList) {
@@ -409,6 +420,23 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }else{
             return result;
         }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> selectVisaSettingByCode(String infoId) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
+        params.put("infoId", infoId);
+        params.put("dictCode", "TAIWAN");
+        List<Map<String, String>> taiwan = omsPriApplyMapper.selectVisaSettingByCode(params);
+        params.put("dictCode", "HONGKONG");
+        List<Map<String, String>> hongkong = omsPriApplyMapper.selectVisaSettingByCode(params);
+        params.put("dictCode", "MAKAO");
+        List<Map<String, String>> makao = omsPriApplyMapper.selectVisaSettingByCode(params);
+        result.put("taiwan", taiwan);
+        result.put("hongkong", hongkong);
+        result.put("makao", makao);
         return result;
     }
 }

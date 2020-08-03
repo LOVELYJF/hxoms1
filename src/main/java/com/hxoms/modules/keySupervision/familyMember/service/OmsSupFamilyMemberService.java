@@ -45,18 +45,10 @@ public interface OmsSupFamilyMemberService {
 	/**
 	 * <b>查询家庭成员信息</b>
 	 * @param a0100
-	 * @param page
 	 * @return
 	 */
-	Page<A36> getFamilyMember(Page<A36> page,String a0100);
+	List<A36> getFamilyMember(String a0100);
 
-
-	/**
-	 * <b>更新家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	void updateFamilyMemberInfo(List<A36> list);
 
 	/**
 	 * <b>对家庭成员进行登记备案</b>
