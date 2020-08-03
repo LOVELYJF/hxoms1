@@ -9,7 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 @TableAnnotation(TableName = "oms_reg_yearcheckinfo", TableDescription="年度检查比对结果集")
-public class OmsRegYearcheckInfo {
+public class OmsRegYearcheckinfo {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
@@ -17,8 +17,8 @@ public class OmsRegYearcheckInfo {
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
     private String a0100;
 
-    @ColumnAnnotation(FieldName = "BATCH_NO",   FieldDescription="备案机构")
-    private String batchNo;
+    @ColumnAnnotation(FieldName = "RF_ID",   FieldDescription="备案id")
+    private String rfId;
 
     @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="备案机构")
     private String rfB0000;
@@ -134,9 +134,7 @@ public class OmsRegYearcheckInfo {
     private String reason;
 
     @ColumnAnnotation(FieldName = "CREATE_DATE",   FieldDescription="")
-    @JsonFormat(pattern = "yyyy")
-    @DateTimeFormat(pattern = "yyyy")
-    private Date createDate;
+    private String createDate;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="")
     private String createUser;
@@ -163,12 +161,12 @@ public class OmsRegYearcheckInfo {
         this.a0100 = a0100 == null ? null : a0100.trim();
     }
 
-    public String getBatchNo() {
-        return batchNo;
+    public String getRfId() {
+        return rfId;
     }
 
-    public void setBatchNo(String batchNo) {
-        this.batchNo = batchNo == null ? null : batchNo.trim();
+    public void setRfId(String rfId) {
+        this.rfId = rfId;
     }
 
     public String getRfB0000() {
@@ -451,14 +449,6 @@ public class OmsRegYearcheckInfo {
         this.reason = reason == null ? null : reason.trim();
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
     public String getCreateUser() {
         return createUser;
     }
@@ -481,5 +471,13 @@ public class OmsRegYearcheckInfo {
 
     public void setPy(String py) {
         this.py = py == null ? null : py.trim();
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 }

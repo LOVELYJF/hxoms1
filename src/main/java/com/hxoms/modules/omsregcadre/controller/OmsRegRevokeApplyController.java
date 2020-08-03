@@ -1,7 +1,5 @@
 package com.hxoms.modules.omsregcadre.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
@@ -94,9 +92,8 @@ public class OmsRegRevokeApplyController {
      * @return
      */
     @PostMapping("/approvalRevokeRegPerson")
-    public Result approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+    public Result approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
         if (!StringUtils.isEmpty(applyIds)
-                && !StringUtils.isBlank(regRevokeApproval.getApprovalUser())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalOpinion())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalConclusion())) {
             return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds));

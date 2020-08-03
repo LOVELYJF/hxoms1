@@ -281,7 +281,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
 						QueryWrapper<OmsRegProcpersoninfo> queryWrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
-						queryWrapper1.eq("IDNUMBER", a36.getIdCard());
+						queryWrapper1.eq("IDNUMBER_GB", a36.getIdCard());
 						omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper1);
 					}
 				}else {

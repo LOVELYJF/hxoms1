@@ -211,7 +211,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 
 			HSSFRow row = null;
 			for(int i = 0; i < list.size(); i++){
-				row = sheet.createRow(i + 2);
+				row = sheet.createRow(i + 3);
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue(list.get(i).getWorkUnit());
 				row.createCell(2).setCellValue(list.get(i).getName());
