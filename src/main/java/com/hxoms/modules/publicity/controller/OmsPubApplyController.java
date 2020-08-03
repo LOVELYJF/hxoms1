@@ -196,6 +196,7 @@ public class OmsPubApplyController {
         List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyByPwh(pwh);
         return Result.success(list);
     }
+
     /**
      * 功能描述: <br>
      * 〈撤销通知书文号相同的备案申请〉
