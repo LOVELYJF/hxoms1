@@ -449,11 +449,9 @@
         union all
         select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pub_apply where SQZT = 3 and SFXD = 1
         union all
-        select "4.签字盖章" as label, 4 as statusCode, count(0) as num from oms_pub_apply where SQZT = 4 and SFXD = 1
+        select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
         union all
-        select "5.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
-        union all
-        select "6.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
+        select "5.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
     </select>
 
 
