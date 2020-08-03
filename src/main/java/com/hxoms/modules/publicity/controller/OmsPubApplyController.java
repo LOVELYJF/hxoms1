@@ -7,11 +7,9 @@ import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -165,8 +163,8 @@ public class OmsPubApplyController {
      * @Date: 2020/7/3 11:45
      */
     @PostMapping("/insertPubApplyChange")
-    public Result insertPubApplyChange(OmsPubApplyChange omsPubApplyChange){
-        omsPubApplyService.insertPubApplyChange(omsPubApplyChange);
+    public Result insertPubApplyChange(OmsPubApplyChange omsPubApplyChange,@RequestParam(value ="ids",required = false) List<String> ids){
+        omsPubApplyService.insertPubApplyChange(omsPubApplyChange,ids);
         return Result.success();
     }
 
@@ -183,6 +181,19 @@ public class OmsPubApplyController {
         OmsPubApplyChange omsPubApplyChange = omsPubApplyService.getPubApplyChange(id);
         return Result.success(omsPubApplyChange);
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈因公出国境申请列表导出〉
+     * @Param: [omsPubApplyQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 9:55
+     */
+    @PostMapping("/exportPubApply")
+    public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response){
+        omsPubApplyService.exportPubApply(omsPubApplyQueryParam,response);
+    }
     /**
      * 功能描述: <br>
      * 〈台办获取相同批文号的人员〉
@@ -197,6 +208,19 @@ public class OmsPubApplyController {
         return Result.success(list);
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈更改时通过批文号模糊查询添加人员〉
+     * @Param: [pwh]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 15:03
+     */
+    @GetMapping("/getPubApplyList")
+    public Result getPubApplyList(String pwh){
+        //List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList(pwh);
+        return Result.success();
+    }
     /**
      * 功能描述: <br>
      * 〈撤销通知书文号相同的备案申请〉

@@ -4,10 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.tree.Tree;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.b01temp.entity.OmsB01Temp;
 import com.hxoms.modules.b01temp.mapper.OmsB01TempMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
@@ -26,10 +23,17 @@ import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.service.OrgService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -322,40 +326,46 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public void insertPubApplyChange(OmsPubApplyChange omsPubApplyChange) {
+    public void insertPubApplyChange(OmsPubApplyChange omsPubApplyChange, List<String> ids) {
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         if (omsPubApplyChange == null){
             throw new CustomMessageException("参数为空");
         }
-        // 获取备案申请表
-        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(omsPubApplyChange.getBaId());
-        Integer sqzt = omsPubApply.getSqzt();
-        if (sqzt >= Constants.leader_business[0]){
-            throw new CustomMessageException("该业务已经提交干部监督处，请先撤销再重新提交!");
+        if (ids == null || ids.size() < 0){
+            throw new CustomMessageException("参数为空");
         }
-        //保存台办变更信息、
-        omsPubApplyChange.setId(UUIDGenerator.getPrimaryKey());
-        omsPubApplyChange.setModifyUser(loginUser.getId());
-        omsPubApplyChange.setModifyTime(new Date());
-        omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
+        // 获取备案申请表
+        for (String id: ids) {
+            OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
+            Integer sqzt = omsPubApply.getSqzt();
+            if (sqzt >= Constants.leader_business[0]){
+                throw new CustomMessageException("该业务已经提交干部监督处，请先撤销再重新提交!");
+            }
+            //保存台办变更信息、
+            omsPubApplyChange.setId(UUIDGenerator.getPrimaryKey());
+            omsPubApplyChange.setModifyUser(loginUser.getId());
+            omsPubApplyChange.setModifyTime(new Date());
+            omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
 
-        // 更新备案申请表
-        //现出国时间、
-        omsPubApply.setCgsj(omsPubApplyChange.getXcgsj());
-        // 现回国时间、
-        omsPubApply.setHgsj(omsPubApplyChange.getXhgsj());
-        // 现出访事由、
-        omsPubApply.setCfsy(omsPubApplyChange.getXcfsy());
-        // 现出访任务、
-        omsPubApply.setCfrw(omsPubApplyChange.getXcfrw());
-        // 修改时间、
-        omsPubApply.setModifyTime(new Date());
-        // 修改人、
-        omsPubApply.setModifyUser(loginUser.getId());
-        // 是否变更
-        omsPubApply.setSfbg("1");
-        omsPubApplyMapper.updateById(omsPubApply);
+            // 更新备案申请表
+            //现出国时间、
+            omsPubApply.setCgsj(omsPubApplyChange.getXcgsj());
+            // 现回国时间、
+            omsPubApply.setHgsj(omsPubApplyChange.getXhgsj());
+            // 现出访事由、
+            omsPubApply.setCfsy(omsPubApplyChange.getXcfsy());
+            // 现出访任务、
+            omsPubApply.setCfrw(omsPubApplyChange.getXcfrw());
+            // 修改时间、
+            omsPubApply.setModifyTime(new Date());
+            // 修改人、
+            omsPubApply.setModifyUser(loginUser.getId());
+            // 是否变更
+            omsPubApply.setSfbg("1");
+            omsPubApplyMapper.updateById(omsPubApply);
+        }
+
         //omsPubApplyMapper.updateByPwh(omsPubApply);
     }
 
@@ -652,6 +662,177 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
         return omsPubApplyVOS;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈因公出国境申请列表导出〉
+     * @Param: [omsPubApplyQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 9:57
+     */
+    @Override
+    public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response) {
+        /**申请状态集合 */
+        List<String> status = omsPubApplyQueryParam.getStatus();
+        /**组团单位*/
+        String ztdw = omsPubApplyQueryParam.getZtdw();
+        /** 出国时间*/
+        Date cgsj = omsPubApplyQueryParam.getCgsj();
+        /** 回国时间*/
+        Date hgsj = omsPubApplyQueryParam.getHgsj();
+        /** 姓名*/
+        String name = omsPubApplyQueryParam.getName();
+        /** 通知书文号*/
+        String pwh = omsPubApplyQueryParam.getPwh();
+        /** 机构id*/
+        String b0100 = omsPubApplyQueryParam.getB0100();
+        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);
+        if (list == null || list.size() < 1){
+            throw new CustomMessageException("操作失败");
+        }else {
+            /** 开始导出 */
+            //创建HSSFWorkbook对象(excel的文档对象)
+            HSSFWorkbook wb = new HSSFWorkbook();
+            //创建文件样式对象
+            HSSFCellStyle style = wb.createCellStyle();
+            //获得字体对象
+            HSSFFont font = wb.createFont();
+            //建立新的sheet对象（excel的表单）
+            HSSFSheet sheet=wb.createSheet("因公出国境备案申请名单");
+            //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
+            HSSFRow row1=sheet.createRow(0);
+            //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
+            HSSFCell cell=row1.createCell(0);
+
+            //设置标题字体大小
+            font.setFontHeightInPoints((short) 16);
+            //加粗
+            font.setBold(true);
+            // 左右居中 
+            style.setAlignment(HorizontalAlignment.CENTER);
+            // 上下居中 
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+            style.setFont(font);
+            cell.setCellStyle(style);
+            //设置标题单元格内容
+            cell.setCellValue("因公出国境备案申请名单");
+
+            //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+            sheet.addMergedRegion(new CellRangeAddress(0,1,0,19));
+            //在sheet里创建第二行
+            HSSFRow row2=sheet.createRow(2);
+            //创建单元格并设置单元格内容
+            row2.createCell(0).setCellValue("序号");
+            row2.createCell(1).setCellValue("姓名");
+            row2.createCell(2).setCellValue("出境日期");
+            row2.createCell(3).setCellValue("入境日期");
+            row2.createCell(4).setCellValue("目的地");
+            row2.createCell(5).setCellValue("出访任务");
+            row2.createCell(6).setCellValue("审批单位");
+            row2.createCell(7).setCellValue("性别");
+            row2.createCell(8).setCellValue("出生日期");
+            row2.createCell(9).setCellValue("政治面貌");
+            row2.createCell(10).setCellValue("职务");
+            row2.createCell(11).setCellValue("申请日期");
+            row2.createCell(12).setCellValue("是否裸官");
+            row2.createCell(13).setCellValue("涉密等级");
+            row2.createCell(14).setCellValue("是否主要领导");
+            row2.createCell(15).setCellValue("负面信息");
+            row2.createCell(16).setCellValue("是否变更");
+            row2.createCell(17).setCellValue("审批单位下达");
+            row2.createCell(18).setCellValue("审批状态");
+            row2.createCell(19).setCellValue("最终结论");
+            //在sheet里添加数据
+
+            //创建文件样式对象
+            HSSFCellStyle style1 = wb.createCellStyle();
+            //获得字体对象
+            HSSFFont font1 = wb.createFont();
+            //设置单元格字体大小
+            font1.setFontHeightInPoints((short) 12);
+            //居左
+            style1.setAlignment(HorizontalAlignment.LEFT);
+            style1.setFont(font1);
+
+            HSSFRow row = null;
+            for(int i = 0; i < list.size(); i++){
+                row = sheet.createRow(i + 3);
+                row.createCell(0).setCellValue(i + 1);
+                row.createCell(1).setCellValue(list.get(i).getName());
+                row.createCell(2).setCellValue(UtilDateTime.toDateString(list.get(i).getCgsj()));
+                row.createCell(3).setCellValue(UtilDateTime.toDateString(list.get(i).getHgsj()));
+                row.createCell(4).setCellValue(list.get(i).getSdgj());
+                row.createCell(5).setCellValue(list.get(i).getCfrw());
+                row.createCell(6).setCellValue(list.get(i).getCgspdw());
+                String sex = list.get(i).getSex();
+                if ("1".equals(sex)){
+                    row.createCell(7).setCellValue("男");
+                }else if ("2".equals(sex)){
+                    row.createCell(7).setCellValue("女");
+                }else {
+                    row.createCell(7).setCellValue(sex);
+                }
+
+                row.createCell(8).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
+                row.createCell(9).setCellValue(list.get(i).getPoliticalAff());
+                row.createCell(10).setCellValue(list.get(i).getJob());
+                row.createCell(11).setCellValue(UtilDateTime.toDateString(list.get(i).getCreateTime()));
+                if ("1".equals(list.get(i).getSflg())) {
+                    row.createCell(12).setCellValue("是");
+                } else {
+                    row.createCell(12).setCellValue("否");
+                }
+                row.createCell(13).setCellValue(list.get(i).getSmdj());
+                if ("1".equals(list.get(i).getSfzyld())){
+                    row.createCell(14).setCellValue("是");
+                }else {
+                    row.createCell(14).setCellValue("否");
+                }
+                row.createCell(15).setCellValue(list.get(i).getFmxx());
+                String sfbg = list.get(i).getSfbg();
+                if ("1".equals(list.get(i).getSfbg())){
+                    row.createCell(16).setCellValue("是");
+                }else {
+                    row.createCell(16).setCellValue("否");
+                }
+                Integer sfxd = list.get(i).getSfxd();
+                if (1 == list.get(i).getSfxd()){
+                    row.createCell(17).setCellValue("是");
+                }else {
+                    row.createCell(17).setCellValue("否");
+                }
+                Integer sqzt = list.get(i).getSqzt();
+                int i1 = Arrays.binarySearch(Constants.leader_business, sqzt);
+                if (i1 < 0 ){
+                    int i2 = Arrays.binarySearch(Constants.private_business, sqzt);
+                    row.createCell(18).setCellValue(Constants.private_businessName[i2]);
+                }else {
+                    row.createCell(18).setCellValue(Constants.leader_businessName[i1]);
+                }
+
+                row.createCell(19).setCellValue(list.get(i).getZzjl());
+
+                //设置单元格字体大小
+                for(int j = 0;j < 19;j++){
+                    row.getCell(j).setCellStyle(style1);
+                }
+            }
+            //输出Excel文件
+            OutputStream output= null;
+            try {
+                output = response.getOutputStream();
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "utf-8");
+
+                wb.write(output);
+                output.flush();
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /** 封装方法——封装干教人员信息*/

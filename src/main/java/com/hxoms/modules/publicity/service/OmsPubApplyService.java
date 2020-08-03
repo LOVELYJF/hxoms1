@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public interface OmsPubApplyService {
      * @Author: 李逍遥
      * @Date: 2020/7/3 11:46
      */
-    void insertPubApplyChange(OmsPubApplyChange omsPubApplyChange);
+    void insertPubApplyChange(OmsPubApplyChange omsPubApplyChange, List<String> ids);
 
     /**
      * 功能描述: <br>
@@ -190,4 +191,14 @@ public interface OmsPubApplyService {
      * @Date: 2020/7/28 17:30
      */
     List<OmsPubApplyVO> getPubApplyByPwh(String pwh);
+
+    /**
+     * 功能描述: <br>
+     * 〈因公出国境申请列表导出〉
+     * @Param: [omsPubApplyQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 9:56
+     */
+    void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response);
 }
