@@ -328,6 +328,12 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (omsPubApplyChange == null){
             throw new CustomMessageException("参数为空");
         }
+        // 获取备案申请表
+        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(omsPubApplyChange.getBaId());
+        Integer sqzt = omsPubApply.getSqzt();
+        if (sqzt >= Constants.leader_business[0]){
+            throw new CustomMessageException("该业务已经提交干部监督处，请先撤销再重新提交!");
+        }
         //保存台办变更信息、
         omsPubApplyChange.setId(UUIDGenerator.getPrimaryKey());
         omsPubApplyChange.setModifyUser(loginUser.getId());
@@ -335,7 +341,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
 
         // 更新备案申请表
-        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(omsPubApplyChange.getBaId());
         //现出国时间、
         omsPubApply.setCgsj(omsPubApplyChange.getXcgsj());
         // 现回国时间、
@@ -350,8 +355,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setModifyUser(loginUser.getId());
         // 是否变更
         omsPubApply.setSfbg("1");
-        //申请状态
-        //TODO
         omsPubApplyMapper.updateById(omsPubApply);
         //omsPubApplyMapper.updateByPwh(omsPubApply);
     }
@@ -624,9 +627,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //更改为打印材料清单 2
             sqzt = Constants.private_business[2];
         }else if (sqzt == Constants.private_business[2]){
-            //更改为签字盖章 3
-            sqzt = Constants.private_business[3];
-        }else if (sqzt == Constants.private_business[3]){
             //更改为自评 4
             sqzt = Constants.private_business[4];
         }else if (sqzt == Constants.private_business[4]){
