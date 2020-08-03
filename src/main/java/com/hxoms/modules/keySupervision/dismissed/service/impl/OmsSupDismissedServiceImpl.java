@@ -177,8 +177,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 			HSSFCell cell=row1.createCell(0);
 
 			//设置标题字体大小
-			font.setFontHeightInPoints((short) 16);
-			font.setBold(true); //加粗
+			font.setFontHeightInPoints((short) 14);
 			style.setAlignment(HorizontalAlignment.CENTER);// 左右居中   
 			style.setVerticalAlignment(VerticalAlignment.CENTER);// 上下居中   
 			style.setFont(font);
@@ -204,8 +203,6 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 			HSSFCellStyle style1 = wb.createCellStyle();
 			//获得字体对象
 			HSSFFont font1 = wb.createFont();
-			//设置单元格字体大小
-			font1.setFontHeightInPoints((short) 12);
 			style1.setAlignment(HorizontalAlignment.LEFT);// 居左  
 			style1.setFont(font1);
 
