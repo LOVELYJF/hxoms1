@@ -1,7 +1,5 @@
 package com.hxoms.modules.omsregcadre.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
@@ -88,15 +86,26 @@ public class OmsRegRevokeApplyController {
 
 
     /**
+     * 录入处领导审批结果
+     * @param
+     * @return
+     */
+    @PostMapping("/updateApplyStatusByCLD")
+    public Result updateApplyStatusByCLD(OmsRegRevokeapply revokeApply, String applyIds) {
+        revokeApply.setStatus("2");
+        return Result.success(revokeApplyService.updateApplyStatusByCLD(revokeApply,applyIds));
+    }
+
+
+    /**
      * 录入部领导审批结果
      * 审批撤销备案人员(同意，不同意)
      * @param
      * @return
      */
     @PostMapping("/approvalRevokeRegPerson")
-    public Result approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+    public Result approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
         if (!StringUtils.isEmpty(applyIds)
-                && !StringUtils.isBlank(regRevokeApproval.getApprovalUser())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalOpinion())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalConclusion())) {
             return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds));

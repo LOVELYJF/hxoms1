@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -37,9 +38,9 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     int checkUploadRegRecord(List<OmsRegProcpersoninfo> list);
 
-    List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersoninfo> list);
+    List<String> queryYearList();
 
-    List<OmsRegYearcheckInfo> queryYearCheckList(Date year);
+    PageInfo<OmsRegYearcheckinfo> queryYearCheckList(OmsRegYearCheckIPagParam regYearCheckIPagParam);
 
     Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo);
 
@@ -70,4 +71,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     int insertBaseInfoConfig(List<OmsBaseinfoConfig> list);
 
     int deleteBaseInfoConfig(List<String> Ids);
+
+    List<ExcelCheckModelORPinfo> selectCheckModelList(String year);
 }

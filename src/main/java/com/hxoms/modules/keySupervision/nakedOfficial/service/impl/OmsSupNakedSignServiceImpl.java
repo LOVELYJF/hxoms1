@@ -155,20 +155,21 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		if(count < 1){
 			throw new CustomMessageException("修改裸官限制性岗位失败");
 		}else {
-
-			//将裸官信息在备案表中进行同步更新
-			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setXrxgw(omsSupNakedSign.getXzxgw());
-			omsRegProcpersonInfo.setFjgnf(omsSupNakedSign.getFjgnf());
-			omsRegProcpersonInfo.setModifyTime(new Date());
-			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
-			//在登记备案表中进行更新登记备案信息
-			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-			queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
-			int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-			if(omsSupNakedSign.getXzxgw().equals("0") && num > 0) {
-				//取消裸官的限制性岗位，同时撤销其家庭成员的登记备案，转到撤销登记备案表中
-				omsSupFamilyMemberService.removeToRegistration(omsSupNakedSign.getA0100());
+			if(omsSupNakedSign.getXzxgw() != null){
+				//将裸官信息在备案表中进行同步更新
+				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
+				omsRegProcpersonInfo.setXrxgw(omsSupNakedSign.getXzxgw());
+				omsRegProcpersonInfo.setFjgnf(omsSupNakedSign.getFjgnf());
+				omsRegProcpersonInfo.setModifyTime(new Date());
+				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
+				//在登记备案表中进行更新登记备案信息
+				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
+				int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
+				if(omsSupNakedSign.getXzxgw().equals("0") && num > 0) {
+					//取消裸官的限制性岗位，同时撤销其家庭成员的登记备案，转到撤销登记备案表中
+					omsSupFamilyMemberService.removeToRegistration(omsSupNakedSign.getA0100());
+				}
 			}
 		}
 	}
@@ -247,8 +248,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			HSSFCell cell=row1.createCell(0);
 
 			//设置标题字体大小
-			font.setFontHeightInPoints((short) 16);
-			font.setBold(true); //加粗
+			font.setFontHeightInPoints((short) 14);
 			style.setAlignment(HorizontalAlignment.CENTER);// 左右居中   
 			style.setVerticalAlignment(VerticalAlignment.CENTER);// 上下居中   
 			style.setFont(font);
@@ -275,14 +275,12 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			HSSFCellStyle style1 = wb.createCellStyle();
 			//获得字体对象
 			HSSFFont font1 = wb.createFont();
-			//设置单元格字体大小
-			font1.setFontHeightInPoints((short) 12);
 			style1.setAlignment(HorizontalAlignment.LEFT);// 居左  
 			style1.setFont(font1);
 
 			HSSFRow row = null;
 			for(int i = 0; i < list.size(); i++){
-				row = sheet.createRow(i + 2);
+				row = sheet.createRow(i + 3);
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue(list.get(i).getWorkUnit());
 				row.createCell(2).setCellValue(list.get(i).getName());

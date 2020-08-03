@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
-import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
@@ -34,7 +33,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
     @Autowired
-    private OmsRegRevokeApprovalMapper regRevokeApprovalMapper;
+    private OmsRegRevokeapprovalMapper regRevokeApprovalMapper;
 
     @Override
     public PageInfo<OmsRegRevokeapply> queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
@@ -130,6 +129,9 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         int con=0;
         //复制登记备案相同字段的数据到撤销登记申请表
         BeanUtils.copyProperties(info, applyinfo);
+        if (info.getRfStatus().equals("0") || info.getRfStatus().equals("1")){
+            applyinfo.setStatus(info.getRfStatus());
+        }
         applyinfo.setId(UUIDGenerator.getPrimaryKey());
         applyinfo.setRfId(info.getId());
         applyinfo.setCreateDate(new Date());
@@ -144,18 +146,26 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
      * @return
      */
     @Override
-    public Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+    public Object approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String[] num = applyIds.split(",");
         int con=0;
         for (int i = 0; i < num.length; i++) {
-            regRevokeApproval.setApplyId(num[i]);
-            regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
-            regRevokeApproval.setApprovalTime(new Date());
-            regRevokeApproval.setSubmitTime(new Date());
-            regRevokeApproval.setSubmitUser(userInfo.getId());
-            con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+            OmsRegRevokeapply revokeApply = new OmsRegRevokeapply();
+            QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
+            queryWrapper.eq("ID",num[i]);
+            revokeApply.setStatus("3");
+            con = baseMapper.update(revokeApply,queryWrapper);
+            if (con > 0){
+                regRevokeApproval.setApplyId(num[i]);
+                regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
+                regRevokeApproval.setApprovalTime(new Date());
+                regRevokeApproval.setApprovalUser(userInfo.getId());
+                regRevokeApproval.setSubmitTime(new Date());
+                regRevokeApproval.setSubmitUser(userInfo.getId());
+                con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+            }
         }
         return con;
     }
@@ -174,6 +184,15 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.eq("ID",revokeApply.getId());
         revokeApply.setStatus(revokeApply.getStatus());
+        return baseMapper.update(revokeApply,queryWrapper);
+    }
+
+
+    @Override
+    public Object updateApplyStatusByCLD(OmsRegRevokeapply revokeApply,String applyIds) {
+        String[] num = applyIds.split(",");
+        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
+        queryWrapper.in("ID",num);
         return baseMapper.update(revokeApply,queryWrapper);
     }
 

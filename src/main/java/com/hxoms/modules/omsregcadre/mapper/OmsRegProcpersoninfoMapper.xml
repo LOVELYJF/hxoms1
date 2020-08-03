@@ -268,7 +268,7 @@
             and INBOUND_FLAG != 'D'
             and DATA_TYPE = '2'
             and INCUMBENCY_STATUS not in (1,7)
-            and ID not in (select rf_id from oms_reg_revokeapply where status!='4')
+            and ID not in (select rf_id from oms_reg_revokeapply where status!='7')
         <if test="idnumberGa !=null and idnumberGa !=''">
             and IDNUMBER_GA = #{idnumberGa}
         </if>

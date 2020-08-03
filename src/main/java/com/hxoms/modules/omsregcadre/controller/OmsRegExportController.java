@@ -5,10 +5,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.hxoms.common.utils.DomainObjectUtil;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.modules.omsregcadre.entity.ExcelModelORPinfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.springframework.beans.BeanUtils;
@@ -101,6 +98,62 @@ public class OmsRegExportController {
         }
         return list;
     }
+
+
+
+
+
+    /**
+     * 导出备案大检查列表信息
+     * @param year
+     * @throws IOException
+     */
+    @PostMapping("/exportCheckInfo")
+    @Transactional(rollbackFor=Exception.class)
+    public void  exportCheckInfo(String year) throws IOException {
+
+        HttpServletResponse response = DomainObjectUtil.getResponse();
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "utf-8");
+        OutputStream outputStream = response.getOutputStream();
+
+        //指定文件输出位置
+        ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
+        //将要输出的内容填充到Sheet里
+        Sheet sheet =new Sheet(1,0, ExcelModelORPinfo.class );
+        //设置sheet表名
+        //sheet.setSheetName("my_excel");
+        /**
+         * 写数据到Write上下文中
+         * 第一个参数：要写入的内容
+         * 第二个参数：要写入的sheet目标
+         */
+        excelWriter.write(createCheckModelList(year),sheet);
+        excelWriter.finish();
+        outputStream.close();
+    }
+    private List<ExcelCheckModelORPinfo> createCheckModelList (String year){
+        //查询年度大检查列表根据年度
+        List<ExcelCheckModelORPinfo> list = mrpinfoService.selectCheckModelList(year);
+        return list;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
