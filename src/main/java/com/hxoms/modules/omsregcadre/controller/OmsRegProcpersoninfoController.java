@@ -5,7 +5,6 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckInfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -18,6 +17,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -209,29 +209,40 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/checkUploadRegRecord")
-    public Result checkUploadRegRecord(Date year,MultipartFile file) {
+    public Result checkUploadRegRecord(MultipartFile file) {
         Map<String, Object> map = new HashMap<String, Object>();
         // 读取Excel表格
         try{
             //登记备案大检查上传登记备案记录
             List<OmsRegProcpersoninfo> list = readOmsDataGA(file);
-            //查询年度列表
-            List<OmsRegYearcheckInfo> yearList = mrpinfoService.queryYearList(list);
             // 匹配未备案人员 新增到大检查表中
             int con = mrpinfoService.checkUploadRegRecord(list);
-            List<OmsRegYearcheckInfo> yearcheckinfoList = null;
-            if (con >0){
-                //查询大检查中未备案人员列表（可根据年度进行查询）
-                yearcheckinfoList = mrpinfoService.queryYearCheckList(year);
-            }
-            map.put("yearcheckinfoList",yearcheckinfoList);
-            map.put("yearList",yearList);
-            return Result.success(map);
+            return Result.success(con);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
         }
     }
+    /**
+     * 查询年度列表
+     * @param
+     * @return
+     */
+    @GetMapping("/selectYearList")
+    public Result selectYearList(){
+        return Result.success(mrpinfoService.queryYearList());
+    }
+
+    /**
+     * 查询所有满足撤销登记备案条件人员
+     * @param
+     * @return
+     */
+    @GetMapping("/selectYearCheckList")
+    public Result selectYearCheckList(String year){
+        return Result.success(mrpinfoService.queryYearCheckList(year));
+    }
+
 
     /**
      * 查询所有满足撤销登记备案条件人员
@@ -260,13 +271,13 @@ public class OmsRegProcpersoninfoController {
     @PostMapping("/readOmsDataGA")
     private static List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");//注意月份是MM
-        /*// 读取Excel文件
+        // 读取Excel文件
         InputStream inputStream = new FileInputStream("D:/example.xls");
-        Workbook workbook = new HSSFWorkbook(inputStream);*/
+        Workbook workbook = new HSSFWorkbook(inputStream);
         //检查文件
-        checkFile(file);
+       // checkFile(file);
         //获得Workbook工作薄对象
-        Workbook workbook = getWorkBook(file);
+        //Workbook workbook = getWorkBook(file);
         //创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
         //List<String[]> list = new ArrayList<String[]>();
         List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
