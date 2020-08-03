@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeapprovalMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapproval">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+    <result column="STEP_NAME" jdbcType="VARCHAR" property="stepName" />
+    <result column="SUBMIT_TIME" jdbcType="DATE" property="submitTime" />
+    <result column="SUBMIT_USER" jdbcType="VARCHAR" property="submitUser" />
+    <result column="APPROVAL_TIME" jdbcType="DATE" property="approvalTime" />
+    <result column="APPROVAL_USER" jdbcType="VARCHAR" property="approvalUser" />
+    <result column="APPROVAL_CONCLUSION" jdbcType="VARCHAR" property="approvalConclusion" />
+    <result column="APPROVAL_OPINION" jdbcType="VARCHAR" property="approvalOpinion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, APPLY_ID, STEP_NAME, SUBMIT_TIME, SUBMIT_USER, APPROVAL_TIME, APPROVAL_USER, 
+    APPROVAL_CONCLUSION, APPROVAL_OPINION
+  </sql>
+
+</mapper>

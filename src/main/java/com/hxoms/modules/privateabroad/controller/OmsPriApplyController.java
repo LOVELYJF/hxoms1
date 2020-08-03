@@ -156,4 +156,15 @@ public class OmsPriApplyController {
         List<Map<String, Object>> countStatusResults = omsPriApplyService.countCancelPriApply(omsPriApplyIPageParam);
         return Result.success(countStatusResults);
     }
+
+    /**
+     * 签注配置查询
+     * @param infoId 出国理由编码
+     * @return
+     */
+    @GetMapping("/selectVisaSettingByCode")
+    public Result selectVisaSettingByCode(String infoId){
+        Map<String, Object> visaSetting = omsPriApplyService.selectVisaSettingByCode(infoId);
+        return Result.success(visaSetting);
+    }
 }

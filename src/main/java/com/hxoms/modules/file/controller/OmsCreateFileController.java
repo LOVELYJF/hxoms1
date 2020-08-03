@@ -45,4 +45,16 @@ public class OmsCreateFileController {
         OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
         return Result.success(result);
     }
+
+    /**
+     * 批量删除生成文件
+     * @param tableCode
+     * @param applyId
+     * @return
+     */
+    @PostMapping("/deleteCreateFile")
+    public Result deleteCreateFile(String tableCode, String applyId){
+        String result = omsCreateFileService.deleteCreateFile(tableCode, applyId);
+        return Result.success().setMsg(result);
+    }
 }

@@ -53,7 +53,8 @@
       select
       <include refid="Base_Column_List" />
       from oms_pub_apply_change
-      where BA_ID = #{pwh,jdbcType=VARCHAR}
+      where BA_ID = #{id,jdbcType=VARCHAR}
+      and MODIFY_TIME in (select max(MODIFY_TIME) from oms_pub_apply_change)
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--

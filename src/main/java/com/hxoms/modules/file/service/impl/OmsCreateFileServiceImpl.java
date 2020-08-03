@@ -64,4 +64,19 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
         }
         return omsCreateFile;
     }
+
+    @Override
+    public String deleteCreateFile(String tableCode, String applyId) {
+        if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        QueryWrapper<OmsCreateFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("TABLE_CODE", tableCode)
+                .eq("APPLY_ID", applyId);
+        int status = omsCreateFileMapper.delete(queryWrapper);
+        if (status < 1){
+            throw new CustomMessageException("删除失败");
+        }
+        return "删除成功";
+    }
 }

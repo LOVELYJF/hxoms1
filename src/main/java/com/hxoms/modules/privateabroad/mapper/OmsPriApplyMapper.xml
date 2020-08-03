@@ -37,7 +37,8 @@
     <result column="PASSPORT_NUM" jdbcType="VARCHAR" property="passportNum" />
     <result column="HONGKONGANDMACAO_PASSPORT" jdbcType="INTEGER" property="hongkongandmacaoPassport" />
     <result column="HONGKONGANDMACAO_PASSPORT_NUM" jdbcType="VARCHAR" property="hongkongandmacaoPassportNum" />
-    <result column="HONGKONGANDMACAO_VISA" jdbcType="INTEGER" property="hongkongandmacaoVisa" />
+    <result column="MACAO_VISA" jdbcType="INTEGER" property="macaoVisa" />
+    <result column="HONGKONG_VISA" jdbcType="INTEGER" property="hongkongVisa" />
     <result column="TAIWAN_PASSPORT" jdbcType="INTEGER" property="taiwanPassport" />
     <result column="TAIWAN_PASSPORT_NUM" jdbcType="VARCHAR" property="taiwanPassportNum" />
     <result column="TAIWAN_VISA" jdbcType="INTEGER" property="taiwanVisa" />
@@ -68,14 +69,14 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, POLITICAL_OUTLOOK, HEALTH, POSTRANK, ABROAD_TIME, RETURN_TIME, 
-    GO_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME, CLASSIFICA_POST,
-    CLASSIFICATION_LEVEL, DECLASSIFICA_STARTTIME, DECLASSIFICA_ENDTIME, PAPER, REAL_GO_COUNTRY,
-    REAL_ABROAD_TIME, REAL_RETURN_TIME, REAL_OUTSIDE_TIME, DESCRIPTION, PERSONDEPART_OPINION,
-    CHECK_PERSON, RESPONSIBLE_PERSON, ABROAD_PHONE, SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ,
-    FINAL_CONCLUSION, PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, HONGKONGANDMACAO_PASSPORT_NUM,
-    HONGKONGANDMACAO_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, TAIWAN_VISA, IS_LUOGUAN,
-    IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO,
-    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON, IS_ENTRUST,
+    GO_COUNTRY, OUTSIDE_TIME, ABROAD_REASONS, APPLY_TIME, REVERT_LICENCE_TIME, CLASSIFICA_POST, 
+    CLASSIFICATION_LEVEL, DECLASSIFICA_STARTTIME, DECLASSIFICA_ENDTIME, PAPER, REAL_GO_COUNTRY, 
+    REAL_ABROAD_TIME, REAL_RETURN_TIME, REAL_OUTSIDE_TIME, DESCRIPTION, PERSONDEPART_OPINION, 
+    CHECK_PERSON, RESPONSIBLE_PERSON, ABROAD_PHONE, SFXYZQJWYJ, LAST_ASK_TIME, SFZQJWYJ, 
+    FINAL_CONCLUSION, PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, HONGKONGANDMACAO_PASSPORT_NUM, 
+    MACAO_VISA, HONGKONG_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, TAIWAN_VISA, IS_LUOGUAN, 
+    IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO, 
+    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON, IS_ENTRUST, 
     REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID
   </sql>
 
@@ -177,7 +178,7 @@
     select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 5
   </select>
 
-  <select id="selectComparisionList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO" parameterType="java.lang.String">
+  <select id="selectComparisionList" parameterType="java.lang.String" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
       select pri.*,entryexit.* from oms_pri_apply pri
           left join oms_entryexit_record entryexit
           on pri.ID = entryexit.PRIAPPLY_ID
@@ -197,7 +198,7 @@
     ) ORDER BY RF_B0000
   </select>
   <!--因私撤销统计-->
-  <select id="cancelCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+  <select id="cancelCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(1) from oms_pri_apply
     where id in
       (select apply_id from
@@ -218,5 +219,14 @@
           and step_code &gt; 24 and step_code &lt; 30
         </if>
     ) and apply_status = 31 and a0100=#{a0100}
+  </select>
+  <select id="selectVisaSettingByCode" parameterType="java.util.Map" resultType="java.util.Map">
+      select INFO_ID AS infoId, INFO_NAME AS infoName from oms_baseinfo_config where 1=1
+      <if test="infoId != null">
+          and PARENT_ID = #{infoId}
+      </if>
+      <if test="dictCode != null">
+          and DICT_CODE = #{dictCode}
+      </if>
   </select>
 </mapper>

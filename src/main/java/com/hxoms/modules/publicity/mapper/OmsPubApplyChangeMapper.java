@@ -60,7 +60,7 @@ public interface OmsPubApplyChangeMapper {
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:08
      */
-    OmsPubApplyChange selectByPrimaryPwh(@Param("pwh") String pwh);
+    OmsPubApplyChange selectByPrimaryPwh(@Param("id") String id);
 
     void deleteByPrimaryBAID(String id);
 }

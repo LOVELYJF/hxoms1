@@ -1,8 +1,8 @@
 package com.hxoms.modules.roadPage.service;
 
 import com.github.pagehelper.PageInfo;
-import com.hxoms.modules.passportCard.entity.CfCertificate;
-import com.hxoms.modules.passportCard.entity.param.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.roadPage.entity.PersonnelPageParam;
 
 import java.util.List;

@@ -27,13 +27,15 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<StatisticsCountVo> selectAllFlagCount();
 
-    List<OmsRegProcpersoninfo> selectMergeList(String dataType);
+    List<OmsRegProcpersoninfo> selectMergeList();
 
     List<OmsRegProcpersoninfo> selectListById(String id);
 
     List<OmsRegProcpersoninfo> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
     int updateRegProcpersoninfo(OmsRegProcpersoninfo info);
+
+    List<OmsRegProcpersoninfo> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 }
 
 

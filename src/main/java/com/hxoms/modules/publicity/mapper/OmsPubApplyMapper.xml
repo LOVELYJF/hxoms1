@@ -264,11 +264,11 @@
     </update>
     <delete id="deletePubApplyById">
         delete from oms_pub_apply
-        where ID = {id}
+        where ID = #{id}
     </delete>
     <delete id="deletePubApplyByYSPId">
         delete from oms_pub_apply
-        where YSP_ID = {id}
+        where YSP_ID = #{id}
     </delete>
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
@@ -325,7 +325,7 @@
         ,GETDICTITEM('300',oms_pub_apply.SQZT,'0') as "SQZT"
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
@@ -346,7 +346,7 @@
         where a.id=#{applyId}
     </select>
     <select id="selectById" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
-        select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE,b.B0101
+        select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE_GB,b.B0101
         ,o.* from oms_pub_apply o inner join oms_reg_procpersoninfo r
         on o.a0100=r.a0100
         inner join b01 b on o.b0100=b.b0100
@@ -390,28 +390,13 @@
     </select>
     <select id="selectPubApplyListByPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
             <if test="pwh != null and pwh !=''">
@@ -421,24 +406,10 @@
     </select>
     <select id="selectByYSPId" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.IDNUMBER
@@ -453,24 +424,10 @@
     </select>
     <select id="selectPubAllyByStatusAndName" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         from oms_pub_apply
@@ -492,11 +449,9 @@
         union all
         select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pub_apply where SQZT = 3 and SFXD = 1
         union all
-        select "4.签字盖章" as label, 4 as statusCode, count(0) as num from oms_pub_apply where SQZT = 4 and SFXD = 1
+        select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
         union all
-        select "5.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
-        union all
-        select "6.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
+        select "5.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
     </select>
 
 

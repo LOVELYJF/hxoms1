@@ -37,9 +37,9 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     int checkUploadRegRecord(List<OmsRegProcpersoninfo> list);
 
-    List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersoninfo> list);
+    List<String> queryYearList();
 
-    List<OmsRegYearcheckInfo> queryYearCheckList(Date year);
+    List<OmsRegYearcheckinfo> queryYearCheckList(String year);
 
     Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo);
 
@@ -57,7 +57,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     Map<String, Object> selectStatisticsCount();
 
-    List<OmsRegProcpersoninfo> selectMergeList(String dataType);
+    List<OmsRegProcpersoninfo> selectMergeList();
 
     List<OmsRegProcpersoninfo> selectListById(String idStr);
 
@@ -70,4 +70,6 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     int insertBaseInfoConfig(List<OmsBaseinfoConfig> list);
 
     int deleteBaseInfoConfig(List<String> Ids);
+
+    List<ExcelCheckModelORPinfo> selectCheckModelList(String year);
 }

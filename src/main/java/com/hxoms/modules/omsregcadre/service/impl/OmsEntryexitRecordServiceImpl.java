@@ -15,19 +15,20 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagPa
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordCompbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
-import com.hxoms.modules.passportCard.entity.CfCertificate;
-import com.hxoms.modules.passportCard.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecordMapper, OmsEntryexitRecord> implements OmsEntryexitRecordService {
@@ -96,11 +97,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                     if (entryexit.getDestination().contains(priapply.getRealGoCountry())) {
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
-                                        entryexit.setComparisionResult("正确");
+                                        entryexit.setComparisonResult("正确");
                                     } else {
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
-                                        entryexit.setComparisionResult("出访目的地不匹配");
+                                        entryexit.setComparisonResult("出访目的地不匹配");
                                     }
 
                                 } else {
@@ -110,7 +111,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
                                         //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
-                                        entryexit.setComparisionResult("出境时间不匹配，并且没有申请变更");
+                                        entryexit.setComparisonResult("出境时间不匹配，并且没有申请变更");
                                     }
                                 }
                                 entryexit.setPriapplyId(priapply.getId());
@@ -124,11 +125,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                     if (entryexit.getDestination().contains(priapply.getRealGoCountry())) {
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
-                                        entryexit.setComparisionResult("正确");
+                                        entryexit.setComparisonResult("正确");
                                     } else {
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
-                                        entryexit.setComparisionResult("目的地不匹配");
+                                        entryexit.setComparisonResult("目的地不匹配");
                                     }
                                 } else {
                                     //入境时间不一致的（并且前后相差超过5天的），提醒干部监督处核查，
@@ -137,12 +138,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                         priapply.setIsComparison("1");
                                         //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
-                                        entryexit.setComparisionResult("入境时间不匹配，并且没有申请变更");
+                                        entryexit.setComparisonResult("入境时间不匹配，并且没有申请变更");
 
                                         //进行出访目的地比对 将出入境信息中的地点（国家、地区）与系统中经经办人审核后的实际因私出国（境）目的地和中转地进行比对，包含在其中的，记为一致
                                         if (!entryexit.getDestination().contains(priapply.getRealGoCountry())) {
                                             //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
-                                            entryexit.setComparisionResult(entryexit.getComparisionResult() + "；出访目的地不匹配");
+                                            entryexit.setComparisonResult(entryexit.getComparisonResult() + "；出访目的地不匹配");
                                         }
                                     }
                                 }
@@ -152,12 +153,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                             }
                         }
                     } else {
-                        entryexit.setComparisionResult("未经申请的出国（境）");
+                        entryexit.setComparisonResult("未经申请的出国（境）");
                         baseMapper.updateById(entryexit);
                     }
 
                 } else {
-                    entryexit.setComparisionResult("未经申请的出国（境）");
+                    entryexit.setComparisonResult("未经申请的出国（境）");
                     baseMapper.updateById(entryexit);
                     throw new CustomMessageException("当前人员证照号为空不能进行比对。");
                 }
@@ -258,11 +259,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
 
                                                     priapply.setIsComparison("1");
-                                                    entryexit.setComparisionResult("正确");
+                                                    entryexit.setComparisonResult("正确");
                                                 } else {
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                                     priapply.setIsComparison("1");
-                                                    entryexit.setComparisionResult("出访目的地不匹配");
+                                                    entryexit.setComparisonResult("出访目的地不匹配");
                                                 }
 
                                             } else {
@@ -272,7 +273,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                                     priapply.setIsComparison("1");
                                                     //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
-                                                    entryexit.setComparisionResult("出境时间不匹配，并且没有申请变更");
+                                                    entryexit.setComparisonResult("出境时间不匹配，并且没有申请变更");
                                                 }
                                             }
                                             entryexit.setPriapplyId(priapply.getId());
@@ -286,11 +287,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                                 if (entryexit.getDestination().contains(priapply.getRealGoCountry())) {
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                                     priapply.setIsComparison("1");
-                                                    entryexit.setComparisionResult("正确");
+                                                    entryexit.setComparisonResult("正确");
                                                 } else {
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                                     priapply.setIsComparison("1");
-                                                    entryexit.setComparisionResult("目的地不匹配");
+                                                    entryexit.setComparisonResult("目的地不匹配");
                                                 }
                                             } else {
                                                 //入境时间不一致的（并且前后相差超过5天的），提醒干部监督处核查，
@@ -299,12 +300,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                                     //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
                                                     priapply.setIsComparison("1");
                                                     //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
-                                                    entryexit.setComparisionResult("入境时间不匹配，并且没有申请变更");
+                                                    entryexit.setComparisonResult("入境时间不匹配，并且没有申请变更");
 
                                                     //进行出访目的地比对 将出入境信息中的地点（国家、地区）与系统中经经办人审核后的实际因私出国（境）目的地和中转地进行比对，包含在其中的，记为一致
                                                     if (!entryexit.getDestination().contains(priapply.getRealGoCountry())) {
                                                         //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
-                                                        entryexit.setComparisionResult(entryexit.getComparisionResult() + "；出访目的地不匹配");
+                                                        entryexit.setComparisonResult(entryexit.getComparisonResult() + "；出访目的地不匹配");
                                                     }
                                                 }
                                             }
@@ -314,12 +315,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                         }
                                     }
                                 } else {
-                                    entryexit.setComparisionResult("未经申请的出国（境）");
+                                    entryexit.setComparisonResult("未经申请的出国（境）");
                                     baseMapper.updateById(entryexit);
                                 }
 
                             } else {
-                                entryexit.setComparisionResult("未经申请的出国（境）");
+                                entryexit.setComparisonResult("未经申请的出国（境）");
                                 baseMapper.updateById(entryexit);
                                 throw new CustomMessageException("当前人员证照号为空不能进行比对。");
                             }

@@ -9,6 +9,8 @@ import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.majorLeader.entity.A02;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
@@ -23,6 +25,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,7 +48,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private OmsRegRevokeApplyMapper revokeApplyMapper;
     @Autowired
-    private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
+    private OmsRegYearcheckinfoMapper yearcheckInfoMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
     @Autowired
@@ -222,9 +225,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<OmsRegProcpersoninfo> selectMergeList(String dataType) {
+    public List<OmsRegProcpersoninfo> selectMergeList() {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
-        return  baseMapper.selectMergeList(dataType);
+        return  baseMapper.selectMergeList();
     }
 
     @Override
@@ -490,7 +493,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo) {
         QueryWrapper<OmsRegProcbatchPerson> qw = new QueryWrapper<OmsRegProcbatchPerson>();
-        qw.eq("BATCH_ID",batchNo);
+        if (!StringUtils.isBlank(batchNo)){
+            qw.eq("BATCH_ID",batchNo);
+        }
         return regProcbatchPersonMapper.selectList(qw);
     }
 
@@ -501,12 +506,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     public int checkUploadRegRecord(List<OmsRegProcpersoninfo> list) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckInfoWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        QueryWrapper<OmsRegYearcheckinfo> yearcheckInfoWrapper = new QueryWrapper<OmsRegYearcheckinfo>();
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        String dateStr = sdf.format(date);
         yearcheckInfoWrapper.eq("RF_STATUS","0");
-        yearcheckInfoWrapper.eq("CREATE_DATE",new Date("yyyy"));
-        List<OmsRegYearcheckInfo> yearoldlist = yearcheckInfoMapper.selectList(yearcheckInfoWrapper);
-        if (yearoldlist!=null){
-            yearcheckInfoMapper.delete(null);
+        yearcheckInfoWrapper.eq("CREATE_DATE",dateStr);
+        List<OmsRegYearcheckinfo> yearoldlist = yearcheckInfoMapper.selectList(yearcheckInfoWrapper);
+        if (yearoldlist!=null && yearoldlist.size() >0){
+            yearcheckInfoMapper.delete(yearcheckInfoWrapper);
         }
         int con =0;
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -514,9 +523,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //查询登记备案干部的数据
         List<OmsRegProcpersoninfo> omsregList = baseMapper.selectList(queryWrapper);
         //登记备案为干部的身份证号集合
-        List<String> gbidnumbers =null;
+        List<String> gbidnumbers = new ArrayList<>();
         for (int i=0;i<omsregList.size();i++){
-            gbidnumbers.add(omsregList.get(i).getIdnumberGb());
+            if (!StringUtils.isBlank(omsregList.get(i).getIdnumberGb())){
+                gbidnumbers.add(omsregList.get(i).getIdnumberGb());
+            }
         }
         //出国境导入数据集合
         for (OmsRegProcpersoninfo cgjdata :list){
@@ -525,16 +536,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 continue;
             }else{
                 //登记备案不中包含出入境
-                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                OmsRegYearcheckinfo yearcheckInfo = new OmsRegYearcheckinfo();
                 BeanUtils.copyProperties(cgjdata, yearcheckInfo);
-                yearcheckInfo.setCreateDate(new Date("yyyy"));
-                yearcheckInfo.setCreateUser("");
+                yearcheckInfo.setCreateDate(dateStr);
+                yearcheckInfo.setCreateUser(loginUser.getId());
                 con = yearcheckInfoMapper.insert(yearcheckInfo);
             }
         }
 
-        //出入境（公安）导入数据身份证号集合
-        List<String> gaidnumbers =null;
+        /*//出入境（公安）导入数据身份证号集合
+        List<String> gaidnumbers = new ArrayList<>();
         for (int i=0;i<list.size();i++){
             gaidnumbers.add(list.get(i).getIdnumberGa());
         }
@@ -545,26 +556,23 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 continue;
             }else{
                 //出入境不包含登记备案
-                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                OmsRegYearcheckinfo yearcheckInfo = new OmsRegYearcheckinfo();
                 BeanUtils.copyProperties(gbdata, yearcheckInfo);
-                yearcheckInfo.setCreateDate(new Date("yyyy"));
-                yearcheckInfo.setCreateUser("");
+                yearcheckInfo.setCreateDate(dateStr);
+                yearcheckInfo.setCreateUser(loginUser.getId());
                 con = yearcheckInfoMapper.insert(yearcheckInfo);
             }
-        }
+        }*/
         return con;
     }
 
     /**
      * 查询年度列表
-      * @param list
      * @return
      */
     @Override
-    public List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersoninfo> list) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
-        yearcheckWrapper.groupBy("CREATE_DATE");
-        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+    public List<String> queryYearList() {
+        return yearcheckInfoMapper.selectYearList();
     }
 
     /**
@@ -573,8 +581,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return
      */
     @Override
-    public List<OmsRegYearcheckInfo> queryYearCheckList(Date year) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+    public List<OmsRegYearcheckinfo> queryYearCheckList(String year) {
+        QueryWrapper<OmsRegYearcheckinfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckinfo>();
         if (year!=null){
             yearcheckWrapper.eq("CREATE_DATE",year);
         }
@@ -583,6 +591,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo) {
+        //在职状态为“免职”或 管理状态为“中管干部”或退出方式为“调出”的，且撤销登记备案表中不存在的（排除已备案状态）。
         //查询符合撤销登记备案的人员信息（1.免职人员 2.脱密结束时间 < 当前时间）
         return baseMapper.selectPersonAndAllowRevoke(msRegProcpersonInfo);
     }
@@ -605,8 +614,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return
      */
     private OmsRegProcpersoninfo initData(A01 a01) throws ParseException {
-        /*//登录用户信息
-        UserInfo loginUser = UserInfoUtil.getUserInfo();*/
+        //登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
@@ -703,7 +712,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //人事主管单位
         orpInfo.setPersonManager("海南省委组织部");
         orpInfo.setCreateTime(new Date());
-        //orpInfo.setCreateUser(loginUser.getId());
+        orpInfo.setCreateUser(loginUser.getId());
         return orpInfo;
     }
 
@@ -804,6 +813,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public int deleteBaseInfoConfig(List<String> Ids) {
         return omsBaseinfoConfigMapper.deleteBatchIds(Ids);
+    }
+
+    @Override
+    public List<ExcelCheckModelORPinfo> selectCheckModelList(String year) {
+        return yearcheckInfoMapper.selectCheckModelList(year);
     }
 
 

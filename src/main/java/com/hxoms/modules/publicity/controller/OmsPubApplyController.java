@@ -28,17 +28,6 @@ public class OmsPubApplyController {
     @Autowired
     private OmsPubApplyService omsPubApplyService;
 
-    /**
-     * 根据id查询申请记录
-     *
-     * @author sunqian
-     * @date 2020/5/11 15:05
-     */
-    @GetMapping("/selectPubApplyById")
-    public Result selectPubApplyById(String id) {
-        OmsPubApply omsPubApply = omsPubApplyService.selectPubApplyById(id);
-        return Result.success(omsPubApply);
-    }
 
     /**
      * 根据机构id查询人员
@@ -129,6 +118,33 @@ public class OmsPubApplyController {
     }
     /**
      * 功能描述: <br>
+     * 〈因公下一步操作根据id更改状态〉
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 9:47
+     */
+    @PostMapping("/updateSQZTById")
+    public Result updateSQZTById(String id){
+        omsPubApplyService.updateSQZTById(id);
+        return Result.success();
+    }
+
+   /**
+    * 功能描述: <br>
+    * 〈根据id查询申请记录〉
+    * @Param: [id]
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: 李逍遥
+    * @Date: 2020/7/28 10:30
+    */
+    @GetMapping("/selectPubApplyById")
+    public Result selectPubApplyById(String id) {
+        OmsPubApply omsPubApply = omsPubApplyService.selectPubApplyById(id);
+        return Result.success(omsPubApply);
+    }
+    /**
+     * 功能描述: <br>
      * 〈根据id删除申请人员〉
      * @Param: [id]
      * @Return: com.hxoms.common.utils.Result
@@ -139,6 +155,46 @@ public class OmsPubApplyController {
     public Result deletePubApplyById(String id){
         omsPubApplyService.deletePubApplyById(id);
         return Result.success();
+    }
+    /**
+     * 功能描述: <br>
+     * 〈保存变更后信息〉
+     * @Param: [omsPubApplyChange]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/3 11:45
+     */
+    @PostMapping("/insertPubApplyChange")
+    public Result insertPubApplyChange(OmsPubApplyChange omsPubApplyChange){
+        omsPubApplyService.insertPubApplyChange(omsPubApplyChange);
+        return Result.success();
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈通过id获取变更前后信息〉
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/6 10:05
+     */
+    @GetMapping("/getPubApplyChange")
+    public Result getPubApplyChange(String id){
+        OmsPubApplyChange omsPubApplyChange = omsPubApplyService.getPubApplyChange(id);
+        return Result.success(omsPubApplyChange);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈台办获取相同批文号的人员〉
+     * @Param: [pwh]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/28 17:30
+     */
+    @GetMapping("/getPubApplyByPwh")
+    public Result getPubApplyByPwh(String pwh){
+        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyByPwh(pwh);
+        return Result.success(list);
     }
 
     /**
@@ -167,45 +223,8 @@ public class OmsPubApplyController {
         omsPubApplyService.repealPubApplyById(id,cxyy);
         return Result.success();
     }
-    /**
-     * 功能描述: <br>
-     * 〈获取台办变更前信息〉
-     * @Param: [pwh]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/7/3 11:30
-     */
-    @GetMapping("/getPubApplyChangeByPwh")
-    public Result getPubApplyChangeByPwh(String pwh){
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyService.getPubApplyChangeByPwh(pwh);
-        return Result.success(omsPubApplyChange);
-    }
-    /**
-     * 功能描述: <br>
-     * 〈保存台办变更后信息〉
-     * @Param: [omsPubApplyChange]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/7/3 11:45
-     */
-    @PostMapping("/insertPubApplyChange")
-    public Result insertPubApplyChange(OmsPubApplyChange omsPubApplyChange){
-        omsPubApplyService.insertPubApplyChange(omsPubApplyChange);
-        return Result.success();
-    }
-    /**
-     * 功能描述: <br>
-     * 〈通过批文号获取变更前后信息〉
-     * @Param: [pwh]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/7/6 10:05
-     */
-    @GetMapping("/getPubApplyChange")
-    public Result getPubApplyChange(String pwh){
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyService.getPubApplyChange(pwh);
-        return Result.success(omsPubApplyChange);
-    }
+
+
 
     /**
      * 功能描述: <br>

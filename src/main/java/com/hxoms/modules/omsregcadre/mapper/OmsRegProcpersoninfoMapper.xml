@@ -245,9 +245,6 @@
   <select id="selectMergeList" resultMap="BaseResultMap">
     select * from oms_reg_procpersoninfo where 1=1
     and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
-    <if test="dataType!=null and dataType!=''">
-      and DATA_TYPE=#{dataType}
-    </if>
   </select>
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
@@ -265,5 +262,20 @@
             and id in(#{id})
         </if>
     </update>
+
+    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="java.util.List">
+        select * from oms_reg_procpersoninfo where 1=1
+            and INBOUND_FLAG != 'D'
+            and DATA_TYPE = '2'
+            and INCUMBENCY_STATUS not in (1,7)
+            and ID not in (select rf_id from oms_reg_revokeapply where status!='1')
+        <if test="idnumberGa !=null and idnumberGa !=''">
+            and IDNUMBER_GA = #{idnumberGa}
+        </if>
+        <if test="name!=null and name!=''">
+            AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
+        </if>
+        order by SURNAME,NAME,WORK_UNIT asc
+    </select>
 
 </mapper>

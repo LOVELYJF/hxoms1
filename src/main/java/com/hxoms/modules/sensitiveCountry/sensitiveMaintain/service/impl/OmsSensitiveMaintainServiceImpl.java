@@ -8,6 +8,7 @@ import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLi
 import com.hxoms.modules.sensitiveCountry.sensitiveMaintain.service.OmsSensitiveMaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,14 +75,23 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 	 * @param sensitiveLimitId
 	 * @return
 	 */
-	public void addCountryInfo(List<Integer> countryIdList, String sensitiveLimitId) {
+	@Transactional(rollbackFor=Exception.class)
+	public void addCountryInfo(List<String> countryIdList, String sensitiveLimitId) {
+		List<Integer> idList = new ArrayList<Integer>();
+		if(countryIdList != null && countryIdList.size() > 0){
+			for(String id : countryIdList){
+				Integer num = Integer.parseInt(id);
+				idList.add(num);
+			}
+		}
+
 		//查询当前限制性对应的内容有哪些
 		List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sensitiveLimitId", sensitiveLimitId);
 		if (list == null || list.size() < 1) {
-			if (countryIdList != null && countryIdList.size() > 0) {
-				for (Integer id : countryIdList) {
+			if (idList != null && idList.size() > 0) {
+				for (Integer id : idList) {
 					map.put("id", id);
 					int result = countryMapper.addSensitiveMaintain(map);
 					if (result < 1) {
@@ -93,8 +103,8 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 			//将当前的限制性国家删除
 			int count = countryMapper.deleteSensitiveMaintain(sensitiveLimitId);
 			if (count > 0) {
-				if (countryIdList != null && countryIdList.size() > 0) {
-					for (Integer id : countryIdList) {
+				if (idList != null && idList.size() > 0) {
+					for (Integer id : idList) {
 						map.put("id", id);
 						int result = countryMapper.addSensitiveMaintain(map);
 						if (result < 1) {

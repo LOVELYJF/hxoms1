@@ -7,6 +7,7 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
@@ -41,6 +42,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
     private CountryMapper countryMapper;
     @Autowired
     private OmsAbroadApprovalService omsAbroadApprovalService;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
 
     @Override
     public PageInfo<OmsPriDelayApplyVO> selectOmsDelayApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -84,6 +87,8 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
             if (omsPriDelayApplyMapper.updateById(omsPriDelayApply) < 1){
                 throw new CustomMessageException("操作失败");
             }
+            //删除生成文件
+            omsCreateFileService.deleteCreateFile(Constants.oms_business[2], omsPriDelayApply.getId());
         }
         return omsPriDelayApply.getId();
     }

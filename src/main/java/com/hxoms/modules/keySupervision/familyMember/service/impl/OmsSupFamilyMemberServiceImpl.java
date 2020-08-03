@@ -141,12 +141,10 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	/**
 	 * <b>根据人员主键查询家庭成员信息(配偶子女)</b>
 	 * @param a0100
-	 * @param page
 	 * @return
 	 */
-	public Page<A36> getFamilyMember(Page<A36> page,String a0100) {
+	public List<A36> getFamilyMember(String a0100) {
 
-		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		//根据身份证号码切割得到出生日期
 		if(list != null && list.size() > 0){
@@ -155,32 +153,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				a36.setA3607(birthdate);
 			}
 		}
-
-		PageInfo<A36> pageInfo = new PageInfo<A36>(list);
-		page.setRecords(list);
-		page.setTotal(pageInfo.getTotal());
-		page.setPages(pageInfo.getPages());
-		return page;
-	}
-
-
-	/**
-	 * <b>更新保存家庭成员信息</b>
-	 * @param list
-	 * @return
-	 */
-	@Transactional(rollbackFor=Exception.class)
-	public void updateFamilyMemberInfo(List<A36> list) {
-		for(A36 a36 : list){
-			a36.setModifyTime(new Date());
-			a36.setModifyUser(UserInfoUtil.getUserInfo().getId());
-			QueryWrapper<A36> queryWrapper = new QueryWrapper<A36>();
-			queryWrapper.eq("a3600", a36.getA3600());
-			int count = a36Mapper.update(a36, queryWrapper);
-			if(count < 1){
-				throw new CustomMessageException("更新保存家庭成员信息失败");
-			}
-		}
+		return list;
 	}
 
 
@@ -308,7 +281,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
 						QueryWrapper<OmsRegProcpersoninfo> queryWrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
-						queryWrapper1.eq("IDNUMBER", a36.getIdCard());
+						queryWrapper1.eq("IDNUMBER_GB", a36.getIdCard());
 						omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper1);
 					}
 				}else {
@@ -362,7 +335,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 						if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
 							//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 							for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
-								if(omsRegRevokeApply.getIdnumber().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
+								if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
 										omsRegRevokeApply.getStatus().equals("0")){
 									//撤销登记备案表中已经存在
 									flag = true;
@@ -381,7 +354,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
 							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
 							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
-							omsRegRevokeApply.setIdnumber(omsRegProcpersonInfo.getIdnumberGb());
+							omsRegRevokeApply.setIdnumberGb(omsRegProcpersonInfo.getIdnumberGb());
 							omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
 							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
 							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
