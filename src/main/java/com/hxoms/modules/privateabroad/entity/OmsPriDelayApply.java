@@ -54,6 +54,29 @@ public class OmsPriDelayApply {
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     private String modifyUser;
 
+    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="干部监督处的批次Id")
+    private String leaderBatchId;
+
+
+
+
+    @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
+    private String clshsftg;
+    @ColumnAnnotation(FieldName = "JDCJL",   FieldDescription="监督处最终结论")
+    private String jdcjl;
+    @ColumnAnnotation(FieldName = "JWJL",   FieldDescription="纪委结论")
+    private String jwjl;
+    @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
+    private String zzjl;
+
+    @ColumnAnnotation(FieldName = "SFZQJWYJ",   FieldDescription="是否需要征求纪委意见")
+    private String sfzqjwyj;
+
+    @ColumnAnnotation(FieldName = "SCZQJWYJSJ",   FieldDescription="上次征求纪委意见时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date sczqjwyjsj;
+
     public String getId() {
         return id;
     }
@@ -148,5 +171,64 @@ public class OmsPriDelayApply {
 
     public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser == null ? null : modifyUser.trim();
+    }
+
+
+    public String getLeaderBatchId() {
+        return leaderBatchId;
+    }
+
+    public void setLeaderBatchId(String leaderBatchId) {
+        this.leaderBatchId = leaderBatchId;
+    }
+
+
+
+    public String getClshsftg() {
+        return clshsftg;
+    }
+
+    public void setClshsftg(String clshsftg) {
+        this.clshsftg = clshsftg;
+    }
+
+    public String getJdcjl() {
+        return jdcjl;
+    }
+
+    public void setJdcjl(String jdcjl) {
+        this.jdcjl = jdcjl;
+    }
+
+    public String getJwjl() {
+        return jwjl;
+    }
+
+    public void setJwjl(String jwjl) {
+        this.jwjl = jwjl;
+    }
+
+    public String getZzjl() {
+        return zzjl;
+    }
+
+    public void setZzjl(String zzjl) {
+        this.zzjl = zzjl;
+    }
+
+    public String getSfzqjwyj() {
+        return sfzqjwyj;
+    }
+
+    public void setSfzqjwyj(String sfzqjwyj) {
+        this.sfzqjwyj = sfzqjwyj;
+    }
+
+    public Date getSczqjwyjsj() {
+        return sczqjwyjsj;
+    }
+
+    public void setSczqjwyjsj(Date sczqjwyjsj) {
+        this.sczqjwyjsj = sczqjwyjsj;
     }
 }
