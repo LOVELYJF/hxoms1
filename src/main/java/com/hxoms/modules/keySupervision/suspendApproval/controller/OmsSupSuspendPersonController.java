@@ -29,7 +29,7 @@ public class OmsSupSuspendPersonController {
 	 * @return
 	 */
 	@GetMapping("/getSuspendPersonInfo")
-	public Result getSuspendPersonInfo(Page<OmsSupSuspendPerson> page, @RequestParam(value = "idList") List<String> idList,
+	public Result getSuspendPersonInfo(Page<OmsSupSuspendPerson> page, @RequestParam(value = "idList",required = false) List<String> idList,
 	                                   OmsSupSuspendPerson omsSupSuspendPerson){
 		page = omsSupSuspendPersonService.getSuspendPersonInfo(page,idList,omsSupSuspendPerson);
 		return Result.success(page);
