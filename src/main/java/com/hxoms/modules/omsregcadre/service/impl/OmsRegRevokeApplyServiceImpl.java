@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
-import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
@@ -34,7 +33,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
     @Autowired
-    private OmsRegRevokeApprovalMapper regRevokeApprovalMapper;
+    private OmsRegRevokeapprovalMapper regRevokeApprovalMapper;
 
     @Override
     public PageInfo<OmsRegRevokeapply> queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
@@ -147,7 +146,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
      * @return
      */
     @Override
-    public Object approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
+    public Object approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String[] num = applyIds.split(",");
