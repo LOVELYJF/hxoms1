@@ -152,13 +152,20 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         String[] num = applyIds.split(",");
         int con=0;
         for (int i = 0; i < num.length; i++) {
-            regRevokeApproval.setApplyId(num[i]);
-            regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
-            regRevokeApproval.setApprovalTime(new Date());
-            regRevokeApproval.setApprovalUser(userInfo.getId());
-            regRevokeApproval.setSubmitTime(new Date());
-            regRevokeApproval.setSubmitUser(userInfo.getId());
-            con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+            OmsRegRevokeapply revokeApply = new OmsRegRevokeapply();
+            QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
+            queryWrapper.eq("ID",num[i]);
+            revokeApply.setStatus("3");
+            con = baseMapper.update(revokeApply,queryWrapper);
+            if (con > 0){
+                regRevokeApproval.setApplyId(num[i]);
+                regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
+                regRevokeApproval.setApprovalTime(new Date());
+                regRevokeApproval.setApprovalUser(userInfo.getId());
+                regRevokeApproval.setSubmitTime(new Date());
+                regRevokeApproval.setSubmitUser(userInfo.getId());
+                con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+            }
         }
         return con;
     }
@@ -177,6 +184,15 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.eq("ID",revokeApply.getId());
         revokeApply.setStatus(revokeApply.getStatus());
+        return baseMapper.update(revokeApply,queryWrapper);
+    }
+
+
+    @Override
+    public Object updateApplyStatusByCLD(OmsRegRevokeapply revokeApply,String applyIds) {
+        String[] num = applyIds.split(",");
+        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
+        queryWrapper.in("ID",num);
         return baseMapper.update(revokeApply,queryWrapper);
     }
 

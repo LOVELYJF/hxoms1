@@ -23,4 +23,6 @@ public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
     Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 
     Object updateApplyStatus(OmsRegRevokeapply revokeApply);
+
+    Object updateApplyStatusByCLD(OmsRegRevokeapply revokeApply, String applyIds);
 }

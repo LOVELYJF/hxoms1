@@ -86,6 +86,18 @@ public class OmsRegRevokeApplyController {
 
 
     /**
+     * 录入处领导审批结果
+     * @param
+     * @return
+     */
+    @PostMapping("/updateApplyStatusByCLD")
+    public Result updateApplyStatusByCLD(OmsRegRevokeapply revokeApply, String applyIds) {
+        revokeApply.setStatus("2");
+        return Result.success(revokeApplyService.updateApplyStatusByCLD(revokeApply,applyIds));
+    }
+
+
+    /**
      * 录入部领导审批结果
      * 审批撤销备案人员(同意，不同意)
      * @param

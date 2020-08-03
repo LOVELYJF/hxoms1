@@ -5,7 +5,9 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckinfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -234,13 +236,14 @@ public class OmsRegProcpersoninfoController {
     }
 
     /**
-     * 查询所有满足撤销登记备案条件人员
+     * 查询大检查中未备案人员列表（可根据年度进行查询）
      * @param
      * @return
      */
     @GetMapping("/selectYearCheckList")
-    public Result selectYearCheckList(String year){
-        return Result.success(mrpinfoService.queryYearCheckList(year));
+    public Result selectYearCheckList(OmsRegYearCheckIPagParam regYearCheckIPagParam){
+        PageInfo<OmsRegYearcheckinfo> list = mrpinfoService.queryYearCheckList(regYearCheckIPagParam);
+        return Result.success(list);
     }
 
 

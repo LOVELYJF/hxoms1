@@ -15,6 +15,7 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.A02;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
@@ -577,16 +578,20 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     /**
      * 查询大检查中未备案人员列表（可根据年度进行查询）
-     * @param year
+     * @param regYearCheckIPagParam
      * @return
      */
     @Override
-    public List<OmsRegYearcheckinfo> queryYearCheckList(String year) {
+    public PageInfo<OmsRegYearcheckinfo> queryYearCheckList(OmsRegYearCheckIPagParam regYearCheckIPagParam) {
         QueryWrapper<OmsRegYearcheckinfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckinfo>();
-        if (year!=null){
-            yearcheckWrapper.eq("CREATE_DATE",year);
+        //分页
+        PageUtil.pageHelp(regYearCheckIPagParam.getPageNum(), regYearCheckIPagParam.getPageSize());
+        if (!StringUtils.isBlank(regYearCheckIPagParam.getYear())){
+            yearcheckWrapper.eq("CREATE_DATE",regYearCheckIPagParam.getYear());
         }
-        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+        //返回数据
+        PageInfo<OmsRegYearcheckinfo> pageInfo = new PageInfo(yearcheckInfoMapper.selectList(yearcheckWrapper));
+        return pageInfo;
     }
 
     @Override

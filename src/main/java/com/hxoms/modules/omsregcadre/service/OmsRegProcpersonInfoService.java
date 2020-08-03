@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -39,7 +40,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     List<String> queryYearList();
 
-    List<OmsRegYearcheckinfo> queryYearCheckList(String year);
+    PageInfo<OmsRegYearcheckinfo> queryYearCheckList(OmsRegYearCheckIPagParam regYearCheckIPagParam);
 
     Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo);
 
