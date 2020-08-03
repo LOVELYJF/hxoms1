@@ -130,6 +130,9 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         int con=0;
         //复制登记备案相同字段的数据到撤销登记申请表
         BeanUtils.copyProperties(info, applyinfo);
+        if (info.getRfStatus().equals("0") || info.getRfStatus().equals("1")){
+            applyinfo.setStatus(info.getRfStatus());
+        }
         applyinfo.setId(UUIDGenerator.getPrimaryKey());
         applyinfo.setRfId(info.getId());
         applyinfo.setCreateDate(new Date());
@@ -153,6 +156,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
             regRevokeApproval.setApplyId(num[i]);
             regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
             regRevokeApproval.setApprovalTime(new Date());
+            regRevokeApproval.setApprovalUser(userInfo.getId());
             regRevokeApproval.setSubmitTime(new Date());
             regRevokeApproval.setSubmitUser(userInfo.getId());
             con =  regRevokeApprovalMapper.insert(regRevokeApproval);

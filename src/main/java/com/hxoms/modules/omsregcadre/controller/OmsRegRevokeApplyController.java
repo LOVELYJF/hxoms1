@@ -96,7 +96,6 @@ public class OmsRegRevokeApplyController {
     @PostMapping("/approvalRevokeRegPerson")
     public Result approvalRevokeRegPerson(OmsRegRevokeApproval regRevokeApproval,String applyIds) {
         if (!StringUtils.isEmpty(applyIds)
-                && !StringUtils.isBlank(regRevokeApproval.getApprovalUser())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalOpinion())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalConclusion())) {
             return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds));
