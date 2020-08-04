@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApprovalMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeApproval">
+<mapper namespace="com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeapprovalMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapproval">
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
     <result column="STEP_NAME" jdbcType="VARCHAR" property="stepName" />

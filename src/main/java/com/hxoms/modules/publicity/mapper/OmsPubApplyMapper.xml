@@ -68,10 +68,10 @@
     BAH, SFXD
   </sql>
     <update id="repealAllPubApplyByPwh">
-        update OMS_PERSONINFO p
+        update oms_pub_apply p
         <set>
             <if test="cxyy != null and cxyy != ''">
-                p.CXYY = #{cxyy}
+                p.CXYY = #{cxyy},
             </if>
             <if test="sqzt != null and sqzt !=''">
                 p.SQZT = #{sqzt}
@@ -80,10 +80,10 @@
         where p.PWH = #{pwh}
     </update>
     <update id="repealPubApplyById">
-        update OMS_PERSONINFO p
+        update oms_pub_apply p
         <set>
             <if test="cxyy != null and cxyy != ''">
-                p.CXYY = #{cxyy}
+                p.CXYY = #{cxyy},
             </if>
             <if test="sqzt != null and sqzt !=''">
                 p.SQZT = #{sqzt}
@@ -412,9 +412,8 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
-        ,oms_reg_procpersoninfo.IDNUMBER
+        ,oms_reg_procpersoninfo.IDNUMBER_GB
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
             <if test="yspId != null and yspId != ''">
@@ -452,6 +451,22 @@
         select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
         union all
         select "5.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
+    </select>
+    <select id="getPubApplyList" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.*
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        from oms_pub_apply
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+            <if test="pwh != null and pwh !=''">
+                and oms_pub_apply.PWH like CONCAT('%',#{pwh},'%')
+            </if>
+        </where>
     </select>
 
 

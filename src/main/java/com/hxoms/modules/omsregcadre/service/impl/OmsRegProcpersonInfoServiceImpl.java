@@ -9,10 +9,13 @@ import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.majorLeader.entity.A02;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
@@ -23,6 +26,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,7 +49,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private OmsRegRevokeApplyMapper revokeApplyMapper;
     @Autowired
-    private OmsRegYearcheckInfoMapper yearcheckInfoMapper;
+    private OmsRegYearcheckinfoMapper yearcheckInfoMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersonInfoMapper;
     @Autowired
@@ -503,12 +507,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     public int checkUploadRegRecord(List<OmsRegProcpersoninfo> list) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckInfoWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        QueryWrapper<OmsRegYearcheckinfo> yearcheckInfoWrapper = new QueryWrapper<OmsRegYearcheckinfo>();
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        String dateStr = sdf.format(date);
         yearcheckInfoWrapper.eq("RF_STATUS","0");
-        yearcheckInfoWrapper.eq("CREATE_DATE",new Date("yyyy"));
-        List<OmsRegYearcheckInfo> yearoldlist = yearcheckInfoMapper.selectList(yearcheckInfoWrapper);
-        if (yearoldlist!=null){
-            yearcheckInfoMapper.delete(null);
+        yearcheckInfoWrapper.eq("CREATE_DATE",dateStr);
+        List<OmsRegYearcheckinfo> yearoldlist = yearcheckInfoMapper.selectList(yearcheckInfoWrapper);
+        if (yearoldlist!=null && yearoldlist.size() >0){
+            yearcheckInfoMapper.delete(yearcheckInfoWrapper);
         }
         int con =0;
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -516,9 +524,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //查询登记备案干部的数据
         List<OmsRegProcpersoninfo> omsregList = baseMapper.selectList(queryWrapper);
         //登记备案为干部的身份证号集合
-        List<String> gbidnumbers =null;
+        List<String> gbidnumbers = new ArrayList<>();
         for (int i=0;i<omsregList.size();i++){
-            gbidnumbers.add(omsregList.get(i).getIdnumberGb());
+            if (!StringUtils.isBlank(omsregList.get(i).getIdnumberGb())){
+                gbidnumbers.add(omsregList.get(i).getIdnumberGb());
+            }
         }
         //出国境导入数据集合
         for (OmsRegProcpersoninfo cgjdata :list){
@@ -527,16 +537,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 continue;
             }else{
                 //登记备案不中包含出入境
-                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                OmsRegYearcheckinfo yearcheckInfo = new OmsRegYearcheckinfo();
                 BeanUtils.copyProperties(cgjdata, yearcheckInfo);
-                yearcheckInfo.setCreateDate(new Date("yyyy"));
-                yearcheckInfo.setCreateUser("");
+                yearcheckInfo.setCreateDate(dateStr);
+                yearcheckInfo.setCreateUser(loginUser.getId());
                 con = yearcheckInfoMapper.insert(yearcheckInfo);
             }
         }
 
-        //出入境（公安）导入数据身份证号集合
-        List<String> gaidnumbers =null;
+        /*//出入境（公安）导入数据身份证号集合
+        List<String> gaidnumbers = new ArrayList<>();
         for (int i=0;i<list.size();i++){
             gaidnumbers.add(list.get(i).getIdnumberGa());
         }
@@ -547,40 +557,41 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 continue;
             }else{
                 //出入境不包含登记备案
-                OmsRegYearcheckInfo yearcheckInfo = new OmsRegYearcheckInfo();
+                OmsRegYearcheckinfo yearcheckInfo = new OmsRegYearcheckinfo();
                 BeanUtils.copyProperties(gbdata, yearcheckInfo);
-                yearcheckInfo.setCreateDate(new Date("yyyy"));
-                yearcheckInfo.setCreateUser("");
+                yearcheckInfo.setCreateDate(dateStr);
+                yearcheckInfo.setCreateUser(loginUser.getId());
                 con = yearcheckInfoMapper.insert(yearcheckInfo);
             }
-        }
+        }*/
         return con;
     }
 
     /**
      * 查询年度列表
-      * @param list
      * @return
      */
     @Override
-    public List<OmsRegYearcheckInfo> queryYearList(List<OmsRegProcpersoninfo> list) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
-        yearcheckWrapper.groupBy("CREATE_DATE");
-        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+    public List<String> queryYearList() {
+        return yearcheckInfoMapper.selectYearList();
     }
 
     /**
      * 查询大检查中未备案人员列表（可根据年度进行查询）
-     * @param year
+     * @param regYearCheckIPagParam
      * @return
      */
     @Override
-    public List<OmsRegYearcheckInfo> queryYearCheckList(Date year) {
-        QueryWrapper<OmsRegYearcheckInfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckInfo>();
-        if (year!=null){
-            yearcheckWrapper.eq("CREATE_DATE",year);
+    public PageInfo<OmsRegYearcheckinfo> queryYearCheckList(OmsRegYearCheckIPagParam regYearCheckIPagParam) {
+        QueryWrapper<OmsRegYearcheckinfo> yearcheckWrapper = new QueryWrapper<OmsRegYearcheckinfo>();
+        //分页
+        PageUtil.pageHelp(regYearCheckIPagParam.getPageNum(), regYearCheckIPagParam.getPageSize());
+        if (!StringUtils.isBlank(regYearCheckIPagParam.getYear())){
+            yearcheckWrapper.eq("CREATE_DATE",regYearCheckIPagParam.getYear());
         }
-        return yearcheckInfoMapper.selectList(yearcheckWrapper);
+        //返回数据
+        PageInfo<OmsRegYearcheckinfo> pageInfo = new PageInfo(yearcheckInfoMapper.selectList(yearcheckWrapper));
+        return pageInfo;
     }
 
     @Override
@@ -608,8 +619,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return
      */
     private OmsRegProcpersoninfo initData(A01 a01) throws ParseException {
-        /*//登录用户信息
-        UserInfo loginUser = UserInfoUtil.getUserInfo();*/
+        //登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
@@ -706,7 +717,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //人事主管单位
         orpInfo.setPersonManager("海南省委组织部");
         orpInfo.setCreateTime(new Date());
-        //orpInfo.setCreateUser(loginUser.getId());
+        orpInfo.setCreateUser(loginUser.getId());
         return orpInfo;
     }
 
@@ -807,6 +818,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public int deleteBaseInfoConfig(List<String> Ids) {
         return omsBaseinfoConfigMapper.deleteBatchIds(Ids);
+    }
+
+    @Override
+    public List<ExcelCheckModelORPinfo> selectCheckModelList(String year) {
+        return yearcheckInfoMapper.selectCheckModelList(year);
     }
 
 

@@ -22,7 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -239,18 +238,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         //获取模板
         String msgTemplate=taskSuperviseCfg.getJdcMsgTemplate();
         //设置参数
-        Field fields[]=urgeParameterVO.getClass().getDeclaredFields();
-        for (int i=0;i<fields.length;i++){
-            Field field=fields[i];
-            field.setAccessible(true);
-            String fieldName="${"+field.getName()+"}";
-            if(msgTemplate.contains(fieldName)){
-                final String value = (String) field.get(urgeParameterVO);
-                if(!StringUtils.isBlank(value)) {
-                    msgTemplate=msgTemplate.replace(fieldName,(String)field.get(urgeParameterVO));
-                }
-            }
-        }
+        msgTemplate=PubUtils.replaceWord(urgeParameterVO,msgTemplate);
         urgeBusiness.setMsgContent(msgTemplate);
     }
     /**
@@ -308,4 +296,5 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         //发送信息
         messageService.sendMessage(sendMessageParam);
     }
+
 }

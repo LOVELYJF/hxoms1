@@ -102,7 +102,7 @@ public class OmsPubTaskSuperviseController {
             omsPubTaskSuperviseService.selectUrgeInfo(urgeBusiness);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CustomMessageException("催办失败，原因："+e.getMessage());
+            throw new CustomMessageException("获取失败，原因："+e.getMessage());
         }
         return Result.success(urgeBusiness);
     }

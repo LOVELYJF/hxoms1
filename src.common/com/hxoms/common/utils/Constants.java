@@ -203,6 +203,16 @@ public class Constants {
      */
     public static String[] handover_businessName={"代办","完成","撤销"};
     /**
+     *预备案主体代码
+     *1.因公出国（境）教育培训预备案、2.省外办下达任务方式、3.因特殊原因因公赴港澳预审批、4.台办发起的赴台备案流程
+     */
+    public static int[] PubGroupPreApproval_business = {1,2,3,4};
+    /**
+     *预备案主体名称
+     *
+     */
+    public static String[] PubGroupPreApproval_businessName = {"因公出国（境）教育培训预备案","省外办下达任务方式","因特殊原因因公赴港澳预审批","台办发起的赴台备案流程"};
+    /**
      * 因私 业务 (签字盖章弃用)
      *
      */
