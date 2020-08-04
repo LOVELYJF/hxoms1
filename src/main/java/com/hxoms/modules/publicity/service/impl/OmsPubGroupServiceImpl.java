@@ -40,12 +40,15 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object insertPubGroup(OmsPubGroupPreApproval pubGroup, OmsPubGroupPreApprovalVO personList) {
-        int num = personList.getPersonInfoVOS().size();
+    public Object insertPubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
+        int num = personList.size();
         if(num > 0){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             for(int i = 0; i < num; i++){
+                pubGroup.setTzrs(num);
+                pubGroup.setCreateUser(userInfo.getId());
+                pubGroup.setCreateTime(new Date());
             }
             return pubGroupMapper.insertPubGroup(pubGroup);
         }else{
@@ -54,7 +57,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object updatePubGroup(OmsPubGroupPreApproval pubGroup, OmsPubGroupPreApprovalVO personList) {
+    public Object updatePubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
         return pubGroupMapper.updatePubGroup(pubGroup);
     }
 
@@ -69,6 +72,47 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         List<Map<String, Object>> list = readExcel(file);
         return msg;
     }
+
+    @Override
+    public Object checkoutPerson(String idList) {
+        return null;
+    }
+
+    @Override
+    public Object insertPerson(String a0100) {
+        return null;
+    }
+
+    @Override
+    public Object backoutPerson(String id) {
+        return null;
+    }
+
+    @Override
+    public Object getPersonDetailById(String id) {
+        return null;
+    }
+
+    @Override
+    public Object sendTask(String id) {
+        return null;
+    }
+
+    @Override
+    public Object getFlowDetail(String id) {
+        return null;
+    }
+
+    @Override
+    public Object uploadApproval(MultipartFile file, String id) {
+        return null;
+    }
+
+    @Override
+    public Object getNumByStatus(String type) {
+        return null;
+    }
+
     /**
      * 读取到Excel表格的数据(导入用)
      * @return List<OmsSmrPersonInfo>

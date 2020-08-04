@@ -22,6 +22,9 @@ public class OmsPubGroupPreApproval {
     @ColumnAnnotation(FieldName = "TZMC",   FieldDescription="团组名称")
     private String tzmc;
 
+    @ColumnAnnotation(FieldName = "TZCY",   FieldDescription="团组成员")
+    private Integer tzcy;
+
     @ColumnAnnotation(FieldName = "TZFZR",   FieldDescription="团组负责人")
     private String tzfzr;
 
@@ -71,6 +74,10 @@ public class OmsPubGroupPreApproval {
     @ColumnAnnotation(FieldName = "FYLYKZXM",   FieldDescription="费用来源开支项目")
     private String fylykzxm;
 
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源")
+    private String source;
+
+
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
 
@@ -115,6 +122,14 @@ public class OmsPubGroupPreApproval {
 
     public void setTzmc(String tzmc) {
         this.tzmc = tzmc == null ? null : tzmc.trim();
+    }
+
+    public Integer getTzcy() {
+        return tzcy;
+    }
+
+    public void setTzcy(Integer tzcy) {
+        this.tzcy = tzcy;
     }
 
     public String getTzfzr() {
@@ -235,6 +250,14 @@ public class OmsPubGroupPreApproval {
 
     public void setFylykzxm(String fylykzxm) {
         this.fylykzxm = fylykzxm == null ? null : fylykzxm.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getCreateUser() {
