@@ -586,7 +586,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 row.createCell(9).setCellValue(Constants.USER_STATUSName[(Integer.valueOf(operatorList.get(i).getUserState()))]);
 
                 //设置单元格字体大小
-                for(int j = 0;j < 8;j++){
+                for(int j = 0;j < 9;j++){
                     row.getCell(j).setCellStyle(style1);
                 }
             }
