@@ -275,17 +275,16 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealAllPubApplyByPwh(String pwh, String cxyy) {
-        if (pwh == null || pwh.equals("")){
+        if (pwh == null || "".equals(pwh)){
             throw new CustomMessageException("通知书文号为空!");
         }
-        if (cxyy == null || cxyy.equals("")){
+        if (cxyy == null || "".equals(cxyy)){
             throw new CustomMessageException("撤销原因为空!");
         }
         //查询相关通知书文号的备案申请
         List<OmsPubApplyVO> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
         if (list != null && list.size()>0){
-            String sqzt = String.valueOf(Constants.private_business[31]);
-            omsPubApplyMapper.repealAllPubApplyByPwh(pwh,cxyy,sqzt);
+            omsPubApplyMapper.repealAllPubApplyByPwh(pwh,cxyy,Constants.private_business[7]);
         }else {
             throw new CustomMessageException("该通知书文号下没有相关数据!");
         }
@@ -303,16 +302,15 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealPubApplyById(String id, String cxyy) {
-        if (id == null || id.equals("")){
+        if (id == null || "".equals(id)){
             throw new CustomMessageException("参数为空!");
         }
-        if (cxyy == null || cxyy.equals("")){
+        if (cxyy == null || "".equals(cxyy)){
             throw new CustomMessageException("参数为空!");
         }
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
         if (omsPubApply != null){
-            String sqzt = String.valueOf(Constants.private_business[31]);
-            omsPubApplyMapper.repealPubApplyById(id,cxyy,sqzt);
+            omsPubApplyMapper.repealPubApplyById(id,cxyy,Constants.private_business[7]);
         }
     }
 
@@ -833,6 +831,24 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈更改时通过批文号模糊查询添加人员〉
+     * @Param: [pwh]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 16:48
+     */
+    @Override
+    public List<OmsPubApplyVO> getPubApplyList(String pwh) {
+        if (StringUtils.isBlank(pwh)){
+            throw new CustomMessageException("参数为空!");
+        }
+        pwh = pwh.substring(0, 8);
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh);
+        return omsPubApplyVOS;
     }
 
     /** 封装方法——封装干教人员信息*/

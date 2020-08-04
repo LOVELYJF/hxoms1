@@ -218,8 +218,8 @@ public class OmsPubApplyController {
      */
     @GetMapping("/getPubApplyList")
     public Result getPubApplyList(String pwh){
-        //List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList(pwh);
-        return Result.success();
+        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList(pwh);
+        return Result.success(list);
     }
     /**
      * 功能描述: <br>

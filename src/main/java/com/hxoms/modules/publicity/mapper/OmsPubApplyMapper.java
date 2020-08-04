@@ -76,11 +76,11 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/7/1 9:25
      */
-    void repealAllPubApplyByPwh(@Param("pwh")String pwh, @Param("cxyy")String cxyy,@Param("sqzt")String sqzt);
+    void repealAllPubApplyByPwh(@Param("pwh")String pwh, @Param("cxyy")String cxyy,@Param("sqzt")int sqzt);
 
     List<OmsPubApplyVO> selectPubApplyListByPwh(String pwh);
 
-    void repealPubApplyById(@Param("id") String id,@Param("cxyy") String cxyy,@Param("sqzt") String sqzt);
+    void repealPubApplyById(@Param("id") String id,@Param("cxyy") String cxyy,@Param("sqzt") int sqzt);
 
     void updateByPwh(OmsPubApply omsPubApply);
 
@@ -107,4 +107,14 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/7/27 15:06
      */
     List<CountStatusResult> selectPubCountStatus();
+
+    /**
+     * 功能描述: <br>
+     * 〈更改时通过批文号模糊查询添加人员〉
+     * @Param: [pwh]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 16:52
+     */
+    List<OmsPubApplyVO> getPubApplyList(String pwh);
 }

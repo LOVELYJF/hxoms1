@@ -201,4 +201,14 @@ public interface OmsPubApplyService {
      * @Date: 2020/8/3 9:56
      */
     void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response);
+
+    /**
+     * 功能描述: <br>
+     * 〈更改时通过批文号模糊查询添加人员〉
+     * @Param: [pwh]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/8/3 16:47
+     */
+    List<OmsPubApplyVO> getPubApplyList(String pwh);
 }
