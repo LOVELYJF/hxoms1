@@ -259,7 +259,7 @@ public class OmsPubApplyController {
      * @Date: 2020/7/6 15:52
      */
     @PostMapping("/insertOrUpdatePubGroupPreApproval")
-    public Result insertOrUpdatePubGroupPreApproval(OmsPubGroupPreApprovalVO omsPubGroupPreApproval){
+    public Result insertOrUpdatePubGroupPreApproval(@RequestBody OmsPubGroupPreApprovalVO omsPubGroupPreApproval){
         String result = omsPubApplyService.insertOrUpdatePubGroupPreApproval(omsPubGroupPreApproval);
         return Result.success().setMsg(result);
     }

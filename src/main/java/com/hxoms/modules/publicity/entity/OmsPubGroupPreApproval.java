@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @TableAnnotation(TableName = "oms_pub_group_pre_approval", TableDescription="因公出国团体预审批申请表")
 public class OmsPubGroupPreApproval {
@@ -70,6 +71,9 @@ public class OmsPubGroupPreApproval {
 
     @ColumnAnnotation(FieldName = "FYLYKZXM",   FieldDescription="费用来源开支项目")
     private String fylykzxm;
+
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：上传）")
+    private String source;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
@@ -235,6 +239,14 @@ public class OmsPubGroupPreApproval {
 
     public void setFylykzxm(String fylykzxm) {
         this.fylykzxm = fylykzxm == null ? null : fylykzxm.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source == null ? null : source.trim();
     }
 
     public String getCreateUser() {
