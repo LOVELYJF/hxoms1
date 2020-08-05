@@ -196,6 +196,11 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         return baseMapper.update(revokeApply,queryWrapper);
     }
 
+    @Override
+    public Object deleteRevokeRegPerson(String id) {
+        return baseMapper.deleteById(id);
+    }
+
 }
 
 

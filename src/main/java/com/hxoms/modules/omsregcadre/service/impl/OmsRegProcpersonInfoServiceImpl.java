@@ -492,12 +492,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return
      */
     @Override
-    public List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo) {
-        QueryWrapper<OmsRegProcbatchPerson> qw = new QueryWrapper<OmsRegProcbatchPerson>();
+    public PageInfo<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo,Integer pageNum,Integer pageSize) {
+        //分页
+        PageUtil.pageHelp(pageNum, pageSize);
+        QueryWrapper<OmsRegProcbatchPerson> qWrapper = new QueryWrapper<OmsRegProcbatchPerson>();
         if (!StringUtils.isBlank(batchNo)){
-            qw.eq("BATCH_ID",batchNo);
+            qWrapper.eq("BATCH_ID",batchNo);
         }
-        return regProcbatchPersonMapper.selectList(qw);
+        //返回数据
+        PageInfo<OmsRegProcbatchPerson> pageInfo = new PageInfo(regProcbatchPersonMapper.selectList(qWrapper));
+        return pageInfo;
     }
 
     /**
@@ -588,6 +592,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         PageUtil.pageHelp(regYearCheckIPagParam.getPageNum(), regYearCheckIPagParam.getPageSize());
         if (!StringUtils.isBlank(regYearCheckIPagParam.getYear())){
             yearcheckWrapper.eq("CREATE_DATE",regYearCheckIPagParam.getYear());
+        }
+        if (!StringUtils.isBlank(regYearCheckIPagParam.getRfB0000())){
+            yearcheckWrapper.eq("RF_B0000",regYearCheckIPagParam.getRfB0000());
         }
         //返回数据
         PageInfo<OmsRegYearcheckinfo> pageInfo = new PageInfo(yearcheckInfoMapper.selectList(yearcheckWrapper));

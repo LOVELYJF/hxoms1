@@ -34,7 +34,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     PageInfo<OmsRegProcpersoninfo> getRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    List<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo);
+    PageInfo<OmsRegProcbatchPerson> selectPersonByBatchNo(String batchNo,Integer pageNum,Integer pageSize);
 
     int checkUploadRegRecord(List<OmsRegProcpersoninfo> list);
 
