@@ -54,7 +54,21 @@ public interface OmsCerIssuePersonMapper {
      */
     int updateByPrimaryKey(OmsCerIssuePerson record);
 
+    /**
+     * @Desc: 批量公安数据中有问题人员
+     * @Author: wangyunquan
+     * @Param: [omsCerIssuePersonList]
+     * @Return: int
+     * @Date: 2020/8/4
+     */
     int batchSaveEntity(@Param("omsCerIssuePersonList") List<OmsCerIssuePerson> omsCerIssuePersonList);
 
+    /**
+     * @Desc: 查询公安数据中有问题人员
+     * @Author: wangyunquan
+     * @Param: [omsCerIssuePerson]
+     * @Return: int
+     * @Date: 2020/8/4
+     */
     int selectByEntity(OmsCerIssuePerson omsCerIssuePerson);
 }
