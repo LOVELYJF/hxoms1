@@ -21,6 +21,10 @@ public interface LeaderCommonService {
     /**材料 审核 人员名单 **/
     PageInfo selectMaterialReviewBusinessUser(LeaderSupervisionVo leaderSupervisionVo) ;
 
+    /** 选择人员 纳入批次 **/
+
+    void leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo);
+
     PageInfo selectAuditOpinionBusinessUser(AuditOpinionVo auditOpinionVo);
 
     PageInfo selectChuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo);

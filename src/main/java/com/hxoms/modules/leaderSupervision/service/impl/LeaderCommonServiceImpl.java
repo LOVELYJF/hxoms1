@@ -65,7 +65,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectBusinessUser(applyStatus,null);
+        List<Map>   users = leaderCommonQueryMapper.selectBusinessUser(applyStatus,null,leaderSupervisionVo.getUserName(),leaderSupervisionVo.getBussinessType());
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
@@ -143,7 +143,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     public void leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo){
 
 
-        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getLeaderBtachId(),leaderSupervisionVo.getBatchName(),leaderSupervisionVo.getAccpetDate(),leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getLeaderBtachId(),leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName());
         //纳入的批次 所选择的人
         saveApplyBussinessByBatchId(leaderSupervisionVo, leaderSupervisionVo.getLeaderBtachId(),"leader_batch_id");
 
@@ -298,7 +298,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     }
 
 
-    // 材料审核 审批 人员名单
+    // TODO 材料审核 审批 人员名单
 
     @Override
     @Transactional(readOnly=true)
@@ -310,6 +310,18 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
+
+    }
+
+    //TODO 业务 处理 材料审核 的 下一步 触发的事件
+    public void materialReviewNextStep( ){
+
+        String tableCode; String applyId;
+
+
+
+
+
 
     }
 

@@ -10,7 +10,7 @@ import java.util.Map;
 public interface LeaderCommonMapper {
 
     /** 业务处理 选择 人员 **/
-   List<Map> selectBusinessUser(@Param("applyStatus") int applyStatus, @Param("leaderBtachId") String leaderBtachId);
+   List<Map> selectBusinessUser(@Param("applyStatus") int applyStatus, @Param("leaderBtachId") String leaderBtachId,@Param("userName") String userName,@Param("bussinessType") String bussinessType);
 
    /**  业务受理 材料审核 人员 **/
 
@@ -72,4 +72,13 @@ public interface LeaderCommonMapper {
    /** 批件核实 查询 业务流程 页面 **/
 
    List<Map> selectInstructionsVerify(LeaderSupervisionVo leaderSupervisionVo);
+
+   /**查询 经办人 */
+   List<Map> selectAgent(@Param("applyId") String applyId, @Param("tableCode") String tableCode);
+
+   /** 通知经办人重新递交备案函 **/
+   List<Map> selectSendAgentMessage(String applyId);
+
+   /** 查询材料 检查项 是否通过 **/
+   List<Map> selectMaterialReview(String applyId);
 }
