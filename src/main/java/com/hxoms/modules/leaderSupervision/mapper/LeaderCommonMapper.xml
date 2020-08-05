@@ -70,7 +70,7 @@
 		case when pua.SFZQJWYJ ='1' then '是' else '否'  END  as sfzqjwyj, # 征求纪委意见
 		case when pua.JWJL ='1' then '通过' else '不通过' END  as jwjl, # 纪委意见
 		case when pua.CLSHSFTG ='1' then '通过' else '不通过' END as clshsftg, # 材料审核
-		pua.SFBG        # 是否变更
+		pua.SFBG  as sfbg      # 是否变更
 		FROM
 		oms_pub_apply pua
 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
