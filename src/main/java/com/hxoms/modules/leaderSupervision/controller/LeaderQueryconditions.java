@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.controller;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ public class LeaderQueryconditions {
     @Autowired
     private LeaderDetailProcessingService leaderDetailProcessingService;
 
-
+    /**
+     * 查询申请 类型
+     * **/
     @GetMapping("/bussinessType")
     public Result applicationType(){
 
@@ -29,6 +32,27 @@ public class LeaderQueryconditions {
 
        return Result.success(map);
 
+    }
+
+
+    /**
+     * 查询批次列表
+     * **/
+
+    public Result selectBatch(){
+
+
+        return Result.success();
+    }
+
+
+    /**
+     * 修改 批次
+     * **/
+    public Result updateBatch(){
+
+
+        return Result.success();
     }
 
 

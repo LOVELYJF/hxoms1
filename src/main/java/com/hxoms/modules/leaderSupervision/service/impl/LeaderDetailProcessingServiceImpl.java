@@ -10,6 +10,7 @@ import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
+import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
@@ -38,6 +39,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Autowired
     private SelectMapper selectMapper;  // 通用 自定义sql
+    @Autowired
+    private OmsLeaderBatchMapper omsLeaderBatchMapper;  // 干部 监督处批次 mapper
 
 
 
@@ -242,6 +245,12 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     }
+
+//    public List<Map> selectOmsLeaderBatch(){
+//
+//        omsLeaderBatchMapper.selectPage();
+//
+//    }
 
 
 
