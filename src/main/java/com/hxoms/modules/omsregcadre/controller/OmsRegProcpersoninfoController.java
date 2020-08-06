@@ -194,9 +194,9 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @GetMapping("/selectPersonByBatchNo")
-    public Result selectPersonByBatchNo(String batchNo) {
+    public Result selectPersonByBatchNo(String batchNo,Integer pageNum,Integer pageSize) {
         try{
-            List<OmsRegProcbatchPerson> personlist = mrpinfoService.selectPersonByBatchNo(batchNo);
+            PageInfo<OmsRegProcbatchPerson> personlist = mrpinfoService.selectPersonByBatchNo(batchNo,pageNum,pageSize);
             return Result.success(personlist);
         }catch (Exception e) {
             e.printStackTrace();

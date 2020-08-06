@@ -1,9 +1,7 @@
 package com.hxoms.modules.omsregcadre.entity.paramentity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hxoms.common.hxannotation.ColumnAnnotation;
-import com.hxoms.common.hxannotation.IdAnnotation;
-import com.hxoms.common.hxannotation.TableAnnotation;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -12,7 +10,7 @@ import java.util.Date;
  * 出入境记录记录参数实体类
  * @author lijiaojiao
  */
-public class OmsEntryexitRecordIPagParam {
+public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
 
     /**页码*/
     private Integer pageNum;
@@ -26,11 +24,6 @@ public class OmsEntryexitRecordIPagParam {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeEndDate;
-    //数据来源
-    private String dataSource;
-    //出入境状态 出1，入2
-    private String ogeStatus;
-
     public Integer getPageNum() {
         return pageNum;
     }
@@ -63,19 +56,4 @@ public class OmsEntryexitRecordIPagParam {
         this.ogeEndDate = ogeEndDate;
     }
 
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public String getOgeStatus() {
-        return ogeStatus;
-    }
-
-    public void setOgeStatus(String ogeStatus) {
-        this.ogeStatus = ogeStatus;
-    }
 }
