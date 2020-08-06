@@ -81,4 +81,8 @@ public interface LeaderCommonMapper {
 
    /** 查询材料 检查项 是否通过 **/
    List<Map> selectMaterialReview(String applyId);
+
+   /**申请类型 查询 条件 **/
+
+   List<Map> selectgetApplicationType();
 }

@@ -2129,6 +2129,18 @@
 	</select>
 
 
+    <select id="selectgetApplicationType"  resultType="java.util.LinkedHashMap">
+
+        select  '所有申请' as name, 'all' as value
+        UNION
+        select '因公出国' , 'oms_pub_apply'
+        UNION
+        select  '因私出国' , 'oms_pri_apply'
+        UNION
+        select  '延期回国','oms_pri_delay_apply'
+    </select>
+
+
 
 
 </mapper>

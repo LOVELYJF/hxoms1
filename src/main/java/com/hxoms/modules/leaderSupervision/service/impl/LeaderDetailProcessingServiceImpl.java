@@ -39,6 +39,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     @Autowired
     private SelectMapper selectMapper;  // 通用 自定义sql
 
+
+
     // 业务 处理 材料审核 的 下一步 触发的事件
     public void materialReviewNextStep(String applyId,String tableCode){
 
@@ -234,18 +236,9 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
 
-    public Map<String,String> getApplicationType(){
+    public List<Map> getApplicationType(){
 
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("所有申请","all");
-
-        int len = Constants.oms_businessName.length;
-
-        for(int i =0;i<len;i++){
-         map.put(Constants.oms_businessName[i],Constants.oms_business[i]);
-        }
-
-        return  map;
+        return leaderCommonMapper.selectgetApplicationType();
 
 
     }

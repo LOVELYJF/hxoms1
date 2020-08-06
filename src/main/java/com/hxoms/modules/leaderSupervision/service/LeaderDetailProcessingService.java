@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public interface LeaderDetailProcessingService {
      *
      * **/
 
-    Map<String,String> getApplicationType();
+    List<Map> getApplicationType();
 
 
 }
