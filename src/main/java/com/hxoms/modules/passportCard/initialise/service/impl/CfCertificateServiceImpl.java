@@ -93,17 +93,17 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
    /**
     * @Desc: 导入公安的证照信息
     * @Author: wangyunquan
-    * @Param: [multipartFile, dataSource]
+    * @Param: [multipartFile]
     * @Return: com.hxoms.common.utils.PageBean
     * @Date: 2020/7/24
     */
     @Override
-    public PageBean excelToDB(MultipartFile multipartFile, String dataSource) throws Exception {
+    public PageBean excelToDB(MultipartFile multipartFile) throws Exception {
         if (multipartFile==null || multipartFile.getSize() <= 0 ) {
            throw new CustomMessageException("参数不正确");
         }
         //读取Excel数据
-        readExcel(multipartFile.getInputStream(),multipartFile.getOriginalFilename(),dataSource);
+        readExcel(multipartFile.getInputStream(),multipartFile.getOriginalFilename());
         return selectAllCertificate(new PageBean());
     }
 
@@ -122,52 +122,108 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
 
     /**
-     * @Desc: 通过证照查询公安证照信息及人员信息
+     * @Desc: 验证证照信息
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate
      * @Date: 2020/8/4
      */
     @Override
-    public CfCertificateValidate selectPersonInfo(CfCertificate cfCertificate) {
+    public CfCertificateValidate validateCerInfo(CfCertificate cfCertificate) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(cfCertificate==null||cfCertificate.getZjlx()==null||StringUtils.isBlank(cfCertificate.getZjhm()))
             throw new CustomMessageException("参数不正确");
-        CfCertificate Recertificate=cfCertificateMapper.selectCertificateInfo(cfCertificate);
+        //通过证件类型、证件号码查询
+        CfCertificate certificateGa=cfCertificateMapper.selectCertificateInfo(cfCertificate);
+        if(certificateGa!=null){
+            //证照验证
+            validateCerInfo(certificateGa,cfCertificate);
+            //验证通过，通过接口获取证照存储位置
+            if("4".equals(certificateGa.getSaveStatus())){
+
+            }
+            certificateGa.setZjxs(cfCertificate.getZjxs());
+            //保管单位默认是干部监督处
+            certificateGa.setSurelyUnit("0");
+            certificateGa.setUpdater(userInfo.getId());
+            certificateGa.setUpdateTime(new Date());
+            int result=cfCertificateMapper.updateById(certificateGa);
+            if(result==0)
+                throw new CustomMessageException("证照验证保存失败！");
+            cfCertificate=cfCertificateMapper.selectById(certificateGa.getId());
+        }
         List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=null;
         //获取备案人员信息
-        omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(Recertificate!=null?Recertificate.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
+        omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
         CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
-        cfCertificateValidate.setCfCertificate(Recertificate);
+        cfCertificateValidate.setCfCertificate(certificateGa);
         cfCertificateValidate.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
         return cfCertificateValidate;
     }
 
     /**
-     * @Desc: 证照验证，有公安数据，则验证并更新状态，否则插入证照信息。
+     * @Desc: 插入证照信息
      * @Author: wangyunquan
-     * @Param: [cfCertificateGa, cfCertificateZz]
+     * @Param: [cfCertificate]
      * @Return: void
      * @Date: 2020/8/5
      */
     @Override
-    public void saveOrUpdate(CfCertificate cfCertificateGa, CfCertificate cfCertificateZz) {
-        //有公安数据，验证并更新状态
-        if(cfCertificateGa!=null&&!StringUtils.isBlank(cfCertificateGa.getOmsId())){
-            //验证姓名、性别、国籍、出生日期、签发单位、签发日期、出生地、证件有效期至
+    public void insertCertificate(CfCertificate cfCertificate) {
 
-        }else{
-
-        }
     }
 
     /**
+     * @Desc: 证件信息对比
+     * @Author: wangyunquan
+     * @Param: [certificateGa, cfCertificate]
+     * @Return: void
+     * @Date: 2020/8/6
+     */
+    public void validateCerInfo(CfCertificate certificateGa,CfCertificate cfCertificate){
+        //验证姓名、性别、国籍、出生日期、签发单位、签发日期、出生地、证件有效期至
+        StringBuffer stringBuffer=new StringBuffer();
+        String[] valiUint={"姓名","性别","国籍","出生日期","签发单位","签发日期","出生地","证件有效期至"};
+        List<String> certificateGaList=new LinkedList<>();
+        List<String> certificateList=new LinkedList<>();
+        SimpleDateFormat sF=new SimpleDateFormat("yyyy-MM-dd");
+        certificateGaList.add(certificateGa.getName());certificateList.add(cfCertificate.getName());
+        certificateGaList.add(certificateGa.getSex());certificateList.add(cfCertificate.getSex());
+        certificateGaList.add(certificateGa.getGj());certificateList.add(cfCertificate.getGj());
+        certificateGaList.add(sF.format(certificateGa.getCsrq()));certificateList.add(sF.format(cfCertificate.getCsrq()));
+        certificateGaList.add(certificateGa.getQfjg());certificateList.add(cfCertificate.getQfjg());
+        certificateGaList.add(sF.format(certificateGa.getQfrq()));certificateList.add(sF.format(cfCertificate.getQfrq()));
+        certificateGaList.add(certificateGa.getCsdd());certificateList.add(cfCertificate.getCsdd());
+        certificateGaList.add(sF.format(certificateGa.getYxqz()));certificateList.add(sF.format(cfCertificate.getYxqz()));
+        for (int i = 0; i < valiUint.length; i++) {
+            String unit = valiUint[i];
+            String valueGa = certificateGaList.get(i);
+            String value = certificateList.get(i);
+            if(StringUtils.isBlank(valueGa)||StringUtils.isBlank(value))
+                throw new CustomMessageException("公安或证照的"+unit+"为空，验证失败，请核实！");
+            if(!valueGa.equals(value)){
+                stringBuffer.append("公安"+unit+"：").append(valueGa).append("、").append("护照"+unit+"：").append(value);
+                if(i!=valiUint.length-1)
+                    stringBuffer.append("，");
+            }
+        }
+        if(StringUtils.isBlank(stringBuffer.toString())){
+            //验证通过
+            certificateGa.setCardStatus("4");
+        }else{
+            //验证失败
+            certificateGa.setCardStatus("3");
+            certificateGa.setExceptionMessage(stringBuffer.toString());
+        }
+    }
+    /**
      * @Desc: 读取Excel数据
      * @Author: wangyunquan
-     * @Param: [inputStream, fileName, dataSource]
+     * @Param: [inputStream, fileName]
      * @Return: java.lang.String
      * @Date: 2020/7/24
      */
-    public void readExcel(InputStream inputStream, String fileName, String dataSource) throws IOException {
+    public void readExcel(InputStream inputStream, String fileName) throws IOException {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         boolean isE2007 = false;
         //判断是否是excel2007格式
@@ -228,8 +284,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 omsCerIssuePerson.setDescription("登记备案表中查无此人");
                             }else{
                                 StringBuffer a0100s=new StringBuffer();
+                                int count=1;
                                 for (OmsRegProcpersoninfo omsRegProcpersoninfo : omsRegProcpersoninfoList) {
-                                    a0100s.append(omsRegProcpersoninfo.getA0100()).append("|");
+                                    a0100s.append(omsRegProcpersoninfo.getA0100());
+                                    if(count++!=size)
+                                        a0100s.append("|");
+
                                 }
                                 omsCerIssuePerson.setA0100s(a0100s.toString());
                                 omsCerIssuePerson.setDescription("登记备案表中匹配到"+size+"人");
@@ -270,28 +330,24 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 cfCertificate.setGj(row.getCell(column++).toString());
                                 cfCertificate.setZjlx(getIdType(row.getCell(column++).toString()));
                                 cfCertificate.setZjhm(row.getCell(column++).toString());
-                                cfCertificate.setZwcsdd(row.getCell(column++).toString());
-                                cfCertificate.setZwqfjg(row.getCell(column++).toString());
+                                cfCertificate.setCsdd(row.getCell(column++).toString());
+                                cfCertificate.setQfjg(row.getCell(column++).toString());
                                 cfCertificate.setQfrq(dateParse.parse(getCellValue(row.getCell(column++))));
                                 Date valiDate=dateParse.parse(getCellValue(row.getCell(column++)));
                                 cfCertificate.setYxqz(valiDate);
                                 //判断是否过期
                                 boolean after = valiDate.after(dateParse.parse(dateParse.format(new Date())));
                                 if(after){
-                                    //是否有效，0：有效
+                                    //是否有效,0:有效,1:无效
                                     cfCertificate.setIsValid(0);
+                                    //证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:其它)
+                                    cfCertificate.setCardStatus("5");
                                 }else{
-                                    //保管状态
-                                    cfCertificate.setSaveStatus("3");
-                                    //是否有效，1：无效
                                     cfCertificate.setIsValid(1);
+                                    cfCertificate.setCardStatus("1");
                                 }
-                                //证照状态 1:正常保管,2:待领取，3:已取出，4:未上缴
-                                cfCertificate.setDqzt(4);
-                                //是否锁定 0:正常，1:锁定
-                                cfCertificate.setIsLock(0);
-                                //人员是否有效 0:有效，1:无效
-                                cfCertificate.setIsCabinet(0);
+                                //保管状态(0:正常保管,1:已取出,2:未上缴)
+                                cfCertificate.setSaveStatus("2");
                                 idTypeInfo.put(cfCertificate.getZjlx()+cfCertificate.getZjhm(),cfCertificate.getYxqz());
                                 //去重
                                 if(cfCertificateExistList.size()>0){
@@ -315,14 +371,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 omsEntryexitRecord.setPriapplyId("");
                                 omsEntryexitRecord.setImportPerson(userInfo.getId());
                                 omsEntryexitRecord.setImportTime(new Date());
-                                omsEntryexitRecord.setDataSource(dataSource);
+                                //数据来源(1:手工,2:导入)
+                                omsEntryexitRecord.setDataSource("2");
                                 omsEntryexitRecord.setOmsId(omsRegProcpersoninfo.getId());
                                 omsEntryexitRecord.setA0100(omsRegProcpersoninfo.getA0100());
-                                omsEntryexitRecord.setDataSource(dataSource);
                                 omsEntryexitRecord.setOgeStatus(getOgeStatus(row.getCell(column++).toString()));
                                 omsEntryexitRecord.setName(row.getCell(column++).toString());
-                                Integer sex=getSex(row.getCell(column++).toString());
-                                omsEntryexitRecord.setSex(sex!=null?String.valueOf(sex):null);
+                                omsEntryexitRecord.setSex(getSex(row.getCell(column++).toString()));
                                 omsEntryexitRecord.setBirthDate(dateParse.parse(getCellValue(row.getCell(column++))));
                                 omsEntryexitRecord.setNationality(row.getCell(column++).toString());
                                 omsEntryexitRecord.setIdType(getIdType(row.getCell(column++).toString()));
@@ -475,8 +530,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Return: java.lang.String
      * @Date: 2020/7/27
      */
-    private Integer getSex(String sex){
-        return "男".equals(sex)?1:"女".equals(sex)?2:null;
+    private String getSex(String sex){
+        return "男".equals(sex)?"1":"女".equals(sex)?"2":null;
     }
     /**
      * @Desc: 获取证件类型，1：护照，2：港澳通行证，4：台湾通行证

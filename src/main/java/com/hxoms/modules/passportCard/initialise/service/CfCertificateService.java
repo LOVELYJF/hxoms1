@@ -32,11 +32,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 初始化证照，导入公安的证照信息
     * @Author: wangyunquan
-    * @Param: [multipartFile, dataSource]
+    * @Param: [multipartFile]
     * @Return: com.hxoms.common.utils.PageBean
     * @Date: 2020/7/24
     */
-   PageBean excelToDB(MultipartFile multipartFile, String dataSource) throws Exception;
+   PageBean excelToDB(MultipartFile multipartFile) throws Exception;
 
    /**
     * @Desc: 查询所有证照
@@ -48,20 +48,20 @@ public interface CfCertificateService extends IService<CfCertificate> {
    PageBean selectAllCertificate(PageBean pageBean);
 
    /**
-    * @Desc: 通过证照查询公安证照信息及人员信息
+    * @Desc: 验证证照信息
     * @Author: wangyunquan
     * @Param: [cfCertificate]
     * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate
     * @Date: 2020/8/4
     */
-   CfCertificateValidate selectPersonInfo(CfCertificate cfCertificate);
+   CfCertificateValidate validateCerInfo(CfCertificate cfCertificate);
 
    /**
-    * @Desc: 证照验证，有公安数据，则验证并更新状态，否则插入证照信息。
+    * @Desc: 插入证照信息
     * @Author: wangyunquan
-    * @Param: [cfCertificateGa, cfCertificateZz]
+    * @Param: [cfCertificate]
     * @Return: void
     * @Date: 2020/8/5
     */
-   void saveOrUpdate(CfCertificate cfCertificateGa,CfCertificate cfCertificateZz);
+   void insertCertificate(CfCertificate cfCertificate);
 }
