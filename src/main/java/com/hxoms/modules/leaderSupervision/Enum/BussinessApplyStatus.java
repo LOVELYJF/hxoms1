@@ -17,7 +17,7 @@ public enum BussinessApplyStatus {
 
     pubBussinessStatus("oms_pub_apply","SQZT", Constants.leader_business[0]),
 
-    priBussinessStatus("oms_pri_apply","APPLY_STATUS", Constants.private_business[4]),
+    priBussinessStatus("oms_pri_apply","APPLY_STATUS", Constants.leader_business[0]),
     delBussinessStatus("oms_pri_delay_apply","APPLY_STATUS", Constants.leader_business[0]);
 
     private String tableName;

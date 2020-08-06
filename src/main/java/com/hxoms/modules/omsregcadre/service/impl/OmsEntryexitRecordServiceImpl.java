@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,24 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //返回数据
         PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(entryexitRecordsList);
         return pageInfo;
+    }
+
+
+
+    @Override
+    public Object insertEntryexitRecord(OmsEntryexitRecord entryexitRecord) {
+        entryexitRecord.setId(UUIDGenerator.getPrimaryKey());
+        return baseMapper.insert(entryexitRecord);
+    }
+
+    @Override
+    public Object updateEntryexitRecord(OmsEntryexitRecord entryexitRecord) {
+        return baseMapper.updateById(entryexitRecord);
+    }
+
+    @Override
+    public Object deleteEntryexitRecord(String id) {
+        return baseMapper.deleteById(id);
     }
 
     // @Override
@@ -86,7 +105,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                         //如果证照保管状态为“已注销”,出入境时间又在注销日期之后
                         //提醒干部监督处：“XXX单位XXX同志持注销证照于XXXX年XX月XX日前往XX国家（地区）。”
                         if (certificate.getSaveStatus().equals("3") && entryexit.getOgeDate().compareTo(certificate.getUpdateTime()) > 0) {
-                            throw new CustomMessageException(entryexit.getB0100() + "单位" + entryexit.getName() + "同志持注销证照于" + entryexit.getOgeDate() + "前往" + entryexit.getDestination());
+                            throw new CustomMessageException(entryexit.getB0000() + "单位" + entryexit.getName() + "同志持注销证照于" + entryexit.getOgeDate() + "前往" + entryexit.getDestination());
                         } else {
                             //非“注销”证照
                             //出入境状态 出1
@@ -247,7 +266,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                     //如果证照保管状态为“已注销”,出入境时间又在注销日期之后
                                     //提醒干部监督处：“XXX单位XXX同志持注销证照于XXXX年XX月XX日前往XX国家（地区）。”
                                     if (certificate.getSaveStatus().equals("3") && entryexit.getOgeDate().compareTo(certificate.getUpdateTime()) > 0) {
-                                        throw new CustomMessageException(entryexit.getB0100() + "单位" + entryexit.getName() + "同志持注销证照于" + entryexit.getOgeDate() + "前往" + entryexit.getDestination());
+                                        throw new CustomMessageException(entryexit.getB0000() + "单位" + entryexit.getName() + "同志持注销证照于" + entryexit.getOgeDate() + "前往" + entryexit.getDestination());
                                     } else {
                                         //非“注销”证照
                                         //出入境状态 出1
@@ -335,6 +354,8 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         }
         return null;
     }
+
+
 
 
 }

@@ -5,9 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.PingYinUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
@@ -17,6 +15,7 @@ import com.hxoms.modules.passportCard.initialise.entity.OmsCerIssuePerson;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateExport;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateReminderParam;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerIssuePersonMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
@@ -71,29 +70,6 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
 
 
-   public boolean saveOrUpdate(CfCertificate cfCertificate){
-
-       CfCertificate cf=cfCertificateMapper.selectById(cfCertificate.getId());
-
-       boolean flag = false;
-
-       if (cf != null){
-
-           int count = cfCertificateMapper.updateById(cfCertificate);
-
-           if(count>0){
-               flag = true;
-           }
-       }else{
-           int count = cfCertificateMapper.insert(cfCertificate);
-
-           if(count>0){
-               flag = true;
-           }
-       }
-
-        return flag;
-    }
 
    public boolean delete(String id){
 
@@ -115,21 +91,75 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
  
    /**
-    * @Desc: TODO
+    * @Desc: 导入公安的证照信息
     * @Author: wangyunquan
     * @Param: [multipartFile, dataSource]
-    * @Return: boolean
+    * @Return: com.hxoms.common.utils.PageBean
     * @Date: 2020/7/24
     */
     @Override
-    public void excelToDB(MultipartFile multipartFile, String dataSource) throws Exception {
-        InputStream inputStream = null;
+    public PageBean excelToDB(MultipartFile multipartFile, String dataSource) throws Exception {
         if (multipartFile==null || multipartFile.getSize() <= 0 ) {
-           throw new CustomMessageException("");
+           throw new CustomMessageException("参数不正确");
         }
         //读取Excel数据
         readExcel(multipartFile.getInputStream(),multipartFile.getOriginalFilename(),dataSource);
+        return selectAllCertificate(new PageBean());
     }
+
+    /**
+     * @Desc: 查询所有证照
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/8/4
+     */
+    @Override
+    public PageBean selectAllCertificate(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        PageInfo<CfCertificate> pageInfo= new PageInfo<CfCertificate>(cfCertificateMapper.selectAllCertificate());
+        return PageUtil.packagePage(pageInfo);
+    }
+
+    /**
+     * @Desc: 通过证照查询公安证照信息及人员信息
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate
+     * @Date: 2020/8/4
+     */
+    @Override
+    public CfCertificateValidate selectPersonInfo(CfCertificate cfCertificate) {
+        if(cfCertificate==null||cfCertificate.getZjlx()==null||StringUtils.isBlank(cfCertificate.getZjhm()))
+            throw new CustomMessageException("参数不正确");
+        CfCertificate Recertificate=cfCertificateMapper.selectCertificateInfo(cfCertificate);
+        List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=null;
+        //获取备案人员信息
+        omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(Recertificate!=null?Recertificate.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
+        CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
+        cfCertificateValidate.setCfCertificate(Recertificate);
+        cfCertificateValidate.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
+        return cfCertificateValidate;
+    }
+
+    /**
+     * @Desc: 证照验证，有公安数据，则验证并更新状态，否则插入证照信息。
+     * @Author: wangyunquan
+     * @Param: [cfCertificateGa, cfCertificateZz]
+     * @Return: void
+     * @Date: 2020/8/5
+     */
+    @Override
+    public void saveOrUpdate(CfCertificate cfCertificateGa, CfCertificate cfCertificateZz) {
+        //有公安数据，验证并更新状态
+        if(cfCertificateGa!=null&&!StringUtils.isBlank(cfCertificateGa.getOmsId())){
+            //验证姓名、性别、国籍、出生日期、签发单位、签发日期、出生地、证件有效期至
+
+        }else{
+
+        }
+    }
+
     /**
      * @Desc: 读取Excel数据
      * @Author: wangyunquan
@@ -184,11 +214,10 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                     if("查询条件".equals(firstRowData.getCell(1).toString())){
                         String idNo = firstRowData.getCell(2).toString();
                         String name = firstRowData.getCell(3).toString();
-                        String namePY = PingYinUtil.getFirstSpell(name);
-                        omsRegProcpersoninfoList=cfCertificateMapper.selectA0100ByQua(idNo,namePY);
+                        omsRegProcpersoninfoList=cfCertificateMapper.selectA0100ByQua(idNo,name);
                         int size = omsRegProcpersoninfoList.size();
                         //记录异常人员
-                        if(size==0||size>1){
+                        if(size!=1){
                             OmsCerIssuePerson omsCerIssuePerson=new OmsCerIssuePerson();
                             omsCerIssuePerson.setId(UUIDGenerator.getPrimaryKey());
                             omsCerIssuePerson.setIdNo(idNo);

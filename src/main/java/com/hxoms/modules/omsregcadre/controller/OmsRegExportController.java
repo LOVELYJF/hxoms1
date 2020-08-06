@@ -8,9 +8,11 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,13 +38,14 @@ public class OmsRegExportController {
      * @param idStr
      * @throws IOException
      */
-    @PostMapping("/exportRfInfo")
+    @GetMapping("/exportRfInfo")
     @Transactional(rollbackFor=Exception.class)
+    @ApiOperation(value = "下载省管干部登记备案表", notes = "export", produces = "application/octet-stream")
     public void  exportRfInfo(String idStr) throws IOException {
 
         HttpServletResponse response = DomainObjectUtil.getResponse();
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=datax.xlsx");
         OutputStream outputStream = response.getOutputStream();
 
         //指定文件输出位置
@@ -108,19 +111,20 @@ public class OmsRegExportController {
      * @param year
      * @throws IOException
      */
-    @PostMapping("/exportCheckInfo")
+    @GetMapping("/exportCheckInfo")
     @Transactional(rollbackFor=Exception.class)
+    @ApiOperation(value = "导出备案大检查列表信息", notes = "export", produces = "application/octet-stream")
     public void  exportCheckInfo(String year) throws IOException {
 
         HttpServletResponse response = DomainObjectUtil.getResponse();
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=datax.xlsx");
         OutputStream outputStream = response.getOutputStream();
 
         //指定文件输出位置
         ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
         //将要输出的内容填充到Sheet里
-        Sheet sheet =new Sheet(1,0, ExcelModelORPinfo.class );
+        Sheet sheet =new Sheet(1,0, ExcelCheckModelORPinfo.class );
         //设置sheet表名
         //sheet.setSheetName("my_excel");
         /**

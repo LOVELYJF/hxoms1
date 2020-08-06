@@ -5,6 +5,7 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
+import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
@@ -32,6 +33,8 @@ public class  LeaderSupervisionController {
     private LeaderCommonService leaderCommonService;
     @Autowired
     private LeaderEXportExcelService leaderEXportExcelService;
+    @Autowired
+    private LeaderDetailProcessingService leaderDetailProcessingService;
 
 
 
@@ -81,6 +84,30 @@ public class  LeaderSupervisionController {
         PageInfo pageInfo = leaderCommonService.selectMaterialReviewBusinessUser(leaderSupervisionVo);
 
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
+    /**
+     *(选择人员)  纳入批次
+     * **/
+    @GetMapping("/leaderBatchAddApplyUser")
+    public Result leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo){
+
+
+        leaderCommonService.leaderBatchAddApplyUser(leaderSupervisionVo);
+
+        return Result.success();
+
+    }
+    /**
+     * 通知经办人重新递交备案函
+     * **/
+    @GetMapping("/sendMessageToAgent")
+    public Result sendMessageToAgent(String applyId,String tableCode){
+
+        leaderDetailProcessingService.sendMessageToAgent(applyId,tableCode);
+
+        return Result.success();
+
     }
 
 

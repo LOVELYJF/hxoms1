@@ -172,20 +172,14 @@
         count(1)
     FROM
         OMS_CER_ISSUE_PERSON
-    <where>
-      <if test="idNo!=null">
+    WHERE
         id_no = #{idNo}
-      </if>
-      <if test="name!=null">
-        AND name = #{name}
-      </if>
+    AND name = #{name}
       <if test="a0100s!=null">
         AND a0100s = #{a0100s}
       </if>
       <if test="description!=null">
         AND description = #{description}
       </if>
-    </where>
-
   </select>
 </mapper>

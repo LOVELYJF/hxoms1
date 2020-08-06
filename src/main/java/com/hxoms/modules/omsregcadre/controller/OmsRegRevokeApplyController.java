@@ -62,6 +62,17 @@ public class OmsRegRevokeApplyController {
 
 
     /**
+     * 删除撤销备案人员
+     * @param
+     * @return
+     */
+    @PostMapping("/deleteRevokeRegPerson")
+    public Result deleteRevokeRegPerson(String id){
+        return Result.success(revokeApplyService.deleteRevokeRegPerson(id));
+    }
+
+
+    /**
      * 搜索撤销登记备案人员根据姓名，身份证号码
      * @return
      * @throws ParseException

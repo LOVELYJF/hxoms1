@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "cf_certificate", TableDescription="证照管理信息表")
 public class CfCertificate {
@@ -105,17 +104,14 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "STORAGE_PLACE",   FieldDescription="证件存放地点")
     private String storagePlace;
 
-    @ColumnAnnotation(FieldName = "SAVE_STATUS",   FieldDescription="证照当前状态(0:正常,1:超期未归还,2:有效期不足半年,3:过期证照,4:注销,5:转出,6:验证失败,7:失效证照,8:其他)")
+    @ColumnAnnotation(FieldName = "SAVE_STATUS",   FieldDescription="保管状态(0:正常保管,1:已取出,2:未上缴)")
     private String saveStatus;
 
-    @ColumnAnnotation(FieldName = "DQZT",   FieldDescription="当前状态(1:正常保管,2:待领取，3:已取出，4:未上缴）")
+    @ColumnAnnotation(FieldName = "DQZT",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:其它)")
     private Integer dqzt;
 
     @ColumnAnnotation(FieldName = "IS_LOCK",   FieldDescription="是否锁定0:正常，1:锁定")
     private Integer isLock;
-
-    @ColumnAnnotation(FieldName = "EXCEPTION_MESSAGE",   FieldDescription="异常消息")
-    private String exceptionMessage;
 
     @ColumnAnnotation(FieldName = "IS_CABINET",   FieldDescription="人员是否有效，0:有效，1:无效")
     private Integer isCabinet;
@@ -127,6 +123,20 @@ public class CfCertificate {
 
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效0:有效，1:无效")
     private Integer isValid;
+
+    @ColumnAnnotation(FieldName = "EXCEPTION_MESSAGE",   FieldDescription="异常消息")
+    private String exceptionMessage;
+
+    @ColumnAnnotation(FieldName = "EXCEPTION_CONCLUSION",   FieldDescription="异常处理结论")
+    private String exceptionConclusion;
+
+    @ColumnAnnotation(FieldName = "EXCEPTION_HANDLER",   FieldDescription="异常处理人")
+    private String exceptionHandler;
+
+    @ColumnAnnotation(FieldName = "EXCEPTION_SOLVEDATE",   FieldDescription="异常处理时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date exceptionSolvedate;
 
     public String getId() {
         return id;
@@ -376,14 +386,6 @@ public class CfCertificate {
         this.isLock = isLock;
     }
 
-    public String getExceptionMessage() {
-        return exceptionMessage;
-    }
-
-    public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage = exceptionMessage == null ? null : exceptionMessage.trim();
-    }
-
     public Integer getIsCabinet() {
         return isCabinet;
     }
@@ -406,5 +408,37 @@ public class CfCertificate {
 
     public void setIsValid(Integer isValid) {
         this.isValid = isValid;
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage == null ? null : exceptionMessage.trim();
+    }
+
+    public String getExceptionConclusion() {
+        return exceptionConclusion;
+    }
+
+    public void setExceptionConclusion(String exceptionConclusion) {
+        this.exceptionConclusion = exceptionConclusion == null ? null : exceptionConclusion.trim();
+    }
+
+    public String getExceptionHandler() {
+        return exceptionHandler;
+    }
+
+    public void setExceptionHandler(String exceptionHandler) {
+        this.exceptionHandler = exceptionHandler == null ? null : exceptionHandler.trim();
+    }
+
+    public Date getExceptionSolvedate() {
+        return exceptionSolvedate;
+    }
+
+    public void setExceptionSolvedate(Date exceptionSolvedate) {
+        this.exceptionSolvedate = exceptionSolvedate;
     }
 }

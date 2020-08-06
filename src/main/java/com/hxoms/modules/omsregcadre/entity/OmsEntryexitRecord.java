@@ -13,8 +13,8 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="")
-    private String b0100;
+    @ColumnAnnotation(FieldName = "B0000",   FieldDescription="")
+    private String b0000;
 
     @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国申请记录id")
     private String priapplyId;
@@ -95,12 +95,12 @@ public class OmsEntryexitRecord {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getB0100() {
-        return b0100;
+    public String getB0000() {
+        return b0000;
     }
 
-    public void setB0100(String b0100) {
-        this.b0100 = b0100 == null ? null : b0100.trim();
+    public void setB0000(String b0000) {
+        this.b0000 = b0000;
     }
 
     public String getPriapplyId() {
