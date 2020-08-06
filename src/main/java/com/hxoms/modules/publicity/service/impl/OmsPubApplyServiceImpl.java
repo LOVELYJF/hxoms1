@@ -67,23 +67,36 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         OmsPubApplyVO omsPubApply = new OmsPubApplyVO();
         //备案表中获取基本信息
         Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(b0100, a0100);
-        omsPubApply.setName((String) personInfo.get("NAME"));//姓名
-        omsPubApply.setA0100((String) personInfo.get("A0100"));//主键
-        omsPubApply.setB0100((String) personInfo.get("B0100"));//工作单位
-        omsPubApply.setB0101((String) personInfo.get("B0101"));//机构名称
-        omsPubApply.setBirthDate((Date) personInfo.get("BIRTH_DATE_GB"));//出生年月
-        omsPubApply.setAge((String) personInfo.get("AGE"));//年龄
-        omsPubApply.setSex((String) personInfo.get("SEX"));//性别
-        omsPubApply.setHealth((String) personInfo.get("HEALTH"));//健康状况
-        omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));//政治面貌
-        omsPubApply.setJob((String) personInfo.get("JOB"));//职务
-        omsPubApply.setSfsmry("0");//是否为涉密人员
+        //姓名
+        omsPubApply.setName((String) personInfo.get("NAME"));
+        //主键
+        omsPubApply.setA0100((String) personInfo.get("A0100"));
+        //工作单位
+        omsPubApply.setB0100((String) personInfo.get("B0100"));
+        //机构名称
+        omsPubApply.setB0101((String) personInfo.get("B0101"));
+        //出生年月
+        omsPubApply.setBirthDate((Date) personInfo.get("BIRTH_DATE_GB"));
+        //年龄
+        omsPubApply.setAge((String) personInfo.get("AGE"));
+        //性别
+        omsPubApply.setSex((String) personInfo.get("SEX"));
+        //健康状况
+        omsPubApply.setHealth((String) personInfo.get("HEALTH"));
+        //政治面貌
+        omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));
+        //职务
+        omsPubApply.setJob((String) personInfo.get("JOB"));
+        //是否为涉密人员
+        omsPubApply.setSfsmry("0");
         String smdj = (String) personInfo.get("SECRET_LEVEL");
-        if (!StringUtils.isBlank(smdj) && !smdj.equals("非涉密")) {
+        if (!StringUtils.isBlank(smdj) && !"非涉密".equals(smdj)) {
             omsPubApply.setSfsmry("1");
-            omsPubApply.setSmdj((String) personInfo.get("SECRET_LEVEL"));//涉密等级
+            //涉密等级
+            omsPubApply.setSmdj((String) personInfo.get("SECRET_LEVEL"));
         }
-        omsPubApply.setSflg((String) personInfo.get("NF"));//是否裸官
+        //是否裸官
+        omsPubApply.setSflg((String) personInfo.get("NF"));
         //获取最近一次出国情况
         List<OmsPubApply> latestInfoList = omsPubApplyMapper.selectPubAbroadLatestInfo(a0100);
         if (latestInfoList != null && !latestInfoList.isEmpty()) {
@@ -398,13 +411,15 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //保存预审批
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        String result = "";//返回信息
+        //返回信息
+        String result = "";
         //预审批主键
         String id = omsPubGroupPreApproval.getId();
+
         if (id == null || "".equals(id)){
             //新增预审批信息
-            String primaryKey = UUIDGenerator.getPrimaryKey();
-            omsPubGroupPreApproval.setId(primaryKey);
+            id = UUIDGenerator.getPrimaryKey();
+            omsPubGroupPreApproval.setId(id);
             //备案主体
             omsPubGroupPreApproval.setBazt(Constants.PubGroupPreApproval_business[0]);
             //创建人、
@@ -413,73 +428,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApproval.setCreateTime(new Date());
 
             omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
-            //将预审批人员添加到备案申请
-            List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();
-            if (personInfoVOS != null && personInfoVOS.size() > 0){
-                for (PersonInfoVO personInfoVO: personInfoVOS) {
-                    OmsPubApply omsPubApply = new OmsPubApply();
-                    //备案表中获取基本信息
-                    Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(personInfoVO.getB0100(), personInfoVO.getA0100());
-                    //主键
-                    omsPubApply.setId(UUIDGenerator.getPrimaryKey());
-                    //A0100
-                    omsPubApply.setA0100(personInfoVO.getA0100());
-                    //B0100
-                    omsPubApply.setB0100(personInfoVO.getB0100());
-                    //预审批主键
-                    omsPubApply.setYspId(primaryKey);
-                    //预审批发起单位
-                    omsPubApply.setYspdwId(omsPubGroupPreApproval.getB0100());
-                    //年龄
-                    omsPubApply.setAge((String) personInfo.get("AGE"));
-                    //政治面貌
-                    omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));
-                    //职务
-                    omsPubApply.setJob(personInfoVO.getJob());
-                    //健康状况
-                    omsPubApply.setHealth((String) personInfo.get("HEALTH"));
-                    //是否为涉密人员
-                    omsPubApply.setSfsmry("0");
-                    String smdj = (String) personInfo.get("SECRET_LEVEL");
-                    if (!StringUtils.isBlank(smdj) && !"非涉密".equals(smdj)) {
-                        omsPubApply.setSfsmry("1");
-                        //涉密等级
-                        omsPubApply.setSmdj((String) personInfo.get("SECRET_LEVEL"));
-                    }
-                    //组团单位
-                    omsPubApply.setZtdw(omsPubGroupPreApproval.getZtdw());
-                    //出国时间
-                    omsPubApply.setCgsj(omsPubGroupPreApproval.getCgsj());
-                    //回国时间
-                    omsPubApply.setHgsj(omsPubGroupPreApproval.getHgsj());
-                    //所到国境
-                    omsPubApply.setSdgj(omsPubGroupPreApproval.getSdgj());
-                    //在外停留时间
-                    omsPubApply.setTlsj(String.valueOf(omsPubGroupPreApproval.getZwtlsj()));
-                    //出访任务
-                    omsPubApply.setCfrw(omsPubGroupPreApproval.getCfrw());
-                    //出访事由
-                    omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());
-                    //是否下达
-                    omsPubApply.setSfxd(Constants.pub_business[0]);
-                    //创建人
-                    omsPubApply.setCreateUser(loginUser.getId());
-                    //创建时间
-                    omsPubApply.setCreateTime(new Date());
-                    omsPubApplyMapper.insert(omsPubApply);
-                    //判断校验类型
-                    result = checkPersonApply(omsPubApply.getA0100(), omsPubApply.getId(), "1");
-                    if (StringUtils.isBlank(result)) {
-                        result = "保存成功";
-                    }
-                }
-            }else {
-                throw new CustomMessageException("参数为空!");
-            }
+
         }else {
             //更新
             //查找原有预审批内容
-            OmsPubGroupPreApproval selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+            OmsPubGroupPreApprovalVO selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
             omsPubGroupPreApprovalMapper.updateByPrimaryKeySelective(omsPubGroupPreApproval);
             //新增预审批更改表信息
             OmsPubApplyChange omsPubApplyChange = new OmsPubApplyChange();
@@ -516,34 +469,71 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //修改时间
             omsPubApplyChange.setModifyTime(new Date());
             omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
-            //更新团体人员
-            List<OmsPubApplyVO> list = omsPubApplyMapper.selectByYSPId(id);
-            if (list != null && list.size()>0){
-                for (OmsPubApply omsPubApply: list) {
-                    //现出国时间
-                    omsPubApply.setCgsj(omsPubGroupPreApproval.getCgsj());
-                    //现回国时间
-                    omsPubApply.setHgsj(omsPubGroupPreApproval.getHgsj());
-                    //现出访任务
-                    omsPubApply.setCfrw(omsPubGroupPreApproval.getCfrw());
-                    //现出访事由
-                    omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());
-                    //现出访国
-                    omsPubApply.setSdgj(omsPubGroupPreApproval.getSdgj());
-                    //修改人
-                    omsPubApply.setModifyUser(loginUser.getId());
-                    //修改时间
-                    omsPubApply.setModifyTime(new Date());
-
-                    omsPubApplyMapper.updateById(omsPubApply);
-                    //判断校验类型
-                    result = checkPersonApply(omsPubApply.getA0100(), omsPubApply.getId(), "1");
-                    if (StringUtils.isBlank(result)) {
-                        result = "保存成功";
-                    }
+            //删除预审批人员
+            omsPubApplyMapper.deletePubApplyByYSPId(id);
+        }
+        //将预审批人员添加到备案申请
+        List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();
+        if (personInfoVOS != null && personInfoVOS.size() > 0){
+            for (PersonInfoVO personInfoVO: personInfoVOS) {
+                OmsPubApply omsPubApply = new OmsPubApply();
+                //备案表中获取基本信息
+                Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(personInfoVO.getB0100(), personInfoVO.getA0100());
+                //主键
+                omsPubApply.setId(UUIDGenerator.getPrimaryKey());
+                //A0100
+                omsPubApply.setA0100(personInfoVO.getA0100());
+                //B0100
+                omsPubApply.setB0100(personInfoVO.getB0100());
+                //预审批主键
+                omsPubApply.setYspId(id);
+                //预审批发起单位
+                omsPubApply.setYspdwId(omsPubGroupPreApproval.getB0100());
+                //年龄
+                omsPubApply.setAge((String) personInfo.get("AGE"));
+                //政治面貌
+                omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));
+                //职务
+                omsPubApply.setJob(personInfoVO.getJob());
+                //健康状况
+                omsPubApply.setHealth((String) personInfo.get("HEALTH"));
+                //是否为涉密人员
+                omsPubApply.setSfsmry("0");
+                String smdj = (String) personInfo.get("SECRET_LEVEL");
+                if (!StringUtils.isBlank(smdj) && !"非涉密".equals(smdj)) {
+                    omsPubApply.setSfsmry("1");
+                    //涉密等级
+                    omsPubApply.setSmdj((String) personInfo.get("SECRET_LEVEL"));
+                }
+                //组团单位
+                omsPubApply.setZtdw(omsPubGroupPreApproval.getZtdw());
+                //出国时间
+                omsPubApply.setCgsj(omsPubGroupPreApproval.getCgsj());
+                //回国时间
+                omsPubApply.setHgsj(omsPubGroupPreApproval.getHgsj());
+                //所到国境
+                omsPubApply.setSdgj(omsPubGroupPreApproval.getSdgj());
+                //在外停留时间
+                omsPubApply.setTlsj(String.valueOf(omsPubGroupPreApproval.getZwtlsj()));
+                //出访任务
+                omsPubApply.setCfrw(omsPubGroupPreApproval.getCfrw());
+                //出访事由
+                omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());
+                //是否下达
+                omsPubApply.setSfxd(Constants.pub_business[0]);
+                //创建人
+                omsPubApply.setCreateUser(loginUser.getId());
+                //创建时间
+                omsPubApply.setCreateTime(new Date());
+                omsPubApplyMapper.insert(omsPubApply);
+                //判断校验类型
+                result = checkPersonApply(omsPubApply.getA0100(), omsPubApply.getId(), "1");
+                if (StringUtils.isBlank(result)) {
+                    result = "保存成功";
                 }
             }
-
+        }else {
+            throw new CustomMessageException("参数为空!");
         }
         return result;
     }
@@ -591,18 +581,36 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Override
     public OmsPubGroupPreApprovalVO getPubGroupPreApprovalById(String id) {
-        if (id == null || id.equals("")){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        //OmsPubGroupPreApprovalVO OmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
-//        if (OmsPubGroupPreApproval != null) {
-//            String id1 = OmsPubGroupPreApproval.getId();
-//            List<PersonInfoVO> personInfoVOS = OmsPubGroupPreApproval.getPersonInfoVOS();
-//            List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id1);
-//            getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
-//        }
-//        return OmsPubGroupPreApproval;
-        return null;
+        //OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = new OmsPubGroupPreApprovalVO();
+        OmsPubGroupPreApprovalVO omsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+        if (omsPubGroupPreApproval != null) {
+            List<PersonInfoVO> personInfoVOS = new ArrayList<PersonInfoVO>();
+            List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+            //getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
+            for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
+                PersonInfoVO personInfoVO = new PersonInfoVO();
+                //单位名称
+                personInfoVO.setB0101(omsPubApplyVO.getB0101());
+                //出生日期
+                personInfoVO.setBirthDate(omsPubApplyVO.getBirthDate());
+                //职务
+                personInfoVO.setJob(omsPubApplyVO.getJob());
+                //姓名
+                personInfoVO.setName(omsPubApplyVO.getName());
+                //性别
+                personInfoVO.setSex(omsPubApplyVO.getSex());
+                //状态
+                personInfoVO.setStatus(omsPubApplyVO.getStatus());
+                personInfoVOS.add(personInfoVO);
+            }
+            omsPubGroupPreApproval.setPersonInfoVOS(personInfoVOS);
+        }else {
+            throw new CustomMessageException("数据为空!");
+        }
+        return omsPubGroupPreApproval;
     }
 
     /**
@@ -891,17 +899,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     /** 封装方法——封装干教人员信息*/
     private void getPersonInfoVO(List<PersonInfoVO> personInfoVOS, List<OmsPubApplyVO> omsPubApplyVOS) {
-        for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-            PersonInfoVO personInfoVO = new PersonInfoVO();
-            personInfoVO.setB0101(omsPubApplyVO.getB0101());//单位名称
-            personInfoVO.setBirthDate(omsPubApplyVO.getBirthDate());//出生日期
-            personInfoVO.setJob(omsPubApplyVO.getJob());//职务
-            personInfoVO.setName(omsPubApplyVO.getName());//姓名
-            personInfoVO.setSex(omsPubApplyVO.getSex());//性别
-            //状态
 
-            personInfoVOS.add(personInfoVO);
-        }
     }
 
     /**

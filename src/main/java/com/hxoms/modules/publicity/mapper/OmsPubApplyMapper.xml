@@ -360,6 +360,7 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         where oms_pub_apply.SFXD = '1'
@@ -409,10 +410,12 @@
         oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
-        ,oms_reg_procpersoninfo.NATION_NAME
-        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
-        ,oms_reg_procpersoninfo.IDNUMBER_GB
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME as politicalAff
+        ,oms_reg_procpersoninfo.IDNUMBER_GB as idnumber
+        ,oms_reg_procpersoninfo.INCUMBENCY_STATUS as status
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>

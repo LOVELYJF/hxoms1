@@ -247,9 +247,6 @@ public class OmsPubApplyController {
         omsPubApplyService.repealPubApplyById(id,cxyy);
         return Result.success();
     }
-
-
-
     /**
      * 功能描述: <br>
      * 〈添加或修改干教因公出国备案申请〉
@@ -265,19 +262,6 @@ public class OmsPubApplyController {
     }
     /**
      * 功能描述: <br>
-     * 〈根据条件查看干教列表〉
-     * @Param: [omsPubApplyQueryParam]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/7/7 15:50
-     */
-    @GetMapping("/getPubGroupPreApprovalByCondition")
-    public Result getPubGroupPreApprovalByCondition(OmsPubApplyQueryParam omsPubApplyQueryParam){
-        PageInfo info = omsPubApplyService.getPubGroupPreApprovalByCondition(omsPubApplyQueryParam);
-        return Result.success(info);
-    }
-    /**
-     * 功能描述: <br>
      * 〈根据ID查看干教信息〉
      * @Param: [id]
      * @Return: com.hxoms.common.utils.Result
@@ -289,6 +273,22 @@ public class OmsPubApplyController {
         OmsPubGroupPreApprovalVO info =omsPubApplyService.getPubGroupPreApprovalById(id);
         return Result.success(info);
     }
+
+
+    /**
+     * 功能描述: <br>
+     * 〈根据条件查看干教列表〉
+     * @Param: [omsPubApplyQueryParam]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/7 15:50
+     */
+    @GetMapping("/getPubGroupPreApprovalByCondition")
+    public Result getPubGroupPreApprovalByCondition(OmsPubApplyQueryParam omsPubApplyQueryParam){
+        PageInfo info = omsPubApplyService.getPubGroupPreApprovalByCondition(omsPubApplyQueryParam);
+        return Result.success(info);
+    }
+
     /**
      * 功能描述: <br>
      * 〈根据ID删除干教信息〉

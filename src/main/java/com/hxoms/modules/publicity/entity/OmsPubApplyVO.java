@@ -18,7 +18,8 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String b0101;
 
     private String idnumber;
-
+    //在职状态
+    private String status;
     public String getB0101() {
         return b0101;
     }
@@ -57,5 +58,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setIdnumber(String idnumber) {
         this.idnumber = idnumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
