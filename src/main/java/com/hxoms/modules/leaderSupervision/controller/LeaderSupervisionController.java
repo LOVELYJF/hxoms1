@@ -55,7 +55,7 @@ public class  LeaderSupervisionController {
      *  进入批次 新建 页面
      * */
 
-    @PostMapping("/createBatchPage")
+    @GetMapping("/createBatchPage")
     public Result createBatchPage( ){
 
 
