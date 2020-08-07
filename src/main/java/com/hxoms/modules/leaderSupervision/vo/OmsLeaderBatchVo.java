@@ -13,6 +13,10 @@ import java.util.Date;
 public class OmsLeaderBatchVo {
 
 
+    private Integer pageNum;  /**页码*/
+
+    private Integer pageSize;   /**分页大小*/
+
     private String name;
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
@@ -44,6 +48,8 @@ public class OmsLeaderBatchVo {
     private String applyUser; // 申请人
 
     private String operatorUser; //经办人 ==   流程的创建人
+
+    private String masterStatus; // 批次 状态
 
 
 
@@ -126,5 +132,29 @@ public class OmsLeaderBatchVo {
 
     public void setOperatorUser(String operatorUser) {
         this.operatorUser = operatorUser;
+    }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public String getMasterStatus() {
+        return masterStatus;
+    }
+
+    public void setMasterStatus(String masterStatus) {
+        this.masterStatus = masterStatus;
     }
 }

@@ -109,12 +109,23 @@ public class LeaderSupervisionUntil {
                 }else{
 
 
+
                     if(obj.getClass()==String.class){
 
                         if(StringUilt.stringIsNullOrEmpty((String)obj)){
                             throw new CustomMessageException("参数为空，请仔细检查");
                         }
-                    }else if(obj instanceof List ){
+                    }else if(obj instanceof LeaderSupervisionVo){
+
+                        if(((LeaderSupervisionVo) obj).getBussinessTypeAndIdVos()==null && ((LeaderSupervisionVo) obj).getBussinessTypeAndIdVos().size()<=0){
+
+                            throw new CustomMessageException("参数为空，请仔细检查");
+
+                        }
+
+                    }
+
+                    else if(obj instanceof List ){
                         if(((List)obj).size()<=0){
 
                             throw new CustomMessageException("参数为空，请仔细检查");

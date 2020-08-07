@@ -62,6 +62,17 @@ public class LeaderQueryconditions {
         return Result.success();
     }
 
+    /**
+     * 获取 批次状态
+     * ***/
+    @GetMapping("/selectLeaderBatchStatus")
+    public Result selectLeaderBatchStatus(){
+
+       List<Map> mapList =  leaderDetailProcessingService.selectLeaderBatchStatus();
+
+        return  Result.success(mapList);
+    }
+
 
 
 

@@ -19,6 +19,7 @@ import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.support.user.entity.User;
+import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -276,6 +277,24 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         omsLeaderBatchMapper.updateById(omsLeaderBatch);
 
+    }
+
+    public List<Map> selectLeaderBatchStatus(){
+
+       List lists = new ArrayList();
+
+       int len = Constants.leader_business.length;
+
+       for(int i=0;i<len;i++){
+
+           Map map = new HashMap();
+
+           map.put("code",Constants.leader_business[i]);
+           map.put("name", Constants.leader_businessName[i]);
+
+           lists.add(map);
+       }
+       return  lists;
     }
 
 

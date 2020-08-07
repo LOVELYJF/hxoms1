@@ -17,6 +17,7 @@ import com.hxoms.modules.leaderSupervision.service.OmsBatchApplybusinessService;
 import com.hxoms.modules.leaderSupervision.service.OmsLeaderBatchService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
@@ -85,9 +86,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         List list = leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList());
 
         LeaderSupervisionUntil.throwableByParam(
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
-
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+                leaderSupervisionVo
         );
 
         // 查询当天最大的批次
@@ -116,9 +117,11 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
     public void  saveBatch(LeaderSupervisionVo leaderSupervisionVo){
 
-        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getBatchName(),leaderSupervisionVo.getAccpetDate()
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getBatchName(),leaderSupervisionVo.getAccpetDate(),
 
-//                ,leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName()
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+                leaderSupervisionVo
         );
          // 保存批次表 (第一步)
         OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
@@ -187,30 +190,19 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     }
 
     // TODO 保存 业务申请 与 主表 之间的关系
-    public void saveApplyBussinessByBatchId(Object object , String batchId,String masterTableId) {
+    public void saveApplyBussinessByBatchId(LeaderSupervisionVo leaderSupervisionVo , String batchId,String masterTableId) {
 
-        String[] bussinessIds=null;
-        String[] bussinessNmaes=null;
 
-        if(object.getClass()== LeaderSupervisionVo.class){
-
-//            bussinessIds =   ((LeaderSupervisionVo) object).getBussinessId(); //业务ids
-//            bussinessNmaes = ((LeaderSupervisionVo)object).getBussinessName();// 业务名称 比如 因公，因私，延期
-
-        }else if(object.getClass() == OmsJiweiOpinionVo.class){
-
-            bussinessIds =   ((OmsJiweiOpinionVo) object).getBussinessId(); //业务ids
-            bussinessNmaes = ((OmsJiweiOpinionVo)object).getBussinessName();// 业务名称 比如 因公，因私，延期
-
-        }
+        List<BussinessTypeAndIdVo> lists = leaderSupervisionVo.getBussinessTypeAndIdVos()  ;
 
 
 
-        for(int i=0;i<bussinessIds.length;i++) {
 
-            String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessNmaes[i]);
+        for(int i=0;i<lists.size();i++) {
 
-            String updateApplyStatusSql = getsavebatchIdbyApplybussiness(bussinessIds[i], bussinessType, batchId,masterTableId);
+            String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(lists.get(i).getBussinessName());
+
+            String updateApplyStatusSql = getsavebatchIdbyApplybussiness(lists.get(i).getBussinessId(), bussinessType, batchId,masterTableId);
 
             log.info("保存 业务申请 表 与 主表 之间的 关系的 sql ="+updateApplyStatusSql);
 
@@ -326,18 +318,6 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
-
-    }
-
-    //TODO 业务 处理 材料审核 的 下一步 触发的事件
-    public void materialReviewNextStep( ){
-
-        String tableCode; String applyId;
-
-
-
-
-
 
     }
 

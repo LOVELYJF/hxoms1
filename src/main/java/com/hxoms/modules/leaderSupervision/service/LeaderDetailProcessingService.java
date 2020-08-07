@@ -37,5 +37,11 @@ public interface LeaderDetailProcessingService {
 
     void updateLeaderBatch(OmsLeaderBatch omsLeaderBatch);
 
+    /**
+     *  获取 批次 状态
+     * **/
+
+    List<Map> selectLeaderBatchStatus();
+
 
 }

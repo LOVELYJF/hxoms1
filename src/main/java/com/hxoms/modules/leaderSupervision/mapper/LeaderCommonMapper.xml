@@ -545,6 +545,12 @@
 				and leb.create_user = #{acceptUser}
 			</if>
 
+            <if test="masterStatus != null and masterStatus !='' ">
+
+                and leb.master_status = #{masterStatus}
+
+            </if>
+
 		</where>
 
 	</select>
