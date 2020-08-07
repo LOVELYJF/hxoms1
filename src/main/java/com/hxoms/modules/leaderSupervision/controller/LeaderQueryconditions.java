@@ -45,6 +45,7 @@ public class LeaderQueryconditions {
     @GetMapping("/selectBatch")
     public Result selectBatch(LeaderSupervisionVo leaderSupervisionVo){
 
+
         PageInfo pageInfo = leaderDetailProcessingService.selectOmsLeaderBatch(leaderSupervisionVo);
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
