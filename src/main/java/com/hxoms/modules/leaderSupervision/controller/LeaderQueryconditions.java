@@ -54,7 +54,7 @@ public class LeaderQueryconditions {
     /**
      * 修改 批次
      * **/
-    @PostMapping("/selectBatch")
+    @PostMapping("/updateBatch")
     public Result updateBatch(OmsLeaderBatch omsLeaderBatch){
 
         leaderDetailProcessingService.updateLeaderBatch(omsLeaderBatch);
