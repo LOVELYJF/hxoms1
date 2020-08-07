@@ -328,6 +328,7 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -397,6 +398,7 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
@@ -432,6 +434,7 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -463,6 +466,7 @@
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
