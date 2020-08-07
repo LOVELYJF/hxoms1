@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class LeaderSupervisionVo {
 
@@ -12,9 +13,11 @@ public class LeaderSupervisionVo {
 
     private Integer pageSize;   /**分页大小*/
 
-    private String[] bussinessId; /**业务id 数组**/
+    List<BussinessTypeAndIdVo>  bussinessTypeAndIdVos; // 封装 业务 id 与 业务类型
 
-    private String[] bussinessName; /**业务名称 数组**/
+//    public String[] bussinessId; /**业务id 数组**/
+//
+//    public String[] bussinessName; /**业务名称 数组**/
 
     private String  userName; /**人员名称 **/
 
@@ -54,21 +57,21 @@ public class LeaderSupervisionVo {
         this.pageSize = pageSize;
     }
 
-    public String[] getBussinessId() {
-        return bussinessId;
-    }
-
-    public void setBussinessId(String[] bussinessId) {
-        this.bussinessId = bussinessId;
-    }
-
-    public String[] getBussinessName() {
-        return bussinessName;
-    }
-
-    public void setBussinessName(String[] bussinessName) {
-        this.bussinessName = bussinessName;
-    }
+//    public String[] getBussinessId() {
+//        return bussinessId;
+//    }
+//
+//    public void setBussinessId(String[] bussinessId) {
+//        this.bussinessId = bussinessId;
+//    }
+//
+//    public String[] getBussinessName() {
+//        return bussinessName;
+//    }
+//
+//    public void setBussinessName(String[] bussinessName) {
+//        this.bussinessName = bussinessName;
+//    }
 
     public String getUserName() {
         return userName;
@@ -118,6 +121,23 @@ public class LeaderSupervisionVo {
         this.incumbencyStatus = incumbencyStatus;
     }
 
+    public List<BussinessTypeAndIdVo> getBussinessTypeAndIdVos() {
+        return bussinessTypeAndIdVos;
+    }
 
+    public void setBussinessTypeAndIdVos(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos) {
 
+//         if(bussinessTypeAndIdVos!=null && bussinessTypeAndIdVos.size()>0){
+//
+//             int num=0;
+//
+//             for(int i=0; i<bussinessTypeAndIdVos.size();i++){}
+//
+//             this.bussinessId[num] = bussinessTypeAndIdVos.get(num).getBussinessId();
+//             this.bussinessName[num] = bussinessTypeAndIdVos.get(num).getBussinessName();
+//             num++;
+//         }
+
+        this.bussinessTypeAndIdVos = bussinessTypeAndIdVos;
+    }
 }

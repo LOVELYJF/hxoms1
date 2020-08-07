@@ -4,6 +4,7 @@ import com.github.pagehelper.util.StringUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
+import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -16,10 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
@@ -116,8 +114,8 @@ public class LeaderSupervisionUntil {
                         if(StringUilt.stringIsNullOrEmpty((String)obj)){
                             throw new CustomMessageException("参数为空，请仔细检查");
                         }
-                    }else if(obj.getClass().isArray()){
-                        if(((String[])obj).length<=0){
+                    }else if(obj instanceof List ){
+                        if(((List)obj).size()<=0){
 
                             throw new CustomMessageException("参数为空，请仔细检查");
                         }
@@ -189,6 +187,14 @@ public class LeaderSupervisionUntil {
 
 
     }
+
+//    public Map getMapByLeaderSupervisionVo(LeaderSupervisionVo leaderSupervisionVo){
+//
+//        Map map = new HashMap();
+//
+//
+//    }
+
 
 
 

@@ -1,7 +1,9 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.PageUtil;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.message.message.entity.Message;
@@ -9,11 +11,13 @@ import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
+import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.support.user.entity.User;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +81,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
      }
 
      // 修改 流程 状态 置为 征求纪委意见
-
+        getUpdateStatusSql(applyId,tableCode,Constants.leader_businessName[1],"materialReviewNextStep");
 
 
 
@@ -105,7 +109,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         // 修改流程状态， 将 流程 置为 初始状态
 
-        String updateSql =   getUpdateStatusSql(applyId,tableCode,"1");
+        String updateSql =   getUpdateStatusSql(applyId,tableCode,"1","sendMessageToAgent");
 
         SqlVo instance = SqlVo.getInstance(updateSql);
         selectMapper.update(instance);
@@ -144,7 +148,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     // TODO  统一 修改 业务申请表状态
-    public String getUpdateStatusSql(String busessId,String bussinesType,String leaderStatusName){
+    public String getUpdateStatusSql(String busessId,String bussinesType,String leaderStatusName, String methodName){
 
         String updateSql = "update "+bussinesType;
 
@@ -158,8 +162,16 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
 
                 String status =  applyStatus.getApplySatus();
-                // 干部监督处的状态
-                setSql+= status + "= ‘" + leaderStatusName+"'";
+
+                if("sendMessageToAgent".equals(methodName)){
+
+                    setSql+= status + "= ‘" + leaderStatusName+"'";
+                }else{
+
+                    // 干部监督处的状态
+                    setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+                }
+
 
                 break;
 
@@ -246,11 +258,28 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     }
 
-//    public List<Map> selectOmsLeaderBatch(){
-//
-//        omsLeaderBatchMapper.selectPage();
-//
-//    }
+    public PageInfo selectOmsLeaderBatch(LeaderSupervisionVo leaderSupervisionVo){
+
+        PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
+
+        List<Map> lists =   leaderCommonMapper.selectLeaderBatch();
+
+        PageInfo pageInfo = new PageInfo(lists);
+        return pageInfo;
+
+    }
+
+    public void updateLeaderBatch(OmsLeaderBatch omsLeaderBatch){
+
+        LeaderSupervisionUntil.throwableByParam(omsLeaderBatch.getId());
+
+
+        omsLeaderBatchMapper.updateById(omsLeaderBatch);
+
+    }
+
+
+
 
 
 

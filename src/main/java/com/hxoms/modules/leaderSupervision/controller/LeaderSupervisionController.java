@@ -8,14 +8,13 @@ import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import oracle.jdbc.proxy.annotation.Post;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -55,8 +55,9 @@ public class  LeaderSupervisionController {
      *  进入批次 新建 页面
      * */
 
-    @GetMapping("/createBatchPage")
-    public Result createBatchPage(LeaderSupervisionVo leaderSupervisionVo){
+    @PostMapping("/createBatchPage")
+    public Result createBatchPage(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
 
        Map dataMap =  leaderCommonService.createBacthByUsers(leaderSupervisionVo);
 

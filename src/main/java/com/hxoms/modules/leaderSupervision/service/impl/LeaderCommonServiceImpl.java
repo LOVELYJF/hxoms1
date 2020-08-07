@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("leaderCommonService")
 public class LeaderCommonServiceImpl implements LeaderCommonService {
@@ -81,7 +82,13 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         Map module = new LinkedHashMap();
 
-        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName());
+        List list = leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList());
+
+        LeaderSupervisionUntil.throwableByParam(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+
+        );
 
         // 查询当天最大的批次
         QueryWrapper<OmsLeaderBatch> leaderBatch_wrapper = new QueryWrapper<OmsLeaderBatch>();
@@ -101,13 +108,18 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
 
+
+
     /**
      *  TODO 保存批次 以及保存批次业务中间表  入口 : 业务受理
      * */
     @Transactional(rollbackFor = CustomMessageException.class)
     public void  saveBatch(LeaderSupervisionVo leaderSupervisionVo){
 
-        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getBatchName(),leaderSupervisionVo.getAccpetDate(),leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getBatchName(),leaderSupervisionVo.getAccpetDate()
+
+//                ,leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName()
+        );
          // 保存批次表 (第一步)
         OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
 
@@ -115,7 +127,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         omsLeaderBatch.setAcceptDate(leaderSupervisionVo.getAccpetDate());
         omsLeaderBatch.setName(leaderSupervisionVo.getBatchName());
         omsLeaderBatch.setCreateTime(new Date());
-//        omsLeaderBatch.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
+        omsLeaderBatch.setCreateUser(UserInfoUtil.getUserInfo().getUserName());
         // 修改 批次状态 为 业务受理
         omsLeaderBatch.setMasterStatus(String.valueOf(Constants.leader_business[0]));
         omsLeaderBatchService.save(omsLeaderBatch);
@@ -143,7 +155,11 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     public void leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo){
 
 
-        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getLeaderBtachId(),leaderSupervisionVo.getBussinessId(),leaderSupervisionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getLeaderBtachId(),
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+
+        );
         //纳入的批次 所选择的人
         saveApplyBussinessByBatchId(leaderSupervisionVo, leaderSupervisionVo.getLeaderBtachId(),"leader_batch_id");
 
@@ -178,8 +194,8 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         if(object.getClass()== LeaderSupervisionVo.class){
 
-            bussinessIds =   ((LeaderSupervisionVo) object).getBussinessId(); //业务ids
-            bussinessNmaes = ((LeaderSupervisionVo)object).getBussinessName();// 业务名称 比如 因公，因私，延期
+//            bussinessIds =   ((LeaderSupervisionVo) object).getBussinessId(); //业务ids
+//            bussinessNmaes = ((LeaderSupervisionVo)object).getBussinessName();// 业务名称 比如 因公，因私，延期
 
         }else if(object.getClass() == OmsJiweiOpinionVo.class){
 
