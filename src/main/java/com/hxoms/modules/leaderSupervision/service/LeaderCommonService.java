@@ -13,7 +13,7 @@ public interface LeaderCommonService {
     PageInfo selectBusinessUser(LeaderSupervisionVo leaderSupervisionVo, int applyStatus);
 
     /** 进入生成 批次 页面 **/
-    Map createBacthByUsers(LeaderSupervisionVo leaderSupervisionVo);
+    Map createBacthByUsers();
 
     /** 保存 批次页面 **/
     void saveBatch(LeaderSupervisionVo leaderSupervisionVo);

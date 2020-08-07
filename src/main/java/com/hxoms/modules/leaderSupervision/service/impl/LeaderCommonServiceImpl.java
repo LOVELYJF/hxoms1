@@ -79,17 +79,17 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     /**
      *  TODO 根据选择的人员 新建批次 页面  返回 批次号，和受理时间
      * */
-    public Map  createBacthByUsers(LeaderSupervisionVo leaderSupervisionVo){
+    public Map  createBacthByUsers(){
 
         Map module = new LinkedHashMap();
 
-        List list = leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList());
-
-        LeaderSupervisionUntil.throwableByParam(
-//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
-                leaderSupervisionVo
-        );
+//        List list = leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList());
+//
+//        LeaderSupervisionUntil.throwableByParam(
+////                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+////                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+//                leaderSupervisionVo
+//        );
 
         // 查询当天最大的批次
         QueryWrapper<OmsLeaderBatch> leaderBatch_wrapper = new QueryWrapper<OmsLeaderBatch>();

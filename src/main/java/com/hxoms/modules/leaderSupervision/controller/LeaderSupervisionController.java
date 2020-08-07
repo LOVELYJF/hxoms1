@@ -56,10 +56,10 @@ public class  LeaderSupervisionController {
      * */
 
     @PostMapping("/createBatchPage")
-    public Result createBatchPage(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+    public Result createBatchPage( ){
 
 
-       Map dataMap =  leaderCommonService.createBacthByUsers(leaderSupervisionVo);
+       Map dataMap =  leaderCommonService.createBacthByUsers();
 
         return Result.success(dataMap);
     }
@@ -69,7 +69,7 @@ public class  LeaderSupervisionController {
      * 保存批次
      * **/
     @GetMapping("/saveBatch")
-    public Result saveBatch(LeaderSupervisionVo leaderSupervisionVo){
+    public Result saveBatch(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
         leaderCommonService.saveBatch(leaderSupervisionVo);
 
