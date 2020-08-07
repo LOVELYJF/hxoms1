@@ -36,8 +36,8 @@ public class CfCertificateController {
      * @Date: 2020/7/24
      */
     @PostMapping("/excelToDB")
-    public Result personExcelToDB(@RequestParam("file") MultipartFile multipartFile,String dataSource) throws Exception {
-        return Result.success(cfCertificateService.excelToDB(multipartFile,dataSource));
+    public Result personExcelToDB(@RequestParam("file") MultipartFile multipartFile) throws Exception {
+        return Result.success(cfCertificateService.excelToDB(multipartFile));
     }
 
     /**
@@ -53,27 +53,27 @@ public class CfCertificateController {
     }
 
     /**
-     * @Desc: 通过证照查询公安证照信息及人员信息
+     * @Desc: 验证证照信息
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/4
      */
-    @GetMapping("/selectPersonInfo")
-    public Result selectPersonInfo(CfCertificate cfCertificate){
-        return Result.success(cfCertificateService.selectPersonInfo(cfCertificate));
+    @GetMapping("/validateCerInfo")
+    public Result validateCerInfo(CfCertificate cfCertificate){
+        return Result.success(cfCertificateService.validateCerInfo(cfCertificate));
     }
 
     /**
-     * @Desc: 证照验证，有公安数据，则验证并更新状态，否则插入证照信息。
+     * @Desc: 插入证照信息
      * @Author: wangyunquan
      * @Param: [cfCertificateGa, cfCertificateZz]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/5
      */
-    @PostMapping("/saveOrUpdate")
-    public Result saveOrUpdate(CfCertificate cfCertificateGa,CfCertificate cfCertificateZz){
-        cfCertificateService.saveOrUpdate(cfCertificateGa,cfCertificateZz);
+    @PostMapping("/insertCertificate")
+    public Result insertCertificate(CfCertificate cfCertificate){
+        cfCertificateService.insertCertificate(cfCertificate);
         return Result.success();
     }
     /**

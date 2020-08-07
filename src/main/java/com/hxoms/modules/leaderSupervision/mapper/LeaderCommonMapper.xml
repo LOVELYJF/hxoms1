@@ -36,7 +36,7 @@
 
 	</sql>
 
-    <select id="selectBusinessUser" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
+    <select id="selectBusinessUser" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
 		SELECT
 		*  from (
 		SELECT
@@ -67,10 +67,10 @@
 		mrp.IDENTITY AS identity, #身份类别
 		pua.SFZYLD as sfzyld,  # 主要领导
 		pua.FMXX AS fmxx, # 负面信息
-		case when pua.SFZQJWYJ ='1' then '是' else '否'  END  as sfzqjwyj, # 征求纪委意见
-		case when pua.JWJL ='1' then '通过' else '不通过' END  as jwjl, # 纪委意见
-		case when pua.CLSHSFTG ='1' then '通过' else '不通过' END as clshsftg, # 材料审核
-		pua.SFBG        # 是否变更
+		case when pua.SFZQJWYJ ='1' then '是' when pua.SFZQJWYJ in (null,'') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+		case when pua.JWJL ='1' then '通过' when pua.JWJL in (null,'') then '无'  else '不通过' END  as jwjl, # 纪委意见
+		case when pua.CLSHSFTG ='1' then '通过'  when  pua.CLSHSFTG in (null,'') then '无' else '不通过' END as clshsftg, # 材料审核
+		pua.SFBG   as sfbg     # 是否变更
 		FROM
 		oms_pub_apply pua
 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
@@ -519,7 +519,9 @@
 
 	<select id="selectLeaderBatch" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
 
-		select leb.name as name , -- 批次号
+		select
+		       leb.id as id, -- 批次id
+		       leb.name as name , -- 批次号
 			   leb.accept_date as acceptDate, -- 受理时间
 			   leb.create_user as createUser, -- 创建人 ==？受理人
 			   b.statusName as status,    --   状态
@@ -542,6 +544,12 @@
 
 				and leb.create_user = #{acceptUser}
 			</if>
+
+            <if test="masterStatus != null and masterStatus !='' ">
+
+                and leb.master_status = #{masterStatus}
+
+            </if>
 
 		</where>
 
@@ -2127,6 +2135,18 @@
 
 
 	</select>
+
+
+    <select id="selectgetApplicationType"  resultType="java.util.LinkedHashMap">
+
+        select  '所有申请' as name, 'all' as value
+        UNION
+        select '因公出国' , 'oms_pub_apply'
+        UNION
+        select  '因私出国' , 'oms_pri_apply'
+        UNION
+        select  '延期回国','oms_pri_delay_apply'
+    </select>
 
 
 
