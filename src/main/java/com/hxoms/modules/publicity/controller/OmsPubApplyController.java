@@ -217,8 +217,8 @@ public class OmsPubApplyController {
      * @Date: 2020/8/3 15:03
      */
     @GetMapping("/getPubApplyList")
-    public Result getPubApplyList(String pwh){
-        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList(pwh);
+    public Result getPubApplyList(){
+        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList();
         return Result.success(list);
     }
     /**
@@ -274,6 +274,19 @@ public class OmsPubApplyController {
         return Result.success(info);
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈上报干部监督处〉
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/7 9:54
+     */
+    @PostMapping("/reportPubGroupPreApproval")
+    public Result reportPubGroupPreApproval(String id){
+        omsPubApplyService.reportPubGroupPreApproval(id);
+        return Result.success();
+    }
 
     /**
      * 功能描述: <br>

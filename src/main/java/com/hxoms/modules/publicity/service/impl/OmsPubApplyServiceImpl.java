@@ -1,5 +1,6 @@
 package com.hxoms.modules.publicity.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -28,6 +29,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -270,6 +272,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String name = omsPubApplyQueryParam.getName();
         /** 通知书文号*/
         String pwh = omsPubApplyQueryParam.getPwh();
+        if (StringUtils.isBlank(pwh)){
+            pwh = "琼台赴";
+        }
         /** 机构id*/
         String b0100 = omsPubApplyQueryParam.getB0100();
         List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);
@@ -426,7 +431,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApproval.setCreateUser(loginUser.getId());
             // 创建时间
             omsPubGroupPreApproval.setCreateTime(new Date());
-
+            omsPubGroupPreApproval.setSource("0");
+            omsPubGroupPreApproval.setSqzt(Constants.GJ_business[0]);
             omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
 
         }else {
@@ -521,6 +527,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 omsPubApply.setCfsy(omsPubGroupPreApproval.getCfsy());
                 //是否下达
                 omsPubApply.setSfxd(Constants.pub_business[0]);
+                //申请状态
+                //omsPubApply.setSqzt(Constants.leader_business[0]);
                 //创建人
                 omsPubApply.setCreateUser(loginUser.getId());
                 //创建时间
@@ -548,7 +556,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
          /** 团组名称*/
         String tzmc = omsPubApplyQueryParam.getTzmc();
         /**申请状态集合 */
@@ -563,9 +572,26 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (OmsPubGroupPreApproval != null && OmsPubGroupPreApproval.size()>0){
             for (OmsPubGroupPreApprovalVO omsPubGroupPreApproval:OmsPubGroupPreApproval) {
                 String id = omsPubGroupPreApproval.getId();
-                List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();
-                List<OmsPubApplyVO> list = omsPubApplyMapper.selectByYSPId(id);
-                getPersonInfoVO(personInfoVOS, list);
+                List<PersonInfoVO> personInfoVOS = new ArrayList<PersonInfoVO>();
+                List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+                //getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
+                for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
+                    PersonInfoVO personInfoVO = new PersonInfoVO();
+                    //单位名称
+                    personInfoVO.setB0101(omsPubApplyVO.getB0101());
+                    //出生日期
+                    personInfoVO.setBirthDate(omsPubApplyVO.getBirthDate());
+                    //职务
+                    personInfoVO.setJob(omsPubApplyVO.getJob());
+                    //姓名
+                    personInfoVO.setName(omsPubApplyVO.getName());
+                    //性别
+                    personInfoVO.setSex(omsPubApplyVO.getSex());
+                    //状态
+                    personInfoVO.setStatus(omsPubApplyVO.getStatus());
+                    personInfoVOS.add(personInfoVO);
+                }
+                omsPubGroupPreApproval.setPersonInfoVOS(personInfoVOS);
             }
         }
         PageInfo info = new PageInfo(OmsPubGroupPreApproval);
@@ -888,18 +914,33 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      * @Date: 2020/8/3 16:48
      */
     @Override
-    public List<OmsPubApplyVO> getPubApplyList(String pwh) {
-        if (StringUtils.isBlank(pwh)){
-            throw new CustomMessageException("参数为空!");
-        }
-        pwh = pwh.substring(0, 8);
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh);
+    public List<OmsPubApplyVO> getPubApplyList() {
+        //要把申请赴台了且未到出国日期的未撤销的全部人员查一下
+        String pwh = "琼台赴";
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh,Constants.private_business[7]);
         return omsPubApplyVOS;
     }
 
-    /** 封装方法——封装干教人员信息*/
-    private void getPersonInfoVO(List<PersonInfoVO> personInfoVOS, List<OmsPubApplyVO> omsPubApplyVOS) {
-
+    /**
+     * 功能描述: <br>
+     * 〈上报干部监督处〉
+     * @Param: [id]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/7 9:55
+     */
+    @Override
+    public void reportPubGroupPreApproval(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+        omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+        for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
+            omsPubApplyVO.setSqzt(Constants.leader_business[0]);
+            omsPubApplyMapper.updateById(omsPubApplyVO);
+        }
     }
 
     /**

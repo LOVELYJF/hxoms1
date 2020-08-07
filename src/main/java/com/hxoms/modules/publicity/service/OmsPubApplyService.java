@@ -210,5 +210,15 @@ public interface OmsPubApplyService {
      * @Author: 李逍遥
      * @Date: 2020/8/3 16:47
      */
-    List<OmsPubApplyVO> getPubApplyList(String pwh);
+    List<OmsPubApplyVO> getPubApplyList();
+
+    /**
+     * 功能描述: <br>
+     * 〈上报干部监督处〉
+     * @Param: [id]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/7 9:55
+     */
+    void reportPubGroupPreApproval(String id);
 }
