@@ -60,6 +60,7 @@ public class LeaderQueryconditions {
 
         leaderDetailProcessingService.updateLeaderBatch(omsLeaderBatch);
 
+
         return Result.success();
     }
 
