@@ -68,7 +68,7 @@ public class  LeaderSupervisionController {
     /**
      * 保存批次
      * **/
-    @GetMapping("/saveBatch")
+    @PostMapping("/saveBatch")
     public Result saveBatch(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
         leaderCommonService.saveBatch(leaderSupervisionVo);
