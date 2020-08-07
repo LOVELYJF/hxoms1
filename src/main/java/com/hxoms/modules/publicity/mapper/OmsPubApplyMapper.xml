@@ -467,7 +467,11 @@
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
             <if test="pwh != null and pwh !=''">
+                <![CDATA[ and oms_pub_apply.CGSJ >= now()]]>
                 and oms_pub_apply.PWH like CONCAT('%',#{pwh},'%')
+            </if>
+            <if test="sqzt != null">
+                and oms_pub_apply.SQZT <![CDATA[<>]]> #{sqzt}
             </if>
         </where>
     </select>

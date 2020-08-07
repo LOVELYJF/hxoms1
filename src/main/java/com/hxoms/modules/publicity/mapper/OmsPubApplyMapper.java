@@ -116,5 +116,5 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/8/3 16:52
      */
-    List<OmsPubApplyVO> getPubApplyList(String pwh);
+    List<OmsPubApplyVO> getPubApplyList(@Param("pwh") String pwh,@Param("sqzt") int sqzt);
 }
