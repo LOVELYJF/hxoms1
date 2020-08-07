@@ -37,172 +37,173 @@
 	</sql>
 
     <select id="selectBusinessUser" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
-		SELECT
-		*  from (
-		SELECT
-		pua.id AS id,   # 业务id
-		pua.leader_batch_id as batchId, # 批次id
-		pua.SQZT   as applyStatus,    # 业务 流程状态
-		b.b0101 AS department,  # "部门名称"
-		a.a0101 AS userName, # 人员名称
-		DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
-		DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
-		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
-		pua.CFRW AS cfrw,  #  出访任务
-		"因公" AS businessType,  # 申请类型
-		"oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
-		pua.CGSPDW AS cgspdw, # 审批单位
-		IF (
-		a.A0104 NOT IN ('1', '2'),
-		'未知',
-		IF (a.A0104 = 1, '男', '女')
-		) AS sex,  # 性别
-		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
-		pua.POLITICAL_AFF AS politcalAffi,  # 政治面貌
-		pua.JOB AS job,   #职务
-		DATE_FORMAT(pua.CREATE_TIME,'%Y.%m.%d') AS applyTime,   # 申请日期
-		pua.SMDJ AS secretLevel,  # 涉密等级
-		DATE_FORMAT(pua.YTMJSSJ1,'%Y.%m.%d') AS declassificaEndTime,  # 脱密结束日期
-		pua.SFLG AS sflg,  # 是否裸官
-		mrp.IDENTITY AS identity, #身份类别
-		pua.SFZYLD as sfzyld,  # 主要领导
-		pua.FMXX AS fmxx, # 负面信息
-		case when pua.SFZQJWYJ ='1' then '是' when pua.SFZQJWYJ in (null,'') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-		case when pua.JWJL ='1' then '通过' when pua.JWJL in (null,'') then '无'  else '不通过' END  as jwjl, # 纪委意见
-		case when pua.CLSHSFTG ='1' then '通过'  when  pua.CLSHSFTG in (null,'') then '无' else '不通过' END as clshsftg, # 材料审核
-		pua.SFBG   as sfbg     # 是否变更
-		FROM
-		oms_pub_apply pua
-		LEFT JOIN b01 b ON pua.b0100 = b.b0100
-		LEFT JOIN a01 a ON pua.a0100 = a.a0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
-		UNION
-		SELECT
-		pra.id AS id, # 业务id
+        SELECT
+        *  from (
+        SELECT
+        pua.id AS id,   # 业务id
+        pua.leader_batch_id as batchId, # 批次id
+        pua.SQZT   as applyStatus,    # 业务 流程状态
+        b.b0101 AS department,  # "部门名称"
+        a.a0101 AS userName, # 人员名称
+        DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
+        DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
+        pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+        pua.CFRW AS cfrw,  #  出访任务
+        "因公" AS businessType,  # 申请类型
+        "oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
+        pua.CGSPDW AS cgspdw, # 审批单位
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
+        pua.POLITICAL_AFF AS politcalAffi,  # 政治面貌
+        pua.JOB AS job,   #职务
+        DATE_FORMAT(pua.CREATE_TIME,'%Y.%m.%d') AS applyTime,   # 申请日期
+        pua.SMDJ AS secretLevel,  # 涉密等级
+        DATE_FORMAT(pua.YTMJSSJ1,'%Y.%m.%d') AS declassificaEndTime,  # 脱密结束日期
+        pua.SFLG AS sflg,  # 是否裸官
+        mrp.IDENTITY AS identity, #身份类别
+        pua.SFZYLD as sfzyld,  # 主要领导
+        pua.FMXX AS fmxx, # 负面信息
+        case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+        case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+        case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+        case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
+        FROM
+        oms_pub_apply pua
+        LEFT JOIN b01 b ON pua.b0100 = b.b0100
+        LEFT JOIN a01 a ON pua.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+        UNION
+        SELECT
+        pra.id AS id, # 业务id
 
-		pra.leader_batch_id as batchId, # 批次id
+        pra.leader_batch_id as batchId, # 批次id
 
-		pra.APPLY_STATUS as applyStatus,
+        pra.APPLY_STATUS as applyStatus,
 
-		b.b0101 AS department, 	# "部门名称"
+        b.b0101 AS department, 	# "部门名称"
 
-		a.a0101 AS userName, # 人员名称
+        a.a0101 AS userName, # 人员名称
 
-		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
+        DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
+        DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
-		"无" AS cfrw,    #出访任务
+        "无" AS cfrw,    #出访任务
 
-		'因私' AS businessType,  # 申请类型
-		'oms_pri_apply' as type, #申请类型 表的名称 约束性条件 会用到
+        '因私' AS businessType,  # 申请类型
+        'oms_pri_apply' as type, #申请类型 表的名称 约束性条件 会用到
 
-		"无" AS cgspdw,  # 审批单位
+        "无" AS cgspdw,  # 审批单位
 
-		IF (
-		a.A0104 NOT IN ('1', '2'),
-		'未知',
-		IF (a.A0104 = 1, '男', '女')
-		) AS sex,  # 性别
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
 
-		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
-		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+        pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
-		pra.POSTRANK AS job, #职务
+        pra.POSTRANK AS job, #职务
 
-		DATE_FORMAT(pra.APPLY_TIME,'%Y.%m.%d') AS applyTime, # 申请时间 == 申请日期
+        DATE_FORMAT(pra.APPLY_TIME,'%Y.%m.%d') AS applyTime, # 申请时间 == 申请日期
 
-		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+        pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d')AS declassificaEndTime, # 脱密期结束时间
+        DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
-		pra.IS_LUOGUAN AS sflg, # 是否裸官
+        pra.IS_LUOGUAN AS sflg, # 是否裸官
 
-		mrp.IDENTITY AS identity, #身份类别
+        mrp.IDENTITY AS identity, #身份类别
 
-		pra.IS_LEADERS as sfzyld, # 主要领导
+        pra.IS_LEADERS as sfzyld, # 主要领导
 
-		pra.NEGATIVE_INFO fmxx, # 负面信息
+        pra.NEGATIVE_INFO fmxx, # 负面信息
 
-		case when pra.SFZQJWYJ ='1' then '是' else '否' END as sfzqjwyj, # 征求纪委意见
-		case when pra.JWJL ='1' then '通过' else '不通过' END as jwjl, # 纪委意见
-		case when pra.CLSHSFTG ='1' then '通过' else '不通过' END as clshsftg, # 材料审核
-		'无'  as sfbg        # 是否变更
+        case when pra.SFZQJWYJ ='1' then '是' when (pra.SFZQJWYJ is null or pra.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+        case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+        case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+        '无'  as sfbg        # 是否变更
 
-		FROM
-		oms_pri_apply pra
-		LEFT JOIN b01 b ON pra.b0100 = b.b0100
-		LEFT JOIN a01 a ON pra.a0100 = a.a0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+        FROM
+        oms_pri_apply pra
+        LEFT JOIN b01 b ON pra.b0100 = b.b0100
+        LEFT JOIN a01 a ON pra.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
 
-		UNION
+        UNION
 
-		SELECT
-		prda.id AS id, # 业务id
+        SELECT
+        prda.id AS id, # 业务id
 
-		pra.leader_batch_id as batchId, # 批次id
+        prda.leader_batch_id as batchId, # 批次id
 
-		pra.APPLY_STATUS as applyStatus,
+        pra.APPLY_STATUS as applyStatus,
 
-		b.b0101 AS department, 	# "部门名称"
+        b.b0101 AS department, 	# "部门名称"
 
-		a.a0101 AS userName, # 人员名称
+        a.a0101 AS userName, # 人员名称
 
-		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
+        DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
+        DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
-		"无" AS cfrw,    #出访任务
+        "无" AS cfrw,    #出访任务
 
-		'延期' AS businessType,  # 申请类型
-		'oms_pri_delay_apply'   as   type,                  # 申请类型 表的名称 约束性条件 会用到
+        '延期' AS businessType,  # 申请类型
+        'oms_pri_delay_apply'   as   type,                  # 申请类型 表的名称 约束性条件 会用到
 
-		"无" AS cgspdw,  # 审批单位
+        "无" AS cgspdw,  # 审批单位
 
-		IF (
-		a.A0104 NOT IN ('1', '2'),
-		'未知',
-		IF (a.A0104 = 1, '男', '女')
-		) AS sex,  # 性别
+        IF (
+        a.A0104 NOT IN ('1', '2'),
+        '未知',
+        IF (a.A0104 = 1, '男', '女')
+        ) AS sex,  # 性别
 
-		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
-		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+        pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
-		pra.POSTRANK AS job, #职务
+        pra.POSTRANK AS job, #职务
 
-		DATE_FORMAT(pra.APPLY_TIME,'%Y.%m.%d') AS applyTime, # 申请时间 == 申请日期
+        DATE_FORMAT(pra.APPLY_TIME,'%Y.%m.%d') AS applyTime, # 申请时间 == 申请日期
 
-		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+        pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+        DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
-		pra.IS_LUOGUAN AS sflg, # 是否裸官
+        pra.IS_LUOGUAN AS sflg, # 是否裸官
 
-		mrp.IDENTITY AS identity, #身份类别
+        mrp.IDENTITY AS identity, #身份类别
 
-		pra.IS_LEADERS as sfzyld , # 主要领导
+        pra.IS_LEADERS as sfzyld , # 主要领导
 
-		pra.NEGATIVE_INFO fmxx, # 负面信息
+        pra.NEGATIVE_INFO fmxx, # 负面信息
 
-		case when prda.SFZQJWYJ ='1' then '是' else '否' END as sfzqjwyj, # 征求纪委意见
-		case when prda.JWJL ='1' then '通过' else '不通过' END as jwjl, # 纪委意见
-		case when prda.CLSHSFTG ='1' then '通过' else '不通过' END as clshsftg, # 材料审核
-		'无'  as sfbg        # 是否变更
-		FROM
-		oms_pri_delay_apply  prda
-		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
-		LEFT JOIN b01 b ON pra.b0100 = b.b0100
-		LEFT JOIN a01 a ON pra.a0100 = a.a0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
-		) temp
+        case when prda.SFZQJWYJ ='1' then '是' when (prda.SFZQJWYJ is null or prda.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+        case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+        case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+        '无'  as sfbg        # 是否变更
+        FROM
+        oms_pri_delay_apply  prda
+        LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+        LEFT JOIN b01 b ON pra.b0100 = b.b0100
+        LEFT JOIN a01 a ON pra.a0100 = a.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+        ) temp
 
-		<where>
+
+        <where>
 
 			applyStatus = #{applyStatus}   # 查询 所以 业务流程 走到 业务受理模块
 
@@ -246,12 +247,12 @@
 						SELECT
 							   pua.id AS id,   # 业务id
 							   pua.leader_batch_id as batchId, # 批次id
-						       pua.A0100 as a0100 , # 人员 id
+							   pua.A0100 as a0100 , # 人员 id
 							   pua.SQZT   as applyStatus,    # 业务 流程状态
 							   b.b0101 AS department,  # "部门名称"
 							   a.a0101 AS userName, # 人员名称
-							   pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
-							   pua.HGSJ AS returnTime,  #  回国时间 == 入境日期
+							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
+							   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
 							   pua.CFRW AS cfrw,  #  出访任务
 							   "因公" AS businessType,  # 申请类型
@@ -262,20 +263,20 @@
 								   '未知',
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
-							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
-							   pua.CREATE_TIME AS applyTime,   # 申请日期
+							   DATE_FORMAT(pua.CREATE_TIME,'%Y.%m.%d') AS applyTime,   # 申请日期
 							   pua.SMDJ AS secretLevel,  # 涉密等级
-							   pua.YTMJSSJ1 AS declassificaEndTime,  # 脱密结束日期
+							   DATE_FORMAT(pua.YTMJSSJ1,'%Y.%m.%d') AS declassificaEndTime,  # 脱密结束日期
 							   pua.SFLG AS sflg,  # 是否裸官
 							   mrp.IDENTITY AS identity, #身份类别
 							   pua.SFZYLD as sfzyld,  # 主要领导
 							   pua.FMXX AS fmxx, # 负面信息
-							   pua.SFZQJWYJ    , # 征求意见
-							   pua.JWJL        , # 纪委意见
-							   pua.CLSHSFTG    , # 材料审核
-							   pua.SFBG        # 是否变更
+							   case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+							   case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+							   case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
 						FROM
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
@@ -295,9 +296,9 @@
 
 							   a.a0101 AS userName, # 人员名称
 
-							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -314,7 +315,7 @@
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
 
-							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -324,7 +325,7 @@
 
 							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+							   DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 							   pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -333,10 +334,10 @@
 							   pra.IS_LEADERS as sfzyld, # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   pra.SFZQJWYJ  as sfzqjwyj   , # 征求意见
-							   pra.JWJL   as jwjl     , # 纪委意见
-							   pra.CLSHSFTG as clshsftg    , # 材料审核
-							   '是否变更'  as sfbg      # 是否变更
+							   case when pra.SFZQJWYJ ='1' then '是' when (pra.SFZQJWYJ is null or pra.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+							   case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+							   case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   '无'  as sfbg        # 是否变更
 						FROM
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
@@ -358,9 +359,9 @@
 
 							   a.a0101 AS userName, # 人员名称
 
-							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -377,7 +378,7 @@
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
 
-							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -387,7 +388,7 @@
 
 							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+							   DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 							   pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -396,10 +397,10 @@
 							   pra.IS_LEADERS as sfzyld , # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   prda.SFZQJWYJ  as sfzqjwyj   , # 征求意见
-							   prda.JWJL      as jwjl  , # 纪委意见
-							   prda.CLSHSFTG  as clshsftg  , # 材料审核
-							   '是否变更'      as sfbg       # 是否变更
+							   case when prda.SFZQJWYJ ='1' then '是' when (prda.SFZQJWYJ is null or prda.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+							   case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+							   case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   '无'  as sfbg        # 是否变更
 
 						FROM
 							 oms_pri_delay_apply  prda
@@ -576,7 +577,7 @@
 		'未知',
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
-		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 		pua.JOB AS job,   #职务
 		"暂无" AS applyTime,   # 申请日期
@@ -612,11 +613,11 @@
 
 		a.a0101 AS userName, # 人员名称
 
-		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
 		TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
 
-		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -632,7 +633,7 @@
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
 
-		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -642,7 +643,7 @@
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -677,10 +678,10 @@
 
 		a.a0101 AS userName, # 人员名称
 
-		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 		TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
 
-		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -696,7 +697,7 @@
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
 
-		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -706,7 +707,7 @@
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -759,7 +760,7 @@
 								   '未知',
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
-							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
 							   "暂无" AS applyTime,   # 申请日期
@@ -795,11 +796,11 @@
 
 							   a.a0101 AS userName, # 人员名称
 
-							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
 							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
 
-							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -815,7 +816,7 @@
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
 
-							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -825,7 +826,7 @@
 
 							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+							   DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 							   pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -860,10 +861,10 @@
 
 							   a.a0101 AS userName, # 人员名称
 
-							   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
 
-							   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -879,7 +880,7 @@
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
 
-							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 							   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -889,7 +890,7 @@
 
 							   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-							   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+							   DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 							   pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -931,9 +932,9 @@
 
 	 a.a0101 AS userName, # 人员名称
 
-	 pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+	 DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-	 pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+	 DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 	 pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -949,7 +950,7 @@
 		   IF (a.A0104 = 1, '男', '女')
 			   ) AS sex,  # 性别
 
-	 mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+	 DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -959,7 +960,7 @@
 
 	 pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-	 pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+	 DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 	 pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1029,7 +1030,7 @@
 		'未知',
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
-		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 		pua.JOB AS job,   #职务
 		"暂无" AS applyTime,   # 申请日期
@@ -1098,9 +1099,9 @@
 
 		a.a0101 AS userName, # 人员名称
 
-		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -1116,7 +1117,7 @@
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
 
-		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1126,7 +1127,7 @@
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1240,7 +1241,7 @@
 								   '未知',
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
-							   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 								-- 			 mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
 							   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
@@ -1276,7 +1277,7 @@
 								   IF (a.A0104 = 1, '男', '女')
 									   ) AS sex,  # 性别
 
-							   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 								-- 	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1321,7 +1322,7 @@
 # 		'未知',
 # 		IF (a.A0104 = 1, '男', '女')
 # 		) AS sex,  # 性别
-# 		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+# 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 # 		mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
 # 		pua.JOB AS job,   #职务
 # 		"暂无" AS applyTime,   # 申请日期
@@ -1371,7 +1372,7 @@
 # 		IF (a.A0104 = 1, '男', '女')
 # 		) AS sex,  # 性别
 #
-# 		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+# 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 #
 # 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 #
@@ -1432,7 +1433,7 @@
 # 		IF (a.A0104 = 1, '男', '女')
 # 		) AS sex,  # 性别
 #
-# 		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+# 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 #
 # 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 #
@@ -1487,7 +1488,7 @@
 		   '未知',
 		   IF (a.A0104 = 1, '男', '女')
 		   ) AS sex,  # 性别
-		   mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		   mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
 		   pua.JOB AS job,   #职务
 		   "暂无" AS applyTime,   # 申请日期
@@ -1535,15 +1536,15 @@
 		   IF (a.A0104 = 1, '男', '女')
 		   ) AS sex,  # 性别
 
-		   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
 		   pra.POSTRANK AS job, #职务
 
-		   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -1561,7 +1562,7 @@
 
 		   pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		   pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		   DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		   pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1609,7 +1610,7 @@
 		   IF (a.A0104 = 1, '男', '女')
 		   ) AS sex,  # 性别
 
-		   mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		   pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1625,9 +1626,9 @@
 		   ( case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else  '暂无数据'  end ) as jiweiOpinion, # 纪委意见
 		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
 
-		   pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		   pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -1676,7 +1677,7 @@
         '未知',
         IF (a.A0104 = 1, '男', '女')
         ) AS sex,  # 性别
-        mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
         mrp.POLITICAL_AFFINAME AS politicalAffi,  # 政治面貌
         pua.JOB AS job,   #职务
         "暂无" AS applyTime,   # 申请日期
@@ -1703,9 +1704,9 @@
 
         a.a0101 AS userName, # 人员名称
 
-        pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+        DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-        pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+        DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
         pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
@@ -1726,7 +1727,7 @@
         IF (a.A0104 = 1, '男', '女')
         ) AS sex,  # 性别
 
-        mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
         pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1736,7 +1737,7 @@
 
         pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-        pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+        DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
         pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1765,9 +1766,9 @@
 
         a.a0101 AS userName, # 人员名称
 
-        pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+        DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-        pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+        DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
         pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
 
@@ -1789,7 +1790,7 @@
         IF (a.A0104 = 1, '男', '女')
         ) AS sex,  # 性别
 
-        mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
         pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1799,7 +1800,7 @@
 
         pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-        pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+        DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
         pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1850,7 +1851,7 @@
 		'未知',
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
-		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 		pua.JOB AS job,   #职务
 		"暂无" AS applyTime,   # 申请日期
@@ -1891,9 +1892,9 @@
 
 		a.a0101 AS userName, # 人员名称
 
-		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
 
@@ -1909,7 +1910,7 @@
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
 
-		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1919,7 +1920,7 @@
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -1962,9 +1963,9 @@
 
 		a.a0101 AS userName, # 人员名称
 
-		pra.ABROAD_TIME AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-		pra.RETURN_TIME AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
 		pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
 
@@ -1980,7 +1981,7 @@
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
 
-		mrp.BIRTH_DATE AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
@@ -1990,7 +1991,7 @@
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-		pra.DECLASSIFICA_ENDTIME AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
 		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
@@ -2053,7 +2054,7 @@
 		'未知',
 		IF (a.A0104 = 1, '男', '女')
 		) AS sex,  # 性别
-		mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 
 		pua.JOB AS job,   #职务
 
