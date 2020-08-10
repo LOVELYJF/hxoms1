@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
@@ -85,27 +83,31 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public Object insertPerson(String a0100) {
-        return null;
+        OmsPubApply pubApply = new OmsPubApply();
+        pubApply.setA0100(a0100);
+        return pubApplyMapper.insert(pubApply);
     }
 
     @Override
-    public Object backoutPerson(String id) {
-        return null;
+    public void backoutPerson(String id) {
+        pubApplyMapper.deletePubApplyById(id);
     }
 
     @Override
-    public Object getPersonDetailById(String id) {
-        return null;
+    public OmsPubApply getPersonDetailById(String id) {
+        return pubApplyMapper.selectById(id);
     }
 
     @Override
     public Object sendTask(String id) {
-        return null;
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        pubGroup.setSqzt(3);
+        return pubGroupMapper.updatePubGroup(pubGroup);
     }
 
     @Override
-    public Object getFlowDetail(String id) {
-        return null;
+    public List<Map<String, String>>  getFlowDetail(String id) {
+        return pubGroupMapper.getFlowDetail(id);
     }
 
     @Override
@@ -114,8 +116,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object getNumByStatus(String type) {
-        return null;
+    public List<Map<String,String>> getNumByStatus(String bazt) {
+        return pubGroupMapper.getNumByStatus(bazt);
     }
 
     /**
