@@ -5,6 +5,7 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -123,6 +124,13 @@ public class LeaderSupervisionUntil {
 
                         }
 
+                    }else if(obj instanceof OmsJiweiOpinionVo){
+
+                        if(((OmsJiweiOpinionVo) obj).getBussinessTypeAndIdVos()==null && ((OmsJiweiOpinionVo) obj).getBussinessTypeAndIdVos().size()<=0){
+
+                            throw new CustomMessageException("参数为空，请仔细检查");
+
+                        }
                     }
 
                     else if(obj instanceof List ){

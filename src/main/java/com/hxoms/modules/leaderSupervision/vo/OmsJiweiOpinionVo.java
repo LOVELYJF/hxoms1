@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @authore:wjf
@@ -44,21 +45,12 @@ public class OmsJiweiOpinionVo {
    //  FieldDescription="备注")
     private String remark;
 
+    private List<BussinessTypeAndIdVo> bussinessTypeAndIdVos; // 封装 业务 id 与 业务类型
+
     public OmsJiweiOpinionVo() {
     }
 
-    public OmsJiweiOpinionVo(String[] bussinessId, String[] bussinessName, String id, String feedbackType, String opinion, String feedbackUser, String telephoneNumber, String feedbackVerdict, Date feedbackDate, String remark) {
-        this.bussinessId = bussinessId;
-        this.bussinessName = bussinessName;
-        this.id = id;
-        this.feedbackType = feedbackType;
-        this.opinion = opinion;
-        this.feedbackUser = feedbackUser;
-        this.telephoneNumber = telephoneNumber;
-        this.feedbackVerdict = feedbackVerdict;
-        this.feedbackDate = feedbackDate;
-        this.remark = remark;
-    }
+
 
     public String[] getBussinessId() {
         return bussinessId;
@@ -138,5 +130,13 @@ public class OmsJiweiOpinionVo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<BussinessTypeAndIdVo> getBussinessTypeAndIdVos() {
+        return bussinessTypeAndIdVos;
+    }
+
+    public void setBussinessTypeAndIdVos(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos) {
+        this.bussinessTypeAndIdVos = bussinessTypeAndIdVos;
     }
 }

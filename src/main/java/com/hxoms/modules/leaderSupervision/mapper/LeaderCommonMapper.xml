@@ -524,7 +524,7 @@
 		select
 		       leb.id as id, -- 批次id
 		       leb.name as name , -- 批次号
-			   leb.accept_date as acceptDate, -- 受理时间
+		       DATE_FORMAT(leb.accept_date,'%Y.%m.%d') as acceptDate, -- 受理时间
 			   leb.create_user as createUser, -- 创建人 ==？受理人
 			   b.statusName as status,    --   状态
 		      if(leb.master_status <![CDATA[<=]]> 20,'edit','noedit') as isdelete -- edit 可编辑，

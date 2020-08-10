@@ -156,9 +156,9 @@ public class  LeaderSupervisionController {
      * **/
 
     @PostMapping("/exportJiweiExcel")
-    public void exportJiweiExcel(AuditOpinionVo auditOpinionVo , HttpServletResponse response){
+    public void exportJiweiExcel(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
 
-            leaderCommonService.updateBussinessFiledsByJiweiExport(auditOpinionVo);
+            leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
 
         try {
             HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport();
