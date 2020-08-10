@@ -384,7 +384,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
         String realOpinion ="";
 
@@ -448,7 +448,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
@@ -521,7 +521,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
@@ -624,7 +624,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply();
+        List<Map>   users = leaderCommonQueryMapper.selectJiweiWriteApply();
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
@@ -644,7 +644,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
             // 征求纪委 意见 时间 ，  选中导出的 就是 征求 过的 所以 该 字段 值 置为 1
             String setSql = " set SCZQJWYJSJ = DATE_FORMAT(now(),'%Y.%m.%d') , SFZQJWYJ = 1 " ;
 
-            String whereCondition = " where id = " + bussinessTypeAndIdVos.get(i).getBussinessId();
+            String whereCondition = " where id = '" + bussinessTypeAndIdVos.get(i).getBussinessId()+"'";
+
+            log.info("sql ="+updateSql+setSql+whereCondition);
 
             SqlVo instance = SqlVo.getInstance(updateSql+setSql+whereCondition);
             selectMapper.update(instance);
@@ -660,10 +662,10 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
     public void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
 
-        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo.getBussinessId());
+        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
 
         // 点击 这个 按就 就保存 纪委意见 表，以及 保存 纪委意见记录 与 业务表之间的关系
-        for(int i=0;i<omsJiweiOpinionVo.getBussinessId().length;i++){
+        for(int i=0;i<omsJiweiOpinionVo.getBussinessTypeAndIdVos().size();i++){
 
 //            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(omsJiweiOpinionVo.getBussinessName()[i]);
 
@@ -673,7 +675,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //            List<LinkedHashMap<String, Object>> list = selectMapper.select(instance);
 
-             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(omsJiweiOpinionVo.getBussinessId()[i]);
+             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(omsJiweiOpinionVo.getBussinessTypeAndIdVos().get(i).getBussinessId());
 
             if(omsJiweiOpinion==null){
                   // 如果 该条  业务申请 记录 的 纪委id 为空
