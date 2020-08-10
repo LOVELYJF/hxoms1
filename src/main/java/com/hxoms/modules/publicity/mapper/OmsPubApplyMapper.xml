@@ -469,5 +469,76 @@
         </where>
     </select>
 
+    <insert id="insertPubApplyList">
+        insert into oms_pub_apply(
+            ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ,
+            NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ, SDGJ, TLSJ, CFRW,
+            CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ,
+            SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY,
+            SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
+            BAH, SFXD
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.a0100},
+            #{item.b0100},
+            #{item.yspId},
+            #{item.yspdwId},
+            #{item.age},
+            #{item.politicalAff},
+            #{item.job},
+            #{item.health},
+            #{item.sfsmry},
+            #{item.smdj},
+            #{item.nssj},
+            #{item.ysmdj1},
+            #{item.ytmjssj1},
+            #{item.ysmdj2},
+            #{item.ytmjssj2},
+            #{item.ztdw},
+            #{item.ztnrzw},
+            #{item.cgsj},
+            #{item.hgsj},
+            #{item.sdgj},
+            #{item.tlsj},
+            #{item.cfrw},
+            #{item.cfsy},
+            #{item.cgspdw},
+            #{item.pwh},
+            #{item.zypwh},
+            #{item.zjcgqk},
+            #{item.sjcgsj},
+            #{item.sjhgsj},
+            #{item.nfgs},
+            #{item.sfysp},
+            #{item.sfzqjwyj},
+            #{item.sczqjwyjsj},
+            #{item.sfbczqjwyj},
+            #{item.jwjl},
+            #{item.clshsftg},
+            #{item.jdcjl},
+            #{item.sfzyld},
+            #{item.sflg},
+            #{item.poznsjd},
+            #{item.fmxx},
+            #{item.dwjsxs},
+            #{item.zzjl},
+            #{item.cxyy},
+            #{item.sftsry},
+            #{item.sfzb},
+            #{item.sfbg},
+            #{item.sqzt},
+            #{item.createUser},
+            #{item.createTime},
+            #{item.modifyUser},
+            #{item.modifyTime},
+            #{item.sortId},
+            #{item.bah},
+            #{item.sfxd}
+            )
+        </foreach>
+    </insert>
 
 </mapper>

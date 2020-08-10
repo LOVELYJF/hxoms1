@@ -10,6 +10,7 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
+import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -31,6 +32,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Autowired
     private OmsPubGroupMapper pubGroupMapper;
 
+    private OmsPubApplyMapper pubApplyMapper;
+
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Map<Object,String> param) throws ParseException {
         List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
@@ -50,7 +53,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubGroup.setCreateUser(userInfo.getId());
                 pubGroup.setCreateTime(new Date());
             }
-            return pubGroupMapper.insertPubGroup(pubGroup);
+            pubGroupMapper.insertPubGroup(pubGroup);
+            pubApplyMapper.insertPubApplyList(personList);
+            return null;
         }else{
             return "未选择备案人员";
         }
