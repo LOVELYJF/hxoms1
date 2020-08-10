@@ -125,7 +125,12 @@ public class OmsPubGroupController {
      */
     @PostMapping("/backoutPerson")
     public Result backoutPerson(String id) {
-        return Result.success(pubGroupService.backoutPerson(id));
+        try {
+            pubGroupService.backoutPerson(id);
+            return Result.success();
+        }catch (Exception e){
+            return Result.error("系统错误！");
+        }
     }
 
     /**

@@ -25,4 +25,6 @@ public interface OmsPubGroupMapper extends BaseMapper<OmsPubGroupPreApproval> {
     Object deletePubGroup(String id);
     //获取备案步骤树
     List<Map<String, String>> getNumByStatus(String bazt);
+    //获取流程节点详情
+    List<Map<String, String>>  getFlowDetail(String id);
 }

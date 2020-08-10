@@ -32,9 +32,9 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //添加人员
     Object insertPerson(String a0100);
     //撤销人员
-    Object backoutPerson(String id);
+    void backoutPerson(String id);
     //查看详情
-    Object getPersonDetailById(String id);
+    OmsPubApply getPersonDetailById(String id);
     //递送任务
     Object sendTask(String id);
     //查看流程详情
