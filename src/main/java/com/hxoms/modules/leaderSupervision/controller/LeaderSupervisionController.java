@@ -118,7 +118,7 @@ public class  LeaderSupervisionController {
      * 征求纪委意见 查询页面
      *
      * **/
-
+    @GetMapping("/selectjiweiBusinessUser")
     public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
