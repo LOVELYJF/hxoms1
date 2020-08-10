@@ -302,6 +302,8 @@ public class OmsPubApplyController {
         return Result.success(info);
     }
 
+    //撤销干教申请
+    
     /**
      * 功能描述: <br>
      * 〈根据ID删除干教信息〉

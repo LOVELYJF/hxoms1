@@ -572,26 +572,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (OmsPubGroupPreApproval != null && OmsPubGroupPreApproval.size()>0){
             for (OmsPubGroupPreApprovalVO omsPubGroupPreApproval:OmsPubGroupPreApproval) {
                 String id = omsPubGroupPreApproval.getId();
-                List<PersonInfoVO> personInfoVOS = new ArrayList<PersonInfoVO>();
                 List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
-                //getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
-                for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-                    PersonInfoVO personInfoVO = new PersonInfoVO();
-                    //单位名称
-                    personInfoVO.setB0101(omsPubApplyVO.getB0101());
-                    //出生日期
-                    personInfoVO.setBirthDate(omsPubApplyVO.getBirthDate());
-                    //职务
-                    personInfoVO.setJob(omsPubApplyVO.getJob());
-                    //姓名
-                    personInfoVO.setName(omsPubApplyVO.getName());
-                    //性别
-                    personInfoVO.setSex(omsPubApplyVO.getSex());
-                    //状态
-                    personInfoVO.setStatus(omsPubApplyVO.getStatus());
-                    personInfoVOS.add(personInfoVO);
-                }
-                omsPubGroupPreApproval.setPersonInfoVOS(personInfoVOS);
+                omsPubGroupPreApproval.setOmsPubApplyVOS(omsPubApplyVOS);
             }
         }
         PageInfo info = new PageInfo(OmsPubGroupPreApproval);
@@ -610,29 +592,10 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        //OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = new OmsPubGroupPreApprovalVO();
         OmsPubGroupPreApprovalVO omsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
         if (omsPubGroupPreApproval != null) {
-            List<PersonInfoVO> personInfoVOS = new ArrayList<PersonInfoVO>();
             List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
-            //getPersonInfoVO(personInfoVOS, omsPubApplyVOS);
-            for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-                PersonInfoVO personInfoVO = new PersonInfoVO();
-                //单位名称
-                personInfoVO.setB0101(omsPubApplyVO.getB0101());
-                //出生日期
-                personInfoVO.setBirthDate(omsPubApplyVO.getBirthDate());
-                //职务
-                personInfoVO.setJob(omsPubApplyVO.getJob());
-                //姓名
-                personInfoVO.setName(omsPubApplyVO.getName());
-                //性别
-                personInfoVO.setSex(omsPubApplyVO.getSex());
-                //状态
-                personInfoVO.setStatus(omsPubApplyVO.getStatus());
-                personInfoVOS.add(personInfoVO);
-            }
-            omsPubGroupPreApproval.setPersonInfoVOS(personInfoVOS);
+            omsPubGroupPreApproval.setOmsPubApplyVOS(omsPubApplyVOS);
         }else {
             throw new CustomMessageException("数据为空!");
         }
