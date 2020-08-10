@@ -17,7 +17,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     Object selectPersonAndAllowRevoke(OmsRegProcpersoninfo msRegProcpersonInfo);
 
-    List<OmsRegProcpersoninfo> selectA0100ByMap(Map<String, Object> map);
+    OmsRegProcpersoninfo selectA0100ByMap(Map<String, Object> map);
 
     List<OmsRegProcpersoninfo> selectProcpersoninfoList(OmsRegProcpersoninfo info);
 

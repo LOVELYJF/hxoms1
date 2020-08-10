@@ -24,7 +24,7 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //删除涉密人员信息
     Object deleteSmrPersonInfo(String id);
     //上传涉密人员统计表
-    List<OmsSmrPersonInfo> uploadSmrExcel(MultipartFile file, String importYear, String b0100);
+    Map<String, Object> uploadSmrExcel(MultipartFile file, String importYear, String b0100);
     //导出涉密人员信息列表
     boolean exportSmrPersonInfo( List<String> idList, OmsSmrPersonInfo smrPersonInfo, HttpServletResponse response);
     //获取漏报涉密人员机构
