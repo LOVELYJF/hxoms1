@@ -75,6 +75,13 @@ public class LeaderQueryconditions {
         return  Result.success(mapList);
     }
 
+    public Result materialReviewNextStep(String applyId,String tableCode){
+
+        leaderDetailProcessingService.materialReviewNextStep(applyId,tableCode);
+
+        return Result.success();
+
+    }
 
 
 

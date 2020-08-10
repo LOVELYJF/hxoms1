@@ -33,6 +33,11 @@ public interface LeaderCommonService {
 
     PageInfo selectInstructionsVerify(LeaderSupervisionVo leaderSupervisionVo);
 
+    /**
+     * 征求纪委意见 查询
+     *
+     * **/
+
     PageInfo selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
     PageInfo selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo);

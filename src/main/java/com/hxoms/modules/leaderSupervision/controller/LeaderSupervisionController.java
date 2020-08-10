@@ -93,8 +93,8 @@ public class  LeaderSupervisionController {
     /**
      *(选择人员)  纳入批次
      * **/
-    @GetMapping("/leaderBatchAddApplyUser")
-    public Result leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo){
+    @PostMapping("/leaderBatchAddApplyUser")
+    public Result leaderBatchAddApplyUser(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
 
         leaderCommonService.leaderBatchAddApplyUser(leaderSupervisionVo);
@@ -112,6 +112,18 @@ public class  LeaderSupervisionController {
 
         return Result.success();
 
+    }
+
+    /**
+     * 征求纪委意见 查询页面
+     *
+     * **/
+
+    public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
+
+        PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
+
+        return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
 

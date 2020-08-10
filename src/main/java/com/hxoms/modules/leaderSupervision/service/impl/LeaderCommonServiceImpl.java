@@ -159,8 +159,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo.getLeaderBtachId(),
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList())
+                leaderSupervisionVo
 
         );
         //纳入的批次 所选择的人

@@ -145,7 +145,7 @@
 
         prda.leader_batch_id as batchId, # 批次id
 
-        pra.APPLY_STATUS as applyStatus,
+		prda.APPLY_STATUS as applyStatus,
 
         b.b0101 AS department, 	# "部门名称"
 
@@ -206,6 +206,7 @@
         <where>
 
 			applyStatus = #{applyStatus}   # 查询 所以 业务流程 走到 业务受理模块
+            and (batchId is null or batchId = '')
 
 		<if test="leaderBtachId !=null and leaderBtachId !='' ">
 
@@ -562,7 +563,7 @@
 		SELECT
 		pua.id AS id,   # 业务id
 		pua.leader_batch_id as batchId, # 批次id
-
+		pua.SQZT   as applyStatus,    # 业务 流程状态
 		b.b0101 AS department,  # "部门名称"
 		a.a0101 AS userName, # 人员名称
 		pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
@@ -608,7 +609,7 @@
 
 		pra.leader_batch_id as batchId, # 批次id
 
-
+		pra.APPLY_STATUS as applyStatus,
 		b.b0101 AS department, 	# "部门名称"
 
 		a.a0101 AS userName, # 人员名称
@@ -670,10 +671,11 @@
 		UNION
 
 		SELECT
-		pra.id AS id, # 业务id
+	    prda.id AS id, # 业务id
 
-		pra.leader_batch_id as batchId, # 批次id
+		prda.leader_batch_id as batchId, # 批次id
 
+		prda.APPLY_STATUS as applyStatus,
 		b.b0101 AS department, 	# "部门名称"
 
 		a.a0101 AS userName, # 人员名称
@@ -733,7 +735,9 @@
 		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
 		) temp
 
-		where temp.clshsftg <![CDATA[ <> ]]> ''
+	#	where temp.clshsftg <![CDATA[ <> ]]> ''
+
+		where (temp.batchId is not null or temp.batchId !='') and temp.applyStatus in ('20','21 ')
 
 
 	</select>
