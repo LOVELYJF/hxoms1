@@ -43,7 +43,7 @@ public interface LeaderCommonService {
     PageInfo selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
 
-    void updateBussinessFiledsByJiweiExport(AuditOpinionVo auditOpinionVo);
+    void updateBussinessFiledsByJiweiExport(LeaderSupervisionVo leaderSupervisionVo);
 
 
 }

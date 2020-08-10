@@ -118,7 +118,7 @@ public class  LeaderSupervisionController {
      * 征求纪委意见 查询页面
      *
      * **/
-
+    @GetMapping("/selectjiweiBusinessUser")
     public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
@@ -156,9 +156,9 @@ public class  LeaderSupervisionController {
      * **/
 
     @PostMapping("/exportJiweiExcel")
-    public void exportJiweiExcel(AuditOpinionVo auditOpinionVo , HttpServletResponse response){
+    public void exportJiweiExcel(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
 
-            leaderCommonService.updateBussinessFiledsByJiweiExport(auditOpinionVo);
+            leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
 
         try {
             HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport();
