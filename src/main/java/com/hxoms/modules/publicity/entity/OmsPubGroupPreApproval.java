@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_pub_group_pre_approval", TableDescription="因公出国团体预审批申请表")
 public class OmsPubGroupPreApproval {
@@ -22,6 +21,9 @@ public class OmsPubGroupPreApproval {
 
     @ColumnAnnotation(FieldName = "TZMC",   FieldDescription="团组名称")
     private String tzmc;
+
+    @ColumnAnnotation(FieldName = "TZCY",   FieldDescription="团组成员")
+    private Integer tzcy;
 
     @ColumnAnnotation(FieldName = "TZFZR",   FieldDescription="团组负责人")
     private String tzfzr;
@@ -72,8 +74,9 @@ public class OmsPubGroupPreApproval {
     @ColumnAnnotation(FieldName = "FYLYKZXM",   FieldDescription="费用来源开支项目")
     private String fylykzxm;
 
-    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：上传）")
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源")
     private String source;
+
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     private String createUser;
@@ -119,6 +122,14 @@ public class OmsPubGroupPreApproval {
 
     public void setTzmc(String tzmc) {
         this.tzmc = tzmc == null ? null : tzmc.trim();
+    }
+
+    public Integer getTzcy() {
+        return tzcy;
+    }
+
+    public void setTzcy(Integer tzcy) {
+        this.tzcy = tzcy;
     }
 
     public String getTzfzr() {
@@ -246,7 +257,7 @@ public class OmsPubGroupPreApproval {
     }
 
     public void setSource(String source) {
-        this.source = source == null ? null : source.trim();
+        this.source = source;
     }
 
     public String getCreateUser() {

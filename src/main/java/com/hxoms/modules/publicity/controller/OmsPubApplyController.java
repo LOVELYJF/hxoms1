@@ -302,8 +302,19 @@ public class OmsPubApplyController {
         return Result.success(info);
     }
 
-    //撤销干教申请
-    
+   /**
+    * 功能描述: <br>
+    * 〈撤销整个干教申请〉
+    * @Param: [id, cxyy]
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: 李逍遥
+    * @Date: 2020/8/10 10:09
+    */
+    @PostMapping("/repealGJ")
+    public Result repealGJ(String id,String cxyy){
+        omsPubApplyService.repealGJ(id,cxyy);
+        return Result.success();
+    }
     /**
      * 功能描述: <br>
      * 〈根据ID删除干教信息〉

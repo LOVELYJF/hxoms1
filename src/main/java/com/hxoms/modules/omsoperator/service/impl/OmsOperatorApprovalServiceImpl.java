@@ -11,6 +11,7 @@ import com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper;
 import com.hxoms.modules.omsoperator.service.OmsOperatorApprovalService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.mapper.CfUserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +88,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      */
     @Override
     public CfUser getOperatorByIdCard(String idnumber) {
-        if (idnumber == null || "".equals(idnumber)){
+        if (StringUtils.isBlank(idnumber)){
             throw new CustomMessageException("身份证号为空!");
         }
         CfUser operator = cfUserMapper.getOperatorApprovalByIdCard(idnumber,"",Constants.USER_TYPES[6]);
@@ -140,7 +141,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void refuseToApproval(String operatorId) {
-        if (operatorId == null || "".equals(operatorId)){
+        if (StringUtils.isBlank(operatorId)){
             throw new CustomMessageException("经办人为空!");
         }
         //点击【不通过】按钮，将经办人申请的状态置为“拒绝”。
@@ -172,7 +173,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void agreeToApprovalById(String operatorId) {
-        if (operatorId == null || "".equals(operatorId)){
+        if (StringUtils.isBlank(operatorId)){
             throw new CustomMessageException("参数为空!");
         }
         //获取登录用户信息

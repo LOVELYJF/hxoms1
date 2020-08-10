@@ -196,10 +196,10 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     @Override
     public String revokeOperator(String operatorId,String handoverId) {
         String msc = "";
-        if (operatorId == null || "".equals(operatorId)) {
+        if (StringUtils.isBlank(operatorId)) {
             throw new CustomMessageException("请先选择经办人!");
         }
-        if (handoverId == null || "".equals(handoverId)){
+        if (StringUtils.isBlank(handoverId)){
             throw new CustomMessageException("接手人不能为空!");
         }
         //获取登录用户信息
@@ -411,7 +411,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public OmsOperatorApproval getOperatorApprovalByUid(String userId) {
-        if (userId == null || "".equals(userId)) {
+        if (StringUtils.isBlank(userId)) {
             throw new CustomMessageException("参数为空！");
         }
         OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(userId);
@@ -428,7 +428,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public List<OmsOperatorHandoverSubformVO>  getOperatorHandoverByUid(String userId) {
-        if (userId == null || "".equals(userId)) {
+        if (StringUtils.isBlank(userId)) {
             throw new CustomMessageException("参数为空！");
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByUserId(userId);
@@ -618,7 +618,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public List<OmsOperatorHandoverSubformVO> getOperatorHandoverByOperatorId(String operatorId) {
-        if (operatorId == null || "".equals(operatorId)) {
+        if (StringUtils.isBlank(operatorId)) {
             throw new CustomMessageException("参数为空！");
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByOperatorId(operatorId,String.valueOf(Constants.handover_business[3]));
@@ -663,7 +663,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public List<OmsOperatorHandoverSubformVO> getOperatorHandoverByhandoverId(String handoverId) {
-        if (handoverId == null || "".equals(handoverId)) {
+        if (StringUtils.isBlank(handoverId)) {
             throw new CustomMessageException("参数为空！");
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByHandoverId(handoverId,String.valueOf(Constants.handover_business[4]));
@@ -682,7 +682,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void nextByHandover(String handoverformid) {
-        if (handoverformid == null || "".equals(handoverformid)){
+        if (StringUtils.isBlank(handoverformid)){
             throw new CustomMessageException("参数为空!");
         }
         //更新交接主表状态
@@ -704,7 +704,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public List<CountStatusResult> selectCountStatusByHandover(String orgId) {
-        if (orgId == null || "".equals(orgId)){
+        if (StringUtils.isBlank(orgId)){
             //获取当前登录人
             UserInfo loginUser = UserInfoUtil.getUserInfo();
             orgId = loginUser.getOrgId();
@@ -729,7 +729,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        if (orgId == null || "".equals(orgId)){
+        if (StringUtils.isBlank(orgId)){
             //获取登录用户信息
             UserInfo loginUser = UserInfoUtil.getUserInfo();
             orgId = loginUser.getOrgId();
@@ -768,7 +768,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void confirmDelivery(String handoverformid) {
-        if (handoverformid == null || "".equals(handoverformid)){
+        if (StringUtils.isBlank(handoverformid)){
             throw new CustomMessageException("参数为空!");
         }
         //获取当前登录人
@@ -796,7 +796,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public void suspendHandover(String handoverformid) {
-        if (handoverformid == null || "".equals(handoverformid)){
+        if (StringUtils.isBlank(handoverformid)){
             throw new CustomMessageException("参数为空!");
         }
         //获取当前登录人

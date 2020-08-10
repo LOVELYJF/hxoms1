@@ -78,9 +78,8 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/uploadSmrExcel")
     public Result uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
         try{
-
-            List<OmsSmrPersonInfo> result = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
-            return Result.success(result);
+            Map<String, Object> resultMap = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
+            return Result.success(resultMap);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导入失败");
