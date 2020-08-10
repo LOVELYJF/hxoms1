@@ -3,9 +3,6 @@ package com.hxoms.modules.omsregcadre.entity;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hxoms.common.hxannotation.ColumnAnnotation;
-import com.hxoms.common.hxannotation.IdAnnotation;
-import com.hxoms.common.hxannotation.TableAnnotation;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -43,8 +40,7 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     @ExcelProperty(value = "人事主管单位", index = 13)
     private String personManager;
     @ExcelProperty(value = "身份情况", index = 14)
-    private String identityCode;
-
+    private String identity;
     @ExcelProperty(value = "涉密等级", index = 15)
     private String secretLevel;
     @ExcelProperty(value = "脱密期开始时间", index = 16)
@@ -182,12 +178,12 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
         this.personManager = personManager;
     }
 
-    public String getIdentityCode() {
-        return identityCode;
+    public String getIdentity() {
+        return identity;
     }
 
-    public void setIdentityCode(String identityCode) {
-        this.identityCode = identityCode;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     public String getSecretLevel() {
@@ -230,16 +226,12 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
         this.licenceIdentity = licenceIdentity;
     }
 
-    public String getNf() {
-        return nf;
-    }
+    public String getNf() { return nf.equals(1)?"否":"是"; }
 
-    public void setNf(String nf) {
-        this.nf = nf;
-    }
+    public void setNf(String nf) { this.nf = nf; }
 
     public String getFjgnf() {
-        return fjgnf;
+        return fjgnf.equals(1)?"否":"是";
     }
 
     public void setFjgnf(String fjgnf) {
@@ -247,7 +239,7 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     }
 
     public String getXrxgw() {
-        return xrxgw;
+        return xrxgw.equals(1)?"否":"是";
     }
 
     public void setXrxgw(String xrxgw) {
@@ -255,7 +247,7 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     }
 
     public String getLqgz() {
-        return lqgz;
+        return lqgz.equals(1)?"否":"是";
     }
 
     public void setLqgz(String lqgz) {
@@ -263,7 +255,7 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     }
 
     public String getDqgz() {
-        return dqgz;
+        return dqgz.equals(1)?"否":"是";
     }
 
     public void setDqgz(String dqgz) {

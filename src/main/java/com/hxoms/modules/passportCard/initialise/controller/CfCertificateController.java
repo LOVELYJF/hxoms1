@@ -2,9 +2,10 @@ package com.hxoms.modules.passportCard.initialise.controller;
 
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.counterReceive.service.CfCheckValidService;
 import com.hxoms.modules.passportCard.counterReceive.entity.parameterEntity.CfCheckValidParam;
+import com.hxoms.modules.passportCard.counterReceive.service.CfCheckValidService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateReminderParam;
@@ -28,14 +29,53 @@ public class CfCertificateController {
 
 
     /**
-     * 导入Excel人员名单
+     * @Desc: 初始化证照，导入公安的证照信息
+     * @Author: wangyunquan
+     * @Param: [multipartFile, dataSource]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/7/24
      */
     @PostMapping("/excelToDB")
-    public Result personExcelToDB(@RequestParam("file") MultipartFile multipartFile,String dataSource) throws Exception {
-        cfCertificateService.excelToDB(multipartFile,dataSource);
-        return Result.success();
+    public Result personExcelToDB(@RequestParam("file") MultipartFile multipartFile) throws Exception {
+        return Result.success(cfCertificateService.excelToDB(multipartFile));
     }
 
+    /**
+     * @Desc: 查询所有证照
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/4
+     */
+    @GetMapping("/selectAllCertificate")
+    public Result selectAllCertificate(PageBean pageBean) throws Exception {
+        return Result.success(cfCertificateService.selectAllCertificate(pageBean));
+    }
+
+    /**
+     * @Desc: 验证证照信息
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/4
+     */
+    @GetMapping("/validateCerInfo")
+    public Result validateCerInfo(CfCertificate cfCertificate){
+        return Result.success(cfCertificateService.validateCerInfo(cfCertificate));
+    }
+
+    /**
+     * @Desc: 插入证照信息
+     * @Author: wangyunquan
+     * @Param: [cfCertificateGa, cfCertificateZz]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/5
+     */
+    @PostMapping("/insertCertificate")
+    public Result insertCertificate(CfCertificate cfCertificate){
+        cfCertificateService.insertCertificate(cfCertificate);
+        return Result.success();
+    }
     /**
      * 条件查询所有
      * @param cfCertificatePageParam
@@ -46,21 +86,6 @@ public class CfCertificateController {
         PageInfo<CfCertificate> cfCertificatePageInfo = cfCertificateService.selectCfCertificateIPage(cfCertificatePageParam);
 
         return Result.success(cfCertificatePageInfo);
-    }
-
-    /**
-     * 保存或者修改证照信息
-     * 如果是证照对于模块，对比完成之后，
-     * 如果正常，传入ID 保存单位，状态改成已取出
-     * 如果不正常，传入ID ，异常信息,状态改成以取出
-     * @param cfCertificate
-     * @return
-     */
-    @PostMapping("/saveOrUpdate")
-    public Result saveOrUpdate(CfCertificate cfCertificate){
-
-        return Result.success(cfCertificateService.saveOrUpdate(cfCertificate));
-
     }
 
 

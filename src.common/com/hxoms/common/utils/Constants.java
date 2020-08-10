@@ -213,6 +213,11 @@ public class Constants {
      */
     public static String[] PubGroupPreApproval_businessName = {"因公出国（境）教育培训预备案","省外办下达任务方式","因特殊原因因公赴港澳预审批","台办发起的赴台备案流程"};
     /**
+     *干教申请状态
+     *0-草稿，1-征求意见，2-下达任务，3-撤销
+     */
+    public static int[] GJ_business = {0,1,2,3};
+    /**
      * 因私 业务 (签字盖章弃用)
      *
      */

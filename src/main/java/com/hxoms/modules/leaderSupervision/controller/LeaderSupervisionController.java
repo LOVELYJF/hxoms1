@@ -5,16 +5,16 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
+import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import oracle.jdbc.proxy.annotation.Post;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,6 +33,8 @@ public class  LeaderSupervisionController {
     private LeaderCommonService leaderCommonService;
     @Autowired
     private LeaderEXportExcelService leaderEXportExcelService;
+    @Autowired
+    private LeaderDetailProcessingService leaderDetailProcessingService;
 
 
 
@@ -53,9 +56,10 @@ public class  LeaderSupervisionController {
      * */
 
     @GetMapping("/createBatchPage")
-    public Result createBatchPage(LeaderSupervisionVo leaderSupervisionVo){
+    public Result createBatchPage( ){
 
-       Map dataMap =  leaderCommonService.createBacthByUsers(leaderSupervisionVo);
+
+       Map dataMap =  leaderCommonService.createBacthByUsers();
 
         return Result.success(dataMap);
     }
@@ -64,13 +68,16 @@ public class  LeaderSupervisionController {
     /**
      * 保存批次
      * **/
-    @GetMapping("/saveBatch")
-    public Result saveBatch(LeaderSupervisionVo leaderSupervisionVo){
+    @PostMapping("/saveBatch")
+    public Result saveBatch(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
         leaderCommonService.saveBatch(leaderSupervisionVo);
 
         return Result.success();
     }
+
+
+
 
     /**
     * 材料审核 人员名单
@@ -79,6 +86,42 @@ public class  LeaderSupervisionController {
     public Result selectMaterialReviewBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectMaterialReviewBusinessUser(leaderSupervisionVo);
+
+        return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
+    /**
+     *(选择人员)  纳入批次
+     * **/
+    @PostMapping("/leaderBatchAddApplyUser")
+    public Result leaderBatchAddApplyUser(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
+
+        leaderCommonService.leaderBatchAddApplyUser(leaderSupervisionVo);
+
+        return Result.success();
+
+    }
+    /**
+     * 通知经办人重新递交备案函
+     * **/
+    @GetMapping("/sendMessageToAgent")
+    public Result sendMessageToAgent(String applyId,String tableCode){
+
+        leaderDetailProcessingService.sendMessageToAgent(applyId,tableCode);
+
+        return Result.success();
+
+    }
+
+    /**
+     * 征求纪委意见 查询页面
+     *
+     * **/
+
+    public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
+
+        PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
 
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }

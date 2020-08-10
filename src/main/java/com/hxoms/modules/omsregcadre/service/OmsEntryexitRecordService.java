@@ -14,4 +14,10 @@ public interface OmsEntryexitRecordService {
     Map<String, Object> queryPriApplyList(String a0100);
 
     Object batchPriApplyList(List<String> a0100s);
+
+    Object insertEntryexitRecord(OmsEntryexitRecord entryexitRecord);
+
+    Object updateEntryexitRecord(OmsEntryexitRecord entryexitRecord);
+
+    Object deleteEntryexitRecord(String id);
 }

@@ -217,8 +217,8 @@ public class OmsPubApplyController {
      * @Date: 2020/8/3 15:03
      */
     @GetMapping("/getPubApplyList")
-    public Result getPubApplyList(String pwh){
-        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList(pwh);
+    public Result getPubApplyList(){
+        List<OmsPubApplyVO> list = omsPubApplyService.getPubApplyList();
         return Result.success(list);
     }
     /**
@@ -247,9 +247,6 @@ public class OmsPubApplyController {
         omsPubApplyService.repealPubApplyById(id,cxyy);
         return Result.success();
     }
-
-
-
     /**
      * 功能描述: <br>
      * 〈添加或修改干教因公出国备案申请〉
@@ -265,6 +262,34 @@ public class OmsPubApplyController {
     }
     /**
      * 功能描述: <br>
+     * 〈根据ID查看干教信息〉
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/7/7 17:47
+     */
+    @GetMapping("/getPubGroupPreApprovalById")
+    public Result getPubGroupPreApprovalById(String id){
+        OmsPubGroupPreApprovalVO info =omsPubApplyService.getPubGroupPreApprovalById(id);
+        return Result.success(info);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈上报干部监督处〉
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/7 9:54
+     */
+    @PostMapping("/reportPubGroupPreApproval")
+    public Result reportPubGroupPreApproval(String id){
+        omsPubApplyService.reportPubGroupPreApproval(id);
+        return Result.success();
+    }
+
+    /**
+     * 功能描述: <br>
      * 〈根据条件查看干教列表〉
      * @Param: [omsPubApplyQueryParam]
      * @Return: com.hxoms.common.utils.Result
@@ -276,18 +301,19 @@ public class OmsPubApplyController {
         PageInfo info = omsPubApplyService.getPubGroupPreApprovalByCondition(omsPubApplyQueryParam);
         return Result.success(info);
     }
-    /**
-     * 功能描述: <br>
-     * 〈根据ID查看干教信息〉
-     * @Param: [id]
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/7/7 17:47
-     */
-    @GetMapping("/getPubGroupPreApprovalById")
-    public Result getPubGroupPreApprovalById(String id){
-        OmsPubGroupPreApprovalVO info =omsPubApplyService.getPubGroupPreApprovalById(id);
-        return Result.success(info);
+
+   /**
+    * 功能描述: <br>
+    * 〈撤销整个干教申请〉
+    * @Param: [id, cxyy]
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: 李逍遥
+    * @Date: 2020/8/10 10:09
+    */
+    @PostMapping("/repealGJ")
+    public Result repealGJ(String id,String cxyy){
+        omsPubApplyService.repealGJ(id,cxyy);
+        return Result.success();
     }
     /**
      * 功能描述: <br>

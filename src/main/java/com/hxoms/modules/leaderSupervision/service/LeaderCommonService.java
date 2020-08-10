@@ -13,13 +13,17 @@ public interface LeaderCommonService {
     PageInfo selectBusinessUser(LeaderSupervisionVo leaderSupervisionVo, int applyStatus);
 
     /** 进入生成 批次 页面 **/
-    Map createBacthByUsers(LeaderSupervisionVo leaderSupervisionVo);
+    Map createBacthByUsers();
 
     /** 保存 批次页面 **/
     void saveBatch(LeaderSupervisionVo leaderSupervisionVo);
 
     /**材料 审核 人员名单 **/
     PageInfo selectMaterialReviewBusinessUser(LeaderSupervisionVo leaderSupervisionVo) ;
+
+    /** 选择人员 纳入批次 **/
+
+    void leaderBatchAddApplyUser(LeaderSupervisionVo leaderSupervisionVo);
 
     PageInfo selectAuditOpinionBusinessUser(AuditOpinionVo auditOpinionVo);
 
@@ -28,6 +32,11 @@ public interface LeaderCommonService {
     PageInfo selectBuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
     PageInfo selectInstructionsVerify(LeaderSupervisionVo leaderSupervisionVo);
+
+    /**
+     * 征求纪委意见 查询
+     *
+     * **/
 
     PageInfo selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 

@@ -7,7 +7,6 @@
   `create_time` datetime default NULL COMMENT '创建时间',
   `create_user` varchar(50) default NULL COMMENT '创建人',
   `master_status` varchar(50) default NULL COMMENT '主状态',
-  `slave_status` varchar(50) default NULL COMMENT '副状态',
   `modify_user` varchar(50) default NULL COMMENT '修改人',
   `modify_time` datetime default NULL COMMENT '修改时间',
   PRIMARY KEY  (`id`)
