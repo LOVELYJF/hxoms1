@@ -1,6 +1,5 @@
 package com.hxoms.modules.publicity.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -29,7 +28,6 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -235,7 +233,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void deletePubApplyById(String id) {
-        if (id == null || "".equals(id)){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
         omsPubApplyMapper.deletePubApplyById(id);
@@ -293,11 +291,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealAllPubApplyByPwh(String pwh, String cxyy) {
-        if (pwh == null || "".equals(pwh)){
-            throw new CustomMessageException("通知书文号为空!");
-        }
-        if (cxyy == null || "".equals(cxyy)){
-            throw new CustomMessageException("撤销原因为空!");
+        if (StringUtils.isBlank(pwh) || StringUtils.isBlank(cxyy)){
+            throw new CustomMessageException("参数为空!");
         }
         //查询相关通知书文号的备案申请
         List<OmsPubApplyVO> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
@@ -320,12 +315,10 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealPubApplyById(String id, String cxyy) {
-        if (id == null || "".equals(id)){
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
             throw new CustomMessageException("参数为空!");
         }
-        if (cxyy == null || "".equals(cxyy)){
-            throw new CustomMessageException("参数为空!");
-        }
+
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
         if (omsPubApply != null){
             omsPubApplyMapper.repealPubApplyById(id,cxyy,Constants.private_business[7]);
@@ -395,7 +388,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Override
     public OmsPubApplyChange getPubApplyChange(String id) {
-        if (id == null || "".equals(id)){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
         OmsPubApplyChange omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
@@ -421,7 +414,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //预审批主键
         String id = omsPubGroupPreApproval.getId();
 
-        if (id == null || "".equals(id)){
+        if (StringUtils.isBlank(id)){
             //新增预审批信息
             id = UUIDGenerator.getPrimaryKey();
             omsPubGroupPreApproval.setId(id);
@@ -655,7 +648,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updateSQZTById(String id) {
-        if (id == null ||"".equals(id)){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
@@ -908,6 +901,37 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     /**
      * 功能描述: <br>
+     * 〈撤销整个干教申请〉
+     * @Param: [id, cxyy]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/10 10:09
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void repealGJ(String id, String cxyy) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
+            throw new CustomMessageException("参数为空!");
+        }
+        //获取登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+        omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[3]);
+        //更新预审批表状态为撤销
+        omsPubGroupPreApprovalMapper.updateByPrimaryKeySelective(omsPubGroupPreApprovalVO);
+        //更新该申请下的所有人员状态为撤销
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+        for (OmsPubApplyVO omsPubApplyVO:omsPubApplyVOS) {
+            omsPubApplyVO.setSqzt(Constants.private_business[7]);
+            omsPubApplyVO.setCxyy(cxyy);
+            omsPubApplyVO.setModifyUser(loginUser.getId());
+            omsPubApplyVO.setModifyTime(new Date());
+            omsPubApplyMapper.updateById(omsPubApplyVO);
+        }
+    }
+
+    /**
+     * 功能描述: <br>
      * 〈根据ID删除干教信息〉
      * @Param: [id]
      * @Return: void
@@ -917,7 +941,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void deletePubGroupPreApprovalById(String id) {
-        if (id == null || id.equals("")){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
         //删除预备案信息
