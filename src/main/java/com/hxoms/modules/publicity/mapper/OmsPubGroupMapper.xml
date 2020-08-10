@@ -44,7 +44,7 @@
         left join oms_pub_apply p on t.id = p.YSP_ID
         left join oms_reg_procpersoninfo a on p.a0100 = a.a0100
         where 1 = 1
-        and t.BAZT = #{type}
+        and t.BAZT = #{bazt}
         <if test="orgId != null and orgId != ''">
            and t.ZTDW in ${orgId}
         </if>
@@ -175,4 +175,15 @@
     <delete id="deletePubGroup">
         delete * from oms_pub_group_pre_approval where id = #{id}
     </delete>
+    <select id="getNumByStatus" parameterType="java.lang.String" resultType="Map">
+        SELECT
+            t.SQZT,
+            count( 1 ) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = #{bazt}
+        GROUP BY
+            t.SQZT
+    </select>
 </mapper>

@@ -32,16 +32,17 @@ public class OmsPubGroupController {
 
     /**
      * 获取团体预备案申请信息
+     * @param bazt
      * @param orgId
      * @param status
      * @param startDate
      * @param endDate
      */
     @GetMapping("/getPubGroupList")
-    public Result getPubGroupList(String type,String orgId,String status,String startDate,String endDate) {
+    public Result getPubGroupList(String bazt,String orgId,String status,String startDate,String endDate) {
         Map<Object,String> param = new HashMap<>();
         try{
-            param.put("type",type);
+            param.put("bazt",bazt);
             param.put("orgId",orgId);
             param.put("status",status);
             param.put("startDate",startDate);
@@ -170,11 +171,11 @@ public class OmsPubGroupController {
 
     /**
      * 获取备案步骤任务数
-     * @param type (备案主体类型)
+     * @param bazt (备案主体类型)
      */
     @GetMapping("/getNumByStatus")
-    public Result getNumByStatus(String type) {
-        return Result.success(pubGroupService.getNumByStatus(type));
+    public Result getNumByStatus(String bazt) {
+        return Result.success(pubGroupService.getNumByStatus(bazt));
     }
 
 }

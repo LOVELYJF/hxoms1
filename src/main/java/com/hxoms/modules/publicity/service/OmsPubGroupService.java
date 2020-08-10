@@ -42,5 +42,5 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //上传批文
     Object uploadApproval(MultipartFile file, String id);
     //获取备案步骤任务数
-    Object getNumByStatus(String type);
+    List<Map<String,String>> getNumByStatus(String bazt);
 }

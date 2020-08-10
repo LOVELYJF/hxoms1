@@ -114,8 +114,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object getNumByStatus(String type) {
-        return null;
+    public List<Map<String,String>> getNumByStatus(String bazt) {
+        return pubGroupMapper.getNumByStatus(bazt);
     }
 
     /**
