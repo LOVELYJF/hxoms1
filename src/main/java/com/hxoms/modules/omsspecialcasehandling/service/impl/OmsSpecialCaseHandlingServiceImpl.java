@@ -3,12 +3,14 @@ package com.hxoms.modules.omsspecialcasehandling.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling;
 import com.hxoms.modules.omsspecialcasehandling.mapper.OmsSpecialcasehandlingMapper;
 import com.hxoms.modules.omsspecialcasehandling.service.OmsSpecialCaseHandlingService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,7 @@ public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandling
         }
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        if (specialCaseHandling.getId() != null && !specialCaseHandling.getId().equals("")){
+        if (StringUtils.isNotBlank(specialCaseHandling.getId())){
             //修改
             //修改人
             specialCaseHandling.setModifyUser(loginUser.getId());
@@ -58,7 +60,7 @@ public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandling
 
     @Override
     public void deleteSpecialCaseById(String id) {
-        if (id == null || id == ""){
+        if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
         specialcasehandlingMapper.deleteByPrimaryKey(id);
