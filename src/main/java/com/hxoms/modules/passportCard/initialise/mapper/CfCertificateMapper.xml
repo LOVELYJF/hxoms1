@@ -511,36 +511,10 @@
         ORDER BY cc.update_time DESC
     </select>
 
-    <select id="findOverduePass" parameterType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateReminderParam" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificateReminder">
-        SELECT
-        cf.*
-        FROM
-        cf_certificate cf
-        LEFT JOIN oms_pri_apply opa ON cf.ZJHM = opa.PASSPORT_NUM
-        WHERE
-        cf.DQZT = 4
-        OR opa.REVERT_LICENCE_TIME &lt;=NOW()
-
-
-    </select>
-
-
-
-    <delete id="delete" parameterType="java.lang.String">
-
-        UPDATE cf_certificate SET IS_VALID = 1 WHERE ID = #{id}
-
-    </delete>
-
     <select id="findCfById" parameterType="java.lang.String" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
         SELECT * FROM cf_certificate WHERE ID = #{id}
     </select>
 
-    <select id="findSuccessCf" resultType="java.lang.Integer">
-
-        SELECT COUNT(1) FROM cf_certificate WHERE MANAGEUNIT != NULL OR MANAGEUNIT !=""
-
-    </select>
 
     <select id="selectA0100ByQua" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         SELECT
@@ -577,31 +551,7 @@
           A0100 =#{a0100}
     </select>
 
-    <insert id="batchSaveEntity">
-        insert into cf_certificate (ID, IMPORT_PERSON, IMPORT_TIME,
-          OMS_ID, A0100, A0184,
-          NAME, PY, SEX, CSRQ,
-          GJ, CSDD, ZJXS, ZJLX,
-          ZJHM, QFJG, QFDD, QFRQ,
-          YXQZ, SAVE_STATUS, CARD_STATUS,
-          SURELY_UNIT, SURELY_WAY, CABINET_NUM,
-          PLACE, IS_VALID, EXCEPTION_MESSAGE,
-          EXCEPTION_CONCLUSION, EXCEPTION_HANDLER,
-          EXCEPTION_SOLVEDATE, UPDATER, UPDATE_TIME)
-        values
-        <foreach collection="cfCertificateList" item="item" separator=",">
-          (#{item.id,jdbcType=VARCHAR}, #{item.importPerson,jdbcType=VARCHAR}, #{item.importTime,jdbcType=TIMESTAMP},
-          #{item.omsId,jdbcType=VARCHAR}, #{item.a0100,jdbcType=VARCHAR}, #{item.a0184,jdbcType=VARCHAR},
-          #{item.name,jdbcType=VARCHAR}, #{item.py,jdbcType=VARCHAR}, #{item.sex,jdbcType=VARCHAR}, #{item.csrq,jdbcType=DATE},
-          #{item.gj,jdbcType=VARCHAR}, #{item.csdd,jdbcType=VARCHAR}, #{item.zjxs,jdbcType=VARCHAR}, #{item.zjlx,jdbcType=INTEGER},
-          #{item.zjhm,jdbcType=VARCHAR}, #{item.qfjg,jdbcType=VARCHAR}, #{item.qfdd,jdbcType=VARCHAR}, #{item.qfrq,jdbcType=DATE},
-          #{item.yxqz,jdbcType=DATE}, #{item.saveStatus,jdbcType=VARCHAR}, #{item.cardStatus,jdbcType=VARCHAR},
-          #{item.surelyUnit,jdbcType=VARCHAR}, #{item.surelyWay,jdbcType=VARCHAR}, #{item.cabinetNum,jdbcType=VARCHAR},
-          #{item.place,jdbcType=VARCHAR}, #{item.isValid,jdbcType=INTEGER}, #{item.exceptionMessage,jdbcType=VARCHAR},
-          #{item.exceptionConclusion,jdbcType=VARCHAR}, #{item.exceptionHandler,jdbcType=VARCHAR},
-          #{item.exceptionSolvedate,jdbcType=TIMESTAMP}, #{item.updater,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP})
-        </foreach>
-    </insert>
+
     <select id="selectAllCertificate" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
       SELECT
         NAME name,
@@ -661,5 +611,51 @@
         AND BIRTH_DATE = #{csrq}
       </otherwise>
     </choose>
+    </select>
+
+    <sql id="commonSql">
+      SELECT
+        a.ID id,
+        a.OMS_ID omsId,
+        b.WORK_UNIT workUnit,
+        b.INCUMBENCY_STATUS incumbencyStatus,
+        b.POST post,
+        a. NAME NAME,
+        a.sex sex,
+        a.zjlx zjlx,
+        a.zjhm zjhm,
+        a.yxqz yxqz,
+        a.SURELY_UNIT surelyUnit,
+        a.SURELY_WAY surelyWay,
+        a.CABINET_NUM cabinetNum,
+        a.PLACE place,
+        a.CSRQ csrq,
+        a.qfjg qfjg,
+        a.QFRQ qfrq,
+        a.CSDD csdd,
+        a.EXCEPTION_MESSAGE exceptionMessage
+      FROM
+          cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+    </sql>
+    <select id="selectNotProvicdeCer" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo">
+      <include refid="commonSql"/>
+      LEFT JOIN cf_certificate_collection c ON a.id=c.cer_id
+      WHERE
+        a.SAVE_STATUS = '2'
+      AND a.CARD_STATUS = '5'
+      AND c.CJ_STATUS is null
+    </select>
+    <select id="selectProNotstorCer" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo">
+      <include refid="commonSql"/>
+      WHERE
+        a.SAVE_STATUS = '1'
+      AND a.CARD_STATUS = '4'
+    </select>
+    <select id="selectExceptionCer" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo">
+      <include refid="commonSql"/>
+      WHERE
+      a.SAVE_STATUS = '1'
+      AND a.CARD_STATUS = '3'
     </select>
 </mapper>

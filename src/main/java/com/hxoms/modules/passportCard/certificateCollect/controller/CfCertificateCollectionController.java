@@ -9,7 +9,6 @@ import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCo
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,41 +40,6 @@ public class CfCertificateCollectionController {
     }
 
     /**
-     * 增加或者修改催缴名单
-     * @param cfCertificateCollectionRequest
-     * @return
-     */
-    @PostMapping("/saveOrUpdate")
-    public Result saveOrUpdate(CfCertificateCollectionRequest cfCertificateCollectionRequest){
-
-        return Result.success(cfCertificateCollectionRequestService.saveOrUpdate(cfCertificateCollectionRequest));
-    }
-
-
-    /**
-     * 单条增加催缴记录
-     * @param cfCertificateCollection
-     * @return
-     */
-    @PostMapping("/insert")
-    public Result insert(CfCertificateCollection cfCertificateCollection){
-
-        return Result.success(cfCertificateCollectionService.insert(cfCertificateCollection));
-    }
-
-    /**
-     * 批量增加催缴记录
-     * @param cfCertificateCollection
-     * @return
-     */
-    @PostMapping("/insertSelective")
-    public Result insertSelective(CfCertificateCollection cfCertificateCollection){
-
-        return Result.success(cfCertificateCollectionService.insertSelective(cfCertificateCollection));
-
-    }
-
-    /**
      * 条件查询所有催缴记录
      * @param cfCertificateCollection
      * @return
@@ -85,4 +49,5 @@ public class CfCertificateCollectionController {
 
         return Result.success(cfCertificateCollectionService.selectByCfcertificateCollection(cfCertificateCollection));
     }
+
 }
