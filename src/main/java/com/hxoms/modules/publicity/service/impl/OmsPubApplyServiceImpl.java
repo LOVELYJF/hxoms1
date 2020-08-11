@@ -880,22 +880,25 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈上报干部监督处〉
-     * @Param: [id]
+     * @Param: [ids]
      * @Return: void
      * @Author: 李逍遥
      * @Date: 2020/8/7 9:55
+     * @param ids
      */
     @Override
-    public void reportPubGroupPreApproval(String id) {
-        if (StringUtils.isBlank(id)){
+    public void reportPubGroupPreApproval(List<String> ids) {
+        if (ids == null || ids.size() < 1){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
-        omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
-        for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-            omsPubApplyVO.setSqzt(Constants.leader_business[0]);
-            omsPubApplyMapper.updateById(omsPubApplyVO);
+        for (String id:ids) {
+            OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+            omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
+            List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+            for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
+                omsPubApplyVO.setSqzt(Constants.leader_business[0]);
+                omsPubApplyMapper.updateById(omsPubApplyVO);
+            }
         }
     }
 

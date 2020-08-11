@@ -219,8 +219,9 @@ public interface OmsPubApplyService {
      * @Return: void
      * @Author: 李逍遥
      * @Date: 2020/8/7 9:55
+     * @param id
      */
-    void reportPubGroupPreApproval(String id);
+    void reportPubGroupPreApproval(List<String> id);
 
     /**
      * 功能描述: <br>

@@ -283,7 +283,7 @@ public class OmsPubApplyController {
      * @Date: 2020/8/7 9:54
      */
     @PostMapping("/reportPubGroupPreApproval")
-    public Result reportPubGroupPreApproval(String id){
+    public Result reportPubGroupPreApproval(@RequestParam(value ="id",required = false) List<String> id){
         omsPubApplyService.reportPubGroupPreApproval(id);
         return Result.success();
     }
