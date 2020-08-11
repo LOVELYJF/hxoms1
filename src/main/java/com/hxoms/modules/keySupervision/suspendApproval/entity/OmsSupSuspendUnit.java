@@ -27,10 +27,13 @@ public class OmsSupSuspendUnit {
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="单位主键")
     private String b0100;
 
-    @ColumnAnnotation(FieldName = "SUSPEND_TIME",   FieldDescription="暂停时间")
+    @ColumnAnnotation(FieldName = "SUSPEND_TIME",   FieldDescription="暂停开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date suspendTime;
+
+    @ColumnAnnotation(FieldName = "PAUSE_TIME",   FieldDescription="暂停时长（月）")
+    private String pauseTime;
 
     @ColumnAnnotation(FieldName = "SUSPEND_REASON",   FieldDescription="暂停原因")
     private String suspendReason;
@@ -48,13 +51,21 @@ public class OmsSupSuspendUnit {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date suspendEndTimeQuery;
 
-    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建用户")
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="暂停操作人")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
+
+    @ColumnAnnotation(FieldName = "RECOVERY_USER",   FieldDescription="暂停操作人")
+    private String recoverUser;
+
+    @ColumnAnnotation(FieldName = "RECOVERY_TIME",   FieldDescription="恢复时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date recoverTime;
 
 
     public String getId() {
@@ -151,5 +162,29 @@ public class OmsSupSuspendUnit {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getPauseTime() {
+        return pauseTime;
+    }
+
+    public void setPauseTime(String pauseTime) {
+        this.pauseTime = pauseTime == null ? null : pauseTime.trim();
+    }
+
+    public String getRevoverUser() {
+        return recoverUser;
+    }
+
+    public void setRecoverUser(String recoverUser) {
+        this.recoverUser = recoverUser == null ? null : recoverUser.trim();
+    }
+
+    public Date getRecoverTime() {
+        return recoverTime;
+    }
+
+    public void setRecoverTime(Date recoverTime) {
+        this.recoverTime = recoverTime;
     }
 }

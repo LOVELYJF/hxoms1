@@ -38,6 +38,8 @@ public class PersonInfoVO {
     private String NATION;
     //身份证号
     private String idnumber;
+    //登记备案id
+    private String procpersonId;
 
     public String getA0100() {
         return a0100;
@@ -133,5 +135,13 @@ public class PersonInfoVO {
 
     public void setB0111(String b0111) {
         this.b0111 = b0111;
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId;
     }
 }

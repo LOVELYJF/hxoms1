@@ -8,16 +8,20 @@
     <result column="UNIT" jdbcType="VARCHAR" property="unit" />
     <result column="B0100" jdbcType="VARCHAR" property="b0100" />
     <result column="SUSPEND_TIME" jdbcType="DATE" property="suspendTime" />
+    <result column="PAUSE_TIME" jdbcType="VARCHAR" property="pauseTime" />
     <result column="SUSPEND_REASON" jdbcType="VARCHAR" property="suspendReason" />
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="SUSPEND_STRAT_TIME_QUERY" jdbcType="DATE" property="suspendStratTimeQuery" />
     <result column="SUSPEND_END_TIME_QUERY" jdbcType="DATE" property="suspendEndTimeQuery" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="RECOVER_USER" jdbcType="VARCHAR" property="recoverUser" />
+    <result column="RECOVER_TIME" jdbcType="TIMESTAMP" property="recoverTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, MODIFY_USER, MODIFY_TIME, UNIT, B0100, SUSPEND_TIME, SUSPEND_REASON, STATUS,
-    SUSPEND_STRAT_TIME_QUERY, SUSPEND_END_TIME_QUERY,CREATE_USER,CREATE_TIME
+    ID, MODIFY_USER, MODIFY_TIME, UNIT, B0100, SUSPEND_TIME, PAUSE_TIME, SUSPEND_REASON, STATUS,
+    SUSPEND_STRAT_TIME_QUERY, SUSPEND_END_TIME_QUERY,CREATE_USER,CREATE_TIME,
+    RECOVER_USER, RECOVER_TIME
   </sql>
 
 </mapper>

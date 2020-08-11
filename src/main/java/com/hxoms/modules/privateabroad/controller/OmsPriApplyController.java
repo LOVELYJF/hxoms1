@@ -54,14 +54,13 @@ public class OmsPriApplyController {
 
     /**
      * 选择人员
-     * @param b0100 机构id
-     * @param a0100 人员id
+     * @param procpersonId 备案表id
      * @return
      * @throws Exception
      */
     @GetMapping("/selectPersonById")
-    public Result selectPersonById(String b0100, String a0100) throws Exception {
-        OmsPriApplyVO omsPriApplyVO = omsPriApplyService.selectPersonById(b0100,a0100);
+    public Result selectPersonById(String procpersonId) throws Exception {
+        OmsPriApplyVO omsPriApplyVO = omsPriApplyService.selectPersonById(procpersonId);
         return Result.success(omsPriApplyVO);
     }
 
