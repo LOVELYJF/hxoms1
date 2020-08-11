@@ -163,7 +163,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         OmsPriDelayApplyVO omsPriDelayApplyVO = new OmsPriDelayApplyVO();
         omsPriDelayApplyVO.setId(omsPriDelayApply.getId());
         omsPriDelayApplyVO.setApplyId(omsPriDelayApply.getApplyId());
-        omsPriDelayApplyVO.setA0100(omsPriDelayApply.getA0100());
+        omsPriDelayApplyVO.setProcpersonId(omsPriDelayApply.getProcpersonId());
         omsPriDelayApplyVO.setApplyStatus(omsPriDelayApply.getApplyStatus());
         omsPriDelayApplyVO.setCancelReason(omsPriDelayApply.getCancelReason());
         omsPriDelayApplyVO.setDelayReason(omsPriDelayApply.getDelayReason());

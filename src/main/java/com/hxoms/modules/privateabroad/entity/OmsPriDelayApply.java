@@ -16,7 +16,10 @@ public class OmsPriDelayApply {
     @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="申请ID")
     private String applyId;
 
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="申请人")
+    @ColumnAnnotation(FieldName = "PROCPERSON_ID",   FieldDescription="登记备案表id")
+    private String procpersonId;
+
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部id")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
@@ -54,18 +57,18 @@ public class OmsPriDelayApply {
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="干部监督处的批次Id")
+    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="")
     private String leaderBatchId;
-
-
-
 
     @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
     private String clshsftg;
+
     @ColumnAnnotation(FieldName = "JDCJL",   FieldDescription="监督处最终结论")
     private String jdcjl;
+
     @ColumnAnnotation(FieldName = "JWJL",   FieldDescription="纪委结论")
     private String jwjl;
+
     @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
     private String zzjl;
 
@@ -91,6 +94,14 @@ public class OmsPriDelayApply {
 
     public void setApplyId(String applyId) {
         this.applyId = applyId == null ? null : applyId.trim();
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId == null ? null : procpersonId.trim();
     }
 
     public String getA0100() {
@@ -173,23 +184,20 @@ public class OmsPriDelayApply {
         this.modifyUser = modifyUser == null ? null : modifyUser.trim();
     }
 
-
     public String getLeaderBatchId() {
         return leaderBatchId;
     }
 
     public void setLeaderBatchId(String leaderBatchId) {
-        this.leaderBatchId = leaderBatchId;
+        this.leaderBatchId = leaderBatchId == null ? null : leaderBatchId.trim();
     }
-
-
 
     public String getClshsftg() {
         return clshsftg;
     }
 
     public void setClshsftg(String clshsftg) {
-        this.clshsftg = clshsftg;
+        this.clshsftg = clshsftg == null ? null : clshsftg.trim();
     }
 
     public String getJdcjl() {
@@ -197,7 +205,7 @@ public class OmsPriDelayApply {
     }
 
     public void setJdcjl(String jdcjl) {
-        this.jdcjl = jdcjl;
+        this.jdcjl = jdcjl == null ? null : jdcjl.trim();
     }
 
     public String getJwjl() {
@@ -205,7 +213,7 @@ public class OmsPriDelayApply {
     }
 
     public void setJwjl(String jwjl) {
-        this.jwjl = jwjl;
+        this.jwjl = jwjl == null ? null : jwjl.trim();
     }
 
     public String getZzjl() {
@@ -213,7 +221,7 @@ public class OmsPriDelayApply {
     }
 
     public void setZzjl(String zzjl) {
-        this.zzjl = zzjl;
+        this.zzjl = zzjl == null ? null : zzjl.trim();
     }
 
     public String getSfzqjwyj() {
@@ -221,7 +229,7 @@ public class OmsPriDelayApply {
     }
 
     public void setSfzqjwyj(String sfzqjwyj) {
-        this.sfzqjwyj = sfzqjwyj;
+        this.sfzqjwyj = sfzqjwyj == null ? null : sfzqjwyj.trim();
     }
 
     public Date getSczqjwyjsj() {

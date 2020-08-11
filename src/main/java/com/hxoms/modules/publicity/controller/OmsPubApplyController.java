@@ -34,8 +34,8 @@ public class OmsPubApplyController {
      * @date 2020/4/21 17:16
      */
     @GetMapping("/selectPersonListByOrg")
-    public Result selectPersonListByOrg(String b0100) {
-        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100);
+    public Result selectPersonListByOrg(String b0100, String keyword) {
+        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100, keyword);
         return Result.success(list);
     }
 

@@ -58,8 +58,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Override
-    public List<PersonInfoVO> selectPersonListByOrg(String b0100) {
-        return omsPubApplyMapper.selectPersonListByOrg(b0100);
+    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String keyword) {
+        return omsPubApplyMapper.selectPersonListByOrg(b0100, keyword);
     }
 
     @Override

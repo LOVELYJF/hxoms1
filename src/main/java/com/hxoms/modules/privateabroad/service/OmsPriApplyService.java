@@ -19,12 +19,11 @@ public interface OmsPriApplyService {
      */
     PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam);
     /**
-     * 选择人员（保存前约束条件判断）
-     * @param b0100 机构id
-     * @param a0100 人员id
+     * 选择人员（）
+     * @param procpersonId 备案信息id
      * @return
      */
-    OmsPriApplyVO selectPersonById(String b0100, String a0100);
+    OmsPriApplyVO selectPersonById(String procpersonId);
     /**
      * 新增或修改因私出国申请
      * @param omsPriApplyParam  申请接收参数类

@@ -14,10 +14,10 @@ public interface OmsConditionService {
     List<Map<String, String>> checkCondition(String applyId, String type);
     /**
      * 检查约束条件(选择人员)
-     * @param a0100 人员id
+     * @param procpersonId 备案人员id
      * @param type 类型（因公，因私，延期回国）
      */
-    List<Map<String, String>> checkConditionByA0100(String a0100, String type);
+    List<Map<String, String>> checkConditionByA0100(String procpersonId, String type);
 
     /**
      * 负面信息

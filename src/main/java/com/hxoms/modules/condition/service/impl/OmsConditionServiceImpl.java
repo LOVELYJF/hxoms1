@@ -60,14 +60,14 @@ public class OmsConditionServiceImpl implements OmsConditionService {
     }
 
     @Override
-    public List<Map<String, String>> checkConditionByA0100(String a0100, String type) {
-        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(type)){
+    public List<Map<String, String>> checkConditionByA0100(String procpersonId, String type) {
+        if (StringUtils.isBlank(procpersonId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         ConditionReplaceVO conditionReplaceVO = new ConditionReplaceVO();
-        conditionReplaceVO.setA0100(a0100);
+        conditionReplaceVO.setProcpersonId(procpersonId);
         conditionReplaceVO.setHandleId(userInfo.getId());
         return checkApply(conditionReplaceVO, Constants.OMS_CONDITION_CHECKTYPE[0], type);
     }
@@ -108,25 +108,25 @@ public class OmsConditionServiceImpl implements OmsConditionService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         ConditionReplaceVO conditionReplaceVO = new ConditionReplaceVO();
-        String a0100 = "";
+        String procpersonId = "";
         if (Constants.oms_business[1].equals(type)){
             //因私出国
             OmsPriApply omsPriApply = omsPriApplyMapper.selectById(applyId);
             if (omsPriApply == null){
                 throw new CustomMessageException("申请不存在");
             }
-            a0100 = omsPriApply.getA0100();
+            procpersonId = omsPriApply.getProcpersonId();
         } else if(Constants.oms_business[2].equals(type)){
             //延期回国
             OmsPriDelayApply omsPriDelayApply = omsPriDelayApplyMapper.selectById(applyId);
             if (omsPriDelayApply == null){
                 throw new CustomMessageException("申请不存在");
             }
-            a0100 = omsPriDelayApply.getA0100();
+            procpersonId = omsPriDelayApply.getProcpersonId();
         } else if(Constants.oms_business[0].equals(type)){
             //因公 TODO
         }
-        conditionReplaceVO.setA0100(a0100);
+        conditionReplaceVO.setProcpersonId(procpersonId);
         conditionReplaceVO.setApplyId(applyId);
         conditionReplaceVO.setHandleId(userInfo.getId());
         return conditionReplaceVO;
