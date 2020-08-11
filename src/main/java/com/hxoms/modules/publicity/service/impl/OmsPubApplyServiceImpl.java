@@ -131,7 +131,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        String result = "";//返回信息
+        //返回信息
+        String result = "";
         String primaryKey = UUIDGenerator.getPrimaryKey();
         if (StringUtils.isBlank(omsPubApply.getId())) {
             omsPubApply.setId(primaryKey);
@@ -257,7 +258,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         /**申请状态集合 */
         List<String> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
@@ -954,8 +956,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //删除备案申请表人员信息
         omsPubApplyMapper.deletePubApplyByYSPId(id);
     }
-
-
 
     /**
      * 校验用户信息
