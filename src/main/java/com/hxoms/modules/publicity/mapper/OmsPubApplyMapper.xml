@@ -280,9 +280,11 @@
                orp.WORK_UNIT as b0101,
                orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
                orp.NATION_NAME as NATION,
-               orp.ID as procpersonId
+               orp.ID as procpersonId,
+               b.b0100 as b0100
         from oms_reg_procpersoninfo orp
-        where orp.RF_B0000 = #{b0100}
+        LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
+        where b.b0100 = #{b0100}
         <if test="keyword != null and keyword != ''">
             and (CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) like CONCAT('%',#{keyword},'%')
             or orp.PY like CONCAT('%',#{keyword},'%'))
