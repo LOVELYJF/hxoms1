@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
@@ -7,7 +8,7 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagPa
 import java.util.List;
 import java.util.Map;
 
-public interface OmsEntryexitRecordService {
+public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> {
 
     PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 

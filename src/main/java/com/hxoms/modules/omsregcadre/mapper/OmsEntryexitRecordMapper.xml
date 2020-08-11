@@ -350,25 +350,5 @@
             ID_NUMBER is null  or to_char(OGE_DATE,'yyyyMMdd') <![CDATA[<=]]> NOW()
           )
   </select>
-  <insert id="batchSaveEntity">
-    insert into oms_entryexit_record (ID, B0000, PRIAPPLY_ID,
-      IMPORT_TIME, IMPORT_PERSON, OGA_MODE,
-      DATA_SOURCE, OMS_ID, A0100,
-      OGE_STATUS, NAME, SEX,
-      BIRTH_DATE, NATIONALITY, ID_TYPE,
-      ID_NUMBER, DESTINATION, ENTRACE_EXIT,
-      OGE_DATE, OGE_TIME, VALID_UNTIL,
-      VISITING_TASKS, COMPARISON_RESULT)
-    values
-    <foreach collection="omsEntryexitRecordList" item="item" separator=",">
-      (#{item.id,jdbcType=VARCHAR}, #{item.b0000,jdbcType=VARCHAR}, #{item.priapplyId,jdbcType=VARCHAR},
-      #{item.importTime,jdbcType=DATE}, #{item.importPerson,jdbcType=VARCHAR}, #{item.ogaMode,jdbcType=VARCHAR},
-      #{item.dataSource,jdbcType=VARCHAR}, #{item.omsId,jdbcType=VARCHAR}, #{item.a0100,jdbcType=VARCHAR},
-      #{item.ogeStatus,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.sex,jdbcType=VARCHAR},
-      #{item.birthDate,jdbcType=DATE}, #{item.nationality,jdbcType=VARCHAR}, #{item.idType,jdbcType=INTEGER},
-      #{item.idNumber,jdbcType=VARCHAR}, #{item.destination,jdbcType=VARCHAR}, #{item.entraceExit,jdbcType=VARCHAR},
-      #{item.ogeDate,jdbcType=DATE}, #{item.ogeTime,jdbcType=VARCHAR}, #{item.validUntil,jdbcType=DATE},
-      #{item.visitingTasks,jdbcType=VARCHAR}, #{item.comparisonResult,jdbcType=VARCHAR})
-    </foreach>
-  </insert>
+
 </mapper>
