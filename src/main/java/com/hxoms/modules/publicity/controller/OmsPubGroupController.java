@@ -32,16 +32,17 @@ public class OmsPubGroupController {
 
     /**
      * 获取团体预备案申请信息
+     * @param bazt
      * @param orgId
      * @param status
      * @param startDate
      * @param endDate
      */
     @GetMapping("/getPubGroupList")
-    public Result getPubProvinceList(String type,String orgId,String status,String startDate,String endDate) {
+    public Result getPubGroupList(String bazt,String orgId,String status,String startDate,String endDate) {
         Map<Object,String> param = new HashMap<>();
         try{
-            param.put("type",type);
+            param.put("bazt",bazt);
             param.put("orgId",orgId);
             param.put("status",status);
             param.put("startDate",startDate);
@@ -60,7 +61,7 @@ public class OmsPubGroupController {
      * @param personList
      */
     @PostMapping("/insertPubGroup")
-    public Result insertPubGroup(OmsPubGroupPreApproval pubGroup, OmsPubGroupPreApprovalVO personList) {
+    public Result insertPubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
         return Result.success(pubGroupService.insertPubGroup(pubGroup,personList));
     }
 
@@ -70,7 +71,7 @@ public class OmsPubGroupController {
      * @param personList
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(OmsPubGroupPreApproval pubGroup,OmsPubGroupPreApprovalVO personList) {
+    public Result updatePubGroup(OmsPubGroupPreApproval pubGroup,List<OmsPubApply> personList) {
         return Result.success(pubGroupService.updatePubGroup(pubGroup,personList));
     }
 
@@ -99,6 +100,89 @@ public class OmsPubGroupController {
             return Result.error("导入失败");
         }
     }
+
+    /**
+     * 重新校验
+     * @param idList
+     */
+    @PostMapping("/checkoutPerson")
+    public Result checkoutPerson(String idList) {
+        return Result.success(pubGroupService.checkoutPerson(idList));
+    }
+
+    /**
+     * 添加人员
+     * @param A0100
+     */
+    @PostMapping("/insertPerson")
+    public Result insertPerson(String A0100) {
+        return Result.success(pubGroupService.insertPerson(A0100));
+    }
+
+    /**
+     * 撤销人员
+     * @param id
+     */
+    @PostMapping("/backoutPerson")
+    public Result backoutPerson(String id) {
+        try {
+            pubGroupService.backoutPerson(id);
+            return Result.success();
+        }catch (Exception e){
+            return Result.error("系统错误！");
+        }
+    }
+
+    /**
+     * 查看人员详情
+     * @param id
+     */
+    @GetMapping("/getPersonDetailById")
+    public Result getPersonDetailById(String id) {
+        return Result.success(pubGroupService.getPersonDetailById(id));
+    }
+
+    /**
+     * 递送任务
+     * @param id(团队id)
+     */
+    @PostMapping("/sendTask")
+    public Result sendTask(String id) {
+        return Result.success(pubGroupService.sendTask(id));
+    }
+
+    /**
+     * 查看流程详情
+     * @param id（人员id）
+     */
+    @GetMapping("/getFlowDetail")
+    public Result getFlowDetail(String id) {
+        return Result.success(pubGroupService.getFlowDetail(id));
+    }
+
+    /** 上传批文
+     * @param file
+     * @param id
+     */
+    @PostMapping("/uploadApproval")
+    public Result uploadApproval(MultipartFile file, String id) {
+        try{
+            return Result.success(pubGroupService.uploadApproval(file,id));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("上传失败");
+        }
+    }
+
+    /**
+     * 获取备案步骤任务数
+     * @param bazt (备案主体类型)
+     */
+    @GetMapping("/getNumByStatus")
+    public Result getNumByStatus(String bazt) {
+        return Result.success(pubGroupService.getNumByStatus(bazt));
+    }
+
 }
 
 

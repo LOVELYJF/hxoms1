@@ -2,6 +2,8 @@ package com.hxoms.modules.leaderSupervision.vo;
 
 import com.hxoms.common.utils.StringUilt;
 
+import java.util.List;
+
 /**
  * @authore:wjf
  * @data 2020/7/7 9:38  干部监督处
@@ -13,11 +15,13 @@ public class AuditOpinionVo {
 
     private Integer pageSize;   /**分页大小*/
 
-    private String[] bussinessId; /**业务id 数组**/
+//    private String[] bussinessId; /**业务id 数组**/
+//
+//    private String[] bussinessName; /**业务名称 数组**/
+//
+//    private String[] incumbencyStatusArrays;  /** 在职 状态 **/
 
-    private String[] bussinessName; /**业务名称 数组**/
-
-    private String[] incumbencyStatusArrays;  /** 在职 状态 **/
+    private List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos;
 
     private String busName;  /** 针对 处长 逐条审批  业务流程名称 */
 
@@ -77,38 +81,6 @@ public class AuditOpinionVo {
         this.pageSize = pageSize;
     }
 
-    public String[] getBussinessId() {
-        return bussinessId;
-    }
-
-    public void setBussinessId(String[] bussinessId) {
-        this.bussinessId = bussinessId;
-    }
-
-    public String[] getBussinessName() {
-        return bussinessName;
-    }
-
-    public void setBussinessName(String[] bussinessName) {
-        this.bussinessName = bussinessName;
-    }
-
-
-    public String getIspass() {
-        return ispass;
-    }
-
-    public void setIspass(String ispass) {
-        this.ispass = ispass;
-    }
-
-    public String[] getIncumbencyStatusArrays() {
-        return incumbencyStatusArrays;
-    }
-
-    public void setIncumbencyStatusArrays(String[] incumbencyStatusArrays) {
-        this.incumbencyStatusArrays = incumbencyStatusArrays;
-    }
 
     public String getReason() {
         return reason;
@@ -132,5 +104,21 @@ public class AuditOpinionVo {
 
     public void setBusId(String busId) {
         this.busId = busId;
+    }
+
+    public List<BusinessTypeAndIdAndOnJobVo> getBusinessTypeAndIdAndOnJobVos() {
+        return businessTypeAndIdAndOnJobVos;
+    }
+
+    public void setBusinessTypeAndIdAndOnJobVos(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos) {
+        this.businessTypeAndIdAndOnJobVos = businessTypeAndIdAndOnJobVos;
+    }
+
+    public String getIspass() {
+        return ispass;
+    }
+
+    public void setIspass(String ispass) {
+        this.ispass = ispass;
     }
 }

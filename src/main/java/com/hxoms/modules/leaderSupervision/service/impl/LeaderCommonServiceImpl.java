@@ -16,10 +16,7 @@ import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.OmsBatchApplybusinessService;
 import com.hxoms.modules.leaderSupervision.service.OmsLeaderBatchService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
-import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
-import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
-import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
-import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.*;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
 import org.slf4j.Logger;
@@ -30,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("leaderCommonService")
@@ -248,15 +242,15 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     }
 
     // 修改 业务 流程表 的状态
-    public void updteBussinessApplyStatue(String[] bussinessId, String[] bussinessName,String leaderStatusName) {
+    public void updteBussinessApplyStatue(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos,String leaderStatusName) {
 
 
-          for(int i=0;i<bussinessId.length;i++){
+          for(int i=0;i<bussinessTypeAndIdVos.size();i++){
 
-             String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName[i]);
+             String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessTypeAndIdVos.get(i).getBussinessName());
 
 
-             String updateApplyStatusSql =   getUpdateStatusSql(bussinessId[i],bussinessType,leaderStatusName);
+             String updateApplyStatusSql =   getUpdateStatusSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
 
              log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
 
@@ -277,16 +271,73 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     }
 
 
-
-    public void updateBussinessApplyRecordOpinion(String[] bussinessId, String[] bussinessName,String opinion,String recordFlow){
-
-
-        for(int i=0;i<bussinessId.length;i++){
-
-            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName[i]);
+    // 修改 业务 流程表 的状态
+    public void updteBussinessApplyStatueAudit(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos,String leaderStatusName) {
 
 
-            String updatRecordOpinionSql =   getUpdateRecordOpinionSql(bussinessId[i],bussinessType,opinion,recordFlow);
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+
+            String updateApplyStatusSql =   getUpdateStatusSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
+
+            log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
+
+
+            if(updateApplyStatusSql.length()>0){
+
+                SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
+                selectMapper.update(instance);
+
+
+            }
+
+
+        }
+
+
+
+    }
+
+
+    public void updateBussinessApplyRecordOpinion(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos,String opinion,String recordFlow){
+
+
+        for(int i=0;i<bussinessTypeAndIdVos.size();i++){
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessTypeAndIdVos.get(i).getBussinessName());
+
+
+            String updatRecordOpinionSql =   getUpdateRecordOpinionSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,opinion,recordFlow);
+
+            log.info("修改业务意见记录 流程的 sql ="+updatRecordOpinionSql);
+
+
+            if(updatRecordOpinionSql.length()>0){
+
+                SqlVo instance = SqlVo.getInstance(updatRecordOpinionSql);
+                selectMapper.update(instance);
+
+
+            }
+
+
+        }
+
+
+
+    }
+
+    public void updateBussinessApplyRecordOpinionAudit(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos,String opinion,String recordFlow){
+
+
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+
+            String updatRecordOpinionSql =   getUpdateRecordOpinionSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,opinion,recordFlow);
 
             log.info("修改业务意见记录 流程的 sql ="+updatRecordOpinionSql);
 
@@ -333,7 +384,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
         String realOpinion ="";
 
@@ -397,7 +448,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
@@ -423,10 +474,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
     // TODO  修改 业务 流程表 的状态  (对 以前 修改业务表 方法 进行 重写)
     /**
-     * @param  bussinessId 业务申请流程Id
-     * @param  bussinessName 业务申请流程名称 （用于区分 那张表）
+     *
      * @param  leaderStatusName 审批步骤
-     * @param  incumbencyStatusArrays 业务申请流程人员 在职状态
+     *
      * @param  ispass  更具 是否通过 判断 该条 业务申请流程 是否 已办结
      *
      * import  只要是 数组参数 必须要保持  对应一致
@@ -435,16 +485,16 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
      *
      * ****/
 
-    public void updteBussinessApplyStatue(String[] bussinessId, String[] bussinessName,String leaderStatusName,String[] incumbencyStatusArrays,String ispass) {
+    public void updteBussinessApplyStatue(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos, String leaderStatusName, String ispass) {
 
 
-        for(int i=0;i<bussinessId.length;i++){
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
 
-            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName[i]);
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
             // 在职 状态
-            String incumbencyStatus = incumbencyStatusArrays[i];
+            String incumbencyStatus = businessTypeAndIdAndOnJobVos.get(i).getIncumbencyStatusArrays();
 
-            String updateApplyStatusSql =   getUpdateStatusSql(bussinessId[i],bussinessType,leaderStatusName,incumbencyStatus,ispass);
+            String updateApplyStatusSql =   getUpdateStatusSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName,incumbencyStatus,ispass);
 
             log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
 
@@ -471,7 +521,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
@@ -555,13 +605,13 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
     // TODO  征求 纪委意见 导出
     @Transactional(rollbackFor = CustomMessageException.class)
-    public void  updateBussinessFiledsByJiweiExport(AuditOpinionVo omsJiweiOpinionVo){
+    public void  updateBussinessFiledsByJiweiExport(LeaderSupervisionVo leaderSupervisionVo){
 
-        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
 
-        updateBussinessFiledByJiWeiExport(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName(), Constants.leader_businessName[2]);
+        updateBussinessFiledByJiWeiExport(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
 
-        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName(), Constants.leader_businessName[2]);
+        updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
 
     }
 
@@ -574,7 +624,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply();
+        List<Map>   users = leaderCommonQueryMapper.selectJiweiWriteApply();
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
@@ -582,19 +632,21 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     }
 
 
-    public  void updateBussinessFiledByJiWeiExport(String[] bussinessIds,String[] bussinessNames,String leaderStatusName){
+    public  void updateBussinessFiledByJiWeiExport(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos,String leaderStatusName){
 
 
-        for(int i=0;i<bussinessIds.length;i++){
+        for(int i=0;i<bussinessTypeAndIdVos.size();i++){
 
-            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessNames[i]);
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessTypeAndIdVos.get(i).getBussinessName());
 
 
             String updateSql = "update "+bussinessType;
             // 征求纪委 意见 时间 ，  选中导出的 就是 征求 过的 所以 该 字段 值 置为 1
             String setSql = " set SCZQJWYJSJ = DATE_FORMAT(now(),'%Y.%m.%d') , SFZQJWYJ = 1 " ;
 
-            String whereCondition = " where id = " + bussinessIds[i];
+            String whereCondition = " where id = '" + bussinessTypeAndIdVos.get(i).getBussinessId()+"'";
+
+            log.info("sql ="+updateSql+setSql+whereCondition);
 
             SqlVo instance = SqlVo.getInstance(updateSql+setSql+whereCondition);
             selectMapper.update(instance);
@@ -610,10 +662,10 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
     public void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
 
-        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo.getBussinessId());
+        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
 
         // 点击 这个 按就 就保存 纪委意见 表，以及 保存 纪委意见记录 与 业务表之间的关系
-        for(int i=0;i<omsJiweiOpinionVo.getBussinessId().length;i++){
+        for(int i=0;i<omsJiweiOpinionVo.getBussinessTypeAndIdVos().size();i++){
 
 //            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(omsJiweiOpinionVo.getBussinessName()[i]);
 
@@ -623,7 +675,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //            List<LinkedHashMap<String, Object>> list = selectMapper.select(instance);
 
-             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(omsJiweiOpinionVo.getBussinessId()[i]);
+             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(omsJiweiOpinionVo.getBussinessTypeAndIdVos().get(i).getBussinessId());
 
             if(omsJiweiOpinion==null){
                   // 如果 该条  业务申请 记录 的 纪委id 为空
@@ -648,7 +700,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
     public void saveJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
 
-        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
 
         OmsJiweiOpinion omsJiweiOpinion = new OmsJiweiOpinion();
         if(omsJiweiOpinionVo.getFeedbackType()==String.valueOf(1)){
@@ -706,10 +758,10 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //        saveApplyBussinessByBatchId(omsJiweiOpinionVo,omsJiweiOpinion.getId(),"jiwei_opinion_id");
 
         // 修改 业务申请 状态  （第三步） 修改 为 记录意见
-        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName(), Constants.leader_businessName[2]);
+        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
 
         //在流程审批业务表 中记录纪委意见（第 三 点1 不）
-        updateBussinessApplyRecordOpinion(omsJiweiOpinionVo.getBussinessId(),omsJiweiOpinionVo.getBussinessName(),omsJiweiOpinionVo.getFeedbackVerdict(),"jwjl");
+        updateBussinessApplyRecordOpinion(omsJiweiOpinionVo.getBussinessTypeAndIdVos(),omsJiweiOpinionVo.getFeedbackVerdict(),"jwjl");
 
         //  修改 批次 状态 (第四步)
 
@@ -908,46 +960,80 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
      *
      */
     @Transactional(rollbackFor = CustomMessageException.class)
-    public void createChengPiDan(AuditOpinionVo auditOpinionVo){
+    public void createChengPiDan(LeaderSupervisionVo leaderSupervisionVo){
 
-        LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
 
-        if(auditOpinionVo.getBussinessId().length!=auditOpinionVo.getBussinessName().length){
-            throw new CustomMessageException("参数id和参数名称 不一致，请仔细检查");
 
-        }
 
         // 保存 审批记录 （第一步）  1.生成呈批单，审核意见自动置为通过
-        saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+        saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
 //        omsAbroadApprovalService
         //  修改 业务流程状态 (第二步) 修改 为 干部监督处
-        updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[3]);
+        updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
 
         // 修改 业务流程申请 最终结论
 
-        updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"1",null);
+        updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"1",null);
 
         //修改 批次状态 (第三步)
-        String bussinessId = auditOpinionVo.getBussinessId()[0];
-
-        String bussinessName = auditOpinionVo.getBussinessName()[0];
-        selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[3]);
+//        String bussinessId = auditOpinionVo.getBussinessId()[0];
+//
+//        String bussinessName = auditOpinionVo.getBussinessName()[0];
+        selectBatchIdAndisOrNotUpateBatchStatus(
+                (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                Constants.leader_business[3]);
 
     }
 
 
 
-    public void saveAbroadApprovalByBussinessId(String[] bussinessIds,String[] bussinessNames, String pass,String stepName,int stepCode,String reson) {
+    public void saveAbroadApprovalByBussinessId(List<BussinessTypeAndIdVo>  bussinessTypeAndIdVos, String pass,String stepName,int stepCode,String reson) {
 
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
 
-        for(int i=0;i<bussinessIds.length;i++){
+        for(int i=0;i<bussinessTypeAndIdVos.size();i++){
 
-            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessNames[i]);
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessTypeAndIdVos.get(i).getBussinessName());
 
             OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
-            omsAbroadApproval.setApplyId(bussinessIds[i]); // 业务流程 Id
+            omsAbroadApproval.setApplyId(bussinessTypeAndIdVos.get(i).getBussinessId()); // 业务流程 Id
+            omsAbroadApproval.setStepCode(stepCode);      //  步骤编码
+            omsAbroadApproval.setStepName(stepName);      //  步骤名称
+            omsAbroadApproval.setType(bussinessType);  // 业务流程 类型(因公   因私  延期出国)
+            if(StringUilt.stringIsNullOrEmpty(reson)){
+
+                omsAbroadApproval.setApprovalAdvice(reson); //  审批意见
+            }else{
+                omsAbroadApproval.setApprovalAdvice(pass);  //  审批意见
+            }
+
+            omsAbroadApproval.setApprovalResult(pass); //  审批结论
+            omsAbroadApproval.setApprovalUser(userInfo.getId());  // 审批人
+            omsAbroadApproval.setApprovalTime(new Date());  // 审批时间
+            omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
+
+
+        }
+
+
+
+    }
+
+
+
+    public void saveAbroadApprovalByBussinessIdByAudit(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos, String pass,String stepName,int stepCode,String reson) {
+
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+            OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
+            omsAbroadApproval.setApplyId(businessTypeAndIdAndOnJobVos .get(i).getBussinessId()); // 业务流程 Id
             omsAbroadApproval.setStepCode(stepCode);      //  步骤编码
             omsAbroadApproval.setStepName(stepName);      //  步骤名称
             omsAbroadApproval.setType(bussinessType);  // 业务流程 类型(因公   因私  延期出国)
@@ -977,30 +1063,28 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
      *
      * **/
     @Transactional(rollbackFor = CustomMessageException.class)
-    public void createInstructionsTable(AuditOpinionVo auditOpinionVo){
+    public void createInstructionsTable(LeaderSupervisionVo leaderSupervisionVo){
 
-        LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName());
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
 
-        if(auditOpinionVo.getBussinessId().length!=auditOpinionVo.getBussinessName().length){
-            throw new CustomMessageException("参数id和参数名称 不一致，请仔细检查");
 
-        }
 
         // 保存 审批记录 （第一步）  1.生成请示表，审核意见自动置为通过
-        saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"不通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+        saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"不通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
 //        omsAbroadApprovalService
         //  修改 业务流程状态 (第二步) 修改 为 干部监督处
-        updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[3]);
+        updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
 
         // 修改 业务流程申请 最终结论
 
-        updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"2",null);
+        updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"2",null);
 
         //修改 批次状态 (第三步)
-        String bussinessId = auditOpinionVo.getBussinessId()[0];
 
-        String bussinessName = auditOpinionVo.getBussinessName()[0];
-        selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[3]);
+        selectBatchIdAndisOrNotUpateBatchStatus(
+                (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+
+                Constants.leader_business[3]);
 
 
 
@@ -1044,53 +1128,55 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
   public void  chuzhangAbroadApprovalBatch(AuditOpinionVo auditOpinionVo){
 
-      LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),auditOpinionVo.getIspass(),auditOpinionVo.getIncumbencyStatusArrays());
+      LeaderSupervisionUntil.throwableByParam(auditOpinionVo,auditOpinionVo.getIspass());
 
-      if(auditOpinionVo.getBussinessId().length!=auditOpinionVo.getBussinessName().length){
-          throw new CustomMessageException("参数id和参数名称 不一致，请仔细检查");
 
-      }
 
       // 通过
       if("pass".equals(auditOpinionVo.getIspass())){
 
           // 保存 审批记录 （第一步）   处领导审批
-          saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+          saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[4],auditOpinionVo.getIncumbencyStatusArrays(),auditOpinionVo.getIspass());
+          updteBussinessApplyStatue(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[4],auditOpinionVo.getIspass());
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"1",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"1",null);
 
 
           //修改 批次状态 (第三步)
-          String bussinessId = auditOpinionVo.getBussinessId()[0];
+//          String bussinessId = auditOpinionVo.getBussinessId()[0];
+//
+//          String bussinessName = auditOpinionVo.getBussinessName()[0];
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
 
-          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[4]);
+                  Constants.leader_business[4]);
 
 
       }else if("nopass".equals(auditOpinionVo.getIspass())){
       // 不通过
 
           // 保存 审批记录 （第一步）   处领导审批
-          saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+          saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[4]);
+          updteBussinessApplyStatueAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),Constants.leader_businessName[4]);
 
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"2",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"2",null);
 
           //修改 批次状态 (第三步)
-          String bussinessId = auditOpinionVo.getBussinessId()[0];
-
-          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[4]);
+//          String bussinessId = auditOpinionVo.getBussinessId()[0];
+//
+//          String bussinessName = auditOpinionVo.getBussinessName()[0];
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  Constants.leader_business[4]);
 
 
 
@@ -1199,42 +1285,51 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
       if("pass".equals(auditOpinionVo.getIspass())){
 
           // 保存 审批记录 （第一步）   处领导审批
-          saveAbroadApprovalByBussinessId(new String[]{auditOpinionVo.getBusId()},new String[]{auditOpinionVo.getBusName()},"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+          List<BussinessTypeAndIdVo> bussinessTypeAndIdVos =  new ArrayList<BussinessTypeAndIdVo>();
+          BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+          bussinessTypeAndIdVo.setBussinessId(auditOpinionVo.getBusId());
+          bussinessTypeAndIdVo.setBussinessName(auditOpinionVo.getBusName());
+          bussinessTypeAndIdVos.add(bussinessTypeAndIdVo);
+          saveAbroadApprovalByBussinessId(bussinessTypeAndIdVos,"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[4],auditOpinionVo.getIncumbencyStatusArrays(),auditOpinionVo.getIspass());
+          updteBussinessApplyStatue(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[4],auditOpinionVo.getIspass());
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"1",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"1",null);
 
 
           //修改 批次状态 (第三步)
-          String bussinessId = auditOpinionVo.getBussinessId()[0];
-
-          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[4]);
+//          String bussinessId = auditOpinionVo.getBussinessId()[0];
+//
+//          String bussinessName = auditOpinionVo.getBussinessName()[0];
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  Constants.leader_business[4]);
 
 
       }else if("nopass".equals(auditOpinionVo.getIspass())){
           // 不通过
 
           // 保存 审批记录 （第一步）   处领导审批
-          saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+          saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[4]);
+          updteBussinessApplyStatueAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[4]);
 
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"2",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"2",null);
 
           //修改 批次状态 (第三步)
-          String bussinessId = auditOpinionVo.getBussinessId()[0];
-
-          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[4]);
+//          String bussinessId = auditOpinionVo.getBussinessId()[0];
+//
+//          String bussinessName = auditOpinionVo.getBussinessName()[0];
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  Constants.leader_business[4]);
 
 
 
@@ -1279,53 +1374,53 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
   public  void buzhangAbroadApproval(AuditOpinionVo auditOpinionVo){
 
 
-      LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),auditOpinionVo.getIspass());
+      LeaderSupervisionUntil.throwableByParam(auditOpinionVo,auditOpinionVo.getIspass());
 
-      if(auditOpinionVo.getBussinessId().length!=auditOpinionVo.getBussinessName().length){
-          throw new CustomMessageException("参数id和参数名称 不一致，请仔细检查");
 
-      }
 
       // 通过
       if("pass".equals(auditOpinionVo.getIspass())){
 
           // 保存 审批记录 （第一步）   部领导审批
-          saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
+          saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  部领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[5],auditOpinionVo.getIncumbencyStatusArrays(),auditOpinionVo.getIspass());
+          updteBussinessApplyStatue(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[5],auditOpinionVo.getIspass());
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"1",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"1",null);
 
 
           //修改 批次状态 (第三步)
 //          String bussinessId = auditOpinionVo.getBussinessId()[0];
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[5]);
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  Constants.leader_business[5]);
 
 
       }else if("nopass".equals(auditOpinionVo.getIspass())){
           // 不通过
 
           // 保存 审批记录 （第一步）   部领导审批
-          saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
+          saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
 //        omsAbroadApprovalService
           //  修改 业务流程状态 (第二步) 修改 为  部领导审批
-          updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[5]);
+          updteBussinessApplyStatueAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[5]);
 
 
           // 修改 业务流程申请 最终结论
 
-          updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"2",null);
+          updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"2",null);
 
           //修改 批次状态 (第三步)
-          String bussinessId = auditOpinionVo.getBussinessId()[0];
 
-          String bussinessName = auditOpinionVo.getBussinessName()[0];
-          selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[5]);
+          selectBatchIdAndisOrNotUpateBatchStatus(
+                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  Constants.leader_business[5]
+          );
 
 
 
@@ -1371,49 +1466,53 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Transactional(rollbackFor = CustomMessageException.class)
     public void InstructionsVerifyApproval(AuditOpinionVo auditOpinionVo){
 
-        LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),auditOpinionVo.getIspass());
+        LeaderSupervisionUntil.throwableByParam(auditOpinionVo,auditOpinionVo.getIspass());
 
 
         // 通过
         if("pass".equals(auditOpinionVo.getIspass())){
 
             // 保存 审批记录 （第一步）  批件核实
-            saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[6], Constants.leader_business[6],null);
+            saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[6], Constants.leader_business[6],null);
 //        omsAbroadApprovalService
             //  修改 业务流程状态 (第二步) 修改 为  部领导审批
-            updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[6],auditOpinionVo.getIncumbencyStatusArrays(),auditOpinionVo.getIspass());
+            updteBussinessApplyStatue(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[6],auditOpinionVo.getIspass());
 
             // 修改 业务流程申请 最终结论
 
-            updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"1",null);
+            updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"1",null);
 
 
             //修改 批次状态 (第三步)
 //            String bussinessId = auditOpinionVo.getBussinessId()[0];
 //
 //            String bussinessName = auditOpinionVo.getBussinessName()[0];
-            selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[6]);
+            selectBatchIdAndisOrNotUpateBatchStatus(
+                    (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                    Constants.leader_business[6]);
 
 
         }else if("nopass".equals(auditOpinionVo.getIspass())){
             // 不通过
 
             // 保存 审批记录 （第一步）   部领导审批
-            saveAbroadApprovalByBussinessId(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"通过", Constants.leader_businessName[6], Constants.leader_business[6],null);
+            saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[6], Constants.leader_business[6],null);
 //        omsAbroadApprovalService
             //  修改 业务流程状态 (第二步) 修改 为  部领导审批
-            updteBussinessApplyStatue(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(), Constants.leader_businessName[6]);
+            updteBussinessApplyStatueAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[6]);
 
 
             // 修改 业务流程申请 最终结论
 
-            updateBussinessApplyRecordOpinion(auditOpinionVo.getBussinessId(),auditOpinionVo.getBussinessName(),"2",null);
+            updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"2",null);
 
             //修改 批次状态 (第三步)
 //            String bussinessId = auditOpinionVo.getBussinessId()[0];
 //
 //            String bussinessName = auditOpinionVo.getBussinessName()[0];
-            selectBatchIdAndisOrNotUpateBatchStatus(auditOpinionVo.getBussinessId(), Constants.leader_business[6]);
+            selectBatchIdAndisOrNotUpateBatchStatus(
+                    (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                    Constants.leader_business[6]);
 
 
 

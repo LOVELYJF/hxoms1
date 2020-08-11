@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
@@ -76,6 +77,14 @@ public class  LeaderSupervisionController {
         return Result.success();
     }
 
+    @GetMapping("/deleteLeaderBatch")
+    public Result deleteLeaderBatch(OmsLeaderBatch omsLeaderBatch){
+
+        leaderCommonService.deleteLeaderBatch(omsLeaderBatch);
+
+        return Result.success();
+    }
+
 
 
 
@@ -118,7 +127,7 @@ public class  LeaderSupervisionController {
      * 征求纪委意见 查询页面
      *
      * **/
-
+    @GetMapping("/selectjiweiBusinessUser")
     public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
@@ -126,13 +135,39 @@ public class  LeaderSupervisionController {
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
+    /**
+     *  纪委意见录入 查询页面
+     * **/
+    @GetMapping("/selectjiweiWriteBusinessUser")
+    public Result selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
+
+
+        PageInfo pageInfo =  leaderCommonService.selectjiweiWriteBusinessUser(leaderSupervisionVo);
+
+        return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
+
+    /**
+     *
+     *  TODO 点击 纪委意见记录 触发的 事件
+     * **/
+
+
+
+
+    /**
+     *  录入口头纪委意见
+     * **/
+
+
 
     /**
      *  因公出国境管理 导出
      * **/
 
     @PostMapping("/exportPubApplyMangerExcel")
-    public void exportExcel(LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
+    public void exportExcel(LeaderSupervisionVo leaderSupervisionVo, HttpServletResponse response){
         try {
             HSSFWorkbook wb = leaderEXportExcelService.pubApplyMangerExport();
             String date = new SimpleDateFormat("yyyy-MM-dd")
@@ -156,9 +191,9 @@ public class  LeaderSupervisionController {
      * **/
 
     @PostMapping("/exportJiweiExcel")
-    public void exportJiweiExcel(AuditOpinionVo auditOpinionVo , HttpServletResponse response){
+    public void exportJiweiExcel(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
 
-            leaderCommonService.updateBussinessFiledsByJiweiExport(auditOpinionVo);
+            leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
 
         try {
             HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport();

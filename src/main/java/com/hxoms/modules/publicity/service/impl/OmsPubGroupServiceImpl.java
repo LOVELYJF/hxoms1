@@ -4,12 +4,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
+import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -31,6 +30,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Autowired
     private OmsPubGroupMapper pubGroupMapper;
 
+    private OmsPubApplyMapper pubApplyMapper;
+
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Map<Object,String> param) throws ParseException {
         List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
@@ -40,21 +41,26 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object insertPubGroup(OmsPubGroupPreApproval pubGroup, OmsPubGroupPreApprovalVO personList) {
-        int num = personList.getPersonInfoVOS().size();
+    public Object insertPubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
+        int num = personList.size();
         if(num > 0){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             for(int i = 0; i < num; i++){
+                pubGroup.setTzrs(num);
+                pubGroup.setCreateUser(userInfo.getId());
+                pubGroup.setCreateTime(new Date());
             }
-            return pubGroupMapper.insertPubGroup(pubGroup);
+            pubGroupMapper.insertPubGroup(pubGroup);
+            pubApplyMapper.insertPubApplyList(personList);
+            return null;
         }else{
             return "未选择备案人员";
         }
     }
 
     @Override
-    public Object updatePubGroup(OmsPubGroupPreApproval pubGroup, OmsPubGroupPreApprovalVO personList) {
+    public Object updatePubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
         return pubGroupMapper.updatePubGroup(pubGroup);
     }
 
@@ -69,6 +75,51 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         List<Map<String, Object>> list = readExcel(file);
         return msg;
     }
+
+    @Override
+    public Object checkoutPerson(String idList) {
+        return null;
+    }
+
+    @Override
+    public Object insertPerson(String a0100) {
+        OmsPubApply pubApply = new OmsPubApply();
+        pubApply.setA0100(a0100);
+        return pubApplyMapper.insert(pubApply);
+    }
+
+    @Override
+    public void backoutPerson(String id) {
+        pubApplyMapper.deletePubApplyById(id);
+    }
+
+    @Override
+    public OmsPubApply getPersonDetailById(String id) {
+        return pubApplyMapper.selectById(id);
+    }
+
+    @Override
+    public Object sendTask(String id) {
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        pubGroup.setSqzt(3);
+        return pubGroupMapper.updatePubGroup(pubGroup);
+    }
+
+    @Override
+    public List<Map<String, String>>  getFlowDetail(String id) {
+        return pubGroupMapper.getFlowDetail(id);
+    }
+
+    @Override
+    public Object uploadApproval(MultipartFile file, String id) {
+        return null;
+    }
+
+    @Override
+    public List<Map<String,String>> getNumByStatus(String bazt) {
+        return pubGroupMapper.getNumByStatus(bazt);
+    }
+
     /**
      * 读取到Excel表格的数据(导入用)
      * @return List<OmsSmrPersonInfo>

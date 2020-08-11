@@ -1,6 +1,7 @@
 package com.hxoms.modules.leaderSupervision.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 
@@ -40,10 +41,20 @@ public interface LeaderCommonService {
 
     PageInfo selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
+    /**
+     *
+     * 记录 纪委意见 查询页面
+     * **/
+
     PageInfo selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
 
-    void updateBussinessFiledsByJiweiExport(AuditOpinionVo auditOpinionVo);
+    void updateBussinessFiledsByJiweiExport(LeaderSupervisionVo leaderSupervisionVo);
+
+    /**
+     *  删除批次
+     * **/
+    void deleteLeaderBatch(OmsLeaderBatch omsLeaderBatch);
 
 
 }
