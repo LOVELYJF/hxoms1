@@ -109,6 +109,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         ConditionReplaceVO conditionReplaceVO = new ConditionReplaceVO();
         String procpersonId = "";
+        String a0100 = "";
         if (Constants.oms_business[1].equals(type)){
             //因私出国
             OmsPriApply omsPriApply = omsPriApplyMapper.selectById(applyId);
@@ -116,6 +117,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
                 throw new CustomMessageException("申请不存在");
             }
             procpersonId = omsPriApply.getProcpersonId();
+            a0100 = omsPriApply.getA0100();
         } else if(Constants.oms_business[2].equals(type)){
             //延期回国
             OmsPriDelayApply omsPriDelayApply = omsPriDelayApplyMapper.selectById(applyId);
@@ -123,12 +125,14 @@ public class OmsConditionServiceImpl implements OmsConditionService {
                 throw new CustomMessageException("申请不存在");
             }
             procpersonId = omsPriDelayApply.getProcpersonId();
+            a0100 = omsPriDelayApply.getA0100();
         } else if(Constants.oms_business[0].equals(type)){
             //因公 TODO
         }
         conditionReplaceVO.setProcpersonId(procpersonId);
         conditionReplaceVO.setApplyId(applyId);
         conditionReplaceVO.setHandleId(userInfo.getId());
+        conditionReplaceVO.setA0100(a0100);
         return conditionReplaceVO;
     }
 
@@ -265,7 +269,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             for (OmsReplaceKeywords item : omsReplaceKeywords) {
                 try {
                     String value = (String) clazz.getDeclaredMethod(item.getReplaceField()).invoke(conditionReplaceVO);
-                    sql = sql.replace(item.getKeyword(), value);
+                    sql = sql.replace(item.getKeyword(), value==null?"":value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                     throw new CustomMessageException("数据异常");

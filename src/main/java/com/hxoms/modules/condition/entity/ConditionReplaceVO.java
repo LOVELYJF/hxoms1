@@ -6,6 +6,8 @@ package com.hxoms.modules.condition.entity;
  * @date: 2020-06-12
  */
 public class ConditionReplaceVO {
+    //人员id
+    private String a0100;
     //备案信息id
     private String procpersonId;
     //经办人id
@@ -15,6 +17,14 @@ public class ConditionReplaceVO {
     //组团单位 TODO
     //审批单位 TODO
     //干部监督处 TODO
+
+    public String getA0100() {
+        return a0100;
+    }
+
+    public void setA0100(String a0100) {
+        this.a0100 = a0100;
+    }
 
     public String getProcpersonId() {
         return procpersonId;
