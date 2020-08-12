@@ -314,7 +314,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //业务类别
                 omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
                 //人员主键
-                omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getA0100());
+                omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getProcpersonId());
                 //姓名
                 omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
                 //性别
@@ -372,7 +372,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //业务类别
                 omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
                 //人员主键
-                omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getA0100());
+                omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getProcpersonId());
                 //姓名
                 omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
                 //性别

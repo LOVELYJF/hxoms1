@@ -2,59 +2,54 @@ package com.hxoms.modules.passportCard.certificateCollect.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
+import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-@TableAnnotation(TableName = "cf_certificate_collection_request", TableDescription="")
+@TableAnnotation(TableName = "cf_certificate_collection_request", TableDescription="证照催缴子表")
 public class CfCertificateCollectionRequest {
-
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="")
+    @IdAnnotation
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "WORKSHEET_ID",   FieldDescription="工作单ID")
-    private String worksheetId;
+    @ColumnAnnotation(FieldName = "CJ_ID",   FieldDescription="证照催缴表ID")
+    private String cjId;
 
-    @ColumnAnnotation(FieldName = "CF_ID",   FieldDescription="护照ID")
-    private String cfId;
+    @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
+    private String cjWay;
 
-    @ColumnAnnotation(FieldName = "REGISTERED_LOCATION",   FieldDescription="户口所在地")
-    private String registeredLocation;
-
-    @ColumnAnnotation(FieldName = "CF_NUM",   FieldDescription="护照号码")
-    private String cfNum;
-
-    @ColumnAnnotation(FieldName = "CJ_STATUS",   FieldDescription="催缴状态0:解除，1：已上缴，2:未上缴")
-    private Integer cjStatus;
-
-    @ColumnAnnotation(FieldName = "UNIT_PERSON",   FieldDescription="单位联系人")
-    private String unitPerson;
-
-    @ColumnAnnotation(FieldName = "PHONE",   FieldDescription="联系电话")
-    private String phone;
-
-    @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源")
-    private String dataSource;
-
-    @ColumnAnnotation(FieldName = "HAPPEN_TIME",   FieldDescription="业务发生时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date happenTime;
-
-    @ColumnAnnotation(FieldName = "RETURN_TIME",   FieldDescription="归还时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date returnTime;
-
-    @ColumnAnnotation(FieldName = "CJ_CONDITION",   FieldDescription="催缴情况0:电话催缴，1:短信催缴")
-    private Integer cjCondition;
+    @ColumnAnnotation(FieldName = "CJ_MESSAGE",   FieldDescription="催缴内容")
+    private String cjMessage;
 
     @ColumnAnnotation(FieldName = "CJ_RESULT",   FieldDescription="催缴结果")
     private String cjResult;
 
-    @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效0:有效，1:无效")
-    private Integer isValid;
+    @ColumnAnnotation(FieldName = "USER_ID",   FieldDescription="经办人用户ID")
+    private String userId;
+
+    @ColumnAnnotation(FieldName = "NAME",   FieldDescription="经办人姓名")
+    private String name;
+
+    @ColumnAnnotation(FieldName = "PHONE",   FieldDescription="经办人电话")
+    private String phone;
+
+    @ColumnAnnotation(FieldName = "CJ_PERSON",   FieldDescription="催缴人")
+    private String cjPerson;
+
+    @ColumnAnnotation(FieldName = "CJ_TIME",   FieldDescription="催缴时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date cjTime;
+
+    @ColumnAnnotation(FieldName = "UPDATOR",   FieldDescription="修改人")
+    private String updator;
+
+    @ColumnAnnotation(FieldName = "UPDATETIME",   FieldDescription="修改时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date updatetime;
 
     public String getId() {
         return id;
@@ -64,92 +59,28 @@ public class CfCertificateCollectionRequest {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getWorksheetId() {
-        return worksheetId;
+    public String getCjId() {
+        return cjId;
     }
 
-    public void setWorksheetId(String worksheetId) {
-        this.worksheetId = worksheetId == null ? null : worksheetId.trim();
+    public void setCjId(String cjId) {
+        this.cjId = cjId == null ? null : cjId.trim();
     }
 
-    public String getCfId() {
-        return cfId;
+    public String getCjWay() {
+        return cjWay;
     }
 
-    public void setCfId(String cfId) {
-        this.cfId = cfId == null ? null : cfId.trim();
+    public void setCjWay(String cjWay) {
+        this.cjWay = cjWay == null ? null : cjWay.trim();
     }
 
-    public String getRegisteredLocation() {
-        return registeredLocation;
+    public String getCjMessage() {
+        return cjMessage;
     }
 
-    public void setRegisteredLocation(String registeredLocation) {
-        this.registeredLocation = registeredLocation == null ? null : registeredLocation.trim();
-    }
-
-    public String getCfNum() {
-        return cfNum;
-    }
-
-    public void setCfNum(String cfNum) {
-        this.cfNum = cfNum == null ? null : cfNum.trim();
-    }
-
-    public Integer getCjStatus() {
-        return cjStatus;
-    }
-
-    public void setCjStatus(Integer cjStatus) {
-        this.cjStatus = cjStatus;
-    }
-
-    public String getUnitPerson() {
-        return unitPerson;
-    }
-
-    public void setUnitPerson(String unitPerson) {
-        this.unitPerson = unitPerson == null ? null : unitPerson.trim();
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
-    }
-
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource == null ? null : dataSource.trim();
-    }
-
-    public Date getHappenTime() {
-        return happenTime;
-    }
-
-    public void setHappenTime(Date happenTime) {
-        this.happenTime = happenTime;
-    }
-
-    public Date getReturnTime() {
-        return returnTime;
-    }
-
-    public void setReturnTime(Date returnTime) {
-        this.returnTime = returnTime;
-    }
-
-    public Integer getCjCondition() {
-        return cjCondition;
-    }
-
-    public void setCjCondition(Integer cjCondition) {
-        this.cjCondition = cjCondition;
+    public void setCjMessage(String cjMessage) {
+        this.cjMessage = cjMessage == null ? null : cjMessage.trim();
     }
 
     public String getCjResult() {
@@ -160,11 +91,59 @@ public class CfCertificateCollectionRequest {
         this.cjResult = cjResult == null ? null : cjResult.trim();
     }
 
-    public Integer getIsValid() {
-        return isValid;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setIsValid(Integer isValid) {
-        this.isValid = isValid;
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getCjPerson() {
+        return cjPerson;
+    }
+
+    public void setCjPerson(String cjPerson) {
+        this.cjPerson = cjPerson == null ? null : cjPerson.trim();
+    }
+
+    public Date getCjTime() {
+        return cjTime;
+    }
+
+    public void setCjTime(Date cjTime) {
+        this.cjTime = cjTime;
+    }
+
+    public String getUpdator() {
+        return updator;
+    }
+
+    public void setUpdator(String updator) {
+        this.updator = updator == null ? null : updator.trim();
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

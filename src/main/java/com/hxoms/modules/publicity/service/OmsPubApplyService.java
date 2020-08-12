@@ -15,7 +15,7 @@ public interface OmsPubApplyService {
      * @author sunqian
      * @date 2020/4/22 16:43
      */
-    List<PersonInfoVO> selectPersonListByOrg(String orgId);
+    List<PersonInfoVO> selectPersonListByOrg(String orgId, String keyword);
 
     /**
      * 根据人员id查询申请需要的基本信息
@@ -219,8 +219,9 @@ public interface OmsPubApplyService {
      * @Return: void
      * @Author: 李逍遥
      * @Date: 2020/8/7 9:55
+     * @param id
      */
-    void reportPubGroupPreApproval(String id);
+    void reportPubGroupPreApproval(List<String> id);
 
     /**
      * 功能描述: <br>

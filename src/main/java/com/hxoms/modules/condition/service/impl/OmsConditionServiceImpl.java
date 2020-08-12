@@ -60,14 +60,14 @@ public class OmsConditionServiceImpl implements OmsConditionService {
     }
 
     @Override
-    public List<Map<String, String>> checkConditionByA0100(String a0100, String type) {
-        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(type)){
+    public List<Map<String, String>> checkConditionByA0100(String procpersonId, String type) {
+        if (StringUtils.isBlank(procpersonId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         ConditionReplaceVO conditionReplaceVO = new ConditionReplaceVO();
-        conditionReplaceVO.setA0100(a0100);
+        conditionReplaceVO.setProcpersonId(procpersonId);
         conditionReplaceVO.setHandleId(userInfo.getId());
         return checkApply(conditionReplaceVO, Constants.OMS_CONDITION_CHECKTYPE[0], type);
     }
@@ -108,6 +108,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         ConditionReplaceVO conditionReplaceVO = new ConditionReplaceVO();
+        String procpersonId = "";
         String a0100 = "";
         if (Constants.oms_business[1].equals(type)){
             //因私出国
@@ -115,6 +116,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             if (omsPriApply == null){
                 throw new CustomMessageException("申请不存在");
             }
+            procpersonId = omsPriApply.getProcpersonId();
             a0100 = omsPriApply.getA0100();
         } else if(Constants.oms_business[2].equals(type)){
             //延期回国
@@ -122,13 +124,15 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             if (omsPriDelayApply == null){
                 throw new CustomMessageException("申请不存在");
             }
+            procpersonId = omsPriDelayApply.getProcpersonId();
             a0100 = omsPriDelayApply.getA0100();
         } else if(Constants.oms_business[0].equals(type)){
             //因公 TODO
         }
-        conditionReplaceVO.setA0100(a0100);
+        conditionReplaceVO.setProcpersonId(procpersonId);
         conditionReplaceVO.setApplyId(applyId);
         conditionReplaceVO.setHandleId(userInfo.getId());
+        conditionReplaceVO.setA0100(a0100);
         return conditionReplaceVO;
     }
 
@@ -265,7 +269,7 @@ public class OmsConditionServiceImpl implements OmsConditionService {
             for (OmsReplaceKeywords item : omsReplaceKeywords) {
                 try {
                     String value = (String) clazz.getDeclaredMethod(item.getReplaceField()).invoke(conditionReplaceVO);
-                    sql = sql.replace(item.getKeyword(), value);
+                    sql = sql.replace(item.getKeyword(), value==null?"":value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                     throw new CustomMessageException("数据异常");

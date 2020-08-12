@@ -34,8 +34,8 @@ public class OmsPubApplyController {
      * @date 2020/4/21 17:16
      */
     @GetMapping("/selectPersonListByOrg")
-    public Result selectPersonListByOrg(String b0100) {
-        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100);
+    public Result selectPersonListByOrg(String b0100, String keyword) {
+        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100, keyword);
         return Result.success(list);
     }
 
@@ -283,7 +283,7 @@ public class OmsPubApplyController {
      * @Date: 2020/8/7 9:54
      */
     @PostMapping("/reportPubGroupPreApproval")
-    public Result reportPubGroupPreApproval(String id){
+    public Result reportPubGroupPreApproval(@RequestParam(value ="id",required = false) List<String> id){
         omsPubApplyService.reportPubGroupPreApproval(id);
         return Result.success();
     }

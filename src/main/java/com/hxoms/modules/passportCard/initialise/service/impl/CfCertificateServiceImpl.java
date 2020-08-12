@@ -8,13 +8,14 @@ import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
+import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificateReminder;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerIssuePerson;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateExport;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerIssuePersonMapper;
@@ -44,11 +45,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     private CfCertificateMapper cfCertificateMapper;
 
     @Autowired
-    private OmsEntryexitRecordMapper omsEntryexitRecordMapper;
+    private OmsEntryexitRecordService omsEntryexitRecordService;
 
     @Autowired
     private OmsCerIssuePersonMapper omsCerIssuePersonMapper;
 
+    @Autowired
+    private CfCertificateCollectionService cfCertificateCollectionService;
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
 
@@ -69,25 +72,6 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         return pageInfo;
     }
 
-
-
-   public boolean delete(String id){
-
-        return cfCertificateMapper.delete(id);
-    }
-
-    @Override
-    public PageInfo<CfCertificateReminder> findOverduePass(CfCertificateReminderParam cfCertificateReminderParam) {
-        PageHelper.startPage(cfCertificateReminderParam.getPageNum()== null?0:cfCertificateReminderParam.getPageNum(),
-                cfCertificateReminderParam.getPageSize()==null?10:cfCertificateReminderParam.getPageSize());
-        List<CfCertificateReminder> cfCertificateReminderList= cfCertificateMapper.findOverduePass(cfCertificateReminderParam);
-        PageInfo<CfCertificateReminder> pageInfo = new PageInfo(cfCertificateReminderList);
-        return pageInfo;
-    }
-
-    public Integer findSuccessCf(){
-        return cfCertificateMapper.findSuccessCf();
-   }
 
  
    /**
@@ -131,6 +115,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Override
     public CfCertificateValidate validateCerInfo(CfCertificate cfCertificate) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if(userInfo==null)
+            throw new CustomMessageException("查询登陆用户信息失败！");
         if(cfCertificate==null||cfCertificate.getZjlx()==null||StringUtils.isBlank(cfCertificate.getZjhm()))
             throw new CustomMessageException("参数不正确");
         //通过证件类型、证件号码查询
@@ -139,9 +125,10 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             //证照验证
             validateCerInfo(certificateGa,cfCertificate);
             //验证通过，通过接口获取证照存储位置
-            if("4".equals(certificateGa.getSaveStatus())){
+            if("4".equals(certificateGa.getCardStatus())){
 
             }
+            certificateGa.setSaveStatus("1");
             certificateGa.setZjxs(cfCertificate.getZjxs());
             //保管单位默认是干部监督处
             certificateGa.setSurelyUnit("0");
@@ -170,6 +157,132 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      */
     @Override
     public void insertCertificate(CfCertificate cfCertificate) {
+        if(cfCertificate==null)
+            throw new CustomMessageException("参数不能为空，请核实！");
+        cfCertificate.setId(UUIDGenerator.getPrimaryKey());
+        cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
+        //已取出
+        cfCertificate.setSaveStatus("1");
+        //待验证
+        cfCertificate.setCardStatus("5");
+        cfCertificate.setExceptionMessage("公安无对应证照数据");
+        int resule=cfCertificateMapper.insert(cfCertificate);
+        if(resule==0)
+            throw new CustomMessageException("保存失败！");
+    }
+
+    /**
+     * @Desc: 未上缴证照统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/8/7
+     */
+    @Override
+    public PageBean selectNotProvicdeCer(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
+        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectNotProvicdeCer());
+        return PageUtil.packagePage(pageInfo);
+    }
+
+    /**
+     * @Desc: 已上缴未入库统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/8/7
+     */
+    @Override
+    public PageBean selectProNotstorCer(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
+        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectProNotstorCer());
+        return PageUtil.packagePage(pageInfo);
+    }
+
+    /**
+     * @Desc: 存疑证照统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.PageBean
+     * @Date: 2020/8/7
+     */
+    @Override
+    public PageBean selectExceptionCer(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
+        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectExceptionCer());
+        return PageUtil.packagePage(pageInfo);
+    }
+
+    /**
+     * @Desc: 生成催缴任务
+     * @Author: wangyunquan
+     * @Param: [cfCertificateCollectionList]
+     * @Return: void
+     * @Date: 2020/8/11
+     */
+    @Override
+    public void createCjTask(List<CfCertificateCollection> cfCertificateCollectionList) {
+        cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
+    }
+
+    /**
+     * @Desc: 公安已注销证照，更新状态
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: void
+     * @Date: 2020/8/10
+     */
+    @Override
+    public void updateCerForCerIsCancel(CfCertificate cfCertificate) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if(userInfo==null)
+            throw new CustomMessageException("查询登陆用户信息失败！");
+        cfCertificate.setSaveStatus("1");
+        cfCertificate.setCardStatus("2");
+        cfCertificate.setUpdater(userInfo.getId());
+        cfCertificate.setUpdateTime(new Date());
+        int result = cfCertificateMapper.updateById(cfCertificate);
+        if(result==0)
+            throw new CustomMessageException("处理失败！");
+    }
+
+    /**
+     * @Desc: 存疑处理，以证照信息为准
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: void
+     * @Date: 2020/8/10
+     */
+    @Override
+    public void updateCerForCerIsRight(CfCertificate cfCertificate) {
+        cfCertificate.setSaveStatus("1");
+        cfCertificate.setCardStatus("4");
+        cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
+        cfCertificate.setUpdateTime(new Date());
+        //通过接口获取证照存储位置
+
+        int result = cfCertificateMapper.updateById(cfCertificate);
+        if(result==0)
+            throw new CustomMessageException("处理失败！");
+    }
+
+    /**
+     * @Desc: 存疑处理，以公安信息为准
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: void
+     * @Date: 2020/8/10
+     */
+    @Override
+    public void updateCerForGaInfoIsRight(CfCertificate cfCertificate) {
+        cfCertificate.setSaveStatus("2");
+        cfCertificate.setCardStatus("5");
+        cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
+        cfCertificate.setUpdateTime(new Date());
+        int result = cfCertificateMapper.updateById(cfCertificate);
+        if(result==0)
+            throw new CustomMessageException("处理失败！");
+        //产生催缴任务
 
     }
 
@@ -186,7 +299,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         String[] valiUint={"姓名","性别","国籍","出生日期","签发单位","签发日期","出生地","证件有效期至"};
         List<String> certificateGaList=new LinkedList<>();
         List<String> certificateList=new LinkedList<>();
-        SimpleDateFormat sF=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sF=new SimpleDateFormat("yyyy.MM.dd");
         certificateGaList.add(certificateGa.getName());certificateList.add(cfCertificate.getName());
         certificateGaList.add(certificateGa.getSex());certificateList.add(cfCertificate.getSex());
         certificateGaList.add(certificateGa.getGj());certificateList.add(cfCertificate.getGj());
@@ -210,6 +323,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if(StringUtils.isBlank(stringBuffer.toString())){
             //验证通过
             certificateGa.setCardStatus("4");
+            certificateGa.setIsValid(0);
         }else{
             //验证失败
             certificateGa.setCardStatus("3");
@@ -338,14 +452,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 //判断是否过期
                                 boolean after = valiDate.after(dateParse.parse(dateParse.format(new Date())));
                                 if(after){
-                                    //是否有效,0:有效,1:无效
-                                    cfCertificate.setIsValid(0);
                                     //证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:其它)
                                     cfCertificate.setCardStatus("5");
                                 }else{
-                                    cfCertificate.setIsValid(1);
                                     cfCertificate.setCardStatus("1");
                                 }
+                                //是否有效,0:有效,1:无效,待验证通过置为有效
+                                cfCertificate.setIsValid(1);
                                 //保管状态(0:正常保管,1:已取出,2:未上缴)
                                 cfCertificate.setSaveStatus("2");
                                 idTypeInfo.put(cfCertificate.getZjlx()+cfCertificate.getZjhm(),cfCertificate.getYxqz());
@@ -427,25 +540,24 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
     @Transactional(rollbackFor=Exception.class)
     public void batchSaveEntity(CfCertificateExport cfCertificateExport){
-        int result = 1;
         //证件信息
         List<CfCertificate> cfCertificateList = cfCertificateExport.getCfCertificateList();
-        if(cfCertificateList.size()>0)
-            result=cfCertificateMapper.batchSaveEntity(cfCertificateList);
-        if(result==0)
-            throw  new CustomMessageException("插入失败");
+        if(cfCertificateList.size()>0){
+            if(!saveBatch(cfCertificateList,cfCertificateList.size()))
+                throw  new CustomMessageException("插入失败");
+        }
         //出入境记录
         List<OmsEntryexitRecord> omsEntryexitRecordList = cfCertificateExport.getOmsEntryexitRecordList();
-        if(omsEntryexitRecordList.size()>0)
-            result=omsEntryexitRecordMapper.batchSaveEntity(omsEntryexitRecordList);
-        if(result==0)
-            throw  new CustomMessageException("插入失败");
+        if(omsEntryexitRecordList.size()>0){
+            if(omsEntryexitRecordService.saveBatch(omsEntryexitRecordList,omsEntryexitRecordList.size()))
+                throw  new CustomMessageException("插入失败");
+        }
         //异常人员
         List<OmsCerIssuePerson> omsCerIssuePersonList = cfCertificateExport.getOmsCerIssuePersonList();
-        if(omsCerIssuePersonList.size()>0)
-            result= omsCerIssuePersonMapper.batchSaveEntity(omsCerIssuePersonList);
-        if(result==0)
-            throw  new CustomMessageException("插入失败");
+        if(omsCerIssuePersonList.size()>0){
+            if(omsCerIssuePersonMapper.batchSaveEntity(omsCerIssuePersonList)==0)
+                throw  new CustomMessageException("插入失败");
+        }
     }
     /**
      *

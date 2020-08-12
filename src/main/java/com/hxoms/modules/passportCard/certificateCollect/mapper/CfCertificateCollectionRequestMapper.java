@@ -12,12 +12,4 @@ public interface CfCertificateCollectionRequestMapper extends BaseMapper<CfCerti
     //批量查询
     List<CfCertificateCollectionRequest> selectCfCertificateCollectionRequestPage(CfCertificateCollectionRequestParam cfCertificateCollectionRequestParam);
 
-    //批量增加
-    int insertSelective(CfCertificateCollectionRequest cfCertificateCollectionRequest);
-
-
-    CfCertificateCollectionRequest selectCfCertificateCollectionRequestById(String id);
-
-    boolean updateCfCertificateCollectionRequest(CfCertificateCollectionRequest cfCertificateCollectionRequest);
-
 }

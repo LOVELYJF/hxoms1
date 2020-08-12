@@ -3,7 +3,6 @@ package com.hxoms.modules.passportCard.certificateCollect.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestParam;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionRequestMapper;
@@ -28,25 +27,5 @@ public class CfCertificateCollectionRequestServiceImpl extends ServiceImpl<CfCer
         PageInfo<CfCertificateCollectionRequest> pageInfo = new PageInfo(cfCertificateCollectionRequestList);
 
         return pageInfo;
-    }
-
-    @Override
-    public int insertSelective(CfCertificateCollectionRequest cfCertificateCollectionRequest) {
-        return cfCertificateCollectionRequestMapper.insertSelective(cfCertificateCollectionRequest);
-    }
-
-    @Override
-    public boolean saveOrUpdate(CfCertificateCollectionRequest cfCertificateCollectionRequest) {
-        boolean flag= false;
-        CfCertificateCollectionRequest cf = cfCertificateCollectionRequestMapper.selectCfCertificateCollectionRequestById(cfCertificateCollectionRequest.getId());
-        if(cf == null){
-            cfCertificateCollectionRequest.setId(UUIDGenerator.getPrimaryKey());
-            cfCertificateCollectionRequestMapper.insertSelective(cfCertificateCollectionRequest);
-            flag = true;
-        }else{
-            cfCertificateCollectionRequestMapper.updateCfCertificateCollectionRequest(cfCertificateCollectionRequest);
-            flag = true;
-        }
-        return flag;
     }
 }

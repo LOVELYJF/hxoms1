@@ -2,44 +2,67 @@ package com.hxoms.modules.passportCard.certificateCollect.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
+import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-@TableAnnotation(TableName = "cf_certificate_collection", TableDescription="")
+@TableAnnotation(TableName = "cf_certificate_collection", TableDescription="证照催缴表")
 public class CfCertificateCollection {
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="id")
+    @IdAnnotation
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "COLLECTION_ID",   FieldDescription="催缴人")
-    private String collectionId;
+    @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
+    private String omsId;
 
+    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照管理表ID")
+    private String cerId;
 
-    @ColumnAnnotation(FieldName = "CF_ID",   FieldDescription="证件号码ID，关联证件表主键ID")
-    private String cfId;
+    @ColumnAnnotation(FieldName = "BUSI_ID",   FieldDescription="业务申请表ID")
+    private String busiId;
 
-    @ColumnAnnotation(FieldName = "COLLECTIONf_TIME",   FieldDescription="催缴时间")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date collectionTime;
+    @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
+    private String cjWay;
 
-    @ColumnAnnotation(FieldName = "COLLECTION_TYPE",   FieldDescription=" 催缴类型-1:短信催缴 2:电话催缴")
-    private Integer collectionType;
+    @ColumnAnnotation(FieldName = "HAPPEN_DATE",   FieldDescription="业务发生日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date happenDate;
 
-    @ColumnAnnotation(FieldName = "RESPONSIBLE_USER",   FieldDescription="经办人")
-    private String responsibleUser;
+    @ColumnAnnotation(FieldName = "RETURN_DATE",   FieldDescription="归还日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date returnDate;
 
-    @ColumnAnnotation(FieldName = "RESPONSIBLE_PHONE",   FieldDescription="经办人联系方式")
-    private String responsiblePhone;
+    @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)")
+    private String dataSource;
 
-    @ColumnAnnotation(FieldName = "SAVE_TIME",   FieldDescription="保存时间")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date saveTime;
+    @ColumnAnnotation(FieldName = "CJ_STATUS",   FieldDescription="催缴状态(0:解除,1;已上缴,2:未上缴)")
+    private String cjStatus;
 
-    @ColumnAnnotation(FieldName = "COLLECTION_CONTEXT",   FieldDescription="催缴内容")
-    private String collectionContext;
+    @ColumnAnnotation(FieldName = "CJ_RESULT",   FieldDescription="催缴结果")
+    private String cjResult;
+
+    @ColumnAnnotation(FieldName = "CJ_REMOVE_DESC",   FieldDescription="解除说明")
+    private String cjRemoveDesc;
+
+    @ColumnAnnotation(FieldName = "CREATETIME",   FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date createtime;
+
+    @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
+    private String creator;
+
+    @ColumnAnnotation(FieldName = "UPDATETIME",   FieldDescription="修改时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date updatetime;
+
+    @ColumnAnnotation(FieldName = "UPDATOR",   FieldDescription="修改人")
+    private String updator;
 
     public String getId() {
         return id;
@@ -49,67 +72,115 @@ public class CfCertificateCollection {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getCollectionId() {
-        return collectionId;
+    public String getOmsId() {
+        return omsId;
     }
 
-    public void setCollectionId(String collectionId) {
-        this.collectionId = collectionId == null ? null : collectionId.trim();
+    public void setOmsId(String omsId) {
+        this.omsId = omsId == null ? null : omsId.trim();
     }
 
-    public Date getCollectionTime() {
-        return collectionTime;
+    public String getCerId() {
+        return cerId;
     }
 
-    public void setCollectionTime(Date collectionTime) {
-        this.collectionTime = collectionTime;
+    public void setCerId(String cerId) {
+        this.cerId = cerId == null ? null : cerId.trim();
     }
 
-    public String getResponsibleUser() {
-        return responsibleUser;
+    public String getBusiId() {
+        return busiId;
     }
 
-    public void setResponsibleUser(String responsibleUser) {
-        this.responsibleUser = responsibleUser == null ? null : responsibleUser.trim();
+    public void setBusiId(String busiId) {
+        this.busiId = busiId == null ? null : busiId.trim();
     }
 
-    public String getResponsiblePhone() {
-        return responsiblePhone;
+    public String getCjWay() {
+        return cjWay;
     }
 
-    public void setResponsiblePhone(String responsiblePhone) {
-        this.responsiblePhone = responsiblePhone == null ? null : responsiblePhone.trim();
+    public void setCjWay(String cjWay) {
+        this.cjWay = cjWay == null ? null : cjWay.trim();
     }
 
-    public Date getSaveTime() {
-        return saveTime;
+    public Date getHappenDate() {
+        return happenDate;
     }
 
-    public void setSaveTime(Date saveTime) {
-        this.saveTime = saveTime;
+    public void setHappenDate(Date happenDate) {
+        this.happenDate = happenDate;
     }
 
-    public String getCollectionContext() {
-        return collectionContext;
+    public Date getReturnDate() {
+        return returnDate;
     }
 
-    public void setCollectionContext(String collectionContext) {
-        this.collectionContext = collectionContext == null ? null : collectionContext.trim();
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
 
-    public String getCfId() {
-        return cfId;
+    public String getDataSource() {
+        return dataSource;
     }
 
-    public void setCfId(String cfId) {
-        this.cfId = cfId;
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource == null ? null : dataSource.trim();
     }
 
-    public Integer getCollectionType() {
-        return collectionType;
+    public String getCjStatus() {
+        return cjStatus;
     }
 
-    public void setCollectionType(Integer collectionType) {
-        this.collectionType = collectionType;
+    public void setCjStatus(String cjStatus) {
+        this.cjStatus = cjStatus == null ? null : cjStatus.trim();
+    }
+
+    public String getCjResult() {
+        return cjResult;
+    }
+
+    public void setCjResult(String cjResult) {
+        this.cjResult = cjResult == null ? null : cjResult.trim();
+    }
+
+    public String getCjRemoveDesc() {
+        return cjRemoveDesc;
+    }
+
+    public void setCjRemoveDesc(String cjRemoveDesc) {
+        this.cjRemoveDesc = cjRemoveDesc == null ? null : cjRemoveDesc.trim();
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator == null ? null : creator.trim();
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public String getUpdator() {
+        return updator;
+    }
+
+    public void setUpdator(String updator) {
+        this.updator = updator == null ? null : updator.trim();
     }
 }

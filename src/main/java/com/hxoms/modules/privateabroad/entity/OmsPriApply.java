@@ -13,7 +13,10 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
+    @ColumnAnnotation(FieldName = "PROCPERSON_ID",   FieldDescription="登记备案表id")
+    private String procpersonId;
+
+    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部id")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
@@ -110,15 +113,8 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "SFXYZQJWYJ",   FieldDescription="是否需要征求纪委意见(如果上次征求意见距现在少于35天，不需要再征求意见)")
     private String sfxyzqjwyj;
 
-    @ColumnAnnotation(FieldName = "SCZQJWYJSJ",   FieldDescription="上次征求纪委意见时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date sczqjwyjsj;
-
     @ColumnAnnotation(FieldName = "SFZQJWYJ",   FieldDescription="是否征求纪委意见(1是，0否)")
     private String sfzqjwyj;
-
-
 
     @ColumnAnnotation(FieldName = "PASSPORT",   FieldDescription="护照(1申领新证、2换发、3失效申领、4签注)")
     private Integer passport;
@@ -204,20 +200,23 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
     private Integer sortId;
 
-
-    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="干部监督处的批次Id")
+    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="")
     private String leaderBatchId;
 
-
-
-
+    @ColumnAnnotation(FieldName = "SCZQJWYJSJ",   FieldDescription="上次征求 纪委意见时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date sczqjwyjsj;
 
     @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
     private String clshsftg;
+
     @ColumnAnnotation(FieldName = "JDCJL",   FieldDescription="监督处最终结论")
     private String jdcjl;
+
     @ColumnAnnotation(FieldName = "JWJL",   FieldDescription="纪委结论")
     private String jwjl;
+
     @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
     private String zzjl;
 
@@ -227,6 +226,14 @@ public class OmsPriApply {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId == null ? null : procpersonId.trim();
     }
 
     public String getA0100() {
@@ -445,14 +452,6 @@ public class OmsPriApply {
         this.sfxyzqjwyj = sfxyzqjwyj == null ? null : sfxyzqjwyj.trim();
     }
 
-    public Date getSczqjwyjsj() {
-        return sczqjwyjsj;
-    }
-
-    public void setSczqjwyjsj(Date sczqjwyjsj) {
-        this.sczqjwyjsj = sczqjwyjsj;
-    }
-
     public String getSfzqjwyj() {
         return sfzqjwyj;
     }
@@ -460,8 +459,6 @@ public class OmsPriApply {
     public void setSfzqjwyj(String sfzqjwyj) {
         this.sfzqjwyj = sfzqjwyj == null ? null : sfzqjwyj.trim();
     }
-
-
 
     public Integer getPassport() {
         return passport;
@@ -676,17 +673,23 @@ public class OmsPriApply {
     }
 
     public void setLeaderBatchId(String leaderBatchId) {
-        this.leaderBatchId = leaderBatchId;
+        this.leaderBatchId = leaderBatchId == null ? null : leaderBatchId.trim();
     }
 
+    public Date getSczqjwyjsj() {
+        return sczqjwyjsj;
+    }
 
+    public void setSczqjwyjsj(Date sczqjwyjsj) {
+        this.sczqjwyjsj = sczqjwyjsj;
+    }
 
     public String getClshsftg() {
         return clshsftg;
     }
 
     public void setClshsftg(String clshsftg) {
-        this.clshsftg = clshsftg;
+        this.clshsftg = clshsftg == null ? null : clshsftg.trim();
     }
 
     public String getJdcjl() {
@@ -694,7 +697,7 @@ public class OmsPriApply {
     }
 
     public void setJdcjl(String jdcjl) {
-        this.jdcjl = jdcjl;
+        this.jdcjl = jdcjl == null ? null : jdcjl.trim();
     }
 
     public String getJwjl() {
@@ -702,7 +705,7 @@ public class OmsPriApply {
     }
 
     public void setJwjl(String jwjl) {
-        this.jwjl = jwjl;
+        this.jwjl = jwjl == null ? null : jwjl.trim();
     }
 
     public String getZzjl() {
@@ -710,9 +713,6 @@ public class OmsPriApply {
     }
 
     public void setZzjl(String zzjl) {
-        this.zzjl = zzjl;
+        this.zzjl = zzjl == null ? null : zzjl.trim();
     }
-
-
-
 }
