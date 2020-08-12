@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //获取省外办备案申请列表
-    PageInfo<OmsPubGroupPreApproval> getPubGroupList(Map<Object, String> param) throws ParseException;
+    PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String, String> param) throws ParseException;
     //添加团体预备案申请信息
     Object insertPubGroup(OmsPubGroupPreApproval pubGroup,List<OmsPubApply> personList);
     //修改团体预备案申请信息

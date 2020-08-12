@@ -23,7 +23,7 @@ public class OmsPubGroupPreApproval {
     private String tzmc;
 
     @ColumnAnnotation(FieldName = "TZCY",   FieldDescription="团组成员")
-    private Integer tzcy;
+    private String tzcy;
 
     @ColumnAnnotation(FieldName = "TZFZR",   FieldDescription="团组负责人")
     private String tzfzr;
@@ -124,11 +124,11 @@ public class OmsPubGroupPreApproval {
         this.tzmc = tzmc == null ? null : tzmc.trim();
     }
 
-    public Integer getTzcy() {
+    public String getTzcy() {
         return tzcy;
     }
 
-    public void setTzcy(Integer tzcy) {
+    public void setTzcy(String tzcy) {
         this.tzcy = tzcy;
     }
 
