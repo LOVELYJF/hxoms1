@@ -39,15 +39,15 @@ public class OmsPubGroupController {
      * @param endDate
      */
     @GetMapping("/getPubGroupList")
-    public Result getPubGroupList(String bazt,String orgId,String status,String startDate,String endDate) {
-        Map<Object,String> param = new HashMap<>();
+    public Result getPubGroupList(Integer pageNum, Integer pageSize,String bazt,String orgId,String status,String startDate,String endDate) {
+        Map<String,String> param = new HashMap<>();
         try{
             param.put("bazt",bazt);
             param.put("orgId",orgId);
             param.put("status",status);
             param.put("startDate",startDate);
             param.put("endDate",endDate);
-            PageInfo<OmsPubGroupPreApproval> pageInfo = pubGroupService.getPubGroupList(param);
+            PageInfo<OmsPubGroupPreApproval> pageInfo = pubGroupService.getPubGroupList(pageNum,pageSize,param);
             return Result.success(pageInfo);
         }catch (Exception e) {
             e.printStackTrace();
