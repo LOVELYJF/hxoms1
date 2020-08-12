@@ -58,8 +58,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Override
-    public List<PersonInfoVO> selectPersonListByOrg(String b0100) {
-        return omsPubApplyMapper.selectPersonListByOrg(b0100);
+    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String keyword) {
+        return omsPubApplyMapper.selectPersonListByOrg(b0100, keyword);
     }
 
     @Override
@@ -131,7 +131,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        String result = "";//返回信息
+        //返回信息
+        String result = "";
         String primaryKey = UUIDGenerator.getPrimaryKey();
         if (StringUtils.isBlank(omsPubApply.getId())) {
             omsPubApply.setId(primaryKey);
@@ -257,7 +258,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         /**申请状态集合 */
         List<String> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
@@ -556,7 +558,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         /**申请状态集合 */
         List<String> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
-        String ztdw = "省干教处";
+        String ztdw = omsPubApplyQueryParam.getZtdw();
+        if (StringUtils.isBlank(ztdw)){
+            ztdw = "省干部教育处";
+        }
+
         /** 出国时间*/
         Date cgsj = omsPubApplyQueryParam.getCgsj();
         /** 回国时间*/
@@ -880,22 +886,25 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈上报干部监督处〉
-     * @Param: [id]
+     * @Param: [ids]
      * @Return: void
      * @Author: 李逍遥
      * @Date: 2020/8/7 9:55
+     * @param ids
      */
     @Override
-    public void reportPubGroupPreApproval(String id) {
-        if (StringUtils.isBlank(id)){
+    public void reportPubGroupPreApproval(List<String> ids) {
+        if (ids == null || ids.size() < 1){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
-        omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
-        for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-            omsPubApplyVO.setSqzt(Constants.leader_business[0]);
-            omsPubApplyMapper.updateById(omsPubApplyVO);
+        for (String id:ids) {
+            OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
+            omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
+            List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
+            for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
+                omsPubApplyVO.setSqzt(Constants.leader_business[0]);
+                omsPubApplyMapper.updateById(omsPubApplyVO);
+            }
         }
     }
 
@@ -951,8 +960,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //删除备案申请表人员信息
         omsPubApplyMapper.deletePubApplyByYSPId(id);
     }
-
-
 
     /**
      * 校验用户信息

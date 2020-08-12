@@ -4,16 +4,15 @@ package com.hxoms.modules.passportCard.initialise.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.counterReceive.entity.parameterEntity.CfCheckValidParam;
-import com.hxoms.modules.passportCard.counterReceive.service.CfCheckValidService;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateReminderParam;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 
 
 @RestController
@@ -23,10 +22,6 @@ public class CfCertificateController {
 
     @Autowired
     private CfCertificateService cfCertificateService;
-
-    @Autowired
-    private CfCheckValidService cfCheckValidService;
-
 
     /**
      * @Desc: 初始化证照，导入公安的证照信息
@@ -76,6 +71,93 @@ public class CfCertificateController {
         cfCertificateService.insertCertificate(cfCertificate);
         return Result.success();
     }
+
+    /**
+     * @Desc: 未上缴证照统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/7
+     */
+    @GetMapping("/selectNotProvicdeCer")
+    public Result selectNotProvicdeCer(PageBean pageBean){
+        return Result.success(cfCertificateService.selectNotProvicdeCer(pageBean));
+    }
+
+    /**
+     * @Desc: 已上缴未入库统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/7
+     */
+    @GetMapping("/selectProNotstorCer")
+    public Result selectProNotstorCer(PageBean pageBean){
+        return Result.success(cfCertificateService.selectProNotstorCer(pageBean));
+    }
+
+    /**
+     * @Desc: 存疑证照统计
+     * @Author: wangyunquan
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/7
+     */
+    @GetMapping("/selectExceptionCer")
+    public Result selectExceptionCer(PageBean pageBean){
+        return Result.success(cfCertificateService.selectExceptionCer(pageBean));
+    }
+
+    /**
+     * @Desc: 公安已注销证照，更新状态
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/10
+     */
+    @PatchMapping("/updateCerForCerIsCancel")
+    public Result updateCerForCerIsCancel(CfCertificate cfCertificate){
+        cfCertificateService.updateCerForCerIsCancel(cfCertificate);
+        return Result.success();
+    }
+
+    /**
+     * @Desc: 生成催缴任务
+     * @Author: wangyunquan
+     * @Param: [cfCertificateCollectionList]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/11
+     */
+    @PostMapping("/createCjTask")
+    public Result createCjTask(List<CfCertificateCollection> cfCertificateCollectionList){
+        cfCertificateService.createCjTask(cfCertificateCollectionList);
+        return Result.success();
+    }
+    /**
+     * @Desc: 存疑处理，以证照信息为准。
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/10
+     */
+    @PostMapping("/updateCerForCerIsRight")
+    public Result updateCerForCerIsRight(CfCertificate cfCertificate){
+        cfCertificateService.updateCerForCerIsRight(cfCertificate);
+        return Result.success();
+    }
+
+    /**
+     * @Desc: 存疑处理，以公安信息为准。
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/10
+     */
+    @PostMapping("/updateCerForGaInfoIsRight")
+    public Result updateCerForGaInfoIsRight(CfCertificate cfCertificate){
+        cfCertificateService.updateCerForGaInfoIsRight(cfCertificate);
+        return Result.success();
+    }
     /**
      * 条件查询所有
      * @param cfCertificatePageParam
@@ -86,59 +168,6 @@ public class CfCertificateController {
         PageInfo<CfCertificate> cfCertificatePageInfo = cfCertificateService.selectCfCertificateIPage(cfCertificatePageParam);
 
         return Result.success(cfCertificatePageInfo);
-    }
-
-
-    /**
-     * 查找过期证照
-     * @param cfCertificateReminderParam
-     * @return
-     */
-    @GetMapping("/findOverduePass")
-    public Result findOverduePass(CfCertificateReminderParam cfCertificateReminderParam){
-
-        return Result.success(cfCertificateService.findOverduePass(cfCertificateReminderParam));
-
-    }
-
-
-    /**
-     * 删除护照信息
-     * @return
-     */
-    @PostMapping("/delete")
-    public Result delete(String id){
-
-        return Result.success(cfCertificateService.delete(id));
-
-    }
-
-    /**
-     * 查询已经验证的护照信息的总数
-     * @return
-     */
-    @GetMapping("/findSuccessCf")
-    public Result findSuccessCf(){
-        return Result.success(cfCertificateService.findSuccessCf());
-    }
-
-    /**
-     * 查看所有重复的有效证件
-     * @param cfCheckValidParam
-     * @return
-     */
-    @GetMapping("/selectCfCheckValid")
-    public Result selectCfCheckValid(CfCheckValidParam cfCheckValidParam){
-        return Result.success(cfCheckValidService.selectCfCheckValid(cfCheckValidParam));
-    }
-
-    /**
-     * 查看有重复证件的人员
-     * @return
-     */
-    @GetMapping("/selectCfCheckValidByName")
-    public Result selectCfCheckValidByName(CfCheckValidParam cfCheckValidParam){
-        return Result.success(cfCheckValidService.selectCfCheckValidByName(cfCheckValidParam));
     }
 
 

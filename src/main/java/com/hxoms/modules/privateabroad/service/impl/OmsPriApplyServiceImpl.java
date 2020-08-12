@@ -88,13 +88,12 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     }
 
     @Override
-    public OmsPriApplyVO selectPersonById(String b0100, String a0100) {
-        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(b0100)){
+    public OmsPriApplyVO selectPersonById(String procpersonId) {
+        if (StringUtils.isBlank(procpersonId)){
             throw new CustomMessageException("参数错误");
         }
         Map<String, String> paramMap1 = new HashMap<>();
-        paramMap1.put("a0100", a0100);
-        paramMap1.put("b0100", b0100);
+        paramMap1.put("procpersonId", procpersonId);
         //查询用户基本信息
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(paramMap1);
         if (omsPriApplyVO == null){
@@ -102,7 +101,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100", a0100);
+        paramMap.put("a0100", procpersonId);
         paramMap.put("finishDate", "1");
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
@@ -112,7 +111,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             omsPriApplyVO.setDescription("非省委管理证照");
         }else{
             QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-            cfCertificate.eq("A0100", a0100)
+            cfCertificate.eq("OMS_ID", procpersonId)
                     .eq("IS_VALID", 0);
             List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
             omsPriApplyVO.setCfCertificates(cfCertificates);
@@ -132,7 +131,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         OmsPriApply omsPriApply = omsPriApplyParam.getOmsPriApply();
         //随行人员
         List<OmsPriTogetherperson> omsPriTogetherpersonList = omsPriApplyParam.getOmsPriTogetherperson();
-        if (StringUtils.isBlank(omsPriApply.getA0100())){
+        if (StringUtils.isBlank(omsPriApply.getProcpersonId())){
             throw new CustomMessageException("请选择需要出国的人员");
         }
         if (StringUtils.isBlank(omsPriApply.getAbroadReasons())){
@@ -271,12 +270,12 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         omsPriApplyVO.setOmsPriTogetherpeoples(omsPriTogetherpersonList);
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100", omsPriApplyVO.getA0100());
+        paramMap.put("a0100", omsPriApplyVO.getProcpersonId());
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
         QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-        cfCertificate.eq("A0100", omsPriApplyVO.getA0100())
+        cfCertificate.eq("OMS_ID", omsPriApplyVO.getProcpersonId())
                 .eq("IS_VALID", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
@@ -368,7 +367,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             for (int i = 0; i<cancelInfor.size(); i++) {
                 Map<String, Object> item = cancelInfor.get(i);
                 params.put("step", "a1");//审核意见之前
-                params.put("a0100", (String) item.get("a0100"));
+                params.put("procpersonId", (String) item.get("procpersonId"));
                 int a = omsPriApplyMapper.cancelCount(params);
                 item.put("a", a);
                 params.put("step", "b1");//作出审核意见

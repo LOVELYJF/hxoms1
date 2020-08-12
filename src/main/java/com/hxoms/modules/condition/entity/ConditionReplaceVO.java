@@ -8,6 +8,8 @@ package com.hxoms.modules.condition.entity;
 public class ConditionReplaceVO {
     //人员id
     private String a0100;
+    //备案信息id
+    private String procpersonId;
     //经办人id
     private String handleId;
     //申请表Id
@@ -22,6 +24,14 @@ public class ConditionReplaceVO {
 
     public void setA0100(String a0100) {
         this.a0100 = a0100;
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId;
     }
 
     public String getHandleId() {

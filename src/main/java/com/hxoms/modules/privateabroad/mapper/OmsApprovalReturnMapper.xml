@@ -22,7 +22,7 @@
     select ar.*
     from oms_approval_return ar
     left join oms_pri_apply pa on ar.APPLY_ID = pa.ID
-    left join oms_reg_procpersoninfo rp on pa.A0100 = rp.A0100
+    left join oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
     where 1=1
     <if test="params.returnStartTime != null and params.returnStopTime != null">
       and ar.RETURN_TIME &gt; #{params.returnStartTime} and ar.RETURN_TIME &lt; #{params.returnStopTime}

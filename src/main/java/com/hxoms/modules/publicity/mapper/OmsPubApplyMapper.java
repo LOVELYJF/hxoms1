@@ -16,7 +16,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
 
     OmsPubApply selectById(@Param("id") String id);
 
-    List<PersonInfoVO> selectPersonListByOrg(String b0100);
+    List<PersonInfoVO> selectPersonListByOrg(@Param("b0100") String b0100,@Param("keyword") String keyword);
 
     Map<String, Object> selectBasePersonInfo(@Param("b0100") String b0100, @Param("a0100") String a0100);
 
