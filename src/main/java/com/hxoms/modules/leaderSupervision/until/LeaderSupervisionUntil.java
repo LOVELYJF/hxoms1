@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -374,6 +376,29 @@ public class LeaderSupervisionUntil {
         style.setFont(font);
 
         return  style;
+    }
+
+
+
+    //文件上传工具类服务方法
+    public static void uploadFile(byte[] file, String filePath, String fileName) {
+
+        File targetFile = new File(filePath);
+        if(!targetFile.exists()){
+            targetFile.mkdirs();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath + fileName);
+            out.write(file);
+            out.flush();
+            out.close();
+        } catch (Exception e){
+          e.printStackTrace();
+
+        }finally {
+
+
+        }
     }
 
 

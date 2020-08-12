@@ -61,6 +61,8 @@ file:
   ueditorImgUrl: /ueditorImgUrl/ #富文本上传图片路径虚拟
   ueditorRealImgUrl: E:/ueditorImgUrl/ #富文本上传图片路径真实
 
+omsAttachment:
+  baseDir: D:/oms/attachment   # 附件上传路径
 
 #职务code
 postcode:
