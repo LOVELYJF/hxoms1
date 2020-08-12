@@ -558,7 +558,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         /**申请状态集合 */
         List<String> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
-        String ztdw = "省干教处";
+        String ztdw = omsPubApplyQueryParam.getZtdw();
+        if (StringUtils.isBlank(ztdw)){
+            ztdw = "省干部教育处";
+        }
+
         /** 出国时间*/
         Date cgsj = omsPubApplyQueryParam.getCgsj();
         /** 回国时间*/
