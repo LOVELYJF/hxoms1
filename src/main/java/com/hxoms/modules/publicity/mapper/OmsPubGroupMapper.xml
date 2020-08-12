@@ -38,7 +38,7 @@
     </sql>
     <select id="getPubGroupList" resultType="com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval">
         SELECT
-            t.*,group_concat(concat(a.SURNAME,a.NAME) separator ',')
+            t.*,group_concat(concat(a.SURNAME,a.NAME) separator ',') tzcy
         FROM
             oms_pub_group_pre_approval t
         left join oms_pub_apply p on t.id = p.YSP_ID
