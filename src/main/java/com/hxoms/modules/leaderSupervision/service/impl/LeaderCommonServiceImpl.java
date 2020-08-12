@@ -596,7 +596,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply();
+        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply(null);
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;

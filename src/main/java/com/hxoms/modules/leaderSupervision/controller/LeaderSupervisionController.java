@@ -208,7 +208,7 @@ public class  LeaderSupervisionController {
             leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
 
         try {
-            HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport();
+            HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport(leaderSupervisionVo);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");

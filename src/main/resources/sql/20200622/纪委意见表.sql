@@ -4,7 +4,7 @@
 
 DROP TABLE IF EXISTS `oms_jiwei_opinion`;
 CREATE TABLE `oms_jiwei_opinion` (
-  `id` varchar(36) NOT NULL COMMENT '纪委意见记录表主键',
+  `id` varchar(36) NOT NULL COMMENT '纪委意见记录表主键 == 业务流程 id 1=1 的关系',
   `feedback_type` varchar(50) default NULL COMMENT '反馈方式 1(口头反馈),2(书面反馈)',
   `opinion` varchar(50) default NULL COMMENT '意见',
   `feedback_user` varchar(50) default NULL COMMENT '反馈人',
@@ -12,6 +12,12 @@ CREATE TABLE `oms_jiwei_opinion` (
   `feedback_verdict` varchar(50) default NULL COMMENT '反馈结论1(同意),2(不同意),3(不回复)',
   `feedback_date` datetime default NULL COMMENT '反馈时间',
   `remark` varchar(50) default NULL COMMENT '备注',
+  `official_feedback_type` varchar(50) default NULL COMMENT '反馈方式 1(口头反馈),2(书面反馈) 正式',
+  `official_opinion` varchar(50) default NULL COMMENT '意见 正式',
+
+  `official_feedback_verdict` varchar(50) default NULL COMMENT '反馈结论1(同意),2(不同意),3(不回复)  正式',
+  `official_remark` varchar(50) default NULL COMMENT '备注 正式',
+
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='纪委意见记录表';
 

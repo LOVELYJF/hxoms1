@@ -56,5 +56,8 @@ public interface LeaderDetailProcessingService {
      * **/
     void fileUpload(MultipartFile[] files,String[] leaderBatchIds,String bussinessType,int bussinessOccureStpet,String bussiness_occure_stpet_name,  HttpServletRequest request);
 
-
+    /**
+     * 征求纪委意见 查询条件
+     * **/
+    List<Map> selectMaterialStatus();
 }

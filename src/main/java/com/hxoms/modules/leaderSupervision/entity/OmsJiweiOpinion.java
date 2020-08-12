@@ -14,9 +14,6 @@ public class OmsJiweiOpinion {
     @ColumnAnnotation(FieldName = "id",   FieldDescription="纪委意见记录表主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "applyId",   FieldDescription="业务流程申请id")
-    private String applyid;
-
     @ColumnAnnotation(FieldName = "feedback_type",   FieldDescription="反馈方式 1(口头反馈),2(书面反馈)")
     private String feedbackType;
 
@@ -60,13 +57,7 @@ public class OmsJiweiOpinion {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getApplyid() {
-        return applyid;
-    }
 
-    public void setApplyid(String applyid) {
-        this.applyid = applyid == null ? null : applyid.trim();
-    }
 
     public String getFeedbackType() {
         return feedbackType;

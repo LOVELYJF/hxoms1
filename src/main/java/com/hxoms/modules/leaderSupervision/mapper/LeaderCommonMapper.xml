@@ -742,6 +742,12 @@
 
 		where (temp.batchId is not null or temp.batchId !='') and temp.applyStatus in ('20','21 ')
 
+
+		<foreach item="item" index="index" collection="array" open="("  close=")" separator=",">
+			#{item}
+		</foreach>
+
+
 	</select>
 
 	<select id="selectJiweiWriteApply"  resultType="java.util.LinkedHashMap">
