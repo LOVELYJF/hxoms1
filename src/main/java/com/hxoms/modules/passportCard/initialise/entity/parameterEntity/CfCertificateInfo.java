@@ -14,6 +14,8 @@ public class CfCertificateInfo {
     private String id;
     //备案表id
     private String omsId;
+    //单位编码
+    private String rfB0000;
     //单位
     private String workUnit;
     //任职状态
@@ -66,6 +68,14 @@ public class CfCertificateInfo {
 
     public void setOmsId(String omsId) {
         this.omsId = omsId;
+    }
+
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000;
     }
 
     public String getWorkUnit() {
