@@ -2,8 +2,7 @@ package com.hxoms.modules.leaderSupervision.service.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.PageUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.message.message.entity.Message;
@@ -11,8 +10,12 @@ import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
+import com.hxoms.modules.leaderSupervision.entity.AttachmentAskforjiwei;
+import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
+import com.hxoms.modules.leaderSupervision.mapper.AttachmentAskforjiweiMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
+import com.hxoms.modules.leaderSupervision.mapper.OmsAttachmentMapper;
 import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
@@ -21,10 +24,21 @@ import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.support.user.entity.User;
 import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -46,6 +60,23 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private SelectMapper selectMapper;  // 通用 自定义sql
     @Autowired
     private OmsLeaderBatchMapper omsLeaderBatchMapper;  // 干部 监督处批次 mapper
+    @Autowired
+    private OmsAttachmentMapper omsAttachmentMapper;
+    @Autowired
+    private AttachmentAskforjiweiMapper attachmentAskforjiweiMapper;
+
+    @Value("${omsAttachment.baseDir}")
+    private String attachmentPath;
+
+    public String getAttachmentPath() {
+        return attachmentPath;
+    }
+
+    public void setAttachmentPath(String attachmentPath) {
+        this.attachmentPath = attachmentPath;
+    }
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
 
 
@@ -297,6 +328,27 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
        return  lists;
     }
 
+    public  List<Map> selectMaterialStatus(){
+
+
+        List lists = new ArrayList();
+
+        Map map = new HashMap();
+        map.put("code","all");
+        map.put("name","材料审核");
+        Map map1 = new HashMap();
+        map1.put("code","1");
+        map1.put("name","已审核");
+        Map map2 = new HashMap();
+        map2.put("code","2");
+        map2.put("name","未审核");
+
+        lists.add(map); lists.add(map1); lists.add(map2);
+        return  lists;
+
+
+
+    }
 
 
 
@@ -304,6 +356,83 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
 
+
+
+    /**
+     * 文件上传
+     * @param files
+     * @throws Exception
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public void fileUpload(@RequestParam("file") MultipartFile[] files, String[] leaderBatchIds,String bussinessType,int bussinessOccureStpet,String bussinessOccureStpetName,  HttpServletRequest request) {
+
+         if(files ==null || files.length<=0){
+             throw new CustomMessageException("没有选择上传的文件，请仔细检查");
+
+         }
+
+         if(leaderBatchIds == null || files.length<=0){
+
+             throw new CustomMessageException("没有选择关联的批次，请仔细检查");
+         }
+
+        //文件命名
+        //保存时的文件名
+        for(int i=0;i<files.length;i++) {
+            //保存文件到本地文件，并保存路径到数据库
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            Calendar calendar = Calendar.getInstance();
+            String fileName = df.format(calendar.getTime()) + files[i].getOriginalFilename();
+            log.info("文件的文件名为:" + fileName);
+
+            if(!files[i].getOriginalFilename().endsWith(".pdf")){
+
+                throw new CustomMessageException(files[i].getOriginalFilename()+"此文件的格式不正确，请上传pdf格式文件");
+            }
+
+            //保存文件的绝对路径
+//            String filePath = request.getSession().getServletContext().getRealPath("static/");
+            String filePath = attachmentPath+File.separator+"static"+File.separator;
+            log.info("文件的绝对路径:" + filePath);
+            log.info(attachmentPath);
+
+            try {
+                //上传文件
+                LeaderSupervisionUntil.uploadFile(files[i].getBytes(), filePath, fileName);
+                //保存到数据库代码，存入路径以及文件名称
+                saveAttachmentAndAskforJiwei(files[i], leaderBatchIds, bussinessOccureStpet, bussinessOccureStpetName, i, fileName, filePath + fileName);
+
+            } catch (IllegalStateException | IOException e) {
+                e.printStackTrace();
+                throw new CustomMessageException("文件上传失败");
+            }
+        }
+    }
+
+    private void saveAttachmentAndAskforJiwei(MultipartFile file, String[] leaderBatchIds, int bussinessOccureStpet, String bussinessOccureStpetName, int i, String fileName, String url) {
+        // 保存 附件 表
+        OmsAttachment omsAttachment = new OmsAttachment();
+        omsAttachment.setId(UUIDGenerator.getPrimaryKey());
+        omsAttachment.setSize(String.valueOf(file.getSize()));
+        omsAttachment.setName(fileName);
+        omsAttachment.setType(file.getOriginalFilename().split("\\.")[file.getOriginalFilename().split("\\.").length-1]);
+        omsAttachment.setUrl(url);
+        omsAttachment.setBussinessOccureStpet(bussinessOccureStpet+"");
+        omsAttachment.setBussinessOccureStpetName(bussinessOccureStpetName);
+        omsAttachment.setCreateTime(new Date());
+        omsAttachment.setCreateUser(UserInfoUtil.getUserInfo().getId());
+        omsAttachmentMapper.insert(omsAttachment);
+        // 保存 附件业务 的中间表
+        for(int j=0;j<leaderBatchIds.length;j++){
+
+            AttachmentAskforjiwei attachmentAskforjiwei = new AttachmentAskforjiwei();
+            attachmentAskforjiwei.setId(UUIDGenerator.getPrimaryKey());
+            attachmentAskforjiwei.setAttachmentid(omsAttachment.getId());
+            attachmentAskforjiwei.setLeaderBatchId(leaderBatchIds[i]);
+            attachmentAskforjiweiMapper.insert(attachmentAskforjiwei);
+
+        }
+    }
 
 
 }

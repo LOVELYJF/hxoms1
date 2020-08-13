@@ -617,6 +617,7 @@
       SELECT
         a.ID id,
         a.OMS_ID omsId,
+        b.RF_B0000 rfB0000,
         b.WORK_UNIT workUnit,
         b.INCUMBENCY_STATUS incumbencyStatus,
         b.POST post,

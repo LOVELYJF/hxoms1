@@ -4,6 +4,7 @@ import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @authore:wjf
@@ -103,14 +105,16 @@ public class LeaderEXportExcelService {
 
 
  /** 因公出国境管理 导出 **/
- public HSSFWorkbook jiweiApplyExport(){
+ public HSSFWorkbook jiweiApplyExport(LeaderSupervisionVo leaderSupervisionVo){
 
-  List<Map> dataList =  leaderCommonQueryMapper.selectPulicApplyManager();
+  List<Map> dataList =  leaderCommonQueryMapper.selectJiweiApply(
+          (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+  );
 
 
 //  pua.id AS id,   # 业务id
 //  pua.leader_batch_id as batchId, # 批次id
-//
+//  pua.SQZT   as applyStatus,    # 业务 流程状态
 //  b.b0101 AS department,  # "部门名称"
 //  a.a0101 AS userName, # 人员名称
 //  pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
@@ -125,7 +129,7 @@ public class LeaderEXportExcelService {
 //          '未知',
 //          IF (a.A0104 = 1, '男', '女')
 //  ) AS sex,  # 性别
-//  mrp.BIRTH_DATE AS birthDate,   # 从登记备案库中 去的 人员出生日期
+//  DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 //  pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 //  pua.JOB AS job,   #职务
 //  "暂无" AS applyTime,   # 申请日期
@@ -136,13 +140,16 @@ public class LeaderEXportExcelService {
 //  pua.SFZYLD as sfzyld,  # 主要领导
 //  pua.FMXX AS fmxx, # 负面信息
 //  pua.SFBG as sfbg, # 是否变更
-//  pua.SFZQJWYJ,    # 是否需要征求纪委意见
-//  pua.SCZQJWYJSJ, # 上次 征求 时间
+//  yesOrnO_take_advice(pua.id,pua.A0100,35) as  sfbczqjwyj,    # 是否需要征求纪委意见
+//  pua.SCZQJWYJSJ as sczqjwyjsj , # 上次 征求 时间
+//  case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 //  case when pua.JWJL =1 then '同意' when pua.JWJL = 2 then '不同意'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
-//  AS jwjl, # 材料审核是否通过
+//  AS jwjl, # 纪委结论
 //
 //  case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
 //  AS clshsftg # 材料审核是否通过
+
+
 
   List listK = new ArrayList();
   List listV = new ArrayList();
@@ -166,8 +173,9 @@ public class LeaderEXportExcelService {
 //  listK.add("sfzyld");listV.add("主要领导");
   listK.add("fmxx");listV.add("负面信息");
   listK.add("sfbg");listV.add("是否变更");
-  listK.add("SFZQJWYJ");listV.add("需要征求纪委意见");
-  listK.add("SCZQJWYJSJ");listV.add("上次征求时间");
+  listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
+  listK.add("sczqjwyjsj");listV.add("上次征求时间");
+  listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
   listK.add("jwjl");listV.add("纪委结论");
   listK.add("clshsftg");listV.add("材料审核结果");
 

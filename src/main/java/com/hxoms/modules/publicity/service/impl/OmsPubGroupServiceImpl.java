@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.PageUtil;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
@@ -33,9 +34,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsPubApplyMapper pubApplyMapper;
 
     @Override
-    public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Map<Object,String> param) throws ParseException {
+    public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) throws ParseException {
         List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
-        PageUtil.pageHelp(Integer.parseInt(param.get("pageNum")), Integer.parseInt(param.get("pageSize")));
+        PageUtil.pageHelp(pageNum, pageSize);
         PageInfo<OmsPubGroupPreApproval> pageInfo = new PageInfo(resultList);
         return pageInfo;
     }
@@ -52,6 +53,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubGroup.setCreateTime(new Date());
             }
             pubGroupMapper.insertPubGroup(pubGroup);
+            for(int i = 0; i < num; i++ ){
+                personList.get(i).setId(UUIDGenerator.getPrimaryKey());
+            }
             pubApplyMapper.insertPubApplyList(personList);
             return null;
         }else{

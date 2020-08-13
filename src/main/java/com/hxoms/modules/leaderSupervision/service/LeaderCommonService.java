@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 
 import java.util.Map;
 
@@ -56,5 +57,12 @@ public interface LeaderCommonService {
      * **/
     void deleteLeaderBatch(OmsLeaderBatch omsLeaderBatch);
 
+    void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo);
+
+
+    /**
+     *  保存纪委意见
+     * **/
+    void saveJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo);
 
 }

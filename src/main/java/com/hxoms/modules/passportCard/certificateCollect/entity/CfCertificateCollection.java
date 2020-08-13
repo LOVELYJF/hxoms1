@@ -20,8 +20,17 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照管理表ID")
     private String cerId;
 
-    @ColumnAnnotation(FieldName = "BUSI_ID",   FieldDescription="业务申请表ID")
+    @ColumnAnnotation(FieldName = "BUSI_ID",   FieldDescription="业务表ID")
     private String busiId;
+
+    @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
+    private String name;
+
+    @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="机构")
+    private String rfB0000;
+
+    @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
+    private String workUnit;
 
     @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
     private String cjWay;
@@ -45,8 +54,8 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "CJ_RESULT",   FieldDescription="催缴结果")
     private String cjResult;
 
-    @ColumnAnnotation(FieldName = "CJ_REMOVE_DESC",   FieldDescription="解除说明")
-    private String cjRemoveDesc;
+    @ColumnAnnotation(FieldName = "REMOVE_CJ_DESC",   FieldDescription="解除催缴说明")
+    private String removeCjDesc;
 
     @ColumnAnnotation(FieldName = "CREATETIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -94,6 +103,30 @@ public class CfCertificateCollection {
 
     public void setBusiId(String busiId) {
         this.busiId = busiId == null ? null : busiId.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000 == null ? null : rfB0000.trim();
+    }
+
+    public String getWorkUnit() {
+        return workUnit;
+    }
+
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit == null ? null : workUnit.trim();
     }
 
     public String getCjWay() {
@@ -144,12 +177,12 @@ public class CfCertificateCollection {
         this.cjResult = cjResult == null ? null : cjResult.trim();
     }
 
-    public String getCjRemoveDesc() {
-        return cjRemoveDesc;
+    public String getRemoveCjDesc() {
+        return removeCjDesc;
     }
 
-    public void setCjRemoveDesc(String cjRemoveDesc) {
-        this.cjRemoveDesc = cjRemoveDesc == null ? null : cjRemoveDesc.trim();
+    public void setRemoveCjDesc(String removeCjDesc) {
+        this.removeCjDesc = removeCjDesc == null ? null : removeCjDesc.trim();
     }
 
     public Date getCreatetime() {

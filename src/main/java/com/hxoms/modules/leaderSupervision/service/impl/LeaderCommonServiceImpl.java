@@ -596,7 +596,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply();
+        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply(null);
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
@@ -681,7 +681,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                   // 如果 该条  业务申请 记录 的 纪委id 为空
                   OmsJiweiOpinion omsJiweiOpinion1 = new OmsJiweiOpinion();
 
-                omsJiweiOpinion1.setId(omsJiweiOpinionVo.getBussinessId()[i]);
+                omsJiweiOpinion1.setId(omsJiweiOpinionVo.getBussinessTypeAndIdVos().get(i).getBussinessId());
                   omsJiweiOpinionMapper.insert(omsJiweiOpinion1);
 
             }else{
@@ -746,7 +746,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         UpdateWrapper<OmsJiweiOpinion> updateWrapper = new UpdateWrapper<>();
 
-        updateWrapper.in("id",omsJiweiOpinionVo.getBussinessId());
+        updateWrapper.in("id",omsJiweiOpinionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()));
         // 修改 纪委意见 表 (第一步)
         omsJiweiOpinionMapper.update(omsJiweiOpinion, updateWrapper);
 
@@ -758,7 +758,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //        saveApplyBussinessByBatchId(omsJiweiOpinionVo,omsJiweiOpinion.getId(),"jiwei_opinion_id");
 
         // 修改 业务申请 状态  （第三步） 修改 为 记录意见
-        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
+        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
 
         //在流程审批业务表 中记录纪委意见（第 三 点1 不）
         updateBussinessApplyRecordOpinion(omsJiweiOpinionVo.getBussinessTypeAndIdVos(),omsJiweiOpinionVo.getFeedbackVerdict(),"jwjl");
@@ -771,7 +771,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //        String bussinessName = omsJiweiOpinionVo.getBussinessName()[0];
 
-        selectBatchIdAndisOrNotUpateBatchStatus(omsJiweiOpinionVo.getBussinessId(), Constants.leader_business[2]);
+        selectBatchIdAndisOrNotUpateBatchStatus(
+                (String[])omsJiweiOpinionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                Constants.leader_business[3]);
 
 
     }

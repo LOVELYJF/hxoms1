@@ -16,7 +16,7 @@ import java.util.Map;
 @Repository
 public interface OmsPubGroupMapper extends BaseMapper<OmsPubGroupPreApproval> {
     //获取团体预备案申请列表
-    List<OmsPubGroupPreApproval> getPubGroupList(Map<Object, String> param);
+    List<OmsPubGroupPreApproval> getPubGroupList(Map<String, String> param);
     //添加团体预备案申请信息
     Object insertPubGroup(OmsPubGroupPreApproval pubGroup);
     //添加团体预备案申请信息

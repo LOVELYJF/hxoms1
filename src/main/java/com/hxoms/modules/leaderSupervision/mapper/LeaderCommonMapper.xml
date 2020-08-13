@@ -589,8 +589,9 @@
 							   pua.SFZYLD as sfzyld,  # 主要领导
 							   pua.FMXX AS fmxx, # 负面信息
 							   pua.SFBG as sfbg, # 是否变更
-							   yesOrnO_take_advice(pua.id,pua.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
-							   pua.SCZQJWYJSJ, # 上次 征求 时间
+							   yesOrnO_take_advice(pua.id,pua.A0100,35) as  sfbczqjwyj,    # 是否需要征求纪委意见
+							   pua.SCZQJWYJSJ as sczqjwyjsj , # 上次 征求 时间
+							   case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 							   case when pua.JWJL =1 then '同意' when pua.JWJL = 2 then '不同意'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
@@ -655,7 +656,8 @@
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
 							   yesOrnO_take_advice(pra.id,pra.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
-							   pra.SCZQJWYJSJ, # 上次 征求 时间
+							   pra.SCZQJWYJSJ , # 上次 征求 时间
+							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 							   case when pra.JWJL =1 then '同意' when pra.JWJL = 2 then '不同意'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
@@ -721,6 +723,7 @@
 							   "是否变更" as sfbg, # 是否变更
 							   yesOrnO_take_advice(prda.id,prda.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
 							   prda.SCZQJWYJSJ, # 上次 征求 时间
+							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 							   case when prda.JWJL =1 then '同意' when prda.JWJL = 2 then '不同意'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
@@ -738,6 +741,12 @@
 				#	where temp.clshsftg <![CDATA[ <> ]]> ''
 
 		where (temp.batchId is not null or temp.batchId !='') and temp.applyStatus in ('20','21 ')
+
+
+		<foreach item="item" index="index" collection="array" open="("  close=")" separator=",">
+			#{item}
+		</foreach>
+
 
 	</select>
 
@@ -919,7 +928,7 @@
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
 						) temp
 
-		where temp.SFZQJWYJ =1   # 纪委意见 这步 填写 必须上一步 要 征求过纪委意
+		where temp.SFZQJWYJ =1
 
 	</select>
 

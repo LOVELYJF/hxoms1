@@ -11,6 +11,7 @@ import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 import oracle.jdbc.proxy.annotation.Post;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,14 +153,25 @@ public class  LeaderSupervisionController {
      *
      *  TODO 点击 纪委意见记录 触发的 事件
      * **/
+    @PostMapping("/clickJieweiOpinion")
+     public Result  clickJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
 
+         leaderCommonService.clickJieweiOpinion(omsJiweiOpinionVo);
 
+         return Result.success();
+     }
 
 
     /**
      *  录入口头纪委意见
      * **/
+    @PostMapping("/saveJieweiOpinion")
+    public Result saveJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
 
+        leaderCommonService.saveJieweiOpinion(omsJiweiOpinionVo);
+
+        return Result.success();
+    }
 
 
     /**
@@ -196,7 +208,7 @@ public class  LeaderSupervisionController {
             leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
 
         try {
-            HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport();
+            HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport(leaderSupervisionVo);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");

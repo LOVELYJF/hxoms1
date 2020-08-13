@@ -2,16 +2,16 @@ package com.hxoms.modules.leaderSupervision.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -75,11 +75,42 @@ public class LeaderQueryconditions {
         return  Result.success(mapList);
     }
 
+    /**
+     *业务 处理 材料审核 的 (最后一个) 下一步 触发的事件
+     * **/
+    @PostMapping("/selectLeaderBatchStatus")
     public Result materialReviewNextStep(String applyId,String tableCode){
 
         leaderDetailProcessingService.materialReviewNextStep(applyId,tableCode);
 
         return Result.success();
+
+    }
+
+    /**
+     *
+     * 征求 纪委意见 保存附件
+     * @param files  附件
+     * @param leaderBatchIds  所选择的批次
+     *
+     * **/
+    @PostMapping("/officialJiweiOpinion")
+    public Result officialJiweiOpinion(@RequestParam("file") MultipartFile[] files,String[] leaderBatchIds, HttpServletRequest request){
+
+        leaderDetailProcessingService.fileUpload(files,leaderBatchIds,"干部监督处",Constants.leader_business[2],Constants.leader_businessName[2],request);
+
+        return Result.success();
+    }
+
+    /**
+     * 征求纪委意见 查询条件
+     * **/
+    @GetMapping("/selectMaterialStatus")
+    public Result selectMaterialStatus(){
+
+      List<Map> lists=  leaderDetailProcessingService.selectMaterialStatus();
+
+      return Result.success(lists);
 
     }
 

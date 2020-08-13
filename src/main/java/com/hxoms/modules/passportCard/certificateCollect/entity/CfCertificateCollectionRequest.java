@@ -14,8 +14,8 @@ public class CfCertificateCollectionRequest {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "CJ_ID",   FieldDescription="证照催缴表ID")
-    private String cjId;
+    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照催缴表ID")
+    private String cerId;
 
     @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
     private String cjWay;
@@ -59,12 +59,12 @@ public class CfCertificateCollectionRequest {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getCjId() {
-        return cjId;
+    public String getCerId() {
+        return cerId;
     }
 
-    public void setCjId(String cjId) {
-        this.cjId = cjId == null ? null : cjId.trim();
+    public void setCerId(String cerId) {
+        this.cerId = cerId == null ? null : cerId.trim();
     }
 
     public String getCjWay() {

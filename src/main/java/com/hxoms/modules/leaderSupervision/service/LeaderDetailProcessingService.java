@@ -3,7 +3,9 @@ package com.hxoms.modules.leaderSupervision.service;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -49,5 +51,13 @@ public interface LeaderDetailProcessingService {
 
     void materialReviewNextStep(String applyId,String tableCode);
 
+    /**
+     * 纪委意见 按批次上传附件
+     * **/
+    void fileUpload(MultipartFile[] files,String[] leaderBatchIds,String bussinessType,int bussinessOccureStpet,String bussiness_occure_stpet_name,  HttpServletRequest request);
 
+    /**
+     * 征求纪委意见 查询条件
+     * **/
+    List<Map> selectMaterialStatus();
 }
