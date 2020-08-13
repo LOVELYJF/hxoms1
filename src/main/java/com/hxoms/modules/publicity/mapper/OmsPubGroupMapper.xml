@@ -177,25 +177,28 @@
     </delete>
     <select id="getNumByStatus" parameterType="java.lang.String" resultType="Map">
         SELECT
-            (
-        CASE
-            WHEN t.SQZT = '0' THEN
-            '1.上传/填写申请'
-            WHEN t.sqzt = '1' THEN
-            '2.审核备案'
-            WHEN t.sqzt = '2' THEN
-            '3.上传批文' ELSE ''
-        END
-            ) label,
-            count( 1 ) num
+            '1.上传/填写申请' label,
+            sum(case when t.SQZT = '0' then 1 else 0 end) num
         FROM
             oms_pub_group_pre_approval t
         WHERE
             t.BAZT = '2'
-        GROUP BY
-            t.SQZT
-        ORDER BY
-        t.sqzt
+        union all
+        SELECT
+            '2.审核备案' label,
+            sum(case when t.SQZT = '1' then 1 else 0 end) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = '2'
+        union all
+        SELECT
+            '3.上传批文' label,
+            sum(case when t.SQZT = '2' then 1 else 0 end) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = '2'
     </select>
     <select id="getFlowDetail" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT
