@@ -178,14 +178,6 @@
     <select id="getNumByStatus" parameterType="java.lang.String" resultType="Map">
         SELECT
             '1.上传/填写申请' label,
-            sum(case when t.SQZT = '0' then 1 else 0 end) num
-        FROM
-            oms_pub_group_pre_approval t
-        WHERE
-            t.BAZT = '2'
-        union all
-        SELECT
-            '2.审核备案' label,
             sum(case when t.SQZT = '1' then 1 else 0 end) num
         FROM
             oms_pub_group_pre_approval t
@@ -193,8 +185,16 @@
             t.BAZT = '2'
         union all
         SELECT
-            '3.上传批文' label,
+            '2.审核备案' label,
             sum(case when t.SQZT = '2' then 1 else 0 end) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = '2'
+        union all
+        SELECT
+            '3.上传批文' label,
+            sum(case when t.SQZT = '3' then 1 else 0 end) num
         FROM
             oms_pub_group_pre_approval t
         WHERE
