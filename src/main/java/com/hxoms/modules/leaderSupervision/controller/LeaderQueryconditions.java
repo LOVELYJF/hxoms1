@@ -102,6 +102,18 @@ public class LeaderQueryconditions {
         return Result.success();
     }
 
+    /**
+     * 征求纪委意见 查询条件
+     * **/
+    @GetMapping("/selectMaterialStatus")
+    public Result selectMaterialStatus(){
+
+      List<Map> lists=  leaderDetailProcessingService.selectMaterialStatus();
+
+      return Result.success(lists);
+
+    }
+
 
 
 }

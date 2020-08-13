@@ -340,8 +340,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         map1.put("code","1");
         map1.put("name","已审核");
         Map map2 = new HashMap();
-        map1.put("code","2");
-        map1.put("name","未审核");
+        map2.put("code","2");
+        map2.put("name","未审核");
 
         lists.add(map); lists.add(map1); lists.add(map2);
         return  lists;
