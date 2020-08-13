@@ -86,7 +86,7 @@ public class OmsPubGroupPreApproval {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
-    @ColumnAnnotation(FieldName = "SQZT",   FieldDescription="申请状态")
+    @ColumnAnnotation(FieldName = "SQZT",   FieldDescription="申请状态(0:上传/填写申请,1:审核备案,2:上传批文)")
     private Integer sqzt;
 
     @ColumnAnnotation(FieldName = "CFSY",   FieldDescription="出访事由")
