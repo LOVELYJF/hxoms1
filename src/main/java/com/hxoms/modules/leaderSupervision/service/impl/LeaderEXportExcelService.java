@@ -107,8 +107,11 @@ public class LeaderEXportExcelService {
  /** 因公出国境管理 导出 **/
  public HSSFWorkbook jiweiApplyExport(LeaderSupervisionVo leaderSupervisionVo){
 
+
+
   List<Map> dataList =  leaderCommonQueryMapper.selectJiweiApply(
-          (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+          leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+
   );
 
 

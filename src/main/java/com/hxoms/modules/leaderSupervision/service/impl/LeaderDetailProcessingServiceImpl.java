@@ -20,6 +20,7 @@ import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.support.user.entity.User;
 import dm.jdbc.dbaccess.Const;
@@ -44,6 +45,7 @@ import java.util.*;
 /**
  * @authore:wjf
  * @data 2020/7/29 10:30  对 干部监督 业务 一些的 细节处理
+ *   没设好 应该 写个 AOP 统一处理这些问题
  * @Description:
  ***/
 @Service("leaderDetailProcessingService")
@@ -64,6 +66,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private OmsAttachmentMapper omsAttachmentMapper;
     @Autowired
     private AttachmentAskforjiweiMapper attachmentAskforjiweiMapper;
+    @Autowired
+    private LeaderCommonServiceImpl leaderCommonService;
 
     @Value("${omsAttachment.baseDir}")
     private String attachmentPath;
@@ -114,8 +118,10 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
      // 修改 流程 状态 置为 征求纪委意见
         getUpdateStatusSql(applyId,tableCode,Constants.leader_businessName[1],"materialReviewNextStep");
-
-
+      // 修改批次状态
+        List<String> bussinessIds = new ArrayList<>();
+        bussinessIds.add(applyId);
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(bussinessIds,Constants.leader_business[1]);
 
     }
 
@@ -433,6 +439,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         }
     }
+
+
 
 
 }
