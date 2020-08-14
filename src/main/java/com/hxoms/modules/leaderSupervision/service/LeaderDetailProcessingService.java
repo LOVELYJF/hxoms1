@@ -60,4 +60,9 @@ public interface LeaderDetailProcessingService {
      * 征求纪委意见 查询条件
      * **/
     List<Map> selectMaterialStatus();
+
+    /**
+     * 查看附件列表
+     * **/
+    List<Map> selectAttachmentList(String[] leaderBatchIds);
 }

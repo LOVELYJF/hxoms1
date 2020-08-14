@@ -87,4 +87,9 @@ public interface LeaderCommonMapper {
    /**申请类型 查询 条件 **/
 
    List<Map> selectgetApplicationType();
+
+   /**
+    * 查看附件列表
+    * ***/
+   List<Map> selectAttachmentList(String[] leaderBatchIds);
 }

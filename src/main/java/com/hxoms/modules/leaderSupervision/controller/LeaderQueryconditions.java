@@ -114,6 +114,16 @@ public class LeaderQueryconditions {
 
     }
 
+    /**
+     * 查看 附件列表
+     * **/
+    @GetMapping("/selectAttachmentList")
+    public Result selectAttachmentList(String[] leaderBatchIds){
+
+     List<Map> lists =   leaderDetailProcessingService.selectAttachmentList(leaderBatchIds);
+
+     return Result.success(lists);
+    }
 
 
 }

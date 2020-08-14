@@ -2229,6 +2229,29 @@
         select  '延期回国','oms_pri_delay_apply'
     </select>
 
+    <select id="selectAttachmentList" resultType="java.util.LinkedHashMap">
+
+        SELECT
+               att.*
+        FROM
+             oms_attachment att
+                 LEFT JOIN attachment_askforjiwei ask ON att.id = ask.attachmentId
+        where 1=1
+        <if test="array != null and array.length>0">
+
+            and ask.leader_batch_id in
+
+            <foreach item="item" index="id" collection="array" open="("
+
+                     separator="," close=")">
+
+                #{item}
+
+            </foreach>
+
+        </if>
+    </select>
+
 
 
 

@@ -440,6 +440,15 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         }
     }
 
+    public List<Map> selectAttachmentList(String[] leaderBatchIds){
+
+       List<Map> lists =  leaderCommonMapper.selectAttachmentList(leaderBatchIds);
+
+       return lists;
+    }
+
+
+
 
 
 
