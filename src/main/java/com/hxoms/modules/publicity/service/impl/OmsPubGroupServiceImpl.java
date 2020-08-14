@@ -7,8 +7,7 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
+import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
@@ -99,8 +98,20 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void backoutPerson(String id) {
-        pubApplyMapper.deletePubApplyById(id);
+    public void backoutPerson(String id,String cxyy) {
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        pubGroup.setSqzt(0);
+        pubGroupMapper.updatePubGroup(pubGroup);
+    }
+
+    @Override
+    public OmsPubGroupAndApplyList getPubGroupDetailById(String id) {
+        OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(id);
+        beanList.setOmsPubGroupPreApproval(pubGroup);
+        beanList.setOmsPubApplyVOList(pubApplyVOList);
+        return  beanList;
     }
 
     @Override
@@ -111,7 +122,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Override
     public Object sendTask(String id) {
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
-        pubGroup.setSqzt(3);
+        pubGroup.setSqzt(2);
         return pubGroupMapper.updatePubGroup(pubGroup);
     }
 
