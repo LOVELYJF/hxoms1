@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -47,17 +48,22 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(num > 0){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
-            for(int i = 0; i < num; i++){
-                pubGroup.setTzrs(num);
-                pubGroup.setCreateUser(userInfo.getId());
-                pubGroup.setCreateTime(new Date());
-            }
+            //团组信息
+            pubGroup.setId(UUIDGenerator.getPrimaryKey());
+            pubGroup.setTzrs(num);
+            pubGroup.setSqzt(1);
+            pubGroup.setCreateUser(userInfo.getId());
+            pubGroup.setCreateTime(new Date());
             pubGroupMapper.insertPubGroup(pubGroup);
+            //出国人员信息
             for(int i = 0; i < num; i++ ){
                 personList.get(i).setId(UUIDGenerator.getPrimaryKey());
+                personList.get(i).setSqzt(1);
+                personList.get(i).setCreateUser(userInfo.getId());
+                personList.get(i).setCreateTime(new Date());
             }
             pubApplyMapper.insertPubApplyList(personList);
-            return null;
+            return "添加成功";
         }else{
             return "未选择备案人员";
         }
