@@ -19,7 +19,7 @@ public interface OmsPubGroupMapper extends BaseMapper<OmsPubGroupPreApproval> {
     List<OmsPubGroupPreApproval> getPubGroupList(Map<String, String> param);
     //添加团体预备案申请信息
     Object insertPubGroup(OmsPubGroupPreApproval pubGroup);
-    //添加团体预备案申请信息
+    //修改团体预备案申请信息
     Object updatePubGroup(OmsPubGroupPreApproval pubGroup);
     //删除团体预备案申请信息
     Object deletePubGroup(String id);

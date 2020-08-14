@@ -124,13 +124,22 @@ public class OmsPubGroupController {
      * @param id
      */
     @PostMapping("/backoutPerson")
-    public Result backoutPerson(String id) {
+    public Result backoutPerson(String id,String cxyy) {
         try {
-            pubGroupService.backoutPerson(id);
+            pubGroupService.backoutPerson(id,cxyy);
             return Result.success();
         }catch (Exception e){
             return Result.error("系统错误！");
         }
+    }
+
+    /**
+     * 查看团组详情
+     * @param id
+     */
+    @GetMapping("/getPubGroupDetailById")
+    public Result getPubGroupDetailById(String id) {
+        return Result.success(pubGroupService.getPubGroupDetailById(id));
     }
 
     /**
