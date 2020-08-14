@@ -742,6 +742,23 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
 
     /**
      * 功能描述: <br>
+     * 〈通过b0100查询经办人〉
+     * @Param: [b0100]
+     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
+     * @Author: 李逍遥
+     * @Date: 2020/8/14 10:47
+     */
+    @Override
+    public List<CfUser> getOperatorByB0100(String b0100) {
+        if (StringUtils.isBlank(b0100)){
+            throw new CustomMessageException("参数为空!");
+        }
+        List<CfUser> users = cfUserMapper.getOperatorByB0100(b0100,Constants.USER_TYPES[6]);
+        return users;
+    }
+
+    /**
+     * 功能描述: <br>
      * 〈管理人员确定列表〉
      * @Param: []
      * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
