@@ -207,4 +207,14 @@ public interface OmsOperatorService {
      * @Date: 2020/7/23 14:51
      */
     PageInfo getAllOperatorHandoverByOrgId(Integer pageNum, Integer pageSize,String orgId);
+
+    /**
+     * 功能描述: <br>
+     * 〈通过b0100查询经办人〉
+     * @Param: [b0100]
+     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
+     * @Author: 李逍遥
+     * @Date: 2020/8/13 10:19
+     */
+    List<CfUser> getOperatorByB0100(String b0100);
 }

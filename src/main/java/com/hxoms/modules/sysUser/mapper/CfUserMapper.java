@@ -118,4 +118,13 @@ public interface CfUserMapper {
     CfUser getOperatorByIdnumAndState(@Param("idnumber") String idnumber, @Param("userType") String userType, @Param("state") String state);
 
 
+    /**
+     * 功能描述: <br>
+     * 〈通过b0100查询经办人〉
+     * @Param: [b0100, userType]
+     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
+     * @Author: 李逍遥
+     * @Date: 2020/8/14 10:48
+     */
+    List<CfUser> getOperatorByB0100(@Param("b0100") String b0100,@Param("userType") String userType);
 }

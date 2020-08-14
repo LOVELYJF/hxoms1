@@ -19,6 +19,7 @@ import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.*;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -392,7 +393,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         if("clshsftg".equals(recordFlow)){   // 材料审核是否通过
 
-            setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion ;
+            setSql+= " CLSHSFTG " + " = ’" + opinion+"‘, zzjl = ’" + opinion+"'" ;
 
             // FINAL_CONCLUSION
 
@@ -407,19 +408,19 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //                    "from( " +
 //                    "select CONCAT(IFNULL(feedback_verdict,'0'),IFNULL(official_feedback_verdict,'0')) as opinion  from oms_jiwei_opinion  " +
 //                    ")temp where id = " +busessId;
-            String sql = "select ifnull(official_feedback_verdict,feedback_verdict) as opinion from oms_jiwei_opinion where id ="+busessId;
+            String sql = "select ifnull(official_feedback_verdict,feedback_verdict) as opinion from oms_jiwei_opinion where id ='"+busessId+"'";
             SqlVo instance1 = SqlVo.getInstance(sql);
             List<LinkedHashMap<String, Object>> linkedHashMaps =  selectMapper.select(instance1);
 
 
 
-            setSql+= " jwjl " + " = " + linkedHashMaps.get(0).get("opinion")+", zzjl = " + linkedHashMaps.get(0).get("opinion") ;
+            setSql+= " jwjl " + " = '" + linkedHashMaps.get(0).get("opinion")+"', zzjl = '" + linkedHashMaps.get(0).get("opinion")+"'" ;
 
 
             return  updateSql+setSql+whereCondition;
         }else if("jdcjl".equals(recordFlow)){  // 监督处最终结论
 
-            setSql+= " jdcjl " + " = " + opinion+", zzjl = " + opinion ;
+            setSql+= " jdcjl " + " = '" + opinion+"', zzjl = '" + opinion+"'" ;
 
 
             return  updateSql+setSql+whereCondition;
@@ -428,7 +429,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
             // 其它 流程步骤 修改 最终 结论
 
-            setSql+= "zzjl = " + opinion;
+            setSql+= "zzjl = '" + opinion+"'";
 
 
             return  updateSql+setSql+whereCondition;
@@ -612,14 +613,17 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         updateBussinessFiledByJiWeiExport(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
 
         updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[2]);
-
+        // 修改批次状态
+        selectBatchIdAndisOrNotUpateBatchStatus(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                Constants.leader_business[2]
+        );
     }
 
 
     // TODO 征求 记录纪委意见 查询页面
 
     @Override
-    @Transactional(readOnly=true)
     public PageInfo selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo) {
 
 
@@ -627,6 +631,11 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         List<Map>   users = leaderCommonQueryMapper.selectJiweiWriteApply();
 
         PageInfo pageInfo = new PageInfo(users);
+
+        // 在这里 就保存纪委意见
+        List<Map> list =  leaderCommonQueryMapper.selectJiweiWriteSave();
+        clickJieweiOpinion(list);
+
         return pageInfo;
 
     }
@@ -660,12 +669,12 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
     //  TODO 点击 纪委意见记录 触发的 事件
     @Transactional(rollbackFor = CustomMessageException.class)
-    public void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
+    public void clickJieweiOpinion(List<Map> lists){
 
-        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
+//        LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
 
         // 点击 这个 按就 就保存 纪委意见 表，以及 保存 纪委意见记录 与 业务表之间的关系
-        for(int i=0;i<omsJiweiOpinionVo.getBussinessTypeAndIdVos().size();i++){
+        for(int i=0;i<lists.size();i++){
 
 //            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(omsJiweiOpinionVo.getBussinessName()[i]);
 
@@ -675,13 +684,13 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //            List<LinkedHashMap<String, Object>> list = selectMapper.select(instance);
 
-             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(omsJiweiOpinionVo.getBussinessTypeAndIdVos().get(i).getBussinessId());
+             OmsJiweiOpinion omsJiweiOpinion =  omsJiweiOpinionMapper.selectById(lists.get(i).get("id").toString());
 
             if(omsJiweiOpinion==null){
                   // 如果 该条  业务申请 记录 的 纪委id 为空
                   OmsJiweiOpinion omsJiweiOpinion1 = new OmsJiweiOpinion();
 
-                omsJiweiOpinion1.setId(omsJiweiOpinionVo.getBussinessTypeAndIdVos().get(i).getBussinessId());
+                omsJiweiOpinion1.setId(lists.get(i).get("id").toString());
                   omsJiweiOpinionMapper.insert(omsJiweiOpinion1);
 
             }else{
@@ -703,12 +712,12 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         LeaderSupervisionUntil.throwableByParam(omsJiweiOpinionVo);
 
         OmsJiweiOpinion omsJiweiOpinion = new OmsJiweiOpinion();
-        if(omsJiweiOpinionVo.getFeedbackType()==String.valueOf(1)){
+        if(omsJiweiOpinionVo.getFeedbackType().equals(String.valueOf(1))){
             // 口头 反馈
            // omsJiweiOpinion.setId(UUIDGenerator.getPrimaryKey());
             BeanUtils.copyProperties(omsJiweiOpinionVo, omsJiweiOpinion);
           //  omsJiweiOpinionMapper.insert(omsJiweiOpinion);
-        }else if(omsJiweiOpinionVo.getFeedbackType()==String.valueOf(2)){
+        }else if(omsJiweiOpinionVo.getFeedbackType().equals(String.valueOf(2))){
             // 书面 反馈
 
             omsJiweiOpinion.setOfficialFeedbackType("2");
@@ -727,7 +736,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
                 }
 
-                if(field.getName().toLowerCase().contains("feedbackType".toLowerCase())){
+                if(field.getName().toLowerCase().contains("feedbackVerdict".toLowerCase())){
 
                     omsJiweiOpinion.setOfficialFeedbackVerdict(omsJiweiOpinionVo.getFeedbackVerdict());
 
@@ -742,6 +751,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
             }
 
+        }else {
+
+            throw new CustomMessageException("意见反馈 只能是 书面 或者 口头 1代表 口头，2 代表书面");
         }
 
         UpdateWrapper<OmsJiweiOpinion> updateWrapper = new UpdateWrapper<>();
@@ -758,7 +770,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //        saveApplyBussinessByBatchId(omsJiweiOpinionVo,omsJiweiOpinion.getId(),"jiwei_opinion_id");
 
         // 修改 业务申请 状态  （第三步） 修改 为 记录意见
-        updteBussinessApplyStatue(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
+        updteBussinessApplyStatueByWriteJiewei(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
 
         //在流程审批业务表 中记录纪委意见（第 三 点1 不）
         updateBussinessApplyRecordOpinion(omsJiweiOpinionVo.getBussinessTypeAndIdVos(),omsJiweiOpinionVo.getFeedbackVerdict(),"jwjl");
@@ -772,15 +784,22 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //        String bussinessName = omsJiweiOpinionVo.getBussinessName()[0];
 
         selectBatchIdAndisOrNotUpateBatchStatus(
-                (String[])omsJiweiOpinionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                omsJiweiOpinionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()),
                 Constants.leader_business[3]);
 
 
     }
 
+    public  List<Map> selectOffictJiiweiOpinionRelevanceLeaderBatch(){
+
+        List<Map> lists =  leaderCommonQueryMapper.selectJiweiWriteSave();
+
+        return lists;
+    }
+
     // 更具 业务 流程 获取批次 并判断是否修改 批次 状态
 
-    public void selectBatchIdAndisOrNotUpateBatchStatus(String[] bussinessId,int status){
+    public void selectBatchIdAndisOrNotUpateBatchStatus(List bussinessId,int status){
 
 //        String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName);
 //
@@ -983,7 +1002,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //        String bussinessName = auditOpinionVo.getBussinessName()[0];
         selectBatchIdAndisOrNotUpateBatchStatus(
-                (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                 Constants.leader_business[3]);
 
     }
@@ -1084,7 +1103,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         //修改 批次状态 (第三步)
 
         selectBatchIdAndisOrNotUpateBatchStatus(
-                (String[]) leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
 
                 Constants.leader_business[3]);
 
@@ -1153,7 +1172,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                   auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
 
                   Constants.leader_business[4]);
 
@@ -1177,7 +1196,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                   auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                   Constants.leader_business[4]);
 
 
@@ -1307,7 +1326,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                   Constants.leader_business[4]);
 
 
@@ -1330,7 +1349,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                 auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                   Constants.leader_business[4]);
 
 
@@ -1399,7 +1418,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //          String bussinessName = auditOpinionVo.getBussinessName()[0];
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                 auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                   Constants.leader_business[5]);
 
 
@@ -1420,7 +1439,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
           //修改 批次状态 (第三步)
 
           selectBatchIdAndisOrNotUpateBatchStatus(
-                  (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                   auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                   Constants.leader_business[5]
           );
 
@@ -1490,7 +1509,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //            String bussinessName = auditOpinionVo.getBussinessName()[0];
             selectBatchIdAndisOrNotUpateBatchStatus(
-                    (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                  auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                     Constants.leader_business[6]);
 
 
@@ -1513,7 +1532,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 //
 //            String bussinessName = auditOpinionVo.getBussinessName()[0];
             selectBatchIdAndisOrNotUpateBatchStatus(
-                    (String[]) auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                     auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                     Constants.leader_business[6]);
 
 
@@ -1521,6 +1540,75 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         }
 
 
+    }
+
+
+    /**
+     *
+     * TODO 由于征求纪委意见 可以多次 填写 需要 单独处理
+     * **/
+
+    public  void updteBussinessApplyStatueByWriteJiewei(List<BussinessTypeAndIdVo> bussinessTypeAndIdVos, String leaderStatusName){
+
+
+        for(int i=0;i<bussinessTypeAndIdVos.size();i++){
+
+            String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessTypeAndIdVos.get(i).getBussinessName());
+
+            int currentStatus = selectBussinessStatus(bussinessTypeAndIdVos.get(i).getBussinessId(), bussinessType, leaderStatusName);
+
+            if(currentStatus < Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)]){
+
+                String updateApplyStatusSql =   getUpdateStatusSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
+
+                if(updateApplyStatusSql.length()>0){
+
+                    SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
+                    selectMapper.update(instance);
+
+
+                }
+
+            }
+
+
+
+
+        }
+
+
+
+
+    }
+
+    //TODO  查当前流程的状态
+
+    public int selectBussinessStatus(String busessId,String bussinesType,String leaderStatusName){
+
+        String selectSql =" select @Status as status from "+bussinesType + " where id = '"+busessId+"'";
+
+        String status="";
+
+        for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+            if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+                status =  applyStatus.getApplySatus();
+                // 干部监督处的状态
+
+                break;
+
+
+            }
+
+        }
+
+        String newSelectSql =  selectSql.replace("@Status",status);
+
+        SqlVo instance = SqlVo.getInstance(newSelectSql);
+        List<LinkedHashMap<String, Object>> lists=  selectMapper.select(instance);
+
+        return Integer.parseInt(lists.get(0).get("status").toString());
     }
 
 
