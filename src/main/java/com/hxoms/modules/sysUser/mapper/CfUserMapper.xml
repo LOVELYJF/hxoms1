@@ -194,6 +194,20 @@
             </if>
         </where>
     </select>
+    <select id="getOperatorByB0100" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+      select
+      *
+      from cf_user c
+      left join b01 b on c.org_id = b.b0111
+      where c.user_state = '1'
+        <if test="userType != null and userType != ''">
+            and c.user_type = #{userType}
+        </if>
+        <if test='b0100 != null and b0100 != ""'>
+            and b.b0100 = #{b0100}
+        </if>
+
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbg.generated
