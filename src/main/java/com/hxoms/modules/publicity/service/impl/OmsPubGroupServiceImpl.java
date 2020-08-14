@@ -30,7 +30,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Autowired
     private OmsPubGroupMapper pubGroupMapper;
-
+    @Autowired
     private OmsPubApplyMapper pubApplyMapper;
 
     @Override
@@ -105,10 +105,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public OmsPubGroupAndApplyList getPubGroupDetailById(String id) {
+    public OmsPubGroupAndApplyList getPubGroupDetailById(String yspId) {
         OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
-        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
-        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(id);
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(yspId);
+        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(yspId);
         beanList.setOmsPubGroupPreApproval(pubGroup);
         beanList.setOmsPubApplyVOList(pubApplyVOList);
         return  beanList;

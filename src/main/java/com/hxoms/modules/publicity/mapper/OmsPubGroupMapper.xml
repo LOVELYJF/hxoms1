@@ -212,4 +212,7 @@
         GROUP BY
             t.SQZT
     </select>
+    <select id="getPubGroupDetailById" resultType="com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval">
+        select * from oms_pub_group_pre_approval where id = #{id}
+    </select>
 </mapper>
