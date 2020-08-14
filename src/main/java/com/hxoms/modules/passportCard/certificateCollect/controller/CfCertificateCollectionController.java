@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/CfCertificateCollection")
+@RequestMapping("/cerCollection")
 public class CfCertificateCollectionController {
 
     //催缴记录接口

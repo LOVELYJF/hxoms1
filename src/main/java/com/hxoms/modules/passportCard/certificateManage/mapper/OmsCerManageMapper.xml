@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.certificateManage.mapper.OmsCerManageMapper">
+  <select id="selectCerInfo" resultType="com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo">
+    SELECT
+        a.id,
+        a. NAME,
+        a.sex,
+        b.work_unit workUnit,
+        b.incumbency_status incumbencyStatus,
+        b.post,
+        a.zjlx,
+        a.xplx,
+        a.zjxs,
+        a.zjhm,
+        a.yxqz,
+        a.surely_Unit surelyUnit,
+        a.card_Status cardStatus,
+        a.save_Status saveStatus,
+        a.surely_Way surelyWay,
+        a.cabinet_Num cabinetNum,
+        a.place,
+        a.counter_num counterNum,
+        a.csrq,
+        a.qfjg,
+        a.qfrq,
+        a.csdd,
+        a.exception_Message exceptionMessage
+    FROM
+        cf_certificate a
+    INNER JOIN oms_reg_procpersoninfo b ON a.oms_id = b.id
+    <where>
+      <if test="name!=null">
+        a.name=#{name}
+      </if>
+      <if test="rfB0000!=null">
+        b.rf_B0000=#{rfB0000}
+      </if>
+      <if test="zjlx!=null">
+        a.zjlx=#{zjlx}
+      </if>
+      <if test="zjhm!=null">
+        a.zjhm=#{zjhm}
+      </if>
+      <if test="yxqz!=null">
+        a.yxqz=#{yxqz}
+      </if>
+      <if test="saveStatus!=null">
+        a.save_Status=#{saveStatus}
+      </if>
+      <if test="cardStatus!=null">
+        a.card_Status=#{cardStatus}
+      </if>
+      <if test="zjxs!=null">
+        a.zjxs=#{zjxs}
+      </if>
+      <if test="xplx!=null">
+        a.xplx=#{xplx}
+      </if>
+    </where>
+  </select>
+</mapper>
