@@ -282,4 +282,17 @@ public class OmsOperatorController {
                                  @RequestParam(value ="state",required = false) List<String> state, HttpServletResponse response){
         operatorService.exportOperator(keyWord,orgId,state,response);
     }
+    /**
+     * 功能描述: <br>
+     * 〈通过b0100查询经办人〉
+     * @Param: [b0100]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/13 10:18
+     */
+    @GetMapping("/getOperatorByB0100")
+    public Result getOperatorByB0100(String b0100){
+        List<CfUser> users = operatorService.getOperatorByB0100(b0100);
+        return Result.success(users);
+    }
 }

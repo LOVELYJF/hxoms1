@@ -7,8 +7,7 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
+import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -47,17 +47,22 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(num > 0){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
-            for(int i = 0; i < num; i++){
-                pubGroup.setTzrs(num);
-                pubGroup.setCreateUser(userInfo.getId());
-                pubGroup.setCreateTime(new Date());
-            }
+            //团组信息
+            pubGroup.setId(UUIDGenerator.getPrimaryKey());
+            pubGroup.setTzrs(num);
+            pubGroup.setSqzt(1);
+            pubGroup.setCreateUser(userInfo.getId());
+            pubGroup.setCreateTime(new Date());
             pubGroupMapper.insertPubGroup(pubGroup);
+            //出国人员信息
             for(int i = 0; i < num; i++ ){
                 personList.get(i).setId(UUIDGenerator.getPrimaryKey());
+                personList.get(i).setSqzt(1);
+                personList.get(i).setCreateUser(userInfo.getId());
+                personList.get(i).setCreateTime(new Date());
             }
             pubApplyMapper.insertPubApplyList(personList);
-            return null;
+            return "添加成功";
         }else{
             return "未选择备案人员";
         }
@@ -93,8 +98,20 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void backoutPerson(String id) {
-        pubApplyMapper.deletePubApplyById(id);
+    public void backoutPerson(String id,String cxyy) {
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        pubGroup.setSqzt(0);
+        pubGroupMapper.updatePubGroup(pubGroup);
+    }
+
+    @Override
+    public OmsPubGroupAndApplyList getPubGroupDetailById(String id) {
+        OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(id);
+        beanList.setOmsPubGroupPreApproval(pubGroup);
+        beanList.setOmsPubApplyVOList(pubApplyVOList);
+        return  beanList;
     }
 
     @Override
@@ -105,7 +122,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Override
     public Object sendTask(String id) {
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
-        pubGroup.setSqzt(3);
+        pubGroup.setSqzt(2);
         return pubGroupMapper.updatePubGroup(pubGroup);
     }
 

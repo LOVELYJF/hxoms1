@@ -3,6 +3,7 @@ package com.hxoms.modules.publicity.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.publicity.entity.OmsPubGroupAndApplyList;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,9 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //添加人员
     Object insertPerson(String a0100);
     //撤销人员
-    void backoutPerson(String id);
+    void backoutPerson(String id,String cxyy);
+    //查看团组详情
+    OmsPubGroupAndApplyList getPubGroupDetailById(String id);
     //查看详情
     OmsPubApply getPersonDetailById(String id);
     //递送任务
