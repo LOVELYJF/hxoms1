@@ -6,6 +6,7 @@ import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface LeaderCommonService {
@@ -57,12 +58,17 @@ public interface LeaderCommonService {
      * **/
     void deleteLeaderBatch(OmsLeaderBatch omsLeaderBatch);
 
-    void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo);
+//    void clickJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo);
 
 
     /**
      *  保存纪委意见
      * **/
     void saveJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo);
+
+    /**
+     * 查询 书面纪委意见 需要关联的批次
+     * **/
+    List<Map> selectOffictJiiweiOpinionRelevanceLeaderBatch();
 
 }

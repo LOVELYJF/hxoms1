@@ -22,7 +22,7 @@ public interface LeaderCommonMapper {
 
    /** 根据所选的 业务流程Id 去查询 包含多少个批次 **/
 
-   List<Map>  selectLeaderBatchIdByBussinessIds(String[] bussinessIds);
+   List<Map>  selectLeaderBatchIdByBussinessIds(List bussinessIds);
 
    /**  查询业务流程及其数量 **/
    List<Map> selectBusinessFlowWithASNum();
@@ -31,11 +31,13 @@ public interface LeaderCommonMapper {
 
    List<Map> selectLeaderBatch();
    /** 征求纪委 意见 查询页面 **/
-   List<Map> selectJiweiApply(String[] bussinessIds);
+   List<Map> selectJiweiApply(Object[] bussinessIds);
 
    /** 记录纪委 意见 查询 页面 **/
 
    List<Map> selectJiweiWriteApply();
+   /**查询纪委意见人员 就保存 **/
+   List<Map> selectJiweiWriteSave();
 
    /** 查询 因私出国境（申请）管理 ***/
 

@@ -149,28 +149,39 @@ public class  LeaderSupervisionController {
     }
 
 
-    /**
-     *
-     *  TODO 点击 纪委意见记录 触发的 事件
-     * **/
-    @PostMapping("/clickJieweiOpinion")
-     public Result  clickJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
-
-         leaderCommonService.clickJieweiOpinion(omsJiweiOpinionVo);
-
-         return Result.success();
-     }
+//    /**
+//     *
+//     *  TODO 点击 纪委意见记录 触发的 事件
+//     * **/
+//    @PostMapping("/clickJieweiOpinion")
+//     public Result  clickJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
+//
+//         leaderCommonService.clickJieweiOpinion(omsJiweiOpinionVo);
+//
+//         return Result.success();
+//     }
 
 
     /**
      *  录入口头纪委意见
      * **/
     @PostMapping("/saveJieweiOpinion")
-    public Result saveJieweiOpinion(OmsJiweiOpinionVo omsJiweiOpinionVo){
+    public Result saveJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
 
         leaderCommonService.saveJieweiOpinion(omsJiweiOpinionVo);
 
         return Result.success();
+    }
+
+    /**
+     * 查询 书面纪委意见 需要关联的批次
+     * **/
+    @GetMapping("/selectOffictJiiweiOpinionRelevanceLeaderBatch")
+    public Result selectOffictJiiweiOpinionRelevanceLeaderBatch(){
+
+        List lists= leaderCommonService.selectOffictJiiweiOpinionRelevanceLeaderBatch();
+
+        return Result.success(lists);
     }
 
 
