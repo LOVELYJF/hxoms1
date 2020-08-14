@@ -159,6 +159,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public void insertCertificate(CfCertificate cfCertificate) {
         if(cfCertificate==null)
             throw new CustomMessageException("参数不能为空，请核实！");
+        if(StringUtils.isBlank(cfCertificate.getOmsId()))
+            throw new CustomMessageException("未关联登记备案人员，请核实！");
         cfCertificate.setId(UUIDGenerator.getPrimaryKey());
         cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
         //已取出

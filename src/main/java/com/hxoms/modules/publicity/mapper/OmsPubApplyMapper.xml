@@ -281,6 +281,7 @@
                orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
                orp.NATION_NAME as NATION,
                orp.ID as procpersonId,
+               orp.INCUMBENCY_STATUS as status,
                b.b0100 as b0100
         from oms_reg_procpersoninfo orp
         LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
