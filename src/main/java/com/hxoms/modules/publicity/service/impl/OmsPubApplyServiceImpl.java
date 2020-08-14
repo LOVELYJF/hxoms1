@@ -471,7 +471,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyChange.setModifyTime(new Date());
             omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
             //删除预审批人员
-            omsPubApplyMapper.deletePubApplyByYSPId(id);
+            //omsPubApplyMapper.deletePubApplyByYSPId(id);
         }
         //将预审批人员添加到备案申请
         List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();

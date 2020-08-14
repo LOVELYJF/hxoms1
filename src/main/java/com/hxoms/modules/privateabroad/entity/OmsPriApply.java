@@ -82,6 +82,9 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "REAL_GO_COUNTRY",   FieldDescription="实际出访国家")
     private String realGoCountry;
 
+    @ColumnAnnotation(FieldName = "REAL_PASS_COUNTRY",   FieldDescription="实际途径国家")
+    private String realPassCountry;
+
     @ColumnAnnotation(FieldName = "REAL_ABROAD_TIME",   FieldDescription="实际出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -98,14 +101,11 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明情况")
     private String description;
 
-    @ColumnAnnotation(FieldName = "PERSONDEPART_OPINION",   FieldDescription="人事部门审核意见")
-    private String persondepartOpinion;
+    @ColumnAnnotation(FieldName = "IS_TWO_PASSPORT",   FieldDescription="是否有两个护照")
+    private String isTwoPassport;
 
-    @ColumnAnnotation(FieldName = "CHECK_PERSON",   FieldDescription="审核人")
-    private String checkPerson;
-
-    @ColumnAnnotation(FieldName = "RESPONSIBLE_PERSON",   FieldDescription="负责人")
-    private String responsiblePerson;
+    @ColumnAnnotation(FieldName = "IS_ABROAD",   FieldDescription="是否出入境")
+    private String isAbroad;
 
     @ColumnAnnotation(FieldName = "ABROAD_PHONE",   FieldDescription="国外通讯及本人联系电话")
     private String abroadPhone;
@@ -380,6 +380,14 @@ public class OmsPriApply {
         this.realGoCountry = realGoCountry == null ? null : realGoCountry.trim();
     }
 
+    public String getRealPassCountry() {
+        return realPassCountry;
+    }
+
+    public void setRealPassCountry(String realPassCountry) {
+        this.realPassCountry = realPassCountry == null ? null : realPassCountry.trim();
+    }
+
     public Date getRealAbroadTime() {
         return realAbroadTime;
     }
@@ -412,28 +420,20 @@ public class OmsPriApply {
         this.description = description == null ? null : description.trim();
     }
 
-    public String getPersondepartOpinion() {
-        return persondepartOpinion;
+    public String getIsTwoPassport() {
+        return isTwoPassport;
     }
 
-    public void setPersondepartOpinion(String persondepartOpinion) {
-        this.persondepartOpinion = persondepartOpinion == null ? null : persondepartOpinion.trim();
+    public void setIsTwoPassport(String isTwoPassport) {
+        this.isTwoPassport = isTwoPassport == null ? null : isTwoPassport.trim();
     }
 
-    public String getCheckPerson() {
-        return checkPerson;
+    public String getIsAbroad() {
+        return isAbroad;
     }
 
-    public void setCheckPerson(String checkPerson) {
-        this.checkPerson = checkPerson == null ? null : checkPerson.trim();
-    }
-
-    public String getResponsiblePerson() {
-        return responsiblePerson;
-    }
-
-    public void setResponsiblePerson(String responsiblePerson) {
-        this.responsiblePerson = responsiblePerson == null ? null : responsiblePerson.trim();
+    public void setIsAbroad(String isAbroad) {
+        this.isAbroad = isAbroad == null ? null : isAbroad.trim();
     }
 
     public String getAbroadPhone() {
