@@ -2,16 +2,24 @@ package com.hxoms.modules.leaderSupervision.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.publicity.taskSupervise.entity.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -124,6 +132,32 @@ public class LeaderQueryconditions {
 
      return Result.success(lists);
     }
+    /**
+     * 附件下载
+     *
+     * **/
+    @GetMapping ("/downloadAttachmentById")
+    public ResponseEntity<byte[]> downloadAttachmentById(String id){
 
+
+
+        Map map = leaderDetailProcessingService.downloadAttachmentById(id);
+
+        ResponseEntity<byte[]> responseEntity=null;
+        try {
+
+            responseEntity=ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode(map.get("fileName").toString(), "utf-8")))
+                    .body((byte[]) map.get("array"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomMessageException("下载失败，原因："+e.getMessage());
+        }
+        return responseEntity;
+
+
+
+    }
 
 }

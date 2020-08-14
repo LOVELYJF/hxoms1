@@ -65,4 +65,10 @@ public interface LeaderDetailProcessingService {
      * 查看附件列表
      * **/
     List<Map> selectAttachmentList(String[] leaderBatchIds);
+
+    /**
+     * 下载 附件
+     * **/
+
+    Map downloadAttachmentById(String id);
 }

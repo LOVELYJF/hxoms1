@@ -10,6 +10,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -22,8 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -405,6 +405,42 @@ public class LeaderSupervisionUntil {
 
 
         }
+    }
+
+
+    /**
+     * @Desc: 文件下载
+     *
+     */
+    public static byte[] downloadFile(String filedDownPath) throws IOException {
+        byte[] fileDateByte=null;
+        File file=new File(FilenameUtils.normalize(filedDownPath));
+        if(!file.exists()||!file.isFile()){
+            throw new CustomMessageException("文件未生成！");
+        }
+        ByteArrayOutputStream outStream=null;
+        FileInputStream in=null;
+        try {
+            outStream = new ByteArrayOutputStream();
+            in = new FileInputStream(file);
+            int len;
+            byte[] buf = new byte[1024];
+            while ((len = in.read(buf)) > 0) {
+                outStream.write(buf, 0, len);
+            }
+            fileDateByte=outStream.toByteArray();
+        } catch (IOException e) {
+            throw new CustomMessageException(e);
+        } finally {
+            //关闭流
+            if(in!=null){
+                in.close();
+            }
+            if(outStream!=null){
+                outStream.close();
+            }
+        }
+        return fileDateByte;
     }
 
 

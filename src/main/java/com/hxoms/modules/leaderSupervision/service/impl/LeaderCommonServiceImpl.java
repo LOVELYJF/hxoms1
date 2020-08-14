@@ -54,6 +54,8 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
 
+
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override

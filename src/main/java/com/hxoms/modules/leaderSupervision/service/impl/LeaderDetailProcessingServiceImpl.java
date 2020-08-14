@@ -447,6 +447,21 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
        return lists;
     }
 
+    public Map downloadAttachmentById(String id){
+
+        Map map = new HashMap();
+
+      OmsAttachment omsAttachment =   omsAttachmentMapper.selectById(id);
+        try {
+            map.put("array",LeaderSupervisionUntil.downloadFile(omsAttachment.getUrl())) ;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        map.put("fileName",omsAttachment.getName());
+        return map;
+
+    }
+
 
 
 
