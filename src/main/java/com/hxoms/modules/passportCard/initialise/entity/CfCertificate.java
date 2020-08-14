@@ -51,11 +51,14 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "CSDD",   FieldDescription="出生地点")
     private String csdd;
 
+    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
+    private Integer zjlx;
+
     @ColumnAnnotation(FieldName = "ZJXS",   FieldDescription="证件形式(0:本式证照,1:卡式证照)")
     private String zjxs;
 
-    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
-    private Integer zjlx;
+    @ColumnAnnotation(FieldName = "XPLX",   FieldDescription="芯片类型(0:自带,1:粘贴)")
+    private String xplx;
 
     @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
     private String zjhm;
@@ -91,8 +94,11 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "CABINET_NUM",   FieldDescription="机柜编号")
     private String cabinetNum;
 
-    @ColumnAnnotation(FieldName = "PLACE",   FieldDescription="位置")
+    @ColumnAnnotation(FieldName = "PLACE",   FieldDescription="机柜位置")
     private String place;
+
+    @ColumnAnnotation(FieldName = "COUNTER_NUM",   FieldDescription="柜台编号")
+    private String counterNum;
 
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效(0:有效,1:无效)")
     private Integer isValid;
@@ -215,6 +221,14 @@ public class CfCertificate {
         this.csdd = csdd == null ? null : csdd.trim();
     }
 
+    public Integer getZjlx() {
+        return zjlx;
+    }
+
+    public void setZjlx(Integer zjlx) {
+        this.zjlx = zjlx;
+    }
+
     public String getZjxs() {
         return zjxs;
     }
@@ -223,12 +237,12 @@ public class CfCertificate {
         this.zjxs = zjxs == null ? null : zjxs.trim();
     }
 
-    public Integer getZjlx() {
-        return zjlx;
+    public String getXplx() {
+        return xplx;
     }
 
-    public void setZjlx(Integer zjlx) {
-        this.zjlx = zjlx;
+    public void setXplx(String xplx) {
+        this.xplx = xplx == null ? null : xplx.trim();
     }
 
     public String getZjhm() {
@@ -317,6 +331,14 @@ public class CfCertificate {
 
     public void setPlace(String place) {
         this.place = place == null ? null : place.trim();
+    }
+
+    public String getCounterNum() {
+        return counterNum;
+    }
+
+    public void setCounterNum(String counterNum) {
+        this.counterNum = counterNum == null ? null : counterNum.trim();
     }
 
     public Integer getIsValid() {
