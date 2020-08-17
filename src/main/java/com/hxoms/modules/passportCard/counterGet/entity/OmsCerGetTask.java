@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @TableAnnotation(TableName = "oms_cer_get_task", TableDescription="证照领取任务表")
 public class OmsCerGetTask {
@@ -40,21 +41,29 @@ public class OmsCerGetTask {
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证)")
     private String dataSource;
 
+    @ColumnAnnotation(FieldName = "GET_PEOPLE",   FieldDescription="领取人")
+    private String getPeople;
+
+    @ColumnAnnotation(FieldName = "GET_TIME",   FieldDescription="领取时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date getTime;
+
     @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
     private String creator;
 
-    @ColumnAnnotation(FieldName = "CREATETIME",   FieldDescription="创建时间")
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date createtime;
+    private Date createTime;
 
     @ColumnAnnotation(FieldName = "UPDATOR",   FieldDescription="修改人")
     private String updator;
 
-    @ColumnAnnotation(FieldName = "UPDATETIME",   FieldDescription="修改时间")
+    @ColumnAnnotation(FieldName = "UPDATE_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date updatetime;
+    private Date updateTime;
 
     @ColumnAnnotation(FieldName = "CER_GET_ELE_SIGN",   FieldDescription="证照领取电子签名(BASE64数据)")
     private String cerGetEleSign;
@@ -142,6 +151,22 @@ public class OmsCerGetTask {
         this.dataSource = dataSource == null ? null : dataSource.trim();
     }
 
+    public String getGetPeople() {
+        return getPeople;
+    }
+
+    public void setGetPeople(String getPeople) {
+        this.getPeople = getPeople == null ? null : getPeople.trim();
+    }
+
+    public Date getGetTime() {
+        return getTime;
+    }
+
+    public void setGetTime(Date getTime) {
+        this.getTime = getTime;
+    }
+
     public String getCreator() {
         return creator;
     }
@@ -150,12 +175,12 @@ public class OmsCerGetTask {
         this.creator = creator == null ? null : creator.trim();
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getUpdator() {
@@ -166,12 +191,12 @@ public class OmsCerGetTask {
         this.updator = updator == null ? null : updator.trim();
     }
 
-    public Date getUpdatetime() {
-        return updatetime;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdatetime(Date updatetime) {
-        this.updatetime = updatetime;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getCerGetEleSign() {
