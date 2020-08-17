@@ -8,9 +8,9 @@ import java.util.List;
  * @Date: 2020/8/6 11:21
  */
 public class OmsPubGroupAndApplyList{
-    //
+    //团体实体类
     private OmsPubGroupPreApproval omsPubGroupPreApproval;
-
+    //人员list
     private List<OmsPubApplyVO> omsPubApplyVOList;
 
     public OmsPubGroupPreApproval getOmsPubGroupPreApproval() {

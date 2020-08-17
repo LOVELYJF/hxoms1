@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -42,13 +41,17 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object insertPubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
+    public String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
+        List<OmsPubApplyVO> personList = pubGroupAndApplyList.getOmsPubApplyVOList();
+        List<OmsPubApply> applyList = new ArrayList<>();
         int num = personList.size();
         if(num > 0){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             //团组信息
-            pubGroup.setId(UUIDGenerator.getPrimaryKey());
+            String id = UUIDGenerator.getPrimaryKey();
+            pubGroup.setId(id);
             pubGroup.setTzrs(num);
             pubGroup.setSqzt(1);
             pubGroup.setCreateUser(userInfo.getId());
@@ -56,12 +59,21 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                personList.get(i).setId(UUIDGenerator.getPrimaryKey());
-                personList.get(i).setSqzt(1);
-                personList.get(i).setCreateUser(userInfo.getId());
-                personList.get(i).setCreateTime(new Date());
+                OmsPubApply pubApply = new OmsPubApply();
+                pubApply.setId(UUIDGenerator.getPrimaryKey());
+                pubApply.setA0100(personList.get(i).getA0100());
+                pubApply.setB0100(personList.get(i).getB0100());
+                pubApply.setAge(personList.get(i).getAge());
+                pubApply.setYspId(id);
+                pubApply.setHealth(personList.get(i).getHealth());
+                pubApply.setSfsmry(personList.get(i).getSfsmry());
+                pubApply.setZjcgqk(personList.get(i).getZjcgqk());
+                pubApply.setSqzt(1);
+                pubApply.setCreateUser(userInfo.getId());
+                pubApply.setCreateTime(new Date());
+                applyList.add(pubApply);
             }
-            pubApplyMapper.insertPubApplyList(personList);
+            pubApplyMapper.insertPubApplyList(applyList);
             return "添加成功";
         }else{
             return "未选择备案人员";
@@ -69,32 +81,62 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object updatePubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
-        return pubGroupMapper.updatePubGroup(pubGroup);
+    public void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
+        List<OmsPubApplyVO> personList = pubGroupAndApplyList.getOmsPubApplyVOList();
+        List<OmsPubApply> applyList = new ArrayList<>();
+        int num = personList.size();
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        pubGroupMapper.updatePubGroup(pubGroup);
+        /*if(num > 0){
+            //出国人员信息
+            for(int i = 0; i < num; i++ ){
+                OmsPubApply pubApply = new OmsPubApply();
+                pubApply.setId(UUIDGenerator.getPrimaryKey());
+                pubApply.setA0100(personList.get(i).getA0100());
+                pubApply.setB0100(personList.get(i).getB0100());
+                pubApply.setAge(personList.get(i).getAge());
+                pubApply.setYspId(id);
+                pubApply.setHealth(personList.get(i).getHealth());
+                pubApply.setSfsmry(personList.get(i).getSfsmry());
+                pubApply.setZjcgqk(personList.get(i).getZjcgqk());
+                pubApply.setSqzt(1);
+                pubApply.setModifyUser(userInfo.getId());
+                pubApply.setModifyTime(new Date());
+                applyList.add(pubApply);
+            }
+            pubApplyMapper.updateById(applyList);
+        }*/
     }
 
     @Override
-    public Object deletePubGroup(String id) {
-        return pubGroupMapper.deletePubGroup(id);
+    public void deletePubGroup(String id) {
+        pubGroupMapper.deletePubGroup(id);
     }
 
     @Override
-    public Object uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) {
+    public String uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) {
         String msg = "";
         List<Map<String, Object>> list = readExcel(file);
         return msg;
     }
 
     @Override
-    public Object checkoutPerson(String idList) {
+    public String checkoutPerson(String idList) {
         return null;
     }
 
     @Override
-    public Object insertPerson(String a0100) {
+    public void insertPerson(String a0100) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
+        pubApply.setId(UUIDGenerator.getPrimaryKey());
         pubApply.setA0100(a0100);
-        return pubApplyMapper.insert(pubApply);
+        pubApply.setSqzt(1);
+        pubApply.setCreateUser(userInfo.getId());
+        pubApply.setCreateTime(new Date());
+        pubApplyMapper.insert(pubApply);
     }
 
     @Override
@@ -120,10 +162,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object sendTask(String id) {
+    public void sendTask(String id) {
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
         pubGroup.setSqzt(2);
-        return pubGroupMapper.updatePubGroup(pubGroup);
+        pubGroupMapper.updatePubGroup(pubGroup);
     }
 
     @Override
@@ -132,8 +174,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Object uploadApproval(MultipartFile file, String id) {
-        return null;
+    public String uploadApproval(MultipartFile file, String id) {
+        return "";
     }
 
     @Override

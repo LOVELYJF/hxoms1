@@ -61,7 +61,7 @@
     </select>
 
     <!-- 添加团体备案申请信息 -->
-    <insert id="insertPubGroup" parameterType="java.util.List">
+    <insert id="insertPubGroup" parameterType="com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval">
         INSERT INTO oms_pub_group_pre_approval (
         ID, B0100, BAZT, TZMC, TZFZR, TZRS, ZTDW, CGSJ, HGSJ, ZWTLSJ,
         SDGJ, SDGJTLSJ, TJGJ, TJGJTLSJ, CFRW, PWH, ZYPWH, YQDW, FYLYKZXM,
@@ -69,30 +69,30 @@
         )
         VALUES
         (
-            #{item.id},
-            #{item.b0100},
-            #{item.bazt},
-            #{item.tzmc},
-            #{item.tzfzr},
-            #{item.tzrs},
-            #{item.ztdw},
-            #{item.cgsj},
-            #{item.hgsj},
-            #{item.zwtlsj},
-            #{item.sdgj},
-            #{item.sdgjtlsj},
-            #{item.tjgj},
-            #{item.tjgjtlsj},
-            #{item.cgrw},
-            #{item.pwh},
-            #{item.zypwh},
-            #{item.yqdw},
-            #{item.fylykzxm},
-            #{item.sorce},
-            #{item.createUser},
-            #{item.createTime},
-            #{item.sqzt},
-            #{item.cfsy}
+            #{id},
+            #{b0100},
+            #{bazt},
+            #{tzmc},
+            #{tzfzr},
+            #{tzrs},
+            #{ztdw},
+            #{cgsj},
+            #{hgsj},
+            #{zwtlsj},
+            #{sdgj},
+            #{sdgjtlsj},
+            #{tjgj},
+            #{tjgjtlsj},
+            #{cfrw},
+            #{pwh},
+            #{zypwh},
+            #{yqdw},
+            #{fylykzxm},
+            #{source},
+            #{createUser},
+            #{createTime},
+            #{sqzt},
+            #{cfsy}
         )
     </insert>
 

@@ -3,14 +3,13 @@ package com.hxoms.modules.publicity.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
-import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
+import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,23 +53,32 @@ public class OmsPubGroupController {
 
     /**
      * 添加团体预备案申请信息
-     * @param pubGroup
-     * @param personList
+     * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/insertPubGroup")
-    public Result insertPubGroup(@RequestParam(required=false) OmsPubGroupPreApproval pubGroup,
-                                 @RequestParam(required=false) List<OmsPubApply> personList) {
-        return Result.success(pubGroupService.insertPubGroup(pubGroup,personList));
+    public Result insertPubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        try {
+            pubGroupService.insertPubGroup(pubGroupAndApplyList);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
     }
 
     /**
      * 修改团体预备案申请信息
-     * @param pubGroup
-     * @param personList
+     * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(OmsPubGroupPreApproval pubGroup,List<OmsPubApply> personList) {
-        return Result.success(pubGroupService.updatePubGroup(pubGroup,personList));
+    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        try {
+            pubGroupService.updatePubGroup(pubGroupAndApplyList);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
     }
 
     /**
@@ -79,7 +87,13 @@ public class OmsPubGroupController {
      */
     @PostMapping("/deletePubGroup")
     public Result deletePubGroup(String id) {
-        return Result.success(pubGroupService.deletePubGroup(id));
+        try {
+            pubGroupService.deletePubGroup(id);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
     }
 
 
@@ -91,7 +105,6 @@ public class OmsPubGroupController {
     @PostMapping("/uploadPubGroupExcel")
     public Result uploadPubGroupExcel(MultipartFile file, String orgName,String orgId) {
         try{
-
             return Result.success(pubGroupService.uploadPubGroupExcel(file,orgName,orgId));
         }catch (Exception e) {
             e.printStackTrace();
@@ -114,7 +127,13 @@ public class OmsPubGroupController {
      */
     @PostMapping("/insertPerson")
     public Result insertPerson(String A0100) {
-        return Result.success(pubGroupService.insertPerson(A0100));
+        try {
+            pubGroupService.insertPerson(A0100);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("导入失败");
+        }
     }
 
     /**
@@ -155,7 +174,13 @@ public class OmsPubGroupController {
      */
     @PostMapping("/sendTask")
     public Result sendTask(String id) {
-        return Result.success(pubGroupService.sendTask(id));
+        try {
+            pubGroupService.sendTask(id);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("导入失败");
+        }
     }
 
     /**
