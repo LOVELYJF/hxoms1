@@ -7,8 +7,10 @@ import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
+import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.publicity.taskSupervise.entity.FileInfo;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,10 +18,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
+import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +39,8 @@ import java.util.Map;
 public class LeaderQueryconditions {
     @Autowired
     private LeaderDetailProcessingService leaderDetailProcessingService;
+    @Autowired
+    private LeaderEXportExcelService leaderEXportExcelService;
 
     /**
      * 查询申请 类型
@@ -156,6 +164,31 @@ public class LeaderQueryconditions {
         }
         return responseEntity;
 
+
+
+    }
+
+    /**
+     * 纪委意见导出
+     * **/
+    @PostMapping("/jiweiWriteApplyExport")
+    public void jiweiWriteApplyExport(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
+
+        try {
+            HSSFWorkbook wb = leaderEXportExcelService.jiweiWriteApplyExport(leaderSupervisionVo);
+            String date = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
 
 
     }
