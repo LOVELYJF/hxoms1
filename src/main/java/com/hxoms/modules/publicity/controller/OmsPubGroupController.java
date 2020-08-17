@@ -8,10 +8,7 @@ import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApprovalVO;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -61,7 +58,8 @@ public class OmsPubGroupController {
      * @param personList
      */
     @PostMapping("/insertPubGroup")
-    public Result insertPubGroup(OmsPubGroupPreApproval pubGroup, List<OmsPubApply> personList) {
+    public Result insertPubGroup(@RequestParam(required=false) OmsPubGroupPreApproval pubGroup,
+                                 @RequestParam(required=false) List<OmsPubApply> personList) {
         return Result.success(pubGroupService.insertPubGroup(pubGroup,personList));
     }
 
