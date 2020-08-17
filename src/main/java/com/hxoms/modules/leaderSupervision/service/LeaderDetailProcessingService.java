@@ -54,7 +54,7 @@ public interface LeaderDetailProcessingService {
     /**
      * 纪委意见 按批次上传附件
      * **/
-    void fileUpload(MultipartFile[] files,String[] leaderBatchIds,String bussinessType,int bussinessOccureStpet,String bussiness_occure_stpet_name,  HttpServletRequest request);
+     void fileUpload(MultipartFile[] files,String[] leaderBatchIds,String bussinessType,int bussinessOccureStpet,String bussiness_occure_stpet_name,  HttpServletRequest request);
 
     /**
      * 征求纪委意见 查询条件

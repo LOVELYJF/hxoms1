@@ -767,7 +767,7 @@
 						SELECT
 							   pua.id AS id,   # 业务id
 							   pua.leader_batch_id as batchId, # 批次id
-                               pua.SQZT   as applyStatus,    # 业务 流程状态
+							   pua.SQZT   as applyStatus,    # 业务 流程状态
 							   b.b0101 AS department,  # "部门名称"
 							   a.a0101 AS userName, # 人员名称
 							   pua.CGSJ AS abroadTime,  # 出国时间 == 出境日期
@@ -794,9 +794,13 @@
 							   pua.FMXX AS fmxx, # 负面信息
 							   pua.SFBG as sfbg, # 是否变更
 							   case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
-							   pua.SCZQJWYJSJ, # 上次 征求 时间
+							   pua.SCZQJWYJSJ as sczqjwyjsj, # 上次 征求 时间
 							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
-								AS jwjl # 纪委意见
+								AS jwjl, # 纪委意见 结论
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+								as verbaljwjl, # 口头纪委意见
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+								as officaljwjl # 书面纪委意见
 
 								--          case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
 								--          AS clshsftg # 材料审核是否通过
@@ -807,12 +811,13 @@
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 						UNION
 						SELECT
 							   pra.id AS id, # 业务id
 
 							   pra.leader_batch_id as batchId, # 批次id
-                               pra.APPLY_STATUS as applyStatus,
+							   pra.APPLY_STATUS as applyStatus,
 
 							   b.b0101 AS department, 	# "部门名称"
 
@@ -858,10 +863,14 @@
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
-                               case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
-                               pra.SCZQJWYJSJ, # 上次 征求 时间
+							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
+							   pra.SCZQJWYJSJ, # 上次 征求 时间
 							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
-								AS jwjl # 材料审核是否通过
+								AS jwjl, # 材料审核是否通过
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+								as verbaljwjl, # 口头纪委意见
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+								as officaljwjl # 书面纪委意见
 
 								--           case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
 								--           AS clshsftg # 材料审核是否通过
@@ -871,14 +880,15 @@
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
 
 						UNION
 
 						SELECT
-                               prda.id AS id, # 业务id
+							   prda.id AS id, # 业务id
 
-                               prda.leader_batch_id as batchId, # 批次id
-                               prda.APPLY_STATUS as applyStatus,
+							   prda.leader_batch_id as batchId, # 批次id
+							   prda.APPLY_STATUS as applyStatus,
 							   b.b0101 AS department, 	# "部门名称"
 
 							   a.a0101 AS userName, # 人员名称
@@ -925,7 +935,11 @@
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
 							   prda.SCZQJWYJSJ, # 上次 征求 时间
 							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
-								AS jwjl # 材料审核是否通过
+								AS jwjl, # 材料审核是否通过
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+								as verbaljwjl, # 口头纪委意见
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+								as officaljwjl # 书面纪委意见
 								--
 								--           case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
 								--           AS clshsftg # 材料审核是否通过
@@ -936,9 +950,26 @@
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
+
 						) temp
 
 		where temp.sfzqjiwyj ='是'
+
+
+		<if test="array != null and array.length>0">
+
+			and temp.id in
+
+			<foreach item="item" index="id" collection="array" open="("
+
+					 separator="," close=")">
+
+				#{item}
+
+			</foreach>
+
+		</if>
 
 	</select>
 

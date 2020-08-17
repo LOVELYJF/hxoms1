@@ -35,7 +35,7 @@ public interface LeaderCommonMapper {
 
    /** 记录纪委 意见 查询 页面 **/
 
-   List<Map> selectJiweiWriteApply();
+   List<Map> selectJiweiWriteApply(Object[] bussinessIds);
    /**查询纪委意见人员 就保存 **/
    List<Map> selectJiweiWriteSave();
 
