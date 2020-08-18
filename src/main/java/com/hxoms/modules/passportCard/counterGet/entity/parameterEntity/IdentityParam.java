@@ -8,16 +8,27 @@ import java.util.Date;
  * @Date: 2020/8/14
  */
 public class IdentityParam {
+    //姓名
     private String name;
+    //性别
     private String sex;
+    //国籍
     private String nation;
+    //出生日期
     private Date csrq;
+    //身份证号
     private String idNo;
+    //户口所在地
     private String registeResidence;
+    //签发机关
     private String qrjg;
+    //有效期
     private Date yxqz;
+    //左手指纹
     private String leftFingerMark;
+    //右手指纹
     private String rightFingerMark;
+    //二维码
     private String qRCode;
 
     public String getName() {

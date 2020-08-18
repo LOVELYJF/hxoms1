@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.exitEntryManage.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 
 import java.util.List;
 
@@ -62,4 +63,13 @@ public interface OmsCerExitEntryRepertoryMapper extends BaseMapper<OmsCerExitEnt
      * @Date: 2020/8/17
      */
     List<OmsCerExitEntryRepertory> selectExitEntryRecord(OmsCerExitEntryRepertory omsCerExitEntryRepertory);
+
+    /**
+     * @Desc: 查看签名
+     * @Author: wangyunquan
+     * @Param: [id]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo>
+     * @Date: 2020/8/17
+     */
+    List<ExitEntrySignInfo> selectSignById(String id);
 }

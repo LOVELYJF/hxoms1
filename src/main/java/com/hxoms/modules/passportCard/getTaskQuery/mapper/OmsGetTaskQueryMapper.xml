@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.getTaskQuery.mapper.OmsGetTaskQueryMapper">
+  <sql id="calGetCerSql">
+    SELECT
+        a.id,
+        a.cer_id cerId,
+        c.work_unit workUnit,
+        b.name,
+        b.sex,
+        b.csrq,
+        c.post,
+        a.get_status getStatus,
+        b.zjlx,
+        b.zjhm,
+        b.yxqz,
+        b.card_status cardStatus,
+        a.spb_get_ele_sign spb,
+        b.surely_way surelyWay,
+        b.cabinet_num cabinetNum,
+        b.place,
+        b.counter_num counterNum,
+        a.data_source dataSource,
+        a.create_time createTime,
+        a.get_time getTime
+    FROM
+        oms_cer_get_task a
+    INNER JOIN cf_certificate b ON a.cer_id = b.id
+    INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
+  </sql>
+  <select id="selectGetCer" resultType="com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity.CerGetTaskInfo">
+    <include refid="calGetCerSql"/>
+    <where>
+        <if test="rfB0000!=null">
+            AND a.rf_b0000=#{rfB0000}
+        </if>
+        <if test="name!=null">
+            AND a.name=#{name}
+        </if>
+        <if test="getStatus!=null">
+            AND a.get_status=#{getStatus}
+        </if>
+        <if test="dataSource!=null">
+            AND a.data_source=#{dataSource}
+        </if>
+        <if test="createStartTime!=null">
+            AND a.create_time &gt;= #{createStartTime}
+        </if>
+        <if test="createEndTime!=null">
+            AND a.create_time &lt;= #{createEndTime}
+        </if>
+        <if test="getStartTime!=null">
+            AND a.get_Time &gt;= #{getStartTime}
+        </if>
+        <if test="getEndTime!=null">
+            AND a.get_Time &lt;= #{getEndTime}
+        </if>
+    </where>
+  </select>
+</mapper>

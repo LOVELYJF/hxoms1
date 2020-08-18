@@ -2,6 +2,8 @@ package com.hxoms.modules.passportCard.counterGet.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo;
+import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskQueryParam;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.IdentityParam;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
@@ -72,4 +74,13 @@ public interface OmsCerGetTaskMapper extends BaseMapper<OmsCerGetTask> {
      * @Date: 2020/8/14
      */
     List<CfUser> selectUserByQua(IdentityParam identityParam);
+
+    /**
+     * @Desc: 查询可领取证照
+     * @Author: wangyunquan
+     * @Param: [cerGetTaskQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo>
+     * @Date: 2020/8/18
+     */
+    List<CerGetTaskInfo> selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam);
 }

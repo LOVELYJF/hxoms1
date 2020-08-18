@@ -28,4 +28,16 @@ public class OmsExitEntryManageController {
     public Result selectExitEntryRecord(PageBean pageBean,OmsCerExitEntryRepertory omsCerExitEntryRepertory){
         return Result.success(omsExitEntryManageService.selectExitEntryRecord(pageBean,omsCerExitEntryRepertory));
     }
+
+    /**
+     * @Desc: 查看签名
+     * @Author: wangyunquan
+     * @Param: [id]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/17
+     */
+    @GetMapping("/selectSignById")
+    public Result selectSignById(String id){
+        return Result.success(omsExitEntryManageService.selectSignById(id));
+    }
 }
