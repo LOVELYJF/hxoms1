@@ -11,18 +11,18 @@
 			   temp.type as type # 业务类型
 		from (
 
-			 select pua.id as id,'因公' as type,  pua.CLSHSFTG=1  as materialsCheck  from oms_pub_apply pua
+			 select pua.id as id,'因公' as type,  pua.CLSHSFTG  as materialsCheck  from oms_pub_apply pua
 			 union
-			 select pri.id as id,'因私' as type, pri.CLSHSFTG=1  as materialsCheck from oms_pri_apply pri
+			 select pri.id as id,'因私' as type, pri.CLSHSFTG as materialsCheck from oms_pri_apply pri
 			 union
-			 select prda.id as id,'延期' as type, prda.CLSHSFTG=1  as materialsCheck from oms_pri_delay_apply prda
+			 select prda.id as id,'延期' as type, prda.CLSHSFTG  as materialsCheck from oms_pri_delay_apply prda
 
 			 )temp left join oms_jiwei_opinion jio on jio.id = temp.id
 
 		 where 1=1
 		<if test="bussinessIds != null and bussinessIds.length>0">
 
-			and ask.leader_batch_id in
+			and temp.id in
 
 			<foreach item="item" index="id" collection="bussinessIds" open="("
 

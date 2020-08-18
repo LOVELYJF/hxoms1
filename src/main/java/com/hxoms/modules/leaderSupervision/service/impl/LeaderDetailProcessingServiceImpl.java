@@ -66,7 +66,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private AttachmentAskforjiweiMapper attachmentAskforjiweiMapper;
     @Autowired
     private LeaderCommonServiceImpl leaderCommonService;
-
+    @Autowired
     private LeaderCommonDetailMapper leaderCommonDetailMapper;
 
     @Value("${omsAttachment.baseDir}")
@@ -478,8 +478,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList()).get(0)
 
                 );
-       List<String> passList = null;
-       List<String> notpassList = null;
+       Set<String> passList = new HashSet<>();
+       Set<String> notpassList = new HashSet<>();
 
        if(lists!=null && lists.size()>0){
 
@@ -488,7 +488,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
               String jiweiopion  = (String)map.get("jiweiopion");
               String id = (String) map.get("id");
                // 1 代表 通过
-              if(materialsCheck.equals("1")&&jiweiopion.equals("1")){
+//              if(materialsCheck.equals("1")&&jiweiopion.equals("1")){
+              if("1".equals(materialsCheck)&&"1".equals(jiweiopion)){
 
                   passList.add(id);
 
