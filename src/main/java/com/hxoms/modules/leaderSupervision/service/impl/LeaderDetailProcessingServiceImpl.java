@@ -13,10 +13,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.entity.AttachmentAskforjiwei;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
-import com.hxoms.modules.leaderSupervision.mapper.AttachmentAskforjiweiMapper;
-import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
-import com.hxoms.modules.leaderSupervision.mapper.OmsAttachmentMapper;
-import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
+import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
@@ -41,6 +38,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @authore:wjf
@@ -68,6 +66,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private AttachmentAskforjiweiMapper attachmentAskforjiweiMapper;
     @Autowired
     private LeaderCommonServiceImpl leaderCommonService;
+
+    private LeaderCommonDetailMapper leaderCommonDetailMapper;
 
     @Value("${omsAttachment.baseDir}")
     private String attachmentPath;
@@ -459,6 +459,68 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         }
         map.put("fileName",omsAttachment.getName());
         return map;
+
+    }
+
+    /**
+     *
+     * 生成审批单
+     * */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public void makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo){
+        // 对 参数进行校验
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
+       // 保存 审批记录  系统自动根据材料审核结果、纪委意见判断生成呈批单（通过）还是请示表（未通过），
+        // 判断依据：材料审核和纪委意见均通过的为通过，否则为不通过。
+
+       List<Map> lists =  leaderCommonDetailMapper.selectJiweiOpinionAndMaterialsCheckOpinion(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray(),
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessName()).collect(Collectors.toList()).get(0)
+
+                );
+       List<String> passList = null;
+       List<String> notpassList = null;
+
+       if(lists!=null && lists.size()>0){
+
+           for (Map map:lists) {
+              String materialsCheck =  (String)map.get("materialsCheck");
+              String jiweiopion  = (String)map.get("jiweiopion");
+              String id = (String) map.get("id");
+               // 1 代表 通过
+              if(materialsCheck.equals("1")&&jiweiopion.equals("1")){
+
+                  passList.add(id);
+
+              }else{
+
+                  notpassList.add(id);
+
+              }
+
+
+           }
+
+       }
+        // 通过 集合
+        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->passList.contains(m.getBussinessId())).collect(Collectors.toList());
+       // 不通过 集合
+        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum2 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->notpassList.contains(m.getBussinessId())).collect(Collectors.toList());
+
+        //  (1) 保存 审批记录(通过)
+        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,"通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+        //不通过
+        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum2,"不通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+        // (2) 修改流程状态
+        leaderCommonService.updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[4]);
+        // 修改 业务流程申请 最终结论 (通过)
+        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,"1",null);
+        // 修改 业务流程申请 最终结论 (不通过)
+        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum2,"1",null);
+        // 修改 批次状态
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                Constants.leader_business[4]);
 
     }
 

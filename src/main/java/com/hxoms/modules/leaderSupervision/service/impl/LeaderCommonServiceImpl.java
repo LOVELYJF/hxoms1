@@ -803,14 +803,6 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
     public void selectBatchIdAndisOrNotUpateBatchStatus(List bussinessId,int status){
 
-//        String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName);
-//
-//        String queryBatchIdSql     =   LeaderSupervisionUntil.getBatchIdByBuessinessId(bussinessId,bussinessType);
-//
-//        SqlVo instance = SqlVo.getInstance(queryBatchIdSql);
-//
-//        List<LinkedHashMap<String, Object>> lists = selectMapper.select(instance);
-
         List<Map> lists =   leaderCommonQueryMapper.selectLeaderBatchIdByBussinessIds(bussinessId);
 
         String batchId ="";
@@ -833,26 +825,6 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
             }
 
         }
-
-
-
-//        String batchId ="";
-//
-//        if(lists!=null && lists.size()>0){
-//
-//            batchId =   lists.get(0).get("batchId")!=null? lists.get(0).get("batchId").toString():"wu";
-//
-//        }
-//
-//        if("wu".equals(batchId)){
-//
-//            throw new CustomMessageException("批次id为空，请仔细检查");
-//        }
-//
-//        log.info("批次 id ="+batchId);
-//
-//        // 修改批次状态
-//        selectMaxStatusBybatchId(batchId,status);
 
 
     }
