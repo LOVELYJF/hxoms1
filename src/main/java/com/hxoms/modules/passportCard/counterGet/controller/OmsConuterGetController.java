@@ -6,6 +6,7 @@ import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.Identity
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class OmsConuterGetController {
      * @Date: 2020/8/14
      */
     @PostMapping("/verifyIdentity")
-    public Result verifyIdentity(IdentityParam identityParam){
+    public Result verifyIdentity(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyIdentity(identityParam);
         return Result.success();
     }
@@ -45,7 +46,7 @@ public class OmsConuterGetController {
      * @Date: 2020/8/14
      */
     @PostMapping("/verifyFingerMark")
-    public Result verifyFingerMark(IdentityParam identityParam){
+    public Result verifyFingerMark(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyFingerMark(identityParam);
         return Result.success();
     }/**
@@ -56,7 +57,7 @@ public class OmsConuterGetController {
      * @Date: 2020/8/14
      */
     @PostMapping("/verifyQRCode")
-    public Result verifyQRCode(IdentityParam identityParam){
+    public Result verifyQRCode(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyQRCode(identityParam);
         return Result.success();
     }

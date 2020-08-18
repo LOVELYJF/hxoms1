@@ -67,7 +67,7 @@ public class CfCertificateController {
      * @Date: 2020/8/5
      */
     @PostMapping("/insertCertificate")
-    public Result insertCertificate(CfCertificate cfCertificate){
+    public Result insertCertificate(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.insertCertificate(cfCertificate);
         return Result.success();
     }
@@ -115,8 +115,8 @@ public class CfCertificateController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
-    @PatchMapping("/updateCerForCerIsCancel")
-    public Result updateCerForCerIsCancel(CfCertificate cfCertificate){
+    @PostMapping("/updateCerForCerIsCancel")
+    public Result updateCerForCerIsCancel(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.updateCerForCerIsCancel(cfCertificate);
         return Result.success();
     }
@@ -129,7 +129,7 @@ public class CfCertificateController {
      * @Date: 2020/8/11
      */
     @PostMapping("/createCjTask")
-    public Result createCjTask(List<CfCertificateCollection> cfCertificateCollectionList){
+    public Result createCjTask(@RequestBody List<CfCertificateCollection> cfCertificateCollectionList){
         cfCertificateService.createCjTask(cfCertificateCollectionList);
         return Result.success();
     }
@@ -141,7 +141,7 @@ public class CfCertificateController {
      * @Date: 2020/8/10
      */
     @PostMapping("/updateCerForCerIsRight")
-    public Result updateCerForCerIsRight(CfCertificate cfCertificate){
+    public Result updateCerForCerIsRight(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.updateCerForCerIsRight(cfCertificate);
         return Result.success();
     }
@@ -154,7 +154,7 @@ public class CfCertificateController {
      * @Date: 2020/8/10
      */
     @PostMapping("/updateCerForGaInfoIsRight")
-    public Result updateCerForGaInfoIsRight(CfCertificate cfCertificate){
+    public Result updateCerForGaInfoIsRight(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.updateCerForGaInfoIsRight(cfCertificate);
         return Result.success();
     }
