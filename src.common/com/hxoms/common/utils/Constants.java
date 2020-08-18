@@ -284,4 +284,45 @@ public class Constants {
     /*******约束条件提醒人员类别*****/
     public static String[] OMS_CONDITION_REMIND_PERSONTYPE={"1","2", "4", "8"};
     public static String[] OMS_CONDITION_REMIND_PERSONNAME={"经办人","组团单位", "审批单位", "干部监督处"};
+
+    //证照类型代码
+    public static int[] CER_TYPE_CODE={1,2,4};
+    //证照类型名称
+    public static String[] CER_TYPE_NAME={"护照","港澳通行证","","台湾通行证"};
+
+    //证照借出申请状态代码
+    public static int[] CER_LENDING_TYPE={0,1,2,3,4};
+    //证照借出申请状态名称
+    public static String[] CER_LENDING_NAME={"申请","审批","已审批","已拒绝","撤销"};
+
+    //在职状态代码
+    public static int[] INCUMBENCY_STATUS={1,2,3,4,5,6,7,8,9};
+    //在职状态名称
+    public static String[] INCUMBENCY_STATUS_NAME={"在职","辞职","退休","去世","开除","调出","省管变中管","未匹配","其他"};
+
+    //证照注销状态代码
+    public static int[] CANCELL_STATUS={0,1,2,3,4,5,6,7,8,9,10,11};
+    //证照注销状态名称
+    public static String[] CANCELL_NAME={"填写申请", "生成材料", "打印材料清单",
+            "提交干部监督处", "受理", "处领导审批", "部领导审批", "生成注销函", "拒绝", "撤销", "完成注销", "已办结"};
+
+    //证照注销方式代码
+    public static int[] CANCELL_MODE_STATUS={0,1};
+    //证照注销方式名称
+    public static String[] CANCELL_MODE_NAME={"自行注销", "委托"};
+
+    //证照保管代码
+    public static int[] CER_SAVE_STATUS={0,1,2};
+    //证照保管名称
+    public static String[] CER_SAVE_NAME={"正常保管", "已取出","未上缴"};
+
+    //证照状态代码
+    public static int[] CER_STATUS={0,1,2,3,4,5,6,7,8};
+    //证照状态名称
+    public static String[] CER_NAME={"正常", "过期","注销","验证失败","已验证","待验证","借出","待领取","其他"};
+
+    //证照注销原因代码
+    public static int[] CANCELL_REASON_STATUS={1,2,3,4};
+    //证照注销原因名称
+    public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他"};
 }
