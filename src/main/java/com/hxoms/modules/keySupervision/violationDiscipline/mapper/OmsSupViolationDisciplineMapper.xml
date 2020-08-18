@@ -19,7 +19,7 @@
     <result column="VIOLATION_END_TIME" jdbcType="DATE" property="violationEndTime" />
     <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, MODIFY_USER, MODIFY_TIME, A0100, WORK_UNIT, NAME, PINYIN, VIOLATION_DIS_POST,

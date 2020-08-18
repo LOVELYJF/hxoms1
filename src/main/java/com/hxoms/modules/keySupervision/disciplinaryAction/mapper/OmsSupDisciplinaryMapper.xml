@@ -19,7 +19,7 @@
     <result column="DISCIPLINARY_END_QUERY" jdbcType="DATE" property="disciplinaryEndQuery" />
     <result column="DISCIPLINARY_START_QUERY" jdbcType="DATE" property="disciplinaryStartQuery" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, MODIFY_USER, MODIFY_TIME, A0100, WORK_UNIT, NAME, PINYIN, DISCIPLINARY_POST,

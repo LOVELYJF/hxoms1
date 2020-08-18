@@ -18,7 +18,7 @@
     <result column="WHY_CASE" jdbcType="VARCHAR" property="whyCase" />
     <result column="DISCIPLINARY_ACTION_TYPE" jdbcType="VARCHAR" property="disciplinaryActionType" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="CreateTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="DISCIPLINARY_TIME" jdbcType="DATE" property="disciplinaryTime" />
   </resultMap>
   <sql id="Base_Column_List">
