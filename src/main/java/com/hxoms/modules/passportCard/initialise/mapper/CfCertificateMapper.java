@@ -9,6 +9,7 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -49,6 +50,15 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
 
     /**
+     * <b>功能描述: 选择注销证照查询</b>
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/5 10:29
+     */
+    List<Map<String, Object>> getCancellateLicense(Map<String, Object> map);
+
+    /**
      * @Desc: 查询所有证照信息
      * @Author: wangyunquan
      * @Param: []
@@ -74,6 +84,16 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/8/4
      */
     List<OmsRegProcpersoninfo> selectRegPerson(String id, String name, Date csrq);
+
+
+    /**
+     * <b>功能描述: 根据主键查询该人员的证照信息</b>
+     * @Param: [a0100]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/11 8:41
+     */
+    List<Map<String, Object>> getCfCertificateByA0100(String a0100);
 
     /**
      * @Desc: 未上缴证照统计
@@ -101,4 +121,23 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/8/7
      */
     List<CfCertificateInfo> selectExceptionCer();
+
+    /**
+     * <b>功能描述: 查询过期证照信息</b>
+     * @Param: [page,list,expiredQueryStartTime,expiredQueryEndTime,cfCertificate]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/17 14:16
+     */
+	List<Map<String, Object>> getTransferExpiredLicenseInfo(Map<String, Object> map);
+
+
+	/**
+	 * <b>功能描述: 查询柜台号码</b>
+	 * @Param: [id]
+	 * @Return: java.lang.String
+	 * @Author: luoshuai
+	 * @Date: 2020/8/18 10:13
+	 */
+    String selectCounterNum(String id);
 }
