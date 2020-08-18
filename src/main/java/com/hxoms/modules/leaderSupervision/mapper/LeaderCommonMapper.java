@@ -58,12 +58,18 @@ public interface LeaderCommonMapper {
    List<Map>  selectjieweiOpinionDetail();
 
 
-   /** 做出审核意见 查询业务流程 页面 **/
+   /** 做出审核意见 查询业务流程（因公） 页面 **/
 
-   List<Map>  selectAuditOpinion(AuditOpinionVo auditOpinionVo);
+   List<Map>  selectAuditOpinionOmsPua(AuditOpinionVo auditOpinionVo);
+
+    /** 做出审核意见 查询业务流程(因私) 页面 **/
+    List<Map>  selectAuditOpinionOmsPri(AuditOpinionVo auditOpinionVo);
+    /**做出审核意见 查询业务流程(延期) 页面**/
+
+    List<Map>  selectAuditOpinionOmsPriDelay(AuditOpinionVo auditOpinionVo);
 
 
-   /** 处领导审批 查询业务流程 页面   **/
+    /** 处领导审批 查询业务流程 页面   **/
 
    List<Map> selectChuZhangApprover(LeaderSupervisionVo leaderSupervisionVo);
 

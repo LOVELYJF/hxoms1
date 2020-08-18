@@ -970,7 +970,17 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(auditOpinionVo.getPageNum(), auditOpinionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectAuditOpinion(auditOpinionVo);
+        List<Map>   users=null;
+        if(auditOpinionVo.getBussinessType().equals("1")){
+            users = leaderCommonQueryMapper.selectAuditOpinionOmsPua(auditOpinionVo);
+        }else if(auditOpinionVo.getBussinessType().equals("2")){
+
+            users = leaderCommonQueryMapper.selectAuditOpinionOmsPri(auditOpinionVo);
+        }else if(auditOpinionVo.getBussinessType().equals("3")){
+
+            users = leaderCommonQueryMapper.selectAuditOpinionOmsPriDelay(auditOpinionVo);
+        }
+
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
