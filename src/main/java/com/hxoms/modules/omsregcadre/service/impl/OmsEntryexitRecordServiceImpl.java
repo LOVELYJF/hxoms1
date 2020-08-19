@@ -121,7 +121,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         if (con > 0){
             OmsEntryexitRecord entryexitRecord = new OmsEntryexitRecord();
             entryexitRecord.setPriapplyId(null);
-            baseMapper.update();
+           // baseMapper.update();
         }
         return null;
     }
