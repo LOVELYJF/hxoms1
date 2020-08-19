@@ -202,11 +202,6 @@
     select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pri_apply where APPLY_STATUS = 5
   </select>
 
-  <select id="selectComparisionList" parameterType="java.lang.String" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
-      select pri.*,entryexit.* from oms_pri_apply pri
-          left join oms_entryexit_record entryexit
-          on pri.ID = entryexit.PRIAPPLY_ID
-  </select>
 <!--撤销申请人员统计-->
   <select id="selectCancelInfor" parameterType="com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam" resultType="java.util.Map">
     select ID as procpersonId, WORK_UNIT as b0101,RF_B0000 AS b0111, CONCAT( IFNULL(SURNAME, ''), IFNULL(NAME, '') ) AS name, POST AS post from oms_reg_procpersoninfo where ID in
@@ -253,5 +248,47 @@
           and DICT_CODE = #{dictCode}
       </if>
       order by infoId
+  </select>
+  
+  <select id="selectPriPubList" parameterType="java.lang.String" resultType="com.hxoms.modules.privateabroad.entity.OmsPriPubApply">
+
+      select
+        ID as id,
+        A0100 as a0100,
+        ABROAD_TIME as cgsj,
+        RETURN_TIME as hgsj,
+        GO_COUNTRY as sdgj,
+        REAL_ABROAD_TIME as sjcgsj,
+        REAL_RETURN_TIME as sjhgsj,
+        IS_COMPARISON as isComparison,
+        APPLY_TIME as applyTime,
+        REAL_GO_COUNTRY as realGoCountry,
+        PAPER as paper,
+        PASSPORT as passport,
+        PASSPORT_NUM as passportNum,
+        HONGKONGANDMACAO_PASSPORT as hongkongandmacaoPassport,
+        HONGKONGANDMACAO_PASSPORT as hongkongandmacaoPassportNum ,
+        TAIWAN_PASSPORT as taiwanPassport,
+        TAIWAN_PASSPORT_NUM as taiwanPassportNum,
+        IS_ABROAD as isAbroad
+      from oms_pri_apply where IS_ABROAD is not null and IS_COMPARISON=#{isComparison} and a0100=#{a0100}
+
+    union
+
+      select ID as id,A0100 as a0100,CGSJ as cgsj,HGSJ as hgsj,
+           SDGJ as sdgj,SJCGSJ as sjchsj,SJHGSJ as sjhgsj,IS_COMPARISON as isComparison,
+           '无' as applyTime,
+           '无' as realGoCountry,
+           '无' as paper,
+           '无' as passport,
+           '无' as passportNum,
+           '无' as hongkongandmacaoPassport,
+           '无' as hongkongandmacaoPassportNum ,
+           '无' as taiwanPassport,
+           '无' as taiwanPassportNum,
+           '无' as isAbroad
+      from oms_pub_apply where pwh like CONCAT('%',#{pwh},'%')
+      and IS_COMPARISON=#{isComparison} and a0100=#{a0100}
+
   </select>
 </mapper>

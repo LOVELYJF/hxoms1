@@ -199,6 +199,9 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "SFXD",   FieldDescription="是否下达（0-否，1-是）")
     private Integer sfxd;
 
+    @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
+    private String isComparison;
+
     public String getId() {
         return id;
     }
@@ -645,5 +648,13 @@ public class OmsPubApply {
 
     public void setSfxd(Integer sfxd) {
         this.sfxd = sfxd;
+    }
+
+    public String getIsComparison() {
+        return isComparison;
+    }
+
+    public void setIsComparison(String isComparison) {
+        this.isComparison = isComparison;
     }
 }

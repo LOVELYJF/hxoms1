@@ -58,6 +58,7 @@
         <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
         <result column="BAH" jdbcType="VARCHAR" property="bah" />
         <result column="SFXD" jdbcType="INTEGER" property="sfxd" />
+        <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ, 
@@ -65,7 +66,7 @@
     CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ, 
     SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY, 
     SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
-    BAH, SFXD
+    BAH, SFXD,IS_COMPARISON
   </sql>
     <update id="repealAllPubApplyByPwh">
         update oms_pub_apply p

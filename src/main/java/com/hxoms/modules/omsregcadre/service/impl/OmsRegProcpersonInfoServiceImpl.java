@@ -358,6 +358,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             //验收状态为待验收
             queryWrapper.eq("CHECK_STATUS","0");
         }
+        if (!StringUtils.isBlank(personInfoIPagParam.getDataType())){
+            //数据类型为干部
+            queryWrapper.eq("DATA_TYPE",personInfoIPagParam.getDataType());
+        }
 
         //排序  姓 名 工作单位
         queryWrapper.orderByAsc("SURNAME","NAME","WORK_UNIT");
