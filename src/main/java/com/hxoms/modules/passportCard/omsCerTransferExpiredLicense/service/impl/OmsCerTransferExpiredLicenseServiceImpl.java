@@ -14,13 +14,10 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.service.ApiListing;
-import sun.util.resources.cldr.zh.CalendarData_zh_Hans_MO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.rmi.MarshalledObject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -237,7 +234,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	public void getTransferExpiredLicenseSave(List<CfCertificate> list) {
 		if(list != null && list.size() > 0){
 			for(CfCertificate cfCertificate : list){
-				cfCertificate.setSaveStatus(String.valueOf(Constants.CER_SAVE_STATUS[0]));      //状态置为正常保管
+				cfCertificate.setSaveStatus(String.valueOf(Constants.CER_SAVE_STATUS[0]));      //状态置为正常保管,证照状态还是过期
 				int count = cfCertificateMapper.updateById(cfCertificate);
 				if(count < 1){
 					throw new CustomMessageException("转存更改状态失败");
