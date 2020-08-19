@@ -3,7 +3,7 @@
 <mapper namespace="com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense">
 	  <id column="ID" jdbcType="VARCHAR" property="id" />
-	  <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+	  <result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
 	  <result column="NAME" jdbcType="VARCHAR" property="name" />
 	  <result column="SEX" jdbcType="VARCHAR" property="sex" />
 	  <result column="CSRQ" jdbcType="DATE" property="csrq" />
@@ -39,7 +39,7 @@
 	  <result column="GATYJLY" jdbcType="VARCHAR" property="gatyjly" />
   </resultMap>
 	<sql id="Base_Column_List">
-		ID, A0100, NAME, SEX, CSRQ, B0100, WORK_UNIT, INCUMBENCY_STATUS, POST, ZJLX, ZJHM, YXQZ,
+		ID, OMS_ID, NAME, SEX, CSRQ, B0100, WORK_UNIT, INCUMBENCY_STATUS, POST, ZJLX, ZJHM, YXQZ,
 		CARD_STATUS, SAVE_STATUS, QFJG, QFRQ, CSDD, ZHZXZT, ZXFS, ZXYY, ZXSM, APPEND_PLACE,
 		CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER, APPLY_QUERY_START_TIME,
 		APPLY_QUERY_END_TIME,LSZJHM,CLDYJ, BLDYJ, CLDYJLY, BLDYJLY, GATSHYJ, GATYJLY
@@ -70,7 +70,7 @@
 	<select id="getCerCancellateLicenseAcceptance" resultType="java.util.Map">
       select
 			cc.ID as id,
-			cc.A0100 as a0100,
+			cc.OMS_ID as omsId,
 			cc.NAME as name,
 			cc.SEX as sex,
 			cc.CSRQ as csrq,  #出生日期
@@ -99,13 +99,19 @@
 			occl.CLDYJ as cldyj, 	#处领导意见
 			occl.BLDYJ as bldyj, 	#部领导意见
 			occl.CLDYJLY as cldyjly, #处领导意见理由
-			occl.BLDYJLY as bldyjly  #部领导意见理由
+			occl.BLDYJLY as bldyjly,  #部领导意见理由
+			occl.CREATE_USER as createUser  #创建人
 		from cf_certificate cc
-		join oms_reg_procpersoninfo orp on cc.a0100 = orp.a0100
+		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
 		join oms_cer_cancellate_license occl on occl.A0100 = cc.A0100
 		<where>
 			<trim suffixOverrides="and">
-				<if test="idList != null">occl.B0100 in #{idList} and </if>
+				<if test="idList != null">occl.B0100 in
+					<foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+						#{item}
+					</foreach>
+					and
+				</if>
 				<if test="zjlx != null">cc.zjlx=#{zjlx} and </if>
 				<if test="zhzxzt != null">occl.zhzxzt=#{zhzxzt} and </if>
 				<if test="applyQueryStartTime != null and applyQueryEndTime != null">

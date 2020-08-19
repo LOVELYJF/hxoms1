@@ -13,8 +13,8 @@ public class OmsCerCancellateLicense {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
-    private String a0100;
+    @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID主键")
+    private String omsId;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
@@ -140,12 +140,12 @@ public class OmsCerCancellateLicense {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getA0100() {
-        return a0100;
+    public String getOmsId() {
+        return omsId;
     }
 
-    public void setA0100(String a0100) {
-        this.a0100 = a0100 == null ? null : a0100.trim();
+    public void setOmsId(String omsId) {
+        this.omsId = omsId == null ? null : omsId.trim();
     }
 
     public String getName() {

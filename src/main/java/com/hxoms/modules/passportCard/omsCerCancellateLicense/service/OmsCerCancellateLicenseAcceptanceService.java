@@ -68,7 +68,10 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 
 
 	/**
-	 * <b>功能描述: 完成注销(公安厅意见)</b>
+	 * <b>功能描述: 完成注销(公安厅意见)
+	 *     分两个按钮，第一个通过后生成证照领取任务，
+	 *     第二个领取任务完成后再次完成注销，状态改为已办结
+	 * </b>
 	 * @Param: [omsCerCancellateLicense]
 	 * @Return: org.apache.ibatis.annotations.Result
 	 * @Author: luoshuai
