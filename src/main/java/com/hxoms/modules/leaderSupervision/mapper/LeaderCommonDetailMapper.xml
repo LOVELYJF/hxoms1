@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.leaderSupervision.mapper.LeaderCommonDetailMapper">
+
+	<select id="selectJiweiOpinionAndMaterialsCheckOpinion" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
+
+		SELECT
+			   temp.id as id, # 业务 id
+			   temp.materialsCheck as materialsCheck , # 材料审核
+			   IFNULL(jio.official_feedback_verdict,jio.feedback_verdict) as jiweiopion, # 纪委意见 以 书面意见为准
+			   temp.type as type # 业务类型
+		from (
+
+			 select pua.id as id,'因公' as type,  pua.CLSHSFTG  as materialsCheck  from oms_pub_apply pua
+			 union
+			 select pri.id as id,'因私' as type, pri.CLSHSFTG as materialsCheck from oms_pri_apply pri
+			 union
+			 select prda.id as id,'延期' as type, prda.CLSHSFTG  as materialsCheck from oms_pri_delay_apply prda
+
+			 )temp left join oms_jiwei_opinion jio on jio.id = temp.id
+
+		 where 1=1
+		<if test="bussinessIds != null and bussinessIds.length>0">
+
+			and temp.id in
+
+			<foreach item="item" index="id" collection="bussinessIds" open="("
+
+					 separator="," close=")">
+
+				#{item}
+
+			</foreach>
+
+		</if>
+		<if test="type !=null and type!='' ">
+
+			and temp.type = #{type}
+
+		</if>
+
+
+
+    </select>
+
+</mapper>

@@ -71,4 +71,11 @@ public interface LeaderDetailProcessingService {
      * **/
 
     Map downloadAttachmentById(String id);
+
+    /**
+     *
+     * 生成 审批单
+     * */
+
+    void makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
 }

@@ -6,9 +6,12 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @Desc：TODO
@@ -32,5 +35,17 @@ public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRe
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<OmsCerExitEntryRepertory> pageInfo=new PageInfo<OmsCerExitEntryRepertory>(omsCerExitEntryRepertoryMapper.selectExitEntryRecord(omsCerExitEntryRepertory));
         return PageUtil.packagePage(pageInfo);
+    }
+
+    /**
+     * @Desc: 查看签名
+     * @Author: wangyunquan
+     * @Param: [id]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo>
+     * @Date: 2020/8/17
+     */
+    @Override
+    public List<ExitEntrySignInfo> selectSignById(String id) {
+        return omsCerExitEntryRepertoryMapper.selectSignById(id);
     }
 }

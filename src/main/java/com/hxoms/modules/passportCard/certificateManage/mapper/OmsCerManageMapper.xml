@@ -4,7 +4,7 @@
   <select id="selectCerInfo" resultType="com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo">
     SELECT
         a.id,
-        a. NAME,
+        a.name,
         a.sex,
         b.work_unit workUnit,
         b.incumbency_status incumbencyStatus,
@@ -34,28 +34,28 @@
         a.name=#{name}
       </if>
       <if test="rfB0000!=null">
-        b.rf_B0000=#{rfB0000}
+        AND b.rf_B0000=#{rfB0000}
       </if>
       <if test="zjlx!=null">
-        a.zjlx=#{zjlx}
+        AND a.zjlx=#{zjlx}
       </if>
       <if test="zjhm!=null">
-        a.zjhm=#{zjhm}
+        AND a.zjhm=#{zjhm}
       </if>
       <if test="yxqz!=null">
-        a.yxqz=#{yxqz}
+        AND a.yxqz=#{yxqz}
       </if>
       <if test="saveStatus!=null">
-        a.save_Status=#{saveStatus}
+        AND a.save_Status=#{saveStatus}
       </if>
       <if test="cardStatus!=null">
-        a.card_Status=#{cardStatus}
+        AND a.card_Status=#{cardStatus}
       </if>
       <if test="zjxs!=null">
-        a.zjxs=#{zjxs}
+        AND a.zjxs=#{zjxs}
       </if>
       <if test="xplx!=null">
-        a.xplx=#{xplx}
+        AND a.xplx=#{xplx}
       </if>
     </where>
   </select>

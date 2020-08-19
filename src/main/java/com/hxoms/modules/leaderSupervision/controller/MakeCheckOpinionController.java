@@ -4,8 +4,10 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
+import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,8 @@ public class MakeCheckOpinionController {
     private LeaderCommonService leaderCommonService;
     @Autowired
     private LeaderEXportExcelService leaderEXportExcelService;
+    @Autowired
+    private LeaderDetailProcessingService leaderDetailProcessingService;
 
     /**
      *
@@ -76,4 +80,18 @@ public class MakeCheckOpinionController {
 
 
     }
+
+    /**
+     *
+     * 做出审核意见【生成审批单】
+     * **/
+    @PostMapping("/makeApprovalFor")
+    public Result makeApprovalFor(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
+        leaderDetailProcessingService.makeApprovalFor(leaderSupervisionVo);
+
+        return Result.success();
+    }
+
+
 }

@@ -803,14 +803,6 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
     public void selectBatchIdAndisOrNotUpateBatchStatus(List bussinessId,int status){
 
-//        String bussinessType = LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessName);
-//
-//        String queryBatchIdSql     =   LeaderSupervisionUntil.getBatchIdByBuessinessId(bussinessId,bussinessType);
-//
-//        SqlVo instance = SqlVo.getInstance(queryBatchIdSql);
-//
-//        List<LinkedHashMap<String, Object>> lists = selectMapper.select(instance);
-
         List<Map> lists =   leaderCommonQueryMapper.selectLeaderBatchIdByBussinessIds(bussinessId);
 
         String batchId ="";
@@ -835,26 +827,6 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
         }
 
 
-
-//        String batchId ="";
-//
-//        if(lists!=null && lists.size()>0){
-//
-//            batchId =   lists.get(0).get("batchId")!=null? lists.get(0).get("batchId").toString():"wu";
-//
-//        }
-//
-//        if("wu".equals(batchId)){
-//
-//            throw new CustomMessageException("批次id为空，请仔细检查");
-//        }
-//
-//        log.info("批次 id ="+batchId);
-//
-//        // 修改批次状态
-//        selectMaxStatusBybatchId(batchId,status);
-
-
     }
 
 
@@ -871,9 +843,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         if(maxStatus!= Constants.leader_business[Constants.leader_business.length-1]){
 
-            if(status>maxStatus){
+            if(status>=maxStatus){
 
-                QueryWrapper<OmsLeaderBatch> queryWrapper = new QueryWrapper<OmsLeaderBatch>();
+                UpdateWrapper<OmsLeaderBatch> queryWrapper = new UpdateWrapper<OmsLeaderBatch>();
                 queryWrapper.eq("id", batchId);
 
                 OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
@@ -900,7 +872,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
 
-            QueryWrapper<OmsLeaderBatch> queryWrapper = new QueryWrapper<OmsLeaderBatch>();
+            UpdateWrapper<OmsLeaderBatch> queryWrapper = new UpdateWrapper<OmsLeaderBatch>();
             queryWrapper.eq("id", batchId);
 
             OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
@@ -912,7 +884,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
             // （当流程 含 已办结 但有不全等于 已办结）  获取 第二大 的流程
-            QueryWrapper<OmsLeaderBatch> queryWrapper = new QueryWrapper<OmsLeaderBatch>();
+            UpdateWrapper<OmsLeaderBatch> queryWrapper = new UpdateWrapper<OmsLeaderBatch>();
             queryWrapper.eq("id", batchId);
 
             OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();

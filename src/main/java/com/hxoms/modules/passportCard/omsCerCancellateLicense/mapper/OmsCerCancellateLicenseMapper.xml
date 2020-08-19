@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense">
+	  <id column="ID" jdbcType="VARCHAR" property="id" />
+	  <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+	  <result column="NAME" jdbcType="VARCHAR" property="name" />
+	  <result column="SEX" jdbcType="VARCHAR" property="sex" />
+	  <result column="CSRQ" jdbcType="DATE" property="csrq" />
+	  <result column="B0100" jdbcType="VARCHAR" property="b0100" />
+	  <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+	  <result column="INCUMBENCY_STATUS" jdbcType="CHAR" property="incumbencyStatus" />
+	  <result column="POST" jdbcType="VARCHAR" property="post" />
+	  <result column="ZJLX" jdbcType="INTEGER" property="zjlx" />
+	  <result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+	  <result column="YXQZ" jdbcType="DATE" property="yxqz" />
+	  <result column="CARD_STATUS" jdbcType="VARCHAR" property="cardStatus" />
+	  <result column="SAVE_STATUS" jdbcType="VARCHAR" property="saveStatus" />
+	  <result column="QFJG" jdbcType="VARCHAR" property="qfjg" />
+	  <result column="QFRQ" jdbcType="DATE" property="qfrq" />
+	  <result column="CSDD" jdbcType="VARCHAR" property="csdd" />
+	  <result column="ZHZXZT" jdbcType="CHAR" property="zhzxzt" />
+	  <result column="ZXFS" jdbcType="CHAR" property="zxfs" />
+	  <result column="ZXYY" jdbcType="CHAR" property="zxyy" />
+	  <result column="ZXSM" jdbcType="VARCHAR" property="zxsm" />
+	  <result column="APPEND_PLACE" jdbcType="CHAR" property="appendPlace" />
+	  <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+	  <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+	  <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+	  <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+	  <result column="APPLY_QUERY_START_TIME" jdbcType="DATE" property="applyQueryStartTime" />
+	  <result column="APPLY_QUERY_END_TIME" jdbcType="DATE" property="applyQueryEndTime" />
+	  <result column="LSZJHM" jdbcType="VARCHAR" property="lszjhm" />
+	  <result column="CLDYJ" jdbcType="CHAR" property="cldyj" />
+	  <result column="BLDYJ" jdbcType="CHAR" property="bldyj" />
+	  <result column="CLDYJLY" jdbcType="VARCHAR" property="cldyjly" />
+	  <result column="BLDYJLY" jdbcType="VARCHAR" property="bldyjly" />
+	  <result column="GATSHYJ" jdbcType="CHAR" property="gatshyj" />
+	  <result column="GATYJLY" jdbcType="VARCHAR" property="gatyjly" />
+  </resultMap>
+	<sql id="Base_Column_List">
+		ID, A0100, NAME, SEX, CSRQ, B0100, WORK_UNIT, INCUMBENCY_STATUS, POST, ZJLX, ZJHM, YXQZ,
+		CARD_STATUS, SAVE_STATUS, QFJG, QFRQ, CSDD, ZHZXZT, ZXFS, ZXYY, ZXSM, APPEND_PLACE,
+		CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER, APPLY_QUERY_START_TIME,
+		APPLY_QUERY_END_TIME,LSZJHM,CLDYJ, BLDYJ, CLDYJLY, BLDYJLY, GATSHYJ, GATYJLY
+	</sql>
+
+	<!-- 处领导审批 -->
+	<update id="updateCerCancellateLicenseApproval">
+		update
+			oms_cer_cancellate_license
+		set
+			<trim suffixOverrides=",">
+				<if test="cldyj != null">CLDYJ=#{cldyj} ,</if>
+				<if test="cldyjly != null">CLDYJLY=#{cldyjly} ,</if>
+				<if test="zhzxzt != null">ZHZXZT=#{zhzxzt} ,</if>
+				<if test="modifyUser != null">MODIFY_USER=#{modifyUser} ,</if>
+				<if test="modifyTime != null">MODUFY_TIME=#{modifyTime} ,</if>
+			</trim>
+		<where>
+			<if test="list != null">id in
+				<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</update>
+
+	<!-- 注销证照受理查询 -->
+	<select id="getCerCancellateLicenseAcceptance" resultType="java.util.Map">
+      select
+			cc.ID as id,
+			cc.A0100 as a0100,
+			cc.NAME as name,
+			cc.SEX as sex,
+			cc.CSRQ as csrq,  #出生日期
+			orp.WORK_UNIT as workUnit,
+			orp.INCUMBENCY_STATUS as incumbencyStatus,  #在职状态
+			orp.POST as post,    #职务
+			cc.ZJLX as zjlx,     #证件类型
+			cc.ZJHM as zjhm,     #证件号码
+			cc.YXQZ as yxqz,     #有效期至
+			cc.CARD_STATUS as cardStatus,    #证照状态
+			cc.SAVE_STATUS as saveStatus,    #保管状态
+			cc.SURELY_WAY as surelyWay,      #保管方式
+			cc.CABINET_NUM as cabinetNum,    #机柜编号
+			cc.PLACE as place,    #机柜位置
+			cc.COUNTER_NUM as counterNum  #柜台编号
+			cc.QFJG as qfjg,      #签发机关
+			cc.QFRQ as qfrq,      #签发日期
+			cc.CSDD as csdd,      #出生地
+			occl.ZHZXZT as zhzxzt,   #证照申请注销状态
+			occl.B0100 as b0100,	 #单位主键
+			occl.ZXFS as zxfs,       #注销方式
+			occl.ZXYY as zxyy,		 #注销原因
+			occl.ZXSM as zxsm,		 #注销说明
+			occl.LSZJHM as lszjhm,	 #临时证件号码
+			occl.APPEND_PLACE as appendPlace,   #发生地
+			occl.CLDYJ as cldyj, 	#处领导意见
+			occl.BLDYJ as bldyj, 	#部领导意见
+			occl.CLDYJLY as cldyjly, #处领导意见理由
+			occl.BLDYJLY as bldyjly  #部领导意见理由
+		from cf_certificate cc
+		join oms_reg_procpersoninfo orp on cc.a0100 = orp.a0100
+		join oms_cer_cancellate_license occl on occl.A0100 = cc.A0100
+		<where>
+			<trim suffixOverrides="and">
+				<if test="idList != null">occl.B0100 in #{idList} and </if>
+				<if test="zjlx != null">cc.zjlx=#{zjlx} and </if>
+				<if test="zhzxzt != null">occl.zhzxzt=#{zhzxzt} and </if>
+				<if test="applyQueryStartTime != null and applyQueryEndTime != null">
+					occl.CREATE_TIME between #{applyQueryStartTime} and #{applyQueryEndTime} and
+				</if>
+				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
+				<if test="name != null">cc.name like concat('%',#{name},'%') and </if>
+			</trim>
+		</where>
+		order by occl.CREATE_TIME desc
+    </select>
+</mapper>

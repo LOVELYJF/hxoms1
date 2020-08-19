@@ -336,4 +336,48 @@
           user_name = #{name}
       AND IDNUMBER = #{idNo}
   </select>
+
+  <sql id="calGetCerSql">
+    SELECT
+        a.id,
+        a.cer_id cerId,
+        c.work_unit workUnit,
+        b.name,
+        b.sex,
+        b.csrq,
+        c.post,
+        a.get_status getStatus,
+        b.zjlx,
+        b.zjhm,
+        b.yxqz,
+        b.card_status cardStatus,
+        a.spb_get_ele_sign spb,
+        b.surely_way surelyWay,
+        b.cabinet_num cabinetNum,
+        b.place,
+        b.counter_num counterNum,
+        a.data_source dataSource,
+        a.create_time createTime,
+        a.get_time getTime
+    FROM
+        oms_cer_get_task a
+    INNER JOIN cf_certificate b ON a.cer_id = b.id
+    INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
+  </sql>
+  <select id="selectCanGetCer" resultType="com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo">
+    <include refid="calGetCerSql"/>
+    WHERE
+        a.id IN
+    <foreach collection="getIdList" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    union
+    <include refid="calGetCerSql"/>
+    WHERE
+        a.RF_B0000=#{rfB0000}
+    AND a.get_status='0'
+    <if test="overFlag!='Y'.toString()">
+      AND a.data_source !='3';
+    </if>
+  </select>
 </mapper>

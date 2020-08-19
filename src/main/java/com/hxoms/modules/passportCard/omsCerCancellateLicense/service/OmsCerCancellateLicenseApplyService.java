@@ -1,0 +1,78 @@
+package com.hxoms.modules.passportCard.omsCerCancellateLicense.service;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * <b>功能描述: 注销证照申请业务层</b>
+ * @Param:
+ * @Return:
+ * @Author: luoshuai
+ * @Date: 2020/8/5 10:24
+ */
+public interface OmsCerCancellateLicenseApplyService {
+
+	/**
+	 * <b>功能描述: 填写注销申请（查询）</b>
+	 * @Param: [cfCertificate]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 10:29
+	 */
+	List<Map<String, Object>> getCancellateLicense(CfCertificate cfCertificate);
+
+
+	/**
+	 * <b>功能描述: 填写注销申请进行下一步</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 11:50
+	 */
+	void saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list);
+
+
+	/**
+	 * <b>功能描述: 查询注销证照申请列表</b>
+	 * @Param: [omsCerCancellateLicense,page]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 13:37
+	 */
+	Page<OmsCerCancellateLicense> getCancellateLicenseApply(Page<OmsCerCancellateLicense> page, OmsCerCancellateLicense omsCerCancellateLicense);
+
+
+	/**
+	 * <b>功能描述: 删除注销证照申请</b>
+	 * @Param: [id]
+	 * @Return: void
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:04
+	 */
+	void deleteCancellateLicenseApply(String id);
+
+
+	/**
+	 * <b>功能描述: 撤销注销证照申请</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	void removeCancellateLicenseApply(List<OmsCerCancellateLicense> list);
+
+
+	/**
+	 * <b>功能描述: 更改申请状态</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	void updateCancellateLicenseApplyStatus(List<OmsCerCancellateLicense> list);
+
+}
