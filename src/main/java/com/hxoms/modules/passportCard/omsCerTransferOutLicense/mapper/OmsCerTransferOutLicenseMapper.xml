@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerTransferOutLicense.mapper.OmsCerTransferOutLicenseMapper">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
+		<result column="B0100" jdbcType="VARCHAR" property="b0100" />
+		<result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="HANDOVER_TIME" jdbcType="DATE" property="handoverTime" />
+		<result column="EXIT_TIME" jdbcType="DATE" property="exitTime" />
+		<result column="EXIT_WAY" jdbcType="VARCHAR" property="exitWay" />
+		<result column="ZJLX" jdbcType="CHAR" property="zjlx" />
+		<result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+		<result column="YXQZ" jdbcType="DATE" property="yxqz" />
+		<result column="HANDOVER_START_QUERY_TIME" jdbcType="DATE" property="handoverStartQueryTime" />
+		<result column="HANDOVER_END_QUERY_TIME" jdbcType="DATE" property="handoverEndQueryTime" />
+		<result column="EXIT_START_QUERY_TIME" jdbcType="DATE" property="exitStartQueryTime" />
+		<result column="EXIT_END_QUERY_TIME" jdbcType="DATE" property="exitEndQueryTime" />
+		<result column="TRANSFEROR" jdbcType="VARCHAR" property="transferor" />
+		<result column="RECEIVER" jdbcType="VARCHAR" property="receiver" />
+		<result column="YEAR" jdbcType="VARCHAR" property="year" />
+		<result column="BATCH_NUM" jdbcType="VARCHAR" property="batchNum" />
+		<result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    ID, OMS_ID,B0100, WORK_UNIT, NAME, HANDOVER_TIME, EXIT_TIME, EXIT_WAY, ZJLX, ZJHM, YXQZ,
+    HANDOVER_START_QUERY_TIME, HANDOVER_END_QUERY_TIME, EXIT_START_QUERY_TIME, EXIT_END_QUERY_TIME, 
+    TRANSFEROR, RECEIVER, YEAR, BATCH_NUM, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME
+  </sql>
+
+	<!-- 查询转出证照申请 -->
+	<select id="selectTransferOutLicenseInfo" resultType="java.util.Map">
+		select
+			octol.ID as id,     #主键
+			octol.OMS_ID as omsId,     #备案人员主键
+			octol.B0100 as b0100,	  #单位主键
+			octol.WORK_UNIT as workUnit,     #工作单位
+			octol.NAME as name,     #姓名
+			cc.SEX as sex,     #性别
+			org.POST as post,     #职务
+			org.REGISTE_RESIDENCE as registeResidence,  #户口所在地
+			octol.HANDOVER_TIME as handoverTime,     #交接时间
+			octol.EXIT_TIME as exitTime,     #退出时间
+			octol.EXIT_WAY as exitWay,     #退出方式
+			octol.ZJLX as zjlx,     #证件类型
+			octol.ZJHM as zjhm,     #证件号码
+			octol.YXQZ as yxqz,     #有效期至
+			cc.CARD_STATUS as cardStatus,     #证件状态
+			cc.SAVE_STATUS as saveStatus,     #保存状态
+			cc.SURELY_WAY as surelyWay,     #保管方式
+			cc.CABINET_NUM as cabinetNum,     #机柜编号
+			cc.PLACE as place,     #位置
+			cc.CSRQ as csrq,     #出生日期
+			cc.QFJG as qfjg,     #签发单位
+			cc.QFRQ as qfrq,     #签发日期
+			cc.CSDD as csdd      #出生地
+		from
+			oms_cer_transfer_out_license octol
+		join cf_certificate cc on octol.zjhm = cc.zjhm
+		join oms_reg_procpersoninfo org on octol.OMS_ID = org.ID
+		<where>
+			<trim suffixOverrides="and">
+				<if test="zjlx != null">octol.zjlx=#{zjlx} and </if>
+				<if test="batchNum != null">octol.BATCH_NUM=#{batchNum} and </if>
+				<if test="handoverStartQueryTime != null and handoverEndQueryTime != null">
+					octol.HANDOVER_TIME between #{handoverStartQueryTime} and #{handoverEndQueryTime} and
+				</if>
+				<if test="exitStartQueryTime != null and exitEndQueryTime != null">
+					octol.EXIT_TIME between #{exitStartQueryTime} and #{exitEndQueryTime} and
+				</if>
+				<if test="name != null">octol.name like concat('%',#{name},'%') and</if>
+			</trim>
+		</where>
+		order by octol.WORK_UNIT
+	</select>
+
+	<!-- 查询原单位信息 -->
+	<select id="getTransferOutWorkUnitInfo" resultType="com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense">
+		select * from oms_cer_transfer_out_license group by WORK_UNIT
+	</select>
+
+	<!-- 根据年份查询批次号 -->
+	<select id="getBatchByYear" resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List"></include>
+		from oms_cer_transfer_out_license
+		<where>
+			<if test="year !=  null">YEAR like concat(#{year},'%')</if>
+		</where>
+	</select>
+
+	<!-- 查询年份集合 -->
+	<select id="selectYearList"
+	        resultType="com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense">
+		select
+			*
+		from oms_cer_transfer_out_license
+		group by year
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
