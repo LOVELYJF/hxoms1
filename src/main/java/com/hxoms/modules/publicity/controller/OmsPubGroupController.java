@@ -58,8 +58,7 @@ public class OmsPubGroupController {
     @PostMapping("/insertPubGroup")
     public Result insertPubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            pubGroupService.insertPubGroup(pubGroupAndApplyList);
-            return Result.success();
+            return Result.success(pubGroupService.insertPubGroup(pubGroupAndApplyList));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");

@@ -566,4 +566,178 @@
         </foreach>
     </insert>
 
+    <update id="updatePubApplyList">
+        <foreach collection="list" item="item" index= "index" separator =";" close=";">
+            update oms_pub_apply
+                <set>
+                (
+                <if test="a0100 != null">
+                    A0100 = #{item.a0100,jdbcType=VARCHAR},
+                </if>
+                <if test="b0100 != null">
+                    B0100 = #{item.b0100,jdbcType=VARCHAR},
+                </if>
+                <if test="yspId != null">
+                    YSP_ID = #{yspId,jdbcType=VARCHAR},
+                </if>
+                <if test="yspdwId != null">
+                    YSPDW_ID = #{yspdwId,jdbcType=VARCHAR},
+                </if>
+                <if test="age != null">
+                    AGE = #{age,jdbcType=VARCHAR},
+                </if>
+                <if test="politicalAff != null">
+                    POLITICAL_AFF = #{politicalAff,jdbcType=VARCHAR},
+                </if>
+                <if test="job != null">
+                    JOB = #{job,jdbcType=VARCHAR},
+                </if>
+                <if test="health != null">
+                    HEALTH = #{health,jdbcType=VARCHAR},
+                </if>
+                <if test="sfsmry != null">
+                    SFSMRY = #{sfsmry,jdbcType=CHAR},
+                </if>
+                <if test="smdj != null">
+                    SMDJ = #{smdj,jdbcType=VARCHAR},
+                </if>
+                <if test="nssj != null">
+                    NSSJ = #{nssj,jdbcType=DATE},
+                </if>
+                <if test="ysmdj1 != null">
+                    YSMDJ1 = #{ysmdj1,jdbcType=VARCHAR},
+                </if>
+                <if test="ytmjssj1 != null">
+                    YTMJSSJ1 = #{ytmjssj1,jdbcType=DATE},
+                </if>
+                <if test="ysmdj2 != null">
+                    YSMDJ2 = #{ysmdj2,jdbcType=VARCHAR},
+                </if>
+                <if test="ytmjssj2 != null">
+                    YTMJSSJ2 = #{ytmjssj2,jdbcType=DATE},
+                </if>
+                <if test="ztdw != null">
+                    ZTDW = #{ztdw,jdbcType=VARCHAR},
+                </if>
+                <if test="ztnrzw != null">
+                    ZTNRZW = #{ztnrzw,jdbcType=VARCHAR},
+                </if>
+                <if test="cgsj != null">
+                    CGSJ = #{cgsj,jdbcType=DATE},
+                </if>
+                <if test="hgsj != null">
+                    HGSJ = #{hgsj,jdbcType=DATE},
+                </if>
+                <if test="sdgj != null">
+                    SDGJ = #{sdgj,jdbcType=VARCHAR},
+                </if>
+                <if test="tlsj != null">
+                    TLSJ = #{tlsj,jdbcType=VARCHAR},
+                </if>
+                <if test="cfrw != null">
+                    CFRW = #{cfrw,jdbcType=VARCHAR},
+                </if>
+                <if test="cfsy != null">
+                    CFSY = #{cfsy,jdbcType=VARCHAR},
+                </if>
+                <if test="cgspdw != null">
+                    CGSPDW = #{cgspdw,jdbcType=VARCHAR},
+                </if>
+                <if test="pwh != null">
+                    PWH = #{pwh,jdbcType=VARCHAR},
+                </if>
+                <if test="zypwh != null">
+                    ZYPWH = #{zypwh,jdbcType=VARCHAR},
+                </if>
+                <if test="zjcgqk != null">
+                    ZJCGQK = #{zjcgqk,jdbcType=VARCHAR},
+                </if>
+                <if test="sjcgsj != null">
+                    SJCGSJ = #{sjcgsj,jdbcType=DATE},
+                </if>
+                <if test="sjhgsj != null">
+                    SJHGSJ = #{sjhgsj,jdbcType=DATE},
+                </if>
+                <if test="nfgs != null">
+                    NFGS = #{nfgs,jdbcType=CHAR},
+                </if>
+                <if test="sfysp != null">
+                    SFYSP = #{sfysp,jdbcType=CHAR},
+                </if>
+                <if test="sfzqjwyj != null">
+                    SFZQJWYJ = #{sfzqjwyj,jdbcType=CHAR},
+                </if>
+                <if test="sczqjwyjsj != null">
+                    SCZQJWYJSJ = #{sczqjwyjsj,jdbcType=DATE},
+                </if>
+                <if test="sfbczqjwyj != null">
+                    SFBCZQJWYJ = #{sfbczqjwyj,jdbcType=CHAR},
+                </if>
+                <if test="jwjl != null">
+                    JWJL = #{jwjl,jdbcType=CHAR},
+                </if>
+                <if test="clshsftg != null">
+                    CLSHSFTG = #{clshsftg,jdbcType=CHAR},
+                </if>
+                <if test="jdcjl != null">
+                    JDCJL = #{jdcjl,jdbcType=CHAR},
+                </if>
+                <if test="sfzyld != null">
+                    SFZYLD = #{sfzyld,jdbcType=CHAR},
+                </if>
+                <if test="sflg != null">
+                    SFLG = #{sflg,jdbcType=CHAR},
+                </if>
+                <if test="poznsjd != null">
+                    POZNSJD = #{poznsjd,jdbcType=CHAR},
+                </if>
+                <if test="fmxx != null">
+                    FMXX = #{fmxx,jdbcType=VARCHAR},
+                </if>
+                <if test="dwjsxs != null">
+                    DWJSXS = #{dwjsxs,jdbcType=CHAR},
+                </if>
+                <if test="zzjl != null">
+                    ZZJL = #{zzjl,jdbcType=CHAR},
+                </if>
+                <if test="cxyy != null">
+                    CXYY = #{cxyy,jdbcType=VARCHAR},
+                </if>
+                <if test="sftsry != null">
+                    SFTSRY = #{sftsry,jdbcType=CHAR},
+                </if>
+                <if test="sfzb != null">
+                    SFZB = #{sfzb,jdbcType=CHAR},
+                </if>
+                <if test="sfbg != null">
+                    SFBG = #{sfbg,jdbcType=CHAR},
+                </if>
+                <if test="sqzt != null">
+                    SQZT = #{sqzt,jdbcType=INTEGER},
+                </if>
+                <if test="createUser != null">
+                    CREATE_USER = #{createUser,jdbcType=VARCHAR},
+                </if>
+                <if test="createTime != null">
+                    CREATE_TIME = #{createTime,jdbcType=DATE},
+                </if>
+                <if test="modifyUser != null">
+                    MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+                </if>
+                <if test="modifyTime != null">
+                    MODIFY_TIME = #{modifyTime,jdbcType=DATE},
+                </if>
+                <if test="sortId != null">
+                    SORT_ID = #{sortId,jdbcType=INTEGER},
+                </if>
+                <if test="bah != null">
+                    BAH = #{bah,jdbcType=VARCHAR},
+                </if>
+                <if test="sfxd != null">
+                    SFXD = #{sfxd,jdbcType=INTEGER},
+                </if>
+                )
+                </set>
+        </foreach>
+    </update>
 </mapper>
