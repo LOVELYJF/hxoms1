@@ -109,8 +109,9 @@ public interface OmsPubApplyService {
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:06
+     * @return
      */
-    OmsPubApplyChange getPubApplyChange(String id);
+    List<OmsPubApplyChange> getPubApplyChange(String id);
 
     /**
      * 功能描述: <br>

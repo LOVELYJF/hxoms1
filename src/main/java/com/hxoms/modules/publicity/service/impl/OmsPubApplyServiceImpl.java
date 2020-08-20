@@ -387,13 +387,14 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:08
+     * @return
      */
     @Override
-    public OmsPubApplyChange getPubApplyChange(String id) {
+    public List<OmsPubApplyChange> getPubApplyChange(String id) {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
+        List<OmsPubApplyChange> omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
         return omsPubApplyChange;
     }
 
