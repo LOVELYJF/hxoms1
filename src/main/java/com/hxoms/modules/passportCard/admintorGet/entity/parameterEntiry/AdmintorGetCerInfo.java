@@ -50,7 +50,7 @@ public class AdmintorGetCerInfo {
     //位置
     private String place;
     //柜台编号
-    private String counterNum;
+    private Integer counterNum;
     //出生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date csrq;
@@ -86,6 +86,14 @@ public class AdmintorGetCerInfo {
 
     public void setWorkUnit(String workUnit) {
         this.workUnit = workUnit;
+    }
+
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000;
     }
 
     public String getName() {
@@ -208,11 +216,11 @@ public class AdmintorGetCerInfo {
         this.place = place;
     }
 
-    public String getCounterNum() {
+    public Integer getCounterNum() {
         return counterNum;
     }
 
-    public void setCounterNum(String counterNum) {
+    public void setCounterNum(Integer counterNum) {
         this.counterNum = counterNum;
     }
 

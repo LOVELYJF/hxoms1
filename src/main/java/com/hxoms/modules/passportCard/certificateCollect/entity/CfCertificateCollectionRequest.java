@@ -17,6 +17,12 @@ public class CfCertificateCollectionRequest {
     @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照催缴表ID")
     private String cerId;
 
+    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
+    private Integer zjlx;
+
+    @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
+    private String zjhm;
+
     @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
     private String cjWay;
 
@@ -65,6 +71,22 @@ public class CfCertificateCollectionRequest {
 
     public void setCerId(String cerId) {
         this.cerId = cerId == null ? null : cerId.trim();
+    }
+
+    public Integer getZjlx() {
+        return zjlx;
+    }
+
+    public void setZjlx(Integer zjlx) {
+        this.zjlx = zjlx;
+    }
+
+    public String getZjhm() {
+        return zjhm;
+    }
+
+    public void setZjhm(String zjhm) {
+        this.zjhm = zjhm == null ? null : zjhm.trim();
     }
 
     public String getCjWay() {

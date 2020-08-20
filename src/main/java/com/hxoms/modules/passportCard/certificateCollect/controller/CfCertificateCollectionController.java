@@ -9,12 +9,11 @@ import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCol
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjQueryParam;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestEx;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestParam;
+import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.RequestList;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionRequestService;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/cerCollection")
@@ -74,8 +73,8 @@ public class CfCertificateCollectionController {
      * @Date: 2020/8/12
      */
     @PostMapping("/insertCerCjResult")
-    public Result insertCerCjResult(@RequestBody  List<CfCertificateCollectionRequestEx> cerCollectionRequestExList){
-        cfCertificateCollectionService.insertCerCjResult(cerCollectionRequestExList);
+    public Result insertCerCjResult(@RequestBody RequestList<CfCertificateCollectionRequestEx> requestList){
+        cfCertificateCollectionService.insertCerCjResult(requestList.getList());
         return  Result.success();
     }
 
@@ -87,8 +86,8 @@ public class CfCertificateCollectionController {
      * @Date: 2020/8/12
      */
     @PostMapping("/updateCerCjForRemove")
-    public Result updateCerCjForRemove(@RequestBody List<CfCertificateCollection> cfCertificateCollectionList){
-        cfCertificateCollectionService.updateCerCjForRemove(cfCertificateCollectionList);
+    public Result updateCerCjForRemove(@RequestBody RequestList<CfCertificateCollection> requestList){
+        cfCertificateCollectionService.updateCerCjForRemove(requestList.getList());
         return Result.success();
     }
 
@@ -104,6 +103,7 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/13
      */
+    @PostMapping("/insertSuspendUnit")
     public Result insertSuspendUnit(OmsSupSuspendUnit omsSupSuspendUnit){
         cfCertificateCollectionService.insertSuspendUnit(omsSupSuspendUnit);
         return Result.success();

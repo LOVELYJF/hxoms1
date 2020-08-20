@@ -3,13 +3,11 @@ package com.hxoms.modules.passportCard.initialise.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
-import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateCollectionApplyList;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 public interface CfCertificateService extends IService<CfCertificate> {
@@ -111,9 +109,9 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 生成催缴任务
     * @Author: wangyunquan
-    * @Param: [cfCertificateCollectionList]
+    * @Param: [cfCertificateCollectionApplyList]
     * @Return: void
     * @Date: 2020/8/11
     */
-   void createCjTask(List<CfCertificateCollection> cfCertificateCollectionList);
+   void createCjTask(CfCertificateCollectionApplyList cfCertificateCollectionApplyList);
 }

@@ -4,15 +4,13 @@ package com.hxoms.modules.passportCard.initialise.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateCollectionApplyList;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 @RestController
@@ -129,8 +127,8 @@ public class CfCertificateController {
      * @Date: 2020/8/11
      */
     @PostMapping("/createCjTask")
-    public Result createCjTask(@RequestBody List<CfCertificateCollection> cfCertificateCollectionList){
-        cfCertificateService.createCjTask(cfCertificateCollectionList);
+    public Result createCjTask(@RequestBody CfCertificateCollectionApplyList cfCertificateCollectionApplyList){
+        cfCertificateService.createCjTask(cfCertificateCollectionApplyList);
         return Result.success();
     }
     /**
