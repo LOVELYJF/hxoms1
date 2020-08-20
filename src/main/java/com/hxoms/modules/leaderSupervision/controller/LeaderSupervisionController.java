@@ -184,6 +184,17 @@ public class  LeaderSupervisionController {
         return Result.success(lists);
     }
 
+    /**
+     * 处领导 查询页面
+     * **/
+    @GetMapping("/selectChuZhangBusinessUser")
+    public Result selectChuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
+
+        PageInfo pageInfo =  leaderCommonService.selectChuZhangBusinessUser(leaderSupervisionVo);
+
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
 
     /**
      *  因公出国境管理 导出

@@ -30,6 +30,7 @@ public interface LeaderCommonService {
     /** 做出审核意见查询 页面**/
     PageInfo selectAuditOpinionBusinessUser(AuditOpinionVo auditOpinionVo);
 
+    /** 处领导审批页面 **/
     PageInfo selectChuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
     PageInfo selectBuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
