@@ -46,7 +46,7 @@ public class CerManageInfo {
     //位置
     private String place;
     //柜台编号
-    private String counterNum;
+    private Integer counterNum;
     //出生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date csrq;
@@ -196,11 +196,11 @@ public class CerManageInfo {
         this.place = place;
     }
 
-    public String getCounterNum() {
+    public Integer getCounterNum() {
         return counterNum;
     }
 
-    public void setCounterNum(String counterNum) {
+    public void setCounterNum(Integer counterNum) {
         this.counterNum = counterNum;
     }
 

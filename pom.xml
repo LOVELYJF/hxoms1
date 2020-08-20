@@ -265,6 +265,19 @@
              <version>2.2.6</version>
          </dependency>
 
+        <!-- 二维码支持包 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.3</version>
+        </dependency>
+        <!-- 二维码支持包 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

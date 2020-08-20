@@ -9,14 +9,10 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
-import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerIssuePerson;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateExport;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerIssuePersonMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
@@ -139,9 +135,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                 throw new CustomMessageException("证照验证保存失败！");
             cfCertificate=cfCertificateMapper.selectById(certificateGa.getId());
         }
-        List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=null;
         //获取备案人员信息
-        omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
+        List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
         CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
         cfCertificateValidate.setCfCertificate(certificateGa);
         cfCertificateValidate.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
@@ -223,8 +218,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/11
      */
     @Override
-    public void createCjTask(List<CfCertificateCollection> cfCertificateCollectionList) {
-        cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
+    public void createCjTask(CfCertificateCollectionApplyList cfCertificateCollectionApplyList) {
+        cfCertificateCollectionService.createCjTask(cfCertificateCollectionApplyList.getCfCertificateCollectionList());
     }
 
     /**

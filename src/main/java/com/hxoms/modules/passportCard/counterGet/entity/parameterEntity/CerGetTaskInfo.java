@@ -45,7 +45,7 @@ public class CerGetTaskInfo {
     //位置
     private String place;
     //柜台编号
-    private String counterNum;
+    private Integer counterNum;
     //来源
     private String dataSource;
     //任务产生日期
@@ -183,11 +183,11 @@ public class CerGetTaskInfo {
         this.place = place;
     }
 
-    public String getCounterNum() {
+    public Integer getCounterNum() {
         return counterNum;
     }
 
-    public void setCounterNum(String counterNum) {
+    public void setCounterNum(Integer counterNum) {
         this.counterNum = counterNum;
     }
 
