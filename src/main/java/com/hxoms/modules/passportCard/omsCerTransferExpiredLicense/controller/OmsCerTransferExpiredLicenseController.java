@@ -2,17 +2,14 @@ package com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;

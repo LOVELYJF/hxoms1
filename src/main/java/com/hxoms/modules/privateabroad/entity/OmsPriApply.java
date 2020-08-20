@@ -125,7 +125,7 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT",   FieldDescription="港澳通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer hongkongandmacaoPassport;
 
-    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT_NUM",   FieldDescription="港澳通行证号")
+    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT",   FieldDescription="港澳通行证号")
     private String hongkongandmacaoPassportNum;
 
     @ColumnAnnotation(FieldName = "MACAO_VISA",   FieldDescription="澳门签注")

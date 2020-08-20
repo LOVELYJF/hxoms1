@@ -37,4 +37,11 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 * @return
 	 */
 	int deleteSensitiveMaintain(String sensitiveLimitId);
+
+	/**
+	 * 根据国家名称查询对应id
+	 * @param name
+	 * @return
+	 */
+	String selectIdByName(String name);
 }

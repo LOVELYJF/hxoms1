@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="SQJCZT" jdbcType="CHAR" property="sqjczt" />
+		<result column="ZJLX" jdbcType="CHAR" property="zjlx" />
+		<result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+		<result column="JBR" jdbcType="VARCHAR" property="jbr" />
+		<result column="RETURN_TIME" jdbcType="DATE" property="returnTime" />
+		<result column="LEND_REASON" jdbcType="VARCHAR" property="lendReason" />
+		<result column="DOCUMENT_NUM" jdbcType="VARCHAR" property="documentNum" />
+		<result column="CLDYJ" jdbcType="CHAR" property="cldyj" />
+		<result column="BLDYJ" jdbcType="CHAR" property="bldyj" />
+		<result column="CLDYJLY" jdbcType="VARCHAR" property="cldyjly" />
+		<result column="BLDYJLY" jdbcType="VARCHAR" property="bldyjly" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+		<result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="MODYFY_TIME" jdbcType="TIMESTAMP" property="modyfyTime" />
+		<result column="LENDING_QUERY_START_TIME" jdbcType="DATE" property="lendingQueryStartTime" />
+		<result column="LENDING_QUERY_END_TIME" jdbcType="DATE" property="lendingQueryEndTime" />
+		<result column="IS_COMMIT" jdbcType="CHAR" property="isCommit" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    ID, OMS_ID, NAME, SQJCZT, ZJLX, ZJHM, JBR, RETURN_TIME, LEND_REASON, DOCUMENT_NUM, CLDYJ,
+    BLDYJ, CLDYJLY, BLDYJLY, CREATE_TIME, CREATE_USER, MODIFY_USER, MODYFY_TIME,
+    LENDING_QUERY_START_TIME, LENDING_QUERY_END_TIME, IS_COMMIT
+  </sql>
+
+
+	<!-- 查询证照借出申请信息 -->
+	<select id="selectApplyLendingLicenseInfo" resultType="java.util.Map">
+		select
+			ocall.ID as id,
+			ocall.OMS_ID as omsId,
+			ocall.NAME as name,
+			ocall.SQJCZT as sqjczt,
+			ocall.ZJLX as zjlx,
+			ocall.ZJHM as zjhm,
+			org.WORK_UNIT as workUnit,
+			org.INCUMBENCY_STATUS as incumbencyStatus,
+			org.POST as post,
+			org.SEX as sex
+		from
+			oms_cer_apply_lending_license ocall
+		join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
+		<where>
+			<trim suffixOverrides="and">
+				<if test="sqjczt != null">ocall.sqjczt=#{sqjczt} and </if>
+				<if test="lendingQueryStartTime != null and lendingQueryEndTime != null">
+					ocall.createTime between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
+				</if>
+				<if test="name != null">ocall.name like concat('%',#{name},'%')
+					or
+					org.PY like concat('%',#{name},'%') and </if>
+				<if test="jbr != null">ocall.jbr like concat('%',#{jbr},'%')
+				or
+				org.PY like concat('%',#{jbr},'%') and </if>
+			</trim>
+		</where>
+		order by ocall.CREATE_TIME desc
+	</select>
+
+	<!-- 查询证照借出申请记录(受理) -->
+	<select id="getApplyLendingLicenseApprovalRecord" resultType="java.util.Map">
+		select
+			ocall.ID as id,
+			ocall.OMS_ID as omsId,
+			ocall.NAME as name,
+			ocall.SQJCZT as sqjczt,  #申请借出状态
+			ocall.ZJLX as zjlx,			#证件类型
+			ocall.ZJHM as zjhm,			#证件号码
+			ocall.CLDYJ as cldyj,		#处领导意见
+			ocall.BLDYJ as bldyj,		#部领导意见
+			ocall.JBR as jbr,			#经办人
+			ocall.CREATE_TIME as createTime,	#申请时间
+			ocall.RETURN_TIME as returnTime,	#归还时间
+			ocall.LEND_REASON as lendReason,	#借出原因
+			org.WORK_UNIT as workUnit,
+			org.INCUMBENCY_STATUS as incumbencyStatus,	#在职状态
+			org.POST as post,
+			org.SEX as sex,
+			cc.YXQZ as yxqz,	#有效期至
+			cc.SURELY_UNIT as surelyUnit,	#保管单位
+			cc.CSRQ as csrq		#出生日期
+		from
+			oms_cer_apply_lending_license ocall
+		join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
+		join cf_certificate cc on cc.ZJHM = ocall.ZJHM
+		where ocall.IS_COMMIT='1'
+		order by
+			createTime
+		desc
+	</select>
+
+
+</mapper>

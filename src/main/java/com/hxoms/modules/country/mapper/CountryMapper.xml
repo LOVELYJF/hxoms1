@@ -48,4 +48,7 @@
 		insert into oms_sensitive_maintain(COUNTRY_ID,SENSITIVE_LIMIT_ID) values (#{id},#{sensitiveLimitId})
 	</insert>
 
+	<select id="selectIdByName" resultType="java.lang.String" parameterType="java.lang.String">
+		select ID from country where NAME like '%${name}%'
+	</select>
 </mapper>

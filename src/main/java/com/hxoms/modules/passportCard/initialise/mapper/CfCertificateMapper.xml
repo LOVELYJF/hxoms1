@@ -690,7 +690,7 @@
 	<select id="getCancellateLicense" resultType="java.util.Map">
 		select
 		cc.ID as id,
-		cc.A0100 as a0100,
+		cc.OMS_ID as omsId,
 		op.B0100 as b0100,
 		cc.NAME as name,
 		cc.SEX as sex,
@@ -707,8 +707,8 @@
 		cc.QFRQ as qfrq,
 		cc.CSDD as csdd
 		from cf_certificate cc
-		join oms_reg_procpersoninfo orp on cc.a0100 = orp.a0100
-		join oms_personinfo op on op.A0100 = orp.A0100
+		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
+		join oms_personinfo op on op.B0111 = orp.RF_B0000
 		<where>
 			<trim suffixOverrides="and">
 				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
@@ -724,16 +724,18 @@
 		select
 		cc.ID as id,
 		cc.A0100 as a0100,
+		cc.OMS_ID as omsId,
 		cc.NAME as name,
 		org.SEX as sex,
 		org.WORK_UNIT as workUnit,
 		org.POST as post,
 		org.INCUMBENCY_STATUS as incumbencyStatus,
 		cc.ZJLX as zjlx,
+		cc.ZJHM as zjhm,
 		org.BIRTH_DATE_GB as birthDateGb
 		from
 		cf_certificate cc
-		join oms_reg_procpersoninfo org on cc.a0100=org.a0100
+		join oms_reg_procpersoninfo org on cc.OMS_ID=org.ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="a0100 != null">cc.a0100=#{a0100} and </if>
@@ -745,7 +747,7 @@
 	<select id="getTransferExpiredLicenseInfo" resultType="java.util.Map">
 		SELECT
 			cc.ID as id,
-			cc.A0100 AS a0100,
+			cc.OMS_ID AS omsId,
 			cc.NAME AS name,
 			cc.SEX AS sex,
 			cc.CSRQ AS csrq,
@@ -762,12 +764,12 @@
 			cc.QFJG AS qfjg,
 			cc.QFRQ AS qfrq,
 			cc.CSDD AS csdd,
-			op.B0100 AS b0100,
+			b.B0100 AS b0100,
 			getTime
 		FROM
 			cf_certificate cc
-		JOIN oms_reg_procpersoninfo org ON cc.A0100 = org.A0100
-		JOIN oms_personinfo as op  on org.A0100 = op.A0100
+		JOIN oms_reg_procpersoninfo org ON cc.OMS_ID = org.ID
+		JOIN b01 as b  on org.RF_B0000 = b.b0111
 		left JOIN (
 		SELECT
 			ocgt.GET_TIME as getTime,
@@ -783,7 +785,7 @@
 		) AS ls ON hm = cc.ZJHM
 		<where>
 			<trim suffixOverrides="and">
-				<if test="list != null">op.B0100 in
+				<if test="list != null">b.B0100 in
 					<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
 						#{item}
 					</foreach>

@@ -1,10 +1,17 @@
 package com.hxoms.modules.passportCard.omsCerCancellateLicense.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseAcceptanceService;
@@ -35,6 +42,12 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 
 	@Autowired
 	private OmsCerCancellateLicenseMapper omsCerCancellateLicenseMapper;
+	@Autowired
+	private CfCertificateMapper cfCertificateMapper;
+	@Autowired
+	private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
+	@Autowired
+	private OmsCerGetTaskMapper omsCerGetTaskMapper;
 	/**
 	 * <b>功能描述: 注销证照受理查询(按单位主键，姓名，证件号码，证件类型,申请时间，申请状态查询)
 	 * 和处领导审批处的查询为同一接口</b>
@@ -197,7 +210,10 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 
 
 	/**
-	 * <b>功能描述: 完成注销(公安厅意见)</b>
+	 * <b>功能描述: 完成注销(公安厅意见)
+	 *     分两个按钮，第一个通过后生成证照领取任务，
+	 *     第二个领取任务完成后再次完成注销，状态改为已办结
+	 * </b>
 	 * @Param: [omsCerCancellateLicense]
 	 * @Return: org.apache.ibatis.annotations.Result
 	 * @Author: luoshuai
@@ -208,18 +224,43 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 		omsCerCancellateLicense.setModifyTime(new Date());
 		if(omsCerCancellateLicense.getGatshyj().equals("1")){
 			//公安厅通过
-			omsCerCancellateLicense.setZhzxzt(Constants.CANCELL_NAME[11]);      //完成注销状态之后，状态改为已办结
+			omsCerCancellateLicense.setZhzxzt(Constants.CANCELL_NAME[10]);      //完成注销状态之后，状态改为完成注销
 			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 			if(count < 1){
-				throw new CustomMessageException("注销失败");
+				throw new CustomMessageException("公安厅通过，更改状态失败");
 			}else {
-
-
 
 				//保管状态为“正常保管”的，生成证照领取任务，将证照状态置为“待领取”，不改变注销申请状态，提醒工作人员将证照取出后再次完成注销。
 				//保管状态为“已取出”的，将证照状态标注为“注销”状态，将证照的柜台保管号插入到证照号废弃表中，供重复使用。
 
+				OmsCerGetTask omsCerGetTask = new OmsCerGetTask();          //创建证照领取对象
+				omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
+				omsCerGetTask.setBusiId(omsCerCancellateLicense.getId());
+				omsCerGetTask.setName(omsCerCancellateLicense.getName());
+				omsCerGetTask.setZjlx(omsCerCancellateLicense.getZjlx());
+				omsCerGetTask.setDataSource("5");
+				omsCerGetTask.setGetPeople(omsCerCancellateLicense.getCreateUser());
+				omsCerGetTask.setCreateTime(new Date());
+				omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
+				omsCerGetTask.setOmsId(omsCerCancellateLicense.getOmsId());
+				omsCerGetTask.setGetStatus("0");                //未领取
 
+				//根据证件号码查询证件信息(查ID)
+				String zjhm = omsCerCancellateLicense.getZjhm();
+				QueryWrapper<CfCertificate> queryWrapper1 = new QueryWrapper<CfCertificate>();
+				queryWrapper1.eq(zjhm != null && zjhm != "", "ZJHM", zjhm);
+				CfCertificate cfCertificate1 = cfCertificateMapper.selectOne(queryWrapper1);
+				omsCerGetTask.setCerId(cfCertificate1.getId());
+				omsCerGetTask.setZjhm(omsCerCancellateLicense.getZjhm());
+
+				//根据备案主键在登记备案表中查询证照领取任务表中需要的信息
+				OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoMapper.selectById(omsCerCancellateLicense.getOmsId());
+				omsCerGetTask.setRfB0000(omsRegProcpersoninfo.getRfB0000());
+
+				int count2 = omsCerGetTaskMapper.insert(omsCerGetTask);
+				if(count2 < 1){
+					throw new CustomMessageException("插入数据到证照领取任务表失败");
+				}
 
 			}
 		}else if(omsCerCancellateLicense.getGatshyj().equals("0")){
@@ -227,7 +268,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			omsCerCancellateLicense.setZhzxzt("8");
 			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 			if(count < 1){
-				throw new CustomMessageException("注销失败");
+				throw new CustomMessageException("公安厅不通过，更改状态失败");
 			}
 		}
 	}

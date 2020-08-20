@@ -1,9 +1,11 @@
 package com.hxoms.modules.privateabroad.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.entity.OmsPriPubApply;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import org.apache.ibatis.annotations.Param;
@@ -44,8 +46,6 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      */
     List<CountStatusResult> selectCountStatus();
 
-    List<OmsPriApplyVO> selectComparisionList();
-
     /**
      * 撤销申请人员统计
      * @return
@@ -64,4 +64,6 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     List<Map<String, String>> selectVisaSettingByCode(Map<String, String> params);
+
+    List<OmsPriPubApply> selectPriPubList(String a0100);
 }

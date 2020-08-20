@@ -206,7 +206,7 @@ public class OmsRegProcpersoninfoController {
 
 
 
-    /* 大检查上传登记备案记录(出入境（公安）)
+    /* 大检查上传登记备案记录(出入境（公安）)c
      * @param
      * @return
      */
