@@ -139,5 +139,15 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 10:13
 	 */
-    String selectCounterNum(String id);
+    Integer selectCounterNum(String id);
+
+
+    /**
+     * <b>功能描述: （盘点）查询证照信息</b>
+     * @Param: [map]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
+     * @Author: luoshuai
+     * @Date: 2020/8/19 15:08
+     */
+	List<CfCertificate> selectOmsCerInfo(Map<String, Object> map);
 }
