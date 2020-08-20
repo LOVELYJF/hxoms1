@@ -261,7 +261,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //设置传入页码，以及每页的大小
         PageHelper.startPage(pageNum, pageSize);
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         /** 出国时间*/
@@ -556,7 +556,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
          /** 团组名称*/
         String tzmc = omsPubApplyQueryParam.getTzmc();
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         if (StringUtils.isBlank(ztdw)){
@@ -707,7 +707,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Override
     public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response) {
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         /** 出国时间*/
