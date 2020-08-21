@@ -53,20 +53,24 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 		Map<String,Object> map1 = new HashMap<String, Object>();
 		map1.put("pubPri", pubPri);
 		List<Map<String,String>> omsSensitiveList = omsSensitiveLimitMapper.selectOmsSensitive(map1);
-		for(OmsSensitiveLimit omsSensitiveLimit : list){
-			List<OmsSensitiveLimit> list1 = new ArrayList<OmsSensitiveLimit>();
-			for(int i = 0 ; i < omsSensitiveList.size() ; i++){
-				if(omsSensitiveList.get(i).get("sensitiveLimitId").equals(omsSensitiveLimit.getId())){
-					String sensitiveItem = omsSensitiveList.get(i).get("sensitiveItem");
-					//根据主键查询对应的限制内容
-					map.put("dictCode",null);
-					map.put("itemId", sensitiveItem);
-					List<OmsSensitiveLimit> childList = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
-					list1.add(childList.get(0));
+
+		if(omsSensitiveList != null && omsSensitiveList.size() > 0){
+			for(OmsSensitiveLimit omsSensitiveLimit : list){
+				List<OmsSensitiveLimit> list1 = new ArrayList<OmsSensitiveLimit>();
+				for(int i = 0 ; i < omsSensitiveList.size() ; i++){
+					if(omsSensitiveList.get(i).get("sensitiveLimitId").equals(omsSensitiveLimit.getId())){
+						String sensitiveItem = omsSensitiveList.get(i).get("sensitiveItem");
+						//根据主键查询对应的限制内容
+						map.put("dictCode",null);
+						map.put("itemId", sensitiveItem);
+						List<OmsSensitiveLimit> childList = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
+						list1.add(childList.get(0));
+					}
+					omsSensitiveLimit.setList(list1);
 				}
-				omsSensitiveLimit.setList(list1);
 			}
 		}
+
 		return list;
 	}
 
