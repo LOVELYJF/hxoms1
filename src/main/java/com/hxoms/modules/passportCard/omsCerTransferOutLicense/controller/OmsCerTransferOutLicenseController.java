@@ -53,7 +53,7 @@ public class OmsCerTransferOutLicenseController {
 
 
 	/**
-	 * <b>功能描述: 根据年份查询批次号</b>
+	 * <b>功能描述: 查询年份对应的批次号结构树</b>
 	 * @Param: []
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
