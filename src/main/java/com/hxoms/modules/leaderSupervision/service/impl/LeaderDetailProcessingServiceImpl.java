@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
@@ -9,6 +10,14 @@ import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
+import com.hxoms.modules.file.entity.FileReplaceVO;
+import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.OmsReplaceKeywords;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
+import com.hxoms.modules.file.mapper.OmsFileMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
+import com.hxoms.modules.file.service.impl.OmsFileServiceImpl;
 import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.entity.AttachmentAskforjiwei;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
@@ -19,9 +28,12 @@ import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.user.entity.User;
 import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +80,18 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private LeaderCommonServiceImpl leaderCommonService;
     @Autowired
     private LeaderCommonDetailMapper leaderCommonDetailMapper;
+    @Autowired
+    private OmsFileMapper omsFileMapper;
+    @Autowired
+    private B01Mapper b01Mapper;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
+
+    @Autowired
+    private OmsFileServiceImpl omsFileServiceImpl;
+
 
     @Value("${omsAttachment.baseDir}")
     private String attachmentPath;
@@ -467,7 +491,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
      * 生成审批单
      * */
     @Transactional(rollbackFor = CustomMessageException.class)
-    public void makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo){
+    public List<Map> makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo){
+
         // 对 参数进行校验
         LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
        // 保存 审批记录  系统自动根据材料审核结果、纪委意见判断生成呈批单（通过）还是请示表（未通过），
@@ -493,9 +518,12 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
                   passList.add(id);
 
+                  map.put("fileType","呈批单");
+
               }else{
 
                   notpassList.add(id);
+                  map.put("fileType","请示表");
 
               }
 
@@ -523,7 +551,108 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
                 Constants.leader_business[4]);
 
+        createOmsFileAndomsCreateFile(lists);
+
+        return lists;
+
     }
+
+    public void createOmsFileAndomsCreateFile(List<Map> lists){
+
+       if(lists!=null && lists.size()>0){
+
+          for(Map map : lists){
+
+              String tableCode =(String)map.get("tableCode");
+              String fileShortname = (String)map.get("fileType");
+              String applyId  = (String) map.get("id");
+
+//              //登录用户信息
+             UserInfo userInfo = UserInfoUtil.getUserInfo();//查询机构信息
+             B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+             if (b01 == null){
+                  throw new CustomMessageException("数据异常");
+              }
+              QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
+              queryWrapper.eq("TABLE_CODE", tableCode)
+//                      .eq("B0100", b01.getB0100())
+                      .eq("FILE_SHORTNAME",fileShortname)
+                      .orderByAsc("SORT_ID");
+              List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
+              if (omsFiles == null || omsFiles.size() < 1) {
+                  //初始化机构文件
+                  queryWrapper.clear();
+                  queryWrapper.eq("TABLE_CODE", tableCode)
+                          .and(wrapper->wrapper.eq("B0100", "")
+                                  .or()
+                                  .isNull("B0100"))
+                          .orderByAsc("SORT_ID");
+                  List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+                  if (omsFileSystem != null && omsFileSystem.size() > 0) {
+                      //插入
+                      for (OmsFile omsfile : omsFileSystem) {
+                          omsfile.setFileId(omsfile.getId());
+                          omsfile.setId(UUIDGenerator.getPrimaryKey());
+                          omsfile.setB0100(b01.getB0100());
+                          omsfile.setCreateUser(userInfo.getId());
+                          omsfile.setCreateTime(new Date());
+                          omsFileMapper.insert(omsfile);
+                      }
+
+                  }
+
+                  //重新查询
+                  queryWrapper.eq("TABLE_CODE", tableCode)
+                          .eq("B0100", b01.getB0100())
+                          .eq("FILE_SHORTNAME",fileShortname)
+                          .orderByAsc("SORT_ID");
+                  omsFiles = omsFileMapper.selectList(queryWrapper);
+              }
+
+              map.put("omsFiles",omsFiles);
+              //生成文件
+              if (!StringUtils.isBlank(applyId)){
+                  QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+                  createFile.eq("TABLE_CODE", tableCode)
+                          .eq("APPLY_ID", applyId);
+                  int count = omsCreateFileMapper.selectCount(createFile);
+                  //没有生成时生成文件
+                  if (count < 1){
+                      for (OmsFile omsFile : omsFiles){
+                          OmsCreateFile omsCreateFile = new OmsCreateFile();
+                          omsCreateFile.setFileId(omsFile.getId());
+                          omsCreateFile.setApplyId(applyId);
+                          omsCreateFile.setFileName(omsFile.getFileName());
+                          omsCreateFile.setFileShortname(omsFile.getFileShortname());
+                          omsCreateFile.setFileType(omsFile.getFileType());
+                          omsCreateFile.setTableCode(omsFile.getTableCode());
+                          omsCreateFile.setIsEdit(omsFile.getIsEdit());
+                          omsCreateFile.setSealDesc(omsFile.getSealDesc());
+                          omsCreateFile.setIsfileList(omsFile.getIsfileList());
+                          omsCreateFile.setSortId(omsFile.getSortId());
+                          omsCreateFile.setPrintNum(omsFile.getPrintNum());
+                          //替换关键词
+                          omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode);
+                          omsCreateFile.setFrontContent(omsFile.getFrontContent());
+                          omsCreateFile.setBankContent(omsFile.getBankContent());
+                          omsCreateFileService.insertOrUpdate(omsCreateFile);
+                      }
+                  }
+              }
+
+
+          }
+       }else{
+
+           throw new CustomMessageException("参数 为空，请仔细检查");
+       }
+
+
+
+    }
+
+
+
 
 
 

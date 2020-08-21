@@ -77,5 +77,5 @@ public interface LeaderDetailProcessingService {
      * 生成 审批单
      * */
 
-    void makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
+    List<Map> makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
 }

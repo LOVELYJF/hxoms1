@@ -3,21 +3,29 @@
 <mapper namespace="com.hxoms.modules.leaderSupervision.mapper.LeaderCommonDetailMapper">
 
 	<select id="selectJiweiOpinionAndMaterialsCheckOpinion" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
-
 		SELECT
-			   temp.id as id, # 业务 id
-			   temp.materialsCheck as materialsCheck , # 材料审核
-			   IFNULL(jio.official_feedback_verdict,jio.feedback_verdict) as jiweiopion, # 纪委意见 以 书面意见为准
-			   temp.type as type # 业务类型
+		temp.id as id, # 业务 id
+		temp.a0100 as a0100, # 人员id
+		temp.tableCode as tableCode, # 表名类型
+		temp.userName, # 人员姓名
+		temp.materialsCheck as materialsCheck , # 材料审核
+		IFNULL(jio.official_feedback_verdict,jio.feedback_verdict) as jiweiopion, # 纪委意见 以 书面意见为准
+		temp.type as type # 业务类型
 		from (
 
-			 select pua.id as id,'因公' as type,  pua.CLSHSFTG  as materialsCheck  from oms_pub_apply pua
-			 union
-			 select pri.id as id,'因私' as type, pri.CLSHSFTG as materialsCheck from oms_pri_apply pri
-			 union
-			 select prda.id as id,'延期' as type, prda.CLSHSFTG  as materialsCheck from oms_pri_delay_apply prda
+		select pua.id as id,'因公' as type,a.a0100 as a0100, a.a0101 AS userName,"oms_pub_apply_cadres" as tableCode, pua.CLSHSFTG  as materialsCheck
+		from oms_pub_apply pua  LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		union
+		select pra.id as id,'因私' as type,a.a0100 as a0100,a.a0101 AS userName,"oms_pri_apply_cadres" as tableCode, pra.CLSHSFTG as materialsCheck
+		from  oms_pri_apply pra LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		union
+		select prda.id as id,'延期' as type,a.a0100 as a0100,a.a0101 AS userName,"oms_pri_delay_apply_" as tablecode, prda.CLSHSFTG  as materialsCheck
+		from oms_pri_delay_apply  prda
+		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
 
-			 )temp left join oms_jiwei_opinion jio on jio.id = temp.id
+		)temp left join oms_jiwei_opinion jio on jio.id = temp.id
 
 		 where 1=1
 		<if test="bussinessIds != null and bussinessIds.length>0">

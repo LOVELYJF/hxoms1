@@ -313,7 +313,7 @@ public class OmsFileServiceImpl implements OmsFileService {
      * @param applyId
      * @param tableCode
      */
-    private void replaceFile(OmsFile omsFile, String applyId, String tableCode){
+    public void replaceFile(OmsFile omsFile, String applyId, String tableCode){
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
         queryWrapperKeyword.eq("TYPE", tableCode)

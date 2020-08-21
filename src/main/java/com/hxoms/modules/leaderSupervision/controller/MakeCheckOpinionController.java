@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @authore:wjf
@@ -88,9 +90,9 @@ public class MakeCheckOpinionController {
     @PostMapping("/makeApprovalFor")
     public Result makeApprovalFor(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
-        leaderDetailProcessingService.makeApprovalFor(leaderSupervisionVo);
+       List<Map> lists= leaderDetailProcessingService.makeApprovalFor(leaderSupervisionVo);
 
-        return Result.success();
+        return Result.success(lists);
     }
 
 
