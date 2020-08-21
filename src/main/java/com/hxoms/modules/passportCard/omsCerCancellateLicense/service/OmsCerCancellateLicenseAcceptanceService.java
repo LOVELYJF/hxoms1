@@ -30,7 +30,7 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 
 
 	/**
-	 * <b>功能描述: 强制注销（监督处强制注销某个人的证照信息）</b>
+	 * <b>功能描述: 强制注销（监督处强制注销某个人的证照信息）进行下一步</b>
 	 * @Param: [list]
 	 * @Return: org.apache.ibatis.annotations.Result
 	 * @Author: luoshuai
@@ -100,4 +100,14 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 	 * @Date: 2020/8/7 16:43
 	 */
 	void updateCerCancellateLicenseAcceptanceNext(OmsCerCancellateLicense omsCerCancellateLicense);
+
+
+	/**
+	 * <b>功能描述: 查询审批记录</b>
+	 * @Param: [omsCerCancellateLicense]
+	 * @Return: org.apache.ibatis.annotations.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/7 16:43
+	 */
+	OmsCerCancellateLicense getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense);
 }

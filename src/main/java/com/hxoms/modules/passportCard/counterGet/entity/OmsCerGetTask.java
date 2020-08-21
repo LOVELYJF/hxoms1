@@ -38,7 +38,12 @@ public class OmsCerGetTask {
     @ColumnAnnotation(FieldName = "GET_STATUS",   FieldDescription="领取状态(0:未领取,1:已领取)")
     private String getStatus;
 
-    @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证)")
+    @ColumnAnnotation(FieldName = "HAPPEN_DATE",   FieldDescription="业务发生日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date happenDate;
+
+    @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证,5:证照注销)")
     private String dataSource;
 
     @ColumnAnnotation(FieldName = "GET_PEOPLE",   FieldDescription="领取人")
@@ -141,6 +146,14 @@ public class OmsCerGetTask {
 
     public void setGetStatus(String getStatus) {
         this.getStatus = getStatus == null ? null : getStatus.trim();
+    }
+
+    public Date getHappenDate() {
+        return happenDate;
+    }
+
+    public void setHappenDate(Date happenDate) {
+        this.happenDate = happenDate;
     }
 
     public String getDataSource() {

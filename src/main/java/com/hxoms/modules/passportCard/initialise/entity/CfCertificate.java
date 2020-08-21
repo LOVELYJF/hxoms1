@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "cf_certificate", TableDescription="证照信息管理表")
 public class CfCertificate {
@@ -82,7 +81,7 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "SAVE_STATUS",   FieldDescription="保管状态(0:正常保管,1:已取出,2:未上缴)")
     private String saveStatus;
 
-    @ColumnAnnotation(FieldName = "CARD_STATUS",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:其它)")
+    @ColumnAnnotation(FieldName = "CARD_STATUS",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
 
     @ColumnAnnotation(FieldName = "SURELY_UNIT",   FieldDescription="保管单位(0:干部监督处,1:省委统战部(台办))")
@@ -98,7 +97,7 @@ public class CfCertificate {
     private String place;
 
     @ColumnAnnotation(FieldName = "COUNTER_NUM",   FieldDescription="柜台编号")
-    private String counterNum;
+    private Integer counterNum;
 
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效(0:有效,1:无效)")
     private Integer isValid;
@@ -333,12 +332,12 @@ public class CfCertificate {
         this.place = place == null ? null : place.trim();
     }
 
-    public String getCounterNum() {
+    public Integer getCounterNum() {
         return counterNum;
     }
 
-    public void setCounterNum(String counterNum) {
-        this.counterNum = counterNum == null ? null : counterNum.trim();
+    public void setCounterNum(Integer counterNum) {
+        this.counterNum = counterNum;
     }
 
     public Integer getIsValid() {

@@ -261,7 +261,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //设置传入页码，以及每页的大小
         PageHelper.startPage(pageNum, pageSize);
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         /** 出国时间*/
@@ -387,13 +387,14 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:08
+     * @return
      */
     @Override
-    public OmsPubApplyChange getPubApplyChange(String id) {
+    public List<OmsPubApplyChange> getPubApplyChange(String id) {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
+        List<OmsPubApplyChange> omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
         return omsPubApplyChange;
     }
 
@@ -556,7 +557,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
          /** 团组名称*/
         String tzmc = omsPubApplyQueryParam.getTzmc();
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         if (StringUtils.isBlank(ztdw)){
@@ -707,7 +708,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Override
     public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response) {
         /**申请状态集合 */
-        List<String> status = omsPubApplyQueryParam.getStatus();
+        List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
         /** 出国时间*/

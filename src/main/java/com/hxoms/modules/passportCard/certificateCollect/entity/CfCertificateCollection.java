@@ -32,6 +32,12 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
     private String workUnit;
 
+    @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
+    private Integer zjlx;
+
+    @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
+    private String zjhm;
+
     @ColumnAnnotation(FieldName = "CJ_WAY",   FieldDescription="催缴方式(0:电话催缴,1:短信催缴)")
     private String cjWay;
 
@@ -57,13 +63,13 @@ public class CfCertificateCollection {
     @ColumnAnnotation(FieldName = "REMOVE_CJ_DESC",   FieldDescription="解除催缴说明")
     private String removeCjDesc;
 
+    @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
+    private String creator;
+
     @ColumnAnnotation(FieldName = "CREATETIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createtime;
-
-    @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
-    private String creator;
 
     @ColumnAnnotation(FieldName = "UPDATETIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -129,6 +135,22 @@ public class CfCertificateCollection {
         this.workUnit = workUnit == null ? null : workUnit.trim();
     }
 
+    public Integer getZjlx() {
+        return zjlx;
+    }
+
+    public void setZjlx(Integer zjlx) {
+        this.zjlx = zjlx;
+    }
+
+    public String getZjhm() {
+        return zjhm;
+    }
+
+    public void setZjhm(String zjhm) {
+        this.zjhm = zjhm == null ? null : zjhm.trim();
+    }
+
     public String getCjWay() {
         return cjWay;
     }
@@ -185,20 +207,20 @@ public class CfCertificateCollection {
         this.removeCjDesc = removeCjDesc == null ? null : removeCjDesc.trim();
     }
 
-    public Date getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
-
     public String getCreator() {
         return creator;
     }
 
     public void setCreator(String creator) {
         this.creator = creator == null ? null : creator.trim();
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
     public Date getUpdatetime() {

@@ -64,5 +64,5 @@ public interface OmsPubGroupPreApprovalMapper {
      * @Author: 李逍遥
      * @Date: 2020/7/7 16:09
      */
-    List<OmsPubGroupPreApprovalVO> selectByCondition(@Param("tzmc") String tzmc, @Param("sqzt") List<String> sqzt, @Param("ztdw") String ztdw, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj);
+    List<OmsPubGroupPreApprovalVO> selectByCondition(@Param("tzmc") String tzmc, @Param("sqzt") List<Integer> sqzt, @Param("ztdw") String ztdw, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj);
 }

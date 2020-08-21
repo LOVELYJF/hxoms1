@@ -36,7 +36,7 @@ public interface OmsCerTransferOutLicenseService {
 
 
 	/**
-	 * <b>功能描述: 根据年份批次号</b>
+	 * <b>功能描述: 查询年份对应的批次号结构树</b>
 	 * @Param: []
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai

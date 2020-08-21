@@ -191,8 +191,8 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 			for(CfCertificate cfCertificate : list){
 				if(cfCertificate.getSaveStatus().equals("1")){          //判断证件的取出状态，只有取出证照机的可以转存
 					//根据查询证照是否存在柜台存放号码
-					String counterNum = cfCertificateMapper.selectCounterNum(cfCertificate.getId());
-					if(counterNum != null && counterNum != ""){         //存在柜台号码，不用重新生成柜台号码
+					Integer counterNum = cfCertificateMapper.selectCounterNum(cfCertificate.getId());
+					if(counterNum != null){         //存在柜台号码，不用重新生成柜台号码
 						cfCertificate.setCounterNum(counterNum);
 					}else {                                             //柜台号码不存在，生成柜台号码
 
@@ -200,7 +200,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 						if(cfCertificate.getZjxs().equals("0")){            //本式证照
 
 
-
+																			//在证号信息表中更新
 
 
 						}else if (cfCertificate.getZjxs().equals("1")){     //卡式证照

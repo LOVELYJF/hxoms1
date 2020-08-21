@@ -20,7 +20,7 @@ public class OmsPubApplyQueryParam {
     /**分页大小*/
     private Integer pageSize;
     /**申请状态集合 */
-    private List<String> status;
+    private List<Integer> status;
     /** 姓名*/
     private String name;
     /** 出国时间*/
@@ -63,11 +63,11 @@ public class OmsPubApplyQueryParam {
         this.pageSize = pageSize;
     }
 
-    public List<String> getStatus() {
+    public List<Integer> getStatus() {
         return status;
     }
 
-    public void setStatus(List<String> status) {
+    public void setStatus(List<Integer> status) {
         this.status = status;
     }
 

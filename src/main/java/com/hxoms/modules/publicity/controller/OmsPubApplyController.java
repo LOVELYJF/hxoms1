@@ -178,7 +178,7 @@ public class OmsPubApplyController {
      */
     @GetMapping("/getPubApplyChange")
     public Result getPubApplyChange(String id){
-        OmsPubApplyChange omsPubApplyChange = omsPubApplyService.getPubApplyChange(id);
+        List<OmsPubApplyChange> omsPubApplyChange = omsPubApplyService.getPubApplyChange(id);
         return Result.success(omsPubApplyChange);
     }
 
