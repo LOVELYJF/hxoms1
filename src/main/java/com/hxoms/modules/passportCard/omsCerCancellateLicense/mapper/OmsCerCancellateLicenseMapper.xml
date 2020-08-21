@@ -101,6 +101,7 @@
 			occl.CLDYJLY as cldyjly, #处领导意见理由
 			occl.BLDYJLY as bldyjly,  #部领导意见理由
 			occl.CREATE_USER as createUser  #创建人
+			occl.CREATE_TIME as createTime  #创建时间
 		from cf_certificate cc
 		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
 		join oms_cer_cancellate_license occl on occl.A0100 = cc.A0100

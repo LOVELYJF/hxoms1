@@ -40,7 +40,7 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 	}
 
 	/**
-	 * <b>功能描述: 强制注销（监督处强制注销某个人的证照信息）</b>
+	 * <b>功能描述: 强制注销（监督处强制注销某个人的证照信息）进行下一步</b>
 	 * @Param: [list]
 	 * @Return: org.apache.ibatis.annotations.Result
 	 * @Author: luoshuai
@@ -138,6 +138,21 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 	                                                 OmsCerCancellateLicense omsCerCancellateLicense){
 		omsCerCancellateLicenseAcceptanceService.getCerCancellateLicenseApprovalOut(idList, omsCerCancellateLicense,response);
 		return Result.success();
+	}
+
+
+
+	/**
+	 * <b>功能描述: 查询审批记录</b>
+	 * @Param: [omsCerCancellateLicense]
+	 * @Return: org.apache.ibatis.annotations.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/7 16:43
+	 */
+	@GetMapping("/getCerCancellateLicenseRecord")
+	public Result getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense){
+		omsCerCancellateLicense = omsCerCancellateLicenseAcceptanceService.getCerCancellateLicenseRecord(omsCerCancellateLicense);
+		return Result.success(omsCerCancellateLicense);
 	}
 }
 
