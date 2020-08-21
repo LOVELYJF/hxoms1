@@ -1,12 +1,8 @@
 package com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
@@ -21,8 +17,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * <b>功能描述: 借出证照申请业务层接口实现类</b>
@@ -52,17 +50,30 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 
 	/**
 	 * <b>功能描述: 保存申请借出的证照信息</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
-	public void saveApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
-		omsCerApplyLendingLicense.setIsCommit("0");
-		int count = omsCerApplyLendingLicenseMapper.insert(omsCerApplyLendingLicense);
-		if(count < 1){
-			throw new CustomMessageException("借出申请保存失败");
+	public void saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list) {
+		if(list != null && list.size() > 0){
+			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+				omsCerApplyLendingLicense.setId(UUIDGenerator.getPrimaryKey());
+				omsCerApplyLendingLicense.setIsCommit("0");
+				omsCerApplyLendingLicense.setCreateTime(new Date());
+				omsCerApplyLendingLicense.setSqjczt("0");       //状态：申请
+				omsCerApplyLendingLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
+				omsCerApplyLendingLicense.setYear(UtilDateTime.nowYear());
+				omsCerApplyLendingLicense.setDocumentNum(UtilDateTime.formatCNDate(new Date()));
+				int count = omsCerApplyLendingLicenseMapper.insert(omsCerApplyLendingLicense);
+				if(count < 1){
+					throw new CustomMessageException("借出申请保存失败");
+				}
+			}
+		}else {
+			throw new CustomMessageException("未选择借出的证照信息");
 		}
+
 	}
 
 	/**
@@ -179,6 +190,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	public void updateApplyLendingLicenseCommit(List<String> list) {
 		OmsCerApplyLendingLicense omsCerApplyLendingLicense = new OmsCerApplyLendingLicense();
 		omsCerApplyLendingLicense.setIsCommit("1");
+		omsCerApplyLendingLicense.setSqjczt("1");       //状态：审批
+		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
+		omsCerApplyLendingLicense.setModyfyTime(new Date());
 		if(list != null && list.size() > 0){
 			QueryWrapper<OmsCerApplyLendingLicense> queryWrapper = new QueryWrapper<OmsCerApplyLendingLicense>();
 			queryWrapper.in("ID", list);
@@ -188,6 +202,24 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 			}
 		}else {
 			throw new CustomMessageException("请选择要提交的信息");
+		}
+	}
+
+
+	/**
+	 * <b>功能描述: 撤销申请借出的证照</b>
+	 * @Param: [omsCerApplyLendingLicense]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	public void updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
+		omsCerApplyLendingLicense.setSqjczt("4");
+		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
+		omsCerApplyLendingLicense.setModyfyTime(new Date());
+		int count = omsCerApplyLendingLicenseMapper.updateById(omsCerApplyLendingLicense);
+		if(count < 1){
+			throw new CustomMessageException("撤销失败");
 		}
 	}
 

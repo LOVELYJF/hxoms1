@@ -27,12 +27,12 @@ public interface OmsCerApplyLendingLicenseService {
 
 	/**
 	 * <b>功能描述: 保存申请借出的证照信息</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
-	void saveApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense);
+	void saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list);
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息</b>
@@ -62,4 +62,12 @@ public interface OmsCerApplyLendingLicenseService {
 	void updateApplyLendingLicenseCommit(List<String> list);
 
 
+	/**
+	 * <b>功能描述: 撤销申请借出的证照</b>
+	 * @Param: [omsCerApplyLendingLicense]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	void updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense);
 }

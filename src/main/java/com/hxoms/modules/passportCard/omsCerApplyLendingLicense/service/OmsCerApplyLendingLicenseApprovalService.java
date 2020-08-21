@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
+import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 
 import java.util.List;
 import java.util.Map;
@@ -16,13 +17,24 @@ import java.util.Map;
 public interface OmsCerApplyLendingLicenseApprovalService {
 
 	/**
+	 * <b>功能描述: 查询年份对应的批次号结构树</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/21 15:07
+	 */
+	List<OmsCerApplyLendingLicense> getBatchByYear();
+
+
+
+	/**
 	 * <b>功能描述: 查询借出证照申请记录</b>
-	 * @Param: [page]
+	 * @Param: [page,documentNum]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
-	Page<Map<String, Object>> getApplyLendingLicenseApprovalRecord(Page<Map<String, Object>> page);
+	Page<Map<String, Object>> getApplyLendingLicenseApprovalRecord(Page<Map<String, Object>> page, String documentNum);
 
 
 	/**
@@ -33,4 +45,7 @@ public interface OmsCerApplyLendingLicenseApprovalService {
 	 * @Date: 2020/8/11 16:29
 	 */
 	void updateApplyLendingLicenseApprovalResult(List<String> list, OmsCerApplyLendingLicense omsCerApplyLendingLicense);
+
+
+
 }

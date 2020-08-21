@@ -39,14 +39,14 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 
 	/**
 	 * <b>功能描述: 保存申请借出的证照信息</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
 	@PostMapping("/saveApplyLendingLicenseInfo")
-	public Result saveApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense){
-		omsCerApplyLendingLicenseService.saveApplyLendingLicenseInfo(omsCerApplyLendingLicense);
+	public Result saveApplyLendingLicenseInfo(@RequestBody List<OmsCerApplyLendingLicense> list){
+		omsCerApplyLendingLicenseService.saveApplyLendingLicenseInfo(list);
 		return Result.success();
 	}
 
@@ -87,6 +87,20 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 	@PostMapping("/updateApplyLendingLicenseCommit")
 	public Result updateApplyLendingLicenseCommit(@RequestParam(value = "list",required = false) List<String> list){
 		omsCerApplyLendingLicenseService.updateApplyLendingLicenseCommit(list);
+		return Result.success();
+	}
+
+
+	/**
+	 * <b>功能描述: 撤销申请借出的证照</b>
+	 * @Param: [omsCerApplyLendingLicense]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	@PostMapping("/updateApplyLendingLicenseRevoke")
+	public Result updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense){
+		omsCerApplyLendingLicenseService.updateApplyLendingLicenseRevoke(omsCerApplyLendingLicense);
 		return Result.success();
 	}
 }

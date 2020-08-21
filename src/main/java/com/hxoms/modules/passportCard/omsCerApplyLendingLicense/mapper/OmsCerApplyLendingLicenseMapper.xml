@@ -12,6 +12,7 @@
 		<result column="RETURN_TIME" jdbcType="DATE" property="returnTime" />
 		<result column="LEND_REASON" jdbcType="VARCHAR" property="lendReason" />
 		<result column="DOCUMENT_NUM" jdbcType="VARCHAR" property="documentNum" />
+		<result column="YEAR" jdbcType="VARCHAR" property="year" />
 		<result column="CLDYJ" jdbcType="CHAR" property="cldyj" />
 		<result column="BLDYJ" jdbcType="CHAR" property="bldyj" />
 		<result column="CLDYJLY" jdbcType="VARCHAR" property="cldyjly" />
@@ -25,7 +26,7 @@
 		<result column="IS_COMMIT" jdbcType="CHAR" property="isCommit" />
 	</resultMap>
 	<sql id="Base_Column_List">
-    ID, OMS_ID, NAME, SQJCZT, ZJLX, ZJHM, JBR, RETURN_TIME, LEND_REASON, DOCUMENT_NUM, CLDYJ,
+    ID, OMS_ID, NAME, SQJCZT, ZJLX, ZJHM, JBR, RETURN_TIME, LEND_REASON, DOCUMENT_NUM, YEAR, CLDYJ,
     BLDYJ, CLDYJLY, BLDYJLY, CREATE_TIME, CREATE_USER, MODIFY_USER, MODYFY_TIME,
     LENDING_QUERY_START_TIME, LENDING_QUERY_END_TIME, IS_COMMIT
   </sql>
@@ -56,16 +57,14 @@
 				<if test="name != null">ocall.name like concat('%',#{name},'%')
 					or
 					org.PY like concat('%',#{name},'%') and </if>
-				<if test="jbr != null">ocall.jbr like concat('%',#{jbr},'%')
-				or
-				org.PY like concat('%',#{jbr},'%') and </if>
+				<if test="jbr != null">ocall.jbr like concat('%',#{jbr},'%') and </if>
 			</trim>
 		</where>
 		order by ocall.CREATE_TIME desc
 	</select>
 
 	<!-- 查询证照借出申请记录(受理) -->
-	<select id="getApplyLendingLicenseApprovalRecord" resultType="java.util.Map">
+	<select id="getApplyLendingLicenseApprovalRecord" parameterType="java.lang.String" resultType="java.util.Map">
 		select
 			ocall.ID as id,
 			ocall.OMS_ID as omsId,
@@ -90,10 +89,35 @@
 			oms_cer_apply_lending_license ocall
 		join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
 		join cf_certificate cc on cc.ZJHM = ocall.ZJHM
-		where ocall.IS_COMMIT='1'
+		<where>
+			<trim suffixOverrides="and">
+				<if test="1 == 1">ocall.IS_COMMIT='1' and </if>
+				<if test="documentNum != null">ocall.DOCUMENT_NUM=#{documentNum} and </if>
+			</trim>
+		</where>
 		order by
 			createTime
 		desc
+	</select>
+
+	<!-- 查询批次号的年份集合 -->
+	<select id="selectYearList"
+	        resultType="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+		select
+			*
+		from oms_cer_apply_lending_license
+		group by year
+	</select>
+
+	<!-- 根据年份查询批次号 -->
+	<select id="getBatchByYear"
+	        resultType="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+		select
+		<include refid="Base_Column_List"></include>
+		from oms_cer_apply_lending_license
+		<where>
+			<if test="year !=  null">YEAR like concat(#{year},'%')</if>
+		</where>
 	</select>
 
 

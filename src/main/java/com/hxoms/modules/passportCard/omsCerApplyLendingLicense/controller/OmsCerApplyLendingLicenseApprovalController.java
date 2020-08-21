@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseApprovalService;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
+import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,15 +28,30 @@ public class OmsCerApplyLendingLicenseApprovalController {
 	@Autowired
 	private OmsCerApplyLendingLicenseApprovalService omsCerApplyLendingLicenseApprovalService;
 	/**
+	 * <b>功能描述: 查询年份对应的批次号结构树</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/21 15:07
+	 */
+	@GetMapping("/getBatchByYear")
+	public Result getBatchByYear(){
+		List<OmsCerApplyLendingLicense> list = omsCerApplyLendingLicenseApprovalService.getBatchByYear();
+		return Result.success(list);
+	}
+
+
+
+	/**
 	 * <b>功能描述: 查询借出证照申请记录</b>
-	 * @Param: [page]
+	 * @Param: [page,documentNum]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
 	@GetMapping("/getApplyLendingLicenseApprovalRecord")
-	public Result getApplyLendingLicenseApprovalRecord(Page<Map<String,Object>> page){
-		page = omsCerApplyLendingLicenseApprovalService.getApplyLendingLicenseApprovalRecord(page);
+	public Result getApplyLendingLicenseApprovalRecord(Page<Map<String,Object>> page,String documentNum){
+		page = omsCerApplyLendingLicenseApprovalService.getApplyLendingLicenseApprovalRecord(page,documentNum);
 		return Result.success(page);
 	}
 

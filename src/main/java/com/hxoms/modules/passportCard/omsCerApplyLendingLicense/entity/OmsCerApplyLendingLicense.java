@@ -5,6 +5,8 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_cer_apply_lending_license", TableDescription="借出证照信息表")
@@ -39,8 +41,11 @@ public class OmsCerApplyLendingLicense {
     @ColumnAnnotation(FieldName = "LEND_REASON",   FieldDescription="借出理由")
     private String lendReason;
 
-    @ColumnAnnotation(FieldName = "DOCUMENT_NUM",   FieldDescription="文书号")
+    @ColumnAnnotation(FieldName = "DOCUMENT_NUM",   FieldDescription="借出日期")
     private String documentNum;
+
+    @ColumnAnnotation(FieldName = "YEAR",   FieldDescription="借出年份")
+    private String year;
 
     @ColumnAnnotation(FieldName = "CLDYJ",   FieldDescription="处领导意见1-通过 0-不通过")
     private String cldyj;
@@ -82,6 +87,16 @@ public class OmsCerApplyLendingLicense {
 
     @ColumnAnnotation(FieldName = "IS_COMMIT",   FieldDescription="是否提交1-是 0-否")
     private String isCommit;
+
+    private List<OmsCerApplyLendingLicense> list;
+
+    public List<OmsCerApplyLendingLicense> getList() {
+        return list;
+    }
+
+    public void setList(List<OmsCerApplyLendingLicense> list) {
+        this.list = list;
+    }
 
     public String getId() {
         return id;
@@ -161,6 +176,15 @@ public class OmsCerApplyLendingLicense {
 
     public void setDocumentNum(String documentNum) {
         this.documentNum = documentNum == null ? null : documentNum.trim();
+    }
+
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year == null ? null :year.trim();
     }
 
     public String getCldyj() {

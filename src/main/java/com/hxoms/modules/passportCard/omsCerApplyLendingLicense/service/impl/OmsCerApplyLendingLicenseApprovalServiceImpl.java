@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.CompressUtil;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -17,6 +18,7 @@ import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseApprovalService;
+import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,18 +45,41 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 	@Autowired
 	private OmsCerGetTaskMapper omsCerGetTaskMapper;
+	/**
+	 * <b>功能描述: 查询年份对应的批次号结构树</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/21 15:07
+	 */
+	public List<OmsCerApplyLendingLicense> getBatchByYear() {
+		List<OmsCerApplyLendingLicense> list = omsCerApplyLendingLicenseMapper.selectYearList();      //查询批次号的年份集合
+		if(list != null && list.size() > 0){
+			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+				String year = omsCerApplyLendingLicense.getYear();
+				List<OmsCerApplyLendingLicense> list1 = omsCerApplyLendingLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
+				if(list1 != null && list1.size() > 0){
+					omsCerApplyLendingLicense.setList(list1);
+				}
+			}
+		}
+
+		return list;
+	}
+
+
 
 	/**
 	 * <b>功能描述: 查询借出证照申请记录</b>
-	 * @Param: [page]
+	 * @Param: [page,documentNum]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
-	public Page<Map<String, Object>> getApplyLendingLicenseApprovalRecord(Page<Map<String, Object>> page) {
+	public Page<Map<String, Object>> getApplyLendingLicenseApprovalRecord(Page<Map<String, Object>> page,String documentNum) {
 		PageHelper.startPage((int)page.getCurrent(), (int) page.getSize());
-		List<Map<String, Object>> list = omsCerApplyLendingLicenseMapper.getApplyLendingLicenseApprovalRecord();
-		PageInfo pageInfo = new PageInfo(list);
+		List<Map<String, Object>> list = omsCerApplyLendingLicenseMapper.getApplyLendingLicenseApprovalRecord(documentNum);
+		PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
 		page.setPages(pageInfo.getPages());
 		page.setRecords(list);
 		page.setTotal(pageInfo.getTotal());
@@ -73,8 +98,11 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 */
 	public void updateApplyLendingLicenseApprovalResult(List<String> list, OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
 		if(list != null && list.size() > 0){
+			omsCerApplyLendingLicense.setModyfyTime(new Date());
+			omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsCerApplyLendingLicense> queryWrapper = new QueryWrapper<OmsCerApplyLendingLicense>();
 			queryWrapper.in( "ID", list);
+			omsCerApplyLendingLicense.setSqjczt("2");       //已审批
 			int count = omsCerApplyLendingLicenseMapper.update(omsCerApplyLendingLicense,queryWrapper);
 			if(count < 1){
 				throw new CustomMessageException("录入失败");
@@ -133,4 +161,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 			throw new CustomMessageException("请选择要审批的证照信息");
 		}
 	}
+
+
+
 }
