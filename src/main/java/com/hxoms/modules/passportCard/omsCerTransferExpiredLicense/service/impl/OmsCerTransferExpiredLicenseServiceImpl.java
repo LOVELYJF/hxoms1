@@ -200,7 +200,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 						if(cfCertificate.getZjxs().equals("0")){            //本式证照
 
 
-
+																			//在证号信息表中更新
 
 
 						}else if (cfCertificate.getZjxs().equals("1")){     //卡式证照
