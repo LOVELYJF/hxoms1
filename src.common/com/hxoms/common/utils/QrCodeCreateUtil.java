@@ -84,8 +84,10 @@ public class QrCodeCreateUtil {
 
         String content = "http://localhost:5999/cfCertificate/excelToDB";
         String path = "C:\\Users\\Lenovo\\Desktop\\qrCodeTest.jpg";
-        createQrCode(new FileOutputStream(new File(path)), content,200,"JPEG");
-        String info = readQrCode(new FileInputStream(new File(path)));
+        ByteArrayOutputStream out=new ByteArrayOutputStream();
+        createQrCode(out, content,200,"JPEG");
+        ByteArrayInputStream bin = new ByteArrayInputStream(out.toByteArray());
+        String info = readQrCode(bin);
         System.out.println(info);
     }
 

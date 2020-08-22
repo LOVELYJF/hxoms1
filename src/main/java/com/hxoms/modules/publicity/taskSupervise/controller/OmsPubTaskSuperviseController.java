@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class OmsPubTaskSuperviseController {
      * @Date: 2020/7/7
      */
     @PostMapping("/batchDownloadBab")
-    public  ResponseEntity<byte[]> batchDownloadBab(@RequestBody DownloadBabParam downloadBabParam) throws IOException {
+    public  ResponseEntity<byte[]> batchDownloadBab(@RequestBody DownloadBabParam downloadBabParam){
         ResponseEntity<byte[]> responseEntity=null;
         try {
             FileInfo fileInfo = omsPubTaskSuperviseService.batchDownloadBab(downloadBabParam);
