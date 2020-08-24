@@ -519,11 +519,13 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                   passList.add(id);
 
                   map.put("fileType","呈批单");
+                  map.put("pass","通过");
 
               }else{
 
                   notpassList.add(id);
                   map.put("fileType","请示表");
+                  map.put("pass","不通过");
 
               }
 
@@ -531,25 +533,25 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
            }
 
        }
-        // 通过 集合
-        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->passList.contains(m.getBussinessId())).collect(Collectors.toList());
-       // 不通过 集合
-        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum2 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->notpassList.contains(m.getBussinessId())).collect(Collectors.toList());
-
-        //  (1) 保存 审批记录(通过)
-        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,"通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
-        //不通过
-        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum2,"不通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
-        // (2) 修改流程状态
-        leaderCommonService.updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[4]);
-        // 修改 业务流程申请 最终结论 (通过)
-        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,"1",null);
-        // 修改 业务流程申请 最终结论 (不通过)
-        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum2,"1",null);
-        // 修改 批次状态
-        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-                Constants.leader_business[4]);
+//        // 通过 集合
+//        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->passList.contains(m.getBussinessId())).collect(Collectors.toList());
+//       // 不通过 集合
+//        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum2 =    leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo m) ->notpassList.contains(m.getBussinessId())).collect(Collectors.toList());
+//
+//        //  (1) 保存 审批记录(通过)
+//        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,"通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+//        //不通过
+//        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum2,"不通过", Constants.leader_businessName[3], Constants.leader_business[3],null);
+//        // (2) 修改流程状态
+//        leaderCommonService.updteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[4]);
+//        // 修改 业务流程申请 最终结论 (通过)
+//        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,"1",null);
+//        // 修改 业务流程申请 最终结论 (不通过)
+//        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum2,"1",null);
+//        // 修改 批次状态
+//        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+//                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+//                Constants.leader_business[4]);
 
         createOmsFileAndomsCreateFile(lists);
 
@@ -655,11 +657,61 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
 
+    @Override
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String applyId, String type,String pass) {
 
+        LeaderSupervisionUntil.throwableByParam(applyId,type,pass);
 
+        String opinion ="";
 
+        if("通过".equals(pass)){
+            opinion="1";
 
+        }else{
 
+            opinion="2";
+        }
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if (StringUtils.isBlank(omsCreateFile.getId())){
+            //新增
+            omsCreateFile.setId(UUIDGenerator.getPrimaryKey());
+            omsCreateFile.setCreateUser(userInfo.getId());
+            omsCreateFile.setIsSealhandle("0");
+            omsCreateFile.setCreateTime(new Date());
+            if (omsCreateFileMapper.insert(omsCreateFile) < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        }else{
+            //修改
+            omsCreateFile.setModifyTime(new Date());
+            omsCreateFile.setModifyUser(userInfo.getId());
+            if (omsCreateFileMapper.updateById(omsCreateFile) < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        }
 
+        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
 
+        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+        bussinessTypeAndIdVo.setBussinessId(applyId);
+        bussinessTypeAndIdVo.setBussinessName(type);
+        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
+
+        //  (1) 保存 审批记录(通过)
+        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
+        //不通过
+        // (2) 修改流程状态
+        leaderCommonService.updteBussinessApplyStatue(bussinessTypeAndIdVosNum1, Constants.leader_businessName[4]);
+        // 修改 业务流程申请 最终结论 (通过)
+        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,opinion,null);
+        // 修改 业务流程申请 最终结论 (不通过)
+        // 修改 批次状态
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                bussinessTypeAndIdVosNum1.stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                Constants.leader_business[4]);
+
+        return omsCreateFile;
+    }
 }

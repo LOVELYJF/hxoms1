@@ -3,6 +3,7 @@ package com.hxoms.modules.leaderSupervision.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
@@ -93,6 +94,18 @@ public class MakeCheckOpinionController {
        List<Map> lists= leaderDetailProcessingService.makeApprovalFor(leaderSupervisionVo);
 
         return Result.success(lists);
+    }
+
+    /**
+     * 保存或者更新
+     *
+     */
+    @PostMapping("/insertOrUpadateCreateFileAndUpdateStaus")
+    public Result insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile,String applyId,String type,String pass){
+//        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
+        OmsCreateFile result = leaderDetailProcessingService.insertOrUpadateCreateFileAndUpdateStaus(omsCreateFile,applyId,type,pass);
+
+        return Result.success(result);
     }
 
 

@@ -1,6 +1,7 @@
 package com.hxoms.modules.leaderSupervision.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -78,4 +79,7 @@ public interface LeaderDetailProcessingService {
      * */
 
     List<Map> makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
+
+
+    OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String applyId, String type,String pass);
 }
