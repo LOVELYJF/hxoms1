@@ -69,15 +69,15 @@ public class OmsCerTransferOutLicenseController {
 
 	/**
 	 * <b>功能描述: 打印后将年月日作为批次号，并记录移交人接手人</b>
-	 * @Param: [list,omsCerTransferOutLicense]
+	 * @Param: [idList,omsCerTransferOutLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 15:07
 	 */
 	@PostMapping("/updateTransferOutRecord")
-	public Result updateTransferOutRecord(@RequestParam(value = "list",required = true) List<String> list,
+	public Result updateTransferOutRecord(@RequestParam(value = "idList",required = true) List<String> idList,
 	                                      OmsCerTransferOutLicense omsCerTransferOutLicense){
-		omsCerTransferOutLicenseService.updateTransferOutRecord(list,omsCerTransferOutLicense);
+		omsCerTransferOutLicenseService.updateTransferOutRecord(idList,omsCerTransferOutLicense);
 		return Result.success();
 	}
 }
