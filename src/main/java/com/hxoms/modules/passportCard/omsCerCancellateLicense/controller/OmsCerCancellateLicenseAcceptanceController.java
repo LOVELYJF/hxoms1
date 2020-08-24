@@ -133,7 +133,7 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 11:48
 	 */
-	@GetMapping("/getCerCancellateLicenseApprovalOut")
+	@PostMapping("/getCerCancellateLicenseApprovalOut")
 	public Result getCerCancellateLicenseApprovalOut(@RequestParam(value = "idList",required = false) List<String> idList,
 	                                                 OmsCerCancellateLicense omsCerCancellateLicense){
 		omsCerCancellateLicenseAcceptanceService.getCerCancellateLicenseApprovalOut(idList, omsCerCancellateLicense,response);
