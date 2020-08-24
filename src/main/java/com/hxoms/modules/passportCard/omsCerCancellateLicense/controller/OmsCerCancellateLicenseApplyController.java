@@ -89,7 +89,7 @@ public class OmsCerCancellateLicenseApplyController {
 	 * @Date: 2020/8/5 15:09
 	 */
 	@PostMapping("/removeCancellateLicenseApply")
-	public Result removeCancellateLicenseApply(List<OmsCerCancellateLicense> list){
+	public Result removeCancellateLicenseApply(@RequestBody List<OmsCerCancellateLicense> list){
 		omsCerCancellateLicenseApplyService.removeCancellateLicenseApply(list);
 		return Result.success();
 	}
