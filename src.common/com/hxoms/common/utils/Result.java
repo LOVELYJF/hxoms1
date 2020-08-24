@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @desc：前端返回的实体类
  * @date：2019/5/27 11:14
  */
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
 
     public Result() {
     }
@@ -33,7 +33,7 @@ public class Result implements Serializable {
      */
     @ApiModelProperty("返回的数据")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object data;
+    private T data;
 
     /**
      * 返回的token
@@ -84,11 +84,11 @@ public class Result implements Serializable {
         return this;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public Result setData(Object data) {
+    public Result setData(T data) {
         this.data = data;
         return this;
     }
