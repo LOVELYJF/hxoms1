@@ -659,9 +659,9 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(rollbackFor = CustomMessageException.class)
-    public OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String applyId, String type,String pass) {
+    public OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String bussinessId, String type,String pass) {
 
-        LeaderSupervisionUntil.throwableByParam(applyId,type,pass);
+        LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
 
         String opinion ="";
 
@@ -695,7 +695,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
 
         BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
-        bussinessTypeAndIdVo.setBussinessId(applyId);
+        bussinessTypeAndIdVo.setBussinessId(bussinessId);
         bussinessTypeAndIdVo.setBussinessName(type);
         bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
 

@@ -101,9 +101,9 @@ public class MakeCheckOpinionController {
      *
      */
     @PostMapping("/insertOrUpadateCreateFileAndUpdateStaus")
-    public Result insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile,String applyId,String type,String pass){
+    public Result insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile,String bussinessId,String type,String pass){
 //        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
-        OmsCreateFile result = leaderDetailProcessingService.insertOrUpadateCreateFileAndUpdateStaus(omsCreateFile,applyId,type,pass);
+        OmsCreateFile result = leaderDetailProcessingService.insertOrUpadateCreateFileAndUpdateStaus(omsCreateFile,bussinessId,type,pass);
 
         return Result.success(result);
     }

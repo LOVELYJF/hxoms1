@@ -81,5 +81,5 @@ public interface LeaderDetailProcessingService {
     List<Map> makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
 
 
-    OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String applyId, String type,String pass);
+    OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String bussinessId, String type,String pass);
 }
