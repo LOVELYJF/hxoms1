@@ -575,7 +575,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
               }
               QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
               queryWrapper.eq("TABLE_CODE", tableCode)
-//                      .eq("B0100", b01.getB0100())
+                     .eq("B0100", b01.getB0100())
                       .eq("FILE_SHORTNAME",fileShortname)
                       .orderByAsc("SORT_ID");
               List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);

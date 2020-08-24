@@ -65,6 +65,13 @@ public class FileReplaceVO {
     private String nowUsername;
     //延期时间
     private Date delayTime;
+
+    // 出访任务
+    private String cfrw;
+
+    // 批文号
+    private String pwh;
+
     public String getName() {
         return name;
     }
@@ -247,5 +254,21 @@ public class FileReplaceVO {
 
     public void setDelayTime(Date delayTime) {
         this.delayTime = delayTime;
+    }
+
+    public String getCfrw() {
+        return cfrw;
+    }
+
+    public void setCfrw(String cfrw) {
+        this.cfrw = cfrw;
+    }
+
+    public String getPwh() {
+        return pwh;
+    }
+
+    public void setPwh(String pwh) {
+        this.pwh = pwh;
     }
 }
