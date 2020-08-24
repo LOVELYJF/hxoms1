@@ -1570,6 +1570,7 @@
 			# and temp.businessType = '延期'
 			SELECT
 
+
             distinct
 			prda.id AS id, # 业务id
 
