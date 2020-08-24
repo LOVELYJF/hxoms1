@@ -710,7 +710,9 @@
 		<where>
 			<trim suffixOverrides="and">
 				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
-				<if test="name != null">cc.name like concat('%',#{name},'%') and </if>
+				<if test="name != null">cc.name like concat('%',#{name},'%')
+					or cc.PY like concat('%',#{name},'%') and
+				</if>
 			</trim>
 		</where>
 		order by csrq
