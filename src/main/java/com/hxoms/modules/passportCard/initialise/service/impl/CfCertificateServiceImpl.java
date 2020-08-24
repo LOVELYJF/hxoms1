@@ -78,7 +78,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     * @Date: 2020/7/24
     */
     @Override
-    public PageBean excelToDB(MultipartFile multipartFile) throws Exception {
+    public PageBean<CfCertificate> excelToDB(MultipartFile multipartFile) throws Exception {
         if (multipartFile==null || multipartFile.getSize() <= 0 ) {
            throw new CustomMessageException("参数不正确");
         }
@@ -95,7 +95,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/4
      */
     @Override
-    public PageBean selectAllCertificate(PageBean pageBean) {
+    public PageBean<CfCertificate> selectAllCertificate(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         PageInfo<CfCertificate> pageInfo= new PageInfo<CfCertificate>(cfCertificateMapper.selectAllCertificate());
         return PageUtil.packagePage(pageInfo);
@@ -144,7 +144,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
 
     /**
-     * @Desc: 插入证照信息
+     * @Desc: 保存证照信息
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: void
@@ -176,7 +176,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/7
      */
     @Override
-    public PageBean selectNotProvicdeCer(PageBean pageBean) {
+    public PageBean<CfCertificateInfo> selectNotProvicdeCer(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectNotProvicdeCer());
         return PageUtil.packagePage(pageInfo);
@@ -190,7 +190,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/7
      */
     @Override
-    public PageBean selectProNotstorCer(PageBean pageBean) {
+    public PageBean<CfCertificateInfo> selectProNotstorCer(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectProNotstorCer());
         return PageUtil.packagePage(pageInfo);
@@ -204,7 +204,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/7
      */
     @Override
-    public PageBean selectExceptionCer(PageBean pageBean) {
+    public PageBean<CfCertificateInfo> selectExceptionCer(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectExceptionCer());
         return PageUtil.packagePage(pageInfo);

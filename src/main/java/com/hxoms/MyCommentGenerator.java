@@ -2,10 +2,11 @@ package com.hxoms;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.*;
+import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.DefaultCommentGenerator;
 
-import java.beans.IntrospectionException;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class MyCommentGenerator extends DefaultCommentGenerator {
         }
         topLevelClass.addAnnotation("@TableAnnotation(TableName = \"" + introspectedTable.getFullyQualifiedTable() +
                 "\", TableDescription=\"" + introspectedTable.getRemarks().split(";")[0] + "\")");
+        //swagger注解
+        topLevelClass.addAnnotation("@ApiModel(value = \"" + introspectedTable.getRemarks().split(";")[0] + "\")");
     }
 
     /**
@@ -56,6 +59,8 @@ public class MyCommentGenerator extends DefaultCommentGenerator {
             field.addAnnotation("@JsonFormat(pattern = \"yyyy.MM.dd\")");
             field.addAnnotation("@DateTimeFormat(pattern = \"yyyy.MM.dd\")");
         }
+        //swagger注解
+        field.addAnnotation("@ApiModelProperty(value=\"" + introspectedColumn.getRemarks() + "\")");
     }
 
     /**

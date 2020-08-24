@@ -1,5 +1,8 @@
 package com.hxoms.common.utils;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -7,27 +10,33 @@ import java.util.List;
  * @Author: wangyunquan
  * @Date: 2020/7/3
  */
-public class PageBean {
+@ApiModel(value = "分页实体类")
+public class PageBean<E> {
     /**
      * 当前页码
      */
+    @ApiModelProperty(value = "当前页码")
     private int pageNum=1;
     /**
      * 每页数量
      */
+    @ApiModelProperty(value = "每页数量")
     private int pageSize=10;
     /**
      * 记录总数
      */
+    @ApiModelProperty(value = "记录总数")
     private long totalSize;
     /**
      * 页码总数
      */
+    @ApiModelProperty(value = "页码总数")
     private int totalPages;
     /**
      * 数据模型
      */
-    private List<?> content;
+    @ApiModelProperty(value = "数据模型")
+    private List<E> content;
 
     public int getPageNum() {
         return pageNum;
@@ -61,11 +70,11 @@ public class PageBean {
         this.totalPages = totalPages;
     }
 
-    public List<?> getContent() {
+    public List<E> getContent() {
         return content;
     }
 
-    public void setContent(List<?> content) {
+    public void setContent(List<E> content) {
         this.content = content;
     }
 }

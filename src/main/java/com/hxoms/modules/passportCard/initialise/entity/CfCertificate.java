@@ -4,124 +4,162 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 @TableAnnotation(TableName = "cf_certificate", TableDescription="证照信息管理表")
+@ApiModel(value = "证照信息管理表")
 public class CfCertificate {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "IMPORT_PERSON",   FieldDescription="导入人")
+    @ApiModelProperty(value="导入人")
     private String importPerson;
 
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="导入时间")
     private Date importTime;
 
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
+    @ApiModelProperty(value="备案信息表ID")
     private String omsId;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
+    @ApiModelProperty(value="人员主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "A0184",   FieldDescription="身份证号码")
+    @ApiModelProperty(value="身份证号码")
     private String a0184;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
+    @ApiModelProperty(value="姓名")
     private String name;
 
     @ColumnAnnotation(FieldName = "PY",   FieldDescription="拼音简称")
+    @ApiModelProperty(value="拼音简称")
     private String py;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
+    @ApiModelProperty(value="性别")
     private String sex;
 
     @ColumnAnnotation(FieldName = "CSRQ",   FieldDescription="出生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出生日期")
     private Date csrq;
 
     @ColumnAnnotation(FieldName = "GJ",   FieldDescription="国籍")
+    @ApiModelProperty(value="国籍")
     private String gj;
 
     @ColumnAnnotation(FieldName = "CSDD",   FieldDescription="出生地点")
+    @ApiModelProperty(value="出生地点")
     private String csdd;
 
     @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
+    @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
 
     @ColumnAnnotation(FieldName = "ZJXS",   FieldDescription="证件形式(0:本式证照,1:卡式证照)")
+    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)")
     private String zjxs;
 
     @ColumnAnnotation(FieldName = "XPLX",   FieldDescription="芯片类型(0:自带,1:粘贴)")
+    @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
 
     @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
+    @ApiModelProperty(value="证件号码")
     private String zjhm;
 
     @ColumnAnnotation(FieldName = "QFJG",   FieldDescription="签发机关")
+    @ApiModelProperty(value="签发机关")
     private String qfjg;
 
     @ColumnAnnotation(FieldName = "QFDD",   FieldDescription="签发地点")
+    @ApiModelProperty(value="签发地点")
     private String qfdd;
 
     @ColumnAnnotation(FieldName = "QFRQ",   FieldDescription="签发日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="签发日期")
     private Date qfrq;
 
     @ColumnAnnotation(FieldName = "YXQZ",   FieldDescription="有效期至")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="有效期至")
     private Date yxqz;
 
     @ColumnAnnotation(FieldName = "SAVE_STATUS",   FieldDescription="保管状态(0:正常保管,1:已取出,2:未上缴)")
+    @ApiModelProperty(value="保管状态(0:正常保管,1:已取出,2:未上缴)")
     private String saveStatus;
 
     @ColumnAnnotation(FieldName = "CARD_STATUS",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
+    @ApiModelProperty(value="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
 
     @ColumnAnnotation(FieldName = "SURELY_UNIT",   FieldDescription="保管单位(0:干部监督处,1:省委统战部(台办))")
+    @ApiModelProperty(value="保管单位(0:干部监督处,1:省委统战部(台办))")
     private String surelyUnit;
 
     @ColumnAnnotation(FieldName = "SURELY_WAY",   FieldDescription="保管方式(0:证照机,1:柜台)")
+    @ApiModelProperty(value="保管方式(0:证照机,1:柜台)")
     private String surelyWay;
 
     @ColumnAnnotation(FieldName = "CABINET_NUM",   FieldDescription="机柜编号")
+    @ApiModelProperty(value="机柜编号")
     private String cabinetNum;
 
     @ColumnAnnotation(FieldName = "PLACE",   FieldDescription="机柜位置")
+    @ApiModelProperty(value="机柜位置")
     private String place;
 
     @ColumnAnnotation(FieldName = "COUNTER_NUM",   FieldDescription="柜台编号")
+    @ApiModelProperty(value="柜台编号")
     private Integer counterNum;
 
     @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效(0:有效,1:无效)")
+    @ApiModelProperty(value="是否有效(0:有效,1:无效)")
     private Integer isValid;
 
     @ColumnAnnotation(FieldName = "EXCEPTION_MESSAGE",   FieldDescription="异常消息")
+    @ApiModelProperty(value="异常消息")
     private String exceptionMessage;
 
     @ColumnAnnotation(FieldName = "EXCEPTION_CONCLUSION",   FieldDescription="异常处理结论")
+    @ApiModelProperty(value="异常处理结论")
     private String exceptionConclusion;
 
     @ColumnAnnotation(FieldName = "EXCEPTION_HANDLER",   FieldDescription="异常处理人")
+    @ApiModelProperty(value="异常处理人")
     private String exceptionHandler;
 
     @ColumnAnnotation(FieldName = "EXCEPTION_SOLVEDATE",   FieldDescription="异常处理时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="异常处理时间")
     private Date exceptionSolvedate;
 
     @ColumnAnnotation(FieldName = "UPDATER",   FieldDescription="修改人")
+    @ApiModelProperty(value="修改人")
     private String updater;
 
     @ColumnAnnotation(FieldName = "UPDATE_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="修改时间")
     private Date updateTime;
 
     public String getId() {

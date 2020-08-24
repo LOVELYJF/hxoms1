@@ -13,6 +13,8 @@ import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
@@ -53,34 +55,36 @@ public class OmsFileServiceImpl implements OmsFileService {
     private B01Mapper b01Mapper;
     @Autowired
     private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public List<OmsFile> selectFileListByCode(String tableCode, String a0100, String applyId) {
-        if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(a0100)){
+    public List<OmsFile> selectFileListByCode(String tableCode, String procpersonId, String applyId) {
+        if (StringUtils.isBlank(tableCode) || StringUtils.isBlank(procpersonId)){
             throw new CustomMessageException("参数错误");
         }
         List<String> fileType = new ArrayList<>();
         fileType.add("1"); //系统
         if(Constants.oms_business[1].equals(tableCode)){
             //涉密信息
-            QueryWrapper<OmsRegProcpersoninfo> omsPersoninfo = new QueryWrapper<>();
-            omsPersoninfo.eq("A0100", a0100)
-                    .eq("secret_level", "0");
-            int sercetCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
-            if (sercetCount > 0){
+            OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoMapper.selectById(procpersonId);
+            if ("0".equals(omsRegProcpersoninfo.getSecretLevel())){
                 //非涉密
                 fileType.add("2");
             }else{
                 fileType.add("3");
-                //TODO 涉密人员（原单位脱密期人员）
+                //涉密人员（原单位脱密期人员）
+                QueryWrapper<OmsSmrOldInfo> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("A0100", procpersonId)
+                        .ne("B0100", omsRegProcpersoninfo.getRfB0000());
+                int omsS = omsSmrOldInfoMapper.selectCount(queryWrapper);
+                if (omsS > 0){
+                    fileType.add("4");
+                }
             }
             //是否主要领导
-            omsPersoninfo.clear();
-            omsPersoninfo.eq("A0100", a0100)
-                    .eq("MAIN_LEADER", "1");
-            int omsPersoninfoCount = omsRegProcpersoninfoMapper.selectCount(omsPersoninfo);
-            if (omsPersoninfoCount > 0){
+            if ("1".equals(omsRegProcpersoninfo.getMainLeader())){
                 fileType.add("5"); //主要领导
             }
         }

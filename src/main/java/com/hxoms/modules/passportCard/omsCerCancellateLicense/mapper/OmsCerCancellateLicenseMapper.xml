@@ -55,7 +55,7 @@
 				<if test="cldyjly != null">CLDYJLY=#{cldyjly} ,</if>
 				<if test="zhzxzt != null">ZHZXZT=#{zhzxzt} ,</if>
 				<if test="modifyUser != null">MODIFY_USER=#{modifyUser} ,</if>
-				<if test="modifyTime != null">MODUFY_TIME=#{modifyTime} ,</if>
+				<if test="modifyTime != null">MODIFY_TIME=#{modifyTime} ,</if>
 			</trim>
 		<where>
 			<if test="list != null">id in
@@ -85,7 +85,7 @@
 			cc.SURELY_WAY as surelyWay,      #保管方式
 			cc.CABINET_NUM as cabinetNum,    #机柜编号
 			cc.PLACE as place,    #机柜位置
-			cc.COUNTER_NUM as counterNum  #柜台编号
+			cc.COUNTER_NUM as counterNum,  #柜台编号
 			cc.QFJG as qfjg,      #签发机关
 			cc.QFRQ as qfrq,      #签发日期
 			cc.CSDD as csdd,      #出生地
@@ -100,11 +100,11 @@
 			occl.BLDYJ as bldyj, 	#部领导意见
 			occl.CLDYJLY as cldyjly, #处领导意见理由
 			occl.BLDYJLY as bldyjly,  #部领导意见理由
-			occl.CREATE_USER as createUser  #创建人
+			occl.CREATE_USER as createUser,  #创建人
 			occl.CREATE_TIME as createTime  #创建时间
 		from cf_certificate cc
 		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
-		join oms_cer_cancellate_license occl on occl.A0100 = cc.A0100
+		join oms_cer_cancellate_license occl on occl.OMS_ID = cc.OMS_ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="idList != null">occl.B0100 in

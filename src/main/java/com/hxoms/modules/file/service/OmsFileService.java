@@ -9,11 +9,11 @@ public interface OmsFileService {
     /**
      * 文件列表
      * @param tableCode 类型（因公 因私 延期回国）
-     * @param a0100 出国人
+     * @param procpersonId 出国人
      * @param applyId 申请id
      * @return
      */
-    List<OmsFile> selectFileListByCode(String tableCode, String a0100, String applyId);
+    List<OmsFile> selectFileListByCode(String tableCode, String procpersonId, String applyId);
 
     /**
      * 查询富文本文件详情

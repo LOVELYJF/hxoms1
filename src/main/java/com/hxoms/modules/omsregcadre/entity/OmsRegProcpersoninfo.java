@@ -4,186 +4,236 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 @TableAnnotation(TableName = "oms_reg_procpersoninfo", TableDescription="省管干部登记备案人员信息")
+@ApiModel(value = "省管干部登记备案人员信息")
 public class OmsRegProcpersoninfo {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
+    @ApiModelProperty(value="人员主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="备案机构")
+    @ApiModelProperty(value="备案机构")
     private String rfB0000;
 
-    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识  新增U  修改I  撤消D")
+    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识新增U  修改I  撤消D")
+    @ApiModelProperty(value="入库标识新增U  修改I  撤消D")
     private String inboundFlag;
 
-    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态  0未备案，1已备案，2已确认")
+    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态0未备案，1已备案，2已确认")
+    @ApiModelProperty(value="备案状态0未备案，1已备案，2已确认")
     private String rfStatus;
 
-    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态  1已验收，0待验收")
+    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态1已验收，0待验收")
+    @ApiModelProperty(value="验收状态1已验收，0待验收")
     private String checkStatus;
 
-    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
+    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
+    @ApiModelProperty(value="在职状态1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
     private String incumbencyStatus;
 
     @ColumnAnnotation(FieldName = "DATA_TYPE",   FieldDescription="数据类型  1.干部    2 公安")
+    @ApiModelProperty(value="数据类型  1.干部    2 公安")
     private String dataType;
 
     @ColumnAnnotation(FieldName = "SURNAME",   FieldDescription="姓")
+    @ApiModelProperty(value="姓")
     private String surname;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="名")
+    @ApiModelProperty(value="名")
     private String name;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
+    @ApiModelProperty(value="性别")
     private String sex;
 
-    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证（公安））")
+    @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出生日期（身份证）")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出生日期（干部）")
     private Date birthDateGb;
 
     @ColumnAnnotation(FieldName = "NATION_CODE",   FieldDescription="民族代码")
+    @ApiModelProperty(value="民族代码")
     private String nationCode;
 
     @ColumnAnnotation(FieldName = "NATION_NAME",   FieldDescription="民族")
+    @ApiModelProperty(value="民族")
     private String nationName;
 
     @ColumnAnnotation(FieldName = "IDNUMBER_GB",   FieldDescription="身份证号（干部）")
+    @ApiModelProperty(value="身份证号（干部）")
     private String idnumberGb;
 
     @ColumnAnnotation(FieldName = "IDNUMBER_GA",   FieldDescription="身份证号（公安）")
+    @ApiModelProperty(value="身份证号（公安）")
     private String idnumberGa;
 
     @ColumnAnnotation(FieldName = "POLITICAL_AFFICODE",   FieldDescription="政治面貌代码")
+    @ApiModelProperty(value="政治面貌代码")
     private String politicalAfficode;
 
     @ColumnAnnotation(FieldName = "POLITICAL_AFFINAME",   FieldDescription="政治面貌")
+    @ApiModelProperty(value="政治面貌")
     private String politicalAffiname;
 
     @ColumnAnnotation(FieldName = "HEALTH_CODE",   FieldDescription="健康状况代码")
+    @ApiModelProperty(value="健康状况代码")
     private String healthCode;
 
     @ColumnAnnotation(FieldName = "HEALTH",   FieldDescription="健康状况")
+    @ApiModelProperty(value="健康状况")
     private String health;
 
     @ColumnAnnotation(FieldName = "REGISTE_RESIDENCE_CODE",   FieldDescription="户口所在地代码")
+    @ApiModelProperty(value="户口所在地代码")
     private String registeResidenceCode;
 
     @ColumnAnnotation(FieldName = "REGISTE_RESIDENCE",   FieldDescription="户口所在地")
+    @ApiModelProperty(value="户口所在地")
     private String registeResidence;
 
     @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
+    @ApiModelProperty(value="工作单位")
     private String workUnit;
 
     @ColumnAnnotation(FieldName = "POST_CODE",   FieldDescription="职务代码")
+    @ApiModelProperty(value="职务代码")
     private String postCode;
 
     @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务")
+    @ApiModelProperty(value="职务")
     private String post;
 
     @ColumnAnnotation(FieldName = "PERSON_MANAGER",   FieldDescription="人事主管单位")
+    @ApiModelProperty(value="人事主管单位")
     private String personManager;
 
-    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码 省管干部-1\n" +
-            "科级以上公务员（企事业单位中层以上管理人员）-2\n" +
-            "涉密人员-3\n" +
-            "重要岗位人-4\n" +
-            "重点监管人员-5\n" +
-            "其他人员-9")
+    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码")
+    @ApiModelProperty(value="身份情况代码")
     private String identityCode;
 
     @ColumnAnnotation(FieldName = "IDENTITY",   FieldDescription="身份情况")
+    @ApiModelProperty(value="身份情况")
     private String identity;
 
     @ColumnAnnotation(FieldName = "SECRET_LEVEL",   FieldDescription="涉密等级0 非涉密  1 一般 2重要 3核心")
+    @ApiModelProperty(value="涉密等级0 非涉密  1 一般 2重要 3核心")
     private String secretLevel;
 
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE",   FieldDescription="脱密期管理开始日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="脱密期管理开始日期")
     private Date decryptStartdate;
 
     @ColumnAnnotation(FieldName = "DECRYPT_ENDDATE",   FieldDescription="脱密期管理终止日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="脱密期管理终止日期")
     private Date decryptEnddate;
 
     @ColumnAnnotation(FieldName = "MAIN_LEADER",   FieldDescription="是否主要领导 1主要领导，0非主要领导")
+    @ApiModelProperty(value="是否主要领导 1主要领导，0非主要领导")
     private String mainLeader;
 
-    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况0查询中、 1护照、2港澳通行证、4台湾通行证，多个通行证用或运算表达，如果有前两个，值为3，如果全有，值为7，证照每次变动都自动更新此列")
+    @ColumnAnnotation(FieldName = "LICENCE_IDENTITY",   FieldDescription="证照持有情况")
+    @ApiModelProperty(value="证照持有情况")
     private Integer licenceIdentity;
 
     @ColumnAnnotation(FieldName = "NF",   FieldDescription="是否为裸官0-不是 1-是")
+    @ApiModelProperty(value="是否为裸官0-不是 1-是")
     private String nf;
 
-    @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官1是，0否")
+    @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官")
+    @ApiModelProperty(value="家属受监管裸官")
     private String fjgnf;
 
     @ColumnAnnotation(FieldName = "XRXGW",   FieldDescription="裸官在限入性岗位")
+    @ApiModelProperty(value="裸官在限入性岗位")
     private String xrxgw;
 
     @ColumnAnnotation(FieldName = "LQGZ",   FieldDescription="离琼挂职1是，0否")
+    @ApiModelProperty(value="离琼挂职1是，0否")
     private String lqgz;
 
     @ColumnAnnotation(FieldName = "DQGZ",   FieldDescription="到琼挂职1是，0否")
+    @ApiModelProperty(value="到琼挂职1是，0否")
     private String dqgz;
 
     @ColumnAnnotation(FieldName = "REPLYOPINION",   FieldDescription="纪委不回复意见人员1是，0否")
+    @ApiModelProperty(value="纪委不回复意见人员1是，0否")
     private String replyopinion;
 
     @ColumnAnnotation(FieldName = "ABROADTIME",   FieldDescription="锁定出国时间到")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="锁定出国时间到")
     private Date abroadtime;
 
     @ColumnAnnotation(FieldName = "REASON",   FieldDescription="锁定原因")
+    @ApiModelProperty(value="锁定原因")
     private String reason;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="")
     private Date createTime;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="")
+    @ApiModelProperty(value="")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="")
+    @ApiModelProperty(value="")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
+    @ApiModelProperty(value="排序")
     private Integer sortId;
 
     @ColumnAnnotation(FieldName = "PY",   FieldDescription="拼音简称")
+    @ApiModelProperty(value="拼音简称")
     private String py;
 
     @ColumnAnnotation(FieldName = "SECRET_POST",   FieldDescription="涉密岗位")
+    @ApiModelProperty(value="涉密岗位")
     private String secretPost;
 
     @ColumnAnnotation(FieldName = "EXIT_DATE",   FieldDescription="辞职、退休等日期 ")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="辞职、退休等日期 ")
     private Date exitDate;
 
-    @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="备案完成时间")
+    @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="")
     private Date finishTime;
 
     public String getId() {
@@ -290,22 +340,6 @@ public class OmsRegProcpersoninfo {
         this.birthDateGb = birthDateGb;
     }
 
-    public String getIdnumberGb() {
-        return idnumberGb;
-    }
-
-    public void setIdnumberGb(String idnumberGb) {
-        this.idnumberGb = idnumberGb;
-    }
-
-    public String getIdnumberGa() {
-        return idnumberGa;
-    }
-
-    public void setIdnumberGa(String idnumberGa) {
-        this.idnumberGa = idnumberGa;
-    }
-
     public String getNationCode() {
         return nationCode;
     }
@@ -320,6 +354,22 @@ public class OmsRegProcpersoninfo {
 
     public void setNationName(String nationName) {
         this.nationName = nationName == null ? null : nationName.trim();
+    }
+
+    public String getIdnumberGb() {
+        return idnumberGb;
+    }
+
+    public void setIdnumberGb(String idnumberGb) {
+        this.idnumberGb = idnumberGb == null ? null : idnumberGb.trim();
+    }
+
+    public String getIdnumberGa() {
+        return idnumberGa;
+    }
+
+    public void setIdnumberGa(String idnumberGa) {
+        this.idnumberGa = idnumberGa == null ? null : idnumberGa.trim();
     }
 
     public String getPoliticalAfficode() {
@@ -593,6 +643,4 @@ public class OmsRegProcpersoninfo {
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
     }
-
-
 }

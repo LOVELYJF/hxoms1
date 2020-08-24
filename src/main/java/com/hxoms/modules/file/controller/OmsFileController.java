@@ -27,13 +27,13 @@ public class OmsFileController {
     /**
      * 文件列表
      * @param tableCode 类型（因公 因私 延期回国）
-     * @param a0100 出国人
+     * @param procpersonId 出国人
      * @param applyId 申请id
      * @return
      */
     @GetMapping("/selectFileListByCode")
-    public Result selectFileListByCode(String tableCode, String a0100, String applyId) {
-        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode, a0100, applyId);
+    public Result selectFileListByCode(String tableCode, String procpersonId, String applyId) {
+        List<OmsFile> list = omsFileService.selectFileListByCode(tableCode, procpersonId, applyId);
         return Result.success(list);
     }
 
