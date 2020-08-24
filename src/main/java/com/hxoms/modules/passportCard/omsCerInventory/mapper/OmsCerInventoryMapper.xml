@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerInventory.mapper.OmsCerInventoryMapper">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="A0100" jdbcType="VARCHAR" property="a0100" />
+		<result column="CSRQ" jdbcType="DATE" property="csrq" />
+		<result column="ZJLX" jdbcType="CHAR" property="zjlx" />
+		<result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+		<result column="YXQZ" jdbcType="DATE" property="yxqz" />
+		<result column="CARD_STATUS" jdbcType="CHAR" property="cardStatus" />
+		<result column="BEFORE_INVENTORY_SAVE_STATUS" jdbcType="CHAR" property="beforeInventorySaveStatus" />
+		<result column="AFTER_INVENTORY_SAVE_STATUS" jdbcType="CHAR" property="afterInventorySaveStatus" />
+		<result column="CABINET_NUM" jdbcType="VARCHAR" property="cabinetNum" />
+		<result column="PLACE" jdbcType="VARCHAR" property="place" />
+		<result column="COUNTER_NUM" jdbcType="INTEGER" property="counterNum" />
+		<result column="COUNTER_START_QUERY" jdbcType="INTEGER" property="counterStartQuery" />
+		<result column="COUNTER_END_QUERY" jdbcType="INTEGER" property="counterEndQuery" />
+		<result column="INVENTORY_RESULT" jdbcType="VARCHAR" property="inventoryResult" />
+		<result column="INVENTORY_DATE" jdbcType="VARCHAR" property="inventoryDate" />
+		<result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+		<result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+    ID, OMS_ID, NAME, A0100, CSRQ, ZJLX, ZJHM, YXQZ, CARD_STATUS, BEFORE_INVENTORY_SAVE_STATUS,
+    AFTER_INVENTORY_SAVE_STATUS, CABINET_NUM, PLACE, COUNTER_NUM, COUNTER_START_QUERY, 
+    COUNTER_END_QUERY, INVENTORY_RESULT, INVENTORY_DATE, CREATE_USER, CREATE_TIME, MODIFY_USER, 
+    MODIFY_TIME
+  </sql>
+
+	<!-- 证照盘点查询 -->
+	<select id="selectCerInventoryResultForCabinet" resultType="java.util.Map">
+		select
+			oci.ID as id,
+			oci.OMS_ID as omsId,
+			oci.NAME as name,
+			oci.ZJLX as zjlx,
+			oci.ZJHM as zjhm,
+			oci.YXQZ as yxqz,
+			oci.CARD_STATUS as cardStatus,
+			oci.BEFORE_INVENTORY_SAVE_STATUS as beforeInventorySaveStatus,
+			oci.AFTER_INVENTORY_SAVE_STATUS as afterInventorySaveStatus,
+			oci.CABINET_NUM as cabinetNum,
+			oci.PLACE as place,
+			oci.COUNTER_NUM as counterNum,
+			oci.CSRQ as csrq,
+			oci.INVENTORY_RESULT as inventoryresult,
+			org.SEX as sex,
+			org.WORK_UNIT as workUnit,
+			org.post as post,
+			org.RF_B0000 as rfB0000
+		from
+			oms_cer_inventory oci
+		join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
+		<where>
+			<trim suffixOverrides="and">
+				<if test="cabinetNum != null">oci.CABINET_NUM=#{cabinetNum} and </if>
+				<if test="cardStatus != null">oci.CARD_STATUS=#{cardStatus} and </if>
+				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
+				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="counterStartQuery != null and counterEndQuery != null">
+					COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
+				</if>
+			</trim>
+		</where>
+	</select>
+
+	<!-- 盘点情况统计（证照机）返回前后统计数量 -->
+	<select id="getCerInventoryStatisticsNum" resultType="java.util.Map">
+		select t1.beforeNormal,t2.beforeTakeOut,t3.beforeTotal,t4.afterNormal,t5.afterTakeOut,t6.afterTotal from
+		  (select count(*) beforeNormal from oms_cer_inventory where BEFORE_INVENTORY_SAVE_STATUS = '0'
+		  	and CABINET_NUM=#{cabinetNum}
+		  	and INVENTORY_DATE=#{inventoryDate}) t1,
+		  (select count(*) beforeTakeOut from oms_cer_inventory where BEFORE_INVENTORY_SAVE_STATUS = '1'
+		   and CABINET_NUM=#{cabinetNum}
+		   and INVENTORY_DATE=#{inventoryDate}) t2,
+		  (select count(*) beforeTotal from oms_cer_inventory where CABINET_NUM=#{cabinetNum}
+		   and INVENTORY_DATE=#{inventoryDate}) t3,
+		  (select count(*) afterNormal from oms_cer_inventory where AFTER_INVENTORY_SAVE_STATUS = '0'
+		   and CABINET_NUM=#{cabinetNum}
+		   and INVENTORY_DATE=#{inventoryDate}) t4,
+		  (select count(*) afterTakeOut from oms_cer_inventory where AFTER_INVENTORY_SAVE_STATUS = '1'
+		   and CABINET_NUM=#{cabinetNum}
+		   and INVENTORY_DATE=#{inventoryDate}) t5
+		  (select count(*) afterTotal from oms_cer_inventory where CABINET_NUM=#{cabinetNum}
+		   and INVENTORY_DATE=#{inventoryDate}) t6
+	</select>
+
+	<!-- 总体盘点结果统计查询 -->
+	<select id="GetCerInventoryResult" resultType="java.util.Map">
+		select
+			oci.ID as id,
+			oci.OMS_ID as omsId,
+			oci.NAME as name,
+			oci.ZJLX as zjlx,
+			oci.ZJHM as zjhm,
+			oci.YXQZ as yxqz,
+			oci.CARD_STATUS as cardStatus,
+			oci.BEFORE_INVENTORY_SAVE_STATUS as beforeInventorySaveStatus,
+			oci.AFTER_INVENTORY_SAVE_STATUS as afterInventorySaveStatus,
+			oci.CABINET_NUM as cabinetNum,
+			oci.PLACE as place,
+			oci.COUNTER_NUM as counterNum,
+			oci.CSRQ as csrq,
+			oci.INVENTORY_RESULT as inventoryresult,
+			org.SEX as sex,
+			org.WORK_UNIT as workUnit,
+			org.post as post
+		from
+			oms_cer_inventory oci
+		join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
+		<where>
+			<trim suffixOverrides="and">
+				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
+				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="counterStartQuery != null and counterEndQuery != null">
+					COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
+				</if>
+				<if test="list != null">oci.CABINET_NUM in
+					<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+						#{item}
+					</foreach>
+					and
+				</if>
+			</trim>
+		</where>
+	</select>
+
+</mapper>
