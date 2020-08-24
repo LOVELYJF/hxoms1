@@ -71,18 +71,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         PageInfo<OmsPriApplyVO> pageInfo = new PageInfo(omsPriApplyVOS);
         //查询途径国家
         for (OmsPriApplyVO item : pageInfo.getList()) {
-            QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
-            if (!StringUtils.isBlank(item.getRealGoCountry())){
-                queryWrapper.in("id", item.getGoCountry().split(","));
-                List<Country> countries = countryMapper.selectList(queryWrapper);
-                item.setCountries(countries);
-            }
-            //实际途径国家
-            if (!StringUtils.isBlank(item.getRealGoCountry())){
-                queryWrapper.clear();
-                queryWrapper.in("ID", item.getRealGoCountry().split(","));
-                item.setRealCountries(countryMapper.selectList(queryWrapper));
-            }
+            //国家详情
+            selectCountryDestail(item);
         }
         return pageInfo;
     }
@@ -279,19 +269,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 .eq("IS_VALID", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
-        //国家列表
-        QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
-            countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
-            List<Country> countries = countryMapper.selectList(countryQueryWrapper);
-            omsPriApplyVO.setCountries(countries);
-        }
-        //实际途径国家
-        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
-            countryQueryWrapper.clear();
-            countryQueryWrapper.in("ID", omsPriApplyVO.getRealGoCountry().split(","));
-            omsPriApplyVO.setRealCountries(countryMapper.selectList(countryQueryWrapper));
-        }
+        //国家详情
+        selectCountryDestail(omsPriApplyVO);
         return omsPriApplyVO;
     }
 
@@ -350,6 +329,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (omsPriApplyMapper.selectById(omsPriApply.getId()) == null){
             throw new CustomMessageException("该申请不存在");
         }
+        //结果比对
         if (omsPriApplyMapper.updateById(omsPriApply) < 1){
             throw new CustomMessageException("操作失败");
         }
@@ -437,5 +417,31 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         result.put("hongkong", hongkong);
         result.put("makao", makao);
         return result;
+    }
+
+    /**
+     * 申请出国国家详情
+     * @param omsPriApplyVO
+     */
+    private void selectCountryDestail(OmsPriApplyVO omsPriApplyVO){
+        //国家列表
+        QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
+        if (!StringUtils.isBlank(omsPriApplyVO.getGoCountry())){
+            countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
+            List<Country> countries = countryMapper.selectList(countryQueryWrapper);
+            omsPriApplyVO.setCountries(countries);
+        }
+        //实际去往国家
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
+            countryQueryWrapper.clear();
+            countryQueryWrapper.in("ID", omsPriApplyVO.getRealGoCountry().split(","));
+            omsPriApplyVO.setRealCountries(countryMapper.selectList(countryQueryWrapper));
+        }
+        //实际途径国家
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealPassCountry())){
+            countryQueryWrapper.clear();
+            countryQueryWrapper.in("ID", omsPriApplyVO.getRealPassCountry().split(","));
+            omsPriApplyVO.setRealPassCountries(countryMapper.selectList(countryQueryWrapper));
+        }
     }
 }
