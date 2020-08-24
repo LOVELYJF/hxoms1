@@ -1418,6 +1418,7 @@
 	  #  and temp.businessType = '因公'
 
 		   SELECT
+           distinct
 		   pua.id AS id,   # 业务id
 		   pua.leader_batch_id as batchId, # 批次id
 		   pua.SQZT   as applyStatus,    # 业务 流程状态
@@ -1479,7 +1480,7 @@
 			#  and temp.businessType = '因私'
 			SELECT
 
-
+             distinct
 			pra.id AS id, # 业务id
 
 			pra.leader_batch_id as batchId, # 批次id
@@ -1569,7 +1570,7 @@
 			# and temp.businessType = '延期'
 			SELECT
 
-
+            distinct
 			prda.id AS id, # 业务id
 
 			prda.leader_batch_id as batchId, # 批次id
