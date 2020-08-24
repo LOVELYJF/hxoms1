@@ -1,5 +1,6 @@
 package com.hxoms.modules.omssmrperson.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -8,6 +9,7 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_smr_oldinfo", TableDescription="涉密人员原涉密信息表")
+@TableName("oms_smr_oldinfo")
 public class OmsSmrOldInfo {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
