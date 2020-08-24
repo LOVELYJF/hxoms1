@@ -150,4 +150,24 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/8/19 15:08
      */
 	List<CfCertificate> selectOmsCerInfo(Map<String, Object> map);
+
+
+	/**
+	 * <b>功能描述: 查询所有的柜子集合</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/20 14:38
+	 */
+	List<String> getCerLicenseMachine();
+
+
+	/**
+	 * <b>功能描述: 存取记录</b>
+	 * @Param: [cfCertificate]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/20 14:38
+	 */
+	List<Map<String, Object>> getCerAccessRecord(Map<String, Object> map);
 }

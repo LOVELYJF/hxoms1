@@ -369,6 +369,7 @@
         b.place,
         b.counter_num counterNum,
         a.data_source dataSource,
+        a.happen_Date happenDate,
         a.create_time createTime,
         a.get_time getTime
     FROM

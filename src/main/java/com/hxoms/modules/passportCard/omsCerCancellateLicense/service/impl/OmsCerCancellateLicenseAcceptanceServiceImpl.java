@@ -250,7 +250,12 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			}else {
 
 
+
+
 				//保管状态为“已取出”的，将证照状态标注为“注销”状态，将证照的柜台保管号插入到证照号废弃表中，供重复使用。
+
+
+
 
 
 				if (omsCerCancellateLicense.getSaveStatus().equals(Constants.CER_SAVE_STATUS[0])){

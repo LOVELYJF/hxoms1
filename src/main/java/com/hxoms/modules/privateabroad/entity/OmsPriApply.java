@@ -107,6 +107,9 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "IS_ABROAD",   FieldDescription="是否出入境")
     private String isAbroad;
 
+    @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    private String comparisonResult;
+
     @ColumnAnnotation(FieldName = "ABROAD_PHONE",   FieldDescription="国外通讯及本人联系电话")
     private String abroadPhone;
 
@@ -125,7 +128,7 @@ public class OmsPriApply {
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT",   FieldDescription="港澳通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer hongkongandmacaoPassport;
 
-    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT",   FieldDescription="港澳通行证号")
+    @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT_NUM",   FieldDescription="港澳通行证号")
     private String hongkongandmacaoPassportNum;
 
     @ColumnAnnotation(FieldName = "MACAO_VISA",   FieldDescription="澳门签注")
@@ -434,6 +437,14 @@ public class OmsPriApply {
 
     public void setIsAbroad(String isAbroad) {
         this.isAbroad = isAbroad == null ? null : isAbroad.trim();
+    }
+
+    public String getComparisonResult() {
+        return comparisonResult;
+    }
+
+    public void setComparisonResult(String comparisonResult) {
+        this.comparisonResult = comparisonResult == null ? null : comparisonResult.trim();
     }
 
     public String getAbroadPhone() {

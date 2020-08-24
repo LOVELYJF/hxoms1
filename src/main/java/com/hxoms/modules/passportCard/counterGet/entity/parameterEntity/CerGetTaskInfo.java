@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.xml.crypto.Data;
 import java.util.Date;
 
 /**
@@ -48,6 +49,9 @@ public class CerGetTaskInfo {
     private Integer counterNum;
     //来源
     private String dataSource;
+    //业务日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    private Data happenDate;
     //任务产生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
