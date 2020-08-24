@@ -583,6 +583,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                   //初始化机构文件
                   queryWrapper.clear();
                   queryWrapper.eq("TABLE_CODE", tableCode)
+                          .eq("FILE_SHORTNAME",fileShortname)
                           .and(wrapper->wrapper.eq("B0100", "")
                                   .or()
                                   .isNull("B0100"))
@@ -600,13 +601,15 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                       }
 
                   }
-
+                  queryWrapper.clear();
                   //重新查询
                   queryWrapper.eq("TABLE_CODE", tableCode)
                           .eq("B0100", b01.getB0100())
                           .eq("FILE_SHORTNAME",fileShortname)
                           .orderByAsc("SORT_ID");
                   omsFiles = omsFileMapper.selectList(queryWrapper);
+
+
               }
 
               map.put("omsFiles",omsFiles);
