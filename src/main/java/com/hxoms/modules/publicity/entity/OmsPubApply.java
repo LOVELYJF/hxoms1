@@ -4,202 +4,270 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @TableAnnotation(TableName = "oms_pub_apply", TableDescription="因公出国（境）备案申请")
+@ApiModel(value = "因公出国（境）备案申请")
 public class OmsPubApply {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "PROCPERSON_ID",   FieldDescription="登记备案id")
+    @ApiModelProperty(value="登记备案id")
+    private String procpersonId;
+
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
+    @ApiModelProperty(value="人员主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
+    @ApiModelProperty(value="工作单位")
     private String b0100;
 
     @ColumnAnnotation(FieldName = "YSP_ID",   FieldDescription="预审批主键")
+    @ApiModelProperty(value="预审批主键")
     private String yspId;
 
     @ColumnAnnotation(FieldName = "YSPDW_ID",   FieldDescription="预审批发起单位")
+    @ApiModelProperty(value="预审批发起单位")
     private String yspdwId;
 
     @ColumnAnnotation(FieldName = "AGE",   FieldDescription="年龄")
+    @ApiModelProperty(value="年龄")
     private String age;
 
     @ColumnAnnotation(FieldName = "POLITICAL_AFF",   FieldDescription="政治面貌")
+    @ApiModelProperty(value="政治面貌")
     private String politicalAff;
 
     @ColumnAnnotation(FieldName = "JOB",   FieldDescription="职务")
+    @ApiModelProperty(value="职务")
     private String job;
 
     @ColumnAnnotation(FieldName = "HEALTH",   FieldDescription="健康状况")
+    @ApiModelProperty(value="健康状况")
     private String health;
 
-    @ColumnAnnotation(FieldName = "SFSMRY",   FieldDescription="是否为涉密人员")
+    @ColumnAnnotation(FieldName = "SFSMRY",   FieldDescription="是否为涉密人员（1-是，0-否）")
+    @ApiModelProperty(value="是否为涉密人员（1-是，0-否）")
     private String sfsmry;
 
     @ColumnAnnotation(FieldName = "SMDJ",   FieldDescription="涉密等级")
+    @ApiModelProperty(value="涉密等级")
     private String smdj;
 
     @ColumnAnnotation(FieldName = "NSSJ",   FieldDescription="核心涉密人员年审")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="核心涉密人员年审")
     private Date nssj;
 
     @ColumnAnnotation(FieldName = "YSMDJ1",   FieldDescription="原单位涉密等级1")
+    @ApiModelProperty(value="原单位涉密等级1")
     private String ysmdj1;
 
     @ColumnAnnotation(FieldName = "YTMJSSJ1",   FieldDescription="原单位脱密结束时间1")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="原单位脱密结束时间1")
     private Date ytmjssj1;
 
     @ColumnAnnotation(FieldName = "YSMDJ2",   FieldDescription="原单位涉密等级2")
+    @ApiModelProperty(value="原单位涉密等级2")
     private String ysmdj2;
 
     @ColumnAnnotation(FieldName = "YTMJSSJ2",   FieldDescription="原单位脱密结束时间2")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="原单位脱密结束时间2")
     private Date ytmjssj2;
 
     @ColumnAnnotation(FieldName = "ZTDW",   FieldDescription="组团单位")
+    @ApiModelProperty(value="组团单位")
     private String ztdw;
 
     @ColumnAnnotation(FieldName = "ZTNRZW",   FieldDescription="在组团单位中拟任职务")
+    @ApiModelProperty(value="在组团单位中拟任职务")
     private String ztnrzw;
 
     @ColumnAnnotation(FieldName = "CGSJ",   FieldDescription="出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出国时间")
     private Date cgsj;
 
     @ColumnAnnotation(FieldName = "HGSJ",   FieldDescription="回国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="回国时间")
     private Date hgsj;
 
     @ColumnAnnotation(FieldName = "SDGJ",   FieldDescription="所到国境")
-        private String sdgj;
+    @ApiModelProperty(value="所到国境")
+    private String sdgj;
 
     @ColumnAnnotation(FieldName = "TLSJ",   FieldDescription="在外停留时间")
+    @ApiModelProperty(value="在外停留时间")
     private String tlsj;
 
     @ColumnAnnotation(FieldName = "CFRW",   FieldDescription="出访任务")
+    @ApiModelProperty(value="出访任务")
     private String cfrw;
 
     @ColumnAnnotation(FieldName = "CFSY",   FieldDescription="出访事由")
+    @ApiModelProperty(value="出访事由")
     private String cfsy;
 
     @ColumnAnnotation(FieldName = "CGSPDW",   FieldDescription="出国任务审批单位")
+    @ApiModelProperty(value="出国任务审批单位")
     private String cgspdw;
 
     @ColumnAnnotation(FieldName = "PWH",   FieldDescription="批文号")
+    @ApiModelProperty(value="批文号")
     private String pwh;
 
     @ColumnAnnotation(FieldName = "ZYPWH",   FieldDescription="中央批准文号")
+    @ApiModelProperty(value="中央批准文号")
     private String zypwh;
 
     @ColumnAnnotation(FieldName = "ZJCGQK",   FieldDescription="最近一次出国情况")
+    @ApiModelProperty(value="最近一次出国情况")
     private String zjcgqk;
 
     @ColumnAnnotation(FieldName = "SJCGSJ",   FieldDescription="实际出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="实际出国时间")
     private Date sjcgsj;
 
     @ColumnAnnotation(FieldName = "SJHGSJ",   FieldDescription="实际回国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="实际回国时间")
     private Date sjhgsj;
 
-    @ColumnAnnotation(FieldName = "NFGS",   FieldDescription="能否公示")
+    @ColumnAnnotation(FieldName = "NFGS",   FieldDescription="能否公示（1-是，0-否）")
+    @ApiModelProperty(value="能否公示（1-是，0-否）")
     private String nfgs;
 
-    @ColumnAnnotation(FieldName = "SFYSP",   FieldDescription="是否预审批")
+    @ColumnAnnotation(FieldName = "SFYSP",   FieldDescription="是否预审批（1-是，0-否）")
+    @ApiModelProperty(value="是否预审批（1-是，0-否）")
     private String sfysp;
 
-    @ColumnAnnotation(FieldName = "SFZQJWYJ",   FieldDescription="是否需要征求纪委意见")
+    @ColumnAnnotation(FieldName = "SFZQJWYJ",   FieldDescription="是否需要征求纪委意见（1-是，0-否）")
+    @ApiModelProperty(value="是否需要征求纪委意见（1-是，0-否）")
     private String sfzqjwyj;
 
     @ColumnAnnotation(FieldName = "SCZQJWYJSJ",   FieldDescription="上次征求纪委意见时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="上次征求纪委意见时间")
     private Date sczqjwyjsj;
 
     @ColumnAnnotation(FieldName = "SFBCZQJWYJ",   FieldDescription="本次是否征求纪委意见")
+    @ApiModelProperty(value="本次是否征求纪委意见")
     private String sfbczqjwyj;
 
     @ColumnAnnotation(FieldName = "JWJL",   FieldDescription="省纪委结论")
+    @ApiModelProperty(value="省纪委结论")
     private String jwjl;
 
-    @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
+    @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过（1-是，0-否）")
+    @ApiModelProperty(value="材料审核是否通过（1-是，0-否）")
     private String clshsftg;
 
     @ColumnAnnotation(FieldName = "JDCJL",   FieldDescription="监督处最终结论")
+    @ApiModelProperty(value="监督处最终结论")
     private String jdcjl;
 
-    @ColumnAnnotation(FieldName = "SFZYLD",   FieldDescription="是否主要领导")
+    @ColumnAnnotation(FieldName = "SFZYLD",   FieldDescription="是否主要领导（1-是，0-否）")
+    @ApiModelProperty(value="是否主要领导（1-是，0-否）")
     private String sfzyld;
 
-    @ColumnAnnotation(FieldName = "SFLG",   FieldDescription="是否裸官")
+    @ColumnAnnotation(FieldName = "SFLG",   FieldDescription="是否裸官（1-是，0-否）")
+    @ApiModelProperty(value="是否裸官（1-是，0-否）")
     private String sflg;
 
-    @ColumnAnnotation(FieldName = "POZNSJD",   FieldDescription="配偶子女受监督")
+    @ColumnAnnotation(FieldName = "POZNSJD",   FieldDescription="配偶子女受监督（1-是，0-否）")
+    @ApiModelProperty(value="配偶子女受监督（1-是，0-否）")
     private String poznsjd;
 
     @ColumnAnnotation(FieldName = "FMXX",   FieldDescription="负面信息")
+    @ApiModelProperty(value="负面信息")
     private String fmxx;
 
     @ColumnAnnotation(FieldName = "DWJSXS",   FieldDescription="单位正在接受巡视（1-是，0-否）")
+    @ApiModelProperty(value="单位正在接受巡视（1-是，0-否）")
     private String dwjsxs;
 
     @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
+    @ApiModelProperty(value="最终结论")
     private String zzjl;
 
     @ColumnAnnotation(FieldName = "CXYY",   FieldDescription="撤销原因")
+    @ApiModelProperty(value="撤销原因")
     private String cxyy;
 
-    @ColumnAnnotation(FieldName = "SFTSRY",   FieldDescription="是否特殊人员")
+    @ColumnAnnotation(FieldName = "SFTSRY",   FieldDescription="是否特殊人员（1-是，0-否）")
+    @ApiModelProperty(value="是否特殊人员（1-是，0-否）")
     private String sftsry;
 
-    @ColumnAnnotation(FieldName = "SFZB",   FieldDescription="是否增补")
+    @ColumnAnnotation(FieldName = "SFZB",   FieldDescription="是否增补（1-是，0-否）")
+    @ApiModelProperty(value="是否增补（1-是，0-否）")
     private String sfzb;
 
-    @ColumnAnnotation(FieldName = "SFBG",   FieldDescription="是否变更")
+    @ColumnAnnotation(FieldName = "SFBG",   FieldDescription="是否变更（1-是，0-否）")
+    @ApiModelProperty(value="是否变更（1-是，0-否）")
     private String sfbg;
 
     @ColumnAnnotation(FieldName = "SQZT",   FieldDescription="申请状态（0-未下发，1-草稿，2-带材料审核，3-待征求意见，4-待反馈意见，5-待处长审批，6-已完结）")
+    @ApiModelProperty(value="申请状态（0-未下发，1-草稿，2-带材料审核，3-待征求意见，4-待反馈意见，5-待处长审批，6-已完结）")
     private Integer sqzt;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
+    @ApiModelProperty(value="创建人")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
+    @ApiModelProperty(value="修改人")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="修改时间")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
+    @ApiModelProperty(value="排序")
     private Integer sortId;
 
     @ColumnAnnotation(FieldName = "BAH",   FieldDescription="备案号")
+    @ApiModelProperty(value="备案号")
     private String bah;
 
     @ColumnAnnotation(FieldName = "SFXD",   FieldDescription="是否下达（0-否，1-是）")
+    @ApiModelProperty(value="是否下达（0-否，1-是）")
     private Integer sfxd;
 
+    @ColumnAnnotation(FieldName = "LEADER_BATCH_ID",   FieldDescription="")
+    @ApiModelProperty(value="")
+    private String leaderBatchId;
+
     @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
+    @ApiModelProperty(value="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
     public String getId() {
@@ -208,6 +276,14 @@ public class OmsPubApply {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId == null ? null : procpersonId.trim();
     }
 
     public String getA0100() {
@@ -650,11 +726,19 @@ public class OmsPubApply {
         this.sfxd = sfxd;
     }
 
+    public String getLeaderBatchId() {
+        return leaderBatchId;
+    }
+
+    public void setLeaderBatchId(String leaderBatchId) {
+        this.leaderBatchId = leaderBatchId == null ? null : leaderBatchId.trim();
+    }
+
     public String getIsComparison() {
         return isComparison;
     }
 
     public void setIsComparison(String isComparison) {
-        this.isComparison = isComparison;
+        this.isComparison = isComparison == null ? null : isComparison.trim();
     }
 }
