@@ -13,6 +13,7 @@
 		temp.type as type # 业务类型
 		from (
 
+
 		select pua.id as id,'因公' as type,a.a0100 as a0100, a.a0101 AS userName,"oms_pub_apply_cadres" as tableCode, pua.CLSHSFTG  as materialsCheck
 		from oms_pub_apply pua  LEFT JOIN a01 a ON pua.a0100 = a.a0100
 		union
