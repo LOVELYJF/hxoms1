@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjByPhone;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjQueryParam;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestEx;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OrganUnit;
+import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 
 import java.util.List;
 
@@ -29,10 +26,10 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      * @Desc: 查询证照催缴
      * @Author: wangyunquan
      * @Param: [pageBean, cfCertificateCjQuery]
-     * @Return: com.hxoms.common.utils.PageBean
+     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo>
      * @Date: 2020/8/12
      */
-    PageBean selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam);
+    PageBean<CfCertificateCjInfo> selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam);
 
     /**
      * @Desc: 查询催缴机构单位

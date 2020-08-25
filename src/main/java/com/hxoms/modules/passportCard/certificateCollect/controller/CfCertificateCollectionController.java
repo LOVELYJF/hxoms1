@@ -6,15 +6,18 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjQueryParam;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestEx;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestParam;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.RequestList;
+import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionRequestService;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Api(tags = "证照催缴")
 @RestController
 @RequestMapping("/cerCollection")
 public class CfCertificateCollectionController {
@@ -33,11 +36,12 @@ public class CfCertificateCollectionController {
      * @Desc: 查询证照催缴
      * @Author: wangyunquan
      * @Param: [cfCertificateCjQuery]
-     * @Return: com.hxoms.common.utils.Result
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo>>
      * @Date: 2020/8/12
      */
+    @ApiOperation(value = "查询证照催缴")
     @GetMapping("/selectCerCjApply")
-    public Result selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam){
+    public Result<PageBean<CfCertificateCjInfo>> selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam){
         return Result.success(cfCertificateCollectionService.selectCerCjApply(pageBean, cfCertificateCjQueryParam));
     }
 
@@ -45,11 +49,12 @@ public class CfCertificateCollectionController {
      * @Desc: 查询催缴机构单位
      * @Author: wangyunquan
      * @Param: []
-     * @Return: com.hxoms.common.utils.Result
+     * @Return: com.hxoms.common.utils.Result<java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OrganUnit>>
      * @Date: 2020/8/12
      */
+    @ApiOperation(value = "查询催缴机构单位")
     @GetMapping("/selectOrganUnit")
-    public Result selectOrganUnit(){
+    public Result<List<OrganUnit>> selectOrganUnit(){
         return Result.success(cfCertificateCollectionService.selectOrganUnit());
     }
 
@@ -57,11 +62,13 @@ public class CfCertificateCollectionController {
      * @Desc: 通过单位查询催缴人员
      * @Author: wangyunquan
      * @Param: [rfB0000]
-     * @Return: com.hxoms.common.utils.Result
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjByPhone>
      * @Date: 2020/8/12
      */
+    @ApiOperation(value = "通过单位查询催缴人员")
+    @ApiImplicitParam(name = "rfB0000", value = "机构单位编码", dataType = "String")
     @GetMapping("/selectCerCjInfoByOrgan")
-    public Result selectCerCjInfoByOrgan(String rfB0000){
+    public Result<CfCertificateCjByPhone> selectCerCjInfoByOrgan(String rfB0000){
         return Result.success(cfCertificateCollectionService.selectCerCjInfoByOrgan(rfB0000));
     }
 
@@ -72,6 +79,7 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/12
      */
+    @ApiOperation(value = "保存催缴结果")
     @PostMapping("/insertCerCjResult")
     public Result insertCerCjResult(@RequestBody RequestList<CfCertificateCollectionRequestEx> requestList){
         cfCertificateCollectionService.insertCerCjResult(requestList.getList());
@@ -85,12 +93,21 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/12
      */
+    @ApiOperation(value = "解除催缴")
     @PostMapping("/updateCerCjForRemove")
     public Result updateCerCjForRemove(@RequestBody RequestList<CfCertificateCollection> requestList){
         cfCertificateCollectionService.updateCerCjForRemove(requestList.getList());
         return Result.success();
     }
 
+    /**
+     * @Desc: 发送催缴通知
+     * @Author: wangyunquan
+     * @Param: [omsSupSuspendUnit]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/13
+     */
+    @ApiOperation(value = "发送催缴通知")
     @PostMapping("/sendCjNotice")
     public Result sendCjNotice(){
         return Result.success();
@@ -103,8 +120,9 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/13
      */
+    @ApiOperation(value = "锁定单位出国")
     @PostMapping("/insertSuspendUnit")
-    public Result insertSuspendUnit(OmsSupSuspendUnit omsSupSuspendUnit){
+    public Result insertSuspendUnit(@RequestBody OmsSupSuspendUnit omsSupSuspendUnit){
         cfCertificateCollectionService.insertSuspendUnit(omsSupSuspendUnit);
         return Result.success();
     }

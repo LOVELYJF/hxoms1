@@ -4,130 +4,166 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @TableAnnotation(TableName = "cf_user", TableDescription="用户表")
+@ApiModel(value = "用户信息")
 public class CfUser {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "user_id",   FieldDescription="用户id")
+    @ApiModelProperty(value = "用户id")
     private String userId;
 
-    @ApiModelProperty("用户名")
     @ColumnAnnotation(FieldName = "user_name",   FieldDescription="经办人真实姓名")
+    @ApiModelProperty("经办人真实姓名")
     private String userName;
 
     @ColumnAnnotation(FieldName = "user_code",   FieldDescription="登录名，(建议机构简称+姓名)")
+    @ApiModelProperty("登录名")
     private String userCode;
 
     @ColumnAnnotation(FieldName = "user_type",   FieldDescription="用户类型(1超级管理员、2安全保密管理员、3安全审计管理员、4各单位管理员、5监督处工作人员、6经办人、7组织部相关处室、8省外办、9统战部（港澳办）、10统战部（台办）、11省保密局、12省纪委、13部领导、14其他)")
+    @ApiModelProperty("用户类型(1超级管理员、2安全保密管理员、3安全审计管理员、4各单位管理员、5监督处工作人员、6经办人、7组织部相关处室、8省外办、9统战部（港澳办）、10统战部（台办）、11省保密局、12省纪委、13部领导、14其他)")
     private String userType;
 
     @ColumnAnnotation(FieldName = "user_state",   FieldDescription="用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7、登记指纹8)")
+    @ApiModelProperty("用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7、登记指纹8)")
     private String userState;
 
     @ColumnAnnotation(FieldName = "user_photo",   FieldDescription="用户照片")
+    @ApiModelProperty("用户照片")
     private String userPhoto;
 
     @ColumnAnnotation(FieldName = "user_email",   FieldDescription="用户邮箱")
+    @ApiModelProperty("用户邮箱")
     private String userEmail;
 
     @ColumnAnnotation(FieldName = "user_mobile",   FieldDescription="用户电话")
+    @ApiModelProperty("用户电话")
     private String userMobile;
 
     @ColumnAnnotation(FieldName = "user_password",   FieldDescription="用户密码")
+    @ApiModelProperty("用户密码")
     private String userPassword;
 
     @ColumnAnnotation(FieldName = "order_index",   FieldDescription="排序")
+    @ApiModelProperty("排序")
     private Integer orderIndex;
 
     @ColumnAnnotation(FieldName = "org_id",   FieldDescription="任职机构ID")
+    @ApiModelProperty("任职机构ID")
     private String orgId;
 
     @ColumnAnnotation(FieldName = "modify_user",   FieldDescription="修改用户")
+    @ApiModelProperty("修改用户")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("修改时间")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "org_name",   FieldDescription="机构名称")
+    @ApiModelProperty("机构名称")
     private String orgName;
 
     @ColumnAnnotation(FieldName = "USER_EXPIRE",   FieldDescription="有效期(过了此日期不允许登录)")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("有效期(过了此日期不允许登录)")
     private Date userExpire;
 
     @ColumnAnnotation(FieldName = "USER_LOGINFAILNUM",   FieldDescription="登录失败次数")
+    @ApiModelProperty("登录失败次数")
     private Integer userLoginfailnum;
 
     @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
+    @ApiModelProperty("创建人")
     private String creator;
 
     @ColumnAnnotation(FieldName = "CREATETIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("创建时间")
     private Date createtime;
 
     @ColumnAnnotation(FieldName = "IP",   FieldDescription="IP地址")
+    @ApiModelProperty("IP地址")
     private String ip;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部信息库A01表主键")
+    @ApiModelProperty("干部信息库A01表主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "Registe_residence",   FieldDescription="户口所在地")
+    @ApiModelProperty("户口所在地")
     private String registeResidence;
 
     @ColumnAnnotation(FieldName = "CARD_ISSUING_AUTHORITY",   FieldDescription="身份证签发机关")
+    @ApiModelProperty("身份证签发机关")
     private String cardIssuingAuthority;
 
     @ColumnAnnotation(FieldName = "CARE_START_DATE",   FieldDescription="身份证有效期开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("身份证有效期开始时间")
     private Date careStartDate;
 
     @ColumnAnnotation(FieldName = "CARD_EXPIRY_DATE",   FieldDescription="身份证有效期结束时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("身份证有效期结束时间")
     private Date cardExpiryDate;
 
     @ColumnAnnotation(FieldName = "CARD_PHYSICAL_ID",   FieldDescription="身份证物理ID")
+    @ApiModelProperty("身份证物理ID")
     private String cardPhysicalId;
 
     @ColumnAnnotation(FieldName = "IDNUMBER",   FieldDescription="身份证号")
+    @ApiModelProperty("身份证号")
     private String idnumber;
 
     @ColumnAnnotation(FieldName = "POLITICAL_AFFI",   FieldDescription="政治面貌")
+    @ApiModelProperty("政治面貌")
     private String politicalAffi;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
+    @ApiModelProperty("性别")
     private String sex;
 
     @ColumnAnnotation(FieldName = "Duty",   FieldDescription="职务（级）")
+    @ApiModelProperty("职务（级）")
     private String duty;
 
     @ColumnAnnotation(FieldName = "MAC",   FieldDescription="Mac地址")
+    @ApiModelProperty("Mac地址")
     private String mac;
 
     @ColumnAnnotation(FieldName = "Telephone",   FieldDescription="座机号")
+    @ApiModelProperty("座机号")
     private String telephone;
 
     @ColumnAnnotation(FieldName = "NATION",   FieldDescription="民族")
+    @ApiModelProperty("民族")
     private String nation;
 
     @ColumnAnnotation(FieldName = "BIRTH",   FieldDescription="出生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty("出生日期")
     private Date birth;
 
     @ColumnAnnotation(FieldName = "FINGERPRINT_1",   FieldDescription="指纹1(存储指纹BASE64数据)")
+    @ApiModelProperty("指纹1(存储指纹BASE64数据)")
     private String fingerprint1;
 
     @ColumnAnnotation(FieldName = "FINGERPRINT_2",   FieldDescription="指纹2(存储指纹BASE64数据)")
+    @ApiModelProperty("指纹2(存储指纹BASE64数据)")
     private String fingerprint2;
 
     public String getUserId() {

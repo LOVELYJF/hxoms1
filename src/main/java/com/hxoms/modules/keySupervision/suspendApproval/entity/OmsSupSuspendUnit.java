@@ -4,67 +4,86 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
+
 @TableAnnotation(TableName = "oms_sup_suspend_unit", TableDescription="暂停出国境单位")
+@ApiModel(value = "暂停出国境单位")
 public class OmsSupSuspendUnit {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value = "主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改用户")
+    @ApiModelProperty(value = "修改用户")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "修改时间")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "UNIT",   FieldDescription="单位名称")
+    @ApiModelProperty(value = "单位名称")
     private String unit;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="单位主键")
+    @ApiModelProperty(value = "单位主键")
     private String b0100;
 
     @ColumnAnnotation(FieldName = "SUSPEND_TIME",   FieldDescription="暂停开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "暂停开始时间")
     private Date suspendTime;
 
     @ColumnAnnotation(FieldName = "PAUSE_TIME",   FieldDescription="暂停时长（月）")
+    @ApiModelProperty(value = "暂停时长（月）")
     private String pauseTime;
 
     @ColumnAnnotation(FieldName = "SUSPEND_REASON",   FieldDescription="暂停原因")
+    @ApiModelProperty(value = "暂停原因")
     private String suspendReason;
 
     @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="状态")
+    @ApiModelProperty(value = "状态")
     private String status;
 
     @ColumnAnnotation(FieldName = "SUSPEND_STRAT_TIME_QUERY",   FieldDescription="暂停状态查询开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "暂停状态查询开始时间")
     private Date suspendStratTimeQuery;
 
     @ColumnAnnotation(FieldName = "SUSPEND_END_TIME_QUERY",   FieldDescription="暂停状态查询结束时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "暂停状态查询结束时间")
     private Date suspendEndTimeQuery;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="暂停操作人")
+    @ApiModelProperty(value = "暂停操作人")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
-    @ColumnAnnotation(FieldName = "RECOVERY_USER",   FieldDescription="暂停操作人")
+    @ColumnAnnotation(FieldName = "RECOVERY_USER",   FieldDescription="恢复操作人")
+    @ApiModelProperty(value = "恢复操作人")
     private String recoverUser;
 
     @ColumnAnnotation(FieldName = "RECOVERY_TIME",   FieldDescription="恢复时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "恢复时间")
     private Date recoverTime;
 
 
