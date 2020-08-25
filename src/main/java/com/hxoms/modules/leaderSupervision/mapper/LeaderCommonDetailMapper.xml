@@ -19,7 +19,7 @@
 		select pra.id as id,'因私' as type,a.a0100 as a0100,a.a0101 AS userName,"oms_pri_apply_cadres" as tableCode, pra.CLSHSFTG as materialsCheck
 		from  oms_pri_apply pra LEFT JOIN a01 a ON pra.a0100 = a.a0100
 		union
-		select prda.id as id,'延期' as type,a.a0100 as a0100,a.a0101 AS userName,"oms_pri_delay_apply_" as tablecode, prda.CLSHSFTG  as materialsCheck
+		select prda.id as id,'延期' as type,a.a0100 as a0100,a.a0101 AS userName,"oms_pri_delay_apply_cadres" as tablecode, prda.CLSHSFTG  as materialsCheck
 		from oms_pri_delay_apply  prda
 		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
