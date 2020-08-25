@@ -7,6 +7,7 @@ import com.hxoms.modules.publicity.entity.OmsPubGroupAndApplyList;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //删除团体预备案申请信息
     void deletePubGroup(String id);
     //上传团体预备案申请信息
-    String uploadPubGroupExcel(MultipartFile file, String orgName, String orgId);
+    OmsPubGroupAndApplyList uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) throws IOException;
     //重新校验
     String checkoutPerson(String idList);
     //添加人员

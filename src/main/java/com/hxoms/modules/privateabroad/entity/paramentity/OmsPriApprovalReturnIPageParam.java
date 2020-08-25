@@ -1,6 +1,8 @@
 package com.hxoms.modules.privateabroad.entity.paramentity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -10,30 +12,39 @@ import java.util.Date;
  * @author: lijing
  * @date: 2020-06-15
  */
+@ApiModel(value = "因私出国审批表回收列表参数")
 public class OmsPriApprovalReturnIPageParam {
     /**页码*/
+    @ApiModelProperty(value = "页码")
     private Integer pageNum;
     /**分页大小*/
+    @ApiModelProperty(value = "分页大小")
     private Integer pageSize;
     //回收开始时间
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "回收开始时间")
     private Date returnStartTime;
     //回收结束时间
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "回收结束时间")
     private Date returnStopTime;
     //出国时间（开始）
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "出国时间（开始）")
     private Date abroadStartTime;
     //出国时间（结束）
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "出国时间（结束）")
     private Date abroadEndTime;
     //申请人(姓名或者拼音)
+    @ApiModelProperty(value = "申请人(姓名或者拼音)")
     private String name;
     //回收人（姓名）
+    @ApiModelProperty(value = "回收人（姓名）")
     private String returnUser;
 
     public Integer getPageNum() {

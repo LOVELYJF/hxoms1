@@ -36,12 +36,13 @@ public interface OmsCerApplyLendingLicenseService {
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [page,omsCerApplyLendingLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
+	 * @return
 	 */
-	List<Map<String, Object>> selectApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense);
+	Page<Map<String, Object>> selectApplyLendingLicenseInfo(Page<Map<String,Object>> page, OmsCerApplyLendingLicense omsCerApplyLendingLicense);
 
 	/**
 	 * <b>功能描述: 借出证照申请导出</b>
@@ -55,11 +56,11 @@ public interface OmsCerApplyLendingLicenseService {
 
 	/**
 	 * <b>功能描述: 提交申请</b>
-	 * @Param: [list]
+	 * @Param: [idList]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 */
-	void updateApplyLendingLicenseCommit(List<String> list);
+	void updateApplyLendingLicenseCommit(List<String> idList);
 
 
 	/**

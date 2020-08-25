@@ -52,7 +52,7 @@
 			<trim suffixOverrides="and">
 				<if test="sqjczt != null">ocall.sqjczt=#{sqjczt} and </if>
 				<if test="lendingQueryStartTime != null and lendingQueryEndTime != null">
-					ocall.createTime between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
+					ocall.CREATE_TIME between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
 				</if>
 				<if test="name != null">ocall.name like concat('%',#{name},'%')
 					or
@@ -118,6 +118,12 @@
 		<where>
 			<if test="year !=  null">YEAR like concat(#{year},'%')</if>
 		</where>
+	</select>
+
+	<!-- 查询申请借出信息 -->
+	<select id="selectOmsCerApplyLendingLicenseInfo"
+	        resultType="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+		select * from oms_cer_apply_lending_license where id=#{id}
 	</select>
 
 

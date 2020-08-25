@@ -1,6 +1,8 @@
 package com.hxoms.modules.privateabroad.entity.paramentity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -11,35 +13,46 @@ import java.util.List;
  * @author: lijing
  * @date: 2020-05-14
  */
+@ApiModel(value = "因私出国境申请列表查询条件")
 public class OmsPriApplyIPageParam {
     /**页码*/
+    @ApiModelProperty(value = "页码")
     private Integer pageNum;
     /**分页大小*/
+    @ApiModelProperty(value = "分页大小")
     private Integer pageSize;
     //申请开始时间
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "申请开始时间")
     private Date applyStartTime;
     //申请结束时间
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "申请结束时间")
     private Date applyStopTime;
     //出国时间（开始）
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "出国时间（开始）")
     private Date abroadStartTime;
     //出国时间（结束）
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "出国时间（结束）")
     private Date abroadEndTime;
     //申请人(姓名或者拼音)
+    @ApiModelProperty(value = "申请人(姓名或者拼音)")
     private String name;
     //经办人（姓名或者拼音）
+    @ApiModelProperty(value = "经办人（姓名或者拼音）")
     private String createUser;
     //状态
     private Integer[] applyStatus;
+    @ApiModelProperty(value = "状态")
     private String applyStatusString;
     //机构id
+    @ApiModelProperty(value = "机构id")
     private String b0100;
 
     public Integer getPageNum() {

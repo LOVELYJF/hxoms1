@@ -1,6 +1,9 @@
 package com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
@@ -20,7 +23,6 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * <b>功能描述: 借出证照申请业务层接口实现类</b>
@@ -78,14 +80,20 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息（首页查询）</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [page,omsCerApplyLendingLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
+	 * @return
 	 */
-	public List<Map<String, Object>> selectApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
+	public Page<Map<String, Object>> selectApplyLendingLicenseInfo(Page<Map<String,Object>> page, OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
+		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<Map<String, Object>> list = omsCerApplyLendingLicenseMapper.selectApplyLendingLicenseInfo(omsCerApplyLendingLicense);
-		return list;
+		PageInfo<Map<String,Object>> pageInfo = new PageInfo<Map<String,Object>>(list);
+		page.setTotal(pageInfo.getTotal());
+		page.setPages(pageInfo.getPages());
+		page.setRecords(list);
+		return page;
 	}
 
 	/**
@@ -152,7 +160,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(list.get(i).get("sex").equals("1") ? "男" :"女");
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(4).setCellValue(Constants.INCUMBENCY_STATUS_NAME[Integer.parseInt((String) list.get(i).get("incumbencyStatus")) - 1]);
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt((String) list.get(i).get("zjlx")) - 1]);
@@ -182,20 +190,20 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 
 	/**
 	 * <b>功能描述: 提交申请</b>
-	 * @Param: [list]
+	 * @Param: [idList]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 14:41
 	 */
-	public void updateApplyLendingLicenseCommit(List<String> list) {
+	public void updateApplyLendingLicenseCommit(List<String> idList) {
 		OmsCerApplyLendingLicense omsCerApplyLendingLicense = new OmsCerApplyLendingLicense();
 		omsCerApplyLendingLicense.setIsCommit("1");
 		omsCerApplyLendingLicense.setSqjczt("1");       //状态：审批
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
-		if(list != null && list.size() > 0){
+		if(idList != null && idList.size() > 0){
 			QueryWrapper<OmsCerApplyLendingLicense> queryWrapper = new QueryWrapper<OmsCerApplyLendingLicense>();
-			queryWrapper.in("ID", list);
+			queryWrapper.in("ID", idList);
 			int count = omsCerApplyLendingLicenseMapper.update(omsCerApplyLendingLicense, queryWrapper);
 			if(count < 1){
 				throw new CustomMessageException("提交失败");
