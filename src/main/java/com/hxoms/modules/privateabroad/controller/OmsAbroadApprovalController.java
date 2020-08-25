@@ -3,6 +3,10 @@ package com.hxoms.modules.privateabroad.controller;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.privateabroad.entity.OmsAbroadApproval;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +19,7 @@ import java.util.List;
  * @author: lijing
  * @date: 2020-06-15
  */
+@Api(tags="出国审批管理")
 @RestController
 @RequestMapping("/omsAbroadApproval")
 public class OmsAbroadApprovalController {
@@ -29,6 +34,11 @@ public class OmsAbroadApprovalController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value="审批列表", notes="审批列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型（因公 因私 延期回国）", required = true, dataType = "String"),
+    })
     @GetMapping("/selectOmsAbroadApprovalList")
     public Result selectOmsAbroadApprovalList(String applyId, String type) throws Exception {
         List<OmsAbroadApproval> omsAbroadApprovalVOS = omsAbroadApprovalService.selectOmsAbroadApprovalList(applyId, type);

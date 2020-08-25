@@ -6,6 +6,10 @@ import com.hxoms.common.utils.DomainObjectUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.baidu.ueditor.ActionEnter;
 import com.hxoms.modules.file.entity.UeditorResponseVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +26,7 @@ import java.io.PrintWriter;
  * @author: lijing
  * @date: 2020-07-13
  */
+@Api(tags = "Ueditor上传文件管理")
 @RestController
 @RequestMapping("/ueditorFile")
 public class UeditorFileController {
@@ -35,6 +40,11 @@ public class UeditorFileController {
      * 读取配置文件
      * @return
      */
+    @ApiOperation(value="读取配置文件", notes="读取配置文件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "action", value = "类型：config:配置，uploadimage：上传图片", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "upfile", value = "文件", required = true, dataType = "MultipartFile")
+    })
     @RequestMapping("/config")
     public Object selectFileListByCode(String action, MultipartFile upfile) throws JSONException {
         try {

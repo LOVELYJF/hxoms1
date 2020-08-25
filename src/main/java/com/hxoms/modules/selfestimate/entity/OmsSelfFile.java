@@ -5,24 +5,33 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@ApiModel(value = "自评材料清单")
 @TableAnnotation(TableName = "oms_self_file", TableDescription="自评材料清单")
 public class OmsSelfFile {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value = "主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="机构ID")
+    @ApiModelProperty(value = "机构ID")
     private String b0100;
 
     @ColumnAnnotation(FieldName = "CHECKFILE_ID",   FieldDescription="检查文件ID")
+    @ApiModelProperty(value = "检查文件ID")
     private String checkfileId;
 
     @ColumnAnnotation(FieldName = "FILENAME",   FieldDescription="文件名称")
+    @ApiModelProperty(value = "文件名称")
     private String filename;
 
     @ColumnAnnotation(FieldName = "TYPE",   FieldDescription="类型(因公   因私  延期回国)")
+    @ApiModelProperty(value = "类型(因公   因私  延期回国)")
     private String type;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")

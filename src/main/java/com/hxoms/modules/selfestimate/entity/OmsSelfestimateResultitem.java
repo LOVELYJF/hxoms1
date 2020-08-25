@@ -5,30 +5,41 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@ApiModel(value = "自评项目结果")
 @TableAnnotation(TableName = "oms_selfestimate_resultitem", TableDescription="自评项目结果")
 public class OmsSelfestimateResultitem {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value = "主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "SELFFILE_ID",   FieldDescription="自评材料清单ID")
+    @ApiModelProperty(value = "自评材料清单ID")
     private String selffileId;
 
     @ColumnAnnotation(FieldName = "APPLY_ID",   FieldDescription="出国申请ID")
+    @ApiModelProperty(value = "出国申请ID")
     private String applyId;
 
     @ColumnAnnotation(FieldName = "CHECK_ID",   FieldDescription="检查项ID")
+    @ApiModelProperty(value = "检查项ID")
     private String checkId;
 
     @ColumnAnnotation(FieldName = "CHECK_RESULT",   FieldDescription="检查结果（1通过、0不通过）")
+    @ApiModelProperty(value = "检查结果")
     private Integer checkResult;
 
     @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明")
+    @ApiModelProperty(value = "说明")
     private String description;
 
     @ColumnAnnotation(FieldName = "PERSON_TYPE",   FieldDescription="处理人类型(经办人  干部监督处)")
+    @ApiModelProperty(value = "处理人类型")
     private String personType;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
