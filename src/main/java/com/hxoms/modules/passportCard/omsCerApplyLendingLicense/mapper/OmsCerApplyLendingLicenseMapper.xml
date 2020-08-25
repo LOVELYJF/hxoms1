@@ -52,7 +52,7 @@
 			<trim suffixOverrides="and">
 				<if test="sqjczt != null">ocall.sqjczt=#{sqjczt} and </if>
 				<if test="lendingQueryStartTime != null and lendingQueryEndTime != null">
-					ocall.createTime between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
+					ocall.CREATE_TIME between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
 				</if>
 				<if test="name != null">ocall.name like concat('%',#{name},'%')
 					or

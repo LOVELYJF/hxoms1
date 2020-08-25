@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.omsCerApplyLendingLicense.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
@@ -53,15 +54,15 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息（首页查询）</b>
-	 * @Param: [omsCerApplyLendingLicense]
+	 * @Param: [page,omsCerApplyLendingLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
 	@GetMapping("/selectApplyLendingLicenseInfo")
-	public Result selectApplyLendingLicenseInfo(OmsCerApplyLendingLicense omsCerApplyLendingLicense){
-		List<Map<String,Object>> list = omsCerApplyLendingLicenseService.selectApplyLendingLicenseInfo(omsCerApplyLendingLicense);
-		return Result.success(list);
+	public Result selectApplyLendingLicenseInfo(Page<Map<String,Object>> page, OmsCerApplyLendingLicense omsCerApplyLendingLicense){
+		page = omsCerApplyLendingLicenseService.selectApplyLendingLicenseInfo(page, omsCerApplyLendingLicense);
+		return Result.success(page);
 	}
 
 	/**
@@ -79,14 +80,14 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 
 	/**
 	 * <b>功能描述: 提交申请</b>
-	 * @Param: [list]
+	 * @Param: [idList]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 14:41
 	 */
 	@PostMapping("/updateApplyLendingLicenseCommit")
-	public Result updateApplyLendingLicenseCommit(@RequestParam(value = "list",required = false) List<String> list){
-		omsCerApplyLendingLicenseService.updateApplyLendingLicenseCommit(list);
+	public Result updateApplyLendingLicenseCommit(@RequestParam(value = "idList",required = false) List<String> idList){
+		omsCerApplyLendingLicenseService.updateApplyLendingLicenseCommit(idList);
 		return Result.success();
 	}
 
