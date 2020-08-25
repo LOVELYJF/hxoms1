@@ -8,7 +8,12 @@ import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.spring.web.json.Json;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +109,15 @@ public class OmsPubGroupController {
     @PostMapping("/uploadPubGroupExcel")
     public Result uploadPubGroupExcel(MultipartFile file, String orgName,String orgId) {
         try{
-            return Result.success(pubGroupService.uploadPubGroupExcel(file,orgName,orgId));
+            //获得文件的名称
+            String fileName = file.getOriginalFilename();
+            //获得文件的扩展名称
+            String extensionName = fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+            if(!"json".equals(extensionName)){
+                return Result.error("请上传json格式文件");
+            }else{
+                return Result.success(pubGroupService.uploadPubGroupExcel(file,orgName,orgId));
+            }
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导入失败");

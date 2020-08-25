@@ -1,8 +1,9 @@
 package com.hxoms.modules.publicity.service.impl;
 
+
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
@@ -11,15 +12,14 @@ import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.*;
 
@@ -74,7 +74,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 applyList.add(pubApply);
             }
             pubApplyMapper.insertPubApplyList(applyList);
-            return "添加成功";
+            return id;
         }else{
             return "未选择备案人员";
         }
@@ -115,10 +115,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public String uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) {
-        String msg = "";
-        List<Map<String, Object>> list = readExcel(file);
-        return msg;
+    public OmsPubGroupAndApplyList uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) throws IOException {
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = readJsonData(file);
+        return omsPubGroupAndApplyList;
     }
 
     @Override
@@ -183,139 +182,23 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     /**
-     * 读取到Excel表格的数据(导入用)
+     * 读取上传Json的数据(导入用)
      * @return List<OmsSmrPersonInfo>
      */
-    public static List<Map<String, Object>> readExcel(MultipartFile file) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        HSSFWorkbook workbook = null;
-        try {
-            // 读取Excel文件
-            POIFSFileSystem inputStream = new POIFSFileSystem(file.getInputStream());
-            //InputStream inputStream = new FileInputStream(filePath);
-            workbook = new HSSFWorkbook(inputStream);
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static OmsPubGroupAndApplyList readJsonData(MultipartFile file) throws IOException {
+        //读取数据
+        InputStream inputStream = file.getInputStream();
+        BufferedReader reader = null;
+        StringBuffer sbf = new StringBuffer();
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+        String tempStr;
+        while ((tempStr = reader.readLine()) != null) {
+            sbf.append(tempStr);
         }
-        // 循环工作表
-        for (int numSheet = 0; numSheet < workbook.getNumberOfSheets(); numSheet++) {
-            HSSFSheet hssfSheet = workbook.getSheetAt(numSheet);
-            if (hssfSheet == null) {
-                continue;
-            }
-            //判断导入模板是否正确
-            if(!"姓名".equals(hssfSheet.getRow(2).getCell(1).toString())){
-                return list;
-            }
-            if(!"身份证号码".equals(hssfSheet.getRow(2).getCell(6).toString())){
-                return list;
-            }
-            if(!"涉密岗位".equals(hssfSheet.getRow(2).getCell(7).toString())){
-                return list;
-            }
-            if(!"涉密等级".equals(hssfSheet.getRow(2).getCell(9).toString())){
-                return list;
-            }
-            if(!"保密复审时间".equals(hssfSheet.getRow(2).getCell(12).toString())){
-                return list;
-            }
-            if(!"脱密期管理开始日期".equals(hssfSheet.getRow(2).getCell(18).toString())){
-                return list;
-            }
-            if(!"脱密期管理终止日期".equals(hssfSheet.getRow(2).getCell(19).toString())){
-                return list;
-            }
-            // 循环行
-            for (int rowNum = 3; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
-                HSSFRow hssfRow = hssfSheet.getRow(rowNum);
-                if (hssfRow == null) {
-                    continue;
-                }
-                // 将单元格中的内容存入集合
-                Map<String, Object> map = new HashMap<String, Object>();
-                //姓名
-                HSSFCell cell = hssfRow.getCell(1);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("name",cell.getStringCellValue());
-                //性别
-                cell = hssfRow.getCell(2);
-                if(cell == null){
-                    continue;
-                }
-                map.put("sex",cell.getStringCellValue());
-                //出生年月
-                cell = hssfRow.getCell(3);
-                if(cell == null){
-                    continue;
-                }
-                map.put("birthDay",cell.getStringCellValue());
-                //民族
-                cell = hssfRow.getCell(3);
-                if(cell == null){
-                    continue;
-                }
-                map.put("nation",cell.getStringCellValue());
-                //政治面貌
-                cell = hssfRow.getCell(5);
-                if(cell == null){
-                    continue;
-                }
-                map.put("a0141",cell.getStringCellValue());
-                //身份证号
-                cell = hssfRow.getCell(6);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("idCardNumber",cell.getStringCellValue());
-                //涉密岗位
-                cell = hssfRow.getCell(7);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("secretRelatedPost",cell.getStringCellValue());
-                //职务（级）或职称
-                cell = hssfRow.getCell(8);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("post",cell.getStringCellValue());
-                //涉密等级
-                cell = hssfRow.getCell(9);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("secretRelatedLevel", OmsCommonUtil.toSecretLevelStatus(cell.getStringCellValue()));
-                //人员类型
-                cell = hssfRow.getCell(11);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("personState",cell.getStringCellValue());
-                //保密复审时间
-                cell = hssfRow.getCell(12);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("secretReviewDate",cell.getStringCellValue());
-                //脱密期管理开始日期
-                cell = hssfRow.getCell(18);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("startDate", cell.getStringCellValue());
-                //脱密期管理终止日期
-                cell = hssfRow.getCell(19);
-                if (cell == null) {
-                    continue;
-                }
-                map.put("finishDate", cell.getStringCellValue());
+        reader.close();
 
-                list.add(map);
-            }
-        }
-        return list;
+        JSONObject jsonObj = JSONObject.parseObject(String.valueOf(sbf));
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = jsonObj.toJavaObject(OmsPubGroupAndApplyList.class);
+        return omsPubGroupAndApplyList;
     }
 }
