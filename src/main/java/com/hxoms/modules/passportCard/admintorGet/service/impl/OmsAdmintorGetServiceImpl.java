@@ -43,11 +43,11 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
      * @Desc: 查询证照信息
      * @Author: wangyunquan
      * @Param: [pageBean, admintorGetQueryParam]
-     * @Return: com.hxoms.common.utils.PageBean
+     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetCerInfo>
      * @Date: 2020/8/18
      */
     @Override
-    public PageBean selectCerInfo(PageBean pageBean, AdmintorGetQueryParam admintorGetQueryParam) {
+    public PageBean<AdmintorGetCerInfo> selectCerInfo(PageBean pageBean, AdmintorGetQueryParam admintorGetQueryParam) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<AdmintorGetCerInfo> pageInfo=new PageInfo<AdmintorGetCerInfo>(omsCerAdmintorGetApplyMapper.selectCerInfo(admintorGetQueryParam));
         return PageUtil.packagePage(pageInfo);

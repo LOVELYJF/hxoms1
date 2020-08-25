@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.admintorGet.entity.OmsCerAdmintorGetApply;
 import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetApplyList;
+import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetCerInfo;
 import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetQueryParam;
 
 public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> {
@@ -17,7 +18,7 @@ public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> 
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/18
      */
-    PageBean selectCerInfo(PageBean pageBean, AdmintorGetQueryParam admintorGetQueryParam);
+    PageBean<AdmintorGetCerInfo> selectCerInfo(PageBean pageBean, AdmintorGetQueryParam admintorGetQueryParam);
 
     /**
      * @Desc: 保存管理员取证申请
