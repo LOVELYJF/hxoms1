@@ -120,5 +120,11 @@
 		</where>
 	</select>
 
+	<!-- 查询申请借出信息 -->
+	<select id="selectOmsCerApplyLendingLicenseInfo"
+	        resultType="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+		select * from oms_cer_apply_lending_license where id=#{id}
+	</select>
+
 
 </mapper>

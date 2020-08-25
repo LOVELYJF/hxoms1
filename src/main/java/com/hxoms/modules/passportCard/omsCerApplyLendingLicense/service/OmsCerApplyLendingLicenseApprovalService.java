@@ -39,12 +39,12 @@ public interface OmsCerApplyLendingLicenseApprovalService {
 
 	/**
 	 * <b>功能描述: 录入审批结果</b>
-	 * @Param: [list,omsCerApplyLendingLicense]
+	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
-	void updateApplyLendingLicenseApprovalResult(List<String> list, OmsCerApplyLendingLicense omsCerApplyLendingLicense);
+	void updateApplyLendingLicenseApprovalResult(List<OmsCerApplyLendingLicense> list);
 
 
 

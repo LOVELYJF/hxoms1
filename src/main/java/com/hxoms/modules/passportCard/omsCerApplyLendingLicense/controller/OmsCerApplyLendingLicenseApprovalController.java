@@ -58,15 +58,14 @@ public class OmsCerApplyLendingLicenseApprovalController {
 
 	/**
 	 * <b>功能描述: 录入审批结果</b>
-	 * @Param: [list,omsCerApplyLendingLicense]
+	 * @Param: [insertList]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
 	@PostMapping("/updateApplyLendingLicenseApprovalResult")
-	public Result updateApplyLendingLicenseApprovalResult(@RequestParam(value = "list",required = true) List<String> list,
-	                                                   OmsCerApplyLendingLicense omsCerApplyLendingLicense){
-		omsCerApplyLendingLicenseApprovalService.updateApplyLendingLicenseApprovalResult(list,omsCerApplyLendingLicense);
+	public Result updateApplyLendingLicenseApprovalResult(@RequestBody List<OmsCerApplyLendingLicense> insertList){
+		omsCerApplyLendingLicenseApprovalService.updateApplyLendingLicenseApprovalResult(insertList);
 		return Result.success();
 	}
 }
