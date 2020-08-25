@@ -5,6 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
@@ -136,25 +138,30 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 			style1.setFont(font1);
 
 			HSSFRow row = null;
-			for(int i = 0; i < list.size(); i++){
+			for(int i = 0; i < list1.size(); i++){
 				row = sheet.createRow(i + 3);
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list1.get(i).get("name"));
-				row.createCell(2).setCellValue(((Integer) list1.get(i).get("sex")) == 1 ? "男" : "女");
+				row.createCell(2).setCellValue(String.valueOf(list1.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(3).setCellValue((String) list1.get(i).get("workUnit"));
 				row.createCell(4).setCellValue((String)list1.get(i).get("post"));
 				row.createCell(5).setCellValue(Constants.CER_TYPE_NAME[(Integer)list1.get(i).get("zjlx") - 1]);
 				row.createCell(6).setCellValue((String)list1.get(i).get("zjhm"));
-				row.createCell(7).setCellValue(((String) list1.get(i).get("yxqz")));
-				row.createCell(8).setCellValue(Constants.CER_NAME[(Integer)list1.get(i).get("cardStatus")]);
-				row.createCell(9).setCellValue(Constants.CER_SAVE_NAME[(Integer)list1.get(i).get("saveStatus")]);
+				row.createCell(7).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("yxqz")));
+				row.createCell(8).setCellValue(Constants.CER_NAME[Integer.parseInt((String)list1.get(i).get("cardStatus"))]);
+				row.createCell(9).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt((String)list1.get(i).get("saveStatus"))]);
 				row.createCell(10).setCellValue((String) list1.get(i).get("cabinetNum"));
 				row.createCell(11).setCellValue((String) list1.get(i).get("place"));
-				row.createCell(12).setCellValue((String) list1.get(i).get("csrq"));
+				row.createCell(12).setCellValue(UtilDateTime.formatCNDate((Date) list1.get(i).get("csrq")));
 				row.createCell(13).setCellValue((String) list1.get(i).get("qfjg"));
-				row.createCell(14).setCellValue((String) list1.get(i).get("qfrq"));
+				row.createCell(14).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("qfrq")));
 				row.createCell(15).setCellValue((String) list1.get(i).get("csdd"));
-				row.createCell(16).setCellValue((String) list1.get(i).get("getTime"));
+				if(list1.get(i).get("getTime") != null){
+					row.createCell(16).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("getTime")));
+				}else {
+					row.createCell(16).setCellValue("");
+				}
+
 
 				//设置单元格字体大小
 				for(int j = 0;j < 17;j++){
@@ -235,6 +242,10 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 		if(list != null && list.size() > 0){
 			for(CfCertificate cfCertificate : list){
 				cfCertificate.setSaveStatus(String.valueOf(Constants.CER_SAVE_STATUS[0]));      //状态置为正常保管,证照状态还是过期
+				cfCertificate.setCabinetNum("");
+				cfCertificate.setPlace("");               //清空证照机和位置
+				cfCertificate.setUpdater(UserInfoUtil.getUserInfo().getId());
+				cfCertificate.setUpdateTime(new Date());
 				int count = cfCertificateMapper.updateById(cfCertificate);
 				if(count < 1){
 					throw new CustomMessageException("转存更改状态失败");
