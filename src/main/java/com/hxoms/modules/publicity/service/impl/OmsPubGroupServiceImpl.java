@@ -1,6 +1,7 @@
 package com.hxoms.modules.publicity.service.impl;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
@@ -8,6 +9,8 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -31,6 +35,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsPubGroupMapper pubGroupMapper;
     @Autowired
     private OmsPubApplyMapper pubApplyMapper;
+    @Autowired
+    private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) throws ParseException {
@@ -115,7 +121,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public OmsPubGroupAndApplyList uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) throws IOException {
+    public OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException {
         OmsPubGroupAndApplyList omsPubGroupAndApplyList = readJsonData(file);
         return omsPubGroupAndApplyList;
     }
@@ -185,7 +191,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
      * 读取上传Json的数据(导入用)
      * @return List<OmsSmrPersonInfo>
      */
-    public static OmsPubGroupAndApplyList readJsonData(MultipartFile file) throws IOException {
+    public OmsPubGroupAndApplyList readJsonData(MultipartFile file) throws IOException {
         //读取数据
         InputStream inputStream = file.getInputStream();
         BufferedReader reader = null;
@@ -197,8 +203,70 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }
         reader.close();
 
-        JSONObject jsonObj = JSONObject.parseObject(String.valueOf(sbf));
-        OmsPubGroupAndApplyList omsPubGroupAndApplyList = jsonObj.toJavaObject(OmsPubGroupAndApplyList.class);
+        //转化数据
+        String obj = sbf.toString().trim();
+        JSONObject jsonObj = new JSONObject();
+        if("[".equals(obj.substring(0,1))){
+            jsonObj = JSONObject.parseObject(obj.substring(1,obj.length()-1));
+        }else{
+            jsonObj = JSONObject.parseObject(obj);
+        }
+        //map对象
+        Map<String, Object> jsonData =new HashMap<>();
+        //循环转换
+        Iterator it =jsonObj.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Object> entry = (Map.Entry<String, Object>) it.next();
+            jsonData.put(entry.getKey(), entry.getValue());
+        }
+
+        //创建对象
+        OmsPubGroupPreApproval omsPubGroupPreApproval = new OmsPubGroupPreApproval();
+        List<OmsPubApplyVO> applyVOList = new ArrayList<>();
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
+
+        //团组解析
+        omsPubGroupPreApproval.setTzmc(jsonData.get("团组名称").toString());
+        omsPubGroupPreApproval.setTzcy(jsonData.get("团组成员").toString());
+        omsPubGroupPreApproval.setTzrs(Integer.parseInt(jsonData.get("团组人数").toString()));
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            omsPubGroupPreApproval.setCgsj(sdf.parse(jsonData.get("出国时间").toString()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        omsPubGroupPreApproval.setZwtlsj(Integer.parseInt(jsonData.get("在外天数").toString()));
+        omsPubGroupPreApproval.setCfsy(jsonData.get("出访事由").toString());
+        omsPubGroupPreApproval.setCfrw(jsonData.get("出访任务").toString());
+        omsPubGroupPreApproval.setSdgj(jsonData.get("出访国家").toString());
+        omsPubGroupPreApproval.setTjgj(jsonData.get("途经国家").toString());
+        omsPubGroupPreApproval.setZtdw(jsonData.get("组团单位").toString());
+        omsPubGroupPreApproval.setFylykzxm(jsonData.get("费用来源开支项目").toString());
+
+        //团组人员解析
+        JSONArray jsonArray = (JSONArray) jsonData.get("省管干部");
+        for (int i = 0; i < jsonArray.size(); i++){
+            OmsPubApplyVO omsPubApplyVO = new OmsPubApplyVO();
+            omsPubApplyVO.setName(jsonArray.getJSONObject(i).get("姓名").toString());
+            //根据身份证号获取人员A0100等信息
+            Map<String,Object> map = new HashMap<>();
+            String idCardNum = jsonArray.getJSONObject(i).get("身份证号").toString();
+            map.put("idCardNum",idCardNum);
+            OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectA0100ByMap(map);
+            if(regProcpersoninfo != null){
+                omsPubApplyVO.setA0100(regProcpersoninfo.getA0100());
+                omsPubApplyVO.setStatus(regProcpersoninfo.getIncumbencyStatus());
+            }
+
+            omsPubApplyVO.setIdnumber(idCardNum);
+            omsPubApplyVO.setB0101(jsonArray.getJSONObject(i).get("工作单位").toString());
+            omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
+            omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
+            applyVOList.add(omsPubApplyVO);
+        }
+        //封装整合对象
+        omsPubGroupAndApplyList.setOmsPubGroupPreApproval(omsPubGroupPreApproval);
+        omsPubGroupAndApplyList.setOmsPubApplyVOList(applyVOList);
         return omsPubGroupAndApplyList;
     }
 }

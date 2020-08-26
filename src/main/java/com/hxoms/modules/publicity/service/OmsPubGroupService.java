@@ -27,7 +27,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //删除团体预备案申请信息
     void deletePubGroup(String id);
     //上传团体预备案申请信息
-    OmsPubGroupAndApplyList uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) throws IOException;
+    OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException;
     //重新校验
     String checkoutPerson(String idList);
     //添加人员

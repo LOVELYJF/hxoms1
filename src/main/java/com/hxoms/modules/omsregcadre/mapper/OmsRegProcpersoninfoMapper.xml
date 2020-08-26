@@ -79,7 +79,7 @@
   </select>
 
   <select id="selectA0100ByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select A0100,IDNUMBER_GB idnumberGb,b.b0101 workUnit,RF_B0000
+    select A0100,IDNUMBER_GB idnumberGb,b.b0101 workUnit,RF_B0000,INCUMBENCY_STATUS incumbencyStatus
     from OMS_REG_PROCPERSONINFO t
     left join b01 b on t.RF_B0000 = b.b0100
     where 1=1

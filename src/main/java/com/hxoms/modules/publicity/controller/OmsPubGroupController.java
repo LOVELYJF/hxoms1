@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.spring.web.json.Json;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -75,7 +76,7 @@ public class OmsPubGroupController {
      * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public Result updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
             pubGroupService.updatePubGroup(pubGroupAndApplyList);
             return Result.success();
@@ -103,11 +104,9 @@ public class OmsPubGroupController {
 
     /** 上传团体预备案申请信息
      * @param file
-     * @param orgName
-     * @param orgId
      */
-    @PostMapping("/uploadPubGroupExcel")
-    public Result uploadPubGroupExcel(MultipartFile file, String orgName,String orgId) {
+    @PostMapping("/uploadPubGroupJson")
+    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file) {
         try{
             //获得文件的名称
             String fileName = file.getOriginalFilename();
@@ -116,7 +115,7 @@ public class OmsPubGroupController {
             if(!"json".equals(extensionName)){
                 return Result.error("请上传json格式文件");
             }else{
-                return Result.success(pubGroupService.uploadPubGroupExcel(file,orgName,orgId));
+                return Result.success(pubGroupService.uploadPubGroupJson(file));
             }
         }catch (Exception e) {
             e.printStackTrace();
