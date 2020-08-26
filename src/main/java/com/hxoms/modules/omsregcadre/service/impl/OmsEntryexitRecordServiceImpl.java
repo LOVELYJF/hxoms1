@@ -325,6 +325,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
         Map<String, String> sensitiveCountry = null;
+        List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
+        if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
+            for (Map<String, String> item : sensitiveCountrys){
+                sensitiveCountry.put(item.get("id"),item.get("name"));
+            }
+        }
 
         for(int i=0;i<=omsEntryexitRecords.size()-1;)
         {
@@ -371,6 +377,19 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     hasApply=true;
                     QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
                     queryWrapper.eq("OMS_ID",recOut.getOmsId());
+                    List<Integer> zjlx = new ArrayList();
+                    if (app.getPassport() != null){
+                        zjlx.add(1);
+                    }
+                    if (app.getHongkongandmacaoPassport() != null){
+                        zjlx.add(2);
+                    }
+                    if (app.getTaiwanPassport() != null){
+                        zjlx.add(4);
+                    }
+                    if (zjlx != null && zjlx.size() > 0){
+                        queryWrapper.in("ZJLX", zjlx);
+                    }
                     //自己把出入境记录关联证照信息获取注销时间和证照状态
                     List<OmsCerCancellateLicense> zzlist = cerCancellateLicenseMapper.selectList(queryWrapper);
                     String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
