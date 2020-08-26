@@ -117,8 +117,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public void deletePubGroup(String id) {
-        pubGroupMapper.deletePubGroup(id);
         pubApplyMapper.deletePubApplyByYSPId(id);
+        pubGroupMapper.deletePubGroup(id);
     }
 
     @Override
@@ -258,9 +258,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             Map<String,Object> map = new HashMap<>();
             String idCardNum = jsonArray.getJSONObject(i).get("身份证号").toString();
             map.put("idCardNum",idCardNum);
-            OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectA0100ByMap(map);
+            OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectRegIdByMap(map);
             if(regProcpersoninfo != null){
-                omsPubApplyVO.setA0100(regProcpersoninfo.getA0100());
+                omsPubApplyVO.setA0100(regProcpersoninfo.getId());
                 omsPubApplyVO.setStatus(regProcpersoninfo.getIncumbencyStatus());
             }
 

@@ -173,7 +173,7 @@
     </update>
 
     <delete id="deletePubGroup">
-        delete * from oms_pub_group_pre_approval where id = #{id}
+        delete from oms_pub_group_pre_approval where id = #{id}
     </delete>
     <select id="getNumByStatus" parameterType="java.lang.String" resultType="Map">
         SELECT

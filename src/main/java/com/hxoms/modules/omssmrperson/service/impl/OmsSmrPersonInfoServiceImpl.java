@@ -253,7 +253,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 }
                 map.put("b0100",b0100);
                 map.put("idCardNum",idCardNum);
-                OmsRegProcpersoninfo rppInfo = regProcpersonInfoMapper.selectA0100ByMap(map);
+                OmsRegProcpersoninfo rppInfo = regProcpersonInfoMapper.selectRegIdByMap(map);
                 //判断所选机构和人员机构是否一致
                 if(!b0100.equals(rppInfo.getRfB0000())){
                     errOrgNum += 1;
@@ -261,7 +261,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 String srLevel = list.get(i).get("secretRelatedLevel").toString();//涉密等级
                 //封装涉密人员基本信息
                 smrPersonInfo.setId(UUIDGenerator.getPrimaryKey());
-                smrPersonInfo.setA0100(rppInfo.getA0100());
+                smrPersonInfo.setA0100(rppInfo.getId());
                 smrPersonInfo.setB0100(b0100);
                 smrPersonInfo.setIdCardNumber(idCardNum);
                 smrPersonInfo.setA0141(list.get(i).get("a0141").toString());
