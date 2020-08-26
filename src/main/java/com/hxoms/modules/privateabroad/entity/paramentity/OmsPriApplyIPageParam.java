@@ -54,6 +54,26 @@ public class OmsPriApplyIPageParam {
     //机构id
     @ApiModelProperty(value = "机构id")
     private String b0100;
+    //备案id
+    private String procpersonId;
+    //比对结果
+    private String isComparison;
+
+    public String getIsComparison() {
+        return isComparison;
+    }
+
+    public void setIsComparison(String isComparison) {
+        this.isComparison = isComparison;
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId;
+    }
 
     public Integer getPageNum() {
         return pageNum;

@@ -39,6 +39,11 @@ public class OmsPubApplyQueryParam {
     private String tzmc;
     /** 机构id */
     private String b0100;
+    //对比标识
+    private String isComparison;
+    //备案id
+    private String procpersonId;
+
     public String getPwh() {
         return pwh;
     }
@@ -117,5 +122,21 @@ public class OmsPubApplyQueryParam {
 
     public void setB0100(String b0100) {
         this.b0100 = b0100;
+    }
+
+    public String getIsComparison() {
+        return isComparison;
+    }
+
+    public void setIsComparison(String isComparison) {
+        this.isComparison = isComparison;
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId;
     }
 }
