@@ -2,22 +2,13 @@ package com.hxoms.modules.publicity.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.spring.web.json.Json;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -180,6 +171,15 @@ public class OmsPubGroupController {
     }
 
     /**
+     * 查看流程详情
+     * @param id（人员id）
+     */
+    @GetMapping("/getFlowDetail")
+    public Result getFlowDetail(String id) {
+        return Result.success(pubGroupService.getFlowDetail(id));
+    }
+
+    /**
      * 递送任务
      * @param id(团队id)
      */
@@ -195,12 +195,12 @@ public class OmsPubGroupController {
     }
 
     /**
-     * 查看流程详情
-     * @param id（人员id）
+     * 获取审核意见
+     * @param id（团组id）
      */
-    @GetMapping("/getFlowDetail")
-    public Result getFlowDetail(String id) {
-        return Result.success(pubGroupService.getFlowDetail(id));
+    @GetMapping("/getAuditOpinion")
+    public Result getAuditOpinion(String id) {
+        return Result.success(pubGroupService.getAuditOpinion(id));
     }
 
     /** 上传批文

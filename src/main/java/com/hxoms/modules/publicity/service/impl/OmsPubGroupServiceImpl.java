@@ -166,6 +166,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
+    public List<OmsPubApplyVO> getAuditOpinion(String yspId) {
+        return pubApplyMapper.selectByYSPId(yspId);
+    }
+
+    @Override
     public void sendTask(String id) {
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
         pubGroup.setSqzt(2);
@@ -189,7 +194,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     /**
      * 读取上传Json的数据(导入用)
-     * @return List<OmsSmrPersonInfo>
+     * @return OmsPubGroupAndApplyList
      */
     public OmsPubGroupAndApplyList readJsonData(MultipartFile file) throws IOException {
         //读取数据
