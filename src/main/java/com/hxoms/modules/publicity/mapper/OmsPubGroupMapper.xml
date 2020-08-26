@@ -153,8 +153,8 @@
             <if test="fylykzxm != null">
                 FYLYKZXM = #{fylykzxm,jdbcType=VARCHAR},
             </if>
-            <if test="fwlx != null">
-                SOURCE = #{fwlx,jdbcType=VARCHAR},
+            <if test="source != null">
+                SOURCE = #{source,jdbcType=VARCHAR},
             </if>
             <if test="createUser != null">
                 CREATE_USER = #{createUser,jdbcType=VARCHAR},

@@ -67,7 +67,7 @@ public class OmsPubGroupController {
      * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
             pubGroupService.updatePubGroup(pubGroupAndApplyList);
             return Result.success();

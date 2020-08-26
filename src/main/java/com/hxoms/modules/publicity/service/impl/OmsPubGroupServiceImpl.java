@@ -146,7 +146,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public void backoutPerson(String id,String cxyy) {
-        OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
         pubGroup.setSqzt(0);
         pubGroupMapper.updatePubGroup(pubGroup);
     }
