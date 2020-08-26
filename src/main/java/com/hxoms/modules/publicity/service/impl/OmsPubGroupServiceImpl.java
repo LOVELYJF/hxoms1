@@ -118,6 +118,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Override
     public void deletePubGroup(String id) {
         pubGroupMapper.deletePubGroup(id);
+        pubApplyMapper.deletePubApplyByYSPId(id);
     }
 
     @Override
