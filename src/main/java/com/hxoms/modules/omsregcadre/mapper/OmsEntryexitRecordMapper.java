@@ -10,6 +10,6 @@ public interface OmsEntryexitRecordMapper extends BaseMapper<OmsEntryexitRecord>
 
     List<OmsEntryexitRecord> selectEntryexitRecordIPage(OmsEntryexitRecordIPagParam entryexitrecord);
 
-    List<OmsEntryexitRecord> selectNoMatchList(String a0100);
+    List<OmsEntryexitRecord> selectNoMatchList(String omsId);
 
 }

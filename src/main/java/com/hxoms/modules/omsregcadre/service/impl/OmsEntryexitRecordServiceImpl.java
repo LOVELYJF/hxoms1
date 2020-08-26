@@ -3,7 +3,6 @@ package com.hxoms.modules.omsregcadre.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -24,7 +23,6 @@ import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCance
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
-import com.hxoms.modules.privateabroad.entity.OmsPriPubApply;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
@@ -32,7 +30,6 @@ import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,12 +95,13 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     public Map<String, Object> selectCompareInfo(OmsPriApply priapply, OmsEntryexitRecord outinfo, OmsEntryexitRecord joininfo) {
         Map<String, Object> map = new HashMap<>();
         if (priapply!=null && outinfo!=null && joininfo!=null){
-            int con = compareInfo(priapply, outinfo, joininfo);
+            entryexitRecordCompare(null);
+            /*int con = compareInfo(priapply, outinfo, joininfo);
             if(con > 0){
                 map = this.selectComparisionList(priapply.getA0100());
             }else{
                 throw new CustomMessageException("当前选择数据无法进行匹配");
-            }
+            }*/
         }else{
             throw new CustomMessageException("请选择数据后进行匹配");
         }
@@ -144,241 +142,89 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Map<String, Object> queryPriApplyList(String a0100) {
-        int con = this.selectAndCompareInfo(a0100);
-        Map<String, Object> map = this.selectComparisionList(a0100);
+    public Map<String, Object> queryPriApplyList(OmsRegProcpersoninfo reg) {
+        entryexitRecordCompare(reg);
+        Map<String, Object> map = this.selectComparisionList(reg.getId());
         return map;
     }
 
-    private int selectAndCompareInfo(String a0100) {
-        int con=0;
-        Map<String,Object> param = new HashMap<>();
-        param.put("a0100",a0100);
-        //比对标识，默认为未比对
-        param.put("isComparison",'0');
-        //因私申请出国境记录查询
-        List<OmsPriPubApply> pripubApplyList = priApplyMapper.selectPriPubList(a0100);
-        QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
-        exitWrapper.eq("A0100", a0100);
-        //比对结果为null的出入境记录查询
-        exitWrapper.eq("COMPARISON_RESULT", null);
-        exitWrapper.eq("OGE_STATUS", '1');
-        exitWrapper.orderByAsc("OGE_DATE");
-        //出境记录list
-        List<OmsEntryexitRecord> outlist = baseMapper.selectList(exitWrapper);
-        //入境记录list
-        exitWrapper.eq("OGE_STATUS", '2');
-        List<OmsEntryexitRecord> joinlist = baseMapper.selectList(exitWrapper);
-        OmsEntryexitRecord outinfo = new OmsEntryexitRecord();
-        OmsEntryexitRecord joininfo = new OmsEntryexitRecord();
-        if (pripubApplyList != null && pripubApplyList.size() > 0 && outlist != null && outlist.size() > 0) {
-            for (int i = 0; i < pripubApplyList.size(); i++) {
-                OmsPriApply priapply = new OmsPriApply();
-                OmsPriPubApply pripubapply = pripubApplyList.get(i);
-                //只有公安出入境记录，没有填写出入境记录
-                if (pripubapply.getCgsj() != null && pripubapply.getSjcgsj() == null) {
-                    pripubapply.setIsComparison("1");
-                    //TODO:请检查是否有两本护照
-                    BeanUtils.copyProperties(pripubapply, priapply);
-                    con = priApplyMapper.updateById(priapply);
-                } else {
-                    boolean out = false;
-                    boolean join = false;
-                    for (int j = 0; j < outlist.size(); j++) {
-                        outinfo = outlist.get(j);
-                        if (outinfo.getOgeDate().after(pripubapply.getApplyTime())
-                                && outinfo.getOgeDate().before(pripubapply.getSjhgsj())) {
-                            out = true;
-                            outlist.remove(j);
-                            break;
-                        }
-                    }
-                    for (int x = 0; x < joinlist.size(); x++) {
-                        joininfo = outlist.get(x);
-                        if (x < joinlist.size() + 1) {
-                            if (joininfo.getOgeDate().after(outinfo.getOgeDate())
-                                    && joininfo.getOgeDate().after(pripubapply.getSjcgsj())) {
-                                join = true;
-                                joinlist.remove(x);
-                                break;
-                            }
-                        } else {
-                            if (joininfo.getOgeDate().after(outinfo.getOgeDate())) {
-                                join = true;
-                                joinlist.remove(x);
-                                break;
-                            }
-                        }
-                    }
-                    if (out = join = true) {
-                        BeanUtils.copyProperties(pripubapply, priapply);
-                        con = compareInfo(priapply, outinfo, joininfo);
-                    } else {
-                        BeanUtils.copyProperties(pripubapply, priapply);
-                        priapply.setIsComparison("1");
-                        outinfo.setComparisonResult("记录不完整");
-                        outinfo.setPriapplyId(priapply.getId());
+    /**
+     * 批量比对
+     *
+     * @param omsIds
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Object batchPriApplyList (List < String > omsIds) {
+        OmsEntryexitRecordCompbatch info = new OmsEntryexitRecordCompbatch();
+        //查询批次表中是否存在进行中的批次
+        QueryWrapper<OmsEntryexitRecordCompbatch> compbatchWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
+        compbatchWrapper.eq("STATUS", 1);
+        int coun = entryexitRecordCompbatchMapper.selectCount(compbatchWrapper);
+        if (coun > 0) {
+            throw new CustomMessageException("因为前一比对还在进行，不能进行新的比对工作");
+        }
+        //TODO:已取消的处理待定
 
-                        joininfo.setComparisonResult("记录不完整");
-                        joininfo.setPriapplyId(priapply.getId());
-                        con = priApplyMapper.updateById(priapply);
-                        if (con > 0) {
-                            baseMapper.updateById(outinfo);
-                            baseMapper.updateById(joininfo);
-                        }
-
-                    }
-
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //新建批次
+        OmsEntryexitRecordCompbatch eRecordCompbatch = new OmsEntryexitRecordCompbatch();
+        eRecordCompbatch.setId(UUIDGenerator.getPrimaryKey());
+        eRecordCompbatch.setBatchNo("" + new Date().getTime());
+        eRecordCompbatch.setCreateUser(userInfo.getId());
+        eRecordCompbatch.setStartDate(new Date());
+        eRecordCompbatch.setCompareSum(omsIds.size());
+        int con = entryexitRecordCompbatchMapper.insert(eRecordCompbatch);
+        if (con > 0) {
+            //批量比对
+            if (omsIds != null && omsIds.size() > 0) {
+                for (int x = 0; x < omsIds.size(); x++) {
+                    String omsId = omsIds.get(x);
+                    OmsRegProcpersoninfo reg = new OmsRegProcpersoninfo();
+                    reg.setId(omsId);
+                    entryexitRecordCompare(reg);
+                    eRecordCompbatch.setCurrentFinishsum(Integer.parseInt(omsIds.get(x)));
+                    eRecordCompbatch.setStatus("2");
+                    entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
                 }
             }
         }
-        return con;
+        QueryWrapper<OmsEntryexitRecordCompbatch>  queryWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
+        queryWrapper.orderByDesc("START_DATE");
+        List<OmsEntryexitRecordCompbatch> list = entryexitRecordCompbatchMapper.selectList(queryWrapper);
+        if (list!=null && list.size()>0){
+            info = list.get(0);
+        }
+        return info;
     }
 
-    private int compareInfo (OmsPriApply priapply, OmsEntryexitRecord outinfo, OmsEntryexitRecord joininfo){
-            int con = 0;
-            //比对出境时间：出入境时间与因私出国实际出入国境时间一致
-            if (outinfo.getOgeDate().compareTo(priapply.getRealAbroadTime()) == 0 && joininfo.getOgeDate().compareTo(priapply.getRealAbroadTime()) == 0) {
-                //根据出入境国家查询对应国家id
-                String outPlaceId = countryMapper.selectIdByName(outinfo.getDestination());
-                String joinPlaceId = countryMapper.selectIdByName(joininfo.getDestination());
-                //查询禁止性国家
-                List<Integer> jzlist = omsSensitiveLimitMapper.getSensitiveMaintain("1");
-                //查询限制性国家
-                List<Integer> xzlist = omsSensitiveLimitMapper.getSensitiveMaintain("2");
-                //查询敏感性国家
-                List<Integer> mglist = omsSensitiveLimitMapper.getSensitiveMaintain("3");
-                if (jzlist.contains(outPlaceId)) {
-                    priapply.setIsComparison("1");
-                    outinfo.setComparisonResult("到达禁止性国家或地区");
-                } else if (jzlist.contains(joinPlaceId)) {
-                    priapply.setIsComparison("1");
-                    joininfo.setComparisonResult("到达禁止性国家或地区");
-                } else if (xzlist.contains(outPlaceId)) {
-                    priapply.setIsComparison("1");
-                    outinfo.setComparisonResult("到达限制性国家或地区");
-                } else if (xzlist.contains(joinPlaceId)) {
-                    priapply.setIsComparison("1");
-                    joininfo.setComparisonResult("到达限制性国家或地区");
-                } else if (mglist.contains(outPlaceId)) {
-                    priapply.setIsComparison("1");
-                    outinfo.setComparisonResult("到达敏感性国家或地区");
-                } else if (mglist.contains(joinPlaceId)) {
-                    priapply.setIsComparison("1");
-                    joininfo.setComparisonResult("到达敏感性国家或地区");
-                } else {
-                    String mudd = ","+priapply.getRealPassCountry()+","+priapply.getRealGoCountry()+",";
-                    String cjmudd = ","+outPlaceId+",";
-                    String rjmudd = ","+joinPlaceId+",";
-                    if (mudd.contains(cjmudd) && mudd.contains(rjmudd)) {
-                        //进行出访目的地比对
-                        priapply.setIsComparison("1");
-                        outinfo.setComparisonResult("正确");
-                        joininfo.setComparisonResult("正确");
-                    } else {
-                        //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
-                        priapply.setIsComparison("1");
-                        outinfo.setComparisonResult("出访目的地不匹配");
-                        joininfo.setComparisonResult("出访目的地不匹配");
-                    }
-                }
-            } else {
-                //出境时间不一致的（并且前后相差超过5天的），提醒干部监督处核查，
-                if (OmsRegInitUtil.dayDiff(outinfo.getOgeDate(), priapply.getRealAbroadTime()) >= 5) {
-                    //将因私出国（境）审批信息表中的比对标识置为“已比对” 是否已比对(1是、0否  )
-                    priapply.setIsComparison("1");
-                    //将出入境记录的比对结果置为“出入境时间不匹配，并且没有申请变更”，
-                    outinfo.setComparisonResult("出境时间不匹配，并且没有申请变更");
-                }
-            }
-            outinfo.setPriapplyId(priapply.getId());
-            joininfo.setPriapplyId(priapply.getId());
-            con = priApplyMapper.updateById(priapply);
-            if (con > 0) {
-                baseMapper.updateById(outinfo);
-                baseMapper.updateById(joininfo);
-            }
-            return con;
-
-        }
 
 
-        /**
-         * 查询比对结果列表
-         * @return
-         */
-        private Map<String, Object> selectComparisionList (String a0100){
-            Map<String, Object> map = new HashMap<>();
-            QueryWrapper<OmsPriApply> priApplyWrapper = new QueryWrapper<OmsPriApply>();
-            priApplyWrapper.eq("A0100", a0100);
 
-            QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
-            exitWrapper.eq("A0100", a0100);
-            exitWrapper.isNotNull("PRIAPPLY_ID");
+    /**
+     * 查询比对结果列表
+     * @return
+     */
+    private Map<String, Object> selectComparisionList (String omsId){
+        Map<String, Object> map = new HashMap<>();
+        QueryWrapper<OmsPriApply> priApplyWrapper = new QueryWrapper<OmsPriApply>();
+        priApplyWrapper.eq("PROCPERSON_ID", omsId);
 
-            //因私申请出国境记录查询
-            List<OmsPriApply> priApplyList = priApplyMapper.selectList(priApplyWrapper);
-            List<OmsEntryexitRecord> entryexitRecordslist = baseMapper.selectList(exitWrapper);
-            List<OmsEntryexitRecord> noMatchList = baseMapper.selectNoMatchList(a0100);
-            map.put("priApplyList", priApplyList);
-            map.put("entryexitRecordslist", entryexitRecordslist);
-            map.put("noMatchList", noMatchList);
-            return map;
-        }
+        QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
+        exitWrapper.eq("PROCPERSON_ID", omsId);
+        exitWrapper.isNotNull("PRIAPPLY_ID");
 
-        /**
-         * 批量比对
-         *
-         * @param a0100s
-         * @return
-         */
-        @Override
-        @Transactional(rollbackFor = Exception.class)
-        public Object batchPriApplyList (List < String > a0100s) {
-            OmsEntryexitRecordCompbatch info = new OmsEntryexitRecordCompbatch();
-            //查询批次表中是否存在进行中的批次
-            QueryWrapper<OmsEntryexitRecordCompbatch> compbatchWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
-            compbatchWrapper.eq("STATUS", 1);
-            int coun = entryexitRecordCompbatchMapper.selectCount(compbatchWrapper);
-            if (coun > 0) {
-                throw new CustomMessageException("因为前一比对还在进行，不能进行新的比对工作");
-            }
-            //TODO:已取消的处理待定
-
-            //登录用户信息
-            UserInfo userInfo = UserInfoUtil.getUserInfo();
-            //新建批次
-            OmsEntryexitRecordCompbatch eRecordCompbatch = new OmsEntryexitRecordCompbatch();
-            eRecordCompbatch.setId(UUIDGenerator.getPrimaryKey());
-            eRecordCompbatch.setBatchNo("" + new Date().getTime());
-            eRecordCompbatch.setCreateUser(userInfo.getId());
-            eRecordCompbatch.setStartDate(new Date());
-            eRecordCompbatch.setCompareSum(a0100s.size());
-            int con = entryexitRecordCompbatchMapper.insert(eRecordCompbatch);
-            if (con > 0) {
-                //批量比对
-                if (a0100s != null && a0100s.size() > 0) {
-                    for (int x = 0; x < a0100s.size(); x++) {
-                        String a0100 = a0100s.get(x);
-                        int conn = this.selectAndCompareInfo(a0100);
-                        if (conn > 0){
-                            eRecordCompbatch.setCurrentFinishsum(Integer.parseInt(a0100s.get(x)));
-                            eRecordCompbatch.setStatus("2");
-                            entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
-                        }
-                    }
-                }
-            }
-            QueryWrapper<OmsEntryexitRecordCompbatch>  queryWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
-            queryWrapper.orderByDesc("START_DATE");
-            List<OmsEntryexitRecordCompbatch> list = entryexitRecordCompbatchMapper.selectList(queryWrapper);
-            if (list!=null && list.size()>0){
-                info = list.get(0);
-            }
-            return info;
-        }
-
-
+        //因私申请出国境记录查询
+        List<OmsPriApply> priApplyList = priApplyMapper.selectList(priApplyWrapper);
+        List<OmsEntryexitRecord> entryexitRecordslist = baseMapper.selectList(exitWrapper);
+        List<OmsEntryexitRecord> noMatchList = baseMapper.selectNoMatchList(omsId);
+        map.put("priApplyList", priApplyList);
+        map.put("entryexitRecordslist", entryexitRecordslist);
+        map.put("noMatchList", noMatchList);
+        return map;
+    }
 
     /**
      * @description: 填写有关情况报告时进行比对，检查出入境记录是否合规
@@ -391,15 +237,13 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     public void verifySituationReport(OmsPriApply apply){
         //没有出国，不处理
         if(apply.getIsAbroad()=="否") return;
-
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
         Map<String, String> sensitiveCountry = null;
-
         String result =  EntryexitRecordChecking(apply.getApplyTime(),apply.getId(),
                 apply.getAbroadTime(),apply.getReturnTime(),apply.getGoCountry(),
                 apply.getRealAbroadTime(),apply.getRealReturnTime(),apply.getRealGoCountry()+","+apply.getRealPassCountry(),
-                sensitiveCountry,null,null);
-        //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
+                sensitiveCountry,null);
+        //保存比对结果isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
         apply.setComparisonResult(result);
         priApplyMapper.updateById(apply);
     }
@@ -503,15 +347,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
                     queryWrapper.eq("OMS_ID",recOut.getOmsId());
                     //自己把出入境记录关联证照信息获取注销时间和证照状态
-                    OmsCerCancellateLicense info = cerCancellateLicenseMapper.selectOne(queryWrapper);
-                    if (info!=null){
-                        certificateCancellationDate = info.getCreateTime();
-                        certificateState = info.getCardStatus();
-                    }
+                    List<OmsCerCancellateLicense> zzlist = cerCancellateLicenseMapper.selectList(queryWrapper);
                     String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
-                            sensitiveCountry,certificateCancellationDate,certificateState);
+                            sensitiveCountry,zzlist);
                     recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
                     recOut.setPriapplyId(app.getId());
                     if(recIn!=null)
@@ -531,15 +371,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                         QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
                         queryWrapper.eq("OMS_ID",recOut.getOmsId());
                         //自己把出入境记录关联证照信息获取注销时间和证照状态
-                        OmsCerCancellateLicense info = cerCancellateLicenseMapper.selectOne(queryWrapper);
-                        if (info!=null){
-                            certificateCancellationDate = info.getCreateTime();
-                            certificateState = info.getCardStatus();
-                        }
+                        List<OmsCerCancellateLicense> zzlist = cerCancellateLicenseMapper.selectList(queryWrapper);
                         String result =  EntryexitRecordChecking(app.getCreateTime(),app.getId(),
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
-                                sensitiveCountry,certificateCancellationDate,certificateState);
+                                sensitiveCountry,zzlist);
                         recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
                         recOut.setPriapplyId(app.getId());
                         if(recIn!=null)
@@ -566,6 +402,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         }
 
     }
+
+
+
+
     /**
      * @description:出入境记录检查
      * @author:李姣姣
@@ -579,8 +419,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      * @param newEntry 用于比较的入境时间
      * @param newDestination 用于比较的目的地
      * @param sensitiveCountry 禁止性、限制性、敏感性国家或地区
-     * @param certificateCancellationDate 证照注销日期
-     * @param certificateState 证照状态
+     * @param zzlist 证照信息
      * @return:java.lang.String
      **/
     @Override
@@ -588,13 +427,17 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                           Date oldExit,Date oldEntry,String oldDestination,
                                           Date newExit,Date newEntry,String newDestination,
                                           Map<String, String> sensitiveCountry,
-                                          Date certificateCancellationDate,String certificateState){
+                                          List<OmsCerCancellateLicense> zzlist){
         String result="";
         //检查是否持注销证照出入境
-        if(certificateCancellationDate!=null && certificateState=="注销" &&
-                certificateCancellationDate.before(oldExit))
-        {
-            result="持已注销证照出入境\r\n";
+        if(zzlist!=null){
+            for (int i=0;i<zzlist.size();i++){
+                if (zzlist.get(i).getCreateTime()!=null
+                        && zzlist.get(i).getCardStatus()=="注销"
+                        && zzlist.get(i).getYxqz().before(oldExit)){
+                    result="持已注销证照出入境\r\n";
+                }
+            }
         }
         //检查是否在申请时间之后，入境时间之前入境，程序不应该进入这个判断中，因为本方法之外已经做过判断
         if(newExit.before(applyDate)||newExit.after(oldEntry))
