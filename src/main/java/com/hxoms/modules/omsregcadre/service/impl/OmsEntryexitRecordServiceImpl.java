@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsregcadre.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -126,17 +127,20 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     }
 
     @Override
-    public Map<String, Object> cancelCompareInfo(String id) {
+    public int cancelCompareInfo(String id) {
         OmsPriApply priapply = new OmsPriApply();
         priapply.setId(id);
         priapply.setIsComparison("0");
         int con = priApplyMapper.updateById(priapply);
         if (con > 0){
+            UpdateWrapper<OmsEntryexitRecord> updateWrapper = new UpdateWrapper<OmsEntryexitRecord>();
+            updateWrapper.eq("PRIAPPLY_ID",id);
             OmsEntryexitRecord entryexitRecord = new OmsEntryexitRecord();
             entryexitRecord.setPriapplyId(null);
-           // baseMapper.update();
+            entryexitRecord.setComparisonResult(null);
+            con = baseMapper.update(entryexitRecord,updateWrapper);
         }
-        return null;
+        return con;
     }
 
 
@@ -150,13 +154,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
     /**
      * 批量比对
-     *
      * @param omsIds
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Object batchPriApplyList (List < String > omsIds) {
+    public Object batchPriApplyList (List<String> omsIds) {
         OmsEntryexitRecordCompbatch info = new OmsEntryexitRecordCompbatch();
         //查询批次表中是否存在进行中的批次
         QueryWrapper<OmsEntryexitRecordCompbatch> compbatchWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
@@ -519,9 +522,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         queryWrapper.eq("APPLY_ID",applyID);
         queryWrapper.orderByDesc("ESTIMATE_RETURNTIME");
         List<OmsPriDelayApply> list = omsPriDelayApplyMapper.selectList(queryWrapper);
-        if (list!=null && list.get(0).getEstimateReturntime()!=null){
+        if (list!=null && list.size()>0){
             //若入境时间在申请回国时间之后（延期入境）
-            if (newEntry.after(list.get(0).getEstimateReturntime())){
+            if (list.get(0).getEstimateReturntime()!=null
+                    && newEntry.after(list.get(0).getEstimateReturntime())){
                 flag = false;
             }else{
                 flag = true;

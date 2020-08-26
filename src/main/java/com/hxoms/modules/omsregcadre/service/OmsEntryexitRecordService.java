@@ -31,7 +31,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     Object clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit);
 
-    Map<String, Object> cancelCompareInfo(String id);/**
+    int cancelCompareInfo(String id);/**
      * @description: 填写有关情况报告时进行比对，检查出入境记录是否合规
      * @author:李姣姣
      * @date:2020-08-19

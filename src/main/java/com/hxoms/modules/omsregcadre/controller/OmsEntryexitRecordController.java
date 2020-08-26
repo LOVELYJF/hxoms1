@@ -125,8 +125,7 @@ public class OmsEntryexitRecordController {
     @GetMapping("/cancelCompareInfo")
     public Result cancelCompareInfo(String id) {
         try{
-            Map<String, Object> map = entryexitRecordService.cancelCompareInfo(id);
-            return Result.success(map);
+            return Result.success(entryexitRecordService.cancelCompareInfo(id));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -137,8 +136,8 @@ public class OmsEntryexitRecordController {
      * 批量比对
      */
     @GetMapping("/batchPriApplyList")
-    public Result batchPriApplyList(List<String> a0100s) {
-        return Result.success(entryexitRecordService.batchPriApplyList(a0100s));
+    public Result batchPriApplyList(List<String> omsIds) {
+        return Result.success(entryexitRecordService.batchPriApplyList(omsIds));
     }
 
 
