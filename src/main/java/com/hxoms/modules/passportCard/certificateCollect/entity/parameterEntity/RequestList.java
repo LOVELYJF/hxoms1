@@ -1,5 +1,8 @@
 package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -7,7 +10,9 @@ import java.util.List;
  * @Author: wangyunquan
  * @Date: 2020/8/19
  */
+@ApiModel(value = "数据集合")
 public class RequestList<T> {
+    @ApiModelProperty(value = "数据集合信息")
     private List<T> list;
 
     public List<T> getList() {

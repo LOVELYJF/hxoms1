@@ -45,4 +45,14 @@ public interface OmsCerApplyLendingLicenseMapper extends BaseMapper<OmsCerApplyL
 	 * @Date: 2020/8/21 15:38
 	 */
 	List<OmsCerApplyLendingLicense> getBatchByYear(String year);
+
+
+	/**
+	 * <b>功能描述: 根据主键查询申请借出信息</b>
+	 * @Param: [id]
+	 * @Return: com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense
+	 * @Author: luoshuai
+	 * @Date: 2020/8/25 14:16
+	 */
+	OmsCerApplyLendingLicense selectOmsCerApplyLendingLicenseInfo(String id);
 }

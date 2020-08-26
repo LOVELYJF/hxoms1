@@ -7,6 +7,9 @@ import com.hxoms.modules.privateabroad.entity.OmsApprovalReturnVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApprovalReturnIPageParam;
 import com.hxoms.modules.privateabroad.service.OmsAbroadApprovalService;
 import com.hxoms.modules.privateabroad.service.OmsApprovalReturnService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: lijing
  * @date: 2020-06-16
  */
+@Api(tags="因私出国审批回收管理")
 @RestController
 @RequestMapping("/omsApprovalReturn")
 public class OmsApprovalReturnController {
@@ -30,6 +34,7 @@ public class OmsApprovalReturnController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value="因私出国审批表回收登记", notes="因私出国审批表回收登记")
     @PostMapping("/savePriApprovalReturn")
     public Result savePriApprovalReturn(OmsApprovalReturn omsApprovalReturn) throws Exception {
         String result = omsApprovalReturnService.savePriApprovalReturn(omsApprovalReturn);
@@ -42,6 +47,7 @@ public class OmsApprovalReturnController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value="因私出国审批表回收登记删除", notes="因私出国审批表回收登记删除")
     @PostMapping("/deletePriApprovalReturn")
     public Result deletePriApprovalReturn(OmsApprovalReturn omsApprovalReturn) throws Exception {
         String result = omsApprovalReturnService.deletePriApprovalReturn(omsApprovalReturn);
@@ -54,6 +60,7 @@ public class OmsApprovalReturnController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value="因私出国审批表回收登记列表", notes="因私出国审批表回收登记列表")
     @GetMapping("/selectPriApprovalReturnPagelist")
     public Result selectPriApprovalReturnPagelist(OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam) throws Exception {
         PageInfo<OmsApprovalReturnVO> omsApprovalReturnVOPageInfo = omsApprovalReturnService.selectPriApprovalReturnPagelist(omsPriApprovalReturnIPageParam);
@@ -66,6 +73,8 @@ public class OmsApprovalReturnController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value="查询回收登记详情", notes="查询回收登记详情")
+    @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String")
     @GetMapping("/selectPriApprovalReturnDestail")
     public Result selectPriApprovalReturnDestail(String applyId) throws Exception {
         OmsApprovalReturn omsApprovalReturn = omsApprovalReturnService.selectPriApprovalReturnDestail(applyId);

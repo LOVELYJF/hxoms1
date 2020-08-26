@@ -1,20 +1,29 @@
 package com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
  * @Date: 2020/8/13
  */
+@ApiModel(value = "查询条件")
 public class AdmintorGetQueryParam {
     //姓名
+    @ApiModelProperty(value = "姓名")
     private String name;
     //机构
+    @ApiModelProperty(value = "机构")
     private String rfB0000;
     //证件类型
+    @ApiModelProperty(value = "证件类型")
     private Integer zjlx;
     //证件号码
+    @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //证照状态
+    @ApiModelProperty(value = "证照状态")
     private String cardStatus;
 
     public String getName() {

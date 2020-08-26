@@ -1,6 +1,8 @@
 package com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -9,59 +11,85 @@ import java.util.Date;
  * @Author: wangyunquan
  * @Date: 2020/8/13
  */
+@ApiModel(value = "管理员取证页面查询信息")
 public class AdmintorGetCerInfo {
     //证照表主键
+    @ApiModelProperty(value = "证照表主键")
     private String id;
     //登记备案表主键
+    @ApiModelProperty(value = "登记备案表主键")
     private String omsId;
     //单位
+    @ApiModelProperty(value = "单位")
     private String workUnit;
     //机构
+    @ApiModelProperty(value = "机构")
     private String rfB0000;
     //姓名
+    @ApiModelProperty(value = "姓名")
     private String name;
     //性别
+    @ApiModelProperty(value = "性别")
     private String sex;
     //任职状态
+    @ApiModelProperty(value = "任职状态")
     private String incumbencyStatus;
     //职务
+    @ApiModelProperty(value = "职务")
     private String post;
     //证照类型
+    @ApiModelProperty(value = "证照类型")
     private Integer zjlx;
     //芯片类型
+    @ApiModelProperty(value = "芯片类型")
     private String xplx;
     //证照形式
+    @ApiModelProperty(value = "证照形式")
     private String zjxs;
     //证件号码
+    @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //有效期至
+    @ApiModelProperty(value = "有效期至")
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date yxqz;
     //管理单位
+    @ApiModelProperty(value = "管理单位")
     private String surelyUnit;
     //证照状态
+    @ApiModelProperty(value = "证照状态")
     private String cardStatus;
     //保管状态
+    @ApiModelProperty(value = "保管状态")
     private String saveStatus;
     //保管方式
+    @ApiModelProperty(value = "保管方式")
     private String surelyWay;
     //机柜
+    @ApiModelProperty(value = "机柜")
     private String cabinetNum;
     //位置
+    @ApiModelProperty(value = "位置")
     private String place;
     //柜台编号
+    @ApiModelProperty(value = "柜台编号")
     private Integer counterNum;
     //出生日期
+    @ApiModelProperty(value = "出生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date csrq;
     //签发单位
+    @ApiModelProperty(value = "签发单位")
     private String qfjg;
     //签发日期
+    @ApiModelProperty(value = "签发日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     private Date qfrq;
     //出生地点
+    @ApiModelProperty(value = "出生地点")
     private String csdd;
     //存疑信息
+    @ApiModelProperty(value = "存疑信息")
     private String exceprionMessqge;
 
     public String getId() {

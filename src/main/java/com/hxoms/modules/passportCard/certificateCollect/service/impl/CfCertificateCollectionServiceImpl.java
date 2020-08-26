@@ -78,11 +78,11 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      * @Desc: 查询证照催缴
      * @Author: wangyunquan
      * @Param: [pageBean, cfCertificateCjQuery]
-     * @Return: com.hxoms.common.utils.PageBean
+     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo>
      * @Date: 2020/8/12
      */
     @Override
-    public PageBean selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam) {
+    public PageBean<CfCertificateCjInfo> selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CfCertificateCjInfo> pageInfo=new PageInfo<CfCertificateCjInfo>(cfCertificateCollectionMapper.selectCerCjApply(cfCertificateCjQueryParam));
         return PageUtil.packagePage(pageInfo);

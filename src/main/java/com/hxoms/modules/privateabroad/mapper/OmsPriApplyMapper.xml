@@ -115,6 +115,12 @@
     <if test="params.b0100 != null and params.b0100 != ''">
       and pa.b0100 like CONCAT(#{params.b0100},'%')
     </if>
+    <if test="params.procpersonId != null and params.procpersonId !=''">
+        and pa.PROCPERSON_ID = #{params.procpersonId}
+    </if>
+    <if test="params.procpersonId != null and params.procpersonId !=''">
+        and pa.IS_COMPARISON = #{params.isComparison}
+    </if>
     <if test="params.abroadStartTime != null and params.abroadEndTime != null">
       and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
     </if>
@@ -290,7 +296,7 @@
            '无' as taiwanPassportNum,
            '无' as isAbroad
       from oms_pub_apply where pwh like CONCAT('%',#{pwh},'%')
-      and IS_COMPARISON=#{isComparison} and a0100=#{a0100}
+      and IS_COMPARISON=#{isComparison} and PROCPERSON_ID=#{procpersonId}
 
   </select>
 </mapper>

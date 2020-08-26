@@ -14,23 +14,31 @@ import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordCompbatch;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordCompbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.OmsPriPubApply;
+import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
+import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecordMapper, OmsEntryexitRecord> implements OmsEntryexitRecordService {
@@ -45,6 +53,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     private OmsSensitiveLimitMapper omsSensitiveLimitMapper;
     @Autowired
     private OmsSupSuspendUnitMapper omsSupSuspendUnitMapper;
+    @Autowired
+    private OmsPubApplyService pubApplyService;
+    @Autowired
+    private OmsEntryexitRecordService omsEntryexitRecordService;
+    @Autowired
+    private OmsCerCancellateLicenseMapper cerCancellateLicenseMapper;
 
 
     @Override
@@ -363,5 +377,259 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
             return info;
         }
 
+
+
+    /**
+     * @description: 填写有关情况报告时进行比对，检查出入境记录是否合规
+     * @author:李姣姣
+     * @date:2020-08-19
+     *  * @param apply 因私出国申请
+     * @return:void
+     **/
+    @Override
+    public void verifySituationReport(OmsPriApply apply){
+        //没有出国，不处理
+        if(apply.getIsAbroad()=="否") return;
+
+        //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
+        Map<String, String> sensitiveCountry = null;
+
+        String result =  EntryexitRecordChecking(apply.getApplyTime(),apply.getId(),
+                apply.getAbroadTime(),apply.getReturnTime(),apply.getGoCountry(),
+                apply.getRealAbroadTime(),apply.getRealReturnTime(),apply.getRealGoCountry()+","+apply.getRealPassCountry(),
+                sensitiveCountry,null,null);
+        //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
+        apply.setComparisonResult(result);
+        priApplyMapper.updateById(apply);
     }
+    /**
+     * @description: 单人出入境记录比对
+     * @author:李姣姣
+     * @date:2020-08-20
+     *  * @param reg 登记备案人员信息
+     * @return:void
+     **/
+    @Override
+    public void entryexitRecordCompare(OmsRegProcpersoninfo reg)
+    {
+        //查询未比对的因私出国境申请
+        OmsPriApplyIPageParam pp=new OmsPriApplyIPageParam();
+        //只查询已办结
+        pp.setApplyStatus(new Integer[]{28});
+        //查询指定备案人员的出国境申请
+        pp.setProcpersonId(reg.getId());
+        //只查询未比对的
+        pp.setIsComparison("0");
+        //注意要按申请时间升序排序，后面的出入境记录只取第一条申请记录申请时间之后的
+        List<OmsPriApplyVO> apps = priApplyMapper.selectOmsPriApplyIPage(pp);
+        //没有申请不做比对
+        if(apps.size()==0) return;
+
+        //查询未比对的因公赴台申请
+        OmsPubApplyQueryParam pqp=new OmsPubApplyQueryParam();
+        //只查询已办结
+        List<Integer> status=new ArrayList<>(28);
+        pqp.setStatus(status);
+        //查询指定备案人员的出国境申请
+        pqp.setProcpersonId(reg.getId());
+        //只查询未比对的
+        pqp.setIsComparison("0");
+        //只查询赴台的
+        pqp.setPwh("琼台赴字");
+        List<OmsPubApply> omsPubApplies = pubApplyService.getPubAppListByCondition(pqp).getList();
+
+        Date applyDate=apps.get(0).getApplyTime();
+        //查询未比对的因私出国境记录
+        OmsEntryexitRecordIPagParam entryexitRecordIPagParam=new OmsEntryexitRecordIPagParam();
+        //注意修改SQL，用大于等于申请日期之后的出入境记录
+        entryexitRecordIPagParam.setOgeDate(applyDate);
+        //查询因私出国境申请id为空的记录（未比对）
+        entryexitRecordIPagParam.setPriapplyId(null);
+        //查询指定人员的出入境记录
+        entryexitRecordIPagParam.setOmsId(reg.getId());
+        //注意要按出国境时间排序（升序）
+        //todo
+        List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
+        //没有出入境记录不做比对
+        if(omsEntryexitRecords.size()==0) return;
+
+        //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
+        Map<String, String> sensitiveCountry = null;
+
+        for(int i=0;i<=omsEntryexitRecords.size()-1;)
+        {
+            OmsEntryexitRecord recOut=omsEntryexitRecords.get(i);
+            OmsEntryexitRecord recIn=null;
+            if(i<omsEntryexitRecords.size()-1)
+                recIn=omsEntryexitRecords.get(i+1);
+
+            Date exitDate=null;
+            Date entryDate=null;
+            String country="";
+            recOut.setComparisonResult("");
+            if(recIn!=null)recIn.setComparisonResult("");
+
+            //出入境配对
+            if(recOut.getOgaMode()=="出境" && recIn!=null && recIn.getOgaMode()=="入境")
+            {
+                exitDate=recOut.getOgeDate();
+                entryDate=recIn.getOgeDate();
+                country=recOut.getDestination()+","+recIn.getDestination();
+                i+=2;
+            }
+            //入境记录丢失
+            else if(recOut.getOgaMode()=="出境" &&(recIn==null ||recIn.getOgaMode()=="出境"))
+            {
+                exitDate=recOut.getOgeDate();
+                country=recOut.getDestination();
+                recOut.setComparisonResult("入境记录丢失");
+                i+=1;
+            }
+            //出境记录丢失
+            else if(recOut.getOgaMode()=="入境" )
+            {
+                entryDate=recOut.getOgeDate();
+                country=recOut.getDestination();
+                recOut.setComparisonResult("出境记录丢失");
+                i+=1;
+            }
+            boolean hasApply=false;
+            Date certificateCancellationDate = null;
+            String certificateState=null;
+            for (OmsPriApplyVO  app: apps){
+                if(app.getApplyTime().before(exitDate) && app.getReturnTime().after(exitDate)){
+                    hasApply=true;
+                    QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
+                    queryWrapper.eq("OMS_ID",recOut.getOmsId());
+                    //自己把出入境记录关联证照信息获取注销时间和证照状态
+                    OmsCerCancellateLicense info = cerCancellateLicenseMapper.selectOne(queryWrapper);
+                    if (info!=null){
+                        certificateCancellationDate = info.getCreateTime();
+                        certificateState = info.getCardStatus();
+                    }
+                    String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
+                            app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
+                            exitDate,entryDate,country,
+                            sensitiveCountry,certificateCancellationDate,certificateState);
+                    recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
+                    recOut.setPriapplyId(app.getId());
+                    if(recIn!=null)
+                    {
+                        recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
+                        recIn.setPriapplyId(app.getId());
+                    }
+                }
+            };
+            //检查因公赴台记录
+            if(hasApply==false && omsPubApplies.size()>0){
+                for (OmsPubApply  app: omsPubApplies){
+                    if(app.getCreateTime().before(exitDate) && app.getHgsj().after(exitDate))
+                    {
+                        hasApply=true;
+                        //自己把出入境记录关联证照信息获取注销时间和证照状态
+                        QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
+                        queryWrapper.eq("OMS_ID",recOut.getOmsId());
+                        //自己把出入境记录关联证照信息获取注销时间和证照状态
+                        OmsCerCancellateLicense info = cerCancellateLicenseMapper.selectOne(queryWrapper);
+                        if (info!=null){
+                            certificateCancellationDate = info.getCreateTime();
+                            certificateState = info.getCardStatus();
+                        }
+                        String result =  EntryexitRecordChecking(app.getCreateTime(),app.getId(),
+                                app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
+                                exitDate,entryDate,country,
+                                sensitiveCountry,certificateCancellationDate,certificateState);
+                        recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
+                        recOut.setPriapplyId(app.getId());
+                        if(recIn!=null)
+                        {
+                            recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
+                            recIn.setPriapplyId(app.getId());
+                        }
+                    }
+                }
+            }
+            if(hasApply==false){
+                recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n未经申请的出国境");
+                if(recIn!=null)
+                {
+                    recIn.setComparisonResult(recOut.getComparisonResult()+"\r\n未经申请的出国境");
+                }
+            }
+            //保存出入境记录
+            omsEntryexitRecordService.updateEntryexitRecord(recOut);
+            if(recIn!=null)
+            {
+                omsEntryexitRecordService.updateEntryexitRecord(recIn);
+            }
+        }
+
+    }
+    /**
+     * @description:出入境记录检查
+     * @author:李姣姣
+     * @date:2020-08-19
+     * @param applyDate 申请出国境日期
+     * @param applyID 出国境申请主键
+     * @param oldExit 被比较出境时间
+     * @param oldEntry 被比较入境时间
+     * @param oldDestination 被比较目的地
+     * @param newExit 用于比较的出境时间
+     * @param newEntry 用于比较的入境时间
+     * @param newDestination 用于比较的目的地
+     * @param sensitiveCountry 禁止性、限制性、敏感性国家或地区
+     * @param certificateCancellationDate 证照注销日期
+     * @param certificateState 证照状态
+     * @return:java.lang.String
+     **/
+    @Override
+    public String EntryexitRecordChecking(Date applyDate,String applyID,
+                                          Date oldExit,Date oldEntry,String oldDestination,
+                                          Date newExit,Date newEntry,String newDestination,
+                                          Map<String, String> sensitiveCountry,
+                                          Date certificateCancellationDate,String certificateState){
+        String result="";
+        //检查是否持注销证照出入境
+        if(certificateCancellationDate!=null && certificateState=="注销" &&
+                certificateCancellationDate.before(oldExit))
+        {
+            result="持已注销证照出入境\r\n";
+        }
+        //检查是否在申请时间之后，入境时间之前入境，程序不应该进入这个判断中，因为本方法之外已经做过判断
+        if(newExit.before(applyDate)||newExit.after(oldEntry))
+        {
+            result+="未经审批的出入境\r\n";
+        }
+
+        //判断是否有延期入境申请
+        boolean delay=CheckDelay();
+        //没有申请延期，并且入境时间超过计划入境时间5天以上
+        if(delay==false && newEntry.compareTo(oldEntry)>5)
+        {
+            result+="未经申请延期入境\r\n";
+        }
+        String[] dests=newDestination.split(",");
+        String oldDest=","+oldDestination+",";
+        for(int i=0;i<dests.length;i++)
+        {
+            if(dests[i].isEmpty()==false&&oldDest.contains(","+dests[i]+",")==false)
+            {
+                result+="擅自变更行程（"+dests[i]+"）\r\n";
+            }
+            if(sensitiveCountry.containsKey(dests[i]))
+            {
+                result+="前往了"+sensitiveCountry.get(dests[i])+"（"+dests[i]+"）\r\n";
+            }
+        }
+
+        return result;
+    }
+
+    private boolean CheckDelay() {
+        boolean flag = false;
+        return flag;
+    }
+
+
+}
 
