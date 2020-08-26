@@ -2,21 +2,13 @@ package com.hxoms.modules.publicity.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.spring.web.json.Json;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,7 +67,7 @@ public class OmsPubGroupController {
      * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public Result updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
             pubGroupService.updatePubGroup(pubGroupAndApplyList);
             return Result.success();
@@ -103,11 +95,9 @@ public class OmsPubGroupController {
 
     /** 上传团体预备案申请信息
      * @param file
-     * @param orgName
-     * @param orgId
      */
-    @PostMapping("/uploadPubGroupExcel")
-    public Result uploadPubGroupExcel(MultipartFile file, String orgName,String orgId) {
+    @PostMapping("/uploadPubGroupJson")
+    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file) {
         try{
             //获得文件的名称
             String fileName = file.getOriginalFilename();
@@ -116,7 +106,7 @@ public class OmsPubGroupController {
             if(!"json".equals(extensionName)){
                 return Result.error("请上传json格式文件");
             }else{
-                return Result.success(pubGroupService.uploadPubGroupExcel(file,orgName,orgId));
+                return Result.success(pubGroupService.uploadPubGroupJson(file));
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -181,6 +171,15 @@ public class OmsPubGroupController {
     }
 
     /**
+     * 查看流程详情
+     * @param id（人员id）
+     */
+    @GetMapping("/getFlowDetail")
+    public Result getFlowDetail(String id) {
+        return Result.success(pubGroupService.getFlowDetail(id));
+    }
+
+    /**
      * 递送任务
      * @param id(团队id)
      */
@@ -196,12 +195,12 @@ public class OmsPubGroupController {
     }
 
     /**
-     * 查看流程详情
-     * @param id（人员id）
+     * 获取审核意见
+     * @param id（团组id）
      */
-    @GetMapping("/getFlowDetail")
-    public Result getFlowDetail(String id) {
-        return Result.success(pubGroupService.getFlowDetail(id));
+    @GetMapping("/getAuditOpinion")
+    public Result getAuditOpinion(String id) {
+        return Result.success(pubGroupService.getAuditOpinion(id));
     }
 
     /** 上传批文

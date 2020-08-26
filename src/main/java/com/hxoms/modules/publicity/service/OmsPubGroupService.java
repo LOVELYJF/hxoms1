@@ -3,6 +3,7 @@ package com.hxoms.modules.publicity.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OmsPubGroupAndApplyList;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //删除团体预备案申请信息
     void deletePubGroup(String id);
     //上传团体预备案申请信息
-    OmsPubGroupAndApplyList uploadPubGroupExcel(MultipartFile file, String orgName, String orgId) throws IOException;
+    OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException;
     //重新校验
     String checkoutPerson(String idList);
     //添加人员
@@ -38,6 +39,8 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     OmsPubGroupAndApplyList getPubGroupDetailById(String id);
     //查看详情
     OmsPubApply getPersonDetailById(String id);
+    //获取审核意见
+    List<OmsPubApplyVO> getAuditOpinion(String id);
     //递送任务
     void sendTask(String id);
     //查看流程详情
