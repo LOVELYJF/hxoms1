@@ -66,4 +66,10 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
     List<Map<String, String>> selectVisaSettingByCode(Map<String, String> params);
 
     List<OmsPriPubApply> selectPriPubList(String a0100);
+
+    /**
+     * 查询禁止性、限制性、敏感性国家和地区
+     * @return
+     */
+    List<Map<String, String>> selectSensitiveCountry();
 }

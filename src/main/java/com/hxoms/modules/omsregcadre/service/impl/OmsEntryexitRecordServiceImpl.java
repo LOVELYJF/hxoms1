@@ -236,14 +236,39 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     @Override
     public void verifySituationReport(OmsPriApply apply){
         //没有出国，不处理
-        if(apply.getIsAbroad()=="否") return;
+        if("0".equals(apply.getIsAbroad())) return;
+
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
-        Map<String, String> sensitiveCountry = null;
+        Map<String, String> sensitiveCountry = new HashMap<>();
+        List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
+        if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
+            for (Map<String, String> item : sensitiveCountrys){
+                sensitiveCountry.put(item.get("id"),item.get("name"));
+            }
+        }
+        //证照信息
+        QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("OMS_ID",apply.getProcpersonId());
+        List<Integer> zjlx = new ArrayList();
+        if (apply.getPassport() != null){
+            zjlx.add(1);
+        }
+        if (apply.getHongkongandmacaoPassport() != null){
+            zjlx.add(2);
+        }
+        if (apply.getTaiwanPassport() != null){
+            zjlx.add(4);
+        }
+        if (zjlx != null && zjlx.size() > 0){
+            queryWrapper.in("ZJLX", zjlx);
+        }
+        //自己把出入境记录关联证照信息获取注销时间和证照状态
+        List<OmsCerCancellateLicense> info = cerCancellateLicenseMapper.selectList(queryWrapper);
         String result =  EntryexitRecordChecking(apply.getApplyTime(),apply.getId(),
                 apply.getAbroadTime(),apply.getReturnTime(),apply.getGoCountry(),
                 apply.getRealAbroadTime(),apply.getRealReturnTime(),apply.getRealGoCountry()+","+apply.getRealPassCountry(),
-                sensitiveCountry,null);
-        //保存比对结果isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
+                sensitiveCountry,info);
+        //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
         apply.setComparisonResult(result);
         priApplyMapper.updateById(apply);
     }
