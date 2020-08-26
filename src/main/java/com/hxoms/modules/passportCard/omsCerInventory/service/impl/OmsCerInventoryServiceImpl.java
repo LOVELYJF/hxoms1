@@ -61,10 +61,9 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("cabinetNum", omsCerInventory.getCabinetNum());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
-		if(resultList != null && resultList.size() > 0){
+		if(resultList.size() > 0){
 			throw new CustomMessageException("该证照柜已经完成盘点，查询请点击统计盘点结果");
 		}
-
 
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
@@ -93,8 +92,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				throw new CustomMessageException("保存到证照盘点表失败");
 			}else {
 				//将该条数据在证照信息表中的机柜、位置清空
-				cfCertificate.setCabinetNum(null);
-				cfCertificate.setPlace(null);
+				cfCertificate.setCabinetNum("");
+				cfCertificate.setPlace("");
 				cfCertificate.setSaveStatus("1");           //全部将状态置为已取出
 				int count1 = cfCertificateMapper.updateById(cfCertificate);
 				if(count1 < 1){
@@ -112,7 +111,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/19 14:38
 	 */
-	public List<Map<String, Object>> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory) {
+	public Map<String, Object> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory) {
 
 		//盘点后重新查询证照状态
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -148,7 +147,18 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		map.put("sameStatus","1");          //盘点前后状态是否一致（仅做xml文件的条件）
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
-		return resultList;
+
+		Map<String,Object> inventoryResult = new HashMap<String,Object>();
+		inventoryResult.put("resultList", resultList);          //将前后盘点结果不一样的添加到页面
+
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		map1.put("cabinetNum",omsCerInventory.getCabinetNum());
+		String inventoryDate = UtilDateTime.formatCNMonth(new Date());
+		map1.put("inventoryDate",inventoryDate);
+		Map<String, Integer> resultmap = omsCerInventoryMapper.getCerInventoryStatisticsNum(map);
+
+		inventoryResult.put("resultMap", resultmap);            //将盘点统计数量显示到页面
+		return inventoryResult;
 	}
 
 
@@ -212,7 +222,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			style.setFont(font);
 			cell.setCellStyle(style);
 			//设置标题单元格内容
-			cell.setCellValue(UtilDateTime.formatCNMonth(new Date()) + " " + omsCerInventory.getCabinetNum() + " 证照机盘点结果");
+			cell.setCellValue(UtilDateTime.formatCNMonth(new Date()) + "（" + omsCerInventory.getCabinetNum() + "）证照机盘点结果");
 
 			//合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
 			sheet.addMergedRegion(new CellRangeAddress(0,1,0,14));
@@ -249,18 +259,18 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(list.get(i).get("sex").equals("1") ? "男" : "女");
-				row.createCell(4).setCellValue((String) list.get(i).get("csrq"));
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(list.get(i).get("zjlx").toString()) - 1]);
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
-				row.createCell(8).setCellValue((String) list.get(i).get("yxqz"));
+				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
 				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
 				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) list.get(i).get("cabinetNum"));
 				row.createCell(13).setCellValue((String) list.get(i).get("place"));
-				row.createCell(14).setCellValue((String) list.get(i).get("inventoryresult"));
+				row.createCell(14).setCellValue((String) list.get(i).get("inventoryResult"));
 				//设置单元格字体大小
 				for(int j = 0;j < 15;j++){
 					row.getCell(j).setCellStyle(style1);
@@ -284,23 +294,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	}
 
 
-	/**
-	 * <b>功能描述: 盘点情况统计（证照机）返回前后统计数量</b>
-	 * @Param: [omsCerInventory]
-	 * @Return: com.hxoms.common.utils.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/20 14:38
-	 */
-	public Map<String, Integer> getCerInventoryStatisticsNum(OmsCerInventory omsCerInventory) {
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("cabinetNum",omsCerInventory.getCabinetNum());
-		String inventoryDate = UtilDateTime.formatCNMonth(new Date());
-		map.put("inventoryDate",inventoryDate);
-		Map<String, Integer> resultmap = omsCerInventoryMapper.getCerInventoryStatisticsNum(map);
-		return resultmap;
-	}
-
-
 
 	/**
 	 * <b>功能描述: 开始盘点（柜台）</b>
@@ -318,7 +311,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		result.put("cardStatus", "0");
 		List<Map<String,Object>>  inventoryList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
-		if(inventoryList != null && inventoryList.size() > 0){
+		if(inventoryList.size() > 0){
 			throw new CustomMessageException("该号码段内已经有盘点过得证照");
 		}
 
@@ -327,6 +320,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		map.put("cardStatus", "0");
+		map.put("isCounter", "1");              //取柜台的证照
 		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map); //查询号码范围内正常状态且正常保管或已取出状态的证照信息
 
 		//将查询结果保存到盘点表中
@@ -341,6 +335,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			omsCerInventory1.setZjhm(cfCertificate.getZjhm());
 			omsCerInventory1.setYxqz(cfCertificate.getYxqz());
 			omsCerInventory1.setCardStatus(cfCertificate.getCardStatus());
+			omsCerInventory1.setCounterNum(cfCertificate.getCounterNum());
 			omsCerInventory1.setBeforeInventorySaveStatus(cfCertificate.getSaveStatus());
 			omsCerInventory1.setAfterInventorySaveStatus("1");                                 //将所有保管后状态置为已取出
 			omsCerInventory1.setInventoryDate(UtilDateTime.formatCNMonth(new Date()));         //盘点年月
@@ -381,8 +376,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 					cfCertificate.setSaveStatus(omsCerInventory.getAfterInventorySaveStatus());
 
 					QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
-					queryWrapper.eq("ZJHM", omsCerInventory.getZjhm())
-							.eq("YXQZ", omsCerInventory.getYxqz());
+					queryWrapper.eq("ZJHM", omsCerInventory.getZjhm());
 					int count1 = cfCertificateMapper.update(cfCertificate, queryWrapper);
 					if(count1 < 1){
 						throw new CustomMessageException("更新到证照信息表失败");
@@ -466,7 +460,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			style.setFont(font);
 			cell.setCellStyle(style);
 			//设置标题单元格内容
-			cell.setCellValue(UtilDateTime.formatCNMonth(new Date()) + "柜台从" + omsCerInventory.getCounterStartQuery()  + "到" + omsCerInventory.getCounterEndQuery() + "号证照盘点结果");
+			cell.setCellValue(UtilDateTime.formatCNMonth(new Date()) + "柜台从 " + omsCerInventory.getCounterStartQuery()  + " 到 " + omsCerInventory.getCounterEndQuery() + " 号证照盘点结果");
 
 			//合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
 			sheet.addMergedRegion(new CellRangeAddress(0,1,0,13));
@@ -502,17 +496,17 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(list.get(i).get("sex").equals("1") ? "男" : "女");
-				row.createCell(4).setCellValue((String) list.get(i).get("csrq"));
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(list.get(i).get("zjlx").toString()) - 1]);
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
-				row.createCell(8).setCellValue((String) list.get(i).get("yxqz"));
+				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
 				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
 				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) list.get(i).get("counterNum"));
-				row.createCell(13).setCellValue((String) list.get(i).get("inventoryresult"));
+				row.createCell(13).setCellValue((String) list.get(i).get("inventoryResult"));
 				//设置单元格字体大小
 				for(int j = 0;j < 14;j++){
 					row.getCell(j).setCellStyle(style1);
@@ -548,7 +542,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list", list);
 		map.put("sameStatus", "1");
-		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
@@ -600,7 +594,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	public void getCerInventoryResultOut(List<String> list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list", list);
-		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
@@ -667,19 +661,19 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) resultList.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) resultList.get(i).get("name"));
-				row.createCell(3).setCellValue(resultList.get(i).get("sex").equals("1") ? "男" : "女");
-				row.createCell(4).setCellValue((String) resultList.get(i).get("csrq"));
+				row.createCell(3).setCellValue(String.valueOf(resultList.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) resultList.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) resultList.get(i).get("post"));
 				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(resultList.get(i).get("zjlx").toString()) - 1]);
 				row.createCell(7).setCellValue((String) resultList.get(i).get("zjhm"));
-				row.createCell(8).setCellValue((String) resultList.get(i).get("yxqz"));
+				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)resultList.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("cardStatus").toString())]);
 				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("beforeInventorySaveStatus").toString())]);
 				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) resultList.get(i).get("cabinetNum"));
 				row.createCell(13).setCellValue((String) resultList.get(i).get("place"));
 				row.createCell(14).setCellValue((String) resultList.get(i).get("counterNum"));
-				row.createCell(15).setCellValue((String) resultList.get(i).get("inventoryresult"));
+				row.createCell(15).setCellValue((String) resultList.get(i).get("inventoryResult"));
 				//设置单元格字体大小
 				for(int j = 0;j < 16;j++){
 					row.getCell(j).setCellStyle(style1);
@@ -735,12 +729,12 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask,mode]
+	 * @Param: [omsCerGetTask]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
-	public void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask,String mode) {
+	public void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask) {
 		omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
 		//查询证照表的ID
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
@@ -763,9 +757,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		omsCerExitEntryRepertory.setZjhm(omsCerGetTask.getZjhm());
 		omsCerExitEntryRepertory.setZjlx(omsCerGetTask.getZjlx());
 		omsCerExitEntryRepertory.setStatus("0");
-		if(mode != null && mode != ""){
-			omsCerExitEntryRepertory.setMode(mode);
-		}
+		omsCerExitEntryRepertory.setMode("0");
+
 		omsCerExitEntryRepertory.setOperator(UserInfoUtil.getUserInfo().getId());
 		omsCerExitEntryRepertory.setOperateTime(new Date());
 		int count1 = omsCerExitEntryRepertoryMapper.insert(omsCerExitEntryRepertory);
