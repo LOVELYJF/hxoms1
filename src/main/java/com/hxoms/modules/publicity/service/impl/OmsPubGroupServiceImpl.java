@@ -5,16 +5,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,6 +116,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public void deletePubGroup(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
         pubApplyMapper.deletePubApplyByYSPId(id);
         pubGroupMapper.deletePubGroup(id);
     }
@@ -146,13 +148,49 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public void backoutPerson(String id,String cxyy) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
+            throw new CustomMessageException("参数为空!");
+        }
+        //撤销团组
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
-        pubGroup.setSqzt(0);
-        pubGroupMapper.updatePubGroup(pubGroup);
+        if(pubGroup != null){
+            pubGroup.setSqzt(0);
+            pubGroupMapper.updatePubGroup(pubGroup);
+        }
+        //批量撤销人员
+        List<OmsPubApplyVO> applyVOListlist = pubApplyMapper.selectByYSPId(id);
+        if(applyVOListlist.size()>0){
+            for (int i = 0; i < applyVOListlist.size(); i++) {
+                pubApplyMapper.repealPubApplyById(applyVOListlist.get(i).getId(),cxyy, Constants.private_business[7]);
+            }
+        }
+    }
+
+    @Override
+    public void regainPerson(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        //恢复团组
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
+        if(pubGroup != null){
+            pubGroup.setSqzt(1);
+            pubGroupMapper.updatePubGroup(pubGroup);
+        }
+        //批量恢复人员
+        List<OmsPubApplyVO> applyVOListlist = pubApplyMapper.selectByYSPId(id);
+        if(applyVOListlist.size()>0){
+            for (int i = 0; i < applyVOListlist.size(); i++) {
+                pubApplyMapper.repealPubApplyById(applyVOListlist.get(i).getId(),null, Constants.private_business[0]);
+            }
+        }
     }
 
     @Override
     public OmsPubGroupAndApplyList getPubGroupDetailById(String yspId) {
+        if (StringUtils.isBlank(yspId)){
+            throw new CustomMessageException("参数为空!");
+        }
         OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(yspId);
         List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(yspId);
@@ -167,12 +205,26 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
+    public Map<String, Object> getBackoutById(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        return null;
+    }
+
+    @Override
     public List<OmsPubApplyVO> getAuditOpinion(String yspId) {
+        if (StringUtils.isBlank(yspId)){
+            throw new CustomMessageException("参数为空!");
+        }
         return pubApplyMapper.selectByYSPId(yspId);
     }
 
     @Override
     public void sendTask(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
         pubGroup.setSqzt(2);
         pubGroupMapper.updatePubGroup(pubGroup);
@@ -180,6 +232,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public List<Map<String, String>>  getFlowDetail(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
         return pubGroupMapper.getFlowDetail(id);
     }
 
