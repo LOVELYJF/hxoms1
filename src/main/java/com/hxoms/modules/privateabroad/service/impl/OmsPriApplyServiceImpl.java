@@ -8,6 +8,7 @@ import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
+import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
@@ -56,6 +57,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsAbroadApprovalService omsAbroadApprovalService;
     @Autowired
     private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsEntryexitRecordService omsEntryexitRecordService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -321,18 +324,20 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         return "操作成功";
     }
 
+    @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String saveAbroadState(OmsPriApply omsPriApply) {
         if(StringUtils.isBlank(omsPriApply.getId())){
             throw new CustomMessageException("参数错误");
         }
-        if (omsPriApplyMapper.selectById(omsPriApply.getId()) == null){
+        if (omsPriApplyMapper.selectCount((new QueryWrapper<OmsPriApply>()).eq("ID", omsPriApply.getId())) < 1){
             throw new CustomMessageException("该申请不存在");
         }
-        //结果比对
         if (omsPriApplyMapper.updateById(omsPriApply) < 1){
             throw new CustomMessageException("操作失败");
         }
+        //结果比对
+        omsEntryexitRecordService.verifySituationReport(omsPriApplyMapper.selectById(omsPriApply.getId()));
         return "操作成功";
     }
 

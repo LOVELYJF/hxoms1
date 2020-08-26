@@ -199,7 +199,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", "0");
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
-		map.put("sameStatus",null);
+		map.put("sameStatus","1");
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
 		if(list.size() < 1 || list == null){
@@ -438,6 +438,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		map.put("cardStatus", "0");
+		map.put("sameStatus","1");
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -602,6 +603,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
+		map.put("sameStatus","1");
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
 
 

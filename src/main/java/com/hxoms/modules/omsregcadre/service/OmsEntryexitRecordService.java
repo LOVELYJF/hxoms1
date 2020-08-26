@@ -6,6 +6,7 @@ import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 
 import java.util.Date;
@@ -16,9 +17,9 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 
-    Map<String, Object> queryPriApplyList(String a0100);
+    Map<String, Object> queryPriApplyList(OmsRegProcpersoninfo reg);
 
-    Object batchPriApplyList(List<String> a0100s);
+    Object batchPriApplyList(List<String> omsIds);
 
     Object insertEntryexitRecord(OmsEntryexitRecord entryexitRecord);
 
@@ -59,15 +60,14 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
      * @param newEntry 用于比较的入境时间
      * @param newDestination 用于比较的目的地
      * @param sensitiveCountry 禁止性、限制性、敏感性国家或地区
-     * @param certificateCancellationDate 证照注销日期
-     * @param certificateState 证照状态
+     * @param zzlist 证照信息
      * @return:java.lang.String
      **/
     String EntryexitRecordChecking(Date applyDate, String applyID,
                                    Date oldExit, Date oldEntry, String oldDestination,
                                    Date newExit, Date newEntry, String newDestination,
                                    Map<String, String> sensitiveCountry,
-                                   Date certificateCancellationDate, String certificateState);
+                                   List<OmsCerCancellateLicense> zzlist);
 
 
 

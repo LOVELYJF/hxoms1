@@ -3,6 +3,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -89,9 +90,9 @@ public class OmsEntryexitRecordController {
      * @return
      */
     @GetMapping("/queryPriApplyList")
-    public Result queryPriApplyList(String a0100) {
+    public Result queryPriApplyList(OmsRegProcpersoninfo reg) {
         try{
-            Map<String, Object> map = entryexitRecordService.queryPriApplyList(a0100);
+            Map<String, Object> map = entryexitRecordService.queryPriApplyList(reg);
             return Result.success(map);
         }catch (Exception e) {
             e.printStackTrace();
