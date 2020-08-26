@@ -139,13 +139,27 @@ public class OmsPubGroupController {
     }
 
     /**
-     * 撤销人员
+     * 撤销团组
      * @param id
      */
     @PostMapping("/backoutPerson")
     public Result backoutPerson(String id,String cxyy) {
         try {
             pubGroupService.backoutPerson(id,cxyy);
+            return Result.success();
+        }catch (Exception e){
+            return Result.error("系统错误！");
+        }
+    }
+
+    /**
+     * 恢复团组
+     * @param id
+     */
+    @PostMapping("/regainPerson")
+    public Result regainPerson(String id) {
+        try {
+            pubGroupService.regainPerson(id);
             return Result.success();
         }catch (Exception e){
             return Result.error("系统错误！");
@@ -168,6 +182,15 @@ public class OmsPubGroupController {
     @GetMapping("/getPersonDetailById")
     public Result getPersonDetailById(String id) {
         return Result.success(pubGroupService.getPersonDetailById(id));
+    }
+
+    /**
+     * 查看撤销详情
+     * @param id
+     */
+    @GetMapping("/getBackoutById")
+    public Result getBackoutById(String id) {
+        return Result.success(pubGroupService.getBackoutById(id));
     }
 
     /**
