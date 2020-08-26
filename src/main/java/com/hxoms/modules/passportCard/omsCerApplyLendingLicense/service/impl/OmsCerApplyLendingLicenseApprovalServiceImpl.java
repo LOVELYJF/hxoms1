@@ -22,6 +22,7 @@ import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerAp
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -97,6 +98,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 16:29
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public void updateApplyLendingLicenseApprovalResult(List<OmsCerApplyLendingLicense> list) {
 		if(list != null && list.size() > 0){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){

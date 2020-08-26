@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -193,6 +194,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 14:16
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public List<CfCertificate> getTransferExpiredLicenseDeposit(List<CfCertificate> list) {
 		if(list != null && list.size() > 0){
 			for(CfCertificate cfCertificate : list){

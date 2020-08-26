@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -238,6 +239,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 11:48
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public void updateCerCancellateLicenseApprovalComplete(OmsCerCancellateLicense omsCerCancellateLicense) {
 		omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerCancellateLicense.setModifyTime(new Date());
