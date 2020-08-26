@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,6 +55,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/19 14:38
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public void insertCerInventoryInfoForCabinet(OmsCerInventory omsCerInventory) {
 
 		//在此处判断是否已经盘点过
@@ -111,6 +113,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/19 14:38
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Object> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory) {
 
 		//盘点后重新查询证照状态
@@ -302,6 +305,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public List<Map<String, Object>> insertCerInventoryInfoForCounter(OmsCerInventory omsCerInventory) {
 
 		//查询是否有已经盘点的证照号码
@@ -361,6 +365,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Integer> updateCerInventoryResultForCounter(List<OmsCerInventory> list) {
 		if(list != null && list.size() > 0){
 			for(OmsCerInventory omsCerInventory : list){
@@ -734,6 +739,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask) {
 		omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
 		//查询证照表的ID
