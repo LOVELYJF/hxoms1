@@ -4,7 +4,6 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
 import com.hxoms.modules.passportCard.omsCerInventory.service.OmsCerInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class OmsCerInventoryController extends BaseController {
 	 */
 	@PostMapping("/GetCerInventoryResultForCabinet")
 	public Result GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory){
-		List<Map<String,Object>> list = omsCerInventoryService.GetCerInventoryResultForCabinet(omsCerInventory);
+		Map<String,Object> list = omsCerInventoryService.GetCerInventoryResultForCabinet(omsCerInventory);
 		return Result.success(list);
 	}
 
@@ -64,7 +63,7 @@ public class OmsCerInventoryController extends BaseController {
 	 * @Date: 2020/8/19 14:38
 	 */
 	@PostMapping("/updateCerInventoryResultForCabinet")
-	public Result updateCerInventoryResultForCabinet(@RequestParam(value = "list",required = false) List<OmsCerInventory> list){
+	public Result updateCerInventoryResultForCabinet(@RequestBody List<OmsCerInventory> list){
 		omsCerInventoryService.updateCerInventoryResultForCabinet(list);
 		return Result.success();
 	}
@@ -81,32 +80,6 @@ public class OmsCerInventoryController extends BaseController {
 	public void getCerInventoryResultForCabinetOut(OmsCerInventory omsCerInventory){
 		omsCerInventoryService.getCerInventoryResultForCabinetOut(omsCerInventory,response);
 	}
-
-
-
-	/**
-	 * <b>功能描述: 盘点情况统计（证照机）返回前后统计数量</b>
-	 * @Param: [omsCerInventory]
-	 * @Return: com.hxoms.common.utils.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/20 14:38
-	 */
-	@GetMapping("/getCerInventoryStatisticsNum")
-	public Result getCerInventoryStatisticsNum(OmsCerInventory omsCerInventory){
-		Map<String,Integer> map =  omsCerInventoryService.getCerInventoryStatisticsNum(omsCerInventory);
-		return Result.success(map);
-	}
-
-
-
-
-
-
-//	=======================================############################==============================================
-//
-//										证照存取记录 及 补领取任务
-//
-//	=======================================############################==============================================
 
 
 
@@ -133,7 +106,7 @@ public class OmsCerInventoryController extends BaseController {
 	 * @Date: 2020/8/20 14:38
 	 */
 	@PostMapping("/updateCerInventoryResultForCounter")
-	public Result updateCerInventoryResultForCounter(@RequestParam(value = "list",required = false) List<OmsCerInventory> list){
+	public Result updateCerInventoryResultForCounter(@RequestBody List<OmsCerInventory> list){
 		Map<String,Integer> map = omsCerInventoryService.updateCerInventoryResultForCounter(list);
 		return Result.success(map);
 	}
@@ -211,14 +184,14 @@ public class OmsCerInventoryController extends BaseController {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask,mode]
+	 * @Param: [omsCerGetTask]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
 	@PostMapping("/saveRepairCollectionRecord")
-	public Result saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask,String mode){
-		omsCerInventoryService.saveRepairCollectionRecord(omsCerGetTask,mode);
+	public Result saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask){
+		omsCerInventoryService.saveRepairCollectionRecord(omsCerGetTask);
 		return Result.success();
 	}
 }

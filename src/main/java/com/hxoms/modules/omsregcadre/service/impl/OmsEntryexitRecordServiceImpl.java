@@ -19,16 +19,15 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagPa
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordCompbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
-import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriPubApply;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
+import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
@@ -59,6 +58,8 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     private OmsEntryexitRecordService omsEntryexitRecordService;
     @Autowired
     private OmsCerCancellateLicenseMapper cerCancellateLicenseMapper;
+    @Autowired
+    private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
 
 
     @Override
@@ -602,7 +603,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         }
 
         //判断是否有延期入境申请
-        boolean delay=CheckDelay();
+        boolean delay=CheckDelay(applyID,newEntry);
         //没有申请延期，并且入境时间超过计划入境时间5天以上
         if(delay==false && newEntry.compareTo(oldEntry)>5)
         {
@@ -625,8 +626,20 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         return result;
     }
 
-    private boolean CheckDelay() {
+    private boolean CheckDelay(String applyID,Date newEntry) {
         boolean flag = false;
+        QueryWrapper<OmsPriDelayApply> queryWrapper = new QueryWrapper<OmsPriDelayApply>();
+        queryWrapper.eq("APPLY_ID",applyID);
+        queryWrapper.orderByDesc("ESTIMATE_RETURNTIME");
+        List<OmsPriDelayApply> list = omsPriDelayApplyMapper.selectList(queryWrapper);
+        if (list!=null && list.get(0).getEstimateReturntime()!=null){
+            //若入境时间在申请回国时间之后（延期入境）
+            if (newEntry.after(list.get(0).getEstimateReturntime())){
+                flag = false;
+            }else{
+                flag = true;
+            }
+        }
         return flag;
     }
 

@@ -34,7 +34,7 @@ public interface OmsCerInventoryService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/19 14:38
 	 */
-	List<Map<String, Object>> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory);
+	Map<String, Object> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory);
 
 
 	/**
@@ -56,15 +56,6 @@ public interface OmsCerInventoryService {
 	 */
 	void getCerInventoryResultForCabinetOut(OmsCerInventory omsCerInventory, HttpServletResponse response);
 
-
-	/**
-	 * <b>功能描述: 盘点情况统计（证照机）返回前后统计数量</b>
-	 * @Param: [omsCerInventory]
-	 * @Return: com.hxoms.common.utils.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/20 14:38
-	 */
-	Map<String, Integer> getCerInventoryStatisticsNum(OmsCerInventory omsCerInventory);
 
 
 	/**
@@ -139,10 +130,10 @@ public interface OmsCerInventoryService {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask,mode]
+	 * @Param: [omsCerGetTask]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
-	void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask,String mode);
+	void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask);
 }
