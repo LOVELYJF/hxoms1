@@ -294,4 +294,34 @@
             select INFO_ID from oms_baseinfo_config where PARENT_ID is not NULL and PARENT_ID!=''
         )
     </select>
+
+    <!-- 查询证照注销申请状态 -->
+	<select id="getCancellateLicenseApplyStatus" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        where DICT_CODE ='ZHZXZT'
+        order by TIME_STAMP
+    </select>
+
+    <!-- 查询证照注销原因 -->
+    <select id="getCancellateLicenseApplyReason" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        where DICT_CODE ='ZJZXYY'
+        order by TIME_STAMP
+    </select>
+
+    <!-- 查询证照注销方式 -->
+    <select id="getCancellateLicenseApplyWay" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        where DICT_CODE ='ZJZXFS'
+        order by TIME_STAMP
+    </select>
 </mapper>

@@ -156,4 +156,34 @@ public interface SysDictItemMapper {
     String selectPoliticalAffiByCode(String a3627);
 
     List<Map<String, Object>> getDictInfoByDictCodeAndGl(Map<String, String> params);
+
+
+    /**
+     * <b>功能描述: 查询证照注销申请状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/5 15:09
+     */
+	List<SysDictItem> getCancellateLicenseApplyStatus();
+
+
+    /**
+     * <b>功能描述: 查询证照注销原因</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/5 15:09
+     */
+    List<SysDictItem> getCancellateLicenseApplyReason();
+
+
+    /**
+     * <b>功能描述: 查询证照注销方式</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/5 15:09
+     */
+    List<SysDictItem> getCancellateLicenseApplyWay();
 }
