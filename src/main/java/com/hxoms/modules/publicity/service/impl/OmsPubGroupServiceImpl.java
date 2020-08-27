@@ -10,6 +10,7 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.publicity.entity.*;
+import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
@@ -36,6 +37,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsPubApplyMapper pubApplyMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
+    @Autowired
+    private OmsPubApplyChangeMapper pubApplyChangeMapper;
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) throws ParseException {
@@ -86,13 +89,15 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList,String bgyy) {
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        //创建所需对象
         OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
+        OmsPubGroupPreApproval pubGroupOld = pubGroupMapper.getPubGroupDetailById(pubGroup.getId());
         List<OmsPubApplyVO> personList = pubGroupAndApplyList.getOmsPubApplyVOList();
         List<OmsPubApply> applyList = new ArrayList<>();
         int num = personList.size();
-        //登录用户信息
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
         pubGroupMapper.updatePubGroup(pubGroup);
         if(num > 0){
             //出国人员信息
@@ -112,6 +117,29 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             }
             pubApplyMapper.updatePubApplyList(applyList);
         }
+
+        //添加变更记录
+        OmsPubApplyChange pubApplyChange = new OmsPubApplyChange();
+        pubApplyChange.setId(UUIDGenerator.getPrimaryKey());
+        pubApplyChange.setTtId(pubGroup.getId());
+        pubApplyChange.setYcgsj(pubGroupOld.getCgsj());
+        pubApplyChange.setYhgsj(pubGroupOld.getHgsj());
+        pubApplyChange.setYsdgj(pubGroupOld.getSdgj());
+        pubApplyChange.setYtjgj(pubGroupOld.getTjgj());
+        pubApplyChange.setYcfsy(pubGroupOld.getCfsy());
+        pubApplyChange.setYcfrw(pubGroupOld.getCfrw());
+        pubApplyChange.setXcgsj(pubGroup.getCgsj());
+        pubApplyChange.setXhgsj(pubGroup.getHgsj());
+        pubApplyChange.setXsdgj(pubGroup.getSdgj());
+        pubApplyChange.setXtjgj(pubGroup.getTjgj());
+        pubApplyChange.setXcfsy(pubGroup.getCfsy());
+        pubApplyChange.setXcfrw(pubGroup.getCfrw());
+        pubApplyChange.setSqzt(pubGroupOld.getSqzt());
+        pubApplyChange.setBgyy(bgyy);
+        pubApplyChange.setModifyUser(userInfo.getId());
+        pubApplyChange.setModifyTime(new Date());
+
+        pubApplyChangeMapper.insertSelective(pubApplyChange);
     }
 
     @Override
@@ -135,14 +163,27 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void insertPerson(String a0100) {
+    public void insertPerson(String a0100,String id) {
+        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
+        OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(a0100);
         pubApply.setId(UUIDGenerator.getPrimaryKey());
+        pubApply.setYspId(id);
         pubApply.setA0100(a0100);
+        pubApply.setB0100(personInfo.getRfB0000());
+        pubApply.setHealth(personInfo.getHealth());
+        if(StringUtils.isBlank(personInfo.getSecretLevel())){
+            pubApply.setSfsmry("0");
+        }else{
+            pubApply.setSfsmry("1");
+        }
         pubApply.setSqzt(1);
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());
+
         pubApplyMapper.insert(pubApply);
     }
 

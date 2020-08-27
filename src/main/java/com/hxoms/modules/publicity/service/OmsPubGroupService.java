@@ -24,7 +24,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //添加团体预备案申请信息
     String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList);
     //修改团体预备案申请信息
-    void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList);
+    void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList,String bgyy);
     //删除团体预备案申请信息
     void deletePubGroup(String id);
     //上传团体预备案申请信息
@@ -32,7 +32,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //重新校验
     String checkoutPerson(String idList);
     //添加人员
-    void insertPerson(String a0100);
+    void insertPerson(String a0100,String id);
     //撤销人员
     void backoutPerson(String id,String cxyy);
     //恢复团组

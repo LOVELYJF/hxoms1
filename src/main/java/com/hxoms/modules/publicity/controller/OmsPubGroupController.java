@@ -67,9 +67,10 @@ public class OmsPubGroupController {
      * @param pubGroupAndApplyList(集合实体类)
      */
     @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
+                                 String bgyy) {
         try {
-            pubGroupService.updatePubGroup(pubGroupAndApplyList);
+            pubGroupService.updatePubGroup(pubGroupAndApplyList,bgyy);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -125,16 +126,17 @@ public class OmsPubGroupController {
 
     /**
      * 添加人员
-     * @param A0100
+     * @param A0100 人员主键
+     * @param id 团组主键
      */
     @PostMapping("/insertPerson")
-    public Result insertPerson(String A0100) {
+    public Result insertPerson(String A0100,String id) {
         try {
-            pubGroupService.insertPerson(A0100);
+            pubGroupService.insertPerson(A0100,id);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导入失败");
+            return Result.error("操作失败");
         }
     }
 
@@ -213,7 +215,7 @@ public class OmsPubGroupController {
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导入失败");
+            return Result.error("操作失败");
         }
     }
 
