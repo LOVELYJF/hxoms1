@@ -8,7 +8,10 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 public interface CfCertificateService extends IService<CfCertificate> {
@@ -115,4 +118,64 @@ public interface CfCertificateService extends IService<CfCertificate> {
     * @Date: 2020/8/11
     */
    void createCjTask(CfCertificateCollectionApplyList cfCertificateCollectionApplyList);
+
+
+   /**
+    * <b>功能描述: 查询证照状态</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+	List<SysDictItem> getCfCertificateStatus();
+
+
+   /**
+    * <b>功能描述: 查询证照类型</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+   List<SysDictItem> getCfCertificateType();
+
+
+   /**
+    * <b>功能描述: 查询证照形式</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+   List<SysDictItem> getCfCertificateForm();
+
+
+   /**
+    * <b>功能描述: 查询证照保管状态</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+   List<SysDictItem> getCfCertificateSaveStatus();
+
+
+   /**
+    * <b>功能描述: 查询证照保管单位</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+   List<SysDictItem> getCfCertificateSaveCompany();
+
+
+   /**
+    * <b>功能描述: 查询证照保管方式</b>
+    * @Param: []
+    * @Return: com.hxoms.common.utils.Result
+    * @Author: luoshuai
+    * @Date: 2020/8/27 14:41
+    */
+   List<SysDictItem> getCfCertificateSaveWay();
 }

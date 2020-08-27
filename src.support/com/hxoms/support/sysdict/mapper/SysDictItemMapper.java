@@ -196,4 +196,14 @@ public interface SysDictItemMapper {
      * @Date: 2020/8/18 14:41
      */
     List<SysDictItem> getApplyLendingLicenseStatus();
+
+
+    /**
+     * <b>功能描述: 查询证照模块字典状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    List<SysDictItem> getCfCertificateSysDictItem();
 }

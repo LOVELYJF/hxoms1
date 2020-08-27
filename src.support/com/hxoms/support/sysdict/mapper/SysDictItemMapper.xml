@@ -334,4 +334,17 @@
         where DICT_CODE ='ZJJCSQZT'
         order by TIME_STAMP
     </select>
+
+
+    <!-- 查询证照模块字典状态 -->
+    <select id="getCfCertificateSysDictItem" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        <where>
+            <if test="dictCode != null">DICT_CODE=#{dictCode} </if>
+        </where>
+        order by TIME_STAMP
+    </select>
 </mapper>

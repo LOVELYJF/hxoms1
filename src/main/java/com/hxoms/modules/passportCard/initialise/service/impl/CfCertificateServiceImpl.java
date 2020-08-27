@@ -16,6 +16,8 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerIssuePersonMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -48,6 +50,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Autowired
     private CfCertificateCollectionService cfCertificateCollectionService;
+    @Autowired
+    private SysDictItemMapper sysDictItemMapper;
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
 
@@ -220,6 +224,96 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Override
     public void createCjTask(CfCertificateCollectionApplyList cfCertificateCollectionApplyList) {
         cfCertificateCollectionService.createCjTask(cfCertificateCollectionApplyList.getCfCertificateCollectionList());
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateStatus() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zjzt");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照类型</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateType() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zjlx");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照形式</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateForm() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zjxs");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateSaveStatus() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zzbgzt");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管单位</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateSaveCompany() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zzbgdw");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管方式</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    public List<SysDictItem> getCfCertificateSaveWay() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("dictCode","zzbgfs");
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        return list;
     }
 
     /**

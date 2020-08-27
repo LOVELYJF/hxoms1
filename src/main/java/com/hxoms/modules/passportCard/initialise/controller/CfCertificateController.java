@@ -10,11 +10,14 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Api(tags = "初始化证照库")
 @RestController
@@ -184,4 +187,86 @@ public class CfCertificateController {
     }
 
 
+    /**
+     * <b>功能描述: 查询证照状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateStatus")
+    public Result getCfCertificateStatus(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateStatus();
+        return Result.success(list);
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照类型</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateType")
+    public Result getCfCertificateType(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateType();
+        return Result.success(list);
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照形式</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateForm")
+    public Result getCfCertificateForm(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateForm();
+        return Result.success(list);
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateSaveStatus")
+    public Result getCfCertificateSaveStatus(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateSaveStatus();
+        return Result.success(list);
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管单位</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateSaveCompany")
+    public Result getCfCertificateSaveCompany(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateSaveCompany();
+        return Result.success(list);
+    }
+
+
+    /**
+     * <b>功能描述: 查询证照保管方式</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    @GetMapping("/getCfCertificateSaveWay")
+    public Result getCfCertificateSaveWay(){
+        List<SysDictItem> list = cfCertificateService.getCfCertificateSaveWay();
+        return Result.success(list);
+    }
 }
