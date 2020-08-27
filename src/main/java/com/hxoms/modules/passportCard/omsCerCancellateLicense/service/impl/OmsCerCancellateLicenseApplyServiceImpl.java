@@ -188,7 +188,9 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/8/5 15:09
 	 */
 	public List<SysDictItem> getCancellateLicenseApplyStatus() {
-		List<SysDictItem> list = sysDictItemMapper.getCancellateLicenseApplyStatus();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zhzxzt");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
 		return list;
 	}
 
@@ -201,7 +203,9 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/8/5 15:09
 	 */
 	public List<SysDictItem> getCancellateLicenseApplyReason() {
-		List<SysDictItem> list = sysDictItemMapper.getCancellateLicenseApplyReason();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zjzxyy");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
 		return list;
 	}
 
@@ -214,7 +218,9 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/8/5 15:09
 	 */
 	public List<SysDictItem> getCancellateLicenseApplyWay() {
-		List<SysDictItem> list = sysDictItemMapper.getCancellateLicenseApplyWay();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zjzxfs");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
 		return list;
 	}
 

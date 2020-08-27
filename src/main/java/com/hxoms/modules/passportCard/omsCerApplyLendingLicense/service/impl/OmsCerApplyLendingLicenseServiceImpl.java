@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -244,7 +245,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Date: 2020/8/18 14:41
 	 */
 	public List<SysDictItem> getApplyLendingLicenseStatus() {
-		List<SysDictItem> list = sysDictItemMapper.getApplyLendingLicenseStatus();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zjjcsqzt");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
 		return list;
 	}
 

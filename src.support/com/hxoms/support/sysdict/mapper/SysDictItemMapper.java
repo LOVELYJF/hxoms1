@@ -159,51 +159,11 @@ public interface SysDictItemMapper {
 
 
     /**
-     * <b>功能描述: 查询证照注销申请状态</b>
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: luoshuai
-     * @Date: 2020/8/5 15:09
-     */
-	List<SysDictItem> getCancellateLicenseApplyStatus();
-
-
-    /**
-     * <b>功能描述: 查询证照注销原因</b>
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: luoshuai
-     * @Date: 2020/8/5 15:09
-     */
-    List<SysDictItem> getCancellateLicenseApplyReason();
-
-
-    /**
-     * <b>功能描述: 查询证照注销方式</b>
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: luoshuai
-     * @Date: 2020/8/5 15:09
-     */
-    List<SysDictItem> getCancellateLicenseApplyWay();
-
-
-    /**
-     * <b>功能描述: 查询证照借出申请状态</b>
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: luoshuai
-     * @Date: 2020/8/18 14:41
-     */
-    List<SysDictItem> getApplyLendingLicenseStatus();
-
-
-    /**
      * <b>功能描述: 查询证照模块字典状态</b>
-     * @Param: []
+     * @Param: [map]
      * @Return: com.hxoms.common.utils.Result
      * @Author: luoshuai
      * @Date: 2020/8/27 14:41
      */
-    List<SysDictItem> getCfCertificateSysDictItem();
+    List<SysDictItem> getCfCertificateSysDictItem(Map<String,Object> map);
 }

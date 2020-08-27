@@ -295,49 +295,9 @@
         )
     </select>
 
-    <!-- 查询证照注销申请状态 -->
-	<select id="getCancellateLicenseApplyStatus" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
-        select
-            *
-        from
-            sys_dict_item
-        where DICT_CODE ='ZHZXZT'
-        order by TIME_STAMP
-    </select>
-
-    <!-- 查询证照注销原因 -->
-    <select id="getCancellateLicenseApplyReason" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
-        select
-            *
-        from
-            sys_dict_item
-        where DICT_CODE ='ZJZXYY'
-        order by TIME_STAMP
-    </select>
-
-    <!-- 查询证照注销方式 -->
-    <select id="getCancellateLicenseApplyWay" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
-        select
-            *
-        from
-            sys_dict_item
-        where DICT_CODE ='ZJZXFS'
-        order by TIME_STAMP
-    </select>
-
-    <!-- 查询证照借出申请状态 -->
-    <select id="getApplyLendingLicenseStatus" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
-        select
-            *
-        from
-            sys_dict_item
-        where DICT_CODE ='ZJJCSQZT'
-        order by TIME_STAMP
-    </select>
-
 
     <!-- 查询证照模块字典状态 -->
-    <select id="getCfCertificateSysDictItem" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+    <select id="getCfCertificateSysDictItem" parameterType="java.util.Map" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
         select
             *
         from

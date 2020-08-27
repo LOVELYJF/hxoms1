@@ -237,7 +237,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateStatus() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zjzt");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
@@ -252,7 +252,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateType() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zjlx");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
@@ -267,7 +267,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateForm() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zjxs");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
@@ -282,7 +282,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateSaveStatus() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zzbgzt");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
@@ -297,7 +297,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateSaveCompany() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zzbgdw");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
@@ -312,7 +312,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public List<SysDictItem> getCfCertificateSaveWay() {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("dictCode","zzbgfs");
-        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem();
+        List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
     }
 
