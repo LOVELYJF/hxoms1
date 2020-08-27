@@ -1,6 +1,5 @@
 package com.hxoms.modules.passportCard.omsCerCancellateLicense.service.impl;
 
-import com.alibaba.druid.wall.WallProvider;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
@@ -9,10 +8,13 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseAcceptanceService;
@@ -50,6 +52,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 	@Autowired
 	private OmsCerGetTaskMapper omsCerGetTaskMapper;
+	@Autowired
+	private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 	/**
 	 * <b>功能描述: 注销证照受理查询(按单位主键，姓名，证件号码，证件类型,申请时间，申请状态查询)
 	 * 和处领导审批处的查询为同一接口</b>
@@ -142,6 +146,24 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 			if(count < 1){
 				throw new CustomMessageException("修改注销状态失败");
+			}else {
+				//根据证照号码查询证照是否存在柜台编号
+				QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
+				queryWrapper.eq(omsCerCancellateLicense.getZjhm() != null && omsCerCancellateLicense.getZjhm() != "",
+						"ZJHM", omsCerCancellateLicense.getZjhm());
+				CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
+				if(cfCertificate.getCounterNum() != null){
+					//将证照号码插入到证照号码废弃表中
+					QueryWrapper<OmsCerCounterNumber> wrapper = new QueryWrapper<OmsCerCounterNumber>();
+					wrapper.eq("COUNTER_NUM", cfCertificate.getCounterNum());
+					OmsCerCounterNumber omsCerCounterNumber = new OmsCerCounterNumber();
+					omsCerCounterNumber.setStatus("0");
+					omsCerCounterNumber.setIsLock("0");
+					int count1 = omsCerConuterNumberMapper.update(omsCerCounterNumber,wrapper);
+					if(count1 < 1){
+						throw new CustomMessageException("将证照柜台号码插入到证照号废弃表失败");
+					}
+				}
 			}
 		}else if(omsCerCancellateLicense.getZxfs().equals("1")){
 			//状态置为处领导审批
@@ -241,26 +263,19 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void updateCerCancellateLicenseApprovalComplete(OmsCerCancellateLicense omsCerCancellateLicense) {
-		omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
-		omsCerCancellateLicense.setModifyTime(new Date());
 		if(omsCerCancellateLicense.getGatshyj().equals("1")){
 			//公安厅通过
-			omsCerCancellateLicense.setZhzxzt(Constants.CANCELL_NAME[10]);      //完成注销状态之后，状态改为完成注销
-			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
+			OmsCerCancellateLicense cancellateLicense = new OmsCerCancellateLicense();
+			cancellateLicense.setId(omsCerCancellateLicense.getId());
+			cancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[10]));      //完成注销状态之后，状态改为完成注销
+			cancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
+			cancellateLicense.setModifyTime(new Date());
+			int count = omsCerCancellateLicenseMapper.updateById(cancellateLicense);
 			if(count < 1){
 				throw new CustomMessageException("公安厅通过，更改状态失败");
 			}else {
-
-
-
-
-				//保管状态为“已取出”的，将证照状态标注为“注销”状态，将证照的柜台保管号插入到证照号废弃表中，供重复使用。
-
-
-
-
-
-				if (omsCerCancellateLicense.getSaveStatus().equals(Constants.CER_SAVE_STATUS[0])){
+				//判断当前证照的保管状态
+				if (omsCerCancellateLicense.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[0]))){
 					//保管状态为正常保管的，生成证照领取任务
 					OmsCerGetTask omsCerGetTask = new OmsCerGetTask();
 					omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
@@ -295,6 +310,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 						OmsCerCancellateLicense omsCerCancellateLicense1 = new OmsCerCancellateLicense();
 						omsCerCancellateLicense1.setId(omsCerCancellateLicense.getId());
 						omsCerCancellateLicense1.setCardStatus(String.valueOf(Constants.CER_STATUS[7]));
+						omsCerCancellateLicense1.setModifyTime(new Date());
+						omsCerCancellateLicense1.setModifyUser(UserInfoUtil.getUserInfo().getId());
 						int count3 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
 						if(count3 < 1){
 							throw new CustomMessageException("更改证照状态失败");
@@ -302,6 +319,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 
 						CfCertificate cfCertificate = new CfCertificate();
 						cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[7]));
+						cfCertificate.setUpdateTime(new Date());
+						cfCertificate.setUpdater(UserInfoUtil.getUserInfo().getId());
 						QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 						queryWrapper.eq("ZJHM", omsCerCancellateLicense.getZjhm());
 						int count4 = cfCertificateMapper.update(cfCertificate, queryWrapper);
@@ -309,23 +328,48 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 							throw new CustomMessageException("更改证照状态失败");
 						}
 					}
-				}else if(omsCerCancellateLicense.getSaveStatus().equals(Constants.CER_SAVE_STATUS[1])){
+				}else if(omsCerCancellateLicense.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[1]))){
 					//保管状态为已取出的，将状态置为注销
 					OmsCerCancellateLicense omsCerCancellateLicense1 = new OmsCerCancellateLicense();
 					omsCerCancellateLicense1.setId(omsCerCancellateLicense.getId());
+					//证照状态改成过期
 					omsCerCancellateLicense1.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));
+					//公安厅通过，且状态已取出，将证照注销状态改成已办结
+					omsCerCancellateLicense1.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));
+					omsCerCancellateLicense1.setModifyUser(UserInfoUtil.getUserInfo().getId());
+					omsCerCancellateLicense1.setModifyTime(new Date());
 					int count3 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
 					if(count3 < 1){
 						throw new CustomMessageException("更改证照状态失败");
 					}
 
 					CfCertificate cfCertificate = new CfCertificate();
-					cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));
+					cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));       //注销
+					cfCertificate.setIsValid(1);        //证照设置成无效
 					QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 					queryWrapper.eq("ZJHM", omsCerCancellateLicense.getZjhm());
 					int count4 = cfCertificateMapper.update(cfCertificate, queryWrapper);
 					if(count4 < 1){
 						throw new CustomMessageException("更改证照状态失败");
+					}
+
+					//将证照的柜台保管号插入到证照号废弃表中，供重复使用。
+					//根据证照号码查询证照是否存在柜台编号
+					QueryWrapper<CfCertificate> wrapper = new QueryWrapper<CfCertificate>();
+					wrapper.eq(omsCerCancellateLicense.getZjhm() != null && omsCerCancellateLicense.getZjhm() != "",
+							"ZJHM", omsCerCancellateLicense.getZjhm());
+					CfCertificate cfCertificate1 = cfCertificateMapper.selectOne(queryWrapper);
+					if(cfCertificate1.getCounterNum() != null){
+						//将证照号码插入到证照号码废弃表中
+						QueryWrapper<OmsCerCounterNumber> wrapper1 = new QueryWrapper<OmsCerCounterNumber>();
+						wrapper1.eq("COUNTER_NUM", cfCertificate.getCounterNum());
+						OmsCerCounterNumber omsCerCounterNumber = new OmsCerCounterNumber();
+						omsCerCounterNumber.setStatus("0");
+						omsCerCounterNumber.setIsLock("0");
+						int count1 = omsCerConuterNumberMapper.update(omsCerCounterNumber,wrapper1);
+						if(count1 < 1){
+							throw new CustomMessageException("将证照柜台号码插入到证照号废弃表失败");
+						}
 					}
 				}
 			}
