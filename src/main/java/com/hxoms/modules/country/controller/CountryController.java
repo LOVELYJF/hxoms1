@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @desc: 国家管理
  * @author: lijing
@@ -43,5 +45,17 @@ public class CountryController {
     public Result selectCountryIPage(Integer pageNum, Integer pageSize, String nameZh) throws Exception {
         PageInfo<Country> countryPageInfo = countryService.selectCountryIPage(pageNum, pageSize, nameZh);
         return Result.success(countryPageInfo);
+    }
+
+
+
+    @ApiOperation(value="国家列表", notes="国家列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "nameZh", value = "国家名字", required = true, dataType = "String")
+    })
+    @GetMapping("/selectCountry")
+    public Result selectCountryIPage(String nameZh) throws Exception {
+        List<Country> list = countryService.selectCountry(nameZh);
+        return Result.success(list);
     }
 }
