@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseApplyService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -109,8 +110,46 @@ public class OmsCerCancellateLicenseApplyController {
 	}
 
 
+	/**
+	 * <b>功能描述: 查询证照注销申请状态</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	@GetMapping("/getCancellateLicenseApplyStatus")
+	public Result getCancellateLicenseApplyStatus(){
+		List<SysDictItem> list = omsCerCancellateLicenseApplyService.getCancellateLicenseApplyStatus();
+		return Result.success(list);
+	}
 
-	/////////////////查询注销申请状态下拉框=======================================================
+
+	/**
+	 * <b>功能描述: 查询证照注销原因</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	@GetMapping("/getCancellateLicenseApplyReason")
+	public Result getCancellateLicenseApplyReason(){
+		List<SysDictItem> list = omsCerCancellateLicenseApplyService.getCancellateLicenseApplyReason();
+		return Result.success(list);
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照注销方式</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	@GetMapping("/getCancellateLicenseApplyWay")
+	public Result getCancellateLicenseApplyWay(){
+		List<SysDictItem> list = omsCerCancellateLicenseApplyService.getCancellateLicenseApplyWay();
+		return Result.success(list);
+	}
 
 
 }
