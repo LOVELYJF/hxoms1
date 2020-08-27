@@ -302,10 +302,16 @@
 
     <!--查询禁止性、限制性、敏感性国家和地区-->
     <select id="selectSensitiveCountry" resultType="java.util.Map">
-        select CONCAT(COUNTRY_ID,'') as id,NAME_ZH as name
+        select "限制性国家" as type,NAME_ZH as name
+        from oms_sensitive_maintain sm left join country co on sm.COUNTRY_ID = co.ID
+              where SENSITIVE_LIMIT_ID='ABE3012D-62B4-49A8-B90D-90A6DC866829'
+        union all
+        select "禁止性国家" as type,NAME_ZH as name
         from oms_sensitive_maintain sm left join country co on sm.COUNTRY_ID = co.ID
         where SENSITIVE_LIMIT_ID='ABE3012D-3FB4-4899-ADB2-DA8F2F78D0C0'
-              or SENSITIVE_LIMIT_ID='ABE3012D-62B4-49A8-B90D-90A6DC866829'
-              or SENSITIVE_LIMIT_ID='ABE3012D-A1AB-4C9C-9F75-EB47ABBA1B72'
+        union all
+        select "敏感性国家" as type,NAME_ZH as name
+        from oms_sensitive_maintain sm left join country co on sm.COUNTRY_ID = co.ID
+           where SENSITIVE_LIMIT_ID='ABE3012D-A1AB-4C9C-9F75-EB47ABBA1B72'
     </select>
 </mapper>

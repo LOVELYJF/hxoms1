@@ -69,7 +69,7 @@
 	<!-- 注销证照受理查询 -->
 	<select id="getCerCancellateLicenseAcceptance" resultType="java.util.Map">
       select
-			cc.ID as id,
+			occl.ID as id,
 			cc.OMS_ID as omsId,
 			cc.NAME as name,
 			cc.SEX as sex,
@@ -100,11 +100,13 @@
 			occl.BLDYJ as bldyj, 	#部领导意见
 			occl.CLDYJLY as cldyjly, #处领导意见理由
 			occl.BLDYJLY as bldyjly,  #部领导意见理由
+			occl.GATSHYJ as gatshyj, #公安厅审核意见
+			occl.GATYJLY as gatshyjly,  #公安厅审核意见理由
 			occl.CREATE_USER as createUser,  #创建人
 			occl.CREATE_TIME as createTime  #创建时间
-		from cf_certificate cc
+		from oms_cer_cancellate_license occl
 		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
-		join oms_cer_cancellate_license occl on occl.OMS_ID = cc.OMS_ID
+		join cf_certificate cc on occl.OMS_ID = cc.OMS_ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="idList != null">occl.B0100 in

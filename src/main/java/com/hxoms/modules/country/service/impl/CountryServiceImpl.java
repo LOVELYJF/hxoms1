@@ -37,4 +37,12 @@ public class CountryServiceImpl implements CountryService {
         PageInfo<Country> pageInfo = new PageInfo(countries);
         return pageInfo;
     }
+
+    @Override
+    public List<Country> selectCountry(String nameZh) {
+        QueryWrapper<Country> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(!StringUtils.isBlank(nameZh),"NAME_ZH", nameZh);
+        List<Country> countries = countryMapper.selectList(queryWrapper);
+        return countries;
+    }
 }

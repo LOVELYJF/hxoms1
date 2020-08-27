@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -8,7 +9,9 @@ import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -17,7 +20,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl;
 
+import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,6 +45,8 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 
 	@Autowired
 	private CfCertificateMapper cfCertificateMapper;
+	@Autowired
+	private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 	/**
 	 * <b>功能描述: 查询过期证照信息</b>
 	 * @Param: [page,list,expiredQueryStartTime,expiredQueryEndTime,cfCertificate]
@@ -198,29 +205,23 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	public List<CfCertificate> getTransferExpiredLicenseDeposit(List<CfCertificate> list) {
 		if(list != null && list.size() > 0){
 			for(CfCertificate cfCertificate : list){
-				if(cfCertificate.getSaveStatus().equals("1")){          //判断证件的取出状态，只有取出证照机的可以转存
-					//根据查询证照是否存在柜台存放号码
-					Integer counterNum = cfCertificateMapper.selectCounterNum(cfCertificate.getId());
-					if(counterNum != null){         //存在柜台号码，不用重新生成柜台号码
-						cfCertificate.setCounterNum(counterNum);
+				if(cfCertificate.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[1]))){          //判断证件的取出状态，只有取出证照机的可以转存
+					cfCertificate.setSurelyWay("1");            //设置为柜台存放
+					if(cfCertificate.getCounterNum() != null){         //存在柜台号码，不用重新生成柜台号码
+						cfCertificate.setCounterNum(cfCertificate.getCounterNum());
 					}else {                                             //柜台号码不存在，生成柜台号码
-
-						//根据卡式和本式进行号码的生成
-						if(cfCertificate.getZjxs().equals("0")){            //本式证照
-
-
-																			//在证号信息表中更新
-
-
-						}else if (cfCertificate.getZjxs().equals("1")){     //卡式证照
-
-
-
-
-
-
+						//根据证件形式，和状态可用的，未锁定的查询柜台可用号码
+						QueryWrapper<OmsCerCounterNumber> queryWrapper = new QueryWrapper<OmsCerCounterNumber>();
+						queryWrapper.eq("ZJXS", cfCertificate.getZjxs())
+									.eq("STATUS", "0")
+									.eq("IS_LOCK", "0");
+						List<OmsCerCounterNumber> list1 = omsCerConuterNumberMapper.selectList(queryWrapper);
+						if(list1 != null && list1.size() > 0){
+							//取第一个号码作为柜台号码
+							cfCertificate.setCounterNum(list1.get(0).getCounterNum());
+						}else {
+							throw new CustomMessageException("没有可用的柜台号码");
 						}
-
 					}
 				}else {
 					throw new CustomMessageException("选择的证照中有证照机中未取出的证照");

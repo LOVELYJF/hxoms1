@@ -17,7 +17,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 
-    Map<String, Object> queryPriApplyList(OmsRegProcpersoninfo reg);
+    Map<String, Object> queryPriApplyList(String omsId);
 
     Object batchPriApplyList(List<String> omsIds);
 
@@ -31,7 +31,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     Object clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit);
 
-    Map<String, Object> cancelCompareInfo(String id);/**
+    int cancelCompareInfo(String id);/**
      * @description: 填写有关情况报告时进行比对，检查出入境记录是否合规
      * @author:李姣姣
      * @date:2020-08-19
@@ -46,7 +46,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
      *  * @param reg 登记备案人员信息
      * @return:void
      **/
-    void entryexitRecordCompare(OmsRegProcpersoninfo reg);
+    void entryexitRecordCompare(String omsId);
     /**
      * @description:出入境记录检查
      * @author:李姣姣

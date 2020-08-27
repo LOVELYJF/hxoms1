@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsregcadre.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -8,6 +9,7 @@ import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
@@ -30,6 +32,7 @@ import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,37 +129,39 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     }
 
     @Override
-    public Map<String, Object> cancelCompareInfo(String id) {
+    public int cancelCompareInfo(String id) {
         OmsPriApply priapply = new OmsPriApply();
         priapply.setId(id);
         priapply.setIsComparison("0");
         int con = priApplyMapper.updateById(priapply);
         if (con > 0){
+            UpdateWrapper<OmsEntryexitRecord> updateWrapper = new UpdateWrapper<OmsEntryexitRecord>();
+            updateWrapper.eq("PRIAPPLY_ID",id);
             OmsEntryexitRecord entryexitRecord = new OmsEntryexitRecord();
             entryexitRecord.setPriapplyId(null);
-           // baseMapper.update();
+            entryexitRecord.setComparisonResult(null);
+            con = baseMapper.update(entryexitRecord,updateWrapper);
         }
-        return null;
+        return con;
     }
 
 
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Map<String, Object> queryPriApplyList(OmsRegProcpersoninfo reg) {
-        entryexitRecordCompare(reg);
-        Map<String, Object> map = this.selectComparisionList(reg.getId());
+    public Map<String, Object> queryPriApplyList(String omsId) {
+        entryexitRecordCompare(omsId);
+        Map<String, Object> map = this.selectComparisionList(omsId);
         return map;
     }
 
     /**
      * 批量比对
-     *
      * @param omsIds
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Object batchPriApplyList (List < String > omsIds) {
+    public Object batchPriApplyList (List<String> omsIds) {
         OmsEntryexitRecordCompbatch info = new OmsEntryexitRecordCompbatch();
         //查询批次表中是否存在进行中的批次
         QueryWrapper<OmsEntryexitRecordCompbatch> compbatchWrapper = new QueryWrapper<OmsEntryexitRecordCompbatch>();
@@ -184,7 +189,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String omsId = omsIds.get(x);
                     OmsRegProcpersoninfo reg = new OmsRegProcpersoninfo();
                     reg.setId(omsId);
-                    entryexitRecordCompare(reg);
+                    entryexitRecordCompare(omsId);
                     eRecordCompbatch.setCurrentFinishsum(Integer.parseInt(omsIds.get(x)));
                     eRecordCompbatch.setStatus("2");
                     entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
@@ -243,7 +248,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
         if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
             for (Map<String, String> item : sensitiveCountrys){
-                sensitiveCountry.put(item.get("id"),item.get("name"));
+                sensitiveCountry.put(item.get("name"),item.get("type"));
             }
         }
         //证照信息
@@ -264,9 +269,34 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         }
         //自己把出入境记录关联证照信息获取注销时间和证照状态
         List<OmsCerCancellateLicense> info = cerCancellateLicenseMapper.selectList(queryWrapper);
+        //查询前往国家名称
+        //国家列表
+        String oldCountry = "";
+        String newCountry = "";
+        QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
+        if (!StringUtils.isBlank(apply.getGoCountry())){
+            countryQueryWrapper.in("id", apply.getGoCountry().split(","));
+            List<Country> countries = countryMapper.selectList(countryQueryWrapper);
+            for (Country country : countries) {
+                oldCountry += country.getNameZh() + ",";
+            }
+        }
+        //实际去往国家
+        if (!StringUtils.isBlank(apply.getRealGoCountry())){
+            String ids = apply.getRealGoCountry();
+            if (!StringUtils.isBlank(apply.getRealPassCountry())){
+                ids += "," + apply.getRealPassCountry();
+            }
+            countryQueryWrapper.clear();
+            countryQueryWrapper.in("ID", ids.split(","));
+            List<Country> countries = countryMapper.selectList(countryQueryWrapper);
+            for (Country country : countries) {
+                newCountry += country.getNameZh() + ",";
+            }
+        }
         String result =  EntryexitRecordChecking(apply.getApplyTime(),apply.getId(),
-                apply.getAbroadTime(),apply.getReturnTime(),apply.getGoCountry(),
-                apply.getRealAbroadTime(),apply.getRealReturnTime(),apply.getRealGoCountry()+","+apply.getRealPassCountry(),
+                apply.getAbroadTime(),apply.getReturnTime(),oldCountry.substring(0,oldCountry.length()-1),
+                apply.getRealAbroadTime(),apply.getRealReturnTime(),newCountry.substring(0,newCountry.length()-1),
                 sensitiveCountry,info);
         //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
         apply.setComparisonResult(result);
@@ -280,14 +310,14 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      * @return:void
      **/
     @Override
-    public void entryexitRecordCompare(OmsRegProcpersoninfo reg)
+    public void entryexitRecordCompare(String omsId)
     {
         //查询未比对的因私出国境申请
         OmsPriApplyIPageParam pp=new OmsPriApplyIPageParam();
         //只查询已办结
         pp.setApplyStatus(new Integer[]{28});
         //查询指定备案人员的出国境申请
-        pp.setProcpersonId(reg.getId());
+        pp.setProcpersonId(omsId);
         //只查询未比对的
         pp.setIsComparison("0");
         //注意要按申请时间升序排序，后面的出入境记录只取第一条申请记录申请时间之后的
@@ -301,7 +331,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         List<Integer> status=new ArrayList<>(28);
         pqp.setStatus(status);
         //查询指定备案人员的出国境申请
-        pqp.setProcpersonId(reg.getId());
+        pqp.setProcpersonId(omsId);
         //只查询未比对的
         pqp.setIsComparison("0");
         //只查询赴台的
@@ -316,7 +346,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //查询因私出国境申请id为空的记录（未比对）
         entryexitRecordIPagParam.setPriapplyId(null);
         //查询指定人员的出入境记录
-        entryexitRecordIPagParam.setOmsId(reg.getId());
+        entryexitRecordIPagParam.setOmsId(omsId);
         //注意要按出国境时间排序（升序）
         //todo
         List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
@@ -328,7 +358,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
         if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
             for (Map<String, String> item : sensitiveCountrys){
-                sensitiveCountry.put(item.get("id"),item.get("name"));
+                sensitiveCountry.put(item.get("name"),item.get("type"));
             }
         }
 
@@ -519,9 +549,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         queryWrapper.eq("APPLY_ID",applyID);
         queryWrapper.orderByDesc("ESTIMATE_RETURNTIME");
         List<OmsPriDelayApply> list = omsPriDelayApplyMapper.selectList(queryWrapper);
-        if (list!=null && list.get(0).getEstimateReturntime()!=null){
+        if (list!=null && list.size()>0){
             //若入境时间在申请回国时间之后（延期入境）
-            if (newEntry.after(list.get(0).getEstimateReturntime())){
+            if (list.get(0).getEstimateReturntime()!=null
+                    && newEntry.after(list.get(0).getEstimateReturntime())){
                 flag = false;
             }else{
                 flag = true;

@@ -760,6 +760,7 @@
 		cc.CARD_STATUS AS cardStatus,
 		cc.SAVE_STATUS AS saveStatus,
 		cc.CABINET_NUM AS cabinetNum,
+		cc.COUNTER_NUM AS counterNum,
 		cc.PLACE AS place,
 		cc.QFJG AS qfjg,
 		cc.QFRQ AS qfrq,
