@@ -354,7 +354,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         if(omsEntryexitRecords.size()==0) return;
 
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
-        Map<String, String> sensitiveCountry = null;
+        Map<String, String> sensitiveCountry = new HashMap<>();
         List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
         if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
             for (Map<String, String> item : sensitiveCountrys){
@@ -365,7 +365,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         for(int i=0;i<=omsEntryexitRecords.size()-1;)
         {
             OmsEntryexitRecord recOut=omsEntryexitRecords.get(i);
-            OmsEntryexitRecord recIn=null;
+            OmsEntryexitRecord recIn =new OmsEntryexitRecord();
             if(i<omsEntryexitRecords.size()-1)
                 recIn=omsEntryexitRecords.get(i+1);
 
@@ -400,8 +400,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 i+=1;
             }
             boolean hasApply=false;
-            Date certificateCancellationDate = null;
-            String certificateState=null;
             for (OmsPriApplyVO  app: apps){
                 if(app.getApplyTime().before(exitDate) && app.getReturnTime().after(exitDate)){
                     hasApply=true;
