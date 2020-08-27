@@ -146,9 +146,9 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Map<String, Object> queryPriApplyList(OmsRegProcpersoninfo reg) {
-        entryexitRecordCompare(reg);
-        Map<String, Object> map = this.selectComparisionList(reg.getId());
+    public Map<String, Object> queryPriApplyList(String omsId) {
+        entryexitRecordCompare(omsId);
+        Map<String, Object> map = this.selectComparisionList(omsId);
         return map;
     }
 
@@ -187,7 +187,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String omsId = omsIds.get(x);
                     OmsRegProcpersoninfo reg = new OmsRegProcpersoninfo();
                     reg.setId(omsId);
-                    entryexitRecordCompare(reg);
+                    entryexitRecordCompare(omsId);
                     eRecordCompbatch.setCurrentFinishsum(Integer.parseInt(omsIds.get(x)));
                     eRecordCompbatch.setStatus("2");
                     entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
@@ -283,14 +283,14 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      * @return:void
      **/
     @Override
-    public void entryexitRecordCompare(OmsRegProcpersoninfo reg)
+    public void entryexitRecordCompare(String omsId)
     {
         //查询未比对的因私出国境申请
         OmsPriApplyIPageParam pp=new OmsPriApplyIPageParam();
         //只查询已办结
         pp.setApplyStatus(new Integer[]{28});
         //查询指定备案人员的出国境申请
-        pp.setProcpersonId(reg.getId());
+        pp.setProcpersonId(omsId);
         //只查询未比对的
         pp.setIsComparison("0");
         //注意要按申请时间升序排序，后面的出入境记录只取第一条申请记录申请时间之后的
@@ -304,7 +304,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         List<Integer> status=new ArrayList<>(28);
         pqp.setStatus(status);
         //查询指定备案人员的出国境申请
-        pqp.setProcpersonId(reg.getId());
+        pqp.setProcpersonId(omsId);
         //只查询未比对的
         pqp.setIsComparison("0");
         //只查询赴台的
@@ -319,7 +319,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //查询因私出国境申请id为空的记录（未比对）
         entryexitRecordIPagParam.setPriapplyId(null);
         //查询指定人员的出入境记录
-        entryexitRecordIPagParam.setOmsId(reg.getId());
+        entryexitRecordIPagParam.setOmsId(omsId);
         //注意要按出国境时间排序（升序）
         //todo
         List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
