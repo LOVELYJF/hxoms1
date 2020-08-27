@@ -67,18 +67,16 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                OmsPubApply pubApply = new OmsPubApply();
-                pubApply.setId(UUIDGenerator.getPrimaryKey());
-                pubApply.setA0100(personList.get(i).getA0100());
-                pubApply.setB0100(personList.get(i).getB0100());
-                pubApply.setAge(personList.get(i).getAge());
-                pubApply.setYspId(id);
-                pubApply.setHealth(personList.get(i).getHealth());
-                pubApply.setSfsmry(personList.get(i).getSfsmry());
-                pubApply.setZjcgqk(personList.get(i).getZjcgqk());
-                pubApply.setSqzt(1);
-                pubApply.setCreateUser(userInfo.getId());
-                pubApply.setCreateTime(new Date());
+                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getA0100());
+                pubApply.setZtdw(pubGroup.getZtdw());
+                pubApply.setCgsj(pubGroup.getCgsj());
+                pubApply.setHgsj(pubApply.getHgsj());
+                pubApply.setSdgj(pubGroup.getSdgj());
+                pubApply.setTlsj(pubGroup.getTjgj());
+                pubApply.setCfrw(pubGroup.getCfrw());
+                pubApply.setCfsy(pubGroup.getCfsy());
+
+                pubApply.setSfzb("0");
                 applyList.add(pubApply);
             }
             pubApplyMapper.insertPubApplyList(applyList);
@@ -167,23 +165,18 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (StringUtils.isBlank(a0100) || StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        OmsPubApply pubApply = new OmsPubApply();
-        OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(a0100);
-        pubApply.setId(UUIDGenerator.getPrimaryKey());
-        pubApply.setYspId(id);
-        pubApply.setA0100(a0100);
-        pubApply.setB0100(personInfo.getRfB0000());
-        pubApply.setHealth(personInfo.getHealth());
-        if(StringUtils.isBlank(personInfo.getSecretLevel())){
-            pubApply.setSfsmry("0");
-        }else{
-            pubApply.setSfsmry("1");
-        }
-        pubApply.setSqzt(1);
-        pubApply.setCreateUser(userInfo.getId());
-        pubApply.setCreateTime(new Date());
+        OmsPubApply pubApply = getInsertOmsPubApply(a0100);
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
+        pubApply.setZtdw(pubGroup.getZtdw());
+        pubApply.setCgsj(pubGroup.getCgsj());
+        pubApply.setHgsj(pubApply.getHgsj());
+        pubApply.setSdgj(pubGroup.getSdgj());
+        pubApply.setTlsj(pubGroup.getTjgj());
+        pubApply.setCfrw(pubGroup.getCfrw());
+        pubApply.setCfsy(pubGroup.getCfsy());
 
+        pubApply.setSfysp("1");
+        pubApply.setSfzb("1");
         pubApplyMapper.insert(pubApply);
     }
 
@@ -370,5 +363,28 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         omsPubGroupAndApplyList.setOmsPubGroupPreApproval(omsPubGroupPreApproval);
         omsPubGroupAndApplyList.setOmsPubApplyVOList(applyVOList);
         return omsPubGroupAndApplyList;
+    }
+
+    private OmsPubApply getInsertOmsPubApply(String id){
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsPubApply pubApply = new OmsPubApply();
+        OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
+        pubApply.setId(UUIDGenerator.getPrimaryKey());
+        pubApply.setA0100(id);
+        pubApply.setB0100(personInfo.getRfB0000());
+        pubApply.setHealth(personInfo.getHealth());
+        pubApply.setSfzyld(personInfo.getMainLeader());
+        pubApply.setSflg(personInfo.getNf());
+        if(StringUtils.isBlank(personInfo.getSecretLevel())){
+            pubApply.setSfsmry("0");
+        }else{
+            pubApply.setSfsmry("1");
+        }
+        pubApply.setSfbg("0");
+        pubApply.setSqzt(1);
+        pubApply.setSfxd(0);
+        pubApply.setCreateUser(userInfo.getId());
+        pubApply.setCreateTime(new Date());
+        return pubApply;
     }
 }
