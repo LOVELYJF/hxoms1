@@ -10,6 +10,8 @@ import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -38,6 +40,8 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	private CfCertificateMapper cfCertificateMapper;
 	@Autowired
 	private OmsCerApplyLendingLicenseMapper omsCerApplyLendingLicenseMapper;
+	@Autowired
+	private SysDictItemMapper sysDictItemMapper;
 	/**
 	 * <b>功能描述: 根据主键查询该人员的证照信息</b>
 	 * @Param: [a0100]
@@ -229,6 +233,19 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		if(count < 1){
 			throw new CustomMessageException("撤销失败");
 		}
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照借出申请状态</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/18 14:41
+	 */
+	public List<SysDictItem> getApplyLendingLicenseStatus() {
+		List<SysDictItem> list = sysDictItemMapper.getApplyLendingLicenseStatus();
+		return list;
 	}
 
 

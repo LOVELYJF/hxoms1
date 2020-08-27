@@ -186,4 +186,14 @@ public interface SysDictItemMapper {
      * @Date: 2020/8/5 15:09
      */
     List<SysDictItem> getCancellateLicenseApplyWay();
+
+
+    /**
+     * <b>功能描述: 查询证照借出申请状态</b>
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/18 14:41
+     */
+    List<SysDictItem> getApplyLendingLicenseStatus();
 }

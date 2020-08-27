@@ -324,4 +324,14 @@
         where DICT_CODE ='ZJZXFS'
         order by TIME_STAMP
     </select>
+
+    <!-- 查询证照借出申请状态 -->
+    <select id="getApplyLendingLicenseStatus" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        where DICT_CODE ='ZJJCSQZT'
+        order by TIME_STAMP
+    </select>
 </mapper>
