@@ -286,9 +286,9 @@ public class Constants {
     public static String[] OMS_CONDITION_REMIND_PERSONNAME={"经办人","组团单位", "审批单位", "干部监督处"};
 
     //证照类型代码
-    public static int[] CER_TYPE_CODE={1,2,4};
+    public static int[] CER_TYPE_CODE={0,1,2,3,4,5,6,7,8,16};
     //证照类型名称
-    public static String[] CER_TYPE_NAME={"护照","港澳通行证","","台湾通行证"};
+    public static String[] CER_TYPE_NAME={"查询中","护照","港澳通行证","护照、港澳通行证","台湾通行证","护照、台湾通行证","港澳通行证、台湾通行证","护照、港澳通行证、台湾通行证","无证照","非省委管理证照"};
 
     //证照借出申请状态代码
     public static int[] CER_LENDING_TYPE={0,1,2,3,4};

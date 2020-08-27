@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -103,6 +104,20 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 	public Result updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense){
 		omsCerApplyLendingLicenseService.updateApplyLendingLicenseRevoke(omsCerApplyLendingLicense);
 		return Result.success();
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照借出申请状态</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/18 14:41
+	 */
+	@GetMapping("/getApplyLendingLicenseStatus")
+	public Result getApplyLendingLicenseStatus(){
+		List<SysDictItem> list = omsCerApplyLendingLicenseService.getApplyLendingLicenseStatus();
+		return Result.success(list);
 	}
 }
 

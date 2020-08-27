@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -71,4 +72,14 @@ public interface OmsCerApplyLendingLicenseService {
 	 * @Date: 2020/8/11 8:41
 	 */
 	void updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense);
+
+
+	/**
+	 * <b>功能描述: 查询证照借出申请状态</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/18 14:41
+	 */
+	List<SysDictItem> getApplyLendingLicenseStatus();
 }

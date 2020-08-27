@@ -294,4 +294,17 @@
             select INFO_ID from oms_baseinfo_config where PARENT_ID is not NULL and PARENT_ID!=''
         )
     </select>
+
+
+    <!-- 查询证照模块字典状态 -->
+    <select id="getCfCertificateSysDictItem" parameterType="java.util.Map" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        <where>
+            <if test="dictCode != null">DICT_CODE=#{dictCode} </if>
+        </where>
+        order by TIME_STAMP
+    </select>
 </mapper>

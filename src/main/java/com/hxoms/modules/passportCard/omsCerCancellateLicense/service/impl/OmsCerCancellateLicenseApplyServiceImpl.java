@@ -4,17 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.autoconfigure.PageHelperProperties;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseApplyService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +37,8 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	private CfCertificateMapper cfCertificateMapper;
 	@Autowired
 	private OmsCerCancellateLicenseMapper omsCerCancellateLicenseMapper;
+	@Autowired
+	private SysDictItemMapper sysDictItemMapper;
 	/**
 	 * <b>功能描述: 填写注销申请（查询）</b>
 	 * @Param: [cfCertificate]
@@ -175,6 +177,51 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 				throw new CustomMessageException("更改状态失败");
 			}
 		}
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照注销申请状态</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	public List<SysDictItem> getCancellateLicenseApplyStatus() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zhzxzt");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
+		return list;
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照注销原因</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	public List<SysDictItem> getCancellateLicenseApplyReason() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zjzxyy");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
+		return list;
+	}
+
+
+	/**
+	 * <b>功能描述: 查询证照注销方式</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/5 15:09
+	 */
+	public List<SysDictItem> getCancellateLicenseApplyWay() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("dictCode","zjzxfs");
+		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
+		return list;
 	}
 
 

@@ -25,8 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.constraints.Null;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -352,7 +350,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         }
         if (!StringUtils.isBlank(personInfoIPagParam.getRfB0000())){
             //机构代码
-            queryWrapper.eq("RF_B0000",personInfoIPagParam.getRfB0000());
+            queryWrapper.like("RF_B0000",personInfoIPagParam.getRfB0000());
         }
         if (!StringUtils.isBlank(personInfoIPagParam.getCheckStatus())){
             //验收状态为待验收
@@ -598,7 +596,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             yearcheckWrapper.eq("CREATE_DATE",regYearCheckIPagParam.getYear());
         }
         if (!StringUtils.isBlank(regYearCheckIPagParam.getRfB0000())){
-            yearcheckWrapper.eq("RF_B0000",regYearCheckIPagParam.getRfB0000());
+            yearcheckWrapper.like("RF_B0000",regYearCheckIPagParam.getRfB0000());
         }
         //返回数据
         PageInfo<OmsRegYearcheckinfo> pageInfo = new PageInfo(yearcheckInfoMapper.selectList(yearcheckWrapper));

@@ -156,4 +156,14 @@ public interface SysDictItemMapper {
     String selectPoliticalAffiByCode(String a3627);
 
     List<Map<String, Object>> getDictInfoByDictCodeAndGl(Map<String, String> params);
+
+
+    /**
+     * <b>功能描述: 查询证照模块字典状态</b>
+     * @Param: [map]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: luoshuai
+     * @Date: 2020/8/27 14:41
+     */
+    List<SysDictItem> getCfCertificateSysDictItem(Map<String,Object> map);
 }
