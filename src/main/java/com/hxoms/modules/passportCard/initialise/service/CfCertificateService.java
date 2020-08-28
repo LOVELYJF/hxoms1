@@ -86,11 +86,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 公安已注销证照，更新状态
     * @Author: wangyunquan
-    * @Param: [cfCertificate]
+    * @Param: [id]
     * @Return: void
     * @Date: 2020/8/10
     */
-   void updateCerForCerIsCancel(CfCertificate cfCertificate);
+   void updateCerForCerIsCancel(String id);
    /**
     * @Desc: 存疑处理，以证照信息为准
     * @Author: wangyunquan

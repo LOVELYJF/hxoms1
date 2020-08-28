@@ -7,6 +7,8 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
@@ -59,6 +61,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsCreateFileService omsCreateFileService;
     @Autowired
     private OmsEntryexitRecordService omsEntryexitRecordService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -299,9 +303,10 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
-
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         if (Constants.oms_business[1].equals(type)){
             //因私
+            omsAbroadApproval.setType(Constants.oms_business[1]);
             OmsPriApply omsPriApply = new OmsPriApply();
             omsPriApply.setApplyStatus(Constants.private_business[1]);
             omsPriApply.setId(applyId);
@@ -311,6 +316,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         } else if (Constants.oms_business[2].equals(type)){
             //延期回国
+            omsAbroadApproval.setType(Constants.oms_business[2]);
             OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
             omsPriDelayApply.setId(applyId);
             omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
@@ -319,6 +325,18 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
+        //添加步骤
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        omsAbroadApproval.setApplyId(applyId);
+        omsAbroadApproval.setStepCode(Constants.private_business[1]);
+        omsAbroadApproval.setStepName(Constants.private_businessName[1]);
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getId());
+        omsAbroadApproval.setSubmitTime(new Date());
+        omsAbroadApproval.setSubmitUser(userInfo.getId());
+        omsAbroadApproval.setApprovalResult("1");
+        omsAbroadApproval.setApprovalAdvice("通过");
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
         //约束消息提醒
         omsConditionService.remindCondition(applyId, type);
         return "操作成功";
@@ -444,6 +462,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         }
         countries += ",";
+        countries = "," + countries;
         if (countries.indexOf(",179,") != -1){
             //台湾
             PassportResult passportResult = new PassportResult();
@@ -460,7 +479,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         for (PassportResult item : result) {
             queryWrapper.clear();
             queryWrapper.eq("OMS_ID", procpersonId)
-                    .eq("ZJLX", item.getZjlx());
+                    .eq("ZJLX", item.getZjlx())
+                    .eq("IS_VALID", 0);
             CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
             if (cfCertificate != null){
                 //半年后是否失效
@@ -525,6 +545,14 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         }
         return result;
+    }
+
+    @Override
+    public OmsCreateFile printApproval(String applyId) {
+        if(StringUtils.isBlank(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        return omsCreateFileMapper.priApplyPrintApproval(applyId);
     }
 
     /**

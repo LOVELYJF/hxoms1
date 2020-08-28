@@ -2,6 +2,7 @@ package com.hxoms.modules.privateabroad.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
@@ -210,5 +211,18 @@ public class OmsPriApplyController {
     public Result selectPassportByCountry(String countries, String procpersonId){
         List<PassportResult> result = omsPriApplyService.selectPassportByCountry(countries, procpersonId);
         return Result.success(result);
+    }
+
+    /**
+     * 因私出国打印审批表
+     * @param applyId 申请id
+     * @return
+     */
+    @ApiOperation(value="因私出国打印审批表", notes="因私出国打印审批表")
+    @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String")
+    @GetMapping("/printApproval")
+    public Result printApproval(String applyId){
+        OmsCreateFile omsCreateFile = omsPriApplyService.printApproval(applyId);
+        return Result.success(omsCreateFile);
     }
 }

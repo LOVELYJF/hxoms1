@@ -33,4 +33,13 @@
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT
   </sql>
+
+  <!--因私出国查询审批表-->
+  <select id="priApplyPrintApproval" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    oc.*
+    from oms_create_file oc LEFT JOIN oms_file o1 on oc.FILE_ID=o1.ID
+      LEFT JOIN oms_file o2 on o1.FILE_ID = o2.ID
+    where (o2.ID='113' or o2.ID='117') and oc.APPLY_ID=#{applyId}
+  </select>
 </mapper>

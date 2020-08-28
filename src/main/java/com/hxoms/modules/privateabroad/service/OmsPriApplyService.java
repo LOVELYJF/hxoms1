@@ -1,6 +1,7 @@
 package com.hxoms.modules.privateabroad.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
@@ -95,4 +96,6 @@ public interface OmsPriApplyService {
      * @return
      */
     List<PassportResult> selectPassportByCountry(String countries, String procpersonId);
+
+    OmsCreateFile printApproval(String applyId);
 }

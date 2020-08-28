@@ -541,12 +541,14 @@
 	<select id="selectA0100ByQua" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         SELECT
             ID id,
-            A0100 a0100
+            A0100 a0100,
+            LICENCE_IDENTITY licenceIdentity,
         FROM
             oms_reg_procpersoninfo
         WHERE
-            IDNUMBER_GA = #{idNo}
+            IDNUMBER_GB = #{idNo}
         AND CONCAT(SURNAME,NAME) = #{name}
+		AND CHECK_STATUS='1'
     </select>
 
 	<select id="selectZJExisByQua" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
@@ -558,7 +560,7 @@
         FROM
             cf_certificate
         WHERE
-            A0100 =#{a0100}
+            oms_id =#{omsId}
     </select>
 	<select id="selectRecordExisByQua" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord">
       SELECT
@@ -570,7 +572,7 @@
       FROM
           oms_entryexit_record
       WHERE
-          A0100 =#{a0100}
+          oms_id =#{omsId}
     </select>
 
 
@@ -591,6 +593,7 @@
     </select>
 	<select id="selectCertificateInfo" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
       SELECT
+      	id,
         OMS_ID omsId,
         NAME NAME,
         SEX sex,
@@ -631,7 +634,7 @@
 			</when>
 			<otherwise>
 				WHERE  CONCAT(SURNAME, NAME) = #{name}
-				AND BIRTH_DATE = #{csrq}
+				AND BIRTH_DATE = DATE_FORMAT(#{csrq},'%Y-%m-%d')
 			</otherwise>
 		</choose>
 	</select>
@@ -644,7 +647,7 @@
         b.WORK_UNIT workUnit,
         b.INCUMBENCY_STATUS incumbencyStatus,
         b.POST post,
-        a. NAME NAME,
+        a.NAME name,
         a.sex sex,
         a.zjlx zjlx,
         a.zjhm zjhm,
@@ -657,7 +660,8 @@
         a.qfjg qfjg,
         a.QFRQ qfrq,
         a.CSDD csdd,
-        a.EXCEPTION_MESSAGE exceptionMessage
+        a.EXCEPTION_MESSAGE exceptionMessage,
+        a.gj
       FROM
           cf_certificate a
       INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
@@ -871,5 +875,29 @@
 		order by
 			oce.OPERATE_TIME
 		desc
+	</select>
+
+	<select id="selectCjTask" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection">
+		SELECT
+			id
+		FROM
+			cf_certificate_collection
+		WHERE
+			OMS_ID = #{omsId}
+		AND CJ_STATUS = '2'
+	</select>
+	<select id="selectCjNeedInfo" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo">
+		SELECT
+        a.ID id,
+        a.OMS_ID omsId,
+        b.RF_B0000 rfB0000,
+        b.WORK_UNIT workUnit,
+        a.NAME name,
+        a.zjlx zjlx,
+        a.zjhm zjhm,
+      FROM
+          cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+      WHERE id=#{id}
 	</select>
 </mapper>

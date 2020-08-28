@@ -12,6 +12,7 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -63,8 +64,8 @@ public class CfCertificateController {
      * @Date: 2020/8/4
      */
     @ApiOperation(value = "验证证照信息")
-    @GetMapping("/validateCerInfo")
-    public Result<CfCertificateValidate> validateCerInfo(CfCertificate cfCertificate){
+    @PostMapping("/validateCerInfo")
+    public Result<CfCertificateValidate> validateCerInfo(@RequestBody CfCertificate cfCertificate){
         return Result.success(cfCertificateService.validateCerInfo(cfCertificate));
     }
 
@@ -124,14 +125,15 @@ public class CfCertificateController {
     /**
      * @Desc: 公安已注销证照，更新状态
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [id]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "公安已注销证照，更新状态")
+    @ApiImplicitParam(value = "数据列表id",name = "id")
     @PostMapping("/updateCerForCerIsCancel")
-    public Result updateCerForCerIsCancel(@RequestBody CfCertificate cfCertificate){
-        cfCertificateService.updateCerForCerIsCancel(cfCertificate);
+    public Result updateCerForCerIsCancel(String id){
+        cfCertificateService.updateCerForCerIsCancel(id);
         return Result.success();
     }
 
@@ -155,7 +157,7 @@ public class CfCertificateController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
-    @ApiOperation(value = "存疑处理，以证照信息为准")
+    @ApiOperation(value = "存疑处理，以证照信息为准，保存处理结果")
     @PostMapping("/updateCerForCerIsRight")
     public Result updateCerForCerIsRight(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.updateCerForCerIsRight(cfCertificate);
@@ -169,7 +171,7 @@ public class CfCertificateController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
-    @ApiOperation(value = "存疑处理，以公安信息为准")
+    @ApiOperation(value = "存疑处理，以公安信息为准，置为未上缴")
     @PostMapping("/updateCerForGaInfoIsRight")
     public Result updateCerForGaInfoIsRight(@RequestBody CfCertificate cfCertificate){
         cfCertificateService.updateCerForGaInfoIsRight(cfCertificate);
