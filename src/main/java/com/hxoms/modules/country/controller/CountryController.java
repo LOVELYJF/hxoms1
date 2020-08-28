@@ -54,7 +54,7 @@ public class CountryController {
             @ApiImplicitParam(name = "nameZh", value = "国家名字", required = true, dataType = "String")
     })
     @GetMapping("/selectCountry")
-    public Result selectCountryIPage(String nameZh) throws Exception {
+    public Result selectCountry(String nameZh) throws Exception {
         List<Country> list = countryService.selectCountry(nameZh);
         return Result.success(list);
     }
