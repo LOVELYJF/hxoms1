@@ -72,6 +72,9 @@ public class FileReplaceVO {
     // 批文号
     private String pwh;
 
+    //审批表备注
+    private String remarks;
+
     public String getName() {
         return name;
     }
@@ -270,5 +273,13 @@ public class FileReplaceVO {
 
     public void setPwh(String pwh) {
         this.pwh = pwh;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

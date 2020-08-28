@@ -190,9 +190,9 @@ public class OmsPubGroupController {
      * 查看撤销详情
      * @param id
      */
-    @GetMapping("/getBackoutById")
-    public Result getBackoutById(String id) {
-        return Result.success(pubGroupService.getBackoutById(id));
+    @GetMapping("/getBackoutDetailById")
+    public Result getBackoutDetailById(String id) {
+        return Result.success(pubGroupService.getBackoutDetailById(id));
     }
 
     /**
