@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.initialise.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
@@ -33,20 +34,20 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     /**
      * @Desc: 通过A0100查询证件信息
      * @Author: wangyunquan
-     * @Param: [a0100]
+     * @Param: [omsId]
      * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
      * @Date: 2020/8/4
      */
-    List<CfCertificate> selectZJExisByQua(String a0100);
+    List<CfCertificate> selectZJExisByQua(String omsId);
 
     /**
      * @Desc: 通过A0100查询出国境信息
      * @Author: wangyunquan
-     * @Param: [a0100]
+     * @Param: [omsId]
      * @Return: java.util.List<com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord>
      * @Date: 2020/8/4
      */
-    List<OmsEntryexitRecord> selectRecordExisByQua(String a0100);
+    List<OmsEntryexitRecord> selectRecordExisByQua(String omsId);
 
 
     /**
@@ -170,4 +171,22 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Date: 2020/8/20 14:38
 	 */
 	List<Map<String, Object>> getCerAccessRecord(Map<String, Object> map);
+
+	/**
+	 * @Desc: 查询催缴任务
+	 * @Author: wangyunquan
+	 * @Param: [omsId]
+	 * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection>
+	 * @Date: 2020/8/28
+	 */
+    List<CfCertificateCollection> selectCjTask(String omsId);
+
+    /**
+     * @Desc: 查询催缴所需信息
+     * @Author: wangyunquan
+     * @Param: [id]
+     * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo
+     * @Date: 2020/8/28
+     */
+	CfCertificateInfo selectCjNeedInfo(String id);
 }

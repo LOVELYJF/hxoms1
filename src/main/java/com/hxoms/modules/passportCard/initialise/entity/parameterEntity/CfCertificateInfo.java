@@ -39,7 +39,7 @@ public class CfCertificateInfo {
     private String sex;
     //证照类型
     @ApiModelProperty(value = "证照类型")
-    private String zjlx;
+    private Integer zjlx;
     //证件号码
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
@@ -64,7 +64,7 @@ public class CfCertificateInfo {
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
     //签发单位
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "签发单位")
     private String qfjg;
     //签发日期
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -72,10 +72,13 @@ public class CfCertificateInfo {
     private  Date qfrq;
     //出生地
     @ApiModelProperty(value = "出生地")
-    private Date csdd;
+    private String csdd;
     //存疑原因
     @ApiModelProperty(value = "存疑原因")
     private String exceptionMessage;
+    //国籍
+    @ApiModelProperty(value = "国籍")
+    private String gj;
 
     public String getId() {
         return id;
@@ -141,11 +144,11 @@ public class CfCertificateInfo {
         this.sex = sex;
     }
 
-    public String getZjlx() {
+    public Integer getZjlx() {
         return zjlx;
     }
 
-    public void setZjlx(String zjlx) {
+    public void setZjlx(Integer zjlx) {
         this.zjlx = zjlx;
     }
 
@@ -221,11 +224,11 @@ public class CfCertificateInfo {
         this.qfrq = qfrq;
     }
 
-    public Date getCsdd() {
+    public String getCsdd() {
         return csdd;
     }
 
-    public void setCsdd(Date csdd) {
+    public void setCsdd(String csdd) {
         this.csdd = csdd;
     }
 
@@ -235,5 +238,13 @@ public class CfCertificateInfo {
 
     public void setExceptionMessage(String exceptionMessage) {
         this.exceptionMessage = exceptionMessage;
+    }
+
+    public String getGj() {
+        return gj;
+    }
+
+    public void setGj(String gj) {
+        this.gj = gj;
     }
 }
