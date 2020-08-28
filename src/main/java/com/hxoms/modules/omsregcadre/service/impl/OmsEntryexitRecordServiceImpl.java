@@ -424,8 +424,13 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
                             sensitiveCountry,zzlist);
-                    recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
-                    recOut.setPriapplyId(app.getId());
+                    if (result == null){
+                        recOut.setPriapplyId(app.getId());
+                        recOut.setComparisonResult("正常");
+                    }else {
+                        recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
+                        recOut.setPriapplyId(app.getId());
+                    }
                     if(recIn!=null)
                     {
                         recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
@@ -528,7 +533,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         String oldDest=","+oldDestination+",";
         for(int i=0;i<dests.length;i++)
         {
-            if(dests[i].isEmpty()==false&&oldDest.contains(","+dests[i]+",")==false)
+            if(dests[i].isEmpty()==false && oldDest.contains(","+dests[i]+",")==false)
             {
                 result+="擅自变更行程（"+dests[i]+"）\r\n";
             }

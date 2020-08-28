@@ -5,222 +5,295 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_pri_apply", TableDescription="因私出国（境）申请")
+@ApiModel(value = "因私出国（境）申请")
 public class OmsPriApply {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "PROCPERSON_ID",   FieldDescription="登记备案表id")
+    @ApiModelProperty(value="登记备案表id")
     private String procpersonId;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="干部id")
+    @ApiModelProperty(value="干部id")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
+    @ApiModelProperty(value="工作单位")
     private String b0100;
 
     @ColumnAnnotation(FieldName = "POLITICAL_OUTLOOK",   FieldDescription="政治面貌")
+    @ApiModelProperty(value="政治面貌")
     private String politicalOutlook;
 
     @ColumnAnnotation(FieldName = "HEALTH",   FieldDescription="健康状况")
+    @ApiModelProperty(value="健康状况")
     private String health;
 
     @ColumnAnnotation(FieldName = "POSTRANK",   FieldDescription="职务（职级）")
+    @ApiModelProperty(value="职务（职级）")
     private String postrank;
 
     @ColumnAnnotation(FieldName = "ABROAD_TIME",   FieldDescription="出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出国时间")
     private Date abroadTime;
 
     @ColumnAnnotation(FieldName = "RETURN_TIME",   FieldDescription="回国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="回国时间")
     private Date returnTime;
 
     @ColumnAnnotation(FieldName = "GO_COUNTRY",   FieldDescription="出访国家")
+    @ApiModelProperty(value="出访国家")
     private String goCountry;
 
     @ColumnAnnotation(FieldName = "OUTSIDE_TIME",   FieldDescription="在外停留时间")
+    @ApiModelProperty(value="在外停留时间")
     private Integer outsideTime;
 
     @ColumnAnnotation(FieldName = "ABROAD_REASONS",   FieldDescription="出国（境）事由")
+    @ApiModelProperty(value="出国（境）事由")
     private String abroadReasons;
 
     @ColumnAnnotation(FieldName = "APPLY_TIME",   FieldDescription="申请时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="申请时间")
     private Date applyTime;
 
     @ColumnAnnotation(FieldName = "REVERT_LICENCE_TIME",   FieldDescription="预计归还证照时间(根据回国时间推算，10后必须归还)")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="预计归还证照时间(根据回国时间推算，10后必须归还)")
     private Date revertLicenceTime;
 
     @ColumnAnnotation(FieldName = "CLASSIFICA_POST",   FieldDescription="涉密岗位")
+    @ApiModelProperty(value="涉密岗位")
     private String classificaPost;
 
     @ColumnAnnotation(FieldName = "CLASSIFICATION_LEVEL",   FieldDescription="涉密等级")
+    @ApiModelProperty(value="涉密等级")
     private String classificationLevel;
 
     @ColumnAnnotation(FieldName = "DECLASSIFICA_STARTTIME",   FieldDescription="脱密期开始时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="脱密期开始时间")
     private Date declassificaStarttime;
 
     @ColumnAnnotation(FieldName = "DECLASSIFICA_ENDTIME",   FieldDescription="脱密期结束时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="脱密期结束时间")
     private Date declassificaEndtime;
 
     @ColumnAnnotation(FieldName = "PAPER",   FieldDescription="证件类型（护照1、港澳通行证2、台湾通行证4 ）")
+    @ApiModelProperty(value="证件类型（护照1、港澳通行证2、台湾通行证4 ）")
     private Integer paper;
 
     @ColumnAnnotation(FieldName = "REAL_GO_COUNTRY",   FieldDescription="实际出访国家")
+    @ApiModelProperty(value="实际出访国家")
     private String realGoCountry;
 
     @ColumnAnnotation(FieldName = "REAL_PASS_COUNTRY",   FieldDescription="实际途径国家")
+    @ApiModelProperty(value="实际途径国家")
     private String realPassCountry;
 
     @ColumnAnnotation(FieldName = "REAL_ABROAD_TIME",   FieldDescription="实际出国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="实际出国时间")
     private Date realAbroadTime;
 
     @ColumnAnnotation(FieldName = "REAL_RETURN_TIME",   FieldDescription="实际回国时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="实际回国时间")
     private Date realReturnTime;
 
     @ColumnAnnotation(FieldName = "REAL_OUTSIDE_TIME",   FieldDescription="实际停留时间")
+    @ApiModelProperty(value="实际停留时间")
     private Integer realOutsideTime;
 
     @ColumnAnnotation(FieldName = "DESCRIPTION",   FieldDescription="说明情况")
+    @ApiModelProperty(value="说明情况")
     private String description;
 
     @ColumnAnnotation(FieldName = "IS_TWO_PASSPORT",   FieldDescription="是否有两个护照")
+    @ApiModelProperty(value="是否有两个护照")
     private String isTwoPassport;
 
     @ColumnAnnotation(FieldName = "IS_ABROAD",   FieldDescription="是否出入境")
+    @ApiModelProperty(value="是否出入境")
     private String isAbroad;
 
     @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    @ApiModelProperty(value="比对结果")
     private String comparisonResult;
 
+    @ColumnAnnotation(FieldName = "COMPARISON_DATE",   FieldDescription="比对时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="比对时间")
+    private Date comparisonDate;
+
     @ColumnAnnotation(FieldName = "ABROAD_PHONE",   FieldDescription="国外通讯及本人联系电话")
+    @ApiModelProperty(value="国外通讯及本人联系电话")
     private String abroadPhone;
 
     @ColumnAnnotation(FieldName = "SFXYZQJWYJ",   FieldDescription="是否需要征求纪委意见(如果上次征求意见距现在少于35天，不需要再征求意见)")
+    @ApiModelProperty(value="是否需要征求纪委意见(如果上次征求意见距现在少于35天，不需要再征求意见)")
     private String sfxyzqjwyj;
 
     @ColumnAnnotation(FieldName = "SFZQJWYJ",   FieldDescription="是否征求纪委意见(1是，0否)")
+    @ApiModelProperty(value="是否征求纪委意见(1是，0否)")
     private String sfzqjwyj;
 
     @ColumnAnnotation(FieldName = "PASSPORT",   FieldDescription="护照(1申领新证、2换发、3失效申领、4签注)")
+    @ApiModelProperty(value="护照(1申领新证、2换发、3失效申领、4签注)")
     private Integer passport;
 
     @ColumnAnnotation(FieldName = "PASSPORT_NUM",   FieldDescription="护照号")
+    @ApiModelProperty(value="护照号")
     private String passportNum;
 
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT",   FieldDescription="港澳通行证(1申领新证、2换发、3失效申领、4签注)")
+    @ApiModelProperty(value="港澳通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer hongkongandmacaoPassport;
 
     @ColumnAnnotation(FieldName = "HONGKONGANDMACAO_PASSPORT_NUM",   FieldDescription="港澳通行证号")
+    @ApiModelProperty(value="港澳通行证号")
     private String hongkongandmacaoPassportNum;
 
     @ColumnAnnotation(FieldName = "MACAO_VISA",   FieldDescription="澳门签注")
+    @ApiModelProperty(value="澳门签注")
     private Integer macaoVisa;
 
     @ColumnAnnotation(FieldName = "HONGKONG_VISA",   FieldDescription="香港签注(1一次、2多次)")
+    @ApiModelProperty(value="香港签注(1一次、2多次)")
     private Integer hongkongVisa;
 
     @ColumnAnnotation(FieldName = "TAIWAN_PASSPORT",   FieldDescription="台湾通行证(1申领新证、2换发、3失效申领、4签注)")
+    @ApiModelProperty(value="台湾通行证(1申领新证、2换发、3失效申领、4签注)")
     private Integer taiwanPassport;
 
     @ColumnAnnotation(FieldName = "TAIWAN_PASSPORT_NUM",   FieldDescription="台湾通行证号")
+    @ApiModelProperty(value="台湾通行证号")
     private String taiwanPassportNum;
 
     @ColumnAnnotation(FieldName = "TAIWAN_VISA",   FieldDescription="台湾签注(1一次、2多次)")
+    @ApiModelProperty(value="台湾签注(1一次、2多次)")
     private Integer taiwanVisa;
 
     @ColumnAnnotation(FieldName = "IS_LUOGUAN",   FieldDescription="是否裸官(1是，0否)")
+    @ApiModelProperty(value="是否裸官(1是，0否)")
     private String isLuoguan;
 
     @ColumnAnnotation(FieldName = "IS_SPOUSEANDCHILDREN_SUPERVISE",   FieldDescription="配偶子女受监管(1是，0否)")
+    @ApiModelProperty(value="配偶子女受监管(1是，0否)")
     private String isSpouseandchildrenSupervise;
 
     @ColumnAnnotation(FieldName = "IS_LEADERS",   FieldDescription="是否主要领导(1是，0否)")
+    @ApiModelProperty(value="是否主要领导(1是，0否)")
     private String isLeaders;
 
     @ColumnAnnotation(FieldName = "IS_SPECIALLY_APPROVED",   FieldDescription="是否特批(1是，0否)")
+    @ApiModelProperty(value="是否特批(1是，0否)")
     private String isSpeciallyApproved;
 
     @ColumnAnnotation(FieldName = "NEGATIVE_INFO",   FieldDescription="负面信息")
+    @ApiModelProperty(value="负面信息")
     private String negativeInfo;
 
     @ColumnAnnotation(FieldName = "PASSPORT_TERM",   FieldDescription="证件有效期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="证件有效期")
     private Date passportTerm;
 
     @ColumnAnnotation(FieldName = "FUNDS_SOURCE",   FieldDescription="经费来源")
+    @ApiModelProperty(value="经费来源")
     private String fundsSource;
 
     @ColumnAnnotation(FieldName = "IS_COMPARISON",   FieldDescription="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
+    @ApiModelProperty(value="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
     @ColumnAnnotation(FieldName = "APPLY_STATUS",   FieldDescription="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
+    @ApiModelProperty(value="申请状态(1草稿、2生成材料、3打印材料、4自评上报、5业务办理、6征求有关单位意见、7待反馈意见、8组织部审批、9核实批件、10制作备案表、11已办结、12待领证、13已领证、14撤销)")
     private Integer applyStatus;
 
     @ColumnAnnotation(FieldName = "CANCEL_REASON",   FieldDescription="撤销原因")
+    @ApiModelProperty(value="撤销原因")
     private String cancelReason;
 
     @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书")
+    @ApiModelProperty(value="是否需要委托书")
     private Integer isEntrust;
 
     @ColumnAnnotation(FieldName = "REMARKS",   FieldDescription="备注")
+    @ApiModelProperty(value="备注")
     private String remarks;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
+    @ApiModelProperty(value="创建人")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
+    @ApiModelProperty(value="修改人")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="修改时间")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")
+    @ApiModelProperty(value="排序")
     private Integer sortId;
 
     @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="")
+    @ApiModelProperty(value="")
     private String leaderBatchId;
 
     @ColumnAnnotation(FieldName = "SCZQJWYJSJ",   FieldDescription="上次征求 纪委意见时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="上次征求 纪委意见时间")
     private Date sczqjwyjsj;
 
     @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
+    @ApiModelProperty(value="材料审核是否通过")
     private String clshsftg;
 
     @ColumnAnnotation(FieldName = "JDCJL",   FieldDescription="监督处最终结论")
+    @ApiModelProperty(value="监督处最终结论")
     private String jdcjl;
 
     @ColumnAnnotation(FieldName = "JWJL",   FieldDescription="纪委结论")
+    @ApiModelProperty(value="纪委结论")
     private String jwjl;
 
     @ColumnAnnotation(FieldName = "ZZJL",   FieldDescription="最终结论")
+    @ApiModelProperty(value="最终结论")
     private String zzjl;
 
     public String getId() {
@@ -445,6 +518,14 @@ public class OmsPriApply {
 
     public void setComparisonResult(String comparisonResult) {
         this.comparisonResult = comparisonResult == null ? null : comparisonResult.trim();
+    }
+
+    public Date getComparisonDate() {
+        return comparisonDate;
+    }
+
+    public void setComparisonDate(Date comparisonDate) {
+        this.comparisonDate = comparisonDate;
     }
 
     public String getAbroadPhone() {
