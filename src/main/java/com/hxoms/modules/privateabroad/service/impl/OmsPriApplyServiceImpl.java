@@ -303,9 +303,10 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
-
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         if (Constants.oms_business[1].equals(type)){
             //因私
+            omsAbroadApproval.setType(Constants.oms_business[1]);
             OmsPriApply omsPriApply = new OmsPriApply();
             omsPriApply.setApplyStatus(Constants.private_business[1]);
             omsPriApply.setId(applyId);
@@ -315,6 +316,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         } else if (Constants.oms_business[2].equals(type)){
             //延期回国
+            omsAbroadApproval.setType(Constants.oms_business[2]);
             OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
             omsPriDelayApply.setId(applyId);
             omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
@@ -323,6 +325,18 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
+        //添加步骤
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        omsAbroadApproval.setApplyId(applyId);
+        omsAbroadApproval.setStepCode(Constants.private_business[1]);
+        omsAbroadApproval.setStepName(Constants.private_businessName[1]);
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getId());
+        omsAbroadApproval.setSubmitTime(new Date());
+        omsAbroadApproval.setSubmitUser(userInfo.getId());
+        omsAbroadApproval.setApprovalResult("1");
+        omsAbroadApproval.setApprovalAdvice("通过");
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
         //约束消息提醒
         omsConditionService.remindCondition(applyId, type);
         return "操作成功";
