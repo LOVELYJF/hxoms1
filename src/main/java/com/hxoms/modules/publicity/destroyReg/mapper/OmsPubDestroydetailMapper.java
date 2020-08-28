@@ -62,4 +62,13 @@ public interface OmsPubDestroydetailMapper {
      * @Date: 2020/7/2
      */
     int insertOmsPubDestroydetailList(@Param("omsPubDestroydetailList") List<OmsPubDestroydetail> omsPubDestroydetailList);
+
+    /**
+     * @Desc: 根据团组备案申请主键获取销毁明细
+     * @Author: gaozhenyuan
+     * @Param: id
+     * @Return: List<OmsPubDestroydetail>
+     * @Date: 2020/8/21
+     */
+    List<OmsPubDestroydetail> getPubDestroydetailByYspId(String id);
 }

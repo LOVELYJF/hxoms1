@@ -27,6 +27,7 @@
         <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
         <result column="SQZT" jdbcType="INTEGER" property="sqzt" />
         <result column="CFSY" jdbcType="VARCHAR" property="cfsy" />
+        <result column="CXYY" jdbcType="VARCHAR" property="cxyy" />
     </resultMap>
     <sql id="Base_Column_List">
         ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ,
@@ -34,7 +35,7 @@
         CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ,
         SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY,
         SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
-        SOURCE
+        SOURCE,CXYY
     </sql>
     <select id="getPubGroupList" resultType="com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval">
         SELECT
@@ -168,6 +169,9 @@
             <if test="cfsy != null">
                 CFSY = #{cfsy,jdbcType=VARCHAR},
             </if>
+            <if test="cxyy != null">
+                CFSY = #{cxyy,jdbcType=VARCHAR},
+            </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}
     </update>
@@ -214,5 +218,11 @@
     </select>
     <select id="getPubGroupDetailById" resultType="com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval">
         select * from oms_pub_group_pre_approval where id = #{id}
+    </select>
+    <select id="getPubApplyByYspId" resultType="com.hxoms.modules.publicity.entity.OmsPubApply">
+        select *
+        from oms_pub_apply
+        where sqzt != "31"
+        and YSP_ID = #{id}
     </select>
 </mapper>

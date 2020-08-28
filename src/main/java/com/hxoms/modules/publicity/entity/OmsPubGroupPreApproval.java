@@ -92,6 +92,9 @@ public class OmsPubGroupPreApproval {
     @ColumnAnnotation(FieldName = "CFSY",   FieldDescription="出访事由")
     private String cfsy;
 
+    @ColumnAnnotation(FieldName = "CXYY",   FieldDescription="撤销原因")
+    private String cxyy;
+
     public String getId() {
         return id;
     }
@@ -290,5 +293,13 @@ public class OmsPubGroupPreApproval {
 
     public void setCfsy(String cfsy) {
         this.cfsy = cfsy == null ? null : cfsy.trim();
+    }
+
+    public String getCxyy() {
+        return cxyy;
+    }
+
+    public void setCxyy(String cxyy) {
+        this.cxyy = cxyy;
     }
 }

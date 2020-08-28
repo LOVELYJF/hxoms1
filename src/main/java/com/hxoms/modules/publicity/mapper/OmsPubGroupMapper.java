@@ -29,4 +29,6 @@ public interface OmsPubGroupMapper extends BaseMapper<OmsPubGroupPreApproval> {
     List<Map<String, String>> getNumByStatus(String bazt);
     //获取流程节点详情
     List<Map<String, String>>  getFlowDetail(String id);
+    //获取当前团组所有未撤销人员信息
+    List<OmsPubApply> getPubApplyByYspId(String id);
 }

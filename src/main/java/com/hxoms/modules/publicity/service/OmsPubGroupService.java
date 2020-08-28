@@ -33,7 +33,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     String checkoutPerson(String idList);
     //添加人员
     void insertPerson(String a0100,String id);
-    //撤销人员
+    //撤销团组
     void backoutPerson(String id,String cxyy);
     //恢复团组
     void regainPerson(String id);
@@ -42,7 +42,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //查看详情
     OmsPubApply getPersonDetailById(String id);
     //获取撤销记录信息
-    Map<String,Object> getBackoutById(String id);
+    Map<String,Object> getBackoutDetailById(String id);
     //获取审核意见
     List<OmsPubApplyVO> getAuditOpinion(String id);
     //递送任务

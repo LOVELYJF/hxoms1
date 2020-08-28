@@ -9,6 +9,10 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.publicity.destroyReg.entity.OmsPubDestroydetail;
+import com.hxoms.modules.publicity.destroyReg.mapper.OmsPubDestroydetailMapper;
+import com.hxoms.modules.publicity.docCallback.entity.OmsPubDoccallbackdetail;
+import com.hxoms.modules.publicity.docCallback.mapper.OmsPubDoccallbackdetailMapper;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
@@ -39,6 +43,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
     @Autowired
     private OmsPubApplyChangeMapper pubApplyChangeMapper;
+    @Autowired
+    private OmsPubDestroydetailMapper pubDestroydetailMapper;
+    @Autowired
+    private OmsPubDoccallbackdetailMapper pubDoccallbackdetailMapper;
+
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) throws ParseException {
@@ -189,13 +198,14 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
         if(pubGroup != null){
             pubGroup.setSqzt(0);
+            pubGroup.setCxyy(cxyy);
             pubGroupMapper.updatePubGroup(pubGroup);
         }
         //批量撤销人员
-        List<OmsPubApplyVO> applyVOListlist = pubApplyMapper.selectByYSPId(id);
-        if(applyVOListlist.size()>0){
-            for (int i = 0; i < applyVOListlist.size(); i++) {
-                pubApplyMapper.repealPubApplyById(applyVOListlist.get(i).getId(),cxyy, Constants.private_business[7]);
+        List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
+        if(applylist.size()>0){
+            for (int i = 0; i < applylist.size(); i++) {
+                pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),cxyy, Constants.private_business[7]);
             }
         }
     }
@@ -212,10 +222,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.updatePubGroup(pubGroup);
         }
         //批量恢复人员
-        List<OmsPubApplyVO> applyVOListlist = pubApplyMapper.selectByYSPId(id);
-        if(applyVOListlist.size()>0){
-            for (int i = 0; i < applyVOListlist.size(); i++) {
-                pubApplyMapper.repealPubApplyById(applyVOListlist.get(i).getId(),null, Constants.private_business[0]);
+        List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
+        if(applylist.size()>0){
+            for (int i = 0; i < applylist.size(); i++) {
+                if(pubGroup.getCxyy().equals(applylist.get(i).getCxyy())){
+                    pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),null, Constants.private_business[0]);
+                }
             }
         }
     }
@@ -239,11 +251,24 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Map<String, Object> getBackoutById(String id) {
+    public Map<String, Object> getBackoutDetailById(String id) {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
-        return null;
+        Map<String, Object> resultMap = new HashMap<>();
+        //获取团组详情
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
+        //获取撤销原因
+        String cxyy = pubGroup.getCxyy();
+        //获取销毁记录
+        List<OmsPubDestroydetail> pubDestroydetailList = pubDestroydetailMapper.getPubDestroydetailByYspId(id);
+        //获取回收记录
+        List<OmsPubDoccallbackdetail> pubDoccallbackdetailList= pubDoccallbackdetailMapper.getPubDoccallbackdetailByYspId(id);
+        //返回结果
+        resultMap.put("cxyy",cxyy);
+        resultMap.put("pubDestroydetailList",pubDestroydetailList);
+        resultMap.put("pubDoccallbackdetailList",pubDoccallbackdetailList);
+        return resultMap;
     }
 
     @Override
@@ -365,6 +390,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         return omsPubGroupAndApplyList;
     }
 
+    /**
+     * 封装插入时所需人员实体类
+     * @param id(人员id)
+     * @return OmsPubApply
+     */
     private OmsPubApply getInsertOmsPubApply(String id){
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
