@@ -49,7 +49,7 @@ public class CountryController {
 
 
 
-    @ApiOperation(value="国家列表", notes="国家列表")
+    @ApiOperation(value="国家列表不分页", notes="国家列表不分页")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "nameZh", value = "国家名字", required = true, dataType = "String")
     })
