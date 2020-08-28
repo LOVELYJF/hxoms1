@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.entity.PassportResult;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
@@ -192,5 +193,22 @@ public class OmsPriApplyController {
     public Result selectVisaSettingByCode(String infoId){
         Map<String, Object> visaSetting = omsPriApplyService.selectVisaSettingByCode(infoId);
         return Result.success(visaSetting);
+    }
+
+    /**
+     * 因私出国证照查询
+     * @param countries 国家id（逗号分隔）
+     * @param procpersonId 备案人员id
+     * @return
+     */
+    @ApiOperation(value="因私出国证照查询", notes="因私出国证照查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "countries", value = "国家id（逗号分隔）", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "procpersonId", value = "备案人员id", required = true, dataType = "String")
+    })
+    @GetMapping("/selectPassportByCountry")
+    public Result selectPassportByCountry(String countries, String procpersonId){
+        List<PassportResult> result = omsPriApplyService.selectPassportByCountry(countries, procpersonId);
+        return Result.success(result);
     }
 }
