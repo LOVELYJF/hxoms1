@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
+import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.publicity.destroyReg.entity.OmsPubDestroydetail;
@@ -27,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,10 +47,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsPubDestroydetailMapper pubDestroydetailMapper;
     @Autowired
     private OmsPubDoccallbackdetailMapper pubDoccallbackdetailMapper;
+    @Autowired
+    private OmsConditionService omsConditionService;
 
 
     @Override
-    public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) throws ParseException {
+    public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) {
         List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
         PageUtil.pageHelp(pageNum, pageSize);
         PageInfo<OmsPubGroupPreApproval> pageInfo = new PageInfo(resultList);
@@ -70,7 +72,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             String id = UUIDGenerator.getPrimaryKey();
             pubGroup.setId(id);
             pubGroup.setTzrs(num);
-            pubGroup.setSqzt(1);
+            pubGroup.setSqzt(2);
             pubGroup.setCreateUser(userInfo.getId());
             pubGroup.setCreateTime(new Date());
             pubGroupMapper.insertPubGroup(pubGroup);
@@ -84,7 +86,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubApply.setTlsj(pubGroup.getTjgj());
                 pubApply.setCfrw(pubGroup.getCfrw());
                 pubApply.setCfsy(pubGroup.getCfsy());
-
+                pubApply.setSfxd(1);
                 pubApply.setSfzb("0");
                 applyList.add(pubApply);
             }
@@ -97,6 +99,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList,String bgyy) {
+        if (pubGroupAndApplyList == null || StringUtils.isBlank(bgyy)){
+            throw new CustomMessageException("参数为空!");
+        }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //创建所需对象
@@ -160,13 +165,26 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException {
+        if (file == null){
+            throw new CustomMessageException("参数为空!");
+        }
         OmsPubGroupAndApplyList omsPubGroupAndApplyList = readJsonData(file);
         return omsPubGroupAndApplyList;
     }
 
     @Override
-    public String checkoutPerson(String idList) {
-        return null;
+    public List<OmsPubApplyVO> checkoutPerson(List<OmsPubApplyVO> list) {
+        if(list.size() < 0){
+            throw new CustomMessageException("未选择人员!");
+        }
+        for (int i = 0; i < list.size(); i++) {
+            String id = list.get(i).getProcpersonId();
+            List<Map<String,String>> result = omsConditionService.checkConditionByA0100(id,"oms_pub_apply");
+            String fmxx = omsConditionService.selectNegativeInfo(list.get(i).getA0100(),list.get(i).getCgsj());
+            list.get(i).setCheckResult(result);
+            list.get(i).setFmxx(fmxx);
+        }
+        return list;
     }
 
     @Override
@@ -186,7 +204,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
         pubApply.setSfysp("1");
         pubApply.setSfzb("1");
-        pubApplyMapper.insert(pubApply);
+        if(pubApplyMapper.insert(pubApply) < 1){
+            throw new CustomMessageException("添加失败!");
+        }
+
     }
 
     @Override
@@ -199,8 +220,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(pubGroup != null){
             pubGroup.setSqzt(0);
             pubGroup.setCxyy(cxyy);
-            pubGroupMapper.updatePubGroup(pubGroup);
-        }
+            if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
+                throw new CustomMessageException("撤销失败!");
+            }
+    }
         //批量撤销人员
         List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
         if(applylist.size()>0){
@@ -219,7 +242,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
         if(pubGroup != null){
             pubGroup.setSqzt(1);
-            pubGroupMapper.updatePubGroup(pubGroup);
+            if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
+                throw new CustomMessageException("恢复失败!");
+            }
         }
         //批量恢复人员
         List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
@@ -239,10 +264,14 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }
         OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(yspId);
-        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(yspId);
+        List<OmsPubApplyVO> applyList = pubApplyMapper.selectByYSPId(yspId);
+        for (int i = 0; i < applyList.size(); i++) {
+            List<Map<String,String>> result = omsConditionService.checkConditionByA0100(applyList.get(i).getProcpersonId(),"oms_pub_apply");
+            applyList.get(i).setCheckResult(result);
+        }
         beanList.setOmsPubGroupPreApproval(pubGroup);
-        beanList.setOmsPubApplyVOList(pubApplyVOList);
-        return  beanList;
+        beanList.setOmsPubApplyVOList(applyList);
+        return beanList;
     }
 
     @Override
@@ -290,16 +319,43 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public List<Map<String, String>>  getFlowDetail(String id) {
-        if (StringUtils.isBlank(id)){
+    public String uploadApproval(MultipartFile file, String id) {
+        if (StringUtils.isBlank(id) ){
             throw new CustomMessageException("参数为空!");
         }
-        return pubGroupMapper.getFlowDetail(id);
+        //获得文件的名称
+        String fileAllName = file.getOriginalFilename();
+        //获得文件的扩展名称
+        String fileName = null;
+        if ((fileAllName != null) && (fileAllName.length() > 0)) {
+            int dot = fileAllName.lastIndexOf('.');
+            if ((dot >-1) && (dot < (fileAllName.length()))) {
+                fileName = fileAllName.substring(0, dot);
+            }
+            //更新批文号
+            OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
+            pubGroup.setId(id);
+            pubGroup.setZypwh(fileName);
+            pubGroup.setSqzt(3);
+            if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
+                throw new CustomMessageException("批文号上传失败！");
+            }
+        }
+        return fileName;
     }
 
     @Override
-    public String uploadApproval(MultipartFile file, String id) {
-        return "";
+    public String updateApproval(String pwh, String id) {
+        if (StringUtils.isBlank(pwh) || StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
+        pubGroup.setId(id);
+        pubGroup.setZypwh(pwh);
+        if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
+            throw new CustomMessageException("批文号更新失败！");
+        }
+        return "批文号更新成功！";
     }
 
     @Override
@@ -410,6 +466,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }else{
             pubApply.setSfsmry("1");
         }
+        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
+        pubApply.setFmxx(fmxx);
         pubApply.setSfbg("0");
         pubApply.setSqzt(1);
         pubApply.setSfxd(0);

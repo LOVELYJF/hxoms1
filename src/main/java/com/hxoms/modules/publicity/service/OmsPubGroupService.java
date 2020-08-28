@@ -30,7 +30,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //上传团体预备案申请信息
     OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException;
     //重新校验
-    String checkoutPerson(String idList);
+    List<OmsPubApplyVO> checkoutPerson(List<OmsPubApplyVO> list);
     //添加人员
     void insertPerson(String a0100,String id);
     //撤销团组
@@ -47,10 +47,10 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     List<OmsPubApplyVO> getAuditOpinion(String id);
     //递送任务
     void sendTask(String id);
-    //查看流程详情
-    Object getFlowDetail(String id);
     //上传批文
     String uploadApproval(MultipartFile file, String id);
+    //更新批文号
+    String updateApproval(String pwh, String id);
     //获取备案步骤任务数
     List<Map<String,String>> getNumByStatus(String bazt);
 }
