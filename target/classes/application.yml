@@ -5,13 +5,13 @@ server:
 spring:
   datasource:
     druid:
-#            username: HXOMS
-#            password: 12345abcde
-#            url: jdbc:dm://www.24hbs.com:5236/HXOMS
-#            driver-class-name: dm.jdbc.driver.DmDriver
-      username: hxoms
-      password: Hxyz-2020#
-      url: jdbc:mysql://118.24.11.160:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8
+      #            username: HXOMS
+      #            password: 12345abcde
+      #            url: jdbc:dm://www.24hbs.com:5236/HXOMS
+      #            driver-class-name: dm.jdbc.driver.DmDriver
+      username: root
+      password: 12345abcde
+      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
       #username: root
       #password: 123456
       #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
@@ -23,7 +23,8 @@ spring:
       validation-query: select 1
       max-wait: 60000
   jackson:
-    #default-property-inclusion: non_null
+    time-zone:GMT+8
+  #default-property-inclusion: non_null
   servlet:
     multipart:
       max-file-size: 100MB
@@ -61,6 +62,8 @@ file:
   ueditorImgUrl: /ueditorImgUrl/ #富文本上传图片路径虚拟
   ueditorRealImgUrl: E:/ueditorImgUrl/ #富文本上传图片路径真实
 
+omsAttachment:
+  baseDir: D:/oms/attachment   # 附件上传路径
 
 #职务code
 postcode:

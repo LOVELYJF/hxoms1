@@ -305,6 +305,7 @@
   </select>
     <select id="selectBasePersonInfo" resultType="java.util.Map">
         select distinct concat(p.SURNAME,p.NAME) as NAME
+        ,p.id as procpersonId
         ,p.SEX
         ,p.BIRTH_DATE_GB
         ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE_GB,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
