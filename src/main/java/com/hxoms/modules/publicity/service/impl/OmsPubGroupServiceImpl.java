@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -84,6 +85,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                     String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
                     pubApply.setFmxx(fmxx);
                 }
+                pubApply.setYspId(id);
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubApply.getHgsj());
@@ -197,8 +199,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApply pubApply = getInsertOmsPubApply(personId);
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
+        OmsPubApply pubApply = getInsertOmsPubApply(personId);
+        pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
         pubApply.setHgsj(pubApply.getHgsj());
@@ -478,10 +481,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setSfsmry("1");
         }
         List<OmsPubApply> list = pubApplyMapper.selectPubAbroadLatestInfo(personInfo.getA0100());
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
         if(list.size() > 0){
             String zjcgqk = "";
             for (int i = 0; i < list.size(); i++) {
-                zjcgqk += "出国时间："+list.get(i).getCgsj()+",所赴国家："+list.get(i).getSdgj()+",出访任务："+list.get(i).getCfrw()+";";
+                zjcgqk += "出国时间："+sdf.format(list.get(i).getCgsj())+",所赴国家："+list.get(i).getSdgj()+",出访任务："+list.get(i).getCfrw()+";";
             }
             pubApply.setZjcgqk(zjcgqk);
         }
