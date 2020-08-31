@@ -328,4 +328,17 @@ public class OmsPubApplyController {
         omsPubApplyService.deletePubGroupPreApprovalById(id);
         return Result.success();
     }
+    /**
+     * 功能描述: <br>
+     * 〈修改通知书文号〉
+     * @Param: [yPWH, xPWH]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 8:54
+     */
+    @PostMapping("/updataPWH")
+    public Result updataPWH(String yPWH , String xPWH){
+        omsPubApplyService.updatePWH(yPWH , xPWH);
+        return Result.success();
+    }
 }

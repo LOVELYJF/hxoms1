@@ -133,4 +133,14 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/7/29 9:52
      */
     void updatePubApplyList(List<OmsPubApply> list);
+
+    /**
+     * 功能描述: <br>
+     * 〈修改通知书文号〉
+     * @Param: [yPWH, xPWH]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 8:58
+     */
+    void updatePWH(@Param("yPWH") String yPWH, @Param("xPWH") String xPWH);
 }
