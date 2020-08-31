@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -78,7 +79,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getProcpersonId());
+                OmsPubApply pubApply = new OmsPubApply();
+                if("0".equals(pubGroup.getSource())){
+                    pubApply = getInsertOmsPubApply(personList.get(i).getProcpersonId());
+                    String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
+                    pubApply.setFmxx(fmxx);
+                }
+                pubApply.setYspId(id);
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubApply.getHgsj());
@@ -192,8 +199,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApply pubApply = getInsertOmsPubApply(personId);
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
+        OmsPubApply pubApply = getInsertOmsPubApply(personId);
+        pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
         pubApply.setHgsj(pubApply.getHgsj());
@@ -202,6 +210,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
 
+        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
+        pubApply.setFmxx(fmxx);
         pubApply.setSfysp("1");
         pubApply.setSfzb("1");
         if(pubApplyMapper.insert(pubApply) < 1){
@@ -471,15 +481,14 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setSfsmry("1");
         }
         List<OmsPubApply> list = pubApplyMapper.selectPubAbroadLatestInfo(personInfo.getA0100());
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
         if(list.size() > 0){
             String zjcgqk = "";
             for (int i = 0; i < list.size(); i++) {
-                zjcgqk += "出国时间："+list.get(i).getCgsj()+",所赴国家："+list.get(i).getSdgj()+",出访任务："+list.get(i).getCfrw()+";";
+                zjcgqk += "出国时间："+sdf.format(list.get(i).getCgsj())+",所赴国家："+list.get(i).getSdgj()+",出访任务："+list.get(i).getCfrw()+";";
             }
             pubApply.setZjcgqk(zjcgqk);
         }
-        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
-        pubApply.setFmxx(fmxx);
         pubApply.setSfbg("0");
         pubApply.setSqzt(1);
         pubApply.setSfxd(0);
