@@ -57,7 +57,8 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
      */
     @Override
     public List<OmsRegProcpersoninfo> selectRegPerson(CfCertificate cfCertificate) {
-        return cfCertificateMapper.selectRegPerson(null,cfCertificate.getName(),cfCertificate.getCsrq());
+        //return cfCertificateMapper.selectRegPerson(null,cfCertificate.getName(),cfCertificate.getCsrq());
+        return null;
     }
 
     /**

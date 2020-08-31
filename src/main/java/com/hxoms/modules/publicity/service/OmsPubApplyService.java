@@ -233,4 +233,14 @@ public interface OmsPubApplyService {
      * @Date: 2020/8/10 10:08
      */
     void repealGJ(String id, String cxyy);
+
+    /**
+     * 功能描述: <br>
+     * 〈修改通知书文号〉
+     * @Param: [yPWH, xPWH]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 8:54
+     */
+    void updatePWH(String yPWH, String xPWH);
 }

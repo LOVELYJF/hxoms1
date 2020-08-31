@@ -1,7 +1,5 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -16,24 +14,24 @@ import java.util.List;
 public class CfCertificateValidate {
     //证照信息
     @ApiModelProperty(value = "证照信息")
-    private CfCertificate cfCertificate;
+    private ValidateCerInfo validateCerInfo;
     //登记备案人员信息
     @ApiModelProperty(value = "登记备案人员信息")
-    private List<OmsRegProcpersoninfo> omsRegProcpersoninfoList;
+    private List<RegProcpersoninfo> regProcpersoninfoList;
 
-    public CfCertificate getCfCertificate() {
-        return cfCertificate;
+    public ValidateCerInfo getValidateCerInfo() {
+        return validateCerInfo;
     }
 
-    public void setCfCertificate(CfCertificate cfCertificate) {
-        this.cfCertificate = cfCertificate;
+    public void setValidateCerInfo(ValidateCerInfo validateCerInfo) {
+        this.validateCerInfo = validateCerInfo;
     }
 
-    public List<OmsRegProcpersoninfo> getOmsRegProcpersoninfoList() {
-        return omsRegProcpersoninfoList;
+    public List<RegProcpersoninfo> getRegProcpersoninfoList() {
+        return regProcpersoninfoList;
     }
 
-    public void setOmsRegProcpersoninfoList(List<OmsRegProcpersoninfo> omsRegProcpersoninfoList) {
-        this.omsRegProcpersoninfoList = omsRegProcpersoninfoList;
+    public void setRegProcpersoninfoList(List<RegProcpersoninfo> regProcpersoninfoList) {
+        this.regProcpersoninfoList = regProcpersoninfoList;
     }
 }

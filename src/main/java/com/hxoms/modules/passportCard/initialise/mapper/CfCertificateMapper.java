@@ -7,6 +7,8 @@ import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCol
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
 
 import java.util.Date;
 import java.util.List;
@@ -63,10 +65,10 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Desc: 查询所有证照信息
      * @Author: wangyunquan
      * @Param: []
-     * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
+	 * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface>
      * @Date: 2020/8/4
      */
-    List<CfCertificate> selectAllCertificate();
+    List<ImportInterface> selectAllCertificate();
 
     /**
      * @Desc: 查询证照信息
@@ -81,10 +83,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Desc: 查询登记备案人员信息
      * @Author: wangyunquan
      * @Param: [id, name, csrq]
-     * @Return: java.util.List<com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo>
+	 * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo>
      * @Date: 2020/8/4
      */
-    List<OmsRegProcpersoninfo> selectRegPerson(String id, String name, Date csrq);
+
+    List<RegProcpersoninfo> selectRegPerson(String id, String name, Date csrq);
 
 
     /**
@@ -189,4 +192,13 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/8/28
      */
 	CfCertificateInfo selectCjNeedInfo(String id);
+
+	/**
+	 * @Desc: 查询用户类型
+	 * @Author: wangyunquan
+	 * @Param: [id]
+	 * @Return: java.lang.String
+	 * @Date: 2020/8/29
+	 */
+	String selectUserType(String id);
 }

@@ -20,10 +20,10 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerImportBatchMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
-import com.hxoms.support.sysdict.entity.SysDictItem;
-import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import com.hxoms.modules.passportCard.initialise.service.OmsCerExitEntryImportManageService;
 import com.hxoms.modules.passportCard.initialise.service.OmsCerImportManageService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -100,7 +100,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     * @Date: 2020/7/24
     */
     @Override
-    public PageBean<CfCertificate> excelToDB(MultipartFile multipartFile) throws Exception {
+    public PageBean<ImportInterface> excelToDB(MultipartFile multipartFile) throws Exception {
         if (multipartFile==null || multipartFile.getSize() <= 0 ) {
            throw new CustomMessageException("参数不正确");
         }
@@ -117,59 +117,70 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/4
      */
     @Override
-    public PageBean<CfCertificate> selectAllCertificate(PageBean pageBean) {
+    public PageBean<ImportInterface> selectAllCertificate(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
-        PageInfo<CfCertificate> pageInfo= new PageInfo<CfCertificate>(cfCertificateMapper.selectAllCertificate());
+        PageInfo<ImportInterface> pageInfo= new PageInfo<ImportInterface>(cfCertificateMapper.selectAllCertificate());
         return PageUtil.packagePage(pageInfo);
     }
 
     /**
      * @Desc: 验证证照信息
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [validateCerInfoParam]
      * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate
      * @Date: 2020/8/4
      */
     @Override
-    public CfCertificateValidate validateCerInfo(CfCertificate cfCertificate) {
+    public CfCertificateValidate validateCerInfo(ValidateCerInfo validateCerInfo) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        if(cfCertificate==null||cfCertificate.getZjlx()==null||StringUtils.isBlank(cfCertificate.getZjhm()))
+        CfCertificate cfCertificate=new CfCertificate();
+        BeanUtils.copyProperties(validateCerInfo,cfCertificate);
+        if(cfCertificate ==null|| cfCertificate.getZjlx()==null||StringUtils.isBlank(cfCertificate.getZjhm()))
             throw new CustomMessageException("参数不正确");
         //通过证件类型、证件号码查询
         CfCertificate certificateGa=cfCertificateMapper.selectCertificateInfo(cfCertificate);
+        //数据库存在证照，则验证证照
         if(certificateGa!=null){
             //证照验证
             validateCerInfo(certificateGa,cfCertificate);
+            //根据登陆用户设置保管单位
+            //0:干部监督处,1:省委统战部(台办)
+            certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
             //验证通过，通过接口获取证照存储位置
             if("4".equals(certificateGa.getCardStatus())){
+                //保管方式
+
+                //保管位置
 
             }
             certificateGa.setSaveStatus("1");
             certificateGa.setZjxs(cfCertificate.getZjxs());
-            //保管单位默认是干部监督处
-            certificateGa.setSurelyUnit("0");
             certificateGa.setUpdater(userInfo.getId());
             certificateGa.setUpdateTime(new Date());
             int result=cfCertificateMapper.updateById(certificateGa);
             if(result==0)
                 throw new CustomMessageException("证照验证保存失败！");
-            cfCertificate=cfCertificateMapper.selectById(certificateGa.getId());
+            certificateGa=cfCertificateMapper.selectById(certificateGa.getId());
         }
         //获取备案人员信息
-        List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
-        CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
-        cfCertificateValidate.setCfCertificate(certificateGa);
-        cfCertificateValidate.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
+        List<RegProcpersoninfo> regProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
         //判断是否需要做新增处理
-        if(certificateGa==null&&omsRegProcpersoninfoList.size()==1){
-            OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoList.get(0);
-            cfCertificate.setOmsId(omsRegProcpersoninfo.getId());
-            cfCertificate.setA0100(omsRegProcpersoninfo.getA0100());
-            cfCertificate.setA0184(omsRegProcpersoninfo.getIdnumberGb());
+        if(certificateGa==null&&regProcpersoninfoList.size()==1){
+            RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
+            cfCertificate.setOmsId(regProcpersoninfo.getId());
+            cfCertificate.setA0100(regProcpersoninfo.getA0100());
+            cfCertificate.setA0184(regProcpersoninfo.getIdnumberGb());
             insertCertificate(cfCertificate);
         }
+        CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
+        if(certificateGa!=null){
+            ValidateCerInfo validateCerInfoReturn = new ValidateCerInfo();
+            BeanUtils.copyProperties(certificateGa,validateCerInfoReturn);
+            cfCertificateValidate.setValidateCerInfo(validateCerInfoReturn);
+        }
+        cfCertificateValidate.setRegProcpersoninfoList(regProcpersoninfoList);
         return cfCertificateValidate;
     }
 
@@ -255,7 +266,16 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      */
     @Override
     public void createCjTask(CfCertificateCollectionApplyList cfCertificateCollectionApplyList) {
-        cfCertificateCollectionService.createCjTask(cfCertificateCollectionApplyList.getCfCertificateCollectionList());
+        List<CertificateCollectionApply> certificateCollectionApplyList = cfCertificateCollectionApplyList.getCertificateCollectionApplyList();
+        if(certificateCollectionApplyList.size()==0)
+            throw  new CustomMessageException("请求参数不能为空，请核实！");
+        List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
+        for (CertificateCollectionApply certificateCollectionApply : certificateCollectionApplyList) {
+            CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
+            BeanUtils.copyProperties(certificateCollectionApply,cfCertificateCollection);
+            cfCertificateCollectionList.add(cfCertificateCollection);
+        }
+        cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
     }
 
 
@@ -374,17 +394,19 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑处理，以证照信息为准
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [qureyDealRequestInfo]
      * @Return: void
      * @Date: 2020/8/10
      */
     @Override
-    public void updateCerForCerIsRight(CfCertificate cfCertificate) {
+    public void updateCerForCerIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
+        CfCertificate cfCertificate=new CfCertificate();
+        BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
         cfCertificate.setSaveStatus("1");
         cfCertificate.setCardStatus("4");
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
         cfCertificate.setUpdateTime(new Date());
-        //通过接口获取证照存储位置
+        //通过接口获取证照存储位置，优先选择证照机存储，否则柜台存储。
 
         int result = cfCertificateMapper.updateById(cfCertificate);
         if(result==0)
@@ -394,12 +416,15 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑处理，以公安信息为准
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [qureyDealRequestInfo]
      * @Return: void
      * @Date: 2020/8/10
      */
     @Override
-    public void updateCerForGaInfoIsRight(CfCertificate cfCertificate) {
+    @Transactional(rollbackFor=Exception.class)
+    public void updateCerForGaInfoIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
+        CfCertificate cfCertificate=new CfCertificate();
+        BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
         cfCertificate.setSaveStatus("2");
         cfCertificate.setCardStatus("5");
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());

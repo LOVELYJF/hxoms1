@@ -3,7 +3,6 @@ package com.hxoms.modules.passportCard.counterReturn.service.impl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo;
 import com.hxoms.modules.passportCard.counterReturn.mapper.OmsCounterReturnMapper;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 
 @Service
@@ -54,10 +52,10 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             storeCfCertificate.setCounterNum(1);
         }
         //获取备案人员信息
-        List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(storeCfCertificate!=null?storeCfCertificate.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
+        //List<OmsRegProcpersoninfo> omsRegProcpersoninfoList=cfCertificateMapper.selectRegPerson(storeCfCertificate!=null?storeCfCertificate.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
         ReturnCertificateInfo returnCertificateInfo=new ReturnCertificateInfo();
         returnCertificateInfo.setCfCertificate(cfCertificate);
-        returnCertificateInfo.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
+        //returnCertificateInfo.setOmsRegProcpersoninfoList(omsRegProcpersoninfoList);
         return returnCertificateInfo;
     }
 

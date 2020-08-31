@@ -1,6 +1,5 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
-import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,13 +14,13 @@ import java.util.List;
 public class CfCertificateCollectionApplyList {
     //催缴任务集合
     @ApiModelProperty(value = "催缴任务集合信息")
-    private List<CfCertificateCollection> cfCertificateCollectionList;
+    private List<CertificateCollectionApply> certificateCollectionApplyList;
 
-    public List<CfCertificateCollection> getCfCertificateCollectionList() {
-        return cfCertificateCollectionList;
+    public List<CertificateCollectionApply> getCertificateCollectionApplyList() {
+        return certificateCollectionApplyList;
     }
 
-    public void setCfCertificateCollectionList(List<CfCertificateCollection> cfCertificateCollectionList) {
-        this.cfCertificateCollectionList = cfCertificateCollectionList;
+    public void setCertificateCollectionApplyList(List<CertificateCollectionApply> certificateCollectionApplyList) {
+        this.certificateCollectionApplyList = certificateCollectionApplyList;
     }
 }

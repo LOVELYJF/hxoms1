@@ -38,8 +38,11 @@ public class CfCertificateInfo {
     @ApiModelProperty(value = "性别")
     private String sex;
     //证照类型
-    @ApiModelProperty(value = "证照类型")
+    @ApiModelProperty(value = "证照类型编码")
     private Integer zjlx;
+    //证照类型
+    @ApiModelProperty(value = "证照类型名称")
+    private Integer zjlxName;
     //证件号码
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
@@ -150,6 +153,14 @@ public class CfCertificateInfo {
 
     public void setZjlx(Integer zjlx) {
         this.zjlx = zjlx;
+    }
+
+    public Integer getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(Integer zjlxName) {
+        this.zjlxName = zjlxName;
     }
 
     public String getZjhm() {
