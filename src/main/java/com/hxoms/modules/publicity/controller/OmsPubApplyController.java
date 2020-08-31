@@ -341,4 +341,17 @@ public class OmsPubApplyController {
         omsPubApplyService.updatePWH(yPWH , xPWH);
         return Result.success();
     }
+    /**
+     * 功能描述: <br>
+     * 〈获取台办批文号树〉
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 10:38
+     */
+    @GetMapping("/getPWHList")
+    public Result getPWHList(){
+        List<PWHVO> pwhList = omsPubApplyService.getPWHList();
+        return Result.success(pwhList);
+    }
 }

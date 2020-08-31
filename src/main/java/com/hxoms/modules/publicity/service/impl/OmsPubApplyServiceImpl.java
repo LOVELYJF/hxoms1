@@ -955,6 +955,35 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     /**
      * 功能描述: <br>
+     * 〈获取台办批文号树〉
+     * @Param: []
+     * @Return: com.hxoms.modules.publicity.entity.PWHVO
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 10:43
+     */
+    @Override
+    public List<PWHVO> getPWHList() {
+        List<PWHVO> pwhvos = omsPubApplyMapper.getPWHList();
+        List<PWHVO> pwhvos1 = new ArrayList<>();
+        for (PWHVO pwhvo:pwhvos) {
+            String year = pwhvo.getYear();
+            PWHVO pwhvo2 = new PWHVO();
+            List<String> pwhs = new ArrayList<>();
+            for (PWHVO pwhvo1:pwhvos) {
+                if (year.equals(pwhvo1.getYear())){
+                    pwhvo2.setYear(year);
+                    pwhs.add(pwhvo1.getPwh());
+                }
+            }
+            pwhvo2.setPwhs(pwhs);
+            pwhvos1.add(pwhvo2);
+        }
+
+        return pwhvos1;
+    }
+
+    /**
+     * 功能描述: <br>
      * 〈根据ID删除干教信息〉
      * @Param: [id]
      * @Return: void

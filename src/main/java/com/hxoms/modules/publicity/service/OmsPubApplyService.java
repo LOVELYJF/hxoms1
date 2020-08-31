@@ -243,4 +243,15 @@ public interface OmsPubApplyService {
      * @Date: 2020/8/31 8:54
      */
     void updatePWH(String yPWH, String xPWH);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取台办批文号树〉
+     * @Param: []
+     * @Return: com.hxoms.modules.publicity.entity.PWHVO
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 10:38
+     */
+    List<PWHVO> getPWHList();
+
 }

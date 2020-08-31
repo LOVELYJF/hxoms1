@@ -506,6 +506,14 @@
             </if>
         </where>
     </select>
+    <select id="getPWHList" resultType="com.hxoms.modules.publicity.entity.PWHVO">
+        SELECT SUBSTRING(PWH,5,4) as year ,PWH
+        FROM oms_pub_apply
+        WHERE
+        oms_pub_apply.PWH like CONCAT('%','琼台赴字','%')
+
+        GROUP BY year,PWH ORDER BY year
+    </select>
 
     <insert id="insertPubApplyList">
         insert into oms_pub_apply(
