@@ -74,7 +74,7 @@ public class OmsCreateFileServiceImpl implements OmsCreateFileService {
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("APPLY_ID", applyId);
         int status = omsCreateFileMapper.delete(queryWrapper);
-        if (status < 1){
+        if (status < 0){
             throw new CustomMessageException("删除失败");
         }
         return "删除成功";

@@ -7,6 +7,8 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
+import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
@@ -59,6 +61,8 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
     private OmsCreateFileService omsCreateFileService;
     @Autowired
     private OmsEntryexitRecordService omsEntryexitRecordService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -299,9 +303,10 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)){
             throw new CustomMessageException("参数错误");
         }
-
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         if (Constants.oms_business[1].equals(type)){
             //因私
+            omsAbroadApproval.setType(Constants.oms_business[1]);
             OmsPriApply omsPriApply = new OmsPriApply();
             omsPriApply.setApplyStatus(Constants.private_business[1]);
             omsPriApply.setId(applyId);
@@ -311,6 +316,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             }
         } else if (Constants.oms_business[2].equals(type)){
             //延期回国
+            omsAbroadApproval.setType(Constants.oms_business[2]);
             OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
             omsPriDelayApply.setId(applyId);
             omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
@@ -319,6 +325,18 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
+        //添加步骤
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        omsAbroadApproval.setApplyId(applyId);
+        omsAbroadApproval.setStepCode(Constants.private_business[1]);
+        omsAbroadApproval.setStepName(Constants.private_businessName[1]);
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getId());
+        omsAbroadApproval.setSubmitTime(new Date());
+        omsAbroadApproval.setSubmitUser(userInfo.getId());
+        omsAbroadApproval.setApprovalResult("1");
+        omsAbroadApproval.setApprovalAdvice("通过");
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
         //约束消息提醒
         omsConditionService.remindCondition(applyId, type);
         return "操作成功";
@@ -422,6 +440,119 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         result.put("hongkong", hongkong);
         result.put("makao", makao);
         return result;
+    }
+
+    @Override
+    public List<PassportResult> selectPassportByCountry(String countries, String procpersonId) {
+        if (StringUtils.isBlank(procpersonId)){
+            throw new CustomMessageException("请先选择出国人员");
+        }
+        if (StringUtils.isBlank(procpersonId)){
+            throw new CustomMessageException("请先选择国家");
+        }
+        List<PassportResult> result = new ArrayList<>();
+        //国外
+        String[] country = countries.split(",");
+        for (String item : country) {
+            if (!"179".equals(item) && !"73".equals(item) && !"115".equals(item)){
+                PassportResult passportResult = new PassportResult();
+                passportResult.setZjlx(1);
+                result.add(passportResult);
+                break;
+            }
+        }
+        countries += ",";
+        countries = "," + countries;
+        if (countries.indexOf(",179,") != -1){
+            //台湾
+            PassportResult passportResult = new PassportResult();
+            passportResult.setZjlx(4);
+            result.add(passportResult);
+        }
+        if (countries.indexOf(",73,") != -1 || countries.indexOf(",115,") != -1){
+            //香港、澳门
+            PassportResult passportResult = new PassportResult();
+            passportResult.setZjlx(2);
+            result.add(passportResult);
+        }
+        QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<>();
+        for (PassportResult item : result) {
+            queryWrapper.clear();
+            queryWrapper.eq("OMS_ID", procpersonId)
+                    .eq("ZJLX", item.getZjlx())
+                    .eq("IS_VALID", 0);
+            CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
+            if (cfCertificate != null){
+                //半年后是否失效
+                boolean flagSix = (DateUtils.addMonths(new Date(), 6)).after(cfCertificate.getYxqz());
+                //是否失效
+                boolean flag = cfCertificate.getYxqz().before(new Date());
+                item.setNum(cfCertificate.getZjhm());
+                //护照
+                if (item.getZjlx() == 1) {
+                    if (flag) {
+                        //失效
+                        item.setType(3);
+                        item.setDesc("失效重新申领护照（" + cfCertificate.getZjhm() + "）");
+                    }else if (flagSix){
+                        //换发
+                        item.setType(2);
+                        item.setDesc("换发护照（" + cfCertificate.getZjhm() + "）");
+                    }else{
+                        item.setDesc("此表只作为存档，不能申领或换发证照");
+                    }
+                }else if (item.getZjlx() == 2){
+                    //港澳
+                    if (flag) {
+                        //失效
+                        item.setType(3);
+                        item.setDesc("失效重新申领港澳通行证（" + cfCertificate.getZjhm() + "）");
+                    }else if (flagSix){
+                        //换发
+                        item.setType(2);
+                        item.setDesc("换发港澳通行证（" + cfCertificate.getZjhm() + "）");
+                    }else{
+                        item.setDesc("此表只作为存档，不能申领或换发港澳通行证");
+                    }
+                }else if (item.getZjlx() == 4){
+                    //台湾
+                    if (flag) {
+                        //失效
+                        item.setType(3);
+                        item.setDesc("失效重新申领台湾通行证（" + cfCertificate.getZjhm() + "）");
+                    }else if (flagSix){
+                        //换发
+                        item.setType(2);
+                        item.setDesc("换发台湾通行证（" + cfCertificate.getZjhm() + "）");
+                    }else{
+                        item.setDesc("此表只作为存档，不能申领或换发台湾通行证");
+                    }
+                }
+            }else{
+                item.setNum("");
+                //申领新证
+                item.setType(1);
+                //护照
+                if (item.getZjlx() == 1){
+                    item.setDesc("申领护照");
+                }else if (item.getZjlx() == 2){
+                    //港澳
+                    item.setDesc("申领港澳通行证");
+                }else if (item.getZjlx() == 4){
+                    //台湾
+                    item.setDesc("申领台湾通行证");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public OmsCreateFile printApproval(String applyId) {
+        if(StringUtils.isBlank(applyId)){
+            throw new CustomMessageException("参数错误");
+        }
+        return omsCreateFileMapper.priApplyPrintApproval(applyId);
     }
 
     /**

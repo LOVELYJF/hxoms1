@@ -1,9 +1,11 @@
 package com.hxoms.modules.privateabroad.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
+import com.hxoms.modules.privateabroad.entity.PassportResult;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyParam;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
@@ -87,4 +89,13 @@ public interface OmsPriApplyService {
      * @return
      */
     Map<String, Object> selectVisaSettingByCode(String infoId);
+
+    /**
+     * 因私出国证照查询
+     * @param countries 国家id（逗号分隔）
+     * @return
+     */
+    List<PassportResult> selectPassportByCountry(String countries, String procpersonId);
+
+    OmsCreateFile printApproval(String applyId);
 }

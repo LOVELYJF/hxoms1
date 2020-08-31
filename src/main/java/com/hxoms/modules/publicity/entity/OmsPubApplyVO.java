@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class OmsPubApplyVO extends OmsPubApply {
     private String name;
@@ -20,6 +21,9 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String idnumber;
     //在职状态
     private String status;
+    //校验结果
+    private List<Map<String,String>> checkResult;
+
     public String getB0101() {
         return b0101;
     }
@@ -66,5 +70,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Map<String, String>> getCheckResult() {
+        return checkResult;
+    }
+
+    public void setCheckResult(List<Map<String, String>> checkResult) {
+        this.checkResult = checkResult;
     }
 }

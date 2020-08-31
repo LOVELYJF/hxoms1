@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,6 +101,9 @@ public class OmsPubGroupController {
     @PostMapping("/uploadPubGroupJson")
     public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file) {
         try{
+            if(file == null){
+                return Result.error("未获取到上传文件，请检查！");
+            }
             //获得文件的名称
             String fileName = file.getOriginalFilename();
             //获得文件的扩展名称
@@ -117,22 +121,27 @@ public class OmsPubGroupController {
 
     /**
      * 重新校验
-     * @param idList
+     * @param list(List<OmsPubApplyVO>)
      */
     @PostMapping("/checkoutPerson")
-    public Result checkoutPerson(String idList) {
-        return Result.success(pubGroupService.checkoutPerson(idList));
+    public Result checkoutPerson(@RequestBody List<OmsPubApplyVO> list) {
+        try {
+            return Result.success(pubGroupService.checkoutPerson(list));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("操作失败");
+        }
     }
 
     /**
      * 添加人员
-     * @param A0100 人员主键
+     * @param a0100 人员主键
      * @param id 团组主键
      */
     @PostMapping("/insertPerson")
-    public Result insertPerson(String A0100,String id) {
+    public Result insertPerson(String a0100,String id) {
         try {
-            pubGroupService.insertPerson(A0100,id);
+            pubGroupService.insertPerson(a0100,id);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -190,18 +199,9 @@ public class OmsPubGroupController {
      * 查看撤销详情
      * @param id
      */
-    @GetMapping("/getBackoutById")
-    public Result getBackoutById(String id) {
-        return Result.success(pubGroupService.getBackoutById(id));
-    }
-
-    /**
-     * 查看流程详情
-     * @param id（人员id）
-     */
-    @GetMapping("/getFlowDetail")
-    public Result getFlowDetail(String id) {
-        return Result.success(pubGroupService.getFlowDetail(id));
+    @GetMapping("/getBackoutDetailById")
+    public Result getBackoutDetailById(String id) {
+        return Result.success(pubGroupService.getBackoutDetailById(id));
     }
 
     /**
@@ -233,9 +233,34 @@ public class OmsPubGroupController {
      * @param id
      */
     @PostMapping("/uploadApproval")
-    public Result uploadApproval(MultipartFile file, String id) {
+    public Result uploadApproval(@RequestParam("file") MultipartFile file, String id) {
         try{
-            return Result.success(pubGroupService.uploadApproval(file,id));
+            if(file == null){
+                return Result.error("未获取到上传文件，请检查！");
+            }
+            //获得文件的名称
+            String fileName = file.getOriginalFilename();
+            //获得文件的扩展名称
+            String extensionName = fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+            if(!"pdf".equals(extensionName)){
+                return Result.error("请上传pdf格式文件!");
+            }else{
+                return Result.success(pubGroupService.uploadApproval(file,id));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("上传失败");
+        }
+    }
+
+    /** 更新批文号
+     * @param pwh 新的批文号
+     * @param id 团组id
+     */
+    @PostMapping("/updateApproval")
+    public Result updateApproval(String pwh, String id) {
+        try{
+            return Result.success(pubGroupService.updateApproval(pwh,id));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("上传失败");

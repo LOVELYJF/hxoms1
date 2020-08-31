@@ -61,4 +61,13 @@ public interface OmsPubDoccallbackdetailMapper {
      * @Date: 2020/7/7
      */
     int insertOmsPubDoccallbackdetailList(@Param("omsPubDoccallbackdetailList") List<OmsPubDoccallbackdetail> omsPubDoccallbackdetailList);
+
+    /**
+     * @Desc: 根据团组备案申请主键获取回收明细
+     * @Author: gaozhenyuan
+     * @Param: id
+     * @Return: List<OmsPubDestroydetail>
+     * @Date: 2020/8/21
+     */
+    List<OmsPubDoccallbackdetail> getPubDoccallbackdetailByYspId(String id);
 }

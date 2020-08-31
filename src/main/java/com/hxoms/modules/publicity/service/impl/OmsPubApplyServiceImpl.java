@@ -423,7 +423,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApproval.setId(id);
             //备案主体
             omsPubGroupPreApproval.setBazt(Constants.PubGroupPreApproval_business[0]);
-            //创建人、
+            //创建人
             omsPubGroupPreApproval.setCreateUser(loginUser.getId());
             // 创建时间
             omsPubGroupPreApproval.setCreateTime(new Date());
@@ -938,6 +938,17 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyVO.setModifyTime(new Date());
             omsPubApplyMapper.updateById(omsPubApplyVO);
         }
+    }
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void updatePWH(String yPWH, String xPWH) {
+        if (StringUtils.isBlank(yPWH)){
+            throw new CustomMessageException("原通知书文号为空!");
+        }
+        if (StringUtils.isBlank(xPWH)){
+            throw new CustomMessageException("现通知书文号为空!");
+        }
+        omsPubApplyMapper.updatePWH(yPWH,xPWH);
     }
 
     /**
