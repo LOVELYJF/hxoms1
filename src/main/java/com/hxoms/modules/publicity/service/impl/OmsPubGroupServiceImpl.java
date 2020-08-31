@@ -440,20 +440,23 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             OmsPubApplyVO omsPubApplyVO = new OmsPubApplyVO();
             omsPubApplyVO.setName(jsonArray.getJSONObject(i).get("姓名").toString());
             //根据身份证号获取人员A0100等信息
-            Map<String,Object> map = new HashMap<>();
             String idCardNum = jsonArray.getJSONObject(i).get("身份证号").toString();
-            map.put("idCardNum",idCardNum);
-            OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectRegIdByMap(map);
-            if(regProcpersoninfo != null){
-                omsPubApplyVO.setA0100(regProcpersoninfo.getId());
-                omsPubApplyVO.setStatus(regProcpersoninfo.getIncumbencyStatus());
+            if(idCardNum != null){
+                OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectPersonInfoByIdCard(idCardNum);
+                if(regProcpersoninfo != null){
+                    omsPubApplyVO.setProcpersonId(regProcpersoninfo.getId());
+                    omsPubApplyVO.setA0100(regProcpersoninfo.getA0100());
+                    omsPubApplyVO.setStatus(regProcpersoninfo.getIncumbencyStatus());
+                }
+                omsPubApplyVO.setIdnumber(idCardNum);
+                omsPubApplyVO.setB0101(jsonArray.getJSONObject(i).get("工作单位").toString());
+                omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
+                omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
+                applyVOList.add(omsPubApplyVO);
+            }else{
+                throw new CustomMessageException("身份证号为空！");
             }
 
-            omsPubApplyVO.setIdnumber(idCardNum);
-            omsPubApplyVO.setB0101(jsonArray.getJSONObject(i).get("工作单位").toString());
-            omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
-            omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
-            applyVOList.add(omsPubApplyVO);
         }
         //封装整合对象
         omsPubGroupAndApplyList.setOmsPubGroupPreApproval(omsPubGroupPreApproval);

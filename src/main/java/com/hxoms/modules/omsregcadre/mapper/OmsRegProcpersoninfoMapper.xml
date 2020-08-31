@@ -277,5 +277,8 @@
         </if>
         order by SURNAME,NAME,WORK_UNIT asc
     </select>
+    <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+        select * from oms_reg_procpersoninfo where IDNUMBER_GB = #{idCard} and DATA_TYPE = '1'
+    </select>
 
 </mapper>

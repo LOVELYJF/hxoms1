@@ -36,6 +36,8 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     int updateRegProcpersoninfo(OmsRegProcpersoninfo info);
 
     List<OmsRegProcpersoninfo> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
+
+    OmsRegProcpersoninfo selectPersonInfoByIdCard(String idCard);
 }
 
 
