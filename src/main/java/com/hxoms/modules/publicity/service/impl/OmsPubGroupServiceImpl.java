@@ -61,7 +61,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception {
         OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
         List<OmsPubApplyVO> personList = pubGroupAndApplyList.getOmsPubApplyVOList();
         List<OmsPubApply> applyList = new ArrayList<>();
@@ -195,7 +195,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void insertPerson(String personId,String pubId) {
+    public void insertPerson(String personId,String pubId) throws Exception {
         if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId)){
             throw new CustomMessageException("参数为空!");
         }
@@ -204,7 +204,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
-        pubApply.setHgsj(pubApply.getHgsj());
+        pubApply.setHgsj(pubGroup.getHgsj());
         pubApply.setSdgj(pubGroup.getSdgj());
         pubApply.setTlsj(pubGroup.getTjgj());
         pubApply.setCfrw(pubGroup.getCfrw());
@@ -461,7 +461,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
      * @param id(人员id)
      * @return OmsPubApply
      */
-    private OmsPubApply getInsertOmsPubApply(String id){
+    private OmsPubApply getInsertOmsPubApply(String id) throws Exception {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
         OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
@@ -473,8 +473,14 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setA0100(personInfo.getA0100());
         pubApply.setB0100(personInfo.getRfB0000());
         pubApply.setHealth(personInfo.getHealth());
+        pubApply.setPoliticalAff(personInfo.getPoliticalAffiname());
+        pubApply.setJob(personInfo.getPost());
         pubApply.setSfzyld(personInfo.getMainLeader());
         pubApply.setSflg(personInfo.getNf());
+        Date birthDay = personInfo.getBirthDateGb();
+        if(birthDay != null){
+            pubApply.setAge(getAge(birthDay));
+        }
         if(StringUtils.isBlank(personInfo.getSecretLevel())){
             pubApply.setSfsmry("0");
         }else{
@@ -495,5 +501,34 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());
         return pubApply;
+    }
+
+    /**
+     * 根据出生日期计算年龄
+     * @param birthDay
+     * @return int
+     */
+    public static String getAge(Date birthDay) throws Exception {
+        Calendar cal = Calendar.getInstance();
+        if (cal.before(birthDay)) { //出生日期晚于当前时间，无法计算
+            throw new IllegalArgumentException(
+                    "出生日期晚于当前时间，无法计算!");
+        }
+        int yearNow = cal.get(Calendar.YEAR);  //当前年份
+        int monthNow = cal.get(Calendar.MONTH);  //当前月份
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
+        cal.setTime(birthDay);
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH);
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+        int age = yearNow - yearBirth;   //计算整岁数
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+            }else{
+                age--;//当前月份在生日之前，年龄减一
+            }
+        }
+        return String.valueOf(age);
     }
 }

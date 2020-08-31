@@ -22,7 +22,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //获取省外办备案申请列表
     PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String, String> param) throws ParseException;
     //添加团体预备案申请信息
-    String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList);
+    String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception;
     //修改团体预备案申请信息
     void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList,String bgyy);
     //删除团体预备案申请信息
@@ -32,7 +32,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //重新校验
     List<OmsPubApplyVO> checkoutPerson(List<OmsPubApplyVO> list);
     //添加人员
-    void insertPerson(String personId,String pubId);
+    void insertPerson(String personId,String pubId) throws Exception;
     //撤销团组
     void backoutPerson(String id,String cxyy);
     //恢复团组
