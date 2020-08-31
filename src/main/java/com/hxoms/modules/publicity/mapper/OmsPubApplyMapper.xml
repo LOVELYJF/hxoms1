@@ -284,7 +284,7 @@
     </delete>
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
-        select orp.IDNUMBER_GB as idnumber,orp.A0100 as a0100, orp.SEX as sex,
+        select orp.IDNUMBER_GB as idnumber,orp.PROCPERSON_ID,orp.A0100 as a0100, orp.SEX as sex,
                CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) as name,
                orp.BIRTH_DATE_GB as birthDate,
                orp.POST as job,

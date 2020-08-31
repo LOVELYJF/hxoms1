@@ -78,7 +78,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getId());
+                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getProcpersonId());
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubApply.getHgsj());
@@ -188,12 +188,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void insertPerson(String a0100,String id) {
-        if (StringUtils.isBlank(a0100) || StringUtils.isBlank(id)){
+    public void insertPerson(String personId,String pubId) {
+        if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsPubApply pubApply = getInsertOmsPubApply(a0100);
-        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
+        OmsPubApply pubApply = getInsertOmsPubApply(personId);
+        OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
         pubApply.setHgsj(pubApply.getHgsj());
@@ -455,6 +455,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
         OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
+        if(personInfo == null){
+            return pubApply;
+        }
         pubApply.setId(UUIDGenerator.getPrimaryKey());
         pubApply.setProcpersonId(id);
         pubApply.setA0100(personInfo.getA0100());
@@ -466,6 +469,14 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setSfsmry("0");
         }else{
             pubApply.setSfsmry("1");
+        }
+        List<OmsPubApply> list = pubApplyMapper.selectPubAbroadLatestInfo(personInfo.getA0100());
+        if(list.size() > 0){
+            String zjcgqk = "";
+            for (int i = 0; i < list.size(); i++) {
+                zjcgqk += "出国时间："+list.get(i).getCgsj()+",所赴国家："+list.get(i).getSdgj()+",出访任务："+list.get(i).getCfrw()+";";
+            }
+            pubApply.setZjcgqk(zjcgqk);
         }
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
         pubApply.setFmxx(fmxx);
