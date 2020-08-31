@@ -15,12 +15,12 @@ public class PageBean<E> {
     /**
      * 当前页码
      */
-    @ApiModelProperty(value = "当前页码")
+    @ApiModelProperty(value = "当前页码",required = true)
     private int pageNum=1;
     /**
      * 每页数量
      */
-    @ApiModelProperty(value = "每页数量")
+    @ApiModelProperty(value = "每页数量",required = true)
     private int pageSize=10;
     /**
      * 记录总数

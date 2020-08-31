@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateCollectionApplyList;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,28 +21,28 @@ public interface CfCertificateService extends IService<CfCertificate> {
     * @Desc: 初始化证照，导入公安的证照信息
     * @Author: wangyunquan
     * @Param: [multipartFile]
-    * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
+    * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface>
     * @Date: 2020/7/24
     */
-   PageBean<CfCertificate> excelToDB(MultipartFile multipartFile) throws Exception;
+   PageBean<ImportInterface> excelToDB(MultipartFile multipartFile) throws Exception;
 
    /**
     * @Desc: 查询所有证照
     * @Author: wangyunquan
     * @Param: [pageBean]
-    * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
+    * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface>
     * @Date: 2020/8/4
     */
-   PageBean<CfCertificate> selectAllCertificate(PageBean pageBean);
+   PageBean<ImportInterface> selectAllCertificate(PageBean pageBean);
 
    /**
     * @Desc: 验证证照信息
     * @Author: wangyunquan
-    * @Param: [cfCertificate]
+    * @Param: [validateCerInfoParam]
     * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate
     * @Date: 2020/8/4
     */
-   CfCertificateValidate validateCerInfo(CfCertificate cfCertificate);
+   CfCertificateValidate validateCerInfo(ValidateCerInfo validateCerInfo);
 
    /**
     * @Desc: 保存证照信息
@@ -94,20 +91,20 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 存疑处理，以证照信息为准
     * @Author: wangyunquan
-    * @Param: [cfCertificate]
+    * @Param: [qureyDealRequestInfo]
     * @Return: void
     * @Date: 2020/8/10
     */
-    void updateCerForCerIsRight(CfCertificate cfCertificate);
+    void updateCerForCerIsRight(QureyDealRequestInfo qureyDealRequestInfo);
 
     /**
      * @Desc: 存疑处理，以公安信息为准
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [qureyDealRequestInfo]
      * @Return: void
      * @Date: 2020/8/10
      */
-   void updateCerForGaInfoIsRight(CfCertificate cfCertificate);
+   void updateCerForGaInfoIsRight(QureyDealRequestInfo qureyDealRequestInfo);
 
 
    /**

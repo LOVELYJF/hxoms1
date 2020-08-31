@@ -5,15 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateCollectionApplyList;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateValidate;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +37,7 @@ public class CfCertificateController {
 
     @ApiOperation(value = "初始化证照，导入公安的证照信息")
     @PostMapping("/excelToDB")
-    public Result<PageBean<CfCertificate>> personExcelToDB(@RequestParam("file") MultipartFile multipartFile) throws Exception {
+    public Result<PageBean<ImportInterface>> personExcelToDB(@RequestParam("file") MultipartFile multipartFile) throws Exception {
         return Result.success(cfCertificateService.excelToDB(multipartFile));
     }
 
@@ -52,34 +50,36 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "查询所有证照")
     @GetMapping("/selectAllCertificate")
-    public Result<PageBean<CfCertificate>> selectAllCertificate(PageBean pageBean) throws Exception {
+    public Result<PageBean<ImportInterface>> selectAllCertificate(PageBean pageBean) throws Exception {
         return Result.success(cfCertificateService.selectAllCertificate(pageBean));
     }
 
     /**
      * @Desc: 验证证照信息
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [validateCerInfoParam]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/4
      */
     @ApiOperation(value = "验证证照信息")
     @PostMapping("/validateCerInfo")
-    public Result<CfCertificateValidate> validateCerInfo(@RequestBody CfCertificate cfCertificate){
-        return Result.success(cfCertificateService.validateCerInfo(cfCertificate));
+    public Result<CfCertificateValidate> validateCerInfo(@RequestBody ValidateCerInfo validateCerInfo){
+        return Result.success(cfCertificateService.validateCerInfo(validateCerInfo));
     }
 
     /**
      * @Desc: 保存证照信息
      * @Author: wangyunquan
-     * @Param: [cfCertificateGa, cfCertificateZz]
+     * @Param: [validateCerSave]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/5
      */
     @ApiOperation(value = "保存证照信息")
     @PostMapping("/insertCertificate")
-    public Result insertCertificate(@RequestBody CfCertificate cfCertificate){
-        cfCertificateService.insertCertificate(cfCertificate);
+    public Result insertCertificate(@RequestBody ValidateCerSave validateCerSave){
+        CfCertificate certificate=new CfCertificate();
+        BeanUtils.copyProperties(validateCerSave,certificate);
+        cfCertificateService.insertCertificate(certificate);
         return Result.success();
     }
 
@@ -130,9 +130,8 @@ public class CfCertificateController {
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "公安已注销证照，更新状态")
-    @ApiImplicitParam(value = "数据列表id",name = "id")
     @PostMapping("/updateCerForCerIsCancel")
-    public Result updateCerForCerIsCancel(String id){
+    public Result updateCerForCerIsCancel(@RequestBody @ApiParam(value = "数据列表id",name = "id",required = true) String id){
         cfCertificateService.updateCerForCerIsCancel(id);
         return Result.success();
     }
@@ -153,28 +152,28 @@ public class CfCertificateController {
     /**
      * @Desc: 存疑处理，以证照信息为准。
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [qureyDealRequestInfo]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "存疑处理，以证照信息为准，保存处理结果")
     @PostMapping("/updateCerForCerIsRight")
-    public Result updateCerForCerIsRight(@RequestBody CfCertificate cfCertificate){
-        cfCertificateService.updateCerForCerIsRight(cfCertificate);
+    public Result updateCerForCerIsRight(@RequestBody QureyDealRequestInfo qureyDealRequestInfo){
+        cfCertificateService.updateCerForCerIsRight(qureyDealRequestInfo);
         return Result.success();
     }
 
     /**
      * @Desc: 存疑处理，以公安信息为准。
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [qureyDealRequestInfo]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "存疑处理，以公安信息为准，置为未上缴")
     @PostMapping("/updateCerForGaInfoIsRight")
-    public Result updateCerForGaInfoIsRight(@RequestBody CfCertificate cfCertificate){
-        cfCertificateService.updateCerForGaInfoIsRight(cfCertificate);
+    public Result updateCerForGaInfoIsRight(@RequestBody QureyDealRequestInfo qureyDealRequestInfo){
+        cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfo);
         return Result.success();
     }
     /**
