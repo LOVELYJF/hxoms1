@@ -135,13 +135,13 @@ public class OmsPubGroupController {
 
     /**
      * 添加人员
-     * @param A0100 人员主键
+     * @param a0100 人员主键
      * @param id 团组主键
      */
     @PostMapping("/insertPerson")
-    public Result insertPerson(String A0100,String id) {
+    public Result insertPerson(String a0100,String id) {
         try {
-            pubGroupService.insertPerson(A0100,id);
+            pubGroupService.insertPerson(a0100,id);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();

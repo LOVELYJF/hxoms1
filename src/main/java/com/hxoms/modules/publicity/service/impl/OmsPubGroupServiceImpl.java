@@ -78,7 +78,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getA0100());
+                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getId());
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubApply.getHgsj());
@@ -456,7 +456,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubApply pubApply = new OmsPubApply();
         OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
         pubApply.setId(UUIDGenerator.getPrimaryKey());
-        pubApply.setA0100(id);
+        pubApply.setProcpersonId(id);
+        pubApply.setA0100(personInfo.getA0100());
         pubApply.setB0100(personInfo.getRfB0000());
         pubApply.setHealth(personInfo.getHealth());
         pubApply.setSfzyld(personInfo.getMainLeader());
