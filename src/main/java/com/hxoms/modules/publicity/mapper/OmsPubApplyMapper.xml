@@ -512,7 +512,7 @@
         WHERE
         oms_pub_apply.PWH like CONCAT('%','琼台赴字','%')
 
-        GROUP BY year,PWH ORDER BY year
+        GROUP BY year,PWH ORDER BY year DESC
     </select>
 
     <insert id="insertPubApplyList">
