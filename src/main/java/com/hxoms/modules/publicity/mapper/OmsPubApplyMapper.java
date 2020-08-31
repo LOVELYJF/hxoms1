@@ -5,6 +5,7 @@ import com.hxoms.modules.condition.entity.OmsCondition;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
+import com.hxoms.modules.publicity.entity.PWHVO;
 import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -143,4 +144,14 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/8/31 8:58
      */
     void updatePWH(@Param("yPWH") String yPWH, @Param("xPWH") String xPWH);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取台办批文号树〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.PWHVO>
+     * @Author: 李逍遥
+     * @Date: 2020/8/31 10:43
+     */
+    List<PWHVO> getPWHList();
 }
