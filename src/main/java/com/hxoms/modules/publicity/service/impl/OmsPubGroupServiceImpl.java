@@ -78,7 +78,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
-                OmsPubApply pubApply = getInsertOmsPubApply(personList.get(i).getProcpersonId());
+                OmsPubApply pubApply = new OmsPubApply();
+                if("0".equals(pubGroup.getSource())){
+                    pubApply = getInsertOmsPubApply(personList.get(i).getProcpersonId());
+                    String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
+                    pubApply.setFmxx(fmxx);
+                }
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubApply.getHgsj());
@@ -202,6 +207,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
 
+        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
+        pubApply.setFmxx(fmxx);
         pubApply.setSfysp("1");
         pubApply.setSfzb("1");
         if(pubApplyMapper.insert(pubApply) < 1){
@@ -478,8 +485,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             }
             pubApply.setZjcgqk(zjcgqk);
         }
-        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubApply.getCgsj());
-        pubApply.setFmxx(fmxx);
         pubApply.setSfbg("0");
         pubApply.setSqzt(1);
         pubApply.setSfxd(0);
