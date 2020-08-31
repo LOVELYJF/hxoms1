@@ -71,6 +71,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setName((String) personInfo.get("NAME"));
         //主键
         omsPubApply.setA0100((String) personInfo.get("A0100"));
+        //备案表主键
+        omsPubApply.setProcpersonId((String) personInfo.get("procpersonId"));
         //工作单位
         omsPubApply.setB0100((String) personInfo.get("B0100"));
         //机构名称
