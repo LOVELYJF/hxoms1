@@ -82,4 +82,6 @@ public interface LeaderDetailProcessingService {
 
 
     OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String bussinessId, String type,String pass);
+
+    void chuzhangAbroadApprovalBatch(LeaderSupervisionVo leaderSupervisionVo);
 }

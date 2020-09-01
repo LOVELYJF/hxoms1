@@ -107,6 +107,14 @@ public class MakeCheckOpinionController {
 
         return Result.success(result);
     }
+    @PostMapping("/chuzhangBatchApprove")
+    public Result chuzhangBatchApprove(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
+        leaderDetailProcessingService.chuzhangAbroadApprovalBatch(leaderSupervisionVo);
+
+
+        return Result.success();
+    }
 
 
 }
