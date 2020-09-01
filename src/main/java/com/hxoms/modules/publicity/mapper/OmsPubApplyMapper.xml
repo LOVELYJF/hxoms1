@@ -506,7 +506,7 @@
             </if>
         </where>
     </select>
-    <select id="getPWHList" resultType="com.hxoms.modules.publicity.entity.PWHVO">
+    <select id="getPWHList" resultType="com.hxoms.modules.publicity.entity.PWHTreeVO">
         SELECT SUBSTRING(PWH,5,4) as year ,PWH
         FROM oms_pub_apply
         WHERE

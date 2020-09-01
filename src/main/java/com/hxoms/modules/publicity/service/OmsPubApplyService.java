@@ -252,6 +252,6 @@ public interface OmsPubApplyService {
      * @Author: 李逍遥
      * @Date: 2020/8/31 10:38
      */
-    List<PWHVO> getPWHList();
+    List<PWHTreeVO> getPWHList();
 
 }
