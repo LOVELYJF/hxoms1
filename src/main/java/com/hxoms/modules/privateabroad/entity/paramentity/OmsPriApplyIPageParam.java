@@ -55,9 +55,12 @@ public class OmsPriApplyIPageParam {
     @ApiModelProperty(value = "机构id")
     private String b0100;
     //备案id
+    @ApiModelProperty(value = "备案id")
     private String procpersonId;
-    //比对结果
+    @ApiModelProperty(value = "比对结果")
     private String isComparison;
+    @ApiModelProperty(value = "是否出入境")
+    private String isAbroad;
 
     public String getIsComparison() {
         return isComparison;
@@ -161,5 +164,13 @@ public class OmsPriApplyIPageParam {
 
     public void setB0100(String b0100) {
         this.b0100 = b0100;
+    }
+
+    public String getIsAbroad() {
+        return isAbroad;
+    }
+
+    public void setIsAbroad(String isAbroad) {
+        this.isAbroad = isAbroad;
     }
 }

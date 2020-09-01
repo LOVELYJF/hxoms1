@@ -147,7 +147,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
     public Map<String, Object> queryPriApplyList(String omsId) {
         entryexitRecordCompare(omsId);
         Map<String, Object> map = this.selectComparisionList(omsId);
@@ -160,7 +159,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Object batchPriApplyList (List<String> omsIds) {
         OmsEntryexitRecordCompbatch info = new OmsEntryexitRecordCompbatch();
         //查询批次表中是否存在进行中的批次
@@ -189,8 +187,9 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String omsId = omsIds.get(x);
                     OmsRegProcpersoninfo reg = new OmsRegProcpersoninfo();
                     reg.setId(omsId);
+                    //调用比对方法
                     entryexitRecordCompare(omsId);
-                    eRecordCompbatch.setCurrentFinishsum(Integer.parseInt(omsIds.get(x)));
+                    eRecordCompbatch.setCurrentFinishsum(x+1);
                     eRecordCompbatch.setStatus("2");
                     entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
                 }
@@ -299,7 +298,14 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 apply.getRealAbroadTime(),apply.getRealReturnTime(),newCountry.substring(0,newCountry.length()-1),
                 sensitiveCountry,info);
         //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
-        apply.setComparisonResult(result);
+        if (result == null){
+            apply.setComparisonDate(new Date());
+            apply.setComparisonResult("正常");
+        }else {
+            apply.setComparisonDate(new Date());
+            apply.setComparisonResult(result);
+        }
+
         priApplyMapper.updateById(apply);
     }
     /**
@@ -310,8 +316,8 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      * @return:void
      **/
     @Override
-    public void entryexitRecordCompare(String omsId)
-    {
+    public void entryexitRecordCompare(String omsId) {
+        int con=0;
         //查询未比对的因私出国境申请
         OmsPriApplyIPageParam pp=new OmsPriApplyIPageParam();
         //只查询已办结
@@ -351,7 +357,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //todo
         List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
         //没有出入境记录不做比对
-        if(omsEntryexitRecords.size()==0) return;
+        if(omsEntryexitRecords.size()==0)return;
 
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
         Map<String, String> sensitiveCountry = new HashMap<>();
@@ -426,14 +432,17 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                             sensitiveCountry,zzlist);
                     if (result == null){
                         recOut.setPriapplyId(app.getId());
+                        recOut.setComparisonDate(new Date());
                         recOut.setComparisonResult("正常");
                     }else {
-                        recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
                         recOut.setPriapplyId(app.getId());
+                        recOut.setComparisonDate(new Date());
+                        recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
                     }
                     if(recIn!=null)
                     {
                         recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
+                        recOut.setComparisonDate(new Date());
                         recIn.setPriapplyId(app.getId());
                     }
                 }
@@ -453,11 +462,19 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
                                 sensitiveCountry,zzlist);
-                        recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
-                        recOut.setPriapplyId(app.getId());
+                        if (result == null){
+                            recOut.setPriapplyId(app.getId());
+                            recOut.setComparisonDate(new Date());
+                            recOut.setComparisonResult("正常");
+                        }else {
+                            recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n"+result);
+                            recOut.setPriapplyId(app.getId());
+                            recOut.setComparisonDate(new Date());
+                        }
                         if(recIn!=null)
                         {
                             recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
+                            recIn.setComparisonDate(new Date());
                             recIn.setPriapplyId(app.getId());
                         }
                     }
@@ -467,6 +484,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 recOut.setComparisonResult(recOut.getComparisonResult()+"\r\n未经申请的出国境");
                 if(recIn!=null)
                 {
+                    recIn.setComparisonDate(new Date());
                     recIn.setComparisonResult(recOut.getComparisonResult()+"\r\n未经申请的出国境");
                 }
             }
@@ -477,7 +495,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 omsEntryexitRecordService.updateEntryexitRecord(recIn);
             }
         }
-
     }
 
 
@@ -544,6 +561,33 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         }
 
         return result;
+    }
+
+    @Override
+    public Object queryCompresultByYear(String year) {
+
+
+
+        return null;
+    }
+
+    @Override
+    public List<OmsEntryexitRecord> queryExceptionPriApplyList(String omsId) {
+        QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
+        exitWrapper.eq("PROCPERSON_ID", omsId);
+        exitWrapper.isNotNull("PRIAPPLY_ID");
+        List<OmsEntryexitRecord> exceptionPriApplylist = baseMapper.selectList(exitWrapper);
+        return exceptionPriApplylist;
+    }
+
+    @Override
+    public PageInfo<OmsEntryexitRecord> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+        //分页
+        PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
+        List<OmsEntryexitRecord> exceptionRecordsList = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
+        //返回数据
+        PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(exceptionRecordsList);
+        return pageInfo;
     }
 
     private boolean CheckDelay(String applyID,Date newEntry) {

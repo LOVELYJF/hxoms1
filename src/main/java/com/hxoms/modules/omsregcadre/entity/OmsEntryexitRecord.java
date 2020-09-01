@@ -87,6 +87,12 @@ public class OmsEntryexitRecord {
     @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
     private String comparisonResult;
 
+    @ColumnAnnotation(FieldName = "COMPARISON_DATE",   FieldDescription="比对日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date comparisonDate;
+
+
     public String getId() {
         return id;
     }
@@ -269,5 +275,13 @@ public class OmsEntryexitRecord {
 
     public void setComparisonResult(String comparisonResult) {
         this.comparisonResult = comparisonResult == null ? null : comparisonResult.trim();
+    }
+
+    public Date getComparisonDate() {
+        return comparisonDate;
+    }
+
+    public void setComparisonDate(Date comparisonDate) {
+        this.comparisonDate = comparisonDate;
     }
 }

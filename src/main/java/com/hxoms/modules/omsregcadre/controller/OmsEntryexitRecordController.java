@@ -3,7 +3,6 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -12,10 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -105,7 +101,7 @@ public class OmsEntryexitRecordController {
      */
     @ApiOperation(value="根据人员查询对应的因私出国申请记录并自动比对", notes="根据人员查询对应的因私出国申请记录并自动比对")
     @ApiImplicitParam(name = "omsId", value = "登记备案id", required = true, dataType = "String")
-    @GetMapping("/queryPriApplyList")
+    @PostMapping("/queryPriApplyList")
     public Result queryPriApplyList(String omsId) {
         try{
             Map<String, Object> map = entryexitRecordService.queryPriApplyList(omsId);
@@ -118,6 +114,29 @@ public class OmsEntryexitRecordController {
 
 
 
+    /**
+     * 根据人员查询对应的异常出入境记录
+     * @return
+     */
+    @ApiOperation(value="根据人员查询对应的异常出入境记录", notes="根据人员查询对应的异常出入境记录")
+    @ApiImplicitParam(name = "omsId", value = "登记备案id", required = true, dataType = "String")
+    @PostMapping("/queryExceptionPriApplyList")
+    public Result queryExceptionPriApplyList(String omsId) {
+        try{
+            List<OmsEntryexitRecord> exceptionPriApplylist = entryexitRecordService.queryExceptionPriApplyList(omsId);
+            return Result.success(exceptionPriApplylist);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    @ApiOperation(value="查询异常出入境记录", notes="查询异常出入境记录")
+    @PostMapping("/getExceptionPriApply")
+    public Result getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) throws Exception{
+        PageInfo<OmsEntryexitRecord> exceptionRecordlist = entryexitRecordService.getExceptionRecord(entryexitRecordIPagParam);
+        return Result.success(exceptionRecordlist);
+    }
 
     /**
      * 选择数据进行匹配
@@ -154,10 +173,19 @@ public class OmsEntryexitRecordController {
      * 批量比对
      */
     @ApiOperation(value="批量比对", notes="批量比对")
-    @ApiImplicitParam(name = "omsIds", value = "登记备案id拼接字符串", required = true, dataType = "String")
-    @GetMapping("/batchPriApplyList")
-    public Result batchPriApplyList(List<String> omsIds) {
+    @PostMapping("/batchPriApplyList")
+    public Result batchPriApplyList(@RequestBody List<String> omsIds) {
         return Result.success(entryexitRecordService.batchPriApplyList(omsIds));
+    }
+
+    /**
+     * 年度出入境比对结果统计
+     */
+    @ApiOperation(value="年度出入境比对结果统计", notes="年度出入境比对结果统计")
+    @ApiImplicitParam(name = "year", value = "年度", required = true, dataType = "String")
+    @GetMapping("/queryCompresultByYear")
+    public Result queryCompresultByYear(String year) {
+        return Result.success(entryexitRecordService.queryCompresultByYear(year));
     }
 
 

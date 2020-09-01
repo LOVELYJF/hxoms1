@@ -123,6 +123,9 @@
     <if test="params.procpersonId != null and params.procpersonId !=''">
         and pa.IS_COMPARISON = #{params.isComparison}
     </if>
+    <if test="params.isAbroad != null and params.isAbroad != ''">
+        and pa.IS_ABROAD = #{params.isAbroad}
+    </if>
     <if test="params.abroadStartTime != null and params.abroadEndTime != null">
       and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
     </if>

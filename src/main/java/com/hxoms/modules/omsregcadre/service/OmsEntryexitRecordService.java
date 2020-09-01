@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -70,8 +69,9 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
                                    List<OmsCerCancellateLicense> zzlist);
 
 
+    Object queryCompresultByYear(String year);
 
+    List<OmsEntryexitRecord> queryExceptionPriApplyList(String omsId);
 
-
-
+    PageInfo<OmsEntryexitRecord> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 }
