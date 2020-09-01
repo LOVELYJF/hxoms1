@@ -30,7 +30,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //上传团体预备案申请信息
     OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException;
     //重新校验
-    List<OmsPubApplyVO> checkoutPerson(List<OmsPubApplyVO> list);
+    List<OmsPubApplyVO> checkoutPerson(OmsPubGroupAndApplyList pubGroupAndApplyList);
     //添加人员
     void insertPerson(String personId,String pubId) throws Exception;
     //撤销团组

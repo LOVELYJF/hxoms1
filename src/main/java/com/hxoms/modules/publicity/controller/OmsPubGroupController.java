@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -121,12 +120,12 @@ public class OmsPubGroupController {
 
     /**
      * 重新校验
-     * @param list(List<OmsPubApplyVO>)
+     * @param pubGroupAndApplyList
      */
     @PostMapping("/checkoutPerson")
-    public Result checkoutPerson(@RequestBody List<OmsPubApplyVO> list) {
+    public Result checkoutPerson(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            return Result.success(pubGroupService.checkoutPerson(list));
+            return Result.success(pubGroupService.checkoutPerson(pubGroupAndApplyList));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");

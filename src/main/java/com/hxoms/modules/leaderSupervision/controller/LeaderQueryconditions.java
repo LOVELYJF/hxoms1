@@ -119,7 +119,7 @@ public class LeaderQueryconditions {
     }
 
     /**
-     * 征求纪委意见 查询条件
+     * 征求纪委意见 查询条件selectChuZhangBusinessUser
      * **/
     @GetMapping("/selectMaterialStatus")
     public Result selectMaterialStatus(){

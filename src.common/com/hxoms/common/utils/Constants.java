@@ -242,7 +242,8 @@ public class Constants {
      *  干部监督处业务 状态名称
      * */
 
-    public static String[] leader_businessName={"业务办理","征求意见","记录意见","做成审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
+    public static String[] leader_businessName={"业务办理","征求意见","记录意见","做出" +
+            "审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
 
     /**
      *  干部监督处 批次 (主)状态
