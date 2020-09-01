@@ -7,14 +7,18 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseApplyService;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import com.hxoms.support.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +43,8 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	private OmsCerCancellateLicenseMapper omsCerCancellateLicenseMapper;
 	@Autowired
 	private SysDictItemMapper sysDictItemMapper;
+	@Autowired
+	private B01Mapper b01Mapper;
 	/**
 	 * <b>功能描述: 填写注销申请（查询）</b>
 	 * @Param: [cfCertificate]
@@ -51,9 +57,16 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 				(cfCertificate.getName().equals("") && cfCertificate.getZjhm().equals(""))){
 			throw new CustomMessageException("请输入姓名或证件号码进行查询");
 		}
+
+		//登录用户信息
+		UserInfo userInfo = UserInfoUtil.getUserInfo();
+		//查询机构信息
+		B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", cfCertificate.getName());
 		map.put("zjhm", cfCertificate.getZjhm());
+		map.put("b0100", b01.getB0100());
 		List<Map<String,Object>> list = cfCertificateMapper.getCancellateLicense(map);
 		if(list == null || list.size() < 1){
 			throw new CustomMessageException("没有查询到相关的证照信息");
