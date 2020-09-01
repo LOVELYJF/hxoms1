@@ -2,7 +2,6 @@ package com.hxoms.modules.passportCard.certificateCollect.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.PageBean;
-import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 
@@ -61,18 +60,27 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
     /**
      * @Desc: 解除催缴
      * @Author: wangyunquan
-     * @Param: [cfCertificateCollectionList]
+     * @Param: [removeCjApplyList]
      * @Return: void
      * @Date: 2020/8/12
      */
-    void updateCerCjForRemove(List<CfCertificateCollection> cfCertificateCollectionList);
+    void updateCerCjForRemove(List<RemoveCjApply> removeCjApplyList);
 
     /**
      * @Desc: 锁定单位出国
      * @Author: wangyunquan
-     * @Param: [omsSupSuspendUnit]
+     * @Param: [supSuspendUnitApply]
      * @Return: void
      * @Date: 2020/8/13
      */
-    void insertSuspendUnit(OmsSupSuspendUnit omsSupSuspendUnit);
+    void insertSuspendUnit(SupSuspendUnitApply supSuspendUnitApply);
+
+    /**
+     * @Desc: 获取电话催缴内容
+     * @Author: wangyunquan
+     * @Param: [phoneContentParamList]
+     * @Return: java.lang.String
+     * @Date: 2020/9/1
+     */
+    String createPhoneContent(List<PhoneContentParam> phoneContentParamList);
 }

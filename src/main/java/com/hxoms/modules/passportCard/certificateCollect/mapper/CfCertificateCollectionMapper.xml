@@ -340,19 +340,23 @@
     SELECT
       a.id,
       a.name,
-      c.sex,
+      if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
       c.birth_date csrq,
-      c.idnumber_Ga idnumberGa,
+      c.idnumber_Gb idnumberGb,
       c.registe_Residence registeResidence,
+      c.Rf_B0000 rfB0000,
       c.work_Unit workUnit,
       c.post,
       c.person_Manager personManager,
-      a.cj_Status cjStatus,
+      a.cj_Status cj_Status,
+      (select item_name from sys_dict_item where dict_code='ZJCJZT' and item_code=a.cj_Status) cjStatusName,
       d.user_name HANDLER,
       d.user_mobile handlerPhone,
       a.zjlx,
+      (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
       a.zjhm,
       a.data_source dataSource,
+      (select item_name from sys_dict_item where dict_code='ZJCJSJLY' and item_code=a.data_source) dataSourceName,
       a.happen_Date happenDate,
       a.return_Date returnDate,
       a.cj_Result cjResult
@@ -395,7 +399,7 @@
         rf_b0000
   </select>
 
-  <select id="selectHandlerByOrgan" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+  <select id="selectHandlerByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.HandlerInfo">
     SELECT
         user_id userId,
         user_name userName,
@@ -406,7 +410,7 @@
         org_id = #{rfB0000}
     AND user_state = '1'
   </select>
-  <select id="selectCerCjInfoByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo">
+  <select id="selectCerCjInfoByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificatePhoneCjInfo">
        SELECT
       a.id,
       c.name,
@@ -415,6 +419,7 @@
       c.work_Unit workUnit,
       c.post,
       b.zjlx,
+      (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=b.zjlx) zjlxName,
       b.zjhm,
       a.data_source dataSource,
       a.happen_Date happenDate,

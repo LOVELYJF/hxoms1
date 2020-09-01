@@ -11,8 +11,8 @@ import java.util.Date;
  * @Author: wangyunquan
  * @Date: 2020/8/12
  */
-@ApiModel(value = "催缴列表信息")
-public class CfCertificateCjInfo {
+@ApiModel(value = "电话催缴列表信息")
+public class CfCertificatePhoneCjInfo {
     //主键
     @ApiModelProperty(value = "主键")
     private String id;
@@ -26,36 +26,12 @@ public class CfCertificateCjInfo {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
-    //身份证号
-    @ApiModelProperty(value = "身份证号")
-    private String idnumberGb;
-    //户口所在地
-    @ApiModelProperty(value = "户口所在地")
-    private String  registeResidence;
-    //工作单位编码
-    @ApiModelProperty(value = "工作单位编码")
-    private String rfB0000;
     //工作单位
     @ApiModelProperty(value = "工作单位")
     private String workUnit;
     //职务（级）或职称
     @ApiModelProperty(value = "职务（级）或职称")
     private String post;
-    //人事主管单位
-    @ApiModelProperty(value = "人事主管单位")
-    private String  personManager;
-    //状态
-    @ApiModelProperty(value = "状态")
-    private String cjStatus;
-    //状态
-    @ApiModelProperty(value = "状态名称")
-    private String cjStatusName;
-    //工作单位联系人
-    @ApiModelProperty(value = "工作单位联系人")
-    private String handler;
-    //工作单位联系人联系电话
-    @ApiModelProperty(value = "工作单位联系人联系电话")
-    private String handlerPhone;
     //证照类型编码
     @ApiModelProperty(value = "证照类型编码")
     private Integer zjlx;
@@ -65,9 +41,6 @@ public class CfCertificateCjInfo {
     //证照号码
     @ApiModelProperty(value = "证照号码")
     private String zjhm;
-    //来源编码
-    @ApiModelProperty(value = "来源编码")
-    private String dataSource;
     //来源名称
     @ApiModelProperty(value = "来源名称")
     private String dataSourceName;
@@ -115,30 +88,6 @@ public class CfCertificateCjInfo {
         this.csrq = csrq;
     }
 
-    public String getIdnumberGb() {
-        return idnumberGb;
-    }
-
-    public void setIdnumberGb(String idnumberGb) {
-        this.idnumberGb = idnumberGb;
-    }
-
-    public String getRegisteResidence() {
-        return registeResidence;
-    }
-
-    public void setRegisteResidence(String registeResidence) {
-        this.registeResidence = registeResidence;
-    }
-
-    public String getRfB0000() {
-        return rfB0000;
-    }
-
-    public void setRfB0000(String rfB0000) {
-        this.rfB0000 = rfB0000;
-    }
-
     public String getWorkUnit() {
         return workUnit;
     }
@@ -153,46 +102,6 @@ public class CfCertificateCjInfo {
 
     public void setPost(String post) {
         this.post = post;
-    }
-
-    public String getPersonManager() {
-        return personManager;
-    }
-
-    public void setPersonManager(String personManager) {
-        this.personManager = personManager;
-    }
-
-    public String getCjStatus() {
-        return cjStatus;
-    }
-
-    public void setCjStatus(String cjStatus) {
-        this.cjStatus = cjStatus;
-    }
-
-    public String getCjStatusName() {
-        return cjStatusName;
-    }
-
-    public void setCjStatusName(String cjStatusName) {
-        this.cjStatusName = cjStatusName;
-    }
-
-    public String getHandler() {
-        return handler;
-    }
-
-    public void setHandler(String handler) {
-        this.handler = handler;
-    }
-
-    public String getHandlerPhone() {
-        return handlerPhone;
-    }
-
-    public void setHandlerPhone(String handlerPhone) {
-        this.handlerPhone = handlerPhone;
     }
 
     public Integer getZjlx() {
@@ -217,14 +126,6 @@ public class CfCertificateCjInfo {
 
     public void setZjhm(String zjhm) {
         this.zjhm = zjhm;
-    }
-
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
     }
 
     public String getDataSourceName() {
@@ -258,5 +159,4 @@ public class CfCertificateCjInfo {
     public void setCjResult(String cjResult) {
         this.cjResult = cjResult;
     }
-
 }

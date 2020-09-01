@@ -19,8 +19,11 @@ public class ImportInterface {
     @ApiModelProperty(value="性别",required = true)
     private String sex;
 
-    @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
+    @ApiModelProperty(value="证件类型编码(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
     private Integer zjlx;
+
+    @ApiModelProperty(value="证件类型名称(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
+    private String zjlxName;
 
     @ApiModelProperty(value="证件号码",required = true)
     private String zjhm;
@@ -65,6 +68,14 @@ public class ImportInterface {
 
     public void setZjlx(Integer zjlx) {
         this.zjlx = zjlx;
+    }
+
+    public String getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
     }
 
     public String getZjhm() {

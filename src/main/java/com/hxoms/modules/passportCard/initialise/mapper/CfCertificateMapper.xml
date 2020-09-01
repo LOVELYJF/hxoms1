@@ -585,7 +585,8 @@
 		'男',
 	IF (SEX = '2', '女', SEX)
 	) sex,
-	 item_name zjlx,
+	 ZJLX zjlx,
+	 item_name zjlxName,
 	 ZJHM zjhm,
 	 YXQZ yxqz,
 	 CSRQ csrq,
