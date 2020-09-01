@@ -8,6 +8,9 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
+import com.hxoms.modules.leaderSupervision.mapper.OmsAttachmentMapper;
+import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.publicity.destroyReg.entity.OmsPubDestroydetail;
@@ -21,14 +24,11 @@ import com.hxoms.modules.publicity.mapper.OmsPubGroupMapper;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -50,7 +50,19 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private OmsPubDoccallbackdetailMapper pubDoccallbackdetailMapper;
     @Autowired
     private OmsConditionService omsConditionService;
+    @Autowired
+    private OmsAttachmentMapper attachmentMapper;
 
+    @Value("${omsAttachment.baseDir}")
+    private String attachmentPath;
+
+    public String getAttachmentPath() {
+        return attachmentPath;
+    }
+
+    public void setAttachmentPath(String attachmentPath) {
+        this.attachmentPath = attachmentPath;
+    }
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) {
@@ -73,7 +85,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             String id = UUIDGenerator.getPrimaryKey();
             pubGroup.setId(id);
             pubGroup.setTzrs(num);
-            pubGroup.setSqzt(2);
+            pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[1]);
             pubGroup.setCreateUser(userInfo.getId());
             pubGroup.setCreateTime(new Date());
             pubGroupMapper.insertPubGroup(pubGroup);
@@ -190,7 +202,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 OmsPubApplyVO pubApplyVO = personList.get(i);
                 String fmxx = omsConditionService.selectNegativeInfo(pubApplyVO.getA0100(),pubGroup.getCgsj());
                 pubApplyVO.setFmxx(fmxx);
-                List<Map<String,String>> result = omsConditionService.checkConditionByA0100(pubApplyVO.getProcpersonId(),"oms_pub_apply");
+                List<Map<String,String>> result =
+                        omsConditionService.checkConditionByA0100(pubApplyVO.getProcpersonId(),Constants.oms_business[0]);
                 pubApplyVO.setCheckResult(result);
             }
             return personList;
@@ -233,7 +246,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         //撤销团组
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
         if(pubGroup != null){
-            pubGroup.setSqzt(0);
+            pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[0]);
             pubGroup.setCxyy(cxyy);
             if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
                 throw new CustomMessageException("撤销失败!");
@@ -256,7 +269,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         //恢复团组
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(id);
         if(pubGroup != null){
-            pubGroup.setSqzt(1);
+            pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[1]);
             if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
                 throw new CustomMessageException("恢复失败!");
             }
@@ -281,7 +294,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(yspId);
         List<OmsPubApplyVO> applyList = pubApplyMapper.selectByYSPId(yspId);
         for (int i = 0; i < applyList.size(); i++) {
-            List<Map<String,String>> result = omsConditionService.checkConditionByA0100(applyList.get(i).getProcpersonId(),"oms_pub_apply");
+            List<Map<String,String>> result =
+                    omsConditionService.checkConditionByA0100(applyList.get(i).getProcpersonId(),Constants.oms_business[0]);
             applyList.get(i).setCheckResult(result);
         }
         beanList.setOmsPubGroupPreApproval(pubGroup);
@@ -329,7 +343,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             throw new CustomMessageException("参数为空!");
         }
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.selectById(id);
-        pubGroup.setSqzt(2);
+        pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[2]);
         pubGroupMapper.updatePubGroup(pubGroup);
     }
 
@@ -347,12 +361,16 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if ((dot >-1) && (dot < (fileAllName.length()))) {
                 fileName = fileAllName.substring(0, dot);
             }
+
             //更新批文号
             OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
             pubGroup.setId(id);
             pubGroup.setZypwh(fileName);
-            pubGroup.setSqzt(3);
-            if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
+            pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[3]);
+            pubGroupMapper.updatePubGroup(pubGroup);
+
+            //保存批文
+            if(saveFile(file,fileAllName,fileName,id) < 1){
                 throw new CustomMessageException("批文号上传失败！");
             }
         }
@@ -538,5 +556,40 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             }
         }
         return String.valueOf(age);
+    }
+
+    private int saveFile(MultipartFile file,String fileAllName,String fileName,String bussinessId){
+        //保存文件的绝对路径
+        String filePath = attachmentPath+ File.separator+"static"+File.separator;
+        //获得文件的扩展名称
+        String extensionName = fileAllName.substring(fileAllName.lastIndexOf(".")+1).toLowerCase();
+        try{
+            //上传文件
+            LeaderSupervisionUntil.uploadFile(file.getBytes(),filePath,fileAllName);
+            //登录用户信息
+            UserInfo userInfo = UserInfoUtil.getUserInfo();
+            //查看是否上传过批文，如果已上传则替换（先删除再插入）
+            OmsAttachment attachmentOld = attachmentMapper.getAttachmentByBussinessId(bussinessId);
+            //封装附件实体类
+            OmsAttachment attachment = new OmsAttachment();
+            if(attachmentOld != null){
+                attachmentMapper.deleteById(attachmentOld.getId());
+            }
+
+            attachment.setId(UUIDGenerator.getPrimaryKey());
+            attachment.setType(extensionName);
+            attachment.setSize(String.valueOf(file.getSize()));
+            attachment.setName(fileName);
+            attachment.setUrl(filePath + fileAllName);
+            attachment.setBussinessOccureStpet(String.valueOf(Constants.PUB_GROUP_STATUS_CODE[3]));
+            attachment.setBussinessOccureStpetName(Constants.PUB_GROUP_STATUS_NAME[3]);
+            attachment.setBussinessid(bussinessId);
+            attachment.setCreateUser(userInfo.getId());
+            attachment.setCreateTime(new Date());
+            return attachmentMapper.insert(attachment);
+        } catch (IllegalStateException | IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("文件上传失败");
+        }
     }
 }

@@ -325,4 +325,13 @@ public class Constants {
     public static int[] CANCELL_REASON_STATUS={1,2,3,4};
     //证照注销原因名称
     public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他"};
+
+    /**
+     * 因公团组流程状态代码
+     */
+    public static final int[] PUB_GROUP_STATUS_CODE ={0,1,2,3};
+    /**
+     * 因公团组流程状态名称
+     */
+    public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文"};
 }
