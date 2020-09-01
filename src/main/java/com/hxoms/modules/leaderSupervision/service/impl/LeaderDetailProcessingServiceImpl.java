@@ -26,6 +26,7 @@ import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.support.b01.entity.B01;
@@ -713,5 +714,171 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 Constants.leader_business[4]);
 
         return omsCreateFile;
+    }
+
+    // 处长批量审批
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public void chuzhangAbroadApprovalBatch(LeaderSupervisionVo leaderSupervisionVo){
+
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
+
+//        for (BussinessTypeAndIdVo bussinessTypeAndIdVo: leaderSupervisionVo.getBussinessTypeAndIdVos()) {
+//
+////              String incumbencyStatus =bussinessTypeAndIdVo.getIncumbencyStatus();
+////
+////             switch (bussinessTypeAndIdVo.getBussinessName()){
+////
+////
+////                 case "因私":
+////                     // 因私 退休通过的处长签字后结束
+////
+////                 break;
+////                 case "因公":
+////
+////                 break;
+////
+////                 case "延期":
+////
+////                     break;
+////                 default:
+////                     throw  new CustomMessageException("业务流程不存在,请仔细检查");
+////
+////             }
+//        }
+
+        List listPass =   leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("通过")).collect(Collectors.toList());
+        List listNoPass  =     leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("不通过")).collect(Collectors.toList());
+
+        //  (1) 保存 审批记录(通过)
+        leaderCommonService.saveAbroadApprovalByBussinessId(listPass,"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+        //不通过
+        leaderCommonService.saveAbroadApprovalByBussinessId(listNoPass,"不通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
+
+        //  修改 业务流程状态 (第二步) 修改 为  处领导审批
+       newUpdteBussinessApplyStatue(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[4]);
+        // 修改 业务流程申请 最终结论
+        leaderCommonService.updateBussinessApplyRecordOpinion(listPass,"1",null);
+
+        leaderCommonService.updateBussinessApplyRecordOpinion(listNoPass,"2",null);
+
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+
+                Constants.leader_business[5]);
+
+
+    }
+
+
+    public void newUpdteBussinessApplyStatue(List<BussinessTypeAndIdVo> businessTypeAndIdAndOnJobVos, String leaderStatusName){
+
+
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+        String ispass = businessTypeAndIdAndOnJobVos.get(i).getCadresupervisionOpinion();
+        String incumbencyStatus = businessTypeAndIdAndOnJobVos.get(i).getIncumbencyStatus();
+        String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+
+            String updateApplyStatusSql =   getUpdateStatusSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName,incumbencyStatus,ispass);
+
+            log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
+
+
+
+        }
+
+
+    }
+
+    public String getUpdateStatusSql(String busessId,String bussinesType,String leaderStatusName,String incumbencyStatus,String ispass){
+
+        String updateSql = "update "+bussinesType;
+
+        String setSql = " set  " ;
+
+        String whereCondition = " where id = '" + busessId+"'";
+
+
+        for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+            if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+                if("oms_pri_apply".equals(bussinesType)){
+
+                    //TODO 因私 退休的处长审批通过，状态置为已办结，不通过的，部长审批
+                    if(leaderStatusName.equals(Constants.leader_businessName[4])&&"3".equals(incumbencyStatus)&&"通过".equals(ispass)){
+
+                        String status =  applyStatus.getApplySatus();
+                        setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+                        return  updateSql+setSql+whereCondition;
+
+
+                    }
+                    // TODO 因私 部长 审批 ，通过 状态 置为 已办结 因私干部监督处 流程 走完
+                    else if(leaderStatusName.equals(Constants.leader_businessName[5])&&"通过".equals(ispass)){
+
+                        String status =  applyStatus.getApplySatus();
+                        setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+                        return  updateSql+setSql+whereCondition;
+
+                    }
+
+                    String status =  applyStatus.getApplySatus();
+                    // 干部监督处的状态
+                    setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)+1   ];
+
+                    //   break;
+                    return  updateSql+setSql+whereCondition;
+
+                 // TODO  因私延期回国，处长审批后结束
+                }else if("oms_pri_delay_apply".equals(bussinesType)){
+
+                    String status =  applyStatus.getApplySatus();
+                    setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+                    return  updateSql+setSql+whereCondition;
+                 // TODO   因公备案，同意的处长签字后结束，不同意的由分管部长签
+                }else if("oms_pub_apply".equals(bussinesType)){
+
+                    String status = applyStatus.getApplySatus();
+
+                    // 同意到 批件核实流程
+                    if("通过".equals(ispass)){
+
+                        setSql+= status + "=" + Constants.leader_business[6];
+
+                        return  updateSql+setSql+whereCondition;
+
+                    }
+                    // 不同意 到 部长审批
+                    else if("不通过".equals(ispass)){
+
+
+                        setSql+= status + "=" + Constants.leader_business[5];
+
+                        return  updateSql+setSql+whereCondition;
+
+
+                    }
+
+
+
+                }
+
+
+
+
+            }
+
+        }
+
+        //   return  updateSql+setSql+whereCondition;
+
+        return null;
+
+
     }
 }

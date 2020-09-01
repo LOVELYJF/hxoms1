@@ -962,21 +962,23 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      * @Date: 2020/8/31 10:43
      */
     @Override
-    public List<PWHVO> getPWHList() {
-        List<PWHVO> pwhvos = omsPubApplyMapper.getPWHList();
-        List<PWHVO> pwhvos1 = new ArrayList<>();
-        for (PWHVO pwhvo:pwhvos) {
-            String year = pwhvo.getYear();
-            PWHVO pwhvo2 = new PWHVO();
-            List<String> pwhs = new ArrayList<>();
-            for (PWHVO pwhvo1:pwhvos) {
-                if (year.equals(pwhvo1.getYear())){
-                    pwhvo2.setYear(year);
-                    pwhs.add(pwhvo1.getPwh());
+    public List<PWHTreeVO> getPWHList() {
+        List<PWHTreeVO> PWHTreeVOS = omsPubApplyMapper.getPWHList();
+        List<PWHTreeVO> pwhvos1 = new ArrayList<>();
+        for (PWHTreeVO PWHTreeVO : PWHTreeVOS) {
+            String year = PWHTreeVO.getYear();
+            PWHTreeVO PWHTreeVO2 = new PWHTreeVO();
+            List<PWHVO> pwhs = new ArrayList<>();
+            for (PWHTreeVO PWHTreeVO1 : PWHTreeVOS) {
+                if (year.equals(PWHTreeVO1.getYear())){
+                    PWHTreeVO2.setYear(year);
+                    PWHVO pwhvo = new PWHVO();
+                    pwhvo.setPwh(PWHTreeVO1.getPwh());
+                    pwhs.add(pwhvo);
                 }
             }
-            pwhvo2.setPwhs(pwhs);
-            pwhvos1.add(pwhvo2);
+            PWHTreeVO2.setPwhs(pwhs);
+            pwhvos1.add(PWHTreeVO2);
         }
 
         return pwhvos1;

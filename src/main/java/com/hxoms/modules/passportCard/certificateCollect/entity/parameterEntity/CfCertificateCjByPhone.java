@@ -1,6 +1,5 @@
 package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity;
 
-import com.hxoms.modules.sysUser.entity.CfUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,24 +14,24 @@ import java.util.List;
 public class CfCertificateCjByPhone {
     //经办人信息
     @ApiModelProperty(value = "经办人")
-    private List<CfUser> handlerList;
+    private List<HandlerInfo> handlerList;
     //单位人员
     @ApiModelProperty(value = "催缴人员集合")
-    private List<CfCertificateCjInfo> cfCertificateCjInfoList;
+    private List<CfCertificatePhoneCjInfo> cfCertificatePhoneCjInfoList;
 
-    public List<CfUser> getHandlerList() {
+    public List<HandlerInfo> getHandlerList() {
         return handlerList;
     }
 
-    public void setHandlerList(List<CfUser> handlerList) {
+    public void setHandlerList(List<HandlerInfo> handlerList) {
         this.handlerList = handlerList;
     }
 
-    public List<CfCertificateCjInfo> getCfCertificateCjInfoList() {
-        return cfCertificateCjInfoList;
+    public List<CfCertificatePhoneCjInfo> getCfCertificatePhoneCjInfoList() {
+        return cfCertificatePhoneCjInfoList;
     }
 
-    public void setCfCertificateCjInfoList(List<CfCertificateCjInfo> cfCertificateCjInfoList) {
-        this.cfCertificateCjInfoList = cfCertificateCjInfoList;
+    public void setCfCertificatePhoneCjInfoList(List<CfCertificatePhoneCjInfo> cfCertificatePhoneCjInfoList) {
+        this.cfCertificatePhoneCjInfoList = cfCertificatePhoneCjInfoList;
     }
 }

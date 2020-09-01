@@ -42,7 +42,7 @@ public class CfCertificateInfo {
     private Integer zjlx;
     //证照类型
     @ApiModelProperty(value = "证照类型名称")
-    private Integer zjlxName;
+    private String zjlxName;
     //证件号码
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
@@ -155,11 +155,11 @@ public class CfCertificateInfo {
         this.zjlx = zjlx;
     }
 
-    public Integer getZjlxName() {
+    public String getZjlxName() {
         return zjlxName;
     }
 
-    public void setZjlxName(Integer zjlxName) {
+    public void setZjlxName(String zjlxName) {
         this.zjlxName = zjlxName;
     }
 

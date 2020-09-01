@@ -851,7 +851,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                 OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
 
                 omsLeaderBatch.setMasterStatus(String.valueOf(status));
-
+                omsLeaderBatch.setModifyTime(new Date());
                 omsLeaderBatchService.update(omsLeaderBatch,queryWrapper);
 
 
@@ -878,7 +878,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
             OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
 
             omsLeaderBatch.setMasterStatus(String.valueOf(Constants.leader_business[Constants.leader_business.length-1]));
-
+            omsLeaderBatch.setModifyTime(new Date());
             omsLeaderBatchService.update(omsLeaderBatch,queryWrapper);
             }else{
 
@@ -890,7 +890,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
             OmsLeaderBatch omsLeaderBatch = new OmsLeaderBatch();
 
             omsLeaderBatch.setMasterStatus(listStatus.get(1).get("status").toString());
-
+            omsLeaderBatch.setModifyTime(new Date());
             omsLeaderBatchService.update(omsLeaderBatch,queryWrapper);
 
 

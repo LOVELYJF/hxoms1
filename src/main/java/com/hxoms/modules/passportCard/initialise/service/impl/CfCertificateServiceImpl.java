@@ -443,7 +443,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificateCollection.setZjlx(cfCertificateInfo.getZjlx());
         cfCertificateCollection.setZjhm(cfCertificateInfo.getZjhm());
         //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
-        cfCertificateCollection.setCjWay("0");
+        cfCertificateCollection.setDataSource("0");
         List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
         cfCertificateCollectionList.add(cfCertificateCollection);
         cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
@@ -651,7 +651,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     //是否有效,0:有效,1:无效
                                     cfCertificate.setIsValid(0);
                                     //去重
-                                    if(cfCertificateExistList.size()>0){
+                                    if(cfCertificateExistList!=null&&cfCertificateExistList.size()>0){
                                         boolean flag=false;
                                         for (CfCertificate cfCertificateExist : cfCertificateExistList) {
                                             if(cfCertificateExist.getZjlx()==cfCertificate.getZjlx()
@@ -714,7 +714,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     cfCertificateExport.setOmsCerExitEntryImportManage(omsCerExitEntryImportManage);
                                 }else{
                                     //去重
-                                    if(omsEntryexitRecordExistList.size()>0){
+                                    if(omsEntryexitRecordExistList!=null&&omsEntryexitRecordExistList.size()>0){
                                         boolean flag=false;
                                         for (OmsEntryexitRecord omsEntryexitRecordExist : omsEntryexitRecordExistList) {
                                             if(omsEntryexitRecordExist.getIdType()==omsEntryexitRecord.getIdType()
@@ -739,7 +739,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                         }
                     }
                     //判断是否需要修改人员证照持有情况
-                    if(!StringUtils.isBlank(omsRegProcpersoninfo.getId())&omsRegProcpersoninfo.getLicenceIdentity()<allHold){
+                    if(!StringUtils.isBlank(omsRegProcpersoninfo.getId())&&omsRegProcpersoninfo.getLicenceIdentity()<allHold){
                         omsRegProcpersoninfo.setLicenceIdentity(allHold);
                         cfCertificateExport.setOmsRegProcpersoninfo(omsRegProcpersoninfo);
                     }

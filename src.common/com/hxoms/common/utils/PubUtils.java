@@ -1,6 +1,10 @@
 package com.hxoms.common.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,5 +39,37 @@ public class PubUtils {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+    /**
+     * @Desc: 计算日期
+     * @Author: wangyunquan
+     * @Param: [date, value]
+     * @Return: java.util.Date
+     * @Date: 2020/8/11
+     */
+    public static Date calDate(Date date, int value){
+        Calendar calendar  =   Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE, value);
+        return calendar.getTime();
+    }
+    /**
+     * @Desc: 计算日期相差
+     * @Author: wangyunquan
+     * @Param: [startDate, endDate]
+     * @Return: java.lang.String
+     * @Date: 2020/9/1
+     */
+    public static int calDateDiff(String startDate,String endDate) {
+        SimpleDateFormat formatter =   new SimpleDateFormat( "yyyy.MM.dd");
+        Long l = 0L;
+        try {
+            long ts = formatter.parse(startDate).getTime();
+            long ts1 = formatter.parse(endDate).getTime();
+            l = (ts - ts1) / (1000 * 60 * 60 * 24);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return l.intValue();
     }
 }

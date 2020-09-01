@@ -242,7 +242,8 @@ public class Constants {
      *  干部监督处业务 状态名称
      * */
 
-    public static String[] leader_businessName={"业务办理","征求意见","记录意见","做成审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
+    public static String[] leader_businessName={"业务办理","征求意见","记录意见","做出" +
+            "审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
 
     /**
      *  干部监督处 批次 (主)状态
@@ -324,14 +325,5 @@ public class Constants {
     //证照注销原因代码
     public static int[] CANCELL_REASON_STATUS={1,2,3,4};
     //证照注销原因名称
-    public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他"};
-
-    /**
-     * 因公团组流程状态代码
-     */
-    public static final int[] PUB_GROUP_STATUS_CODE ={0,1,2,3};
-    /**
-     * 因公团组流程状态名称
-     */
-    public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文"};
+    public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他原因"};
 }

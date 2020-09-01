@@ -2,10 +2,7 @@ package com.hxoms.modules.passportCard.certificateCollect.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjQueryParam;
-import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OrganUnit;
-import com.hxoms.modules.sysUser.entity.CfUser;
+import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 
 import java.util.List;
 
@@ -35,17 +32,17 @@ public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateC
      * @Desc: 查询经办人
      * @Author: wangyunquan
      * @Param: [rfB0000]
-     * @Return: java.util.List<com.hxoms.modules.sysUser.entity.CfUser>
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.HandlerInfo>
      * @Date: 2020/8/12
      */
-    List<CfUser> selectHandlerByOrgan(String rfB0000);
+    List<HandlerInfo> selectHandlerByOrgan(String rfB0000);
 
     /**
      * @Desc: 查询催缴人员
      * @Author: wangyunquan
      * @Param: [rfB0000]
-     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo>
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificatePhoneCjInfo>
      * @Date: 2020/8/12
      */
-    List<CfCertificateCjInfo> selectCerCjInfoByOrgan(String rfB0000);
+    List<CfCertificatePhoneCjInfo> selectCerCjInfoByOrgan(String rfB0000);
 }

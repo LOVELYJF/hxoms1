@@ -3,7 +3,6 @@ package com.hxoms.modules.passportCard.certificateCollect.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
@@ -39,7 +38,7 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result<com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo>>
      * @Date: 2020/8/12
      */
-    @ApiOperation(value = "查询证照催缴")
+    @ApiOperation(value = "查询证照催缴申请")
     @GetMapping("/selectCerCjApply")
     public Result<PageBean<CfCertificateCjInfo>> selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam){
         return Result.success(cfCertificateCollectionService.selectCerCjApply(pageBean, cfCertificateCjQueryParam));
@@ -66,12 +65,24 @@ public class CfCertificateCollectionController {
      * @Date: 2020/8/12
      */
     @ApiOperation(value = "通过单位查询催缴人员")
-    @ApiImplicitParam(name = "rfB0000", value = "机构单位编码", dataType = "String")
+    @ApiImplicitParam(value = "机构单位编码",name = "rfB0000",required = true)
     @GetMapping("/selectCerCjInfoByOrgan")
     public Result<CfCertificateCjByPhone> selectCerCjInfoByOrgan(String rfB0000){
         return Result.success(cfCertificateCollectionService.selectCerCjInfoByOrgan(rfB0000));
     }
 
+    /**
+     * @Desc: 获取电话催缴内容
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: com.hxoms.common.utils.Result<java.lang.String>
+     * @Date: 2020/9/1
+     */
+    @ApiOperation(value = "获取电话催缴内容")
+    @PostMapping("/createPhoneContent")
+    public Result<String> createPhoneContent(@RequestBody RequestList<PhoneContentParam> requestList){
+        return Result.success(cfCertificateCollectionService.createPhoneContent(requestList.getList()));
+    }
     /**
      * @Desc: 保存催缴结果
      * @Author: wangyunquan
@@ -89,13 +100,13 @@ public class CfCertificateCollectionController {
     /**
      * @Desc: 解除催缴
      * @Author: wangyunquan
-     * @Param: [cfCertificateCollectionList]
+     * @Param: [requestList]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/12
      */
     @ApiOperation(value = "解除催缴")
     @PostMapping("/updateCerCjForRemove")
-    public Result updateCerCjForRemove(@RequestBody RequestList<CfCertificateCollection> requestList){
+    public Result updateCerCjForRemove(@RequestBody RequestList<RemoveCjApply> requestList){
         cfCertificateCollectionService.updateCerCjForRemove(requestList.getList());
         return Result.success();
     }
@@ -120,10 +131,10 @@ public class CfCertificateCollectionController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/13
      */
-    @ApiOperation(value = "锁定单位出国")
+    @ApiOperation(value = "锁定单位出国申请")
     @PostMapping("/insertSuspendUnit")
-    public Result insertSuspendUnit(@RequestBody OmsSupSuspendUnit omsSupSuspendUnit){
-        cfCertificateCollectionService.insertSuspendUnit(omsSupSuspendUnit);
+    public Result insertSuspendUnit(@RequestBody SupSuspendUnitApply supSuspendUnitApply){
+        cfCertificateCollectionService.insertSuspendUnit(supSuspendUnitApply);
         return Result.success();
     }
     /**

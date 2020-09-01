@@ -351,7 +351,7 @@ public class OmsPubApplyController {
      */
     @GetMapping("/getPWHList")
     public Result getPWHList(){
-        List<PWHVO> pwhList = omsPubApplyService.getPWHList();
+        List<PWHTreeVO> pwhList = omsPubApplyService.getPWHList();
         return Result.success(pwhList);
     }
 }
