@@ -23,7 +23,7 @@ public class OmsApprovalReturn {
     private String applyId;
 
     @ColumnAnnotation(FieldName = "RETURN_TIME",   FieldDescription="回收时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone ="GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "回收时间")
     private Date returnTime;
