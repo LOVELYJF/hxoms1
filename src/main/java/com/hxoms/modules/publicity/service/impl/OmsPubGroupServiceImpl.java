@@ -187,7 +187,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (file == null){
             throw new CustomMessageException("参数为空!");
         }
+        //解析json数据
         OmsPubGroupAndApplyList omsPubGroupAndApplyList = readJsonData(file);
+        try {
+            insertPubGroup(omsPubGroupAndApplyList);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return omsPubGroupAndApplyList;
     }
 
@@ -218,6 +224,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             throw new CustomMessageException("参数为空!");
         }
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
+        pubGroup.setTzrs(pubGroup.getTzrs()+1);
+        pubGroupMapper.updatePubGroup(pubGroup);//更新团组人数
+
         OmsPubApply pubApply = getInsertOmsPubApply(personId);
         pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
@@ -235,11 +244,28 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(pubApplyMapper.insert(pubApply) < 1){
             throw new CustomMessageException("添加失败!");
         }
-
     }
 
     @Override
     public void backoutPerson(String id,String cxyy) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
+            throw new CustomMessageException("参数为空!");
+        }
+        //撤销人员
+        pubApplyMapper.repealPubApplyById(id,cxyy, Constants.private_business[7]);
+        //获取人员详情
+        OmsPubApply pubApply = pubApplyMapper.selectById(id);
+        //更新团组人数
+        if(pubApply != null){
+            OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
+            pubGroup.setId(pubApply.getYspId());
+            pubGroup.setTzrs(pubGroup.getTzrs()-1);
+            pubGroupMapper.updatePubGroup(pubGroup);
+        }
+    }
+
+    @Override
+    public void backoutGroup(String id,String cxyy) {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
             throw new CustomMessageException("参数为空!");
         }
@@ -262,7 +288,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void regainPerson(String id) {
+    public void regainGroup(String id) {
         if (StringUtils.isBlank(id)){
             throw new CustomMessageException("参数为空!");
         }
@@ -293,11 +319,18 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubGroupAndApplyList beanList = new OmsPubGroupAndApplyList();
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(yspId);
         List<OmsPubApplyVO> applyList = pubApplyMapper.selectByYSPId(yspId);
+        StringBuffer tzcy = new StringBuffer();
         for (int i = 0; i < applyList.size(); i++) {
+            tzcy.append(applyList.get(i).getName());
+            if(i != applyList.size()-1){
+                tzcy.append(",");
+            }
+            //获取校验结果
             List<Map<String,String>> result =
                     omsConditionService.checkConditionByA0100(applyList.get(i).getProcpersonId(),Constants.oms_business[0]);
             applyList.get(i).setCheckResult(result);
         }
+        pubGroup.setTzcy(tzcy.toString());
         beanList.setOmsPubGroupPreApproval(pubGroup);
         beanList.setOmsPubApplyVOList(applyList);
         return beanList;

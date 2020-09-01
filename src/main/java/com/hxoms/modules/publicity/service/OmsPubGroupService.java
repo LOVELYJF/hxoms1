@@ -33,10 +33,12 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     List<OmsPubApplyVO> checkoutPerson(OmsPubGroupAndApplyList pubGroupAndApplyList);
     //添加人员
     void insertPerson(String personId,String pubId) throws Exception;
-    //撤销团组
+    //撤销人员
     void backoutPerson(String id,String cxyy);
+    //撤销团组
+    void backoutGroup(String id,String cxyy);
     //恢复团组
-    void regainPerson(String id);
+    void regainGroup(String id);
     //查看团组详情
     OmsPubGroupAndApplyList getPubGroupDetailById(String id);
     //查看详情
