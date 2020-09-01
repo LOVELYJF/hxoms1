@@ -325,5 +325,5 @@ public class Constants {
     //证照注销原因代码
     public static int[] CANCELL_REASON_STATUS={1,2,3,4};
     //证照注销原因名称
-    public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他"};
+    public static String[] CANCELL_REASON_NAME={"遗失", "被盗","损毁","其他原因"};
 }
