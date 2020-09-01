@@ -542,7 +542,7 @@
         SELECT
             ID id,
             A0100 a0100,
-            LICENCE_IDENTITY licenceIdentity,
+            LICENCE_IDENTITY licenceIdentity
         FROM
             oms_reg_procpersoninfo
         WHERE
@@ -903,11 +903,11 @@
         b.WORK_UNIT workUnit,
         a.NAME name,
         a.zjlx zjlx,
-        a.zjhm zjhm,
+        a.zjhm zjhm
       FROM
           cf_certificate a
       INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
-      WHERE id=#{id}
+      WHERE a.id=#{id}
 	</select>
 	<select id="selectUserType" resultType="java.lang.String">
 		SELECT
