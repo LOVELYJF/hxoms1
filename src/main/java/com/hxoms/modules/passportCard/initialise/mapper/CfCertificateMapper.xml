@@ -722,6 +722,7 @@
 		join oms_personinfo op on op.B0111 = orp.RF_B0000
 		<where>
 			<trim suffixOverrides="and">
+				<if test="b0100 != null">op.B0100=#{b0100} and </if>
 				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
 				<if test="name != null">cc.name like concat('%',#{name},'%')
 					or cc.PY like concat('%',#{name},'%') and

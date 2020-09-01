@@ -123,6 +123,9 @@
     <if test="params.procpersonId != null and params.procpersonId !=''">
         and pa.IS_COMPARISON = #{params.isComparison}
     </if>
+    <if test="params.isAbroad != null and params.isAbroad != ''">
+        and pa.IS_ABROAD = #{params.isAbroad}
+    </if>
     <if test="params.abroadStartTime != null and params.abroadEndTime != null">
       and pa.ABROAD_TIME &gt; #{params.abroadStartTime} and pa.ABROAD_TIME &lt; #{params.abroadEndTime}
     </if>
@@ -245,9 +248,9 @@
           and step_code = 24
         </if>
         <if test="step != null and step == 'd1'">
-          and step_code &gt; 24 and step_code &lt; 30
+          and step_code &gt; 24 and step_code &lt;= 30
         </if>
-    ) and apply_status = 31 and PROCPERSON_ID=#{id}
+    ) and apply_status = 31 and PROCPERSON_ID=#{procpersonId}
   </select>
   <select id="selectVisaSettingByCode" parameterType="java.util.Map" resultType="java.util.Map">
       select INFO_ID AS infoId, INFO_NAME AS infoName from oms_baseinfo_config where 1=1

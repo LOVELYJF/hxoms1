@@ -30,6 +30,7 @@
     <result column="VALID_UNTIL" jdbcType="DATE" property="validUntil" />
     <result column="VISITING_TASKS" jdbcType="VARCHAR" property="visitingTasks" />
     <result column="COMPARISON_RESULT" jdbcType="VARCHAR" property="comparisonResult" />
+    <result column="COMPARISON_DATE" jdbcType="VARCHAR" property="comparisonDate" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -340,6 +341,9 @@
     </if>
     <if test="ogeEndDate != null">
       and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[<=]]>#{ogeEndDate}
+    </if>
+    <if test="comparisonResult!=null and comparisonResult!=''">
+      and COMPARISON_RESULT LIKE '%${comparisonResult}%'
     </if>
     order by OGE_DATE asc
   </select>
