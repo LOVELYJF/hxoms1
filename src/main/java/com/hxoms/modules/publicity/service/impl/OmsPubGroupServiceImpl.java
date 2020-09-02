@@ -68,10 +68,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     private static final int IS_ASSIGN = 1;
     //人员未下达
     private static final int IS_NOT_ASSIGN = 0;
-    //是
-    private static final String IS_YES = "1";
-    //否
-    private static final String IS_NOT = "0";
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) {
@@ -110,7 +106,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubApply.setTlsj(pubGroup.getTjgj());
                 pubApply.setCfrw(pubGroup.getCfrw());
                 pubApply.setCfsy(pubGroup.getCfsy());
-                pubApply.setSfzb(IS_NOT);
+                pubApply.setSfzb(Constants.IS_NOT);
                 applyList.add(pubApply);
             }
             pubApplyMapper.insertPubApplyList(applyList);
@@ -230,7 +226,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setTlsj(pubGroup.getTjgj());
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
-        pubApply.setSfzb(IS_YES);
+        pubApply.setSfzb(Constants.IS_YES);
         if(Constants.PUB_GROUP_STATUS_CODE[2] == pubGroup.getSqzt()){
             pubApply.setSqzt(Constants.private_business[0]);
             pubApply.setSfxd(IS_ASSIGN);
@@ -248,7 +244,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }
         //获取人员详情
         OmsPubApply pubApply = pubApplyMapper.selectById(id);
-        if(StringUtils.isBlank(pubApply.getJdcjl()) || IS_NOT.equals(pubApply.getJdcjl())){
+        if(StringUtils.isBlank(pubApply.getJdcjl()) || Constants.IS_NOT.equals(pubApply.getJdcjl())){
             //撤销人员
             pubApplyMapper.repealPubApplyById(id,cxyy, Constants.private_business[7]);
             //更新团组人数
@@ -409,7 +405,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if(Constants.private_business[7] != applyVOList.get(i).getSqzt()){
                 if(StringUtils.isBlank(applyVOList.get(i).getZzjl())){
                     msg = "还未审核完毕，不能进行下一步操作！";
-                    if(IS_NOT.equals(applyVOList.get(i).getZzjl())){
+                    if(Constants.IS_NOT.equals(applyVOList.get(i).getZzjl())){
                         msg = "请撤消未通过审核的人员!";
                     }
                     return msg;
@@ -628,10 +624,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setAge(getAge(birthDay));
         }
         if(StringUtils.isBlank(personInfo.getSecretLevel())){
-            pubApply.setSfsmry("0");
+            pubApply.setSfsmry(Constants.IS_NOT);
         }else{
             pubApply.setSmdj(personInfo.getSecretLevel());
-            pubApply.setSfsmry("1");
+            pubApply.setSfsmry(Constants.IS_YES);
         }
         List<OmsPubApply> list = pubApplyMapper.selectPubAbroadLatestInfo(personInfo.getA0100());
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
@@ -645,7 +641,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         //负面信息
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),cgsj);
         pubApply.setFmxx(fmxx);
-        pubApply.setSfysp(IS_YES);
+        pubApply.setSfysp(Constants.IS_YES);
         if(StringUtils.isBlank(pubApply.getSqzt().toString())){
             pubApply.setSqzt(Constants.private_business[8]);
         }
@@ -653,13 +649,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setSfxd(IS_NOT_ASSIGN);
         }
         if(StringUtils.isBlank(pubApply.getSfbg())){
-            pubApply.setSfbg(IS_NOT);
+            pubApply.setSfbg(Constants.IS_NOT);
         }
         if(StringUtils.isBlank(pubApply.getSfzb())){
-            pubApply.setSfzb(IS_NOT);
+            pubApply.setSfzb(Constants.IS_NOT);
         }
         if(StringUtils.isBlank(pubApply.getSftsry())){
-            pubApply.setSftsry(IS_NOT);
+            pubApply.setSftsry(Constants.IS_NOT);
         }
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());

@@ -334,4 +334,12 @@ public class Constants {
      * 因公团组流程状态名称
      */
     public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文"};
+    /**
+     * 是
+     */
+    public static final String IS_YES = "1";
+    /**
+     * 否
+     */
+    public static final String IS_NOT = "0";
 }
