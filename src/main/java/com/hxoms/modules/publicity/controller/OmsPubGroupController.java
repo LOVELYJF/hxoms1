@@ -113,7 +113,8 @@ public class OmsPubGroupController {
      * @param file
      */
     @PostMapping("/uploadPubGroupJson")
-    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file) {
+    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file,
+                                     String orgName,String orgId,String bazt) {
         try{
             if(file == null){
                 return Result.error("未获取到上传文件，请检查！");
@@ -125,7 +126,7 @@ public class OmsPubGroupController {
             if(!"json".equals(extensionName)){
                 return Result.error("请上传json格式文件");
             }else{
-                return Result.success(pubGroupService.uploadPubGroupJson(file));
+                return Result.success(pubGroupService.uploadPubGroupJson(file,orgName,orgId,bazt));
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -237,9 +238,9 @@ public class OmsPubGroupController {
      * @param pubGroupAndApplyList(团队及人员信息)
      */
     @PostMapping("/sendTask")
-    public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt) {
         try {
-            pubGroupService.sendTask(pubGroupAndApplyList);
+            pubGroupService.sendTask(pubGroupAndApplyList,bazt);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();

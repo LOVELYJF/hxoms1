@@ -173,13 +173,19 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file) throws IOException {
-        if (file == null){
+    public OmsPubGroupAndApplyList uploadPubGroupJson(MultipartFile file,String orgName,String orgId,String bazt) throws IOException {
+        if (file == null || StringUtils.isBlank(bazt)){
             throw new CustomMessageException("参数为空!");
         }
         //解析json数据
         OmsPubGroupAndApplyList omsPubGroupAndApplyList = readJsonData(file);
         try {
+            if(StringUtils.isBlank(orgId)){
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
+            }else{
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
+            }
+            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
             insertPubGroup(omsPubGroupAndApplyList);
         }catch (Exception e){
             e.printStackTrace();
@@ -359,7 +365,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void sendTask(OmsPubGroupAndApplyList pubGroupAndApplyList) {
+    public void sendTask(OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt) {
         OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
         List<OmsPubApplyVO> applyVOList = pubGroupAndApplyList.getOmsPubApplyVOList();
         if(pubGroup == null || applyVOList.size() < 1){
@@ -371,7 +377,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[2]);
 
             //填写时添加
-            if("0".equals(pubGroup.getSource())){
+            if(StringUtils.isBlank(pubGroup.getSource())){
+                pubGroup.setSource("0");
+                pubGroup.setBazt(Integer.parseInt(bazt));
                 for (int i = 0; i < applyVOList.size(); i++) {
                     if(Constants.private_business[7] != applyVOList.get(i).getSqzt()){
                         applyVOList.get(i).setSqzt(Constants.private_business[0]);
@@ -567,6 +575,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         omsPubGroupPreApproval.setTjgj(jsonData.get("途经国家").toString());
         omsPubGroupPreApproval.setZtdw(jsonData.get("组团单位").toString());
         omsPubGroupPreApproval.setFylykzxm(jsonData.get("费用来源开支项目").toString());
+        omsPubGroupPreApproval.setSource("1");
 
         //团组人员解析
         JSONArray jsonArray = (JSONArray) jsonData.get("省管干部");
