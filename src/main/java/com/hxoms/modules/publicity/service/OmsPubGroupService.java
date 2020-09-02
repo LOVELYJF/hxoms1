@@ -45,6 +45,8 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     OmsPubGroupAndApplyList getPubGroupDetailById(String id);
     //查看详情
     OmsPubApply getPersonDetailById(String id);
+    //查看人员审批详情
+    List<OmsPubApplyVO> getAuditOpinion(String id);
     //获取撤销记录信息
     Map<String,Object> getBackoutDetailById(String id);
     //递送任务

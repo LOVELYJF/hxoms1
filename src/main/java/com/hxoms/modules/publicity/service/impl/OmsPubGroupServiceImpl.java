@@ -35,7 +35,6 @@ import java.util.*;
 @Service
 public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPubGroupPreApproval> implements OmsPubGroupService {
 
-
     @Autowired
     private OmsPubGroupMapper pubGroupMapper;
     @Autowired
@@ -204,9 +203,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 OmsPubApplyVO pubApplyVO = personList.get(i);
                 String fmxx = omsConditionService.selectNegativeInfo(pubApplyVO.getA0100(),pubGroup.getCgsj());
                 pubApplyVO.setFmxx(fmxx);
-                List<Map<String,String>> result =
-                        omsConditionService.checkConditionByA0100(pubApplyVO.getProcpersonId(),Constants.oms_business[0]);
-                pubApplyVO.setCheckResult(result);
+                pubApplyVO.setCheckResult(getCheckResult(pubApplyVO.getProcpersonId(),Constants.oms_business[0]));
             }
             return personList;
         }else{
@@ -328,9 +325,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 tzcy.append(",");
             }
             //获取校验结果
-            List<Map<String,String>> result =
-                    omsConditionService.checkConditionByA0100(applyList.get(i).getProcpersonId(),Constants.oms_business[0]);
-            applyList.get(i).setCheckResult(result);
+            applyList.get(i).setCheckResult(getCheckResult(applyList.get(i).getProcpersonId(),Constants.oms_business[0]));
         }
         pubGroup.setTzcy(tzcy.toString());
         beanList.setOmsPubGroupPreApproval(pubGroup);
@@ -341,6 +336,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Override
     public OmsPubApply getPersonDetailById(String id) {
         return pubApplyMapper.selectById(id);
+    }
+
+    @Override
+    public List<OmsPubApplyVO> getAuditOpinion(String id) {
+        return pubApplyMapper.selectByYSPId(id);
     }
 
     @Override
@@ -651,10 +651,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),cgsj);
         pubApply.setFmxx(fmxx);
         pubApply.setSfysp(Constants.IS_YES);
-        if(StringUtils.isBlank(pubApply.getSqzt().toString())){
+        if(StringUtils.isBlank(String.valueOf(pubApply.getSqzt()))){
             pubApply.setSqzt(Constants.private_business[8]);
         }
-        if(StringUtils.isBlank(pubApply.getSfxd().toString())){
+        if(StringUtils.isBlank(String.valueOf(pubApply.getSfxd()))){
             pubApply.setSfxd(IS_NOT_ASSIGN);
         }
         if(StringUtils.isBlank(pubApply.getSfbg())){
@@ -741,5 +741,20 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             e.printStackTrace();
             throw new CustomMessageException("文件上传失败");
         }
+    }
+
+    private String getCheckResult(String id,String type){
+        StringBuffer result = new StringBuffer();
+        Map<String,String> map = new HashMap<>();
+        List<Map<String,String>> resultList = omsConditionService.checkConditionByA0100(id,type);
+        if(resultList.size() > 0){
+            for (int i = 0; i < resultList.size(); i++) {
+                map = resultList.get(i);
+                if(Constants.IS_NOT.equals(map.get("isFit"))){
+                    result.append(map.get("title")+";");
+                }
+            }
+        }
+        return result.toString();
     }
 }

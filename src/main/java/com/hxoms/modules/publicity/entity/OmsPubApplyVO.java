@@ -22,7 +22,7 @@ public class OmsPubApplyVO extends OmsPubApply {
     //在职状态
     private String status;
     //校验结果
-    private List<Map<String,String>> checkResult;
+    private String checkResult;
 
     public String getB0101() {
         return b0101;
@@ -72,11 +72,11 @@ public class OmsPubApplyVO extends OmsPubApply {
         this.status = status;
     }
 
-    public List<Map<String, String>> getCheckResult() {
+    public String getCheckResult() {
         return checkResult;
     }
 
-    public void setCheckResult(List<Map<String, String>> checkResult) {
+    public void setCheckResult(String checkResult) {
         this.checkResult = checkResult;
     }
 }
