@@ -395,7 +395,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         if("clshsftg".equals(recordFlow)){   // 材料审核是否通过
 
-            setSql+= " CLSHSFTG " + " = ’" + opinion+"‘, zzjl = ’" + opinion+"'" ;
+            setSql+= " CLSHSFTG " + " = '" + opinion+"‘, zzjl = '" + opinion+"'" ;
 
             // FINAL_CONCLUSION
 
@@ -1213,21 +1213,23 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
                     + " '因公' as businessType, "
                     + " mrp.INCUMBENCY_STATUS as incumbencyStatus, "
-                    + " SFSMRY as sfsmry, "
+//                    + " SFSMRY as sfsmry, "
                       // 核心涉密人员
-                    +" (case when mrp.SECRET_LEVEL=3 then 1 else 2 end) as coreClassified,"
+                    +" (case when mrp.SECRET_LEVEL=3 then '是' else '否' end) as coreClassified,"
                     // 重点监管对象
-                    + " (case when mrp.IDENTITY_CODE = 5 then 1 else 2 end) as keyRegulatory ,"
+                    + " (case when mrp.IDENTITY_CODE = 5 then '是' else '否' end) as keyRegulatory ,"
                     // 纪委意见 是否反复
                     +"\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain,"
                     // 未征求纪委意见
-                    +"\t SFZQJWYJ as sfzqjwyj,"
+                    +"\t case when pua.SFZQJWYJ=1 then '是' else '否' end as sfzqjwyj,"
                     // 是否重要领导
-                    +  " \t SFLG as isLeaders,"
+                    + " case when pua.SFZYLD = 1 then '是' else '否' end as sfzyld, "
+                    // 是否裸官
+                    +  " \t case when  pua.SFLG=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
-                    +" JWJL as jwjl, "
+                    +" pua.JWJL as jwjl, "
                     // 材料审核结论
-                    + " CLSHSFTG as clshsftg "
+                    + " pua.CLSHSFTG as clshsftg "
                     + " from oms_pub_apply  pua " +
                       " left join  oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id " +
                       "where pua.id = '"+bussinessId+"'";
@@ -1245,9 +1247,11 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                      // 纪委意见 是否反复
                      + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2)  from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain, "
                     // 未征求纪委意见
-                    +"\t pra.SFZQJWYJ as sfzqjwyj, "
-                    // 是否重要领导
-                    +  " \t pra.IS_LEADERS as isLeaders,"
+                    +"\t case when  pra.SFZQJWYJ=1 then '是' else '否' end  as sfzqjwyj, "
+                     // 是否重要领导
+                    + "case when pra.IS_LEADERS = 1 then '是' else '否' end as isLeaders, "
+                    // 是否裸官
+                    +  " \t case when pra.IS_LUOGUAN=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
                     +" pra.JWJL as jwjl, "
                     // 材料审核结论
@@ -1271,9 +1275,11 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
                      + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain,"
                     // 未征求纪委意见
-                    +"\t pda.SFZQJWYJ as sfzqjwyj"
-                    // 是否重要领导
-                    +  " \t pda.IS_LEADERS as isLeaders"
+                    +"\t case when pda.SFZQJWYJ =1 then '是' else '否' as sfzqjwyj,"
+                     // 是否重要领导
+                     + "case when pra.IS_LEADERS = 1 then '是' else '否' end as isLeaders, "
+                     // 是否裸官
+                     +  " \t case when pra.IS_LUOGUAN=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
                     +" pda.JWJL as jwjl "
                     // 材料审核结论
