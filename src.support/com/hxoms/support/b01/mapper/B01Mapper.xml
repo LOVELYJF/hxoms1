@@ -74,7 +74,7 @@
         b0180, job_number_desc
     </sql>
     <insert id="insert" parameterType="com.hxoms.support.b01.entity.B01">
-        insert into b01 (b0101, b0104, b0107,
+        insert into b01 (b0100,b0101, b0104, b0107,
         b0111, b0114, b0117,
         b0124, b0127, b0131,
         b0134, b0137, b0144a,
@@ -96,7 +96,7 @@
         b0142, b0143, b0150,
         b0236, b0234, b0121,
         b0180,job_number_desc)
-        values (#{b0101,jdbcType=VARCHAR}, #{b0104,jdbcType=VARCHAR}, #{b0107,jdbcType=VARCHAR},
+        values (#{b0100,jdbcType=VARCHAR}, #{b0104,jdbcType=VARCHAR}, #{b0107,jdbcType=VARCHAR},
         #{b0111,jdbcType=VARCHAR}, #{b0114,jdbcType=VARCHAR}, #{b0117,jdbcType=VARCHAR},
         #{b0124,jdbcType=VARCHAR}, #{b0127,jdbcType=VARCHAR}, #{b0131,jdbcType=VARCHAR},
         #{b0134,jdbcType=VARCHAR}, #{b0137,jdbcType=VARCHAR}, #{b0144a,jdbcType=VARCHAR},
@@ -123,6 +123,9 @@
     <insert id="insertOrg" parameterType="com.hxoms.support.b01.entity.B01">
         insert into b01
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="b0100 != null">
+                b0100,
+            </if>
             <if test="b0101 != null">
                 b0101,
             </if>
@@ -317,6 +320,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="b0100 != null">
+                #{b0100,jdbcType=VARCHAR},
+            </if>
             <if test="b0101 != null">
                 #{b0101,jdbcType=VARCHAR},
             </if>

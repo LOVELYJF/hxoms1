@@ -1,8 +1,10 @@
 package com.hxoms.support.customquery.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -39,6 +41,8 @@ public class QueryPlan {
     /**
      * 创建时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ColumnAnnotation(FieldName = "create_time",  FieldDescription="创建时间")
     private Date createTime;
 
@@ -51,6 +55,8 @@ public class QueryPlan {
     /**
      * 更新时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ColumnAnnotation(FieldName = "modify_time",  FieldDescription="更新时间")
     private Date modifyTime;
 
