@@ -50,8 +50,8 @@ public class OmsCerCancellateLicenseApplyController {
 	 */
 	@PostMapping("/saveCancellateLicenseChoose")
 	public Result saveCancellateLicenseChoose(@RequestBody List<OmsCerCancellateLicense> list){
-		omsCerCancellateLicenseApplyService.saveCancellateLicenseChoose(list);
-		return Result.success();
+		Map<String,Object> map = omsCerCancellateLicenseApplyService.saveCancellateLicenseChoose(list);
+		return Result.success(map);
 	}
 
 	/**
