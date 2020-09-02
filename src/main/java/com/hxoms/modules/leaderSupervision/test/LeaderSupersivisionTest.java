@@ -1,9 +1,10 @@
-/*
+
 package com.hxoms.modules.leaderSupervision.test;
 
 import com.hxoms.modules.leaderSupervision.config.StatusConvertLinkMap;
 import com.hxoms.modules.leaderSupervision.entity.OmsJiweiOpinion;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 import org.junit.Test;
 
@@ -12,8 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-*/
-/*
+import java.util.stream.Collectors;
+
+
 public class LeaderSupersivisionTest {
 
 //    @Autowired
@@ -183,6 +185,28 @@ public class LeaderSupersivisionTest {
 //
 //        System.out.println(ids);
         System.out.printf("字母a的大写是：%c %n", 'A');
+        List<BussinessTypeAndIdVo> list = new ArrayList();
+        for(int i=0;i<5;i++){
+
+            BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+
+            if(i==3){
+                bussinessTypeAndIdVo.setCadresupervisionOpinion("通过");
+
+            }else{
+
+                bussinessTypeAndIdVo.setCadresupervisionOpinion("不通过");
+            }
+
+            list.add(bussinessTypeAndIdVo);
+        }
+
+
+      List list1 =   list.stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("通过")).collect(Collectors.toList());
+      List list2  =     list.stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("不通过")).collect(Collectors.toList());
+
+        System.out.println(list1.size());
+        System.out.println(list2.size());
 
     }
 
@@ -190,4 +214,4 @@ public class LeaderSupersivisionTest {
 
 
 }
-*/
+

@@ -1,6 +1,7 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
@@ -29,6 +30,8 @@ import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.user.entity.User;
@@ -92,6 +95,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Autowired
     private OmsFileServiceImpl omsFileServiceImpl;
+    @Autowired
+    private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 
 
     @Value("${omsAttachment.baseDir}")
@@ -746,8 +751,8 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 ////             }
 //        }
 
-        List listPass =   leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("通过")).collect(Collectors.toList());
-        List listNoPass  =     leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> b.getCadresupervisionOpinion().equals("不通过")).collect(Collectors.toList());
+        List listPass =   leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> "通过".equals(b.getCadresupervisionOpinion())).collect(Collectors.toList());
+        List listNoPass  =     leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> "不通过".equals(b.getCadresupervisionOpinion())).collect(Collectors.toList());
 
         //  (1) 保存 审批记录(通过)
         leaderCommonService.saveAbroadApprovalByBussinessId(listPass,"通过", Constants.leader_businessName[4], Constants.leader_business[4],null);
@@ -765,6 +770,9 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
 
                 Constants.leader_business[5]);
+
+        //更新 《登记备案人员信息表》中纪委不回复意见人员字段
+        updateProcpersoninfoByjiwei(leaderSupervisionVo.getBussinessTypeAndIdVos());
 
 
     }
@@ -878,6 +886,46 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         //   return  updateSql+setSql+whereCondition;
 
         return null;
+    }
+
+    // 更新 登记备案表
+
+    public void updateProcpersoninfoByjiwei(List<BussinessTypeAndIdVo> businessTypeAndIdAndOnJobVos){
+
+        for (BussinessTypeAndIdVo bussinessTypeAndIdVo: businessTypeAndIdAndOnJobVos) {
+
+            String jwjl    = bussinessTypeAndIdVo.getJwjl();
+            String procpersonId = bussinessTypeAndIdVo.getProcpersonId();
+
+            if("不回复".equals(jwjl)){
+
+                OmsRegProcpersoninfo omsRegProcpersoninfo = new OmsRegProcpersoninfo();
+
+                omsRegProcpersoninfo.setId(procpersonId);
+                omsRegProcpersoninfo.setReplyopinion("是");
+
+                omsRegProcpersoninfoMapper.updateById(omsRegProcpersoninfo);
+            }else {
+                // 如果纪委不回复意见人员字段值是“是”，本次回复了意见，将纪委不回复意见人员字段更新为“否”。
+                UpdateWrapper<OmsRegProcpersoninfo> queryWrapper = new UpdateWrapper<OmsRegProcpersoninfo>();
+                queryWrapper.eq("id", procpersonId);
+                queryWrapper.eq("REPLYOPINION","是");
+
+                OmsRegProcpersoninfo omsRegProcpersoninfo = new OmsRegProcpersoninfo();
+
+
+                omsRegProcpersoninfo.setReplyopinion("否");
+
+                omsRegProcpersoninfoMapper.update(omsRegProcpersoninfo,queryWrapper);
+
+
+            }
+
+
+
+        }
+
+
 
 
     }

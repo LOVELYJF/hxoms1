@@ -72,4 +72,9 @@ public interface LeaderCommonService {
      * **/
     List<Map> selectOffictJiiweiOpinionRelevanceLeaderBatch();
 
+    /**
+     * 进入 处领导审批 逐条 审批 页面
+     * **/
+    Map goInChuZhangApplyPage(AuditOpinionVo auditOpinionVo);
+
 }
