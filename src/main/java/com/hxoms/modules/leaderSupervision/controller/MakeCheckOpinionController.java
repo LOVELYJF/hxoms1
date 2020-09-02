@@ -132,5 +132,18 @@ public class MakeCheckOpinionController {
 
     }
 
+    /**
+     *  保存 处长单条审批记录
+     * **/
+    @PostMapping("/saveChuZhangOneApproveRecord")
+    public Result  saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo){
+
+        leaderDetailProcessingService.saveChuZhangOneApproveRecord(auditOpinionVo);
+
+        return Result.success();
+
+
+    }
+
 
 }

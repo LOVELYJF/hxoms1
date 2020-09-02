@@ -27,6 +27,7 @@ import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
+import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
@@ -793,6 +794,14 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
 
 
+            if(updateApplyStatusSql.length()>0){
+
+                SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
+                selectMapper.update(instance);
+
+
+            }
+
 
         }
 
@@ -853,7 +862,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
                     String status = applyStatus.getApplySatus();
 
-                    // 同意到 批件核实流程
+                    // 同意到  上传批文流程
                     if("通过".equals(ispass)){
 
                         setSql+= status + "=" + Constants.leader_business[6];
@@ -924,6 +933,58 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
         }
+
+
+
+
+    }
+
+
+    /**
+     * 保存 单条处长审批记录
+     * **/
+    public void saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo){
+
+        LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBusId()
+                ,auditOpinionVo.getBusName()
+                ,auditOpinionVo.getIspass()
+                ,auditOpinionVo.getReason()
+                ,auditOpinionVo.getIncumbencyStatus()
+//                ,auditOpinionVo.getJwjl()
+        );
+
+        List<BussinessTypeAndIdVo> listPass  = new ArrayList<>();
+
+        BussinessTypeAndIdVo  bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+        bussinessTypeAndIdVo.setBussinessId(auditOpinionVo.getBusId());
+        bussinessTypeAndIdVo.setBussinessName(auditOpinionVo.getBusName());
+        bussinessTypeAndIdVo.setIncumbencyStatus(auditOpinionVo.getIncumbencyStatus());
+        bussinessTypeAndIdVo.setJwjl(auditOpinionVo.getJwjl());
+        listPass.add(bussinessTypeAndIdVo);
+        if("pass".equals(auditOpinionVo.getIspass())){
+
+         leaderCommonService.saveAbroadApprovalByBussinessId(listPass,"通过", Constants.leader_businessName[4], Constants.leader_business[4],auditOpinionVo.getReason());
+            // 修改 业务流程申请 最终结论
+            leaderCommonService.updateBussinessApplyRecordOpinion(listPass,"1",null);
+
+        }else if("noPass".equals(auditOpinionVo.getIspass())){
+
+         leaderCommonService.saveAbroadApprovalByBussinessId(listPass,"不通过", Constants.leader_businessName[4], Constants.leader_business[4],auditOpinionVo.getReason());
+            leaderCommonService.updateBussinessApplyRecordOpinion(listPass,"2",null);
+
+        }
+
+        //  修改 业务流程状态 (第二步) 修改 为  处领导审批
+        newUpdteBussinessApplyStatue(listPass, Constants.leader_businessName[4]);
+
+
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                listPass.stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+
+                Constants.leader_business[5]);
+
+        //更新 《登记备案人员信息表》中纪委不回复意见人员字段
+        updateProcpersoninfoByjiwei(listPass);
 
 
 
