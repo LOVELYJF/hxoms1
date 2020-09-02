@@ -109,6 +109,16 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 		return Result.success();
 	}
 
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * <b>功能描述: 完成注销(公安厅意见)
 	 *     分两个按钮，第一个通过后生成证照领取任务，
