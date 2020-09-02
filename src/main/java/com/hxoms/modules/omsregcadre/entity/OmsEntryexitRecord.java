@@ -5,89 +5,115 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_entryexit_record", TableDescription="出入境记录表")
 public class OmsEntryexitRecord {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "B0000",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "B0000",   FieldDescription="机构id")
+    @ApiModelProperty(value="机构id")
     private String b0000;
 
     @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国申请记录id")
+    @ApiModelProperty(value="因私出国申请记录id")
     private String priapplyId;
 
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="导入时间")
     private Date importTime;
 
     @ColumnAnnotation(FieldName = "IMPORT_PERSON",   FieldDescription="导入人")
+    @ApiModelProperty(value="导入人")
     private String importPerson;
 
     @ColumnAnnotation(FieldName = "OGA_MODE",   FieldDescription="出国（境）方式")
+    @ApiModelProperty(value="出国（境）方式")
     private String ogaMode;
 
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源")
+    @ApiModelProperty(value="数据来源")
     private String dataSource;
 
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息ID")
+    @ApiModelProperty(value="备案信息ID")
     private String omsId;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="人员主键")
+    @ApiModelProperty(value="人员主键")
     private String a0100;
 
     @ColumnAnnotation(FieldName = "OGE_STATUS",   FieldDescription="出入境状态 出1，入2")
+    @ApiModelProperty(value="出入境状态 出1，入2")
     private Integer ogeStatus;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
+    @ApiModelProperty(value="姓名")
     private String name;
 
     @ColumnAnnotation(FieldName = "SEX",   FieldDescription="性别")
+    @ApiModelProperty(value="性别")
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生年月")
+    @ApiModelProperty(value="出生年月")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "NATIONALITY",   FieldDescription="国籍")
+    @ApiModelProperty(value="国籍")
     private String nationality;
 
     @ColumnAnnotation(FieldName = "ID_TYPE",   FieldDescription="证件种类")
+    @ApiModelProperty(value="证件种类")
     private Integer idType;
 
     @ColumnAnnotation(FieldName = "ID_NUMBER",   FieldDescription="证件号码")
+    @ApiModelProperty(value="证件号码")
     private String idNumber;
 
     @ColumnAnnotation(FieldName = "DESTINATION",   FieldDescription="前往地")
+    @ApiModelProperty(value="前往地")
     private String destination;
 
     @ColumnAnnotation(FieldName = "ENTRACE_EXIT",   FieldDescription="出入口岸")
+    @ApiModelProperty(value="出入口岸")
     private String entraceExit;
 
     @ColumnAnnotation(FieldName = "OGE_DATE",   FieldDescription="出入境日期")
+    @ApiModelProperty(value="出入境日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeDate;
 
     @ColumnAnnotation(FieldName = "OGE_TIME",   FieldDescription="出入境时间")
+    @ApiModelProperty(value="出入境时间")
     private String ogeTime;
 
     @ColumnAnnotation(FieldName = "VALID_UNTIL",   FieldDescription="证件有效期至")
+    @ApiModelProperty(value="证件有效期至")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date validUntil;
 
     @ColumnAnnotation(FieldName = "VISITING_TASKS",   FieldDescription="出访任务出国（境）事项")
+    @ApiModelProperty(value="出访任务出国（境）事项")
     private String visitingTasks;
 
     @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    @ApiModelProperty(value="比对结果")
     private String comparisonResult;
 
     @ColumnAnnotation(FieldName = "COMPARISON_DATE",   FieldDescription="比对日期")
+    @ApiModelProperty(value="比对日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date comparisonDate;
