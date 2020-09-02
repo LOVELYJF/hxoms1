@@ -15,6 +15,7 @@ import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordCompbatch;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordCompbatchMapper;
@@ -584,7 +585,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     public PageInfo<OmsEntryexitRecord> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
-        List<OmsEntryexitRecord> exceptionRecordsList = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
+        List<OmsEntryexitRecordVO> exceptionRecordsList = baseMapper.getExceptionPriApply(entryexitRecordIPagParam);
         //返回数据
         PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(exceptionRecordsList);
         return pageInfo;

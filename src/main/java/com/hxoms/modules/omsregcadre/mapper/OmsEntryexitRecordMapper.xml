@@ -348,6 +348,24 @@
     order by OGE_DATE asc
   </select>
 
+
+  <select id="getExceptionPriApply" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO">
+    select record.*,apply.* from oms_pri_apply apply left join oms_entryexit_record record
+    on apply.PROCPERSON_ID = record.OMS_ID
+    where apply.IS_ABROAD = 1
+    and apply.ID = record.PRIAPPLY_ID
+    and length(record.PRIAPPLY_ID)>0
+    and record.PRIAPPLY_ID is not NULL
+    and apply.COMPARISON_RESULT !='正常'
+    and record.COMPARISON_RESULT!='正常'
+    <if test="comparisonResult!=null and comparisonResult!=''">
+      and COMPARISON_RESULT LIKE '%${comparisonResult}%'
+    </if>
+    order by OGE_DATE asc
+  </select>
+
+
+
   <select id="selectNoMatchList" parameterType="java.lang.String" resultMap="BaseResultMap">
       select * from oms_entryexit_record where 1=1
       and OMS_ID=#{omsId} and (COMPARISON_RESULT is null OR PRIAPPLY_ID is null)

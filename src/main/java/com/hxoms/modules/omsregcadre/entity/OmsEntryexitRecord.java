@@ -6,6 +6,8 @@ import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
 
+import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -118,6 +120,7 @@ public class OmsEntryexitRecord {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date comparisonDate;
 
+    private OmsPriApply priApply;
 
     public String getId() {
         return id;
