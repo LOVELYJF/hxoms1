@@ -1213,50 +1213,63 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
                     + " '因公' as businessType "
                     + " mrp.INCUMBENCY_STATUS as incumbencyStatus "
-                    + " SFSMRY as sfsmry "+
-
+                    + " SFSMRY as sfsmry "
+                      // 核心涉密人员
+                    +" (case when mrp.SECRET_LEVEL=3 then 1 else 2 end) as coreClassified,"
+                    // 重点监管对象
+                    + " (case when mrp.IDENTITY_CODE = 5 then 1 else 2 end) as keyRegulatory ,"
                     // 纪委意见 是否反复
-                    "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"')"
+                    +"\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain,"
                     // 未征求纪委意见
-                    +"\t SFZQJWYJ as sfzqjwyj"
+                    +"\t SFZQJWYJ as sfzqjwyj,"
                     // 是否重要领导
-                    +  " \t IS_LEADERS as isLeaders"
+                    +  " \t IS_LEADERS as isLeaders,"
                     // 纪委结论
-                    +" JWJL as jwjl "
+                    +" JWJL as jwjl, "
                     // 材料审核结论
                     + " CLSHSFTG as clshsftg "
                     + " from oms_pub_apply  pua " +
-                      " left join  oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100 " +
-                      "where id = '"+bussinessId+"'";
+                      " left join  oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id " +
+                      "where pua.id = '"+bussinessId+"'";
 
 
         }else if("oms_pri_apply".equals(bussinessType)){
 
              selectSql = "select  " +
-                      " '因私' as businessType "
-                     + "  mrp.INCUMBENCY_STATUS as incumbencyStatus "
+                      " '因私' as businessType, "
+                     + "  mrp.INCUMBENCY_STATUS as incumbencyStatus, "
+                     // 核心涉密人员
+                     +" (case when mrp.SECRET_LEVEL=3 then 1 else 2 end) as coreClassified,"
+                     // 重点监管对象
+                     + " (case when mrp.IDENTITY_CODE = 5 then 1 else 2 end) as keyRegulatory ,"
                      // 纪委意见 是否反复
-                     + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"')"
+                     + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2)  from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain, "
                     // 未征求纪委意见
-                    +"\t pra.SFZQJWYJ as sfzqjwyj"
+                    +"\t pra.SFZQJWYJ as sfzqjwyj, "
                     // 是否重要领导
-                    +  " \t pra.IS_LEADERS as isLeaders"
+                    +  " \t pra.IS_LEADERS as isLeaders,"
                     // 纪委结论
-                    +" pra.JWJL as jwjl "
+                    +" pra.JWJL as jwjl, "
                     // 材料审核结论
                     + " pra.CLSHSFTG as clshsftg "
                     + " from oms_pri_apply pra" +
-                      "  left join  oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100   " +
-                     "where id =  '" + bussinessId+"'";
+                      "  left join  oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id   " +
+                     "where pra.id =  '" + bussinessId+"'";
                     ;
 
 
         }else if("oms_pri_delay_apply".equals(bussinessType)){
 
              selectSql = " select  " +
-                     " '延期' as businessType "
-                     + "  mrp.INCUMBENCY_STATUS as incumbencyStatus "
-                     + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"')"
+                     " '延期' as businessType, "
+                     + "  mrp.INCUMBENCY_STATUS as incumbencyStatus, "
+
+                     // 核心涉密人员
+                     +" (case when mrp.SECRET_LEVEL=3 then 1 else 2 end) as coreClassified,"
+                     // 重点监管对象
+                     + " (case when mrp.IDENTITY_CODE = 5 then 1 else 2 end) as keyRegulatory ,"
+
+                     + "\t ( select if(CONCAT(feedback_verdict,official_feedback_verdict) in (12,21) ,1,2) as opinionsRepeatedly from oms_jiwei_opinion jiw  where jiw.id = '"+bussinessId+"') as overAgain,"
                     // 未征求纪委意见
                     +"\t pda.SFZQJWYJ as sfzqjwyj"
                     // 是否重要领导
@@ -1266,7 +1279,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                     // 材料审核结论
                     + " pda.CLSHSFTG as clshsftg " +
                     "   from  oms_pri_delay_apply pda left join oms_pri_apply pra on pda.APPLY_ID = pra.id "
-                    +  "  left join  oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100 "
+                    +  "  left join  oms_reg_procpersoninfo mrp ON pda.PROCPERSON_ID = mrp.a0100 "
                     + "  where pda.id = '" + bussinessId+"'" ;
         }
 

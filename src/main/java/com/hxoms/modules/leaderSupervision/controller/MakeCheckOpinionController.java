@@ -116,5 +116,21 @@ public class MakeCheckOpinionController {
         return Result.success();
     }
 
+    /**
+     * 进入处领导 单条审批页面
+     * **/
+    @GetMapping("/goInChuZhangApplyPage")
+    public Result goInChuZhangApplyPage(AuditOpinionVo auditOpinionVo){
+
+
+       Map map = leaderCommonService.goInChuZhangApplyPage(auditOpinionVo);
+
+
+       return Result.success(map);
+
+
+
+    }
+
 
 }

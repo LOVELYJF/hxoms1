@@ -235,7 +235,7 @@ public class Constants {
      * */
 
 
-    public static int[] leader_business={20,21,22,23,24,25,26,27,28};
+    public static int[] leader_business={20,21,22,23,24,25,26,27,28,29};
 
 
     /**
@@ -243,7 +243,7 @@ public class Constants {
      * */
 
     public static String[] leader_businessName={"业务办理","征求意见","记录意见","做出" +
-            "审核意见","处领导审批","部领导审批","核实批件","制作备案表","已办结"};
+            "审核意见","处领导审批","部领导审批","上传批文","核实批件","制作备案表","已办结"};
 
     /**
      *  干部监督处 批次 (主)状态

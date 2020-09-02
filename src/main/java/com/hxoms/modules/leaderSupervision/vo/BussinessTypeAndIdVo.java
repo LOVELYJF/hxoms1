@@ -15,6 +15,10 @@ public class BussinessTypeAndIdVo {
 
     private  String cadresupervisionOpinion;/** 干部监督处建议 **/
 
+    private  String jwjl; /** 纪委建议 **/
+
+    private  String procpersonId; /** 登记备案人员id **/
+
 
     public String getBussinessId() {
         return bussinessId;
@@ -46,5 +50,21 @@ public class BussinessTypeAndIdVo {
 
     public void setCadresupervisionOpinion(String cadresupervisionOpinion) {
         this.cadresupervisionOpinion = cadresupervisionOpinion;
+    }
+
+    public String getJwjl() {
+        return jwjl;
+    }
+
+    public void setJwjl(String jwjl) {
+        this.jwjl = jwjl;
+    }
+
+    public String getProcpersonId() {
+        return procpersonId;
+    }
+
+    public void setProcpersonId(String procpersonId) {
+        this.procpersonId = procpersonId;
     }
 }

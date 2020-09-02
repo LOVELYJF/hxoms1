@@ -31,9 +31,9 @@ public class AuditOpinionVo {
     public static final String  pass = "1"; /** 通过 **/
     public static final String  nopass = "2"; /**不通过 **/
 
-    public static String[]  bussinessTypeStatus ={"1","2","3"};
-
-    public static String[]  getBussinessTypeStatusName={"因公出国(境)","因私出国(境)","因私出国（境）延期入境"};
+//    public static String[]  bussinessTypeStatus ={"1","2","3"};
+//
+//    public static String[]  getBussinessTypeStatusName={"因公出国(境)","因私出国(境)","因私出国（境）延期入境"};
 
     private String bussinessType;
 
@@ -42,9 +42,6 @@ public class AuditOpinionVo {
     private String reason; /**  部长 审批理由 **/
 
 
-    public AuditOpinionVo(String bussinessType) {
-        this.bussinessType = bussinessType;
-    }
 
     public AuditOpinionVo() {
     }
