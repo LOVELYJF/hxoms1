@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateRecordsMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords">
+
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CANCELLATE_ID" jdbcType="VARCHAR" property="cancellateId" />
+    <result column="ZHZXZT" jdbcType="VARCHAR" property="zhzxzt" />
+    <result column="SPERATOR" jdbcType="VARCHAR" property="sperator" />
+    <result column="SPERATOR_TIME" jdbcType="TIMESTAMP" property="speratorTime" />
+    <result column="RESULT" jdbcType="VARCHAR" property="result" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+
+    ID, CANCELLATE_ID, ZHZXZT, SPERATOR, SPERATOR_TIME, RESULT, REMARKS, CREATE_USER, 
+    CREATE_TIME
+  </sql>
+
+</mapper>
