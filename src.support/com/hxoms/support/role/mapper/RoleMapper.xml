@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.support.role.mapper.RoleMapper">
     <resultMap id="BaseResultMap" type="com.hxoms.support.role.entity.Role">
-        <id column="role_id" jdbcType="VARCHAR" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
         <result column="role_type" jdbcType="VARCHAR" property="roleType"/>
@@ -14,21 +14,21 @@
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    role_id, role_code, role_name, role_type, role_desc, role_state, order_index, org_id,
+    id, role_code, role_name, role_type, role_desc, role_state, order_index, org_id,
     modify_user, modify_time
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from cf_role
-        where role_id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from cf_role
-    where role_id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
   </delete>
     <insert id="insert" parameterType="com.hxoms.support.role.entity.Role">
-    insert into cf_role (role_id, role_code, role_name,
+    insert into cf_role (id, role_code, role_name,
       role_type, role_desc, role_state,
       order_index, org_id, modify_user,
       modify_time)
@@ -41,7 +41,7 @@
         insert into cf_role
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                role_id,
+                id,
             </if>
             <if test="roleCode != null">
                 role_code,
@@ -135,7 +135,7 @@
                 modify_time = #{modifyTime,jdbcType=TIMESTAMP},
             </if>
         </set>
-        where role_id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.hxoms.support.role.entity.Role">
     update cf_role
@@ -148,7 +148,7 @@
       org_id = #{orgId,jdbcType=VARCHAR},
       modify_user = #{modifyUser,jdbcType=VARCHAR},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
-    where role_id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 
     <!--业务...-->
@@ -192,7 +192,7 @@
     <select id="selectUserGroupAssignRoles" resultMap="BaseResultMap">
         select r.* from cf_usergroup_roles ugr
         inner join cf_role r
-        on ugr.role_id=r.role_id
+        on ugr.role_id=r.id
         where ugr.ug_id=#{id}
     </select>
     <select id="selectUserAssignRoles" resultMap="BaseResultMap">
@@ -200,14 +200,14 @@
         inner join cf_user_roles ur
         on u.user_id=ur.user_id
         inner join cf_role r
-        on ur.role_id=r.role_id
+        on ur.role_id=r.id
         where u.user_id=#{id}
         union
         select r.*,'true' as "extend" from cf_usergroup_user ugu
         inner join cf_usergroup_roles ugr
         on ugu.ug_id=ugr.ug_id
         inner join cf_role r
-        on ugr.role_id=r.role_id
+        on ugr.role_id=r.id
         where ugu.user_id=#{id}
     </select>
 

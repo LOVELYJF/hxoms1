@@ -221,12 +221,12 @@ public class Constants {
      * 因私 业务 (签字盖章弃用)
      *
      */
-    public  static int[] private_business ={1,2,3,4,5,29,30,31};
+    public  static int[] private_business ={1,2,3,4,5,29,30,31,0};
     /**
      * 因私 业务 状态名称
      *
      */
-    public  static String[] private_businessName ={"草稿","生成材料","打印材料清单","签字盖章","自评","待领证","已领证","撤销"};
+    public  static String[] private_businessName ={"草稿","生成材料","打印材料清单","签字盖章","自评","待领证","已领证","撤销","预备案填写中"};
 
     /**
      *  干部监督处业务
@@ -334,4 +334,12 @@ public class Constants {
      * 因公团组流程状态名称
      */
     public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文"};
+    /**
+     * 是
+     */
+    public static final String IS_YES = "1";
+    /**
+     * 否
+     */
+    public static final String IS_NOT = "0";
 }

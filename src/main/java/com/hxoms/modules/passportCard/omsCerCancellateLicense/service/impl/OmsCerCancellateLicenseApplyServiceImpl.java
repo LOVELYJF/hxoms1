@@ -10,9 +10,14 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateApplyMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateRecordsMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseApplyService;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
@@ -45,6 +50,10 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	private SysDictItemMapper sysDictItemMapper;
 	@Autowired
 	private B01Mapper b01Mapper;
+	@Autowired
+	private OmsCerCancellateRecordsMapper omsCerCancellateRecordsMapper;
+	@Autowired
+	private OmsCerCancellateApplyMapper omsCerCancellateApplyMapper;
 	/**
 	 * <b>功能描述: 填写注销申请（查询）</b>
 	 * @Param: [cfCertificate]
@@ -82,7 +91,49 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 11:50
 	 */
-	public void saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list) {
+	public Map<String,Object> saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate");
+
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择注销的证照信息");
+		}
+
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerCancellateLicense omsCerCancellateLicense : list){
+			if(!omsCerCancellateLicense.getOmsId().equals(omsId)){
+				throw new CustomMessageException("选中的多个人员不是同一个人");
+			}
+		}
+		map.put("procpersonId", list.get(0).getOmsId());
+
+		//将集合中的多个证照注销信息合并
+		StringBuffer cerInfo = new StringBuffer();
+		if(list != null && list.size() > 0){
+			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
+				cerInfo.append(Constants.CER_TYPE_NAME[omsCerCancellateLicense.getZjlx()] + ":" + omsCerCancellateLicense.getZjhm() + "、");
+			}
+		}
+		//去掉结尾的“、”号
+		String applyCerInfo = cerInfo.toString().substring(0, cerInfo.toString().length() - 1);
+
+		//加入到注销证照申请表中
+		OmsCerCancellateApply omsCerCancellateApply = new OmsCerCancellateApply();
+		omsCerCancellateApply.setId(UUIDGenerator.getPrimaryKey());
+		omsCerCancellateApply.setOmsId(list.get(0).getOmsId());
+		omsCerCancellateApply.setApplyCerInfo(applyCerInfo);
+		omsCerCancellateApply.setAppendPlace(list.get(0).getAppendPlace().equals("1") ? "国内" : "国外");
+		omsCerCancellateApply.setZxyy(Constants.CANCELL_REASON_NAME[Integer.parseInt(list.get(0).getZxyy())]);
+		omsCerCancellateApply.setCreateTime(new Date());
+		omsCerCancellateApply.setCrreateUser(UserInfoUtil.getUserInfo().getId());
+		int count = omsCerCancellateApplyMapper.insert(omsCerCancellateApply);
+		if(count < 1){
+			throw new CustomMessageException("保存到注销证照申请表失败");
+		}
+		map.put("applyId", omsCerCancellateApply.getId());
+
+		//将注销申请信息保存，修改状态
 		if(list != null && list.size() > 0){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
 				omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[1]));        //证照申请注销状态（生成材料）
@@ -90,14 +141,30 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 				omsCerCancellateLicense.setId(UUIDGenerator.getPrimaryKey());
 				omsCerCancellateLicense.setCreateTime(new Date());
 				omsCerCancellateLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
-				int count = omsCerCancellateLicenseMapper.insert(omsCerCancellateLicense);
-				if(count < 1){
+				int count1 = omsCerCancellateLicenseMapper.insert(omsCerCancellateLicense);
+				if(count1 < 1){
 					throw new CustomMessageException("将信息保存到注销证照申请表中失败");
+				}else {
+					//将注销证照信息过程插入到证照注销记录表
+					OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+					omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[1]));
+					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setSperatorTime(new Date());
+					omsCerCancellateRecords.setCreateTime(new Date());
+					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+					int count2 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+					if(count2 < 1){
+						throw new CustomMessageException("将记录插入到注销记录表失败");
+					}
 				}
 			}
 		}else {
 			throw new CustomMessageException("请选择相关的人员证照信息再进行下一步");
 		}
+
+		return map;
 	}
 
 
@@ -165,6 +232,20 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 					int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 					if(count < 1){
 						throw new CustomMessageException("撤销失败");
+					}
+				}else {
+					//将注销证照信息过程插入到证照注销记录表
+					OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+					omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[9]));     //撤销
+					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setSperatorTime(new Date());
+					omsCerCancellateRecords.setCreateTime(new Date());
+					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+					int count1 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+					if(count1 < 1){
+						throw new CustomMessageException("将记录插入到注销记录表失败");
 					}
 				}
 			}

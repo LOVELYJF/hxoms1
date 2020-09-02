@@ -66,11 +66,26 @@ public class OmsPubGroupController {
      * 修改团体预备案申请信息
      * @param pubGroupAndApplyList(集合实体类)
      */
-    @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
+    @PostMapping("/updateTimeTask")
+    public Result updateTimeTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
                                  String bgyy) {
         try {
-            pubGroupService.updatePubGroup(pubGroupAndApplyList,bgyy);
+            pubGroupService.updateTimeTask(pubGroupAndApplyList,bgyy);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    /**
+     * 修改团体预备案申请信息
+     * @param pubGroupAndApplyList(集合实体类)
+     */
+    @PostMapping("/updatePubGroup")
+    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        try {
+            pubGroupService.updatePubGroup(pubGroupAndApplyList);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +113,8 @@ public class OmsPubGroupController {
      * @param file
      */
     @PostMapping("/uploadPubGroupJson")
-    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file) {
+    public Result uploadPubGroupJson(@RequestParam("file") MultipartFile file,
+                                     String orgName,String orgId,String bazt) {
         try{
             if(file == null){
                 return Result.error("未获取到上传文件，请检查！");
@@ -110,7 +126,7 @@ public class OmsPubGroupController {
             if(!"json".equals(extensionName)){
                 return Result.error("请上传json格式文件");
             }else{
-                return Result.success(pubGroupService.uploadPubGroupJson(file));
+                return Result.success(pubGroupService.uploadPubGroupJson(file,orgName,orgId,bazt));
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -219,12 +235,12 @@ public class OmsPubGroupController {
 
     /**
      * 递送任务
-     * @param id(团队id)
+     * @param pubGroupAndApplyList(团队及人员信息)
      */
     @PostMapping("/sendTask")
-    public Result sendTask(String id) {
+    public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt) {
         try {
-            pubGroupService.sendTask(id);
+            pubGroupService.sendTask(pubGroupAndApplyList,bazt);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -233,13 +249,23 @@ public class OmsPubGroupController {
     }
 
     /**
-     * 获取审核意见
-     * @param id（团组id）
+     * 审核备案下一步
+     * @param id(团队id)
      */
-    @GetMapping("/getAuditOpinion")
-    public Result getAuditOpinion(String id) {
-        return Result.success(pubGroupService.getAuditOpinion(id));
+    @PostMapping("/goToUploadApproval")
+    public Result goToUploadApproval(String id) {
+        try {
+            String msg = pubGroupService.goToUploadApproval(id);
+            if(msg.length() > 0){
+                return Result.error(msg);
+            }
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("操作失败");
+        }
     }
+
 
     /** 上传批文
      * @param file

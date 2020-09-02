@@ -34,7 +34,7 @@ public interface OmsCerCancellateLicenseApplyService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 11:50
 	 */
-	void saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list);
+	Map<String,Object> saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list);
 
 
 	/**

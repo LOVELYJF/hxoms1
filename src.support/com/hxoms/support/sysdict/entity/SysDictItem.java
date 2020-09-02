@@ -1,8 +1,10 @@
 package com.hxoms.support.sysdict.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -109,6 +111,8 @@ public class SysDictItem {
     /**
      * MODIFY_TIME
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ColumnAnnotation(FieldName = "modify_time",  FieldDescription="MODIFY_TIME")
     private Date modifyTime;
 
