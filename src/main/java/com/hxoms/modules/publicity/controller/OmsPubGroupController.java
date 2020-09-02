@@ -255,7 +255,10 @@ public class OmsPubGroupController {
     public Result goToUploadApproval(String id) {
         try {
             String msg = pubGroupService.goToUploadApproval(id);
-            return Result.success(msg);
+            if(msg.length() > 0){
+                return Result.error(msg);
+            }
+            return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");
