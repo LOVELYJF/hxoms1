@@ -66,11 +66,26 @@ public class OmsPubGroupController {
      * 修改团体预备案申请信息
      * @param pubGroupAndApplyList(集合实体类)
      */
-    @PostMapping("/updatePubGroup")
-    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
+    @PostMapping("/updateTimeTask")
+    public Result updateTimeTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
                                  String bgyy) {
         try {
-            pubGroupService.updatePubGroup(pubGroupAndApplyList,bgyy);
+            pubGroupService.updateTimeTask(pubGroupAndApplyList,bgyy);
+            return Result.success();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    /**
+     * 修改团体预备案申请信息
+     * @param pubGroupAndApplyList(集合实体类)
+     */
+    @PostMapping("/updatePubGroup")
+    public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        try {
+            pubGroupService.updatePubGroup(pubGroupAndApplyList);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -219,12 +234,12 @@ public class OmsPubGroupController {
 
     /**
      * 递送任务
-     * @param id(团队id)
+     * @param pubGroupAndApplyList(团队及人员信息)
      */
     @PostMapping("/sendTask")
-    public Result sendTask(String id) {
+    public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            pubGroupService.sendTask(id);
+            pubGroupService.sendTask(pubGroupAndApplyList);
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();
@@ -233,13 +248,20 @@ public class OmsPubGroupController {
     }
 
     /**
-     * 获取审核意见
-     * @param id（团组id）
+     * 审核备案下一步
+     * @param id(团队id)
      */
-    @GetMapping("/getAuditOpinion")
-    public Result getAuditOpinion(String id) {
-        return Result.success(pubGroupService.getAuditOpinion(id));
+    @PostMapping("/goToUploadApproval")
+    public Result goToUploadApproval(String id) {
+        try {
+            String msg = pubGroupService.goToUploadApproval(id);
+            return Result.success(msg);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("操作失败");
+        }
     }
+
 
     /** 上传批文
      * @param file

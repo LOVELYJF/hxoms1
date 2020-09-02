@@ -23,8 +23,10 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String, String> param) throws ParseException;
     //添加团体预备案申请信息
     String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception;
+    //获取备案步骤任务数
+    void updateTimeTask(OmsPubGroupAndApplyList pubGroupAndApplyList, String bgyy);
     //修改团体预备案申请信息
-    void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList,String bgyy);
+    void updatePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList);
     //删除团体预备案申请信息
     void deletePubGroup(String id);
     //上传团体预备案申请信息
@@ -34,7 +36,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //添加人员
     void insertPerson(String personId,String pubId) throws Exception;
     //撤销人员
-    void backoutPerson(String id,String cxyy);
+    String backoutPerson(String id,String cxyy);
     //撤销团组
     void backoutGroup(String id,String cxyy);
     //恢复团组
@@ -45,10 +47,10 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     OmsPubApply getPersonDetailById(String id);
     //获取撤销记录信息
     Map<String,Object> getBackoutDetailById(String id);
-    //获取审核意见
-    List<OmsPubApplyVO> getAuditOpinion(String id);
     //递送任务
-    void sendTask(String id);
+    void sendTask(OmsPubGroupAndApplyList pubGroupAndApplyList);
+    //审核备案下一步
+    String goToUploadApproval(String id);
     //上传批文
     String uploadApproval(MultipartFile file, String id);
     //更新批文号
