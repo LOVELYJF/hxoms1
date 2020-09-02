@@ -1211,9 +1211,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                              // 是否涉密人员
               selectSql = "select  "
 
-                    + " '因公' as businessType "
-                    + " mrp.INCUMBENCY_STATUS as incumbencyStatus "
-                    + " SFSMRY as sfsmry "
+                    + " '因公' as businessType, "
+                    + " mrp.INCUMBENCY_STATUS as incumbencyStatus, "
+                    + " SFSMRY as sfsmry, "
                       // 核心涉密人员
                     +" (case when mrp.SECRET_LEVEL=3 then 1 else 2 end) as coreClassified,"
                     // 重点监管对象
@@ -1223,7 +1223,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                     // 未征求纪委意见
                     +"\t SFZQJWYJ as sfzqjwyj,"
                     // 是否重要领导
-                    +  " \t IS_LEADERS as isLeaders,"
+                    +  " \t SFLG as isLeaders,"
                     // 纪委结论
                     +" JWJL as jwjl, "
                     // 材料审核结论
