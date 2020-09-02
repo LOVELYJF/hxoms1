@@ -58,7 +58,7 @@
       user_email, user_mobile, user_password,
       order_index, org_id, modify_user,
       modify_time)
-    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+    values (#{id,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
       #{userType,jdbcType=VARCHAR}, #{userState,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR},
       #{userEmail,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
       #{orderIndex,jdbcType=INTEGER}, #{orgId,jdbcType=VARCHAR}, #{modifyUser,jdbcType=VARCHAR},
@@ -70,7 +70,7 @@
             <if test="id != null">
                 user_id,
             </if>
-            <if test="name != null">
+            <if test="userCode != null">
                 user_code,
             </if>
             <if test="userName != null">
@@ -111,11 +111,11 @@
             <if test="id != null">
                 #{id,jdbcType=VARCHAR},
             </if>
-            <if test="name != null">
-                #{userName,jdbcType=VARCHAR},
+            <if test="userCode != null">
+                #{userCode,jdbcType=VARCHAR},
             </if>
             <if test="userName != null">
-                #{name,jdbcType=VARCHAR},
+                #{userName,jdbcType=VARCHAR},
             </if>
             <if test="userType != null">
                 #{userType,jdbcType=VARCHAR},
@@ -152,11 +152,11 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.support.user.entity.User">
         update cf_user
         <set>
-            <if test="name != null">
-                user_code = #{userName,jdbcType=VARCHAR},
+            <if test="userCode != null">
+                user_code = #{userCode,jdbcType=VARCHAR},
             </if>
             <if test="userName != null">
-                user_name = #{name,jdbcType=VARCHAR},
+                user_name = #{userName,jdbcType=VARCHAR},
             </if>
             <if test="userType != null">
                 user_type = #{userType,jdbcType=VARCHAR},
@@ -193,8 +193,8 @@
     </update>
     <update id="updateByPrimaryKey" parameterType="com.hxoms.support.user.entity.User">
     update cf_user
-    set user_code = #{userName,jdbcType=VARCHAR},
-      user_name = #{name,jdbcType=VARCHAR},
+    set user_code = #{userCode,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
       user_type = #{userType,jdbcType=VARCHAR},
       user_state = #{userState,jdbcType=VARCHAR},
       user_photo = #{userPhoto,jdbcType=VARCHAR},
@@ -221,7 +221,7 @@
             <if test="userCode!=null">
                 USER_CODE = #{userCode},
             </if>
-            <if test="name!=null">
+            <if test="userName!=null">
                 USER_NAME = #{userName},
             </if>
             <if test="userType!=null">

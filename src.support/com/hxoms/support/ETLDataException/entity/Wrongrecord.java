@@ -1,9 +1,12 @@
 package com.hxoms.support.ETLDataException.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.IgnoreLogAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -51,6 +54,8 @@ public class Wrongrecord {
     /**
      * 触发时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ColumnAnnotation(FieldName = "OccurDate",  FieldDescription="触发时间")
     private Date occurdate;
 
@@ -75,6 +80,8 @@ public class Wrongrecord {
     /**
      * 处理日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ColumnAnnotation(FieldName = "DealDate",  FieldDescription="处理日期")
     private Date dealdate;
 

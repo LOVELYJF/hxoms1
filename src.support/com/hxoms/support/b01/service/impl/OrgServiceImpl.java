@@ -81,6 +81,7 @@ public class OrgServiceImpl implements OrgService {
     public void insertOrg(B01 b01) {
         CheckInput(b01);
         b01.setB0111(b01Mapper.getNextOrgCode(b01.getB0121()));
+        b01.setB0100(GuidUtility.createNewGuid().toString());
         b01Mapper.insertOrg(b01);
     }
 
