@@ -621,7 +621,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				row.createCell(16).setCellValue(((String) list.get(i).get("surelyWay")).equals("0") ? "证照机" : "柜台");
 				row.createCell(17).setCellValue((String) list.get(i).get("cabinetNum"));
 				row.createCell(18).setCellValue((String) list.get(i).get("place"));
-				row.createCell(19).setCellValue((String) list.get(i).get("counterNum"));
+				row.createCell(19).setCellValue(String.valueOf(list.get(i).get("counterNum")));
 				row.createCell(20).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(21).setCellValue((String) list.get(i).get("qfjg"));
 				row.createCell(22).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("qfrq")));
