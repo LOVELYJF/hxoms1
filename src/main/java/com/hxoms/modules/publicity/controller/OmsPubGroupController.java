@@ -216,6 +216,15 @@ public class OmsPubGroupController {
     }
 
     /**
+     * 查看团组审批详情
+     * @param id
+     */
+    @GetMapping("/getAuditOpinion")
+    public Result getAuditOpinion(String id) {
+        return Result.success(pubGroupService.getAuditOpinion(id));
+    }
+
+    /**
      * 查看人员详情
      * @param id
      */

@@ -158,9 +158,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public Object insertRpinfo(OmsRegProcpersoninfo orpInfo) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         orpInfo.setId(UUIDGenerator.getPrimaryKey());
-        orpInfo.setCreateTime(new Date());
         return baseMapper.insert(orpInfo);
     }
 
@@ -255,21 +253,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             con = baseMapper.updateRegProcpersoninfo(info);
         }
         return con;
-    }
-
-
-
-
-    /**
-     * 查询当前存在的公安数据记录
-     * @param dataType
-     * @return
-     */
-    @Override
-    public int selectCountGongAn(String dataType) {
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        queryWrapper.eq("DATA_TYPE",dataType);
-        return baseMapper.selectCount(queryWrapper);
     }
 
 
@@ -725,6 +708,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setIdentity("省管干部");
         //人事主管单位
         orpInfo.setPersonManager("海南省委组织部");
+        //任职时间
+        orpInfo.setRzDate(a01.getRxzDate());
         orpInfo.setCreateTime(new Date());
         orpInfo.setCreateUser(loginUser.getId());
         return orpInfo;

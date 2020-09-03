@@ -61,6 +61,8 @@
         <result column="SFXD" jdbcType="INTEGER" property="sfxd" />
         <result column="LEADER_BATCH_ID" jdbcType="VARCHAR" property="leaderBatchId" />
         <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
+        <result column="ABROAD_PHONE" jdbcType="VARCHAR" property="abroadPhone" />
+        <result column="BZ" jdbcType="VARCHAR" property="bz" />
     </resultMap>
     <sql id="Base_Column_List">
     ID, PROCPERSON_ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH,
@@ -68,7 +70,7 @@
     SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
     SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
     DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
-    MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON
+    MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
   </sql>
     <update id="repealAllPubApplyByPwh">
         update oms_pub_apply p
@@ -91,6 +93,7 @@
             <if test="sqzt != null and sqzt !=''">
                 p.SQZT = #{sqzt}
             </if>
+            p.SFBG = "1"
         </set>
         where p.ID = #{id}
     </update>
@@ -271,6 +274,12 @@
             <if test="isComparison != null">
                 IS_COMPARISON = #{isComparison,jdbcType=CHAR},
             </if>
+            <if test="abroadPhone != null">
+                ABROAD_PHONE = #{abroadPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="bz != null">
+                BZ = #{bz,jdbcType=VARCHAR},
+            </if>
         </set>
         where PWH = #{pwh,jdbcType=VARCHAR}
     </update>
@@ -306,18 +315,20 @@
     <select id="selectBasePersonInfo" resultType="java.util.Map">
         select distinct concat(p.SURNAME,p.NAME) as NAME
         ,p.id as procpersonId
-        ,p.SEX
-        ,p.BIRTH_DATE_GB
+        ,p.SEX as SEX
+        ,p.BIRTH_DATE_GB as BIRTH_DATE_GB
         ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE_GB,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
-        ,p.POLITICAL_AFFINAME
-        ,p.HEALTH
-        ,p.A0100
-        ,p.SECRET_LEVEL
-        ,p.NF
-        ,i.JOB
-        ,i.B0100
-        ,i.B0101
+        ,p.POLITICAL_AFFINAME as POLITICAL_AFFINAME
+        ,p.HEALTH as HEALTH
+        ,p.A0100 as A0100
+        ,p.SECRET_LEVEL as SECRET_LEVEL
+        ,p.NF as NF
+        ,i.JOB as JOB
+        ,i.B0100 as B0100
+        ,i.B0101 as B0101
+        ,op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE
          from oms_reg_procpersoninfo p inner join oms_personinfo i on p.a0100=i.a0100
+         left join oms_smr_personinfo op on p.id = op.PROC_PERSON_ID
          where i.b0100=#{b0100} and i.a0100=#{a0100}
     </select>
     <select id="selectPubAbroadLatestInfo" resultType="com.hxoms.modules.publicity.entity.OmsPubApply">
@@ -522,7 +533,7 @@
         SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
         SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
         DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
-        MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON
+        MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
         )
         values
         <foreach collection="list" item="item" index= "index" separator =",">
@@ -585,7 +596,9 @@
             #{item.bah},
             #{item.sfxd},
             #{item.leaderBatchId},
-            #{item.isComparison}
+            #{item.isComparison},
+            #{item.abroadPhone},
+            #{item.bz}
             )
         </foreach>
     </insert>
@@ -596,7 +609,7 @@
                 <set>
                 (
                 <if test="procpersonId != null">
-                    PROCPERSON_ID = #{procpersonId,jdbcType=VARCHAR},
+                    PROCPERSON_ID = #{item.procpersonId,jdbcType=VARCHAR},
                 </if>
                 <if test="a0100 != null">
                     A0100 = #{item.a0100,jdbcType=VARCHAR},
@@ -764,10 +777,16 @@
                     SFXD = #{item.sfxd,jdbcType=INTEGER},
                 </if>
                 <if test="leaderBatchId != null">
-                    LEADER_BATCH_ID = #{leaderBatchId,jdbcType=VARCHAR},
+                    LEADER_BATCH_ID = #{item.leaderBatchId,jdbcType=VARCHAR},
                 </if>
                 <if test="isComparison != null">
-                    IS_COMPARISON = #{isComparison,jdbcType=CHAR},
+                    IS_COMPARISON = #{item.isComparison,jdbcType=CHAR},
+                </if>
+                <if test="abroadPhone != null">
+                    ABROAD_PHONE = #{item.abroadPhone}
+                </if>
+                <if test="bz != null">
+                    BZ = #{item.bz}
                 </if>
                 )
                 </set>

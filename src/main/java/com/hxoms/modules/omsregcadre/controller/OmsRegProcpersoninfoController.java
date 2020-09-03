@@ -98,19 +98,17 @@ public class OmsRegProcpersoninfoController {
     public Result uploadOmsRegGongAn(MultipartFile file) {
         // 读取Excel表格
         try{
-            //查询是否存在公安数据
-            String dataType="2";
-            int count = mrpinfoService.selectCountGongAn(dataType);
-            if (count < 1){
-                List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA(file);
-                /*//获取缓存
-                Cache<String,Object> cache = GuavaCache.getCache();
-                cache.put("uploadOmsRegGongAnlist", uploadOmsRegGongAnlist);*/
+            List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA(file);
+            if (uploadOmsRegGongAnlist!=null && uploadOmsRegGongAnlist.size()>0){
                 int con = mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
                 return Result.success("上传成功");
             }else{
-                return Result.error("存在待处理的公安数据，请勿多次上传");
+                return Result.error("上传文件为空，请检查后再上传");
             }
+            /*//获取缓存
+            Cache<String,Object> cache = GuavaCache.getCache();
+            cache.put("uploadOmsRegGongAnlist", uploadOmsRegGongAnlist);*/
+
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");

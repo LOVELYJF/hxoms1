@@ -15,8 +15,11 @@ import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateRecordsMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseAcceptanceService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -54,6 +57,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	private OmsCerGetTaskMapper omsCerGetTaskMapper;
 	@Autowired
 	private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
+	@Autowired
+	private OmsCerCancellateRecordsMapper omsCerCancellateRecordsMapper;
 	/**
 	 * <b>功能描述: 注销证照受理查询(按单位主键，姓名，证件号码，证件类型,申请时间，申请状态查询)
 	 * 和处领导审批处的查询为同一接口</b>
@@ -100,6 +105,20 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				int count = omsCerCancellateLicenseMapper.insert(omsCerCancellateLicense);
 				if(count < 1){
 					throw new CustomMessageException("强制注销插入数据失败");
+				}else {
+					//将注销证照信息过程插入到证照注销记录表
+					OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+					omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));
+					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setSperatorTime(new Date());
+					omsCerCancellateRecords.setCreateTime(new Date());
+					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+					int count1 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+					if(count1 < 1){
+						throw new CustomMessageException("将记录插入到注销记录表失败");
+					}
 				}
 			}
 		}
@@ -123,6 +142,20 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 		int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 		if(count < 1){
 			throw new CustomMessageException("修改失败");
+		}else {
+			//将注销证照信息过程插入到证照注销记录表
+			OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+			omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+			omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+			omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));
+			omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+			omsCerCancellateRecords.setSperatorTime(new Date());
+			omsCerCancellateRecords.setCreateTime(new Date());
+			omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+			int count1 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+			if(count1 < 1){
+				throw new CustomMessageException("修改到注销记录表失败");
+			}
 		}
 	}
 
@@ -147,6 +180,20 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			if(count < 1){
 				throw new CustomMessageException("修改注销状态失败");
 			}else {
+				//将注销证照信息过程插入到证照注销记录表
+				OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+				omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));     //撤销
+				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+				omsCerCancellateRecords.setSperatorTime(new Date());
+				omsCerCancellateRecords.setCreateTime(new Date());
+				omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+				int count2 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+				if(count2 < 1){
+					throw new CustomMessageException("将记录插入到注销记录表失败");
+				}
+
 				//根据证照号码查询证照是否存在柜台编号
 				QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 				queryWrapper.eq(omsCerCancellateLicense.getZjhm() != null && omsCerCancellateLicense.getZjhm() != "",
@@ -171,24 +218,24 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 			if(count < 1){
 				throw new CustomMessageException("修改注销状态失败");
+			}else {
+				//将注销证照信息过程插入到证照注销记录表
+				OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+				omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));     //撤销
+				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+				omsCerCancellateRecords.setSperatorTime(new Date());
+				omsCerCancellateRecords.setCreateTime(new Date());
+				omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+				int count2 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+				if(count2 < 1){
+					throw new CustomMessageException("将记录插入到注销记录表失败");
+				}
 			}
 		}
 	}
 
-
-	/**
-	 * <b>功能描述: 查询审批记录</b>
-	 * @Param: [omsCerCancellateLicense]
-	 * @Return: org.apache.ibatis.annotations.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/7 16:43
-	 */
-	public OmsCerCancellateLicense getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense) {
-		if (omsCerCancellateLicense.getId() != null && omsCerCancellateLicense.getId() != "") {
-			omsCerCancellateLicense = omsCerCancellateLicenseMapper.selectById(omsCerCancellateLicense.getId());
-		}
-		return omsCerCancellateLicense;
-	}
 
 
 	/**
@@ -221,6 +268,27 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			int count = omsCerCancellateLicenseMapper.updateCerCancellateLicenseApproval(map);
 			if(count < 1){
 				throw new CustomMessageException("审批操作失败");
+			}else {
+				//将注销证照信息过程插入到证照注销记录表
+				for(String id : list){
+					OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+					omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+					omsCerCancellateRecords.setCancellateId(id);
+					if(omsCerCancellateLicense.getCldyj().equals("1")){
+						omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[6])); //状态置为部领导审批
+					}else if (omsCerCancellateLicense.getCldyj().equals("0")){
+						omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));   //状态置为拒绝
+					}
+					omsCerCancellateRecords.setResult(omsCerCancellateLicense.getCldyjly());
+					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setSperatorTime(new Date());
+					omsCerCancellateRecords.setCreateTime(new Date());
+					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+					int count2 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+					if(count2 < 1){
+						throw new CustomMessageException("将记录插入到注销记录表失败");
+					}
+				}
 			}
 		}
 	}
@@ -247,8 +315,28 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 		int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 		if(count < 1){
 			throw new CustomMessageException("审核操作失败");
+		}else {
+			//将注销证照信息过程插入到证照注销记录表
+			OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+			omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+			omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+			if(omsCerCancellateLicense.getBldyj().equals("1")){
+				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[7]));   //生成注销函
+			}else if (omsCerCancellateLicense.getBldyj().equals("0")){
+				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));   //拒绝
+			}
+			omsCerCancellateRecords.setResult(omsCerCancellateLicense.getBldyjly());
+			omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+			omsCerCancellateRecords.setSperatorTime(new Date());
+			omsCerCancellateRecords.setCreateTime(new Date());
+			omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+			int count2 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+			if(count2 < 1){
+				throw new CustomMessageException("将记录插入到注销记录表失败");
+			}
 		}
 	}
+
 
 
 	/**
@@ -261,7 +349,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 11:48
 	 */
-	@Transactional(rollbackFor = Exception.class)
+//	@Transactional(rollbackFor = Exception.class)
 	public void updateCerCancellateLicenseApprovalComplete(OmsCerCancellateLicense omsCerCancellateLicense) {
 		if(omsCerCancellateLicense.getGatshyj().equals("1")){
 			//公安厅通过
@@ -270,10 +358,27 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			cancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[10]));      //完成注销状态之后，状态改为完成注销
 			cancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			cancellateLicense.setModifyTime(new Date());
+			cancellateLicense.setGatshyj(omsCerCancellateLicense.getGatshyj());
+			cancellateLicense.setGatyjly(omsCerCancellateLicense.getGatyjly());
 			int count = omsCerCancellateLicenseMapper.updateById(cancellateLicense);
 			if(count < 1){
 				throw new CustomMessageException("公安厅通过，更改状态失败");
 			}else {
+				//将注销证照信息过程插入到证照注销记录表
+				OmsCerCancellateRecords omsCerCancellateRecords = new OmsCerCancellateRecords();
+				omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[10]));     //撤销
+				omsCerCancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
+				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+				omsCerCancellateRecords.setSperatorTime(new Date());
+				omsCerCancellateRecords.setCreateTime(new Date());
+				omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+				int count3 = omsCerCancellateRecordsMapper.insert(omsCerCancellateRecords);
+				if(count3 < 1){
+					throw new CustomMessageException("将记录插入到注销记录表失败");
+				}
+
 				//判断当前证照的保管状态
 				if (omsCerCancellateLicense.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[0]))){
 					//保管状态为正常保管的，生成证照领取任务
@@ -312,8 +417,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 						omsCerCancellateLicense1.setCardStatus(String.valueOf(Constants.CER_STATUS[7]));
 						omsCerCancellateLicense1.setModifyTime(new Date());
 						omsCerCancellateLicense1.setModifyUser(UserInfoUtil.getUserInfo().getId());
-						int count3 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
-						if(count3 < 1){
+						int count4 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
+						if(count4 < 1){
 							throw new CustomMessageException("更改证照状态失败");
 						}
 
@@ -323,8 +428,8 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 						cfCertificate.setUpdater(UserInfoUtil.getUserInfo().getId());
 						QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 						queryWrapper.eq("ZJHM", omsCerCancellateLicense.getZjhm());
-						int count4 = cfCertificateMapper.update(cfCertificate, queryWrapper);
-						if(count4 < 1){
+						int count5 = cfCertificateMapper.update(cfCertificate, queryWrapper);
+						if(count5 < 1){
 							throw new CustomMessageException("更改证照状态失败");
 						}
 					}
@@ -338,9 +443,24 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					omsCerCancellateLicense1.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));
 					omsCerCancellateLicense1.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					omsCerCancellateLicense1.setModifyTime(new Date());
-					int count3 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
-					if(count3 < 1){
+					int count6 = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense1);
+					if(count6 < 1){
 						throw new CustomMessageException("更改证照状态失败");
+					}else {
+						//将注销证照信息过程插入到证照注销记录表
+						OmsCerCancellateRecords cancellateRecords = new OmsCerCancellateRecords();
+						cancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+						cancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+						cancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));     //撤销
+						cancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
+						cancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+						cancellateRecords.setSperatorTime(new Date());
+						cancellateRecords.setCreateTime(new Date());
+						cancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+						int count2 = omsCerCancellateRecordsMapper.insert(cancellateRecords);
+						if(count2 < 1){
+							throw new CustomMessageException("将记录插入到注销记录表失败");
+						}
 					}
 
 					CfCertificate cfCertificate = new CfCertificate();
@@ -379,6 +499,21 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
 			if(count < 1){
 				throw new CustomMessageException("公安厅不通过，更改状态失败");
+			}else {
+				//将注销证照信息过程插入到证照注销记录表
+				OmsCerCancellateRecords cancellateRecords = new OmsCerCancellateRecords();
+				cancellateRecords.setId(UUIDGenerator.getPrimaryKey());
+				cancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
+				cancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));     //拒绝
+				cancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
+				cancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+				cancellateRecords.setSperatorTime(new Date());
+				cancellateRecords.setCreateTime(new Date());
+				cancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
+				int count2 = omsCerCancellateRecordsMapper.insert(cancellateRecords);
+				if(count2 < 1){
+					throw new CustomMessageException("将记录插入到注销记录表失败");
+				}
 			}
 		}
 	}
@@ -478,7 +613,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				row.createCell(8).setCellValue(Constants.CANCELL_REASON_NAME[Integer.parseInt((String)list.get(i).get("zxyy")) - 1]);
 				row.createCell(9).setCellValue(((String) list.get(i).get("appendPlace")).equals("1") ? "国内" : "国外");
 				row.createCell(10).setCellValue((String) list.get(i).get("zxsm"));
-				row.createCell(11).setCellValue(Constants.CER_TYPE_NAME[(Integer) list.get(i).get("zjlx") - 1]);
+				row.createCell(11).setCellValue(CerTypeUtil.getCnTypeLicence((Integer) list.get(i).get("zjlx")));
 				row.createCell(12).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(13).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(14).setCellValue(Constants.CER_NAME[Integer.parseInt((String)list.get(i).get("cardStatus"))]);
@@ -486,7 +621,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				row.createCell(16).setCellValue(((String) list.get(i).get("surelyWay")).equals("0") ? "证照机" : "柜台");
 				row.createCell(17).setCellValue((String) list.get(i).get("cabinetNum"));
 				row.createCell(18).setCellValue((String) list.get(i).get("place"));
-				row.createCell(19).setCellValue((String) list.get(i).get("counterNum"));
+				row.createCell(19).setCellValue(String.valueOf(list.get(i).get("counterNum")));
 				row.createCell(20).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(21).setCellValue((String) list.get(i).get("qfjg"));
 				row.createCell(22).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("qfrq")));
