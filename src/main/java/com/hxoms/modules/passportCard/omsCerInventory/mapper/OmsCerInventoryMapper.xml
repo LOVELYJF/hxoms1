@@ -37,7 +37,7 @@
 		select
 			oci.ID as id,
 			oci.OMS_ID as omsId,
-			cc.ID as cerId
+			cc.ID as cerId,
 			oci.NAME as name,
 			oci.ZJLX as zjlx,
 			oci.ZJHM as zjhm,
@@ -65,7 +65,7 @@
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
 				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
-					COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
+					oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
 				</if>
 			</trim>
 		</where>
@@ -120,13 +120,13 @@
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
 				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
-					COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
+					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
 				</if>
 				<if test="list != null">oci.CABINET_NUM in
 					<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
 						#{item}
 					</foreach>
-					and
+					)and
 				</if>
 			</trim>
 		</where>
