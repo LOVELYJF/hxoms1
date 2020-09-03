@@ -266,8 +266,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
-				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
-				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
+				row.createCell(10).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
+				row.createCell(11).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) list.get(i).get("cabinetNum"));
 				row.createCell(13).setCellValue((String) list.get(i).get("place"));
 				row.createCell(14).setCellValue((String) list.get(i).get("inventoryResult"));
@@ -506,8 +506,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
-				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
-				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
+				row.createCell(10).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(list.get(i).get("beforeInventorySaveStatus").toString())]);
+				row.createCell(11).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(list.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) list.get(i).get("counterNum"));
 				row.createCell(13).setCellValue((String) list.get(i).get("inventoryResult"));
 				//设置单元格字体大小
@@ -672,8 +672,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(7).setCellValue((String) resultList.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)resultList.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("cardStatus").toString())]);
-				row.createCell(10).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("beforeInventorySaveStatus").toString())]);
-				row.createCell(11).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("afterInventorySaveStatus").toString())]);
+				row.createCell(10).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(resultList.get(i).get("beforeInventorySaveStatus").toString())]);
+				row.createCell(11).setCellValue(Constants.CER_SAVE_NAME[Integer.parseInt(resultList.get(i).get("afterInventorySaveStatus").toString())]);
 				row.createCell(12).setCellValue((String) resultList.get(i).get("cabinetNum"));
 				row.createCell(13).setCellValue((String) resultList.get(i).get("place"));
 				row.createCell(14).setCellValue((String) resultList.get(i).get("counterNum"));
