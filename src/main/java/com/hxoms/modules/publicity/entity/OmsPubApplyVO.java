@@ -23,10 +23,7 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String checkResult;
     //人员状态
     private String applyStatus;
-    //核心涉密人员年审
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
-    private Date SECRET_REVIEW_DATE;
+
 
     public String getB0101() {
         return b0101;
