@@ -3,10 +3,7 @@ package com.hxoms.modules.passportCard.omsCerInventory.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.common.utils.UtilDateTime;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
@@ -265,7 +262,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
-				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(list.get(i).get("zjlx").toString()) - 1]);
+				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)list.get(i).get("zjlx"))));
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
@@ -505,7 +502,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
-				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(list.get(i).get("zjlx").toString()) - 1]);
+				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)list.get(i).get("zjlx"))));
 				row.createCell(7).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(list.get(i).get("cardStatus").toString())]);
@@ -671,7 +668,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(3).setCellValue(String.valueOf(resultList.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) resultList.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) resultList.get(i).get("post"));
-				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt(resultList.get(i).get("zjlx").toString()) - 1]);
+				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)resultList.get(i).get("zjlx"))));
 				row.createCell(7).setCellValue((String) resultList.get(i).get("zjhm"));
 				row.createCell(8).setCellValue(UtilDateTime.formatCNDate((Date)resultList.get(i).get("yxqz")));
 				row.createCell(9).setCellValue(Constants.CER_NAME[Integer.parseInt(resultList.get(i).get("cardStatus").toString())]);

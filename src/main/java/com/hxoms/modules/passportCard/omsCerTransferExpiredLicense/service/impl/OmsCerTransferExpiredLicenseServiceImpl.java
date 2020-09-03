@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.CerTypeUtil;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -153,7 +154,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 				row.createCell(2).setCellValue(String.valueOf(list1.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(3).setCellValue((String) list1.get(i).get("workUnit"));
 				row.createCell(4).setCellValue((String)list1.get(i).get("post"));
-				row.createCell(5).setCellValue(Constants.CER_TYPE_NAME[(Integer)list1.get(i).get("zjlx") - 1]);
+				row.createCell(5).setCellValue(CerTypeUtil.getCnTypeLicence((Integer)list1.get(i).get("zjlx")));
 				row.createCell(6).setCellValue((String)list1.get(i).get("zjhm"));
 				row.createCell(7).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("yxqz")));
 				row.createCell(8).setCellValue(Constants.CER_NAME[Integer.parseInt((String)list1.get(i).get("cardStatus"))]);
