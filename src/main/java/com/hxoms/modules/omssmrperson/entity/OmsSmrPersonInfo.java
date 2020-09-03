@@ -101,6 +101,9 @@ public class OmsSmrPersonInfo {
     @ColumnAnnotation(FieldName = "MSG",   FieldDescription="返回消息")
     private String msg;
 
+    @ColumnAnnotation(FieldName = "PROC_PERSON_ID",   FieldDescription="人员备案表主键")
+    private String procPersonId;
+
     public String getId() {
         return id;
     }
@@ -315,5 +318,13 @@ public class OmsSmrPersonInfo {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getProcPersonId() {
+        return procPersonId;
+    }
+
+    public void setProcPersonId(String procPersonId) {
+        this.procPersonId = procPersonId;
     }
 }

@@ -69,6 +69,9 @@ public class OmsSmrOldInfo {
     @ColumnAnnotation(FieldName = "IMPORT_YEAR",   FieldDescription="导入年度")
     private String importYear;
 
+    @ColumnAnnotation(FieldName = "PROC_PERSON_ID",   FieldDescription="人员备案表主键")
+    private String procPersonId;
+
     public String getId() {
         return id;
     }
@@ -187,5 +190,13 @@ public class OmsSmrOldInfo {
 
     public void setImportYear(String importYear) {
         this.importYear = importYear == null ? null : importYear.trim();
+    }
+
+    public String getProcPersonId() {
+        return procPersonId;
+    }
+
+    public void setProcPersonId(String procPersonId) {
+        this.procPersonId = procPersonId;
     }
 }
