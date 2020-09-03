@@ -88,7 +88,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             //团组信息
             String id = UUIDGenerator.getPrimaryKey();
             pubGroup.setId(id);
-            pubGroup.setTzrs(num);
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[1]);
             pubGroup.setCreateUser(userInfo.getId());
             pubGroup.setCreateTime(new Date());
@@ -217,7 +216,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             throw new CustomMessageException("参数为空!");
         }
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
-        pubGroup.setTzrs(pubGroup.getTzrs()+1);
         pubGroupMapper.updatePubGroup(pubGroup);//更新团组人数
 
         OmsPubApply pubApply = getInsertOmsPubApply(personId,pubGroup.getCgsj());
@@ -254,7 +252,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if(pubApply != null){
                 OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
                 pubGroup.setId(pubApply.getYspId());
-                pubGroup.setTzrs(pubGroup.getTzrs()-1);
                 pubGroupMapper.updatePubGroup(pubGroup);
             }
         }else{
@@ -335,12 +332,37 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public OmsPubApply getPersonDetailById(String id) {
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
         return pubApplyMapper.selectById(id);
     }
 
     @Override
     public List<OmsPubApplyVO> getAuditOpinion(String id) {
-        return pubApplyMapper.selectByYSPId(id);
+        if (StringUtils.isBlank(id)){
+            throw new CustomMessageException("参数为空!");
+        }
+        List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(id);
+        if(applyVOList.size() > 0){
+            for (int i = 0; i < applyVOList.size(); i++) {
+                OmsPubApplyVO applyVO = applyVOList.get(i);
+                if(Constants.IS_YES.equals(applyVO.getSfbg())){
+                    if(Constants.IS_YES.equals(applyVO.getSfzb())){
+                        applyVO.setApplyStatus("撤销");
+                    }
+                    if(Constants.IS_NOT.equals(applyVO.getSfzb())){
+                        applyVO.setApplyStatus("撤销");
+                    }
+                }
+                if(Constants.IS_NOT.equals(applyVO.getSfbg())){
+                    if(Constants.IS_YES.equals(applyVO.getSfzb())){
+                        applyVO.setApplyStatus("增补");
+                    }
+                }
+            }
+        }
+        return applyVOList;
     }
 
     @Override

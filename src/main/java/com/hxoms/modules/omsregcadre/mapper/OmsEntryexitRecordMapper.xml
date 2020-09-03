@@ -350,18 +350,38 @@
 
 
   <select id="getExceptionPriApply" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO">
-    select record.*,apply.* from oms_pri_apply apply left join oms_entryexit_record record
-    on apply.PROCPERSON_ID = record.OMS_ID
-    where apply.IS_ABROAD = 1
-    and apply.ID = record.PRIAPPLY_ID
-    and length(record.PRIAPPLY_ID)>0
-    and record.PRIAPPLY_ID is not NULL
-    and apply.COMPARISON_RESULT !='正常'
-    and record.COMPARISON_RESULT!='正常'
+      select
+          rp.NAME as name,
+          rp.SEX as sex,
+          rp.WORK_UNIT as workUnit,
+          rp.POST as post,
+          apply.ABROAD_TIME as abroadTime,
+          apply.RETURN_TIME as returnTime,
+          apply.GO_COUNTRY as goCountry,
+          record.PRIAPPLY_ID as priapplyId,
+          record.OGE_DATE as ogeDate,
+          record.OGE_STATUS as ogeStatus,
+          record.DESTINATION as destination,
+          record.ID_TYPE as idType,
+          record.ENTRACE_EXIT as entraceExit,
+          record.COMPARISON_RESULT as comparisonResult,
+          record.ID_NUMBER as idNumber
+      from oms_pri_apply apply
+      LEFT JOIN oms_reg_procpersoninfo rp on apply.PROCPERSON_ID = rp.ID
+      left join oms_entryexit_record record
+      on apply.PROCPERSON_ID = record.OMS_ID
+      where apply.IS_ABROAD = 1
+      and length(record.PRIAPPLY_ID)>0
+      and record.PRIAPPLY_ID is not NULL
+      and apply.COMPARISON_RESULT is not null and apply.COMPARISON_RESULT !='正常'
+      and record.COMPARISON_RESULT is not null and record.COMPARISON_RESULT!='正常'
     <if test="comparisonResult!=null and comparisonResult!=''">
-      and COMPARISON_RESULT LIKE '%${comparisonResult}%'
+      and record.COMPARISON_RESULT LIKE '%${comparisonResult}%'
     </if>
-    order by OGE_DATE asc
+    <if test="year!=null and year!=''">
+      and to_char(record.COMPARISON_DATE,'yyyy') <![CDATA[<=]]>#{year}
+    </if>
+    order by record.OGE_DATE asc
   </select>
 
 
@@ -369,6 +389,29 @@
   <select id="selectNoMatchList" parameterType="java.lang.String" resultMap="BaseResultMap">
       select * from oms_entryexit_record where 1=1
       and OMS_ID=#{omsId} and (COMPARISON_RESULT is null OR PRIAPPLY_ID is null)
+  </select>
+  <select id="queryCompresultByYear" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO" parameterType="java.lang.String">
+      select
+      count(CASE WHEN t.comparisonResult LIKE '%未经申请延期%' then 1 else null end) AS wjsqyqcount,
+      count(CASE WHEN t.comparisonResult LIKE '%未经审批出%' then 1 else null end) AS wjspcount,
+      count(CASE WHEN t.comparisonResult LIKE '%擅自变更%' then 1 else null end) AS szbgcount,
+      (SELECT count(1) from oms_pri_apply apply where apply.IS_COMPARISON =1
+      <if test="year!=null and year!=''">
+          and to_char(record.COMPARISON_DATE,'yyyy') <![CDATA[<=]]>#{year}
+      </if>
+      ) AS yssqcount,
+      (SELECT count(1) FROM `oms_entryexit_record` record where length(record.PRIAPPLY_ID)>0
+      and record.PRIAPPLY_ID is not NULL
+      <if test="year!=null and year!=''">
+          and to_char(record.COMPARISON_DATE,'yyyy') <![CDATA[<=]]>#{year}
+      </if>
+      ) AS crjcount
+      FROM (	SELECT record.comparison_Result as comparisonResult from oms_pri_apply apply
+      left join oms_entryexit_record record on apply.PROCPERSON_ID = record.OMS_ID
+      where apply.IS_ABROAD = 1
+      and length(record.PRIAPPLY_ID)>0
+      and record.PRIAPPLY_ID is not NULL
+      ) t
   </select>
 
 </mapper>

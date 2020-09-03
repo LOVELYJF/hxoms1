@@ -23,6 +23,8 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String status;
     //校验结果
     private String checkResult;
+    //人员状态
+    private String applyStatus;
 
     public String getB0101() {
         return b0101;
@@ -78,5 +80,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setCheckResult(String checkResult) {
         this.checkResult = checkResult;
+    }
+
+    public String getApplyStatus() {
+        return applyStatus;
+    }
+
+    public void setApplyStatus(String applyStatus) {
+        this.applyStatus = applyStatus;
     }
 }
