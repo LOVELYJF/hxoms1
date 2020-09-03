@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class OmsPubApplyVO extends OmsPubApply {
     private String name;
@@ -25,6 +23,10 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String checkResult;
     //人员状态
     private String applyStatus;
+    //核心涉密人员年审
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
+    private Date SECRET_REVIEW_DATE;
 
     public String getB0101() {
         return b0101;
@@ -88,5 +90,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setApplyStatus(String applyStatus) {
         this.applyStatus = applyStatus;
+    }
+
+    public Date getSECRET_REVIEW_DATE() {
+        return SECRET_REVIEW_DATE;
+    }
+
+    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
+        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
     }
 }

@@ -89,6 +89,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));
         //职务
         omsPubApply.setJob((String) personInfo.get("JOB"));
+        //核心涉密人员年审
+        omsPubApply.setSECRET_REVIEW_DATE((Date) personInfo.get("SECRET_REVIEW_DATE"));
         //是否为涉密人员
         omsPubApply.setSfsmry("0");
         String smdj = (String) personInfo.get("SECRET_LEVEL");
