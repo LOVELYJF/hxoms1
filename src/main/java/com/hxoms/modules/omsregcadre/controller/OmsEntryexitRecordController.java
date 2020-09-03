@@ -3,6 +3,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -134,7 +135,7 @@ public class OmsEntryexitRecordController {
     @ApiOperation(value="查询异常出入境记录", notes="查询异常出入境记录")
     @PostMapping("/getExceptionPriApply")
     public Result getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) throws Exception{
-        PageInfo<OmsEntryexitRecord> exceptionRecordlist = entryexitRecordService.getExceptionRecord(entryexitRecordIPagParam);
+        PageInfo<OmsEntryexitRecordVO> exceptionRecordlist = entryexitRecordService.getExceptionRecord(entryexitRecordIPagParam);
         return Result.success(exceptionRecordlist);
     }
 
@@ -182,10 +183,10 @@ public class OmsEntryexitRecordController {
      * 年度出入境比对结果统计
      */
     @ApiOperation(value="年度出入境比对结果统计", notes="年度出入境比对结果统计")
-    @ApiImplicitParam(name = "year", value = "年度", required = true, dataType = "String")
     @GetMapping("/queryCompresultByYear")
-    public Result queryCompresultByYear(String year) {
-        return Result.success(entryexitRecordService.queryCompresultByYear(year));
+    public Result queryCompresultByYear(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+        Map<String, Object> map = entryexitRecordService.queryCompresultByYear(entryexitRecordIPagParam);
+        return Result.success(map);
     }
 
 

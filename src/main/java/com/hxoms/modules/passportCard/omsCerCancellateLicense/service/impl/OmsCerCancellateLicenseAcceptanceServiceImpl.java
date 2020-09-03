@@ -237,20 +237,6 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	}
 
 
-	/**
-	 * <b>功能描述: 查询审批记录</b>
-	 * @Param: [omsCerCancellateLicense]
-	 * @Return: org.apache.ibatis.annotations.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/7 16:43
-	 */
-	public OmsCerCancellateLicense getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense) {
-		if (omsCerCancellateLicense.getId() != null && omsCerCancellateLicense.getId() != "") {
-			omsCerCancellateLicense = omsCerCancellateLicenseMapper.selectById(omsCerCancellateLicense.getId());
-		}
-		return omsCerCancellateLicense;
-	}
-
 
 	/**
 	 * <b>功能描述: 处领导审批(可以批量审批)</b>
@@ -627,7 +613,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				row.createCell(8).setCellValue(Constants.CANCELL_REASON_NAME[Integer.parseInt((String)list.get(i).get("zxyy")) - 1]);
 				row.createCell(9).setCellValue(((String) list.get(i).get("appendPlace")).equals("1") ? "国内" : "国外");
 				row.createCell(10).setCellValue((String) list.get(i).get("zxsm"));
-				row.createCell(11).setCellValue(Constants.CER_TYPE_NAME[(Integer) list.get(i).get("zjlx") - 1]);
+				row.createCell(11).setCellValue(CerTypeUtil.getCnTypeLicence((Integer) list.get(i).get("zjlx")));
 				row.createCell(12).setCellValue((String) list.get(i).get("zjhm"));
 				row.createCell(13).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("yxqz")));
 				row.createCell(14).setCellValue(Constants.CER_NAME[Integer.parseInt((String)list.get(i).get("cardStatus"))]);
@@ -635,7 +621,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				row.createCell(16).setCellValue(((String) list.get(i).get("surelyWay")).equals("0") ? "证照机" : "柜台");
 				row.createCell(17).setCellValue((String) list.get(i).get("cabinetNum"));
 				row.createCell(18).setCellValue((String) list.get(i).get("place"));
-				row.createCell(19).setCellValue((String) list.get(i).get("counterNum"));
+				row.createCell(19).setCellValue(String.valueOf(list.get(i).get("counterNum")));
 				row.createCell(20).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(21).setCellValue((String) list.get(i).get("qfjg"));
 				row.createCell(22).setCellValue(UtilDateTime.formatCNDate((Date)list.get(i).get("qfrq")));

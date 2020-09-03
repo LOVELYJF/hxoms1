@@ -564,12 +564,19 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         return result;
     }
 
+
     @Override
-    public Object queryCompresultByYear(String year) {
-
-
-
-        return null;
+    public Map<String, Object> queryCompresultByYear(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+        Map<String, Object> map = new HashMap<>();
+        OmsEntryexitRecordVO info = baseMapper.queryCompresultByYear(entryexitRecordIPagParam.getYear());
+        //分页
+        PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
+        List<OmsEntryexitRecordVO> exceptionRecordsList = baseMapper.getExceptionPriApply(entryexitRecordIPagParam);
+        //返回数据
+        PageInfo<OmsEntryexitRecordVO> pageInfo = new PageInfo(exceptionRecordsList);
+        map.put("info",info);
+        map.put("pageInfo",pageInfo);
+        return map;
     }
 
     @Override
@@ -582,12 +589,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     }
 
     @Override
-    public PageInfo<OmsEntryexitRecord> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+    public PageInfo<OmsEntryexitRecordVO> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
         List<OmsEntryexitRecordVO> exceptionRecordsList = baseMapper.getExceptionPriApply(entryexitRecordIPagParam);
         //返回数据
-        PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(exceptionRecordsList);
+        PageInfo<OmsEntryexitRecordVO> pageInfo = new PageInfo(exceptionRecordsList);
         return pageInfo;
     }
 

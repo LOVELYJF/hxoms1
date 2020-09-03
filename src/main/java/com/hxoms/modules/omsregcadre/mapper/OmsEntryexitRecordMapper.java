@@ -14,4 +14,6 @@ public interface OmsEntryexitRecordMapper extends BaseMapper<OmsEntryexitRecord>
     List<OmsEntryexitRecord> selectNoMatchList(String omsId);
 
     List<OmsEntryexitRecordVO> getExceptionPriApply(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
+
+    OmsEntryexitRecordVO queryCompresultByYear(String year);
 }

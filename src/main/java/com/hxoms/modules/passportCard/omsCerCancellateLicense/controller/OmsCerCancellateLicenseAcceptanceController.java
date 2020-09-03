@@ -152,18 +152,7 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 
 
 
-	/**
-	 * <b>功能描述: 查询审批记录</b>
-	 * @Param: [omsCerCancellateLicense]
-	 * @Return: org.apache.ibatis.annotations.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/7 16:43
-	 */
-	@GetMapping("/getCerCancellateLicenseRecord")
-	public Result getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense){
-		omsCerCancellateLicense = omsCerCancellateLicenseAcceptanceService.getCerCancellateLicenseRecord(omsCerCancellateLicense);
-		return Result.success(omsCerCancellateLicense);
-	}
+
 }
 
 
