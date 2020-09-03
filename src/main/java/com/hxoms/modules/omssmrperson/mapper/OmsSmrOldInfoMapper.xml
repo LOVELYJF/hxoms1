@@ -17,6 +17,7 @@
     <result column="QR_USER_ID" jdbcType="VARCHAR" property="qrUserId" />
     <result column="QR_TIME" jdbcType="TIMESTAMP" property="qrTime" />
     <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
+    <result column="PROC_PERSON_ID" jdbcType="VARCHAR" property="procPersonId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
@@ -24,7 +25,7 @@
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
     START_DATE, FINISH_DATE, QR_SECRET_RELATED_POST, QR_SECRET_RELATED_LEVEL, QR_START_DATE, 
-    QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR
+    QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR,PROC_PERSON_ID
   </sql>
 
   <select id="getSmrOldInfoList" parameterType="java.lang.String" resultMap="BaseResultMap">

@@ -599,7 +599,7 @@
                 <set>
                 (
                 <if test="procpersonId != null">
-                    PROCPERSON_ID = #{procpersonId,jdbcType=VARCHAR},
+                    PROCPERSON_ID = #{item.procpersonId,jdbcType=VARCHAR},
                 </if>
                 <if test="a0100 != null">
                     A0100 = #{item.a0100,jdbcType=VARCHAR},
@@ -767,10 +767,10 @@
                     SFXD = #{item.sfxd,jdbcType=INTEGER},
                 </if>
                 <if test="leaderBatchId != null">
-                    LEADER_BATCH_ID = #{leaderBatchId,jdbcType=VARCHAR},
+                    LEADER_BATCH_ID = #{item.leaderBatchId,jdbcType=VARCHAR},
                 </if>
                 <if test="isComparison != null">
-                    IS_COMPARISON = #{isComparison,jdbcType=CHAR},
+                    IS_COMPARISON = #{item.isComparison,jdbcType=CHAR},
                 </if>
                 )
                 </set>
