@@ -75,6 +75,15 @@ public class FileReplaceVO {
     //审批表备注
     private String remarks;
 
+    //发生地
+    private String appendPlace;
+
+    //申请证照信息
+    private String applyCerInfo;
+
+    //注销原因
+    private String zxyy;
+
     public String getName() {
         return name;
     }
@@ -281,5 +290,29 @@ public class FileReplaceVO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getAppendPlace() {
+        return appendPlace;
+    }
+
+    public void setAppendPlace(String appendPlace) {
+        this.appendPlace = appendPlace;
+    }
+
+    public String getApplyCerInfo() {
+        return applyCerInfo;
+    }
+
+    public void setApplyCerInfo(String applyCerInfo) {
+        this.applyCerInfo = applyCerInfo;
+    }
+
+    public String getZxyy() {
+        return zxyy;
+    }
+
+    public void setZxyy(String zxyy) {
+        this.zxyy = zxyy;
     }
 }
