@@ -40,4 +40,13 @@ public interface SysDictItemService {
      * @date: 2019/8/8
      */
     List<Map<String,Object>> getDictInfoByDictCode(String dictCode, String itemCode);
+    
+    /**
+     * 数据字典项编码和数据字典查询
+     * @param dictCode
+     * @param itemCode
+     * @author: wuyezhen
+     * @return
+     */
+   SysDictItem selectByDictCodeAndItemCode(String dictCode,String itemCode);
 }

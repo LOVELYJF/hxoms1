@@ -6,6 +6,8 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 /**
  * @description：字典管理映射类Mapper接口
  * @author ：张乾
@@ -166,4 +168,16 @@ public interface SysDictItemMapper {
      * @Date: 2020/8/27 14:41
      */
     List<SysDictItem> getCfCertificateSysDictItem(Map<String,Object> map);
+    
+    
+    /**
+     * 根据dictCode 和ItemCode 查询字典
+     * @param dictCode
+     * @param ItemCode
+     * @Author: wuyezhen
+     * @Date: 2020/9/0 16:30
+     * @return
+     */
+    SysDictItem selectByDictCodeAndItemCode(@Param("dictCode")String dictCode,@Param("itemCode")String itemCode);
+
 }
