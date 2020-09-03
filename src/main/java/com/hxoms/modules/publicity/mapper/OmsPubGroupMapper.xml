@@ -203,6 +203,14 @@
             oms_pub_group_pre_approval t
         WHERE
             t.BAZT = #{bazt}
+        union all
+        SELECT
+            '4.已完结' label,
+            sum(case when t.SQZT = '4' then 1 else 0 end) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = #{bazt}
     </select>
     <select id="getFlowDetail" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT
