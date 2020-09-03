@@ -89,11 +89,4 @@ public class OmsPubApplyVO extends OmsPubApply {
         this.applyStatus = applyStatus;
     }
 
-    public Date getSECRET_REVIEW_DATE() {
-        return SECRET_REVIEW_DATE;
-    }
-
-    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
-        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
-    }
 }
