@@ -98,4 +98,10 @@ public interface LeaderCommonMapper {
     * 查看附件列表
     * ***/
    List<Map> selectAttachmentList(String[] leaderBatchIds);
+
+   /**查询团组 **/
+
+   List<Map> selectGroupConditions();
+
+   Map  selectDefaultId();
 }

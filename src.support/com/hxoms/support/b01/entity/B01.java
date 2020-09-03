@@ -136,7 +136,12 @@ public class B01 {
     private String b0180;
     //job_number_desc
     private String jobNumberDesc;
-
+    //组织机构代码
+    private String ORGANIZATION_CODE;
+    //联系人
+    private String CONTACTS;
+    //联系电话
+    private String PHONE;
     public String getB0100() {
         return b0100;
     }
@@ -655,5 +660,29 @@ public class B01 {
 
     public void setJobNumberDesc(String jobNumberDesc) {
         this.jobNumberDesc = jobNumberDesc;
+    }
+
+    public String getORGANIZATION_CODE() {
+        return ORGANIZATION_CODE;
+    }
+
+    public void setORGANIZATION_CODE(String ORGANIZATION_CODE) {
+        this.ORGANIZATION_CODE = ORGANIZATION_CODE;
+    }
+
+    public String getCONTACTS() {
+        return CONTACTS;
+    }
+
+    public void setCONTACTS(String CONTACTS) {
+        this.CONTACTS = CONTACTS;
+    }
+
+    public String getPHONE() {
+        return PHONE;
+    }
+
+    public void setPHONE(String PHONE) {
+        this.PHONE = PHONE;
     }
 }

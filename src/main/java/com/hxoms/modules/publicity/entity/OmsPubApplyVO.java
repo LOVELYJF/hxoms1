@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class OmsPubApplyVO extends OmsPubApply {
     private String name;
@@ -25,6 +23,7 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String checkResult;
     //人员状态
     private String applyStatus;
+
 
     public String getB0101() {
         return b0101;
@@ -89,4 +88,5 @@ public class OmsPubApplyVO extends OmsPubApply {
     public void setApplyStatus(String applyStatus) {
         this.applyStatus = applyStatus;
     }
+
 }

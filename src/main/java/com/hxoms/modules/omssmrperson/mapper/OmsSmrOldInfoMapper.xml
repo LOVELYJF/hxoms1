@@ -64,5 +64,6 @@
       and t.QR_FINISH_DATE is not null
       and t.QR_FINISH_DATE &gt;= now()
     </if>
+    ORDER BY t.QR_FINISH_DATE desc , t.SECRET_RELATED_LEVEL desc
   </select>
 </mapper>
