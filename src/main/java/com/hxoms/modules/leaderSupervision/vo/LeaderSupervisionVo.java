@@ -34,6 +34,13 @@ public class LeaderSupervisionVo {
     private String incumbencyStatus; /** 业务申请流程中 人员 在职状态  1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它   **/
 
 
+    private String tzid;  /** 团组id **/
+
+    private String ispass; /** 批件核实 是否一致**/
+
+    private String reason;
+
+
 
 
     public LeaderSupervisionVo(){
@@ -139,5 +146,29 @@ public class LeaderSupervisionVo {
 //         }
 
         this.bussinessTypeAndIdVos = bussinessTypeAndIdVos;
+    }
+
+    public String getTzid() {
+        return tzid;
+    }
+
+    public void setTzid(String tzid) {
+        this.tzid = tzid;
+    }
+
+    public String getIspass() {
+        return ispass;
+    }
+
+    public void setIspass(String ispass) {
+        this.ispass = ispass;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

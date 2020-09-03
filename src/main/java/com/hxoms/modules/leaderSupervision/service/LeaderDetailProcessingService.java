@@ -95,5 +95,9 @@ public interface LeaderDetailProcessingService {
      * 保存 单条处长审批记录
      * **/
     void saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo);
+
+    /** 保存部长审批记录 **/
+
+    void saveBuZhangApprover(AuditOpinionVo auditOpinionVo);
 }
 
