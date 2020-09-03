@@ -940,9 +940,54 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
 
+    // 更新 登记备案表(部长)
+
+    public void updateProcpersoninfoByjiweiBybuzhang(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos){
+
+        for (BusinessTypeAndIdAndOnJobVo bussinessTypeAndIdVo: businessTypeAndIdAndOnJobVos) {
+
+            String jwjl    = bussinessTypeAndIdVo.getJwjl();
+            String procpersonId = bussinessTypeAndIdVo.getProcpersonId();
+
+            if("不回复".equals(jwjl)){
+
+                OmsRegProcpersoninfo omsRegProcpersoninfo = new OmsRegProcpersoninfo();
+
+                omsRegProcpersoninfo.setId(procpersonId);
+                omsRegProcpersoninfo.setReplyopinion("是");
+
+                omsRegProcpersoninfoMapper.updateById(omsRegProcpersoninfo);
+            }else {
+                // 如果纪委不回复意见人员字段值是“是”，本次回复了意见，将纪委不回复意见人员字段更新为“否”。
+                UpdateWrapper<OmsRegProcpersoninfo> queryWrapper = new UpdateWrapper<OmsRegProcpersoninfo>();
+                queryWrapper.eq("id", procpersonId);
+                queryWrapper.eq("REPLYOPINION","是");
+
+                OmsRegProcpersoninfo omsRegProcpersoninfo = new OmsRegProcpersoninfo();
+
+
+                omsRegProcpersoninfo.setReplyopinion("否");
+
+                omsRegProcpersoninfoMapper.update(omsRegProcpersoninfo,queryWrapper);
+
+
+            }
+
+
+
+        }
+
+
+
+
+    }
+
+
+
     /**
      * 保存 单条处长审批记录
      * **/
+    @Transactional(rollbackFor = CustomMessageException.class)
     public void saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo){
 
         LeaderSupervisionUntil.throwableByParam(auditOpinionVo.getBusId()
@@ -967,7 +1012,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             // 修改 业务流程申请 最终结论
             leaderCommonService.updateBussinessApplyRecordOpinion(listPass,"1",null);
 
-        }else if("noPass".equals(auditOpinionVo.getIspass())){
+        }else if("nopass".equals(auditOpinionVo.getIspass())){
 
          leaderCommonService.saveAbroadApprovalByBussinessId(listPass,"不通过", Constants.leader_businessName[4], Constants.leader_business[4],auditOpinionVo.getReason());
             leaderCommonService.updateBussinessApplyRecordOpinion(listPass,"2",null);
@@ -989,5 +1034,146 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
 
+    }
+
+
+    /** 保存部长审批记录 **/
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public void saveBuZhangApprover(AuditOpinionVo auditOpinionVo){
+
+        LeaderSupervisionUntil.throwableByParam(
+                auditOpinionVo,
+                auditOpinionVo.getIspass(),
+                auditOpinionVo.getReason()
+        );
+
+
+        //保存审批记录
+        if("pass".equals(auditOpinionVo.getIspass())){
+
+            //  (1) 保存 审批记录(通过)
+            leaderCommonService.saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
+            // 修改最终结论
+            leaderCommonService.updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"1",null);
+
+
+        }else if("nopass".equals(auditOpinionVo.getIspass())){
+
+            leaderCommonService.saveAbroadApprovalByBussinessIdByAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"不通过", Constants.leader_businessName[5], Constants.leader_business[5],auditOpinionVo.getReason());
+
+            leaderCommonService.updateBussinessApplyRecordOpinionAudit(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(),"2",null);
+
+        }
+
+
+        //  修改 业务流程状态 (第二步) 修改 为  处领导审批
+        newUpdteBussinessApplyStatueBybuzhang(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos(), Constants.leader_businessName[5],auditOpinionVo.getIspass());
+
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                auditOpinionVo.getBusinessTypeAndIdAndOnJobVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+
+                Constants.leader_business[6]);
+
+        //更新 《登记备案人员信息表》中纪委不回复意见人员字段
+        updateProcpersoninfoByjiweiBybuzhang(auditOpinionVo.getBusinessTypeAndIdAndOnJobVos());
+
+    }
+
+    public void newUpdteBussinessApplyStatueBybuzhang(List<BusinessTypeAndIdAndOnJobVo> businessTypeAndIdAndOnJobVos, String leaderStatusName,String ispass){
+
+
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+//            String ispass = businessTypeAndIdAndOnJobVos.get(i).getCadresupervisionOpinion();
+//            String incumbencyStatus = businessTypeAndIdAndOnJobVos.get(i).getIncumbencyStatus();
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+
+            String updateApplyStatusSql =   getUpdateStatusSqlByBuzhang(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName,ispass);
+
+            log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
+
+
+            if(updateApplyStatusSql.length()>0){
+
+                SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
+                selectMapper.update(instance);
+
+
+            }
+
+
+        }
+
+
+    }
+
+    public String getUpdateStatusSqlByBuzhang(String busessId,String bussinesType,String leaderStatusName,String ispass){
+
+        String updateSql = "update "+bussinesType;
+
+        String setSql = " set  " ;
+
+        String whereCondition = " where id = '" + busessId+"'";
+
+
+        for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+            if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+                if("oms_pri_apply".equals(bussinesType)){
+
+
+                    // TODO 因私 到 部长 审批 流程结束 ，状态 置为 已办结 因私干部监督处 流程 走完
+                     if(leaderStatusName.equals(Constants.leader_businessName[5])){
+
+                        String status =  applyStatus.getApplySatus();
+                        setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+                        return  updateSql+setSql+whereCondition;
+
+                    }
+
+
+
+
+                }else if("oms_pub_apply".equals(bussinesType)){
+
+                    String status = applyStatus.getApplySatus();
+
+                    // 同意到  上传批文流程
+                    if("pass".equals(ispass)){
+
+                        setSql+= status + "=" + Constants.leader_business[6];
+
+                        return  updateSql+setSql+whereCondition;
+
+                    }
+                    // 不同意 到 部长审批 因公流程 完结
+                    else if("nopass".equals(ispass)){
+
+
+                        setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];;
+
+                        return  updateSql+setSql+whereCondition;
+
+
+                    }
+
+
+
+                }
+
+
+
+
+            }
+
+        }
+
+        //   return  updateSql+setSql+whereCondition;
+
+        return null;
     }
 }

@@ -188,4 +188,12 @@ public class SysDictItemServiceImpl implements SysDictItemService {
         List<Map<String, Object>> list = sysDictItemMapper.getDictInfoByDictCode(params);
         return list;
     }
+
+	@Override
+	public SysDictItem selectByDictCodeAndItemCode(String dictCode, String itemCode) {
+		if (StringUtils.isEmpty(dictCode) ||StringUtils.isEmpty(itemCode)){
+			 throw new CustomMessageException("参数错误");
+		}
+		return sysDictItemMapper.selectByDictCodeAndItemCode(dictCode, itemCode);
+	}
 }

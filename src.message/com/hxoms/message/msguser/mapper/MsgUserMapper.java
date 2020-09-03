@@ -23,7 +23,7 @@ public interface MsgUserMapper {
      * @author: lijing
      * @date: 2019/5/30
      */
-    int insertMsgUsers(@Param("disMsgUsers") List<MsgUser> disMsgUsers);
+    int insertMsgUsers(@Param("emps") List<MsgUser> emps);
 
     /**
      * @desc: 通过讨论组ID删除成员

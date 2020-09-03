@@ -14,15 +14,23 @@
 
   <!--######################################################自定义######################################################-->
   <!--批量插入-->
-  <insert id="insertMsgUsers" parameterType="java.util.List">
-    insert into m_msg_user (id, msg_id, discussion_group_id,
-    receive_user_id, receive_username, handle_identify,
-    create_time, is_delete)
-    values
-    <foreach collection="disMsgUsers" item="item" index="index" separator=",">
-      (#{item.id,jdbcType=VARCHAR}, #{item.msgId,jdbcType=VARCHAR}, #{item.discussionGroupId,jdbcType=VARCHAR},
-      #{item.receiveUserId,jdbcType=VARCHAR}, #{item.receiveUsername,jdbcType=VARCHAR}, #{item.handleIdentify,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.isDelete,jdbcType=VARCHAR})
+  <insert id="insertMsgUsers">
+    insert into m_msg_user (id, 
+    msg_id, discussion_group_id,
+    receive_user_id,
+    receive_username,
+    handle_identify,
+    create_time,
+    is_delete)values
+    <foreach collection="emps" item="item" separator=",">
+      (#{item.id,jdbcType=VARCHAR}, 
+      #{item.msgId,jdbcType=VARCHAR}, 
+      #{item.discussionGroupId,jdbcType=VARCHAR},
+      #{item.receiveUserId,jdbcType=VARCHAR}, 
+      #{item.receiveUsername,jdbcType=VARCHAR}, 
+      #{item.handleIdentify,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.isDelete,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <!--通过讨论组ID删除成员(伪删除)-->

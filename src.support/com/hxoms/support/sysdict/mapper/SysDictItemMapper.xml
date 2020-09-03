@@ -307,4 +307,11 @@
         </where>
         order by TIME_STAMP
     </select>
+    
+    <!-- 查询字典编码 -->
+    <select id="selectByDictCodeAndItemCode"  resultMap="BaseResultMap">
+    SELECT *
+    FROM sys_dict_item
+    WHERE dict_code=#{dictCode} and item_code =#{itemCode} 
+    </select>
 </mapper>
