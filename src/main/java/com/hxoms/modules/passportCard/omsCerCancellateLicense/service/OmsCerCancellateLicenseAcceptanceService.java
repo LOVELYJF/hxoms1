@@ -101,13 +101,4 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 	 */
 	void updateCerCancellateLicenseAcceptanceNext(OmsCerCancellateLicense omsCerCancellateLicense);
 
-
-	/**
-	 * <b>功能描述: 查询审批记录</b>
-	 * @Param: [omsCerCancellateLicense]
-	 * @Return: org.apache.ibatis.annotations.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/7 16:43
-	 */
-	OmsCerCancellateLicense getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense);
 }

@@ -237,20 +237,6 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	}
 
 
-	/**
-	 * <b>功能描述: 查询审批记录</b>
-	 * @Param: [omsCerCancellateLicense]
-	 * @Return: org.apache.ibatis.annotations.Result
-	 * @Author: luoshuai
-	 * @Date: 2020/8/7 16:43
-	 */
-	public OmsCerCancellateLicense getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense) {
-		if (omsCerCancellateLicense.getId() != null && omsCerCancellateLicense.getId() != "") {
-			omsCerCancellateLicense = omsCerCancellateLicenseMapper.selectById(omsCerCancellateLicense.getId());
-		}
-		return omsCerCancellateLicense;
-	}
-
 
 	/**
 	 * <b>功能描述: 处领导审批(可以批量审批)</b>

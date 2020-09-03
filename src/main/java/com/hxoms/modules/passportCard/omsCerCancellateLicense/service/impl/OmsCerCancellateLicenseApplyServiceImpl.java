@@ -319,6 +319,22 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	}
 
 
+
+	/**
+	 * <b>功能描述: 查询审批记录</b>
+	 * @Param: [omsCerCancellateLicense]
+	 * @Return: java.util.List<com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords>
+	 * @Author: luoshuai
+	 * @Date: 2020/9/3 9:15
+	 */
+	public List<OmsCerCancellateRecords> getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense) {
+		QueryWrapper<OmsCerCancellateRecords> queryWrapper = new QueryWrapper<OmsCerCancellateRecords>();
+		queryWrapper.eq("CANCELLATE_ID", omsCerCancellateLicense.getId());
+		List<OmsCerCancellateRecords> list = omsCerCancellateRecordsMapper.selectList(queryWrapper);
+		return list;
+	}
+
+
 }
 
 
