@@ -91,7 +91,7 @@
                 p.CXYY = #{cxyy},
             </if>
             <if test="sqzt != null and sqzt !=''">
-                p.SQZT = #{sqzt}
+                p.SQZT = #{sqzt},
             </if>
             p.SFBG = "1"
         </set>
