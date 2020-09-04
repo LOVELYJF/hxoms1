@@ -260,12 +260,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(StringUtils.isBlank(pubApply.getJdcjl()) || Constants.IS_NOT.equals(pubApply.getJdcjl())){
             //撤销人员
             pubApplyMapper.repealPubApplyById(id,cxyy, Constants.private_business[7]);
-            //更新团组人数
-            if(pubApply != null){
-                OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
-                pubGroup.setId(pubApply.getYspId());
-                pubGroupMapper.updatePubGroup(pubGroup);
-            }
         }else{
             msg.append("干部监督处已审核完成，不能变更该人员，请先撤消原申请后重新发起新的申请!");
         }
