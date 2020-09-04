@@ -357,11 +357,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                     if(Constants.IS_YES.equals(applyVO.getSfzb())){
                         applyVO.setApplyStatus("撤销");
                     }
-                    if(Constants.IS_NOT.equals(applyVO.getSfzb())){
+                    if(Constants.IS_NOT.equals(applyVO.getSfzb()) || applyVO.getSfzb() == null){
                         applyVO.setApplyStatus("撤销");
                     }
                 }
-                if(Constants.IS_NOT.equals(applyVO.getSfbg())){
+                if(Constants.IS_NOT.equals(applyVO.getSfbg()) || applyVO.getSfbg() == null){
                     if(Constants.IS_YES.equals(applyVO.getSfzb())){
                         applyVO.setApplyStatus("增补");
                     }
