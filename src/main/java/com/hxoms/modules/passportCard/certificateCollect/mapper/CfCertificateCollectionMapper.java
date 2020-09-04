@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.certificateCollect.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 
 import java.util.List;
@@ -45,4 +46,22 @@ public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateC
      * @Date: 2020/8/12
      */
     List<CfCertificatePhoneCjInfo> selectCerCjInfoByOrgan(String rfB0000);
+
+    /**
+     * @Desc: 查询生成催缴内容参数
+     * @Author: wangyunquan
+     * @Param: [rfB0000]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjContentParam>
+     * @Date: 2020/9/3
+     */
+    List<CjContentParam> selectCjContentByOrgan(String rfB0000);
+
+    /**
+     * @Desc: 查询证件催缴信息
+     * @Author: wangyunquan
+     * @Param: [rfB0000]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest>
+     * @Date: 2020/9/4
+     */
+    List<CfCertificateCollectionRequest> selectCjInfoByOrgan(String rfB0000);
 }

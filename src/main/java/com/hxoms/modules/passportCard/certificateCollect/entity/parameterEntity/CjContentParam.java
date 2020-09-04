@@ -13,7 +13,7 @@ import java.util.Date;
  * @Date: 2020/9/1
  */
 @ApiModel(value = "催缴内容参数")
-public class PhoneContentParam {
+public class CjContentParam {
     //主键
     @ApiModelProperty(value = "主键",required = true)
     private String id;
@@ -34,6 +34,13 @@ public class PhoneContentParam {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "应归还时间",required = true)
     private Date returnDate;
+    //工作单位
+    @ApiModelProperty(value = "工作单位",required = true)
+    private String workUnit;
+    //机构编码
+    @ApiModelProperty(value = "机构编码",required = true)
+    private String rfB0000;
+
 
     public String getId() {
         return id;
@@ -81,5 +88,21 @@ public class PhoneContentParam {
 
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public String getWorkUnit() {
+        return workUnit;
+    }
+
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit;
+    }
+
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000;
     }
 }

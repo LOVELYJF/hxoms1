@@ -57,4 +57,13 @@ public interface OmsPubTaskSuperviseService {
      * @Date: 2020/7/14
      */
     void insertUrgeBusiness(UrgeBusiness urgeBusiness) throws Exception;
+
+    /**
+     * @Desc: 发送线消息
+     * @Author: wangyunquan
+     * @Param: [orgId, msgContent, userType, receiveUserType]
+     * @Return: void
+     * @Date: 2020/9/3
+     */
+    void preAndRecMessage(String orgId, String msgContent, String userType, String receiveUserType) throws Exception;
 }

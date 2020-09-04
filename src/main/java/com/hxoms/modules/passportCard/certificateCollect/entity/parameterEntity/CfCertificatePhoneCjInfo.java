@@ -26,6 +26,9 @@ public class CfCertificatePhoneCjInfo {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
+    //机构编码
+    @ApiModelProperty(value = "机构编码")
+    private String rfB0000;
     //工作单位
     @ApiModelProperty(value = "工作单位")
     private String workUnit;
@@ -86,6 +89,14 @@ public class CfCertificatePhoneCjInfo {
 
     public void setCsrq(Date csrq) {
         this.csrq = csrq;
+    }
+
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000;
     }
 
     public String getWorkUnit() {
