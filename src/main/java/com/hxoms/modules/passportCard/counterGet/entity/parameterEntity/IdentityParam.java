@@ -1,5 +1,7 @@
 package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
@@ -9,26 +11,37 @@ import java.util.Date;
  */
 public class IdentityParam {
     //姓名
+    @ApiModelProperty(value="姓名")
     private String name;
     //性别
+    @ApiModelProperty(value="性别")
     private String sex;
     //国籍
+    @ApiModelProperty(value="国籍")
     private String nation;
     //出生日期
+    @ApiModelProperty(value="出生日期")
     private Date csrq;
     //身份证号
+    @ApiModelProperty(value="身份证号")
     private String idNo;
     //户口所在地
+    @ApiModelProperty(value="户口所在地")
     private String registeResidence;
     //签发机关
+    @ApiModelProperty(value="签发机关")
     private String qrjg;
     //有效期
+    @ApiModelProperty(value="有效期")
     private Date yxqz;
     //左手指纹
+    @ApiModelProperty(value="左手指纹")
     private String leftFingerMark;
     //右手指纹
+    @ApiModelProperty(value="右手指纹")
     private String rightFingerMark;
     //二维码
+    @ApiModelProperty(value="二维码")
     private String qRCode;
 
     public String getName() {
