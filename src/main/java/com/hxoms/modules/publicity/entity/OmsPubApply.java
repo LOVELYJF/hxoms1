@@ -270,6 +270,14 @@ public class OmsPubApply {
     @ApiModelProperty(value="是否已比对(1是、0否    是否与出入境管理局提供的出入境记录进行过比对)")
     private String isComparison;
 
+    @ColumnAnnotation(FieldName = "ABROAD_PHONE",   FieldDescription="国外通讯及本人联系电话")
+    @ApiModelProperty(value="国外通讯及本人联系电话")
+    private String abroadPhone;
+
+    @ColumnAnnotation(FieldName = "BZ",   FieldDescription="备注")
+    @ApiModelProperty(value="备注")
+    private String bz;
+
     public String getId() {
         return id;
     }
@@ -740,5 +748,21 @@ public class OmsPubApply {
 
     public void setIsComparison(String isComparison) {
         this.isComparison = isComparison == null ? null : isComparison.trim();
+    }
+
+    public String getAbroadPhone() {
+        return abroadPhone;
+    }
+
+    public void setAbroadPhone(String abroadPhone) {
+        this.abroadPhone = abroadPhone == null ? null : abroadPhone.trim();
+    }
+
+    public String getBz() {
+        return bz;
+    }
+
+    public void setBz(String bz) {
+        this.bz = bz == null ? null : bz.trim();
     }
 }

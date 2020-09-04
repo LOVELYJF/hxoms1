@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.omsCerCancellateLicense.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 
 import java.util.List;
@@ -105,4 +106,14 @@ public interface OmsCerCancellateLicenseApplyService {
 	 * @Date: 2020/8/5 15:09
 	 */
 	List<SysDictItem> getCancellateLicenseApplyWay();
+
+
+	/**
+	 * <b>功能描述: 查询审批记录</b>
+	 * @Param: [omsCerCancellateLicense]
+	 * @Return: java.util.List<com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords>
+	 * @Author: luoshuai
+	 * @Date: 2020/9/3 9:15
+	 */
+	List<OmsCerCancellateRecords> getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense);
 }

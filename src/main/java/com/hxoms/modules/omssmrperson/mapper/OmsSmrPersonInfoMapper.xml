@@ -25,12 +25,13 @@
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
     <result column="DATASOURCE" jdbcType="VARCHAR" property="dataSource" />
+    <result column="PROC_PERSON_ID" jdbcType="VARCHAR" property="procPersonId" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, ID_CARD_NUMBER, A0141, POST, PERSON_STATE, SECRET_RELATED_POST,
     SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, SECRET_RELATED_ORG, MAX_SECRET_RELATED_ORG, 
     MAX_SECRET_RELATED_LEVEL, MAX_FINISH_DATE, START_DATE, FINISH_DATE, UPDATE_USER_ID, 
-    UPDATE_TIME, IMPORT_YEAR
+    UPDATE_TIME, IMPORT_YEAR,PROC_PERSON_ID
   </sql>
 
   <!-- 查询涉密人员管理列表 -->

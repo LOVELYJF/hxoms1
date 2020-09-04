@@ -168,7 +168,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
 				row.createCell(4).setCellValue(Constants.INCUMBENCY_STATUS_NAME[Integer.parseInt((String) list.get(i).get("incumbencyStatus")) - 1]);
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
-				row.createCell(6).setCellValue(Constants.CER_TYPE_NAME[Integer.parseInt((String) list.get(i).get("zjlx")) - 1]);
+				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String) list.get(i).get("zjlx"))));
 				row.createCell(7).setCellValue(Constants.CER_LENDING_NAME[Integer.parseInt((String) list.get(i).get("sqjczt"))]);
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){

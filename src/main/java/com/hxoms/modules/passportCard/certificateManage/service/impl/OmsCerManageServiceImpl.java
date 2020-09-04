@@ -42,7 +42,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
      * @Date: 2020/8/13
      */
     @Override
-    public PageBean selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
+    public PageBean<PageInfo<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CerManageInfo> pageInfo=new PageInfo<CerManageInfo>(omsCerManageMapper.selectCerInfo(cerManageQueryParam));
         return PageUtil.packagePage(pageInfo);

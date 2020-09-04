@@ -10,6 +10,9 @@ import com.hxoms.modules.privateabroad.service.OmsApprovalReturnService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +68,20 @@ public class OmsApprovalReturnController {
     public Result selectPriApprovalReturnPagelist(OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam) throws Exception {
         PageInfo<OmsApprovalReturnVO> omsApprovalReturnVOPageInfo = omsApprovalReturnService.selectPriApprovalReturnPagelist(omsPriApprovalReturnIPageParam);
         return Result.success(omsApprovalReturnVOPageInfo);
+    }
+    
+    
+    /**
+     * 导出因私出国审批表回收登记列表
+     * @param omsPriApprovalReturnIPageParam
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value="导出因私出国审批表回收登记列表", notes="导出因私出国审批表回收登记列表")
+    @GetMapping("/exportPriApprovalReturn")
+    public void exportPriApprovalReturn(OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam,HttpServletResponse response) throws Exception {
+                omsApprovalReturnService.exportPriApprovalReturn(omsPriApprovalReturnIPageParam, response);
+       
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.hxoms.modules.privateabroad.service;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.privateabroad.entity.OmsApprovalReturn;
 import com.hxoms.modules.privateabroad.entity.OmsApprovalReturnVO;
@@ -25,6 +27,7 @@ public interface OmsApprovalReturnService {
      */
     PageInfo<OmsApprovalReturnVO> selectPriApprovalReturnPagelist(OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam);
 
+    
     /**
      * 查询回收登记详情
      * @param applyId
@@ -32,4 +35,12 @@ public interface OmsApprovalReturnService {
      * @throws Exception
      */
     OmsApprovalReturn selectPriApprovalReturnDestail(String applyId);
+    
+    
+   /**
+    * 导出因私出国审批表回收登记列表
+    * @param omsPriApprovalReturnIPageParam
+    * @param response
+    */
+    void exportPriApprovalReturn (OmsPriApprovalReturnIPageParam omsPriApprovalReturnIPageParam,HttpServletResponse response);
 }

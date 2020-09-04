@@ -183,8 +183,10 @@
            orp.WORK_UNIT as b0101,
            orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
            orp.NATION_NAME as NATION,
+           b.b0100 as b0100,
            orp.ID as procpersonId
     from oms_reg_procpersoninfo orp
+    LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
     where
         CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) like CONCAT('%',#{keyword},'%')
       or orp.PY like CONCAT('%',#{keyword},'%')

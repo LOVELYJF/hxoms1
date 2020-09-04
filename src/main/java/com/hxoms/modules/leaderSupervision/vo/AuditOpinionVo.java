@@ -27,6 +27,10 @@ public class AuditOpinionVo {
 
     private String busId;   /** 针对 处长 逐条审批  业务流程id */
 
+    private String  incumbencyStatus ; /** 在职状态 **/
+
+    private String jwjl;/** 纪委结论**/
+
 
     public static final String  pass = "1"; /** 通过 **/
     public static final String  nopass = "2"; /**不通过 **/
@@ -39,7 +43,7 @@ public class AuditOpinionVo {
 
     private String ispass; /** 处理 批量审批 是否 通过 ***/
 
-    private String reason; /**  部长 审批理由 **/
+    private String reason; /**  部长 审批理由,处长审批理由 **/
 
 
 
@@ -117,5 +121,21 @@ public class AuditOpinionVo {
 
     public void setIspass(String ispass) {
         this.ispass = ispass;
+    }
+
+    public String getIncumbencyStatus() {
+        return incumbencyStatus;
+    }
+
+    public void setIncumbencyStatus(String incumbencyStatus) {
+        this.incumbencyStatus = incumbencyStatus;
+    }
+
+    public String getJwjl() {
+        return jwjl;
+    }
+
+    public void setJwjl(String jwjl) {
+        this.jwjl = jwjl;
     }
 }

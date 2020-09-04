@@ -1,6 +1,8 @@
 package com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -11,53 +13,90 @@ import java.util.Date;
  */
 public class CerManageInfo {
     //主键
+    @ApiModelProperty(value = "主键")
     private String id;
     //姓名
+    @ApiModelProperty(value = "姓名")
     private String name;
     //性别
+    @ApiModelProperty(value = "性别")
     private String sex;
     //单位
+    @ApiModelProperty(value = "单位")
     private String workUnit;
     //任职状态
+    @ApiModelProperty(value = "任职状态")
     private String incumbencyStatus;
+    @ApiModelProperty(value = "任职状态名称")
+    private String incumbencyStatusName;//转换给前端
     //职务
+    @ApiModelProperty(value = "职务")
     private String post;
     //证照类型
+    @ApiModelProperty(value = "证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
     //芯片类型
+    @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
     //证照形式
+    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)")
     private String zjxs;
+    @ApiModelProperty(value="证件形式名称")
+    private String zjxsName;//转换给前端显示
     //证件号码
+    @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //有效期至
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="有效期至")
     private Date yxqz;
     //管理单位
+    @ApiModelProperty(value = "管理单位")
     private String surelyUnit;
     //证照状态
+    @ApiModelProperty(value = "证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
+    @ApiModelProperty(value = "证照状态")
+    private String cardStatusName;//转换给前端显示
+
     //保管状态
+    @ApiModelProperty(value = "保管状态")
     private String saveStatus;
+    @ApiModelProperty(value = "保管状态名称")
+    private String saveStatusName;//转换给前端显示
     //保管方式
+    @ApiModelProperty(value = "保管方式")
     private String surelyWay;
+    @ApiModelProperty(value = "保管方式名称")
+    private String surelyWayName;//转换给前端显示
     //机柜
+    @ApiModelProperty(value = "机柜")
     private String cabinetNum;
     //位置
+    @ApiModelProperty(value = "位置")
     private String place;
     //柜台编号
+    @ApiModelProperty(value = "柜台编号")
     private Integer counterNum;
     //出生日期
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出生日期")
     private Date csrq;
     //签发单位
+    @ApiModelProperty(value="签发单位")
     private String qfjg;
     //签发日期
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="签发日期")
     private Date qfrq;
     //出生地点
+    @ApiModelProperty(value="出生地点")
     private String csdd;
     //存疑信息
+    @ApiModelProperty(value="存疑信息")
     private String exceprionMessqge;
 
     public String getId() {
@@ -66,6 +105,38 @@ public class CerManageInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getZjxsName() {
+        return zjxsName;
+    }
+
+    public String getCardStatusName() {
+        return cardStatusName;
+    }
+
+    public void setCardStatusName(String cardStatusName) {
+        this.cardStatusName = cardStatusName;
+    }
+
+    public String getSaveStatusName() {
+        return saveStatusName;
+    }
+
+    public void setSaveStatusName(String saveStatusName) {
+        this.saveStatusName = saveStatusName;
+    }
+
+    public String getSurelyWayName() {
+        return surelyWayName;
+    }
+
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
+    }
+
+    public void setZjxsName(String zjxsName) {
+        this.zjxsName = zjxsName;
     }
 
     public String getName() {
@@ -98,6 +169,14 @@ public class CerManageInfo {
 
     public void setIncumbencyStatus(String incumbencyStatus) {
         this.incumbencyStatus = incumbencyStatus;
+    }
+
+    public String getIncumbencyStatusName() {
+        return incumbencyStatusName;
+    }
+
+    public void setIncumbencyStatusName(String incumbencyStatusName) {
+        this.incumbencyStatusName = incumbencyStatusName;
     }
 
     public String getPost() {

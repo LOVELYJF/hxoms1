@@ -13,7 +13,7 @@ public interface OmsConditionMapper extends BaseMapper<OmsCondition> {
      * @param sql
      * @return
      */
-    int excuteSelectSql(String sql);
+    Integer excuteSelectSql(String sql);
 
     /**
      * 处分信息

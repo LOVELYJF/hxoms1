@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
@@ -132,5 +133,37 @@ public class MakeCheckOpinionController {
 
     }
 
+    /**
+     *  保存 处长单条审批记录
+     * **/
+    @PostMapping("/saveChuZhangOneApproveRecord")
+    public Result  saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo){
+
+        leaderDetailProcessingService.saveChuZhangOneApproveRecord(auditOpinionVo);
+
+        return Result.success();
+
+
+    }
+
+    /**
+     * 部长审批列表
+     * **/
+    @GetMapping("/selectBuZhangApprover")
+    public Result  selectBuZhangApprover(LeaderSupervisionVo leaderSupervisionVo){
+
+        PageInfo pageInfo = leaderCommonService.selectBuZhangBusinessUser(leaderSupervisionVo);
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
+    /**保存部长审批 建议 **/
+    @PostMapping("/saveBuZhangApprover")
+    public Result saveBuZhangApprover(AuditOpinionVo auditOpinionVo){
+
+
+        leaderDetailProcessingService.saveBuZhangApprover(auditOpinionVo);
+
+        return  Result.success();
+    }
 
 }

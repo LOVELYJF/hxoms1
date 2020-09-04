@@ -1384,7 +1384,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectChuZhangApprover(leaderSupervisionVo);
+        List<Map>   users = leaderCommonQueryMapper.selectBuZhangApprover(leaderSupervisionVo);
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
@@ -1613,6 +1613,8 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
         return Integer.parseInt(lists.get(0).get("status").toString());
     }
+
+
 
 
 

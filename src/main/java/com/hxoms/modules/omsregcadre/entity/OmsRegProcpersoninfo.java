@@ -192,23 +192,23 @@ public class OmsRegProcpersoninfo {
     @ApiModelProperty(value="锁定原因")
     private String reason;
 
-    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="备案时间（创建时间）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="")
     private Date createTime;
 
-    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     @ApiModelProperty(value="")
     private String createUser;
 
-    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="")
     private Date modifyTime;
 
-    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     @ApiModelProperty(value="")
     private String modifyUser;
 
@@ -230,12 +230,18 @@ public class OmsRegProcpersoninfo {
     @ApiModelProperty(value="辞职、退休等日期 ")
     private Date exitDate;
 
-    @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="备案完成时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="备案完成时间")
     private Date finishTime;
 
+
+    @ColumnAnnotation(FieldName = "RZ_DATE",   FieldDescription="任职时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="任职时间")
+    private Date rzDate;
     public String getId() {
         return id;
     }
@@ -642,5 +648,13 @@ public class OmsRegProcpersoninfo {
 
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public Date getRzDate() {
+        return rzDate;
+    }
+
+    public void setRzDate(Date rzDate) {
+        this.rzDate = rzDate;
     }
 }

@@ -3,6 +3,7 @@ package com.hxoms.modules.leaderSupervision.service;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
+import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,5 +90,14 @@ public interface LeaderDetailProcessingService {
     void chuzhangAbroadApprovalBatch(LeaderSupervisionVo leaderSupervisionVo);
 
 
+
+    /**
+     * 保存 单条处长审批记录
+     * **/
+    void saveChuZhangOneApproveRecord(AuditOpinionVo auditOpinionVo);
+
+    /** 保存部长审批记录 **/
+
+    void saveBuZhangApprover(AuditOpinionVo auditOpinionVo);
 }
 

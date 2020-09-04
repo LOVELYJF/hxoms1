@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.certificateManage.service;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo;
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageQueryParam;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 
@@ -21,7 +23,7 @@ public interface OmsCerManageService {
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/13
      */
-    PageBean selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam);
+    PageBean<PageInfo<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam);
 
     /**
      * @Desc: 查询登记备案人员

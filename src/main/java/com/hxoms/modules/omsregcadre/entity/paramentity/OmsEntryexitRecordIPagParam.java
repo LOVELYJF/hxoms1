@@ -24,6 +24,17 @@ public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeEndDate;
+    //根据年份查询对应比对数据
+    private String year;
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
     public Integer getPageNum() {
         return pageNum;
     }

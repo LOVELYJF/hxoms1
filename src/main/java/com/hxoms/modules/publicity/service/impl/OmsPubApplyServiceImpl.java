@@ -89,6 +89,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubApply.setPoliticalAff((String) personInfo.get("POLITICAL_AFFINAME"));
         //职务
         omsPubApply.setJob((String) personInfo.get("JOB"));
+        //核心涉密人员年审
+        omsPubApply.setNssj((Date) personInfo.get("SECRET_REVIEW_DATE"));
         //是否为涉密人员
         omsPubApply.setSfsmry("0");
         String smdj = (String) personInfo.get("SECRET_LEVEL");
@@ -274,9 +276,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String name = omsPubApplyQueryParam.getName();
         /** 通知书文号*/
         String pwh = omsPubApplyQueryParam.getPwh();
-        if (StringUtils.isBlank(pwh)){
-            pwh = "琼台赴";
-        }
+
         /** 机构id*/
         String b0100 = omsPubApplyQueryParam.getB0100();
         List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);

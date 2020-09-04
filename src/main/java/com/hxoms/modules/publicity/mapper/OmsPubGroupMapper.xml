@@ -186,7 +186,7 @@
         FROM
             oms_pub_group_pre_approval t
         WHERE
-            t.BAZT = '2'
+            t.BAZT = #{bazt}
         union all
         SELECT
             '2.审核备案' label,
@@ -194,7 +194,7 @@
         FROM
             oms_pub_group_pre_approval t
         WHERE
-            t.BAZT = '2'
+            t.BAZT = #{bazt}
         union all
         SELECT
             '3.上传批文' label,
@@ -202,7 +202,15 @@
         FROM
             oms_pub_group_pre_approval t
         WHERE
-            t.BAZT = '2'
+            t.BAZT = #{bazt}
+        union all
+        SELECT
+            '4.已完结' label,
+            sum(case when t.SQZT = '4' then 1 else 0 end) num
+        FROM
+            oms_pub_group_pre_approval t
+        WHERE
+            t.BAZT = #{bazt}
     </select>
     <select id="getFlowDetail" parameterType="java.lang.String" resultType="java.util.Map">
         SELECT
