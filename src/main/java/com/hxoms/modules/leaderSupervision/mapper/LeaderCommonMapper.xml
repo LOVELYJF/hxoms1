@@ -1928,6 +1928,8 @@
 										pua.SFZYLD as sfzyld,  # 主要领导
 										pua.FMXX AS fmxx, # 负面信息
 										case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+										case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj,  # 是否已征求纪委意见
+
 										case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								         AS jwjl, # 纪委意见 结论
 										case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END

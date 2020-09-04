@@ -1020,7 +1020,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         }
 
         //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-        newUpdteBussinessApplyStatue(listPass, Constants.leader_businessName[4]);
+        newUpdteBussinessApplyStatueByChuzhangOne(listPass, Constants.leader_businessName[5], auditOpinionVo.getIspass());
 
 
         leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
@@ -1030,6 +1030,43 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         //更新 《登记备案人员信息表》中纪委不回复意见人员字段
         updateProcpersoninfoByjiwei(listPass);
+
+
+
+
+    }
+
+    public void newUpdteBussinessApplyStatueByChuzhangOne(List<BussinessTypeAndIdVo> businessTypeAndIdAndOnJobVos, String leaderStatusName,String ispass){
+
+        for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
+
+            String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
+
+            String incumbencyStatus = businessTypeAndIdAndOnJobVos.get(i).getIncumbencyStatus();
+
+             if("pass".equals(ispass)){
+                 ispass="通过";
+
+             }else if("nopass".equals(ispass)){
+                 ispass="不通过";
+
+             }
+
+            String updateApplyStatusSql =   getUpdateStatusSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName,incumbencyStatus,ispass);
+
+            log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
+
+
+            if(updateApplyStatusSql.length()>0){
+
+                SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
+                selectMapper.update(instance);
+
+
+            }
+
+
+        }
 
 
 
