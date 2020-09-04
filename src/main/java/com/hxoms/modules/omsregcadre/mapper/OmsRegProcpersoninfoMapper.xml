@@ -53,6 +53,8 @@
     <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
     <result column="EXIT_DATE" jdbcType="DATE" property="exitDate" />
     <result column="FINISH_TIME" jdbcType="DATE" property="finishTime"/>
+      <result column="RZ_DATE" jdbcType="DATE" property="rzDate"/>
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
@@ -61,7 +63,7 @@
     REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER,
     IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER,
     LICENCE_IDENTITY, NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME,
-    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE,FINISH_TIME
+    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
   </sql>
 
 
@@ -153,7 +155,7 @@
               FJGNF, XRXGW, LQGZ, DQGZ,
               REPLYOPINION, ABROADTIME, REASON,
               CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,
-              SORT_ID,PY,SECRET_POST,EXIT_DATE,FINISH_TIME
+              SORT_ID,PY,SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
     )
     values
     <foreach collection="list" index="index" item="item" separator=",">
@@ -173,7 +175,8 @@
       #{item.replyopinion,jdbcType=CHAR}, #{item.abroadtime,jdbcType=DATE}, #{item.reason,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=DATE}, #{item.createUser,jdbcType=VARCHAR},#{item.modifyTime,jdbcType=DATE},
       #{item.modifyUser,jdbcType=VARCHAR},#{item.sortId,jdbcType=VARCHAR},#{item.py,jdbcType=VARCHAR},
-      #{item.secretPost,jdbcType=VARCHAR},#{item.exitDate,jdbcType=DATE},#{item.finishTime,jdbcType=DATE}
+      #{item.secretPost,jdbcType=VARCHAR},#{item.exitDate,jdbcType=DATE},#{item.finishTime,jdbcType=DATE},
+      #{item.rzDate,jdbcType=DATE}
       )
     </foreach>
 

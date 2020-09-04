@@ -329,11 +329,11 @@ public class Constants {
     /**
      * 因公团组流程状态代码
      */
-    public static final int[] PUB_GROUP_STATUS_CODE ={0,1,2,3};
+    public static final int[] PUB_GROUP_STATUS_CODE ={0,1,2,3,4};
     /**
      * 因公团组流程状态名称
      */
-    public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文"};
+    public static final String[] PUB_GROUP_STATUS_NAME ={"撤销","上传/填写申请","审核备案","上传批文","已完结"};
     /**
      * 是
      */
