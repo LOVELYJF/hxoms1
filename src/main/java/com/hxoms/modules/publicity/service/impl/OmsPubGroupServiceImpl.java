@@ -486,7 +486,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             //更新批文号
             OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
             pubGroup.setId(id);
-            pubGroup.setZypwh(fileName);
+            pubGroup.setPwh(fileName);
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[3]);
             OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
             omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
@@ -510,7 +510,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }
         OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
         pubGroup.setId(id);
-        pubGroup.setZypwh(pwh);
+        pubGroup.setPwh(pwh);
         if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
             throw new CustomMessageException("批文号更新失败！");
         }
@@ -660,6 +660,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 omsPubApplyVO.setIdnumber(idCardNum);
                 omsPubApplyVO.setB0101(jsonArray.getJSONObject(i).get("工作单位").toString());
                 omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
+                omsPubApplyVO.setZtnrzw(jsonArray.getJSONObject(i).get("在团职务").toString());
                 omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
                 applyVOList.add(omsPubApplyVO);
             }else{
