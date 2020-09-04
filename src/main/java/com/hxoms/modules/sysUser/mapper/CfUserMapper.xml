@@ -87,18 +87,12 @@
     select
     <include refid="Base_Column_List"/>
     from cf_user
-    <where>
+    where user_type != '6'
       <if test='userName != null and userName != ""'>
         and (user_name like CONCAT('%',#{userName},'%')
         or user_code like CONCAT('%',#{userName},'%'))
       </if>
-      <if test="orgId != null and orgId.size > 0">
-        and org_id in
-        <foreach collection="orgId" item="orgId" open="(" separator="," close=")">
-          #{orgId}
-        </foreach>
-      </if>
-    </where>
+
   </select>
   <select id="selectByUserCode" resultType="com.hxoms.modules.sysUser.entity.CfUser">
     select

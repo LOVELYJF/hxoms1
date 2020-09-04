@@ -229,11 +229,12 @@
         a.cer_id cerId,
         c.work_unit workUnit,
         b.name,
-        b.sex,
+        if(b.sex='1','男',if(b.sex='2','女',b.sex)) sex,
         b.csrq,
         c.post,
-        a.get_status getStatus,
+        (select item_name from sys_dict_item where dict_code='zjlqzt' and item_code=a.get_status)  getStatus,
         b.zjlx,
+        (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=b.zjlx) zjlxName,
         b.zjhm,
         b.yxqz,
         a.spb_get_ele_sign spb,
@@ -242,9 +243,9 @@
         b.place,
         b.counter_num counterNum,
         a.data_source dataSource,
+        (select item_name from sys_dict_item where dict_code='zjlqsjly' and item_code=b.zjlx) dataSourceName,
         a.happen_Date happenDate,
-        a.create_time createTime,
-        a.get_time getTime
+        a.create_time createTime
     FROM
         cf_user d
     INNER JOIN oms_cer_get_task a ON d.org_id = a.rf_b0000
@@ -254,7 +255,7 @@
   <select id="selectCanGetCer" resultType="com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CanGetCerInfo">
     <include refid="calGetCerSql"/>
     WHERE
-    d.id=#{id}
+    d.user_id=#{id}
     AND a.get_status='0'
     <if test="overFlag!='Y'.toString()">
       AND a.data_source !='3';

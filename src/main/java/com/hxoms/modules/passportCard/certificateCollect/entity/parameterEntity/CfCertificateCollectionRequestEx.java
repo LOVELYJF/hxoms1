@@ -14,7 +14,7 @@ import java.util.Date;
 public class CfCertificateCollectionRequestEx{
 
     @ApiModelProperty(value="数据列表id",required = true)
-    private String cerId;
+    private String cerCjId;
 
     @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
     private Integer zjlx;
@@ -49,12 +49,12 @@ public class CfCertificateCollectionRequestEx{
     @ApiModelProperty(value = "催缴情况",required = true)
     private String allCjResult;
 
-    public String getCerId() {
-        return cerId;
+    public String getCerCjId() {
+        return cerCjId;
     }
 
-    public void setCerId(String cerId) {
-        this.cerId = cerId;
+    public void setCerCjId(String cerCjId) {
+        this.cerCjId = cerCjId;
     }
 
     public Integer getZjlx() {

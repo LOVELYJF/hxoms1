@@ -84,7 +84,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
      * @Date: 2020/8/18
      */
     @Override
-    public PageBean selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam) {
+    public PageBean<PageInfo<CerGetTaskInfo>> selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam) {
         PageBean pageBean= cerGetTaskQueryParam.getPageBean();
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageNum());
         PageInfo<CerGetTaskInfo> pageInfo=new PageInfo<CerGetTaskInfo>(omsCerGetTaskMapper.selectCanGetCer(cerGetTaskQueryParam));

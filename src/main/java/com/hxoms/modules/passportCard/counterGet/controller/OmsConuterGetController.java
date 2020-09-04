@@ -1,11 +1,15 @@
 package com.hxoms.modules.passportCard.counterGet.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskQueryParam;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.IdentityParam;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskListParam;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Return:
  * @Date: 2020/8/14
  */
+@Api(tags = "柜台领取证照")
 @RestController
 @RequestMapping("/conuterGet")
 public class OmsConuterGetController {
@@ -35,6 +40,7 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/14
      */
+    @ApiOperation(value = "验证身份证")
     @PostMapping("/verifyIdentity")
     public Result verifyIdentity(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyIdentity(identityParam);
@@ -47,6 +53,7 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/14
      */
+    @ApiOperation(value = "验证指纹")
     @PostMapping("/verifyFingerMark")
     public Result verifyFingerMark(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyFingerMark(identityParam);
@@ -58,6 +65,7 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/14
      */
+    @ApiOperation(value = "验证二维码")
     @PostMapping("/verifyQRCode")
     public Result verifyQRCode(@RequestBody IdentityParam identityParam){
         omsCounterGetService.verifyQRCode(identityParam);
@@ -71,8 +79,9 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/18
      */
+    @ApiOperation(value = "查询可领取证照")
     @PostMapping("/selectCanGetCer")
-    public Result selectCanGetCer(@RequestBody CerGetTaskQueryParam cerGetTaskQueryParam){
+    public Result<PageInfo<CerGetTaskInfo>> selectCanGetCer(@RequestBody CerGetTaskQueryParam cerGetTaskQueryParam){
         return Result.success(omsCounterGetService.selectCanGetCer(cerGetTaskQueryParam));
     }
 
@@ -83,6 +92,7 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/17
      */
+    @ApiOperation(value = "确认领取证照，保存签名")
     @PostMapping("/updateCerGetTask")
     public Result updateToCerGet(@RequestBody OmsCerGetTaskListParam omsCerGetTaskListParam){
         omsCounterGetService.updateToCerGet(omsCerGetTaskListParam);
@@ -95,6 +105,7 @@ public class OmsConuterGetController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/17
      */
+    @ApiOperation(value = "确认领取审批表，保存签名")
     @PostMapping("/updateToSpbGet")
     public Result updateToSpbGet(@RequestBody OmsCerGetTaskListParam omsCerGetTaskListParam){
         omsCounterGetService.updateToSpbGet(omsCerGetTaskListParam);

@@ -414,13 +414,14 @@
        SELECT
       a.id,
       c.name,
-      c.sex,
+      if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
       c.birth_date csrq,
+      c.rf_B0000 rfB0000,
       c.work_Unit workUnit,
       c.post,
-      b.zjlx,
-      (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=b.zjlx) zjlxName,
-      b.zjhm,
+      a.zjlx,
+      (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
+      a.zjhm,
       a.data_source dataSource,
       a.happen_Date happenDate,
       a.return_Date returnDate,
@@ -428,10 +429,35 @@
     FROM
         cf_certificate_collection a
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
-    LEFT JOIN cf_certificate b ON a.cer_id = b.id
     WHERE
         a.cj_status='2'
     AND a.rf_b0000=#{rfB0000}
   </select>
-
+  <select id="selectCjContentByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjContentParam">
+         SELECT
+        a.id,
+        c.name,
+        c.work_Unit workUnit,
+        a.zjlx,
+        (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
+        a.zjhm,
+        a.return_Date returnDate
+      FROM
+          cf_certificate_collection a
+      INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
+      WHERE
+          a.cj_status='2'
+      AND a.rf_b0000=#{rfB0000}
+    </select>
+  <select id="selectCjInfoByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest">
+    SELECT
+        id cerCjId,
+        zjlx,
+        zjhm
+    FROM
+        cf_certificate_collection
+    WHERE
+        RF_B0000 = #{rfB0000}
+    AND CJ_STATUS = '2'
+  </select>
 </mapper>

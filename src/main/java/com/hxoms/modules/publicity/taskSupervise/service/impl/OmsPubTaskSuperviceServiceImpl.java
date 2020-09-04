@@ -272,6 +272,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
      * @Return: void
      * @Date: 2020/6/29
      */
+    @Override
     public void preAndRecMessage(String orgId,String msgContent,String userType,String receiveUserType) throws Exception{
         //用户类型为监督处工作人员时，查询条件剔除机构单位。
         List<User> receiveUserList=omsPubTaskSuperviseMapper.selectUserByQua(userType.equals("5")?null:orgId,userType);

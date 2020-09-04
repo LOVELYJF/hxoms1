@@ -18,9 +18,9 @@ public class CfCertificateCollectionRequest {
     @ApiModelProperty(value="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照催缴表ID")
+    @ColumnAnnotation(FieldName = "CER_CJ_ID",   FieldDescription="证照催缴表ID")
     @ApiModelProperty(value="证照催缴表ID")
-    private String cerId;
+    private String cerCjId;
 
     @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
@@ -82,12 +82,12 @@ public class CfCertificateCollectionRequest {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getCerId() {
-        return cerId;
+    public String getCerCjId() {
+        return cerCjId;
     }
 
-    public void setCerId(String cerId) {
-        this.cerId = cerId == null ? null : cerId.trim();
+    public void setCerCjId(String cerCjId) {
+        this.cerCjId = cerCjId == null ? null : cerCjId.trim();
     }
 
     public Integer getZjlx() {

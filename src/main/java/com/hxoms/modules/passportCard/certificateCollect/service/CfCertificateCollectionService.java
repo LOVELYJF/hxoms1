@@ -5,6 +5,8 @@ import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public interface CfCertificateCollectionService extends IService<CfCertificateCollection> {
@@ -57,6 +59,16 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      */
     void insertCerCjResult(List<CfCertificateCollectionRequestEx> cerCollectionRequestExList);
 
+
+    /**
+     * @Desc: 保存催缴结果（短信催缴）
+     * @Author: wangyunquan
+     * @Param: [saveCjResultList]
+     * @Return: void
+     * @Date: 2020/9/4
+     */
+    void updateCerCjResult(List<SaveCjResult> saveCjResultList);
+
     /**
      * @Desc: 解除催缴
      * @Author: wangyunquan
@@ -66,6 +78,23 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      */
     void updateCerCjForRemove(List<RemoveCjApply> removeCjApplyList);
 
+    /**
+     * @Desc: 获取导出短信催缴名单
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.ExportSMSCjInfo>
+     * @Date: 2020/9/3
+     */
+    List<ExportSMSCjInfo> getExportSMSCjList(RequestList<Institution> requestList);
+
+    /**
+     * @Desc: 导出短信催缴名单
+     * @Author: wangyunquan
+     * @Param: [exportRequestPara, outputStream]
+     * @Return: void
+     * @Date: 2020/9/3
+     */
+    void exportSMSCjList(ExportRequestPara exportRequestPara, ServletOutputStream outputStream) throws IOException;
     /**
      * @Desc: 锁定单位出国
      * @Author: wangyunquan
@@ -78,9 +107,19 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
     /**
      * @Desc: 获取电话催缴内容
      * @Author: wangyunquan
-     * @Param: [phoneContentParamList]
-     * @Return: java.lang.String
+     * @Param: [cjContentParamList]
+     * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PhoneContent
      * @Date: 2020/9/1
      */
-    String createPhoneContent(List<PhoneContentParam> phoneContentParamList);
+    PhoneContent createPhoneContent(List<CjContentParam> cjContentParamList);
+
+    /**
+     * @Desc: 发送催缴通知
+     * @Author: wangyunquan
+     * @Param: [cjContentParam]
+     * @Return: void
+     * @Date: 2020/9/3
+     */
+    void sendCjNotice(CjContentParam cjContentParam);
+
 }
