@@ -1,8 +1,10 @@
 package com.hxoms.modules.passportCard.certificateCollect.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
@@ -12,8 +14,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Api(tags = "证照催缴")
@@ -80,20 +86,33 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "获取电话催缴内容")
     @PostMapping("/createPhoneContent")
-    public Result<String> createPhoneContent(@RequestBody RequestList<PhoneContentParam> requestList){
+    public Result<PhoneContent> createPhoneContent(@RequestBody RequestList<CjContentParam> requestList){
         return Result.success(cfCertificateCollectionService.createPhoneContent(requestList.getList()));
     }
     /**
-     * @Desc: 保存催缴结果
+     * @Desc: 保存催缴结果（电话催缴）
      * @Author: wangyunquan
      * @Param: [cerCollectionRequestList]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/12
      */
-    @ApiOperation(value = "保存催缴结果")
+    @ApiOperation(value = "保存催缴结果（电话催缴）")
     @PostMapping("/insertCerCjResult")
     public Result insertCerCjResult(@RequestBody RequestList<CfCertificateCollectionRequestEx> requestList){
         cfCertificateCollectionService.insertCerCjResult(requestList.getList());
+        return  Result.success();
+    }
+    /**
+     * @Desc: 保存催缴结果（短信催缴）
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/9/4
+     */
+    @ApiOperation(value = "保存催缴结果（短信催缴）")
+    @PostMapping("/updateCerCjResult")
+    public Result updateCerCjResult(@RequestBody RequestList<SaveCjResult> requestList){
+        cfCertificateCollectionService.updateCerCjResult(requestList.getList());
         return  Result.success();
     }
 
@@ -112,6 +131,33 @@ public class CfCertificateCollectionController {
     }
 
     /**
+     * @Desc: 获取导出短信催缴名单
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: com.hxoms.common.utils.Result<java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.ExportSMSCjInfo>>
+     * @Date: 2020/9/3
+     */
+    @ApiOperation(value = "获取导出短信催缴名单")
+    @PostMapping("/getExportSMSCjList")
+    public Result<List<ExportSMSCjInfo>> getExportSMSCjList(@RequestBody  RequestList<Institution> requestList){
+        return Result.success(cfCertificateCollectionService.getExportSMSCjList(requestList));
+    }
+
+    @ApiOperation(value = "导出短信催缴名单")
+    @PostMapping("/ExportSMSCjList")
+    public void exportSMSCjList(@RequestBody ExportRequestPara exportRequestPara, HttpServletResponse response){
+        try {
+            cfCertificateCollectionService.exportSMSCjList(exportRequestPara,response.getOutputStream());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode(UUIDGenerator.getPrimaryKey()+".xls", "utf-8")));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+    }
+
+    /**
      * @Desc: 发送催缴通知
      * @Author: wangyunquan
      * @Param: [omsSupSuspendUnit]
@@ -120,7 +166,8 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "发送催缴通知")
     @PostMapping("/sendCjNotice")
-    public Result sendCjNotice(){
+    public Result sendCjNotice(@RequestBody CjContentParam cjContentParam){
+        cfCertificateCollectionService.sendCjNotice(cjContentParam);
         return Result.success();
     }
 
