@@ -95,7 +95,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             //出国人员信息
             for(int i = 0; i < num; i++ ){
                 OmsPubApply pubApply = applyVOList.get(i);
-                pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup.getCgsj());
+                pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup.getCgsj(),pubApply.getB0100());
                 pubApply.setYspId(id);
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
@@ -213,14 +213,23 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public void insertPerson(String personId,String pubId){
-        if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId)){
+    public String insertPerson(String personId,String pubId,String b0100){
+        if (StringUtils.isBlank(personId) || StringUtils.isBlank(pubId) || StringUtils.isBlank(b0100)){
             throw new CustomMessageException("参数为空!");
         }
+        String msg = "";
         OmsPubGroupPreApproval pubGroup = pubGroupMapper.getPubGroupDetailById(pubId);
-        pubGroupMapper.updatePubGroup(pubGroup);//更新团组人数
-
-        OmsPubApply pubApply = getInsertOmsPubApply(personId,pubGroup.getCgsj());
+        List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(pubId);
+        if(applyVOList.size() > 0){
+            for (int i = 0; i < applyVOList.size(); i++) {
+                if(personId.equals(applyVOList.get(i).getProcpersonId())
+                        && Constants.private_business[8] != applyVOList.get(i).getSqzt()){
+                    msg = "当前团组已经存在该人员，请不要重复添加！";
+                    return msg;
+                }
+            }
+        }
+        OmsPubApply pubApply = getInsertOmsPubApply(personId,pubGroup.getCgsj(),b0100);
         pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
@@ -237,6 +246,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(pubApplyMapper.insert(pubApply) < 1){
             throw new CustomMessageException("添加失败!");
         }
+        return msg;
     }
 
     @Override
@@ -679,7 +689,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
      * @param id(人员id)
      * @return OmsPubApply
      */
-    private OmsPubApply getInsertOmsPubApply(String id,Date cgsj){
+    private OmsPubApply getInsertOmsPubApply(String id,Date cgsj,String b0100){
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
         OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
@@ -689,7 +699,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setId(UUIDGenerator.getPrimaryKey());
         pubApply.setProcpersonId(id);
         pubApply.setA0100(personInfo.getA0100());
-        pubApply.setB0100(personInfo.getRfB0000());
+        pubApply.setB0100(b0100);
         pubApply.setHealth(personInfo.getHealth());
         pubApply.setPoliticalAff(personInfo.getPoliticalAffiname());
         pubApply.setJob(personInfo.getPost());
