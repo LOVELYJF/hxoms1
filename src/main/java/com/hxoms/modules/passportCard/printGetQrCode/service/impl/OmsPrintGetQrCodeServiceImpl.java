@@ -8,14 +8,17 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.OmsCerPrintQrCode;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CanGetCerInfo;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CreateQrCodeApply;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 import com.hxoms.modules.passportCard.printGetQrCode.mapper.OmsCerPrintQrCodeMapper;
 import com.hxoms.modules.passportCard.printGetQrCode.service.OmsPrintGetQrCodeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +35,11 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
      * @Desc: 查询可领取证照
      * @Author: wangyunquan
      * @Param: [pageBean, overFlag]
-     * @Return: com.hxoms.common.utils.PageBean
+     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CanGetCerInfo>
      * @Date: 2020/8/20
      */
     @Override
-    public PageBean selectCanGetCer(PageBean pageBean, String overFlag) {
+    public PageBean<CanGetCerInfo> selectCanGetCer(PageBean pageBean, String overFlag) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
@@ -53,13 +56,13 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
      * @Date: 2020/8/21
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public String createPrintQrCode(List<OmsCerPrintQrCode> omsCerPrintQrCodeList) throws IOException {
+    public QrCode createPrintQrCode(List<CreateQrCodeApply> createQrCodeApplyList) throws IOException {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String enCodeStr=null;
+        QrCode qrCode=new QrCode();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        if(omsCerPrintQrCodeList.size()>0){
+        if(createQrCodeApplyList.size()>0){
             String qrCodeId= UUIDGenerator.getPrimaryKey();
             StringBuffer stringBuffer=new StringBuffer("获取请求路径");
             stringBuffer.append("?").append("operatId=").append(userInfo.getId()).append("&qrCodeId=").append(qrCodeId);
@@ -74,17 +77,22 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
                 if(bs!=null)
                     bs.close();
             }
-            for (OmsCerPrintQrCode omsCerPrintQrCode : omsCerPrintQrCodeList) {
-                omsCerPrintQrCode.setGetId(UUIDGenerator.getPrimaryKey());
+            List<OmsCerPrintQrCode> omsCerPrintQrCodeList=new ArrayList<>();
+            for (CreateQrCodeApply createQrCodeApply : createQrCodeApplyList) {
+                OmsCerPrintQrCode omsCerPrintQrCode=new OmsCerPrintQrCode();
+                BeanUtils.copyProperties(createQrCodeApply,omsCerPrintQrCode);
+                omsCerPrintQrCode.setId(UUIDGenerator.getPrimaryKey());
                 omsCerPrintQrCode.setQrCodeId(qrCodeId);
                 omsCerPrintQrCode.setQrUrl(stringBuffer.toString());
                 omsCerPrintQrCode.setQrCode(enCodeStr);
                 omsCerPrintQrCode.setOperator(userInfo.getId());
                 omsCerPrintQrCode.setOperateTime(new Date());
+                omsCerPrintQrCodeList.add(omsCerPrintQrCode);
             }
-            if(omsPrintGetQrCodeService.saveBatch(omsCerPrintQrCodeList))
+            if(!omsPrintGetQrCodeService.saveBatch(omsCerPrintQrCodeList))
                 throw new CustomMessageException("保存失败！");
         }
-        return enCodeStr;
+        qrCode.setQrCodeStr(enCodeStr);
+        return qrCode;
     }
 }
