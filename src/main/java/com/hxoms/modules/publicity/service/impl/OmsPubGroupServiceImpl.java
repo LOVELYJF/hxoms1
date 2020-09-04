@@ -223,7 +223,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(applyVOList.size() > 0){
             for (int i = 0; i < applyVOList.size(); i++) {
                 if(personId.equals(applyVOList.get(i).getProcpersonId())
-                        && Constants.private_business[8] != applyVOList.get(i).getSqzt()){
+                        && Constants.private_business[7] != applyVOList.get(i).getSqzt()){
                     msg = "当前团组已经存在该人员，请不要重复添加！";
                     return msg;
                 }
