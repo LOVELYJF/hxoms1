@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -249,8 +250,12 @@ public class OmsPubGroupController {
     @PostMapping("/sendTask")
     public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt) {
         try {
-            pubGroupService.sendTask(pubGroupAndApplyList,bazt);
-            return Result.success();
+            String msg = pubGroupService.sendTask(pubGroupAndApplyList,bazt);
+            if(StringUtils.isBlank(msg)){
+                return Result.success();
+            }else{
+                return Result.error(msg);
+            }
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");

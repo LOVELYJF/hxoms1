@@ -276,9 +276,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String name = omsPubApplyQueryParam.getName();
         /** 通知书文号*/
         String pwh = omsPubApplyQueryParam.getPwh();
-        if (StringUtils.isBlank(pwh)){
-            pwh = "琼台赴";
-        }
+
         /** 机构id*/
         String b0100 = omsPubApplyQueryParam.getB0100();
         List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);

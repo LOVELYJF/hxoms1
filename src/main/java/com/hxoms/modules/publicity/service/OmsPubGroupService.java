@@ -50,7 +50,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //获取撤销记录信息
     Map<String,Object> getBackoutDetailById(String id);
     //递送任务
-    void sendTask(OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt);
+    String sendTask(OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt);
     //审核备案下一步
     String goToUploadApproval(String id);
     //上传批文
@@ -59,4 +59,6 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     String updateApproval(String pwh, String id);
     //获取备案步骤任务数
     List<Map<String,String>> getNumByStatus(String bazt);
+    //判断流程是否完结（给三凡用）
+    void isGroupBeOver(String id);
 }

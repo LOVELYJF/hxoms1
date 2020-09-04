@@ -65,6 +65,9 @@
         <result column="b0236" jdbcType="INTEGER" property="b0236"/>
         <result column="b0234" jdbcType="INTEGER" property="b0234"/>
         <result column="b0121" jdbcType="VARCHAR" property="b0121"/>
+        <result column="ORGANIZATION_CODE" jdbcType="VARCHAR" property="ORGANIZATION_CODE"/>
+        <result column="CONTACTS" jdbcType="VARCHAR" property="CONTACTS"/>
+        <result column="PHONE" jdbcType="VARCHAR" property="PHONE"/>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.support.b01.entity.B01">
         <result column="b0180" jdbcType="LONGVARCHAR" property="b0180"/>
@@ -95,7 +98,7 @@
         level_index, b0140, b0141,
         b0142, b0143, b0150,
         b0236, b0234, b0121,
-        b0180,job_number_desc)
+        b0180,job_number_desc,ORGANIZATION_CODE,CONTACTS,PHONE)
         values (#{b0100,jdbcType=VARCHAR}, #{b0104,jdbcType=VARCHAR}, #{b0107,jdbcType=VARCHAR},
         #{b0111,jdbcType=VARCHAR}, #{b0114,jdbcType=VARCHAR}, #{b0117,jdbcType=VARCHAR},
         #{b0124,jdbcType=VARCHAR}, #{b0127,jdbcType=VARCHAR}, #{b0131,jdbcType=VARCHAR},
@@ -117,7 +120,8 @@
         #{levelIndex,jdbcType=VARCHAR}, #{b0140,jdbcType=VARCHAR}, #{b0141,jdbcType=VARCHAR},
         #{b0142,jdbcType=VARCHAR}, #{b0143,jdbcType=VARCHAR}, #{b0150,jdbcType=INTEGER},
         #{b0236,jdbcType=INTEGER}, #{b0234,jdbcType=INTEGER}, #{b0121,jdbcType=VARCHAR},
-        #{b0180,jdbcType=LONGVARCHAR},#{jobNumberDesc,jdbcType=LONGVARCHAR})
+        #{b0180,jdbcType=LONGVARCHAR},#{jobNumberDesc,jdbcType=LONGVARCHAR}, #{ORGANIZATION_CODE,jdbcType=VARCHAR}
+        , #{CONTACTS,jdbcType=VARCHAR}, #{PHONE,jdbcType=VARCHAR})
     </insert>
     <!--添加机构-->
     <insert id="insertOrg" parameterType="com.hxoms.support.b01.entity.B01">
@@ -318,6 +322,15 @@
             <if test="jobNumberDesc != null">
                 job_number_desc,
             </if>
+            <if test="ORGANIZATION_CODE != null">
+                ORGANIZATION_CODE,
+            </if>
+            <if test="CONTACTS != null">
+                CONTACTS,
+            </if>
+            <if test="PHONE != null">
+                PHONE,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="b0100 != null">
@@ -515,6 +528,15 @@
             <if test="jobNumberDesc != null">
                 #{jobNumberDesc,jdbcType=LONGVARCHAR},
             </if>
+            <if test="ORGANIZATION_CODE != null">
+                #{ORGANIZATION_CODE,jdbcType=VARCHAR},
+            </if>
+            <if test="CONTACTS != null">
+                #{CONTACTS,jdbcType=VARCHAR},
+            </if>
+            <if test="PHONE != null">
+                #{PHONE,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
 
@@ -536,7 +558,8 @@
     b0240=#{b0240},sortid=#{orderIndex},pad_as_unit=#{padAsOrg},b0199=#{b0199},
     modify_user=#{modifyUser}, modify_time=#{modifyTime},level_index=#{levelIndex},
     b0140=#{b0140},b0141=#{b0141},b0142=#{b0142},b0143=#{b0143},b0150=#{b0150},b0180=#{b0180},
-    b0236=#{b0236},b0234=#{b0234},b0121=#{b0121},job_number_desc=#{jobNumberDesc}
+    b0236=#{b0236},b0234=#{b0234},b0121=#{b0121},job_number_desc=#{jobNumberDesc},ORGANIZATION_CODE=#{ORGANIZATION_CODE},
+    CONTACTS=#{CONTACTS},PHONE=#{PHONE}
     WHERE b0111=#{b0111}
     </update>
 
@@ -546,7 +569,7 @@
     b0151b,b0154a,b0154b,b0157a,b0157b,b0161,b0164,b0167,b0171a,b0171b,b0174,b0177,b0181,b0183,
     b0184,b0185,b0187a,b0187b,b0188,b0189,b0190,b0191,b0191a,b0192,b0193,b0194,b0197,b0198,b0227,
     b0232,b0233,b0238,b0239,b0240,sortid,pad_as_unit,b0199,modify_user,modify_time,level_index,
-    b0140,b0141,b0142,b0143,b0150,b0180,b0236,b0234,b0121,job_number_desc
+    b0140,b0141,b0142,b0143,b0150,b0180,b0236,b0234,b0121,job_number_desc,ORGANIZATION_CODE,CONTACTS,PHONE
     FROM b01 WHERE b0101 LIKE "%"#{b0101}"%"
     </select>
 
@@ -584,7 +607,7 @@
     b0171b,b0174,b0177,b0181,b0183,b0184, b0185,b0187a,b0187b,b0188,b0189,b0190,
     b0191,b0191a,b0192,b0193,b0194,b0197,b0198,b0227,b0232,b0233,b0238,b0239,
     b0240,sortid,pad_as_unit,b0199,modify_user, modify_time,level_index,
-    b0140,b0141,b0142,b0143,b0150,b0180,b0236,b0234,b0121,job_number_desc
+    b0140,b0141,b0142,b0143,b0150,b0180,b0236,b0234,b0121,job_number_desc,ORGANIZATION_CODE,CONTACTS,PHONE
     FROM  b01 WHERE b0111=#{b0111}
     </select>
 
