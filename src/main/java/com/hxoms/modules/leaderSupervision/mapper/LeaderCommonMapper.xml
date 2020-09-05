@@ -2059,7 +2059,6 @@
 			   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
 			   pua.CFRW AS cfrw,  #  出访任务
 			   pua.PWH  as pwh,   #批文
-			   "因公" AS businessType,  # 申请类型
 			   pua.CGSPDW AS cgspdw, # 审批单位
 			   IF (
 				   a.A0104 NOT IN ('1', '2'),

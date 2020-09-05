@@ -184,7 +184,7 @@
 
     <!--修改字典映射表信息-->
     <update id="updateSysDictItem" parameterType="com.hxoms.support.sysdict.entity.SysDictItem">
-    UPDATE sys_dict_item SET dict_code=#{dictCode},item_name=#{itemName},item_num=#{itemNum},
+    UPDATE sys_dict_item SET dict_code=#{dictCode},item_code=#{itemCode},item_name=#{itemName},item_num=#{itemNum},
     item_levelcode=#{itemLevelcode},short_name=#{shortName},item_desc=#{itemDesc},
     comp_spell=#{compSpell},logo_spell=#{logoSpell},is_use=#{isUse},is_leaf=#{isLeaf},
     modify_user=#{modifyUser},modify_time=#{modifyTime},securitylevel=#{securitylevel},

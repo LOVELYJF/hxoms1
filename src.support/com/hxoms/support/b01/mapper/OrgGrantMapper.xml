@@ -69,6 +69,10 @@
         delete from ${tabName} where b0111=#{id}
     </delete>
 
+    <delete id="deleteLeaderTypeGrantByLeaderTypeId">
+        delete from cf_org_leadertype where b0111=#{id} and leadertype_id=#{ltid}
+    </delete>
+
     <select id="selectGrantModuleId" resultType="string">
         select m.mu_id
         from cf_org_module rm
@@ -90,7 +94,7 @@
     </select>
 
     <select id="selectLeaderType" resultType="com.hxoms.common.tree.Tree">
-        SELECT id as "id", item_name as "label",parent_item_code as "pId"
+        SELECT item_id as "id", item_name as "label",parent_item_code as "pId"
         FROM sys_dict_item
         where dict_code=#{dictCode}
         ORDER BY orderindex

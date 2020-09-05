@@ -95,7 +95,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             //出国人员信息
             for(int i = 0; i < num; i++ ){
                 OmsPubApply pubApply = applyVOList.get(i);
-                pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup.getCgsj(),pubApply.getB0100());
+                pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup,pubApply.getB0100());
                 pubApply.setYspId(id);
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
@@ -104,7 +104,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubApply.setTlsj(pubGroup.getTjgj());
                 pubApply.setCfrw(pubGroup.getCfrw());
                 pubApply.setCfsy(pubGroup.getCfsy());
-                pubApply.setSfzb(Constants.IS_NOT);
+                pubApply.setYspId(pubGroup.getB0100());
                 applyList.add(pubApply);
             }
             pubApplyMapper.insertPubApplyList(applyList);
@@ -229,7 +229,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 }
             }
         }
-        OmsPubApply pubApply = getInsertOmsPubApply(personId,pubGroup.getCgsj(),b0100);
+        OmsPubApply pubApply = getInsertOmsPubApply(personId,pubGroup,b0100);
         pubApply.setYspId(pubId);
         pubApply.setZtdw(pubGroup.getZtdw());
         pubApply.setCgsj(pubGroup.getCgsj());
@@ -238,9 +238,9 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setTlsj(pubGroup.getTjgj());
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
-        pubApply.setSfzb(Constants.IS_YES);
-        if(Constants.PUB_GROUP_STATUS_CODE[2] == pubGroup.getSqzt()){
+        if(Constants.PUB_GROUP_STATUS_CODE[1] != pubGroup.getSqzt()){
             pubApply.setSqzt(Constants.private_business[0]);
+            pubApply.setSfzb(Constants.IS_YES);
             pubApply.setSfxd(IS_ASSIGN);
         }
         if(pubApplyMapper.insert(pubApply) < 1){
@@ -353,18 +353,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(applyVOList.size() > 0){
             for (int i = 0; i < applyVOList.size(); i++) {
                 OmsPubApplyVO applyVO = applyVOList.get(i);
-                if(Constants.IS_YES.equals(applyVO.getSfbg())){
-                    if(Constants.IS_YES.equals(applyVO.getSfzb())){
-                        applyVO.setApplyStatus("撤销");
-                    }
-                    if(Constants.IS_NOT.equals(applyVO.getSfzb()) || applyVO.getSfzb() == null){
-                        applyVO.setApplyStatus("撤销");
-                    }
+                if(Constants.private_business[7] == applyVO.getSqzt()){
+                    applyVO.setApplyStatus("撤销");
                 }
-                if(Constants.IS_NOT.equals(applyVO.getSfbg()) || applyVO.getSfbg() == null){
-                    if(Constants.IS_YES.equals(applyVO.getSfzb())){
-                        applyVO.setApplyStatus("增补");
-                    }
+                if(Constants.private_business[7] != applyVO.getSqzt() && Constants.IS_YES.equals(applyVO.getSfzb())){
+                    applyVO.setApplyStatus("增补");
                 }
             }
         }
@@ -683,7 +676,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
      * @param id(人员id)
      * @return OmsPubApply
      */
-    private OmsPubApply getInsertOmsPubApply(String id,Date cgsj,String b0100){
+    private OmsPubApply getInsertOmsPubApply(String id,OmsPubGroupPreApproval pubGroup,String b0100){
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsPubApply pubApply = new OmsPubApply();
         OmsRegProcpersoninfo personInfo = regProcpersoninfoMapper.selectById(id);
@@ -719,24 +712,15 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubApply.setZjcgqk(zjcgqk.toString());
         }
         //负面信息
-        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),cgsj);
+        String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubGroup.getCgsj());
         pubApply.setFmxx(fmxx);
         pubApply.setSfysp(Constants.IS_YES);
-        if(StringUtils.isBlank(String.valueOf(pubApply.getSqzt()))){
-            pubApply.setSqzt(Constants.private_business[8]);
-        }
-        if(StringUtils.isBlank(String.valueOf(pubApply.getSfxd()))){
-            pubApply.setSfxd(IS_NOT_ASSIGN);
-        }
-        if(StringUtils.isBlank(pubApply.getSfbg())){
-            pubApply.setSfbg(Constants.IS_NOT);
-        }
-        if(StringUtils.isBlank(pubApply.getSfzb())){
-            pubApply.setSfzb(Constants.IS_NOT);
-        }
-        if(StringUtils.isBlank(pubApply.getSftsry())){
-            pubApply.setSftsry(Constants.IS_NOT);
-        }
+        pubApply.setSqzt(Constants.private_business[8]);
+        pubApply.setSfxd(IS_NOT_ASSIGN);
+        pubApply.setSfbg(Constants.IS_NOT);
+        pubApply.setSfzb(Constants.IS_NOT);
+        pubApply.setSftsry(Constants.IS_NOT);
+        pubApply.setDwjsxs(Constants.IS_NOT);
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());
         return pubApply;

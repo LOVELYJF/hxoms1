@@ -121,7 +121,7 @@
     </select>
 
     <select id="selectLeaderType" resultType="com.hxoms.common.tree.Tree">
-        SELECT id as "id", item_name as "label",parent_item_code as "pId"
+        SELECT ITEM_ID as "id", item_name as "label",parent_item_code as "pId"
         FROM sys_dict_item
         where dict_code=#{dictCode}
         ORDER BY orderindex
@@ -129,7 +129,7 @@
     <select id="selectGrantOrg" resultType="java.lang.String">
         select b.b0111  from cf_roleb01 rb
         inner join b01 b
-        on rb.b0111=b.b0111
+        on rb.org_id=b.b0111
         where rb.role_id=#{roleId}
     </select>
 
