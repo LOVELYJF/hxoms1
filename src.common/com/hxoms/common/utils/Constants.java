@@ -342,4 +342,7 @@ public class Constants {
      * 否
      */
     public static final String IS_NOT = "0";
+
+    //出入境状态 1出境 2 入境
+    public static final int[] OGE_STATUS_CODE ={1,2};
 }

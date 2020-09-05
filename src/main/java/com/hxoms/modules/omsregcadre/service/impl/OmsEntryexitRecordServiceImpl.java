@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.PageUtil;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
 import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
@@ -34,6 +31,7 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,8 +47,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     private OmsEntryexitRecordCompbatchMapper entryexitRecordCompbatchMapper;
     @Autowired
     private CountryMapper countryMapper;
-    @Autowired
-    private OmsSensitiveLimitMapper omsSensitiveLimitMapper;
     @Autowired
     private OmsSupSuspendUnitMapper omsSupSuspendUnitMapper;
     @Autowired
@@ -355,7 +351,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //查询指定人员的出入境记录
         entryexitRecordIPagParam.setOmsId(omsId);
         //注意要按出国境时间排序（升序）
-        //todo
         List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
         //没有出入境记录不做比对
         if(omsEntryexitRecords.size()==0)return;
@@ -372,7 +367,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         for(int i=0;i<=omsEntryexitRecords.size()-1;)
         {
             OmsEntryexitRecord recOut=omsEntryexitRecords.get(i);
-            OmsEntryexitRecord recIn =new OmsEntryexitRecord();
+            OmsEntryexitRecord recIn = null;
             if(i<omsEntryexitRecords.size()-1)
                 recIn=omsEntryexitRecords.get(i+1);
 
@@ -383,7 +378,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
             if(recIn!=null)recIn.setComparisonResult("");
 
             //出入境配对
-            if(recOut.getOgaMode()=="出境" && recIn!=null && recIn.getOgaMode()=="入境")
+            if(recOut.getOgeStatus()== Constants.OGE_STATUS_CODE[0] && recIn!=null && recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[1])
             {
                 exitDate=recOut.getOgeDate();
                 entryDate=recIn.getOgeDate();
@@ -391,7 +386,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 i+=2;
             }
             //入境记录丢失
-            else if(recOut.getOgaMode()=="出境" &&(recIn==null ||recIn.getOgaMode()=="出境"))
+            else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[1]))
             {
                 exitDate=recOut.getOgeDate();
                 country=recOut.getDestination();
@@ -399,7 +394,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 i+=1;
             }
             //出境记录丢失
-            else if(recOut.getOgaMode()=="入境" )
+            else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[1] )
             {
                 entryDate=recOut.getOgeDate();
                 country=recOut.getDestination();
@@ -568,16 +563,63 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     @Override
     public Map<String, Object> queryCompresultByYear(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         Map<String, Object> map = new HashMap<>();
+
         OmsEntryexitRecordVO info = baseMapper.queryCompresultByYear(entryexitRecordIPagParam.getYear());
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
+        //查询异常list
         List<OmsEntryexitRecordVO> exceptionRecordsList = baseMapper.getExceptionPriApply(entryexitRecordIPagParam);
+        //组装出入境记录后的list
+        List<OmsEntryexitRecordVO> exceptionlist = getNewList(exceptionRecordsList);
         //返回数据
-        PageInfo<OmsEntryexitRecordVO> pageInfo = new PageInfo(exceptionRecordsList);
+        PageInfo<OmsEntryexitRecordVO> pageInfo = new PageInfo(exceptionlist);
         map.put("info",info);
         map.put("pageInfo",pageInfo);
         return map;
     }
+
+    private List<OmsEntryexitRecordVO> getNewList(List<OmsEntryexitRecordVO> exceptionRecordsList) {
+        List<OmsEntryexitRecordVO> exceptionlist = new ArrayList<>();
+        if (exceptionRecordsList!=null && exceptionRecordsList.size()>0){
+            for(int i=0;i<=exceptionRecordsList.size()-1;) {
+                OmsEntryexitRecordVO vo = new OmsEntryexitRecordVO();
+                OmsEntryexitRecordVO recOut = exceptionRecordsList.get(i);
+                OmsEntryexitRecordVO recIn = null;
+                if (i < exceptionRecordsList.size() - 1){
+                    recIn = exceptionRecordsList.get(i + 1);
+                }
+                //出入境配对
+                if (recOut.getOgeStatus() == Constants.OGE_STATUS_CODE[0] && recIn != null && recIn.getOgeStatus() == Constants.OGE_STATUS_CODE[1]) {
+                    vo=recOut;
+                    vo.setRealAbroadTime(recOut.getOgeDate());
+                    vo.setRealReturnTime(recIn.getOgeDate());
+                    exceptionlist.add(vo);
+                    i += 2;
+                }
+                //入境记录丢失
+                else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[1]))
+                {
+                    vo=recOut;
+                    vo.setRealAbroadTime(recOut.getOgeDate());
+                    exceptionlist.add(vo);
+                    i+=1;
+                }
+                //出境记录丢失
+                else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[1] )
+                {
+                    vo=recOut;
+                    vo.setRealReturnTime(recOut.getOgeDate());
+                    exceptionlist.add(vo);
+                    i+=1;
+                }
+
+            }
+        }
+        return exceptionlist;
+    }
+
+
+
 
     @Override
     public List<OmsEntryexitRecord> queryExceptionPriApplyList(String omsId) {
