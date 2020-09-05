@@ -36,6 +36,8 @@ public class OmsEntryexitRecordVO{
     private Date returnTime;
     @ApiModelProperty(value="计划前往地")
     private String goCountry;
+    @ApiModelProperty(value="事由")
+    private String abroadReasons;
     @ApiModelProperty(value="申请id")
     private String priapplyId;
     @ApiModelProperty(value="实际出境时间")
@@ -255,5 +257,13 @@ public class OmsEntryexitRecordVO{
 
     public void setCrjcount(Integer crjcount) {
         this.crjcount = crjcount;
+    }
+
+    public String getAbroadReasons() {
+        return abroadReasons;
+    }
+
+    public void setAbroadReasons(String abroadReasons) {
+        this.abroadReasons = abroadReasons;
     }
 }

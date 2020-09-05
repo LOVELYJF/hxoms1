@@ -63,13 +63,10 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         }
         //省管干部登记备案查询
         List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectList(queryWrapper);
-        List<String> a0100s = new ArrayList<>();
         for (int i=0;i<reginfolist.size();i++){
             OmsRegProcpersoninfo info = reginfolist.get(i);
             //将日期格式化
             SimpleDateFormat sd = new SimpleDateFormat("yyyyMM");
-            //脱密开始日期
-            String secretStartDate = sd.format(info.getDecryptStartdate());
             //脱密结束日期
             String secretEndDate = sd.format(info.getDecryptEnddate());
             String currentDate = sd.format(new Date());
