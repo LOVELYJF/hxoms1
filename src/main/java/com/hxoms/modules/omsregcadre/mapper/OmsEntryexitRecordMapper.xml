@@ -379,7 +379,7 @@
       and record.COMPARISON_RESULT LIKE '%${comparisonResult}%'
     </if>
     <if test="year!=null and year!=''">
-      and to_char(record.COMPARISON_DATE,'yyyy') <![CDATA[<=]]>#{year}
+      and to_char(record.COMPARISON_DATE,'YYYY')=#{year}
     </if>
     order by record.OGE_DATE asc
   </select>

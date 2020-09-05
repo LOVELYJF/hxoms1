@@ -16,6 +16,8 @@ import java.util.Date;
  */
 public class OmsEntryexitRecordVO{
 
+
+    private String id;
     @ApiModelProperty(value="姓名")
     private String name;
     @ApiModelProperty(value="性别")
@@ -25,14 +27,28 @@ public class OmsEntryexitRecordVO{
     @ApiModelProperty(value="职务")
     private String post;
     @ApiModelProperty(value="计划出境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date abroadTime;
     @ApiModelProperty(value="计划入境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date returnTime;
     @ApiModelProperty(value="计划前往地")
     private String goCountry;
     @ApiModelProperty(value="申请id")
     private String priapplyId;
-    @ApiModelProperty(value="实际出入境时间")
+    @ApiModelProperty(value="实际出境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date realAbroadTime;
+    @ApiModelProperty(value="实际入境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date realReturnTime;
+    @ApiModelProperty(value="出入境时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeDate;
     @ApiModelProperty(value="出入境状态 出1，入2")
     private Integer ogeStatus;
@@ -57,44 +73,12 @@ public class OmsEntryexitRecordVO{
     @ApiModelProperty(value="已比对的出入境记录总数")
     private Integer crjcount;
 
-    public Integer getWjsqyqcount() {
-        return wjsqyqcount;
+    public String getId() {
+        return id;
     }
 
-    public void setWjsqyqcount(Integer wjsqyqcount) {
-        this.wjsqyqcount = wjsqyqcount;
-    }
-
-    public Integer getWjspcount() {
-        return wjspcount;
-    }
-
-    public void setWjspcount(Integer wjspcount) {
-        this.wjspcount = wjspcount;
-    }
-
-    public Integer getSzbgcount() {
-        return szbgcount;
-    }
-
-    public void setSzbgcount(Integer szbgcount) {
-        this.szbgcount = szbgcount;
-    }
-
-    public Integer getYssqcount() {
-        return yssqcount;
-    }
-
-    public void setYssqcount(Integer yssqcount) {
-        this.yssqcount = yssqcount;
-    }
-
-    public Integer getCrjcount() {
-        return crjcount;
-    }
-
-    public void setCrjcount(Integer crjcount) {
-        this.crjcount = crjcount;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -161,6 +145,22 @@ public class OmsEntryexitRecordVO{
         this.priapplyId = priapplyId;
     }
 
+    public Date getRealAbroadTime() {
+        return realAbroadTime;
+    }
+
+    public void setRealAbroadTime(Date realAbroadTime) {
+        this.realAbroadTime = realAbroadTime;
+    }
+
+    public Date getRealReturnTime() {
+        return realReturnTime;
+    }
+
+    public void setRealReturnTime(Date realReturnTime) {
+        this.realReturnTime = realReturnTime;
+    }
+
     public Date getOgeDate() {
         return ogeDate;
     }
@@ -215,5 +215,45 @@ public class OmsEntryexitRecordVO{
 
     public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
+    }
+
+    public Integer getWjsqyqcount() {
+        return wjsqyqcount;
+    }
+
+    public void setWjsqyqcount(Integer wjsqyqcount) {
+        this.wjsqyqcount = wjsqyqcount;
+    }
+
+    public Integer getWjspcount() {
+        return wjspcount;
+    }
+
+    public void setWjspcount(Integer wjspcount) {
+        this.wjspcount = wjspcount;
+    }
+
+    public Integer getSzbgcount() {
+        return szbgcount;
+    }
+
+    public void setSzbgcount(Integer szbgcount) {
+        this.szbgcount = szbgcount;
+    }
+
+    public Integer getYssqcount() {
+        return yssqcount;
+    }
+
+    public void setYssqcount(Integer yssqcount) {
+        this.yssqcount = yssqcount;
+    }
+
+    public Integer getCrjcount() {
+        return crjcount;
+    }
+
+    public void setCrjcount(Integer crjcount) {
+        this.crjcount = crjcount;
     }
 }
