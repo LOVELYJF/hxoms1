@@ -657,7 +657,7 @@
         inner join cf_org_sub os
         on b.b0111=os.managed_org
         inner join cf_user u
-        on os.b0111=u.org_id and u.id=#{orgId}
+        on os.b0111=u.org_id and u.user_id=#{orgId}
         order by b.sortid
     </select>
     <select id="selectAllOrgTree" resultType="com.hxoms.support.b01.entity.B01Tree">

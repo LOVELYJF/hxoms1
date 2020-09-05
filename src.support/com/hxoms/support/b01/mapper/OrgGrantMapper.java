@@ -26,7 +26,15 @@ public interface OrgGrantMapper {
      * @date 2019/6/25 9:41
      */
     void deleteGrantByTabName(@Param("id") String id, @Param("tabName") String tabName);
-
+    /**
+     * 删除已授予机构领导类型能访问的信息集权限
+     *
+     * @param id      角色id
+     * @param ltid    领导类型id
+     * @author 杨波
+     * @date 2020/9/5
+     */
+    void deleteLeaderTypeGrantByLeaderTypeId(@Param("id") String id, @Param("ltid") String ltid);
     /**
      * 获取已授权的id
      *
