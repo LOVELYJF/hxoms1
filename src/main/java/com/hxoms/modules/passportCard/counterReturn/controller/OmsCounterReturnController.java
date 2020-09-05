@@ -2,9 +2,12 @@ package com.hxoms.modules.passportCard.counterReturn.controller;
 
 
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Return:
  * @Date: 2020/8/14
  */
+@Api(tags = "柜台归还证照")
 @RestController
 @RequestMapping("/counterReturn")
 public class OmsCounterReturnController {
@@ -32,8 +36,9 @@ public class OmsCounterReturnController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/20
      */
+    @ApiOperation(value = "读取证照信息")
     @GetMapping("/readCerInfo")
-    public Result readCerInfo(CfCertificate cfCertificate){
+    public Result<ReturnCertificateInfo> readCerInfo(CfCertificate cfCertificate){
         return Result.success(omsCounterReturnService.readCerInfo(cfCertificate));
     }
 
@@ -44,8 +49,9 @@ public class OmsCounterReturnController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/20
      */
+    @ApiOperation(value = "查询因私出国申请信息")
     @GetMapping("/selectPriApplyInfo")
-    public Result selectPriApplyInfo(CfCertificate cfCertificate){
+    public Result<OmsPriApply> selectPriApplyInfo(CfCertificate cfCertificate){
         return  Result.success(omsCounterReturnService.selectPriApplyInfo(cfCertificate));
     }
 
@@ -56,6 +62,7 @@ public class OmsCounterReturnController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/20
      */
+    @ApiOperation(value = "填写因私有关情况报告")
     @PostMapping("/updatePriForFillReport")
     public Result updatePriForFillReport(OmsPriApply omsPriApply){
         omsCounterReturnService.updatePriForFillReport(omsPriApply);
@@ -69,6 +76,7 @@ public class OmsCounterReturnController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/20
      */
+    @ApiOperation(value = "归还证照")
     @PostMapping("/returnCertificate")
     public Result returnCertificate(CfCertificate cfCertificate){
         omsCounterReturnService.returnCertificate(cfCertificate);

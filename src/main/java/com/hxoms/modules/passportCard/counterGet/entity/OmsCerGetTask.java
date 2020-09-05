@@ -59,6 +59,7 @@ public class OmsCerGetTask {
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证,5:证照注销)")
     private String dataSource;
 
+    @ApiModelProperty(value="领取人")
     @ColumnAnnotation(FieldName = "GET_PEOPLE",   FieldDescription="领取人")
     private String getPeople;
 
