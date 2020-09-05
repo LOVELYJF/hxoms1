@@ -492,7 +492,7 @@
         inner join data_table dt
         on crli.info_id=dt.tab_code
         inner join cf_org_leadertype olt
-        on crli.leadertype_id=olt.leadertype_id and crli.info_id=olt.info_id and olt.b0111=(select u.org_id from cf_user u where u.id=#{userId})
+        on crli.leadertype_id=olt.leadertype_id and crli.info_id=olt.info_id and olt.b0111=(select u.org_id from cf_user u where u.user_id=#{userId})
         where urv.user_id=#{userId} and crli.leaderType_id=#{leaderTypeId}
         order by dt.order_index
   </select>

@@ -187,7 +187,7 @@
         inner join cf_org_system cos
         on cos.system_id=s.id
         inner join cf_user u
-        on cos.b0111=u.org_id and u.id=#{userId}
+        on cos.b0111=u.org_id and u.user_id=#{userId}
         where urv.user_id=#{userId}
         order by s.order_index
     </select>
