@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.counterGet.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskQueryParam;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.IdentityParam;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskListParam;
@@ -79,7 +81,7 @@ public class OmsConuterGetController {
      */
     @ApiOperation(value = "查询可领取证照")
     @PostMapping("/selectCanGetCer")
-    public Result selectCanGetCer(@RequestBody CerGetTaskQueryParam cerGetTaskQueryParam){
+    public Result<PageInfo<CerGetTaskInfo>> selectCanGetCer(@RequestBody CerGetTaskQueryParam cerGetTaskQueryParam){
         return Result.success(omsCounterGetService.selectCanGetCer(cerGetTaskQueryParam));
     }
 

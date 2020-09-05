@@ -414,7 +414,7 @@
        SELECT
       a.id,
       c.name,
-      c.sex,
+      if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
       c.birth_date csrq,
       c.rf_B0000 rfB0000,
       c.work_Unit workUnit,

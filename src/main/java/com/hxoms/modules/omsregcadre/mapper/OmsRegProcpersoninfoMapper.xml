@@ -83,10 +83,10 @@
   <select id="selectRegIdByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
     select id,A0100,IDNUMBER_GB idnumberGb,b.b0101 workUnit,RF_B0000,INCUMBENCY_STATUS incumbencyStatus
     from OMS_REG_PROCPERSONINFO t
-    left join b01 b on t.RF_B0000 = b.b0100
+    LEFT JOIN b01 b ON b.b0111 = t.RF_B0000
     where 1=1
     <if test="b0100 !=null and b0100 !=''">
-        and t.RF_B0000 = #{b0100}
+        and b.b0100 = #{b0100}
     </if>
     <if test="idCardNum !=null and idCardNum !=''">
         and t.IDNUMBER_GB = #{idCardNum}
