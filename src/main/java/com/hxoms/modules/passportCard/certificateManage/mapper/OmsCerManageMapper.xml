@@ -8,16 +8,66 @@
         a.sex,
         b.work_unit workUnit,
         b.incumbency_status incumbencyStatus,
+      (
+      SELECT
+        item.item_name
+      FROM
+      sys_dict_item item
+      WHERE
+      item.dict_code = 'ZZZT'
+      AND b.incumbency_status= item.item_code
+      )
+      AS incumbencyStatusName,
         b.post,
         a.zjlx,
         a.xplx,
         a.zjxs,
+    (
+    SELECT
+    item.item_name
+    FROM
+    sys_dict_item item
+    WHERE
+    item.dict_code = 'ZJXS'
+    AND a.zjxs= item.item_code
+    )
+    AS zjxsName,
         a.zjhm,
         a.yxqz,
         a.surely_Unit surelyUnit,
         a.card_Status cardStatus,
+    (
+    SELECT
+    item.item_name
+    FROM
+    sys_dict_item item
+    WHERE
+    item.dict_code = 'ZJZT'
+    AND a.card_Status= item.item_code
+    )
+    AS cardStatus,
         a.save_Status saveStatus,
+    (
+    SELECT
+    item.item_name
+    FROM
+    sys_dict_item item
+    WHERE
+    item.dict_code = 'ZZBGZT'
+    AND a.save_Status= item.item_code
+    )
+    AS saveStatusName,
         a.surely_Way surelyWay,
+    (
+    SELECT
+    item.item_name
+    FROM
+    sys_dict_item item
+    WHERE
+    item.dict_code = 'ZZBGFS'
+    AND a.surely_Way= item.item_code
+    )
+    AS surelyWayName,
         a.cabinet_Num cabinetNum,
         a.place,
         a.counter_num counterNum,

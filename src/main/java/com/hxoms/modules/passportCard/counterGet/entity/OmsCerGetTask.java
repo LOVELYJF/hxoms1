@@ -4,75 +4,95 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @TableAnnotation(TableName = "oms_cer_get_task", TableDescription="证照领取任务表")
 public class OmsCerGetTask {
+
+    @ApiModelProperty(value="主键")
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ApiModelProperty(value="备案信息表ID")
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
     private String omsId;
 
+    @ApiModelProperty(value="证照管理表ID")
     @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照管理表ID")
     private String cerId;
 
+    @ApiModelProperty(value="业务表ID")
     @ColumnAnnotation(FieldName = "BUSI_ID",   FieldDescription="业务表ID")
     private String busiId;
 
+    @ApiModelProperty(value="姓名")
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")
     private String name;
 
+    @ApiModelProperty(value="机构")
     @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="机构")
     private String rfB0000;
 
+    @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     @ColumnAnnotation(FieldName = "ZJLX",   FieldDescription="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
 
+    @ApiModelProperty(value="证件号码")
     @ColumnAnnotation(FieldName = "ZJHM",   FieldDescription="证件号码")
     private String zjhm;
 
+    @ApiModelProperty(value="领取状态(0:未领取,1:已领取)")
     @ColumnAnnotation(FieldName = "GET_STATUS",   FieldDescription="领取状态(0:未领取,1:已领取)")
     private String getStatus;
 
+    @ApiModelProperty(value="业务发生日期")
     @ColumnAnnotation(FieldName = "HAPPEN_DATE",   FieldDescription="业务发生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date happenDate;
 
+    @ApiModelProperty(value="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证,5:证照注销)")
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:因私出国(境),1:撤销登记备案,2:证照借出,3:证照过期,4:管理员取证,5:证照注销)")
     private String dataSource;
 
     @ColumnAnnotation(FieldName = "GET_PEOPLE",   FieldDescription="领取人")
     private String getPeople;
 
+    @ApiModelProperty(value="领取时间")
     @ColumnAnnotation(FieldName = "GET_TIME",   FieldDescription="领取时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date getTime;
 
+    @ApiModelProperty(value="创建人")
     @ColumnAnnotation(FieldName = "CREATOR",   FieldDescription="创建人")
     private String creator;
 
+    @ApiModelProperty(value="创建时间")
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="创建时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
 
+    @ApiModelProperty(value="修改人")
     @ColumnAnnotation(FieldName = "UPDATOR",   FieldDescription="修改人")
     private String updator;
 
+    @ApiModelProperty(value="修改时间")
     @ColumnAnnotation(FieldName = "UPDATE_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date updateTime;
 
+    @ApiModelProperty(value="证照领取电子签名(BASE64数据)")
     @ColumnAnnotation(FieldName = "CER_GET_ELE_SIGN",   FieldDescription="证照领取电子签名(BASE64数据)")
     private String cerGetEleSign;
 
+    @ApiModelProperty(value="审批表领取电子签名(BASE64数据)")
     @ColumnAnnotation(FieldName = "SPB_GET_ELE_SIGN",   FieldDescription="审批表领取电子签名(BASE64数据)")
     private String spbGetEleSign;
 

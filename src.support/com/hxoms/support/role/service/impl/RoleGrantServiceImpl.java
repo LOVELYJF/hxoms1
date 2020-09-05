@@ -147,7 +147,10 @@ public class RoleGrantServiceImpl implements RoleGrantService {
             throw new CustomMessageException("干部类别id为空");
         }
         //先删除已授权的模块
-        roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_leader_info");
+        //yangbo
+        //roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_leader_info");
+        roleGrantMapper.deleteLeaderTypeGrantByLeaderTypeId(roleId,leaderTypeId);
+        //------------yangbo----------
         List<String> checkList = roleGrant.getCheckList();
         if (checkList == null || checkList.isEmpty()) {
             return;

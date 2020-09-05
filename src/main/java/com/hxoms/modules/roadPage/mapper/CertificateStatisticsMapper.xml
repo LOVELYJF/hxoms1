@@ -20,7 +20,7 @@
     </select>
 
     <select id="getNotturnedinqty" resultType="int">
-        SELECT COUNT(*) AS COUNTQTY FROM cf_certificate cc WHERE cc.ZJLX=#{ZJLX} AND cc.DQZT=4
+        SELECT COUNT(*) AS COUNTQTY FROM cf_certificate cc WHERE cc.ZJLX=#{ZJLX} AND cc.CARD_STATUS=4
     </select>
 
     <select id="getExpireqty" resultType="hashmap">
@@ -41,8 +41,8 @@
             <if test="zjlx!=null and zjlx>0">
                 and cc.zjlx = #{zjlx}
             </if>
-            <if test="dqzt!=null and dqzt==4">
-                and cc.dqzt=#{dqzt}
+            <if test="CARD_STATUS!=null and CARD_STATUS==4">
+                and cc.CARD_STATUS=#{CARD_STATUS}
             </if>
             <if test="dayqty!=null and dayqty &lt; 0">
                 and (TO_DAYS(cc.YXQZ)-TO_DAYS(UTC_DATE())) &lt;= #{dayqty}

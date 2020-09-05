@@ -72,4 +72,5 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     List<Map<String, String>> selectSensitiveCountry();
+
 }

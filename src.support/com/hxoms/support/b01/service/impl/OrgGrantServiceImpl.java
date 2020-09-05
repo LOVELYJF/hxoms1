@@ -151,7 +151,10 @@ public class OrgGrantServiceImpl implements OrgGrantService {
             throw new CustomMessageException("干部类别id为空");
         }
         //先删除已授权的模块
-        orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_leadertype");
+        //yangbo
+        //orgGrantMapper.deleteGrantByTabName(orgId, "cf_org_leadertype");
+        orgGrantMapper.deleteLeaderTypeGrantByLeaderTypeId(orgId,leaderTypeId);
+        //---------yangbo-----------
         List<String> checkList = orgGrant.getCheckList();
         if (checkList == null || checkList.isEmpty()) {
             return;

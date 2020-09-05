@@ -74,7 +74,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         a01qw.eq("is_deleted","0");
         List<A01> a01list = a01Mapper.selectList(a01qw);
         int con =0;
-        OmsRegProcpersoninfo orpInfo = null;
+        OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
+        List<OmsRegProcpersoninfo> orpInfoList = new ArrayList();
         if(a01list != null && a0100str != null){
             for (A01 a01 : a01list) {
                 orpInfo = initData(a01);
@@ -92,16 +93,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                      //验收状态
                      orpInfo.setCheckStatus("0");
                      orpInfo.setCreateTime(new Date());
-                    con = baseMapper.insert(orpInfo);
+                     orpInfoList.add(orpInfo);
                  }
             }
-
         }else if(a01list!=null && a0100str==null){
-            List<OmsRegProcpersoninfo> orpInfoList = new ArrayList();
             for (A01 a01 : a01list) {
                 orpInfo = initData(a01);
             }
             orpInfoList.add(orpInfo);
+        }
+        if (orpInfoList!=null && orpInfoList.size()>0){
             //批量添加的方法
             int count = 30;
             int n1 = orpInfoList.size() / count;
@@ -274,9 +275,14 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             OmsRegProcpersoninfo gaData = omsregList.get(1);
             //身份账号与名称一致
             if (gbData.getIdnumberGb().equals(gaData.getIdnumberGa()) && gbData.getName() .equals(gaData.getName())){
+
                 //更新干部相关信息从公安数据中维护
                 OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
                 omsreginfo.setId(gbData.getId());
+                //将公安的身份证号写入干部数据的公安身份证号字段里
+                omsreginfo.setIdnumberGa(gaData.getIdnumberGa());
+                //将公安的出生日期写入干部数据的公安出生日期字段里
+                omsreginfo.setBirthDate(gaData.getBirthDate());
                 //入库标识  新增U  修改I  撤消D
                 omsreginfo.setInboundFlag(gaData.getInboundFlag());
                 //备案状态  0未备案，1已备案，2已确认
@@ -358,14 +364,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public Object extractRegPersonInfo() throws ParseException {
         int con=0;
+
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         queryWrapper.eq("DATA_TYPE","1");
 
         //数据类型 为干部的省管干部登记备案查询
         List<OmsRegProcpersoninfo> reginfolist = baseMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
+        //TODO:加条件，查询省管干部
         List<A01> a01list = a01Mapper.selectList(null);
-        List<String> a0100s =null;
+        List<String> a0100s = new ArrayList<>();
         for (int i=0;i<reginfolist.size();i++){
             a0100s.add(reginfolist.get(i).getA0100());
         }
@@ -634,30 +642,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         QueryWrapper<A02> queryWrapper = new QueryWrapper<A02>();
         queryWrapper.eq("a0100",a01.getA0100());
         List<A02> list = a02Mapper.selectList(queryWrapper);
-        String a0201b ="";
-        if(list != null && list.size() > 0){
-            //主职务
-             a0201b = list.get(0).getA0201b();
-            //查询机构id
-            if (!StringUtils.isBlank(a0201b)){
-                orpInfo.setRfB0000(a0201b);
-                //工作单位
-                String workunit = a02Mapper.selectB0101ByA0201b(a0201b);
-                orpInfo.setWorkUnit(workunit);
-            }
-            /*if (!StringUtils.isBlank(a0201b)){
-                String a0215b = list.get(0).getA0215b();
-                if (!StringUtils.isBlank(a0215b)){
-                    String code =  environment.getProperty("postcode." + list.get(0).getA0215b());
-                    String zhiwu =  environment.getProperty("post." + code);
-                    //职务code
-                    orpInfo.setPostCode(code);
-                    //职务
-                    orpInfo.setPost(zhiwu);
-                }
-            }*/
-        }
-
+        //工作单位
+        orpInfo.setWorkUnit(a01.getA0192a());
         String incumbencyStatus = this.queryStatusByA0100(a01.getA0100());
         orpInfo.setA0100(a01.getA0100());
         if (!StringUtils.isBlank(a01.getA0184())){
@@ -750,9 +736,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         }else{
             incumbencyStatus="1";
         }
-
         return incumbencyStatus;
-
     }
 
 

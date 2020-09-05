@@ -1,6 +1,8 @@
 package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -12,51 +14,77 @@ import java.util.Date;
  */
 public class CerGetTaskInfo {
     //主键ID
+    @ApiModelProperty(value = "主键ID")
     private String id;
     //证照表ID
+    @ApiModelProperty(value = "证照表ID")
     private String cerId;
     //工作单位
+    @ApiModelProperty(value = "工作单位")
     private String workUnit;
     //姓名
+    @ApiModelProperty(value = "姓名")
     private String name;
     //性别
+    @ApiModelProperty(value = "性别")
     private String sex;
     //出生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="出生日期")
     private Date csrq;
     //职务（级）或职称
+    @ApiModelProperty(value="职务（级）或职称")
     private String post;
     //领取状态
+    @ApiModelProperty(value="领取状态")
     private String getStatus;
     //证照类型
+    @ApiModelProperty(value="证照类型")
     private int zjlx;
     //证件号码
+    @ApiModelProperty(value="证件号码")
     private String zjhm;
     //有效期至
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="有效期至")
     private Date yxqz;
     //证照状态
+    @ApiModelProperty(value="证照状态")
     private String cardStatus;
     //审批表
+    @ApiModelProperty(value="审批表")
     private String spb;
     //保管方式
+    @ApiModelProperty(value="保管方式")
     private String surelyWay;
     //机柜
+    @ApiModelProperty(value="机柜")
     private String cabinetNum;
     //位置
+    @ApiModelProperty(value="位置")
     private String place;
     //柜台编号
+    @ApiModelProperty(value="柜台编号")
     private Integer counterNum;
     //来源
+    @ApiModelProperty(value="来源")
     private String dataSource;
     //业务日期
+    @ApiModelProperty(value="业务日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Data happenDate;
     //任务产生日期
+    @ApiModelProperty(value="任务产生日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createTime;
     //领取时间
+    @ApiModelProperty(value="领取时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date getTime;
 
     public String getId() {

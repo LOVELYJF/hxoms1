@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
 import com.hxoms.common.utils.PageBean;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -11,14 +12,19 @@ import java.util.List;
  */
 public class CerGetTaskQueryParam {
     //分页
+    @ApiModelProperty(value = "分页")
     private PageBean pageBean;
     //经办人用户Id
+    @ApiModelProperty(value = "经办人用户Id")
     private String userId;
     //机构Id
+    @ApiModelProperty(value = "机构Id")
     private String rfB0000;
     //领取表Id
+    @ApiModelProperty(value = "领取表Id")
     private List<String> getIdList;
     //是否显示过期证照，Y：是，N：否
+    @ApiModelProperty(value = "是否显示过期证照，Y：是，N：否")
     private String overFlag;
 
     public PageBean getPageBean() {

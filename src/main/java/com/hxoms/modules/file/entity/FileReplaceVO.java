@@ -83,6 +83,8 @@ public class FileReplaceVO {
 
     //注销原因
     private String zxyy;
+    //随同姓名
+    private String stName;
 
     public String getName() {
         return name;
@@ -314,5 +316,13 @@ public class FileReplaceVO {
 
     public void setZxyy(String zxyy) {
         this.zxyy = zxyy;
+    }
+
+    public String getStName() {
+        return stName;
+    }
+
+    public void setStName(String stName) {
+        this.stName = stName;
     }
 }

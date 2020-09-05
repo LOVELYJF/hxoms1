@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class OmsCerGetTaskListParam {
     //领取信息集合
+    @ApiModelProperty(value = "领取信息集合")
     private List<OmsCerGetTask> omsCerGetTaskList;
 
     public List<OmsCerGetTask> getOmsCerGetTaskList() {

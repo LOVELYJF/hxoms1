@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.certificateManage.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo;
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageQueryParam;
 import com.hxoms.modules.passportCard.certificateManage.service.OmsCerManageService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
@@ -32,7 +34,7 @@ public class OmsCerManageController {
      */
     @ApiOperation(value = "查询证照信息分页")
     @GetMapping("/selectCerInfo")
-    public Result selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
+    public Result<PageInfo<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
         return Result.success(omsCerManageService.selectCerInfo(pageBean, cerManageQueryParam));
     }
 

@@ -155,9 +155,12 @@ public class OmsPubGroupController {
      * @param id 团组主键
      */
     @PostMapping("/insertPerson")
-    public Result insertPerson(String personId,String id) {
+    public Result insertPerson(String personId,String id,String b0100) {
         try {
-            pubGroupService.insertPerson(personId,id);
+            String msg = pubGroupService.insertPerson(personId,id,b0100);
+            if(msg.length() > 0){
+                return Result.error(msg);
+            }
             return Result.success();
         }catch (Exception e) {
             e.printStackTrace();

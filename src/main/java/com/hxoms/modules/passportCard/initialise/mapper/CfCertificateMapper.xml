@@ -491,7 +491,7 @@
 		cc.IS_LOCK,
 		cc.MANAGE_UNIT,
 		cc.YXQZ,
-		cc.DQZT,
+		cc.CARD_STATUS,
 		cc.CABINET_NUM,
 		cc.EXCEPTION_MESSAGE,
 		cc.IS_CABINET,
@@ -512,8 +512,8 @@
 			AND cc.ZJHM like CONCAT(CONCAT('%', #{zjhm}), '%')
 		</if>
 
-		<if test="dqzt != null">
-			AND cc.DQZT = #{dqzt}
+		<if test="CARD_STATUS != null">
+			AND cc.CARD_STATUS = #{CARD_STATUS}
 		</if>
 
 		<if test="isLock != null">
