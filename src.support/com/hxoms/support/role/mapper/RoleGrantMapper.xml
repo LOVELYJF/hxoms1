@@ -87,6 +87,10 @@
         delete from ${tabName} where role_id=#{id}
     </delete>
 
+    <delete id="deleteLeaderTypeGrantByLeaderTypeId">
+        delete from cf_role_leader_info where role_id=#{id} and leadertype_id=#{ltid}
+    </delete>
+
     <select id="selectGrantModuleId" resultType="string">
         select m.mu_id
         from cf_role_module rm
