@@ -1,5 +1,10 @@
 package com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -7,22 +12,39 @@ import java.util.Date;
  * @Author: wangyunquan
  * @Date: 2020/8/18
  */
+@ApiModel(value = "领取证照查询参数")
 public class CerGetTaskQueryParam {
     //机构Id
+    @ApiModelProperty(value = "机构Id")
     private String rfB0000;
     //姓名
+    @ApiModelProperty(value = "姓名")
     private String name;
     //领取状态
+    @ApiModelProperty(value = "领取状态")
     private String getStatus;
     //数据来源
+    @ApiModelProperty(value = "数据来源")
     private String dataSource;
     //创建起始日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "创建起始日期")
     private Date createStartTime;
     //创建终止日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "创建终止日期")
     private Date createEndTime;
     //领取起始日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "领取起始日期")
     private Date getStartTime;
     //领取终止日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "领取终止日期")
     private Date getEndTime;
 
     public String getRfB0000() {
