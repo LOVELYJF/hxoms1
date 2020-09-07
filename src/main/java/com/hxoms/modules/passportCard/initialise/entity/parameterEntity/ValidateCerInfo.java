@@ -2,8 +2,12 @@ package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.checkerframework.checker.nullness.compatqual.NonNullType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -14,44 +18,56 @@ import java.util.Date;
 @ApiModel(value = "证照验证参数")
 public class ValidateCerInfo {
 
+    @NotBlank(message = "姓名不能为空")
     @ApiModelProperty(value="姓名",required = true)
     private String name;
 
+    @NotBlank(message = "性别不能为空")
     @ApiModelProperty(value="性别",required = true)
     private String sex;
 
+    @NotNull(message = "出生日期不能为空")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="出生日期",required = true)
     private Date csrq;
 
+    @NotBlank(message = "国籍不能为空")
     @ApiModelProperty(value="国籍",required = true)
     private String gj;
 
+    @NotBlank(message = "出生地点不能为空")
     @ApiModelProperty(value="出生地点",required = true)
     private String csdd;
 
+    @NotNull(message = "证件类型不能为空")
     @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
     private Integer zjlx;
 
+    @NotBlank(message = "证件形式不能为空")
     @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)",required = true)
     private String zjxs;
 
+    @NotBlank(message = "芯片类型不能为空")
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)",required = true)
     private String xplx;
 
+    @NotBlank(message = "证件号码不能为空")
     @ApiModelProperty(value="证件号码",required = true)
     private String zjhm;
 
+    @NotBlank(message = "签发机关不能为空")
     @ApiModelProperty(value="签发机关",required = true)
     private String qfjg;
 
     @ApiModelProperty(value="签发地点")
     private String qfdd;
 
+    @NotNull(message = "签发日期不能为空")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="签发日期",required = true)
     private Date qfrq;
 
+    @NotNull(message = "有效期至不能为空")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="有效期至",required = true)
     private Date yxqz;
