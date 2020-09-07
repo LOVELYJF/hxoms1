@@ -9,6 +9,7 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
@@ -68,7 +69,6 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "验证证照信息")
     @PostMapping("/validateCerInfo")
-    @Validated
     public Result<CfCertificateValidate> validateCerInfo(@RequestBody @Validated ValidateCerInfo validateCerInfo){
         return Result.success(cfCertificateService.validateCerInfo(validateCerInfo));
     }
@@ -137,8 +137,8 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "公安已注销证照，更新状态")
     @PostMapping("/updateCerForCerIsCancel")
-    public Result updateCerForCerIsCancel(@ApiParam(value = "数据列表id",name = "id",required = true) @Validated @NotBlank(message = "数据列表id不能为空") String id){
-
+    @ApiImplicitParam(value = "数据列表id",name = "id",required = true,paramType = "query")
+    public Result updateCerForCerIsCancel( @NotBlank(message = "数据列表id不能为空") String id){
         cfCertificateService.updateCerForCerIsCancel(id);
         return Result.success();
     }
@@ -152,7 +152,7 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "生成催缴任务")
     @PostMapping("/createCjTask")
-    public Result createCjTask(@RequestBody CfCertificateCollectionApplyList cfCertificateCollectionApplyList){
+    public Result createCjTask(@RequestBody  @Validated CfCertificateCollectionApplyList cfCertificateCollectionApplyList){
         cfCertificateService.createCjTask(cfCertificateCollectionApplyList);
         return Result.success();
     }
@@ -165,7 +165,7 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "存疑处理，以证照信息为准，保存处理结果")
     @PostMapping("/updateCerForCerIsRight")
-    public Result updateCerForCerIsRight(@RequestBody QureyDealRequestInfo qureyDealRequestInfo){
+    public Result updateCerForCerIsRight(@RequestBody  @Validated QureyDealRequestInfo qureyDealRequestInfo){
         cfCertificateService.updateCerForCerIsRight(qureyDealRequestInfo);
         return Result.success();
     }
@@ -179,7 +179,7 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "存疑处理，以公安信息为准，置为未上缴")
     @PostMapping("/updateCerForGaInfoIsRight")
-    public Result updateCerForGaInfoIsRight(@RequestBody QureyDealRequestInfo qureyDealRequestInfo){
+    public Result updateCerForGaInfoIsRight(@RequestBody @Validated  QureyDealRequestInfo qureyDealRequestInfo){
         cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfo);
         return Result.success();
     }

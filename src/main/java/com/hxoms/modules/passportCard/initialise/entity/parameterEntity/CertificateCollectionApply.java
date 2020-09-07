@@ -1,7 +1,11 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @Desc：TODO
@@ -11,27 +15,35 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "证照催缴申请信息")
 public class CertificateCollectionApply {
 
+    @NotBlank(message = "备案信息表id不能为空")
     @ApiModelProperty(value="备案信息表id",required = true)
     private String omsId;
 
+    @NotBlank(message = "数据列表id不能为空")
     @ApiModelProperty(value="数据列表id",required = true)
     private String cerId;
 
+    @NotBlank(message = "姓名不能为空")
     @ApiModelProperty(value="姓名",required = true)
     private String name;
 
+    @NotBlank(message = "机构不能为空")
     @ApiModelProperty(value="机构",required = true)
     private String rfB0000;
 
+    @NotBlank(message ="工作单位不能为空")
     @ApiModelProperty(value="工作单位",required = true)
     private String workUnit;
 
+    @NotNull(message = "证件类型不能为空")
     @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)",required = true)
     private Integer zjlx;
 
+    @NotBlank(message = "证件号码不能为空")
     @ApiModelProperty(value="证件号码",required = true)
     private String zjhm;
 
+    @NotBlank(message = "数据来源不能为空")
     @ApiModelProperty(value="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)",required = true)
     private String dataSource;
 

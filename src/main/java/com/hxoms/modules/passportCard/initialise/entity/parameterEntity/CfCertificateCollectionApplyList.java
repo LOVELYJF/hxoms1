@@ -17,7 +17,7 @@ public class CfCertificateCollectionApplyList {
     //催缴任务集合
     @NotEmpty(message = "certificateCollectionApplyList数据集合Size不能为0")
     @Valid
-    @ApiModelProperty(value = "催缴任务集合信息")
+    @ApiModelProperty(value = "催缴任务集合信息",required = true)
     private List<CertificateCollectionApply> certificateCollectionApplyList;
 
     public List<CertificateCollectionApply> getCertificateCollectionApplyList() {
