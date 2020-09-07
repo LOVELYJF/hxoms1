@@ -7,6 +7,8 @@ import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnServ
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,5 +83,23 @@ public class OmsCounterReturnController {
     public Result returnCertificate(CfCertificate cfCertificate){
         omsCounterReturnService.returnCertificate(cfCertificate);
         return Result.success();
+    }
+    
+    
+    /**
+     * @Desc: 因私出国查看证照
+     * @Author: wuyezhen
+     * @Date: 2020/9/04
+     */
+    @GetMapping("/examineCertificate")
+    @ApiOperation(value="因私出国查看证照", notes="因私出国查看证照")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "passportNum", value = "证件号）", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "a0100", value = "人员主键）", required = true, dataType = "String")
+    
+    })
+    public Result examineCertificate(String passportNum,String a0100){
+      
+        return Result.success(omsCounterReturnService.examineCertificate(passportNum, a0100));
     }
 }
