@@ -182,6 +182,16 @@ public class A01 {
 
     private String zjType;
 
+    public String getAge_2() {
+        return age_2;
+    }
+
+    public void setAge_2(String age_2) {
+        this.age_2 = age_2;
+    }
+
+    private String age_2;
+
     public String getA0100() {
         return a0100;
     }

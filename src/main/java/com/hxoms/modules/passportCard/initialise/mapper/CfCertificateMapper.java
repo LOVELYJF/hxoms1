@@ -5,6 +5,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
@@ -13,6 +14,8 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcp
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -201,4 +204,15 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Date: 2020/8/29
 	 */
 	String selectUserType(String id);
+	
+	
+	 /**
+     * 根据证件号查询证件信息
+     * @param passportNum
+     * @param a0100
+     * @return
+     * @Author: wuyezhen
+     * @Date: 2020/9/04
+     */
+    CfCertificateSeeRes examineCertificate(@Param("passportNum")String passportNum,@Param("a0100")String a0100);
 }

@@ -222,7 +222,7 @@
         inner join cf_org_module om
         on m.mu_id=om.mu_id
         inner join cf_user u
-        on om.b0111=u.org_id and u.id=#{userId}
+        on om.b0111=u.org_id and u.user_id=#{userId}
         order by m.order_index
     </select>
 

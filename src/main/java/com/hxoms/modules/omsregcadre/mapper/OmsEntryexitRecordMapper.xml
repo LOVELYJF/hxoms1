@@ -355,6 +355,7 @@
           rp.SEX as sex,
           rp.WORK_UNIT as workUnit,
           rp.POST as post,
+          apply.ABROAD_REASONS as abroadReasons,
           apply.ABROAD_TIME as abroadTime,
           apply.RETURN_TIME as returnTime,
           apply.GO_COUNTRY as goCountry,

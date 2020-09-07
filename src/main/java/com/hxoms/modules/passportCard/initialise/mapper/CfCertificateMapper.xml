@@ -922,4 +922,52 @@
 		WHERE
 			user_id = #{id}
 	</select>
+	
+	
+	<resultMap id="examineCertificateMap" type="com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="A0100" jdbcType="VARCHAR" property="a0100" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="A0184" jdbcType="VARCHAR" property="a0184" />
+		<result column="SEX" jdbcType="VARCHAR" property="sex" />
+		<result column="CSRQ" jdbcType="DATE" property="csrq" />
+		<result column="GJ" jdbcType="VARCHAR" property="gj" />
+		<result column="ZJLX" jdbcType="INTEGER" property="zjlx" />
+		<result column="CSDD" jdbcType="VARCHAR" property="csdd" />
+	    <result column="ZJHM" jdbcType="VARCHAR" property="zjhm" />
+        <result column="QFJG" jdbcType="VARCHAR" property="qfjg" />
+        <result column="QFRQ" jdbcType="DATE" property="qfrq" />
+	    <result column="YXQZ" jdbcType="DATE" property="yxqz" />
+	    <result column="SURELY_WAY" jdbcType="VARCHAR" property="surelyWay" />
+		<result column="SURELY_UNIT" jdbcType="VARCHAR" property="surelyUnit" />
+	    <result column="CABINET_NUM" jdbcType="VARCHAR" property="cabinetNum" />
+	    <result column="PLACE" jdbcType="VARCHAR" property="place" />
+	    <result column="COUNTER_NUM" jdbcType="INTEGER" property="counterNum" />
+		 <result column="REGISTE_RESIDENCE" jdbcType="VARCHAR" property="registeResidence" />
+	</resultMap>
+	
+	<!-- 根据人员主键A0100查询证照信息 -->
+	<select id="examineCertificate"  resultMap="examineCertificateMap">
+		select c.ID,
+		c.A0100,
+		c.NAME,
+		c.SEX,
+		c.CSRQ,
+		c.GJ,
+		c.ZJLX,
+		c.CSDD,
+		c.ZJHM,
+		c.QFJG,
+		c.QFRQ,
+		c.YXQZ,
+		c.SURELY_WAY,
+		c.SURELY_UNIT,
+		c.CABINET_NUM,
+		c.PLACE,
+		c.COUNTER_NUM,
+		o.REGISTE_RESIDENCE
+		from cf_certificate c
+		LEFT JOIN oms_reg_procpersoninfo o on c.A0100 =o.A0100
+		where c.ZJHM = #{passportNum,jdbcType=VARCHAR}  and c.A0100 = #{a0100,jdbcType=VARCHAR}
+	</select>	
 </mapper>

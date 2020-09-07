@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.counterReturn.service;
 
 import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 
 public interface OmsCounterReturnService {
@@ -43,4 +44,15 @@ public interface OmsCounterReturnService {
      * @Date: 2020/8/20
      */
     void returnCertificate(CfCertificate cfCertificate);
+    
+    
+    /**
+     * 根据证件号查询证件信息
+     * @param passportNum
+     *  @param a0100
+     * @return
+     * @Author: wuyezhen
+     * @Date: 2020/9/04
+     */
+    CfCertificateSeeRes examineCertificate(String passportNum,String a0100);
 }

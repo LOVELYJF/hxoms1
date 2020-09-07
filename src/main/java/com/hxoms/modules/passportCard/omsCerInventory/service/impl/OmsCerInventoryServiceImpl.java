@@ -137,10 +137,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 					.eq("ZJHM", cfCertificate.getZjhm())                //证件号码
 					.eq("YXQZ", cfCertificate.getYxqz());               //有效期至
 
-			int count = omsCerInventoryMapper.update(omsCerInventory1, queryWrapper);
-			if(count < 1){
-				throw new CustomMessageException("同步证照状态到盘点表失败");
-			}
+			omsCerInventoryMapper.update(omsCerInventory1, queryWrapper);
+
 		}
 
 		//查询将盘点前后保管状态不一样的显示到界面

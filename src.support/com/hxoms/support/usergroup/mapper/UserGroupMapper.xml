@@ -36,7 +36,7 @@
         select
         a.id,a.ug_id,a.user_id,b.name,c.ug_name
         from cf_usergroup_user a
-        inner join cf_user b on a.user_id=b.id
+        inner join cf_user b on a.user_id=b.user_id
         inner join cf_usergroup c on a.ug_id=c.id
         where ug_id = #{ugid,jdbcType=VARCHAR}
     </select>
@@ -194,7 +194,7 @@
     <insert id="assignRolesForUser">
         <foreach collection="list" separator=";" index="index" item="item">
             insert into cf_user_roles (id, user_id, role_id) values
-            (uuid.Nextval,#{userId},#{item})
+            (UUID(),#{userId},#{item})
         </foreach>
     </insert>
 
@@ -205,7 +205,7 @@
     <insert id="assignRolesForUserGroup">
         <foreach collection="list" separator=";" index="index" item="item">
             insert into cf_usergroup_roles (id, ug_id, role_id) values
-            (uuid.Nextval,#{ugId},#{item})
+            (UUID(),#{ugId},#{item})
         </foreach>
     </insert>
 

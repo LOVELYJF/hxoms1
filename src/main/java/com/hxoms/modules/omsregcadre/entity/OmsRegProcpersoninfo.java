@@ -195,21 +195,21 @@ public class OmsRegProcpersoninfo {
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="备案时间（创建时间）")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="备案时间（创建时间）")
     private Date createTime;
 
     @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="创建人")
     private String createUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="修改时间")
     private Date modifyTime;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="修改人")
     private String modifyUser;
 
     @ColumnAnnotation(FieldName = "SORT_ID",   FieldDescription="排序")

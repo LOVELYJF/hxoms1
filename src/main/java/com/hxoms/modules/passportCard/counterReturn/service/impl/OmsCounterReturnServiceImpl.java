@@ -7,6 +7,7 @@ import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.Retur
 import com.hxoms.modules.passportCard.counterReturn.mapper.OmsCounterReturnMapper;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
@@ -120,4 +121,12 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         }
         //证照已上缴，取消证照催缴
     }
+    
+    @Override
+	public CfCertificateSeeRes examineCertificate(String passportNum,String a0100) {
+		if (StringUtils.isEmpty(passportNum) ||StringUtils.isEmpty(a0100)) {
+			 throw new CustomMessageException("参数错误！");
+		}
+		return cfCertificateMapper.examineCertificate(passportNum,a0100);
+	}
 }
