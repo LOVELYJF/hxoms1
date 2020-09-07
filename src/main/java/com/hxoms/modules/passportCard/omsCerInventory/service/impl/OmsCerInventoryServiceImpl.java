@@ -60,7 +60,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(resultList.size() > 0){
-			throw new CustomMessageException("该证照柜已经完成盘点，查询请点击统计盘点结果");
+			throw new CustomMessageException("本月该证照柜已经完成盘点，查询请点击统计盘点结果");
 		}
 
 		Map<String,Object> map = new HashMap<String,Object>();
