@@ -403,6 +403,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         for (CjContentParam cjContentParam : cjContentParamList) {
             int dateDiff= PubUtils.calDateDiff(formatter.format(cjContentParam.getReturnDate()),formatter.format(date));
             StringBuffer partStr=new StringBuffer();
+            //张三的护照（E9435）
             partStr.append(cjContentParam.getName()).append("的").append(cjContentParam.getZjlxName()).append("（"+ cjContentParam.getZjhm()+"）");
             String value = map.get(dateDiff);
             Integer key=0;

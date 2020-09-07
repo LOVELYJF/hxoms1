@@ -5,13 +5,16 @@
     SELECT
         a.id,
         a.cer_id cerId,
+        c.rf_b0000 rfB0000,
         c.work_unit workUnit,
         b.name,
-        b.sex,
+        if(b.sex='1','男',if(b.sex='2','女',b.sex)) sex,
         b.csrq,
         c.post,
         a.get_status getStatus,
+        (select item_name from sys_dict_item where dict_code='ZJLQZT' and item_code=a.get_status) getStatusName,
         b.zjlx,
+        (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=b.zjlx) zjlxName,
         b.zjhm,
         b.yxqz,
         b.card_status cardStatus,
@@ -21,6 +24,7 @@
         b.place,
         b.counter_num counterNum,
         a.data_source dataSource,
+        (select item_name from sys_dict_item where dict_code='ZJLQSJLY' and item_code=a.data_source) dataSourceName,
         a.create_time createTime,
         a.get_time getTime
     FROM
