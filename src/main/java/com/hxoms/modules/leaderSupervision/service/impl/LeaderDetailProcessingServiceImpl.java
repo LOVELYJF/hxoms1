@@ -1213,4 +1213,16 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         return null;
     }
+
+    @Override
+    @Transactional(readOnly=true)
+    public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo) {
+
+
+        PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
+        List<Map> lists =   leaderCommonMapper.createPutOnRecordList(leaderSupervisionVo);
+        PageInfo pageInfo = new PageInfo(lists);
+        return pageInfo;
+
+    }
 }
