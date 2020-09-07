@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -13,6 +15,8 @@ import java.util.List;
 @ApiModel(value = "催缴任务集合")
 public class CfCertificateCollectionApplyList {
     //催缴任务集合
+    @NotEmpty(message = "certificateCollectionApplyList数据集合Size不能为0")
+    @Valid
     @ApiModelProperty(value = "催缴任务集合信息")
     private List<CertificateCollectionApply> certificateCollectionApplyList;
 

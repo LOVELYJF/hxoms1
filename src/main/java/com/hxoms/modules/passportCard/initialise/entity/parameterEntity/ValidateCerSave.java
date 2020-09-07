@@ -1,14 +1,12 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.poi.hsmf.MAPIMessage;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.rmi.MarshalException;
 import java.util.Date;
 
 /**
@@ -28,6 +26,7 @@ public class ValidateCerSave {
     private String sex;
 
     @NotNull(message = "出生日期不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="出生日期",required = true)
     private Date csrq;
@@ -65,11 +64,13 @@ public class ValidateCerSave {
     private String qfdd;
 
     @NotNull(message = "签发日期不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="签发日期",required = true)
     private Date qfrq;
 
     @NotNull(message = "有效期至不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="有效期至",required = true)
     private Date yxqz;

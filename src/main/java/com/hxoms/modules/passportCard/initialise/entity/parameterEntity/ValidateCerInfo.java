@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.checkerframework.checker.nullness.compatqual.NonNullType;
@@ -27,6 +28,7 @@ public class ValidateCerInfo {
     private String sex;
 
     @NotNull(message = "出生日期不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="出生日期",required = true)
     private Date csrq;
@@ -62,14 +64,17 @@ public class ValidateCerInfo {
     @ApiModelProperty(value="签发地点")
     private String qfdd;
 
-    @NotNull(message = "签发日期不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="签发日期",required = true)
+    @NotNull(message = "签发日期不能为空")
     private Date qfrq;
 
-    @NotNull(message = "有效期至不能为空")
+
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="有效期至",required = true)
+    @NotNull(message = "有效期至不能为空")
     private Date yxqz;
 
     @ApiModelProperty(value="保管单位(0:干部监督处,1:省委统战部(台办))")
