@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.bouncycastle.jce.provider.symmetric.AES;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,6 +75,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			OmsCerInventory omsCerInventory1 = new OmsCerInventory();
 			omsCerInventory1.setId(UUIDGenerator.getPrimaryKey());
 			omsCerInventory1.setOmsId(cfCertificate.getOmsId());
+			omsCerInventory1.setCfId(cfCertificate.getId());
 			omsCerInventory1.setName(cfCertificate.getName());
 			omsCerInventory1.setA0100(cfCertificate.getA0100());
 			omsCerInventory1.setCsrq(cfCertificate.getCsrq());
@@ -90,8 +92,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			if(count < 1){
 				throw new CustomMessageException("保存到证照盘点表失败");
 			}else {
-				//将该条数据在证照信息表中的机柜、位置清空
-				cfCertificate.setCabinetNum("");
 				cfCertificate.setPlace("");
 				cfCertificate.setSaveStatus("1");           //全部将状态置为已取出
 				int count1 = cfCertificateMapper.updateById(cfCertificate);
@@ -117,8 +117,11 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", "0");
-		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map);
-
+		//查询证照主键
+		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
+		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
+		queryWrapper.in(idList != null && idList.size() > 0,"ID",idList);
+		List<CfCertificate> list = cfCertificateMapper.selectList(queryWrapper);
 
 		//同步盘点结果到盘点表
 		for(CfCertificate cfCertificate : list){
@@ -131,13 +134,12 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 
 			//设置同步条件
 			String inventoryDate = UtilDateTime.formatCNMonth(new Date());
-			QueryWrapper<OmsCerInventory> queryWrapper = new QueryWrapper<OmsCerInventory>();
-			queryWrapper.eq("INVENTORY_DATE", inventoryDate)            //盘点年月
-					.eq("CABINET_NUM", omsCerInventory.getCabinetNum())     //机柜编号
+			QueryWrapper<OmsCerInventory> wrapper = new QueryWrapper<OmsCerInventory>();
+			wrapper.eq("INVENTORY_DATE", inventoryDate)            //盘点年月
 					.eq("ZJHM", cfCertificate.getZjhm())                //证件号码
 					.eq("YXQZ", cfCertificate.getYxqz());               //有效期至
 
-			omsCerInventoryMapper.update(omsCerInventory1, queryWrapper);
+			omsCerInventoryMapper.update(omsCerInventory1, wrapper);
 
 		}
 
