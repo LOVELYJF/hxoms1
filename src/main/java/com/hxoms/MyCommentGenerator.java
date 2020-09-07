@@ -22,6 +22,10 @@ public class MyCommentGenerator extends DefaultCommentGenerator {
         topLevelClass.addImportedType("com.hxoms.common.hxannotation.ColumnAnnotation");
         topLevelClass.addImportedType("com.hxoms.common.hxannotation.IdAnnotation");
         topLevelClass.addImportedType("com.hxoms.common.hxannotation.TableAnnotation");
+        //swagger包
+        topLevelClass.addImportedType("io.swagger.annotations.ApiModel");
+        topLevelClass.addImportedType("io.swagger.annotations.ApiModelProperty");
+
         List<IntrospectedColumn> allColumns = introspectedTable.getAllColumns();
         for (IntrospectedColumn column : allColumns) {
             String shortName = column.getFullyQualifiedJavaType().getShortName();

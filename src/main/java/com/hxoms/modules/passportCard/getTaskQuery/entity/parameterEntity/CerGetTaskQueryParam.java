@@ -14,8 +14,8 @@ import java.util.Date;
  */
 @ApiModel(value = "领取证照查询参数")
 public class CerGetTaskQueryParam {
-    //机构Id
-    @ApiModelProperty(value = "机构Id")
+    //机构编码
+    @ApiModelProperty(value = "机构编码")
     private String rfB0000;
     //姓名
     @ApiModelProperty(value = "姓名")

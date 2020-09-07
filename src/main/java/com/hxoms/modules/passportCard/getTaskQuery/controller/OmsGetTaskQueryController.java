@@ -8,6 +8,7 @@ import com.hxoms.modules.passportCard.getTaskQuery.service.OmsGetTaskQueryServic
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "证照领取任务查询")
 @RestController
 @RequestMapping("/conuterGet")
+@Validated
 public class OmsGetTaskQueryController {
 
     @Autowired
@@ -35,7 +37,7 @@ public class OmsGetTaskQueryController {
      */
     @ApiOperation(value = "查询领取证照")
     @GetMapping("/selectGetCer")
-    public Result<PageBean<CerGetTaskInfo>> selectGetCer(PageBean pageBean, CerGetTaskQueryParam cerGetTaskQueryParam){
+    public Result<PageBean<CerGetTaskInfo>> selectGetCer(PageBean pageBean,CerGetTaskQueryParam cerGetTaskQueryParam){
         return Result.success(omsGetTaskQueryService.selectGetCer(pageBean,cerGetTaskQueryParam));
     }
 
@@ -48,7 +50,7 @@ public class OmsGetTaskQueryController {
      */
     @ApiOperation(value = "获取发通知内容模板")
     @PostMapping("/getSendNoticeContent")
-    public Result<NoticeContent> getSendNoticeContent(@RequestBody RequestList<SendNoticeContentParam> requestList){
+    public Result<NoticeContent> getSendNoticeContent(@RequestBody @Validated RequestList<SendNoticeContentParam> requestList){
         return Result.success(omsGetTaskQueryService.getSendNoticeContent(requestList.getList()));
     }
 
@@ -61,7 +63,7 @@ public class OmsGetTaskQueryController {
      */
     @ApiOperation(value = "发通知")
     @PostMapping("/sendNotice")
-    public Result sendNotice(@RequestBody SendNotice sendNotice){
+    public Result sendNotice(@RequestBody  @Validated SendNotice sendNotice){
         omsGetTaskQueryService.sendNotice(sendNotice);
         return Result.success();
     }

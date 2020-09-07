@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
@@ -11,18 +13,23 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "发通知内容获取请求参数")
 public class SendNoticeContentParam {
     //机构编码
+    @NotBlank(message = "机构编码不能为空")
     @ApiModelProperty(value = "机构编码",required = true)
     private String rfB0000;
     //姓名
+    @NotBlank(message = "姓名不能为空")
     @ApiModelProperty(value = "姓名",required = true)
     private String name;
     //状态
+    @NotBlank(message = "状态不能为空")
     @ApiModelProperty(value = "状态",required = true)
     private String getStatusName;
     //证件类型名称
+    @NotBlank(message = "证件类型名称不能为空")
     @ApiModelProperty(value = "证件类型名称",required = true)
     private String zjlxName;
     //证件号码
+    @NotBlank(message = "证件号码不能为空")
     @ApiModelProperty(value = "证件号码",required = true)
     private String zjhm;
 

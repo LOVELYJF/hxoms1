@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -12,7 +14,9 @@ import java.util.List;
  */
 @ApiModel(value = "数据集合")
 public class RequestList<T> {
-    @ApiModelProperty(value = "数据集合信息")
+    @NotEmpty(message = "数据集合Size不能为0")
+    @Valid
+    @ApiModelProperty(value = "数据集合信息",required = true)
     private List<T> list;
 
     public List<T> getList() {

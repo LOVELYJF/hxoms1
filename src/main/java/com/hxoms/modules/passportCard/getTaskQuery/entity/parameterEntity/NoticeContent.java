@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "通知内容模板")
 public class NoticeContent {
-    @ApiModelProperty("机构id")
+    @ApiModelProperty("机构编码")
     private String rfB0000;
 
     @ApiModelProperty("内容模板")
