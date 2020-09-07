@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -98,7 +99,7 @@ public class OmsCounterReturnController {
             @ApiImplicitParam(name = "a0100", value = "人员主键）", required = true, dataType = "String")
     
     })
-    public Result examineCertificate(String passportNum,String a0100){
+    public Result<CfCertificateSeeRes> examineCertificate(String passportNum,String a0100){
       
         return Result.success(omsCounterReturnService.examineCertificate(passportNum, a0100));
     }
