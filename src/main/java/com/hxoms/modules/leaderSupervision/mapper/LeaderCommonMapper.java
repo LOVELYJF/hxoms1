@@ -104,4 +104,8 @@ public interface LeaderCommonMapper {
    List<Map> selectGroupConditions();
 
    Map  selectDefaultId();
+
+   /**生成备案表 查询列表 **/
+
+   List<Map> createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo);
 }

@@ -158,7 +158,7 @@ public class MakeCheckOpinionController {
 
     /**保存部长审批 建议 **/
     @PostMapping("/saveBuZhangApprover")
-    public Result saveBuZhangApprover(AuditOpinionVo auditOpinionVo){
+    public Result saveBuZhangApprover(@RequestBody AuditOpinionVo auditOpinionVo){
 
 
         leaderDetailProcessingService.saveBuZhangApprover(auditOpinionVo);

@@ -107,8 +107,14 @@ public class VerifyCheckController {
     }
 
     //生成备案表 查询流程列表
+    @GetMapping("/putOnRecordsTable")
+    public Result putOnRecordsTable(LeaderSupervisionVo leaderSupervisionVo){
 
-//    public Reuslt
+        PageInfo pageInfo =  leaderDetailProcessingService.createPutOnRecordList(leaderSupervisionVo);
 
+
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+
+    }
 
 }
