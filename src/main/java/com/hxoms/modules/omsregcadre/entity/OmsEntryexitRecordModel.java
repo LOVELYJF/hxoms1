@@ -13,7 +13,7 @@ import java.util.Date;
 public class OmsEntryexitRecordModel  extends BaseRowModel {
 
     @ExcelProperty(value = "出入境状态 出1，入2", index = 0)
-    private Integer ogeStatus;
+    private String ogeStatus;
     @ExcelProperty(value = "姓名", index = 1)
     private String name;
     @ExcelProperty(value = "性别", index = 2)
@@ -25,7 +25,7 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
     @ExcelProperty(value = "国籍", index = 4)
     private String nationality;
     @ExcelProperty(value = "证件种类", index = 5)
-    private Integer idType;
+    private String idType;
     @ExcelProperty(value = "证件号码", index = 6)
     private String idNumber;
     @ExcelProperty(value = "前往地", index = 7)
@@ -45,11 +45,11 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
     @ExcelProperty(value = "数据来源 1.手录  2导入", index = 12)
     private String dataSource;
 
-    public Integer getOgeStatus() {
-        return ogeStatus;
+    public String getOgeStatus() {
+        return ogeStatus.equals("1")?"出入境导入":"手工录入";
     }
 
-    public void setOgeStatus(Integer ogeStatus) {
+    public void setOgeStatus(String ogeStatus) {
         this.ogeStatus = ogeStatus;
     }
 
@@ -85,11 +85,18 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
         this.nationality = nationality;
     }
 
-    public Integer getIdType() {
+    public String getIdType() {
+        if (idType.equals("1")){
+            idType = "护照";
+        }else if (idType.equals("2")){
+            idType = "港澳通行证";
+        }else if (idType.equals("3")){
+            idType = "台湾通行证";
+        }
         return idType;
     }
 
-    public void setIdType(Integer idType) {
+    public void setIdType(String idType) {
         this.idType = idType;
     }
 

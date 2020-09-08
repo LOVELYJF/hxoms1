@@ -61,12 +61,15 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     public PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
-        List<OmsEntryexitRecord> entryexitRecordsList = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
+        List<OmsEntryexitRecord> entryexitRecordsList = newexitRecordsList(entryexitRecordIPagParam);
         //返回数据
         PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(entryexitRecordsList);
         return pageInfo;
     }
 
+    public List<OmsEntryexitRecord> newexitRecordsList(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+        return baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
+    }
 
 
     @Override
