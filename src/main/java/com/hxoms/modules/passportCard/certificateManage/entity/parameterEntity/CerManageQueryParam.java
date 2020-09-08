@@ -1,7 +1,6 @@
 package com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -37,7 +36,7 @@ public class CerManageQueryParam {
     @ApiModelProperty(value = "证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
     //证件样式
-    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)")
+    @ApiModelProperty(value="证件形式(0:本式,1:卡式)")
     private String zjxs;
     //芯片类型
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")

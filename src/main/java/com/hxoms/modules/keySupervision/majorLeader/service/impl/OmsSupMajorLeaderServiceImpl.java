@@ -61,12 +61,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
 		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
-				.or()
-				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
-						"PINYIN", omsSupMajorLeader.getName());
-
+						.or()
+						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+								"PINYIN", omsSupMajorLeader.getName()));
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupMajorLeader> resultList = omsSupMajorLeaderMapper.selectList(queryWrapper);
 		PageInfo<OmsSupMajorLeader> pageInfo = new PageInfo<OmsSupMajorLeader>(resultList);
@@ -227,11 +226,11 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
 		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
-				.or()
-				.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
-						"PINYIN", omsSupMajorLeader.getName());
+						.or()
+						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+								"PINYIN", omsSupMajorLeader.getName()));
 
 		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);
 
