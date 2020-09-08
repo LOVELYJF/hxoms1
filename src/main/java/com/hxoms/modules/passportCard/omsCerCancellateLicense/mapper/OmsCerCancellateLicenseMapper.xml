@@ -3,6 +3,7 @@
 <mapper namespace="com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper">
   <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense">
 	  <id column="ID" jdbcType="VARCHAR" property="id" />
+	  <result column="CANCELLATE_APPLY_ID" jdbcType="VARCHAR" property="cancellateApplyId" />
 	  <result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
 	  <result column="NAME" jdbcType="VARCHAR" property="name" />
 	  <result column="SEX" jdbcType="VARCHAR" property="sex" />
@@ -39,7 +40,7 @@
 	  <result column="GATYJLY" jdbcType="VARCHAR" property="gatyjly" />
   </resultMap>
 	<sql id="Base_Column_List">
-		ID, OMS_ID, NAME, SEX, CSRQ, B0100, WORK_UNIT, INCUMBENCY_STATUS, POST, ZJLX, ZJHM, YXQZ,
+		ID, CANCELLATE_APPLY_ID, OMS_ID, NAME, SEX, CSRQ, B0100, WORK_UNIT, INCUMBENCY_STATUS, POST, ZJLX, ZJHM, YXQZ,
 		CARD_STATUS, SAVE_STATUS, QFJG, QFRQ, CSDD, ZHZXZT, ZXFS, ZXYY, ZXSM, APPEND_PLACE,
 		CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER, APPLY_QUERY_START_TIME,
 		APPLY_QUERY_END_TIME,LSZJHM,CLDYJ, BLDYJ, CLDYJLY, BLDYJLY, GATSHYJ, GATYJLY
@@ -70,6 +71,7 @@
 	<select id="getCerCancellateLicenseAcceptance" resultType="java.util.Map">
       select
 			occl.ID as id,
+			occl.CANCELLATE_APPLY_ID as cancellateApplyId,
 			cc.OMS_ID as omsId,
 			cc.NAME as name,
 			cc.SEX as sex,

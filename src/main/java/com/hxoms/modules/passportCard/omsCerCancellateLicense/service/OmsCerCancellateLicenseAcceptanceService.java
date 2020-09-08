@@ -64,7 +64,7 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 16:48
 	 */
-	void updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense);
+	Map<String,Object> updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense);
 
 
 	/**
@@ -101,4 +101,13 @@ public interface OmsCerCancellateLicenseAcceptanceService {
 	 */
 	void updateCerCancellateLicenseAcceptanceNext(OmsCerCancellateLicense omsCerCancellateLicense);
 
+
+	/**
+	 * <b>功能描述: 处领导审批进行下一步</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/5 14:50
+	 */
+	Map<String, Object> getCerCancellateLicenseBillApproval(List<OmsCerCancellateLicense> list);
 }

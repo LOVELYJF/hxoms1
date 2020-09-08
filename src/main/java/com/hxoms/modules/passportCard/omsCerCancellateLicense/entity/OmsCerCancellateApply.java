@@ -40,9 +40,9 @@ public class OmsCerCancellateApply {
     @ApiModelProperty(value="创建时间")
     private Date createTime;
 
-    @ColumnAnnotation(FieldName = "CRREATE_USER",   FieldDescription="创建人")
+    @ColumnAnnotation(FieldName = "CREATE_USER",   FieldDescription="创建人")
     @ApiModelProperty(value="创建人")
-    private String crreateUser;
+    private String createUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     @ApiModelProperty(value="修改人")
@@ -102,12 +102,12 @@ public class OmsCerCancellateApply {
         this.createTime = createTime;
     }
 
-    public String getCrreateUser() {
-        return crreateUser;
+    public String getCreateUser() {
+        return createUser;
     }
 
-    public void setCrreateUser(String crreateUser) {
-        this.crreateUser = crreateUser == null ? null : crreateUser.trim();
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
     }
 
     public String getModifyUser() {

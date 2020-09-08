@@ -96,6 +96,22 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 		return Result.success();
 	}
 
+
+	/**
+	 * <b>功能描述: 处领导审批进行下一步</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/5 14:50
+	 */
+	@GetMapping("/getCerCancellateLicenseBillApproval")
+	public Result getCerCancellateLicenseBillApproval(@RequestBody List<OmsCerCancellateLicense> list){
+		Map<String,Object> map = omsCerCancellateLicenseAcceptanceService.getCerCancellateLicenseBillApproval(list);
+		return Result.success(map);
+	}
+
+
+
 	/**
 	 * <b>功能描述: 部领导审批</b>
 	 * @Param: [omsCerCancellateLicense]
@@ -105,8 +121,8 @@ public class OmsCerCancellateLicenseAcceptanceController extends BaseController 
 	 */
 	@PostMapping("/updateCerCancellateLicenseApprovalMinister")
 	public Result updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense){
-		omsCerCancellateLicenseAcceptanceService.updateCerCancellateLicenseApprovalMinister(omsCerCancellateLicense);
-		return Result.success();
+		Map<String,Object> map = omsCerCancellateLicenseAcceptanceService.updateCerCancellateLicenseApprovalMinister(omsCerCancellateLicense);
+		return Result.success(map);
 	}
 
 

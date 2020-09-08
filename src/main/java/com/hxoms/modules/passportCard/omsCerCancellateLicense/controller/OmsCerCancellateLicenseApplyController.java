@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.omsCerCancellateLicense.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords;
@@ -99,14 +100,14 @@ public class OmsCerCancellateLicenseApplyController {
 
 	/**
 	 * <b>功能描述: 更改申请状态</b>
-	 * @Param: [list]
+	 * @Param: [omsCerCancellateLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 15:09
 	 */
 	@PostMapping("/updateCancellateLicenseApplyStatus")
-	public Result updateCancellateLicenseApplyStatus(@RequestBody List<OmsCerCancellateLicense> list){
-		omsCerCancellateLicenseApplyService.updateCancellateLicenseApplyStatus(list);
+	public Result updateCancellateLicenseApplyStatus(OmsCerCancellateLicense omsCerCancellateLicense){
+		omsCerCancellateLicenseApplyService.updateCancellateLicenseApplyStatus(omsCerCancellateLicense);
 		return Result.success();
 	}
 
@@ -166,6 +167,21 @@ public class OmsCerCancellateLicenseApplyController {
 		List<OmsCerCancellateRecords> list = omsCerCancellateLicenseApplyService.getCerCancellateLicenseRecord(omsCerCancellateLicense);
 		return Result.success(list);
 	}
+
+
+//
+//	/**
+//	 * <b>功能描述: 注销证照生成材料最后一步，进行下一步打印材料清单</b>
+//	 * @Param: [omsCerCancellateLicense, applyId, tableCode]
+//	 * @Return: com.hxoms.common.utils.Result
+//	 * @Author: luoshuai
+//	 * @Date: 2020/9/4 9:11
+//	 */
+//	@GetMapping("/getCerCancellateMaterialList")
+//	public Result getCerCancellateMaterialList(OmsCerCancellateLicense omsCerCancellateLicense,String applyId,String tableCode){
+//		List<OmsCreateFile> list = omsCerCancellateLicenseApplyService.getCerCancellateMaterialList(omsCerCancellateLicense,applyId,tableCode);
+//		return Result.success(list);
+//	}
 
 }
 

@@ -92,6 +92,18 @@ public class OmsFileServiceImpl implements OmsFileService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+
+
+
+//        //测试用的单位主键
+//        UserInfo userInfo = UserInfoUtil.getUserInfo();
+//        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//        B01 b01 = new B01();
+//        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
+
+
+
+
         if (b01 == null){
             throw new CustomMessageException("数据异常");
         }
@@ -118,7 +130,10 @@ public class OmsFileServiceImpl implements OmsFileService {
                     omsfile.setB0100(b01.getB0100());
                     omsfile.setCreateUser(userInfo.getId());
                     omsfile.setCreateTime(new Date());
-                    omsFileMapper.insert(omsfile);
+                    int count = omsFileMapper.insert(omsfile);
+                    if(count < 1){
+                        throw new CustomMessageException("插入新的文件信息出错");
+                    }
                 }
                 //复制文件
                 if (Constants.oms_business[1].equals(tableCode)){
@@ -130,6 +145,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
             }
             //重新查询
+            queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
                     .eq("B0100", b01.getB0100())
                     .in("FILE_TYPE",fileType)
@@ -181,6 +197,16 @@ public class OmsFileServiceImpl implements OmsFileService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+
+
+//        //测试用的单位主键
+//        UserInfo userInfo = UserInfoUtil.getUserInfo();
+//        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//        B01 b01 = new B01();
+//        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
+//
+
+
         //查询文件
         QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
         queryWrapperFile.eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
