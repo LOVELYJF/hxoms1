@@ -10,6 +10,7 @@ import com.hxoms.modules.file.entity.OmsFile;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateApplyMapper;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.selfestimate.entity.OmsSelfFile;
@@ -53,6 +54,8 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
     private OmsPriApplyMapper omsPriApplyMapper;
     @Autowired
     private OmsFileMapper omsFileMapper;
+    @Autowired
+    private OmsCerCancellateApplyMapper omsCerCancellateApplyMapper;
 
     @Override
     public List<OmsSelfFile> selectItemsList(String type) {
@@ -63,6 +66,14 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+
+//        UserInfo userInfo = UserInfoUtil.getUserInfo();
+//        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//        B01 b01 = new B01();
+//        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
+
+
+
         QueryWrapper<OmsSelfFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("TYPE",type)
                 .eq("B0100", b01.getB0100());
@@ -162,6 +173,14 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+
+
+//        UserInfo userInfo = UserInfoUtil.getUserInfo();
+//        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//        B01 b01 = new B01();
+//        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
+
+
         //查询自评项目是否初始化
         QueryWrapper<OmsSelfFile> wrapper = new QueryWrapper<>();
         wrapper.eq("B0100", b01.getB0100())
@@ -225,6 +244,11 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
             }else{
                 throw new CustomMessageException("该申请单不存在");
             }
+        }else if(Constants.oms_business[3].equals(type)){
+            //注销证照
+            B01 b01 = omsCerCancellateApplyMapper.getB0100ByApplyId(applyId);
+            omsSelfFileVO.setB0100(b01.getB0100());
+            omsSelfFileVO.setB0101(b01.getB0101());
         }
         //主要领导
         QueryWrapper<OmsSupMajorLeader> wrapper = new QueryWrapper<>();
