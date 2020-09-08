@@ -10,10 +10,7 @@ import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
-import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
-import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordCompbatch;
-import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordCompbatchMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsEntryexitRecordMapper;
@@ -61,15 +58,12 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     public PageInfo<OmsEntryexitRecord> getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         //分页
         PageUtil.pageHelp(entryexitRecordIPagParam.getPageNum(), entryexitRecordIPagParam.getPageSize());
-        List<OmsEntryexitRecord> entryexitRecordsList = newexitRecordsList(entryexitRecordIPagParam);
+        List<OmsEntryexitRecord> entryexitRecordsList = baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
         //返回数据
         PageInfo<OmsEntryexitRecord> pageInfo = new PageInfo(entryexitRecordsList);
         return pageInfo;
     }
 
-    public List<OmsEntryexitRecord> newexitRecordsList(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
-        return baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
-    }
 
 
     @Override
@@ -635,6 +629,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         //返回数据
         PageInfo<OmsEntryexitRecordVO> pageInfo = new PageInfo(exceptionRecordsList);
         return pageInfo;
+    }
+
+    @Override
+    public List<OmsEntryexitRecordModel> newexitRecordsList(List<String> ids) {
+        return baseMapper.newexitRecordsList(ids);
     }
 
     private boolean CheckDelay(String applyID,Date newEntry) {
