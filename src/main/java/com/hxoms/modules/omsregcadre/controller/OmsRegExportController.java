@@ -148,7 +148,11 @@ public class OmsRegExportController {
     }
 
 
-
+    /**
+     * 导入出入境记录
+     * @param idStr
+     * @throws IOException
+     */
     @PostMapping("/exportZzCrjInfo")
     public void  exportZzCrjInfo(String idStr) throws IOException {
 
@@ -168,46 +172,22 @@ public class OmsRegExportController {
          * 第一个参数：要写入的内容
          * 第二个参数：要写入的sheet目标
          */
-        excelWriter.write(createModelList(idStr),sheet);
+        excelWriter.write(exportEntryexitRecord(idStr),sheet);
         excelWriter.finish();
         outputStream.close();
     }
+
 
     /**
-     * 导出备案大检查列表信息
-     * @param entryexitRecordIPagParam
-     * @throws IOException
+     * 导出出入境记录
+     * @param idStr
      */
-    @GetMapping("/exportEntryexitRecord")
-    @Transactional(rollbackFor=Exception.class)
-    @ApiOperation(value = "导出备案大检查列表信息", notes = "export", produces = "application/octet-stream")
-    public void  exportEntryexitRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) throws IOException {
-
-        HttpServletResponse response = DomainObjectUtil.getResponse();
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-disposition", "attachment;filename=datax.xlsx");
-        OutputStream outputStream = response.getOutputStream();
-
-        //指定文件输出位置
-        ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
-        //将要输出的内容填充到Sheet里
-        Sheet sheet =new Sheet(1,0, OmsEntryexitRecordModel.class );
-        //设置sheet表名
-        //sheet.setSheetName("my_excel");
-        /**
-         * 写数据到Write上下文中
-         * 第一个参数：要写入的内容
-         * 第二个参数：要写入的sheet目标
-         */
-        //excelWriter.write(createEntryRecordModelList(entryexitRecordIPagParam),sheet);
-        excelWriter.finish();
-        outputStream.close();
+    private List exportEntryexitRecord(String idStr) {
+        OmsEntryexitRecordIPagParam entryexitRecordIPagParam = new OmsEntryexitRecordIPagParam();
+        entryexitRecordIPagParam.setIds(idStr);
+        List<OmsEntryexitRecord> entryexitRecordsList =  entryexitRecordService.newexitRecordsList(entryexitRecordIPagParam);
+        return entryexitRecordsList;
     }
-   // private List<OmsEntryexitRecordModel> createEntryRecordModelList(OmsEntryexitRecordIPagParam entryexitRecordIPagParam){
-        //查询年度大检查列表根据年度
-        //List<OmsEntryexitRecordModel> list = entryexitRecordService.entryexitRecordService(entryexitRecordIPagParam);
-        //return list;
-  //  }
 
 
 }

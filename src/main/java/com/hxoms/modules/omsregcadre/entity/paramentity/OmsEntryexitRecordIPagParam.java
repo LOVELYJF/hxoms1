@@ -26,7 +26,8 @@ public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
     private Date ogeEndDate;
     //根据年份查询对应比对数据
     private String year;
-
+    //导出出入境记录批量id串
+    private String ids;
     public String getYear() {
         return year;
     }
@@ -67,4 +68,11 @@ public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
         this.ogeEndDate = ogeEndDate;
     }
 
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
 }
