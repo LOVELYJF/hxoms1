@@ -61,7 +61,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         List<CfCertificateCollection> cfCerList=new ArrayList<>();
         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
             //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
-            if("0".equals(cfCertificateCollection.getCjWay())){
+            if("0".equals(cfCertificateCollection.getDataSource())){
                 Date date = new Date();
                 cfCertificateCollection.setHappenDate(date);
                 cfCertificateCollection.setReturnDate(PubUtils.calDate(date,10));

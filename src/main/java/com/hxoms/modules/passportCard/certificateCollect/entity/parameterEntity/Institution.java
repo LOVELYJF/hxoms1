@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
@@ -10,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @ApiModel(value = "机构")
 public class Institution {
+    @NotBlank(message = "机构单位编码不能为空")
     @ApiModelProperty(value = "机构单位编码")
     private String rfB0000;
 

@@ -15,9 +15,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.List;
 @Api(tags = "证照催缴")
 @RestController
 @RequestMapping("/cerCollection")
+@Validated
 public class CfCertificateCollectionController {
 
     //催缴记录接口
@@ -71,9 +74,9 @@ public class CfCertificateCollectionController {
      * @Date: 2020/8/12
      */
     @ApiOperation(value = "通过单位查询催缴人员")
-    @ApiImplicitParam(value = "机构单位编码",name = "rfB0000",required = true)
+    @ApiImplicitParam(value = "机构单位编码",name = "rfB0000",required = true,paramType = "query")
     @GetMapping("/selectCerCjInfoByOrgan")
-    public Result<CfCertificateCjByPhone> selectCerCjInfoByOrgan(String rfB0000){
+    public Result<CfCertificateCjByPhone> selectCerCjInfoByOrgan(@NotBlank(message = "机构单位编码不能为空") String rfB0000){
         return Result.success(cfCertificateCollectionService.selectCerCjInfoByOrgan(rfB0000));
     }
 
@@ -86,7 +89,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "获取电话催缴内容")
     @PostMapping("/createPhoneContent")
-    public Result<PhoneContent> createPhoneContent(@RequestBody RequestList<CjContentParam> requestList){
+    public Result<PhoneContent> createPhoneContent(@RequestBody @Validated RequestList<CjContentParam> requestList){
         return Result.success(cfCertificateCollectionService.createPhoneContent(requestList.getList()));
     }
     /**
@@ -98,7 +101,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "保存催缴结果（电话催缴）")
     @PostMapping("/insertCerCjResult")
-    public Result insertCerCjResult(@RequestBody RequestList<CfCertificateCollectionRequestEx> requestList){
+    public Result insertCerCjResult(@RequestBody @Validated RequestList<CfCertificateCollectionRequestEx> requestList){
         cfCertificateCollectionService.insertCerCjResult(requestList.getList());
         return  Result.success();
     }
@@ -111,7 +114,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "保存催缴结果（短信催缴）")
     @PostMapping("/updateCerCjResult")
-    public Result updateCerCjResult(@RequestBody RequestList<SaveCjResult> requestList){
+    public Result updateCerCjResult(@RequestBody @Validated RequestList<SaveCjResult> requestList){
         cfCertificateCollectionService.updateCerCjResult(requestList.getList());
         return  Result.success();
     }
@@ -125,7 +128,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "解除催缴")
     @PostMapping("/updateCerCjForRemove")
-    public Result updateCerCjForRemove(@RequestBody RequestList<RemoveCjApply> requestList){
+    public Result updateCerCjForRemove(@RequestBody @Validated RequestList<RemoveCjApply> requestList){
         cfCertificateCollectionService.updateCerCjForRemove(requestList.getList());
         return Result.success();
     }
@@ -139,13 +142,13 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "获取导出短信催缴名单")
     @PostMapping("/getExportSMSCjList")
-    public Result<List<ExportSMSCjInfo>> getExportSMSCjList(@RequestBody  RequestList<Institution> requestList){
+    public Result<List<ExportSMSCjInfo>> getExportSMSCjList(@RequestBody  @Validated RequestList<Institution> requestList){
         return Result.success(cfCertificateCollectionService.getExportSMSCjList(requestList));
     }
 
     @ApiOperation(value = "导出短信催缴名单")
     @PostMapping("/ExportSMSCjList")
-    public void exportSMSCjList(@RequestBody ExportRequestPara exportRequestPara, HttpServletResponse response){
+    public void exportSMSCjList(@RequestBody @Validated ExportRequestPara exportRequestPara, HttpServletResponse response){
         try {
             cfCertificateCollectionService.exportSMSCjList(exportRequestPara,response.getOutputStream());
             response.setCharacterEncoding("UTF-8");
@@ -166,7 +169,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "发送催缴通知")
     @PostMapping("/sendCjNotice")
-    public Result sendCjNotice(@RequestBody CjContentParam cjContentParam){
+    public Result sendCjNotice(@RequestBody @Validated  CjContentParam cjContentParam){
         cfCertificateCollectionService.sendCjNotice(cjContentParam);
         return Result.success();
     }
@@ -180,7 +183,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "锁定单位出国申请")
     @PostMapping("/insertSuspendUnit")
-    public Result insertSuspendUnit(@RequestBody SupSuspendUnitApply supSuspendUnitApply){
+    public Result insertSuspendUnit(@RequestBody @Validated SupSuspendUnitApply supSuspendUnitApply){
         cfCertificateCollectionService.insertSuspendUnit(supSuspendUnitApply);
         return Result.success();
     }
