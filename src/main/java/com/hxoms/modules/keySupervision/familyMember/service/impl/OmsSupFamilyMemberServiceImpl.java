@@ -116,6 +116,21 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	}
 
 
+	/**
+	 * <b>添加家庭成员</b>
+	 * @param a36
+	 * @return
+	 */
+	public void insertFamilyMember(A36 a36) {
+		a36.setA3600(UUIDGenerator.getPrimaryKey());
+		a36.setIsDeleted("0");
+		a36.setIsNormal("1");
+		int count = a36Mapper.insert(a36);
+		if(count < 1){
+			throw new CustomMessageException("添加家庭成员失败");
+		}
+	}
+
 
 	/**
 	 * <b>家庭成员模块查询人员基本信息</b>
