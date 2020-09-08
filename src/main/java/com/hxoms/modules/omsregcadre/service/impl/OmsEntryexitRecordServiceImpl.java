@@ -97,12 +97,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         Map<String, Object> map = new HashMap<>();
         if (priapply!=null && outinfo!=null && joininfo!=null){
             entryexitRecordCompare(null);
-            /*int con = compareInfo(priapply, outinfo, joininfo);
-            if(con > 0){
-                map = this.selectComparisionList(priapply.getA0100());
-            }else{
-                throw new CustomMessageException("当前选择数据无法进行匹配");
-            }*/
         }else{
             throw new CustomMessageException("请选择数据后进行匹配");
         }
