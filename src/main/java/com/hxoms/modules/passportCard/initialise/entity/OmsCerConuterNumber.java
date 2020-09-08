@@ -26,8 +26,8 @@ public class OmsCerConuterNumber {
     @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
 
-    @ColumnAnnotation(FieldName = "ZJXS",   FieldDescription="证件形式(0:本式证照,1:卡式证照)")
-    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)")
+    @ColumnAnnotation(FieldName = "ZJXS",   FieldDescription="证件形式(0:本式,1:卡式)")
+    @ApiModelProperty(value="证件形式(0:本式,1:卡式)")
     private String zjxs;
 
     @ColumnAnnotation(FieldName = "COUNTER_NUM",   FieldDescription="柜台编号")

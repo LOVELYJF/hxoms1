@@ -39,9 +39,15 @@ public class CerGetTaskInfo {
     //领取状态
     @ApiModelProperty(value="领取状态")
     private String getStatus;
+    //领取状态
+    @ApiModelProperty(value="领取状态名称")
+    private String getStatusName;
     //证照类型
     @ApiModelProperty(value="证照类型")
-    private int zjlx;
+    private Integer zjlx;
+    //证照类型名称
+    @ApiModelProperty(value="证照类型名称")
+    private String zjlxName;
     //证件号码
     @ApiModelProperty(value="证件号码")
     private String zjhm;
@@ -53,6 +59,9 @@ public class CerGetTaskInfo {
     //证照状态
     @ApiModelProperty(value="证照状态")
     private String cardStatus;
+    //证照状态名称
+    @ApiModelProperty(value="证照状态名称")
+    private String cardStatusName;
     //审批表
     @ApiModelProperty(value="审批表")
     private String spb;
@@ -151,12 +160,28 @@ public class CerGetTaskInfo {
         this.getStatus = getStatus;
     }
 
-    public int getZjlx() {
+    public String getGetStatusName() {
+        return getStatusName;
+    }
+
+    public void setGetStatusName(String getStatusName) {
+        this.getStatusName = getStatusName;
+    }
+
+    public Integer getZjlx() {
         return zjlx;
     }
 
-    public void setZjlx(int zjlx) {
+    public void setZjlx(Integer zjlx) {
         this.zjlx = zjlx;
+    }
+
+    public String getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
     }
 
     public String getZjhm() {
@@ -229,6 +254,14 @@ public class CerGetTaskInfo {
 
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public Data getHappenDate() {
+        return happenDate;
+    }
+
+    public void setHappenDate(Data happenDate) {
+        this.happenDate = happenDate;
     }
 
     public Date getCreateTime() {

@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.counterGet.entity.parameterEntity;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -9,9 +11,11 @@ import java.util.Date;
  * @Author: wangyunquan
  * @Date: 2020/8/14
  */
+@ApiModel(value = "身份验证")
 public class IdentityParam {
     //姓名
-    @ApiModelProperty(value="姓名")
+    @NotBlank(message = "姓名不能为空")
+    @ApiModelProperty(value="姓名",required = true)
     private String name;
     //性别
     @ApiModelProperty(value="性别")
@@ -23,7 +27,8 @@ public class IdentityParam {
     @ApiModelProperty(value="出生日期")
     private Date csrq;
     //身份证号
-    @ApiModelProperty(value="身份证号")
+    @NotBlank(message = "身份证号不能为空")
+    @ApiModelProperty(value="身份证号",required = true)
     private String idNo;
     //户口所在地
     @ApiModelProperty(value="户口所在地")
@@ -34,15 +39,6 @@ public class IdentityParam {
     //有效期
     @ApiModelProperty(value="有效期")
     private Date yxqz;
-    //左手指纹
-    @ApiModelProperty(value="左手指纹")
-    private String leftFingerMark;
-    //右手指纹
-    @ApiModelProperty(value="右手指纹")
-    private String rightFingerMark;
-    //二维码
-    @ApiModelProperty(value="二维码")
-    private String qRCode;
 
     public String getName() {
         return name;
@@ -108,27 +104,4 @@ public class IdentityParam {
         this.yxqz = yxqz;
     }
 
-    public String getLeftFingerMark() {
-        return leftFingerMark;
-    }
-
-    public void setLeftFingerMark(String leftFingerMark) {
-        this.leftFingerMark = leftFingerMark;
-    }
-
-    public String getRightFingerMark() {
-        return rightFingerMark;
-    }
-
-    public void setRightFingerMark(String rightFingerMark) {
-        this.rightFingerMark = rightFingerMark;
-    }
-
-    public String getqRCode() {
-        return qRCode;
-    }
-
-    public void setqRCode(String qRCode) {
-        this.qRCode = qRCode;
-    }
 }

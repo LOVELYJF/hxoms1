@@ -44,7 +44,7 @@ public class ValidateCerSave {
     private Integer zjlx;
 
     @NotBlank(message = "证件形式不能为空")
-    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)",required = true)
+    @ApiModelProperty(value="证件形式(0:本式,1:卡式)",required = true)
     private String zjxs;
 
     @NotBlank(message = "芯片类型不能为空")
