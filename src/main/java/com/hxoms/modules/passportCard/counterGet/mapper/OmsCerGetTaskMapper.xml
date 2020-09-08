@@ -24,6 +24,7 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATOR" jdbcType="VARCHAR" property="updator" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask">
     <!--
@@ -41,7 +42,7 @@
       This element was generated on Thu Aug 20 17:37:24 CST 2020.
     -->
     ID, OMS_ID, CER_ID, BUSI_ID, NAME, RF_B0000, ZJLX, ZJHM, GET_STATUS, HAPPEN_DATE, 
-    DATA_SOURCE, GET_PEOPLE, GET_TIME, CREATOR, CREATE_TIME, UPDATOR, UPDATE_TIME
+    DATA_SOURCE, GET_PEOPLE, GET_TIME, CREATOR, CREATE_TIME, UPDATOR, UPDATE_TIME, REMARKS
   </sql>
   <sql id="Blob_Column_List">
     <!--
@@ -85,14 +86,14 @@
       HAPPEN_DATE, DATA_SOURCE, GET_PEOPLE, 
       GET_TIME, CREATOR, CREATE_TIME, 
       UPDATOR, UPDATE_TIME, CER_GET_ELE_SIGN, 
-      SPB_GET_ELE_SIGN)
+      SPB_GET_ELE_SIGN,REMARKS)
     values (#{id,jdbcType=VARCHAR}, #{omsId,jdbcType=VARCHAR}, #{cerId,jdbcType=VARCHAR}, 
       #{busiId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR}, 
       #{zjlx,jdbcType=INTEGER}, #{zjhm,jdbcType=VARCHAR}, #{getStatus,jdbcType=VARCHAR}, 
       #{happenDate,jdbcType=DATE}, #{dataSource,jdbcType=VARCHAR}, #{getPeople,jdbcType=VARCHAR}, 
       #{getTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updator,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{cerGetEleSign,jdbcType=LONGVARCHAR}, 
-      #{spbGetEleSign,jdbcType=LONGVARCHAR})
+      #{spbGetEleSign,jdbcType=LONGVARCHAR}, #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask">
     <!--
