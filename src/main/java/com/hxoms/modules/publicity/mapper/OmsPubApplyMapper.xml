@@ -306,7 +306,10 @@
                b.b0100 as b0100
         from oms_reg_procpersoninfo orp
         LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
-        where b.b0100 = #{b0100}
+        where
+        <if test="b0100 != null and b0100 != ''">
+            and b.b0100 = #{b0100}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) like CONCAT('%',#{keyword},'%')
             or orp.PY like CONCAT('%',#{keyword},'%'))
