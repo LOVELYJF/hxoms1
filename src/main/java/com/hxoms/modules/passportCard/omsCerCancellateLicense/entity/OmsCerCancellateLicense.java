@@ -10,8 +10,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 @TableAnnotation(TableName = "oms_cer_cancellate_license", TableDescription="注销证照信息表")
 public class OmsCerCancellateLicense {
     @IdAnnotation
-    @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
+    @ColumnAnnotation(FieldName = "ID",   FieldDescription="注销证照信息主键")
     private String id;
+
+    @IdAnnotation
+    @ColumnAnnotation(FieldName = "CANCELLATE_APPLY_ID",   FieldDescription="注销证照申请主键")
+    private String cancellateApplyId;
 
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID主键")
     private String omsId;
@@ -138,6 +142,14 @@ public class OmsCerCancellateLicense {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getCancellateApplyId() {
+        return cancellateApplyId;
+    }
+
+    public void setCancellateApplyId(String cancellateApplyId) {
+        this.cancellateApplyId = cancellateApplyId == null ? null : cancellateApplyId.trim();
     }
 
     public String getOmsId() {

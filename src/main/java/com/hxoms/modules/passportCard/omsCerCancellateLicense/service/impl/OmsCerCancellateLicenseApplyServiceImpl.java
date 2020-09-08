@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UserInfo;
-import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.*;
+import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
@@ -24,6 +22,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import com.hxoms.support.user.entity.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,15 +66,15 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 			throw new CustomMessageException("请输入姓名或证件号码进行查询");
 		}
 
-		//登录用户信息
-		UserInfo userInfo = UserInfoUtil.getUserInfo();
-		//查询机构信息
-		B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+//		//登录用户信息
+//		UserInfo userInfo = UserInfoUtil.getUserInfo();
+//		//查询机构信息
+//		B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", cfCertificate.getName());
 		map.put("zjhm", cfCertificate.getZjhm());
-		map.put("b0100", b01.getB0100());
+//		map.put("b0100", b01.getB0100());
 		List<Map<String,Object>> list = cfCertificateMapper.getCancellateLicense(map);
 		if(list == null || list.size() < 1){
 			throw new CustomMessageException("没有查询到相关的证照信息");
@@ -126,7 +125,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		omsCerCancellateApply.setAppendPlace(list.get(0).getAppendPlace().equals("1") ? "国内" : "国外");
 		omsCerCancellateApply.setZxyy(Constants.CANCELL_REASON_NAME[Integer.parseInt(list.get(0).getZxyy())]);
 		omsCerCancellateApply.setCreateTime(new Date());
-		omsCerCancellateApply.setCrreateUser(UserInfoUtil.getUserInfo().getId());
+		omsCerCancellateApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsCerCancellateApplyMapper.insert(omsCerCancellateApply);
 		if(count < 1){
 			throw new CustomMessageException("保存到注销证照申请表失败");
@@ -139,6 +138,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 				omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[1]));        //证照申请注销状态（生成材料）
 				omsCerCancellateLicense.setZxfs(String.valueOf(Constants.CANCELL_MODE_STATUS[0]));          //注销方式（自行注销）
 				omsCerCancellateLicense.setId(UUIDGenerator.getPrimaryKey());
+				omsCerCancellateLicense.setCancellateApplyId(omsCerCancellateApply.getId());
 				omsCerCancellateLicense.setCreateTime(new Date());
 				omsCerCancellateLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
 				int count1 = omsCerCancellateLicenseMapper.insert(omsCerCancellateLicense);
@@ -257,19 +257,23 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 
 	/**
 	 * <b>功能描述: 更改申请状态</b>
-	 * @Param: [list]
+	 * @Param: [omsCerCancellateLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 15:09
 	 */
-	public void updateCancellateLicenseApplyStatus(List<OmsCerCancellateLicense> list) {
-		for(OmsCerCancellateLicense omsCerCancellateLicense : list){
-			omsCerCancellateLicense.setModifyTime(new Date());
-			omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
-			int count = omsCerCancellateLicenseMapper.updateById(omsCerCancellateLicense);
-			if(count < 1){
-				throw new CustomMessageException("更改状态失败");
-			}
+	public void updateCancellateLicenseApplyStatus(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if (omsCerCancellateLicense.getZhzxzt() != null && StringUtils.isBlank(omsCerCancellateLicense.getCancellateApplyId())){
+			throw new CustomMessageException("参数错误");
+		}
+
+		omsCerCancellateLicense.setModifyTime(new Date());
+		omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
+		QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
+		queryWrapper.eq("CANCELLATE_APPLY_ID", omsCerCancellateLicense.getCancellateApplyId());
+		int count = omsCerCancellateLicenseMapper.update(omsCerCancellateLicense, queryWrapper);
+		if(count < 1){
+			throw new CustomMessageException("更改状态失败");
 		}
 	}
 
@@ -333,6 +337,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		List<OmsCerCancellateRecords> list = omsCerCancellateRecordsMapper.selectList(queryWrapper);
 		return list;
 	}
+
 
 
 }
