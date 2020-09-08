@@ -17,7 +17,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
 
     OmsPubApply selectById(@Param("id") String id);
 
-    List<PersonInfoVO> selectPersonListByOrg(@Param("b0100") String b0100,@Param("keyword") String keyword);
+    List<PersonInfoVO> selectPersonListByOrg(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
 
     Map<String, Object> selectBasePersonInfo(@Param("b0100") String b0100, @Param("a0100") String a0100);
 
@@ -163,7 +163,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/9/8 14:42
      */
-    List<PersonInfoVO> selectPersonListForOperator(@Param("a0165") List<String> a0165);
+    List<PersonInfoVO> selectPersonListForOperator(@Param("a0165") List<String> a0165 ,@Param("b0100") List<String> b0100,@Param("keyword") String keyword);
 
     /**
      * 功能描述: <br>
@@ -172,7 +172,9 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Return: java.util.List<com.hxoms.modules.publicity.entity.PersonInfoVO>
      * @Author: 李逍遥
      * @Date: 2020/9/8 14:58
+     * @param b0100
+     * @param keyword
      */
-    List<PersonInfoVO> selectPersonListForTZQGB();
+    List<PersonInfoVO> selectPersonListForTZQGB(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
 
 }
