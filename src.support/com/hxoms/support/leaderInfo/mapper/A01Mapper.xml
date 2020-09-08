@@ -143,7 +143,7 @@
 		inner join b01 b on a2.a0201b=b.b0111
 
 		where a.a0100 =#{a0100} and
-		a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0'
+		a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0' and a.a0165 = '02'
 	</select>
 
 	<!--根据机构ID查询-->
