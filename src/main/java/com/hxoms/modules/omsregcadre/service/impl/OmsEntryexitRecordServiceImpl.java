@@ -67,7 +67,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         return pageInfo;
     }
 
-    private List<OmsEntryexitRecord> newexitRecordsList(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
+    public List<OmsEntryexitRecord> newexitRecordsList(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) {
         return baseMapper.selectEntryexitRecordIPage(entryexitRecordIPagParam);
     }
 
