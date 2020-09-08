@@ -334,7 +334,7 @@
       AND DATA_SOURCE = #{dataSource}
     </if>
     <if test="ogeStatus!=null and ogeStatus!=''">
-      AND ORG_STATUS = #{ogeStatus}
+      AND OGE_STATUS = #{ogeStatus}
     </if>
     <if test="ogeStartDate != null">
       and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[>=]]>#{ogeStartDate}
