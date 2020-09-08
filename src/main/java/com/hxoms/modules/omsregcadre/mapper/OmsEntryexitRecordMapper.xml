@@ -336,14 +336,14 @@
     <if test="ogeStatus!=null and ogeStatus!=''">
       AND OGE_STATUS = #{ogeStatus}
     </if>
-    <if test="ogeStartDate != null">
-      and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[>=]]>#{ogeStartDate}
-    </if>
-    <if test="ogeEndDate != null">
-      and to_char(OGE_DATE,'yyyyMMdd') <![CDATA[<=]]>#{ogeEndDate}
+    <if test="ogeStartDate != null and ogeEndDate!=null">
+      and OGE_DATE &gt; #{ogeStartDate} and OGE_DATE &lt; #{ogeEndDate}
     </if>
     <if test="comparisonResult!=null and comparisonResult!=''">
       and COMPARISON_RESULT LIKE '%${comparisonResult}%'
+    </if>
+    <if test="ids!=null and ids!=''">
+      and id in (#{ids})
     </if>
     order by OGE_DATE asc
   </select>
