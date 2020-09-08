@@ -167,7 +167,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 						.or()
 						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 								"PINYIN", omsSupViolationDiscipline.getName())
-				.orderByDesc("VIOLATION_DIS_TIME");
+				.orderByDesc("VIOLATION_DIS_TIME"));
 
 		List<OmsSupViolationDiscipline> list = omsSupViolationDisciplineMapper.selectList(queryWrapper);
 
