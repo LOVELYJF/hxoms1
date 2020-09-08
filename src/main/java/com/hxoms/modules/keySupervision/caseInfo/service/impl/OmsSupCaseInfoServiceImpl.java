@@ -72,14 +72,14 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
-				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
-						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
 				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
 						.or()
 						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
-								"PINYIN", omsSupCaseInfo.getName())
-				.orderByDesc("CASE_TIME"));
+								"PINYIN", omsSupCaseInfo.getName()))
+				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
+								"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
+				.orderByDesc("CASE_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupCaseInfo> resultList = omsSupCaseInfoMapper.selectList(queryWrapper);
@@ -248,14 +248,14 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
 				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
-				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
-						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
 				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
 						.or()
 						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
-								"PINYIN", omsSupCaseInfo.getName())
-				.orderByDesc("CASE_TIME"));
+								"PINYIN", omsSupCaseInfo.getName()))
+				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
+						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
+				.orderByDesc("CASE_TIME");
 
 		List<OmsSupCaseInfo> list = omsSupCaseInfoMapper.selectList(queryWrapper);
 

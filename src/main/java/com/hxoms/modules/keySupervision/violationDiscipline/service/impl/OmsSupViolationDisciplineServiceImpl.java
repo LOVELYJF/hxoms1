@@ -69,14 +69,14 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
 						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
-				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
-						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
 				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
 						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
-								"PINYIN", omsSupViolationDiscipline.getName())
-				.orderByDesc("VIOLATION_DIS_TIME"));
+								"PINYIN", omsSupViolationDiscipline.getName()))
+				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
+						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
+				.orderByDesc("VIOLATION_DIS_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupViolationDiscipline> resultList = omsSupViolationDisciplineMapper.selectList(queryWrapper);
@@ -160,14 +160,14 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
 				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
 						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
-				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
-						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
 				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
 						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
-								"PINYIN", omsSupViolationDiscipline.getName())
-				.orderByDesc("VIOLATION_DIS_TIME"));
+								"PINYIN", omsSupViolationDiscipline.getName()))
+				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
+						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
+				.orderByDesc("VIOLATION_DIS_TIME");
 
 		List<OmsSupViolationDiscipline> list = omsSupViolationDisciplineMapper.selectList(queryWrapper);
 
