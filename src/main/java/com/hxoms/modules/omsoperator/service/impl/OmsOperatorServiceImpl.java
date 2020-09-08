@@ -20,7 +20,6 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * 功能描述: <br>
@@ -152,18 +154,21 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //新增经办人信息
             cfUserMapper.insertSelective(user);
         }
-        //经办人审批表主键、
-        omsOperatorApproval.setId(UUIDGenerator.getPrimaryKey());
-        // 经办人主键、
-        omsOperatorApproval.setOperatorid(user.getUserId());
-        //步骤名称（1.监督处审核 2.处领导审批）、
-        omsOperatorApproval.setStepname("监督处审核");
-        // 提交时间
-        omsOperatorApproval.setSubmissiontime(new Date());
-        // 提交人
-        omsOperatorApproval.setSubmitter(loginUser.getId());
-        //新增经办人审批信息
-        operatorApprovalMapper.insertSelective(omsOperatorApproval);
+        OmsOperatorApproval omsOperatorApproval1 = operatorApprovalMapper.selectByUserId(user.getUserId());
+        if(omsOperatorApproval1 == null){
+            //经办人审批表主键、
+            omsOperatorApproval.setId(UUIDGenerator.getPrimaryKey());
+            // 经办人主键、
+            omsOperatorApproval.setOperatorid(user.getUserId());
+            //步骤名称（1.监督处审核 2.处领导审批）、
+            omsOperatorApproval.setStepname("监督处审核");
+            // 提交时间
+            omsOperatorApproval.setSubmissiontime(new Date());
+            // 提交人
+            omsOperatorApproval.setSubmitter(loginUser.getId());
+            //新增经办人审批信息
+            operatorApprovalMapper.insertSelective(omsOperatorApproval);
+        }
         return "请通知经办人持单位审批后的申请表及身份证到干部监督处办理审批手续";
     }
 

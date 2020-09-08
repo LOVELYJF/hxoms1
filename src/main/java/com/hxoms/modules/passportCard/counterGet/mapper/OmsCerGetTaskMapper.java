@@ -83,4 +83,22 @@ public interface OmsCerGetTaskMapper extends BaseMapper<OmsCerGetTask> {
      * @Date: 2020/8/18
      */
     List<CerGetTaskInfo> selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam);
+
+    /**
+     * @Desc: 查询二维码URL是否存在
+     * @Author: wangyunquan
+     * @Param: [qRCode]
+     * @Return: java.lang.String
+     * @Date: 2020/9/7
+     */
+    String selectQRCode(String qRCode);
+
+    /**
+     * @Desc: 查询用户是否存在
+     * @Author: wangyunquan
+     * @Param: [cerGetTaskQueryParam]
+     * @Return: java.lang.String
+     * @Date: 2020/9/8
+     */
+    String selectUserIsExist(CerGetTaskQueryParam cerGetTaskQueryParam);
 }

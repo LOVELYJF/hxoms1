@@ -81,8 +81,18 @@ public interface LeaderDetailProcessingService {
 
     List<Map> makeApprovalFor(LeaderSupervisionVo leaderSupervisionVo);
 
+    /**
+     * 生成备案表
+     * **/
+    List<Map> createPutOnRecord(LeaderSupervisionVo leaderSupervisionVo);
+
 
     OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String bussinessId, String type,String pass);
+
+    /**
+     * 保存 备案表
+     * **/
+    OmsCreateFile insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName);
 
     /**
      *  处长批量审批
@@ -103,5 +113,9 @@ public interface LeaderDetailProcessingService {
     /**备案表查询列表**/
 
     PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo);
+
+    List<Map> selectGroupConditions();
+
+
 }
 

@@ -72,6 +72,23 @@ public class FileReplaceVO {
     // 批文号
     private String pwh;
 
+    //所赴国家(地区)
+    private String sdgj;
+    //出国任务审批单位
+    private String cgspdw;
+
+    //组团单位名称
+    private String  ztdw;
+
+    //在团组中拟担任职务
+    private String ztnrzw;
+    // 备案单位(备案主体)
+    private String bazt;
+    // 职务
+    private String post;
+
+
+
     //审批表备注
     private String remarks;
 
@@ -324,5 +341,54 @@ public class FileReplaceVO {
 
     public void setStName(String stName) {
         this.stName = stName;
+    }
+
+    public String getSdgj() {
+        return sdgj;
+    }
+
+    public void setSdgj(String sdgj) {
+        this.sdgj = sdgj;
+    }
+
+    public String getCgspdw() {
+        return cgspdw;
+    }
+
+    public void setCgspdw(String cgspdw) {
+        this.cgspdw = cgspdw;
+    }
+
+    public String getZtdw() {
+        return ztdw;
+    }
+
+    public void setZtdw(String ztdw) {
+        this.ztdw = ztdw;
+    }
+
+    public String getZtnrzw() {
+        return ztnrzw;
+    }
+
+    public void setZtnrzw(String ztnrzw) {
+        this.ztnrzw = ztnrzw;
+    }
+
+
+    public String getBazt() {
+        return bazt;
+    }
+
+    public void setBazt(String bazt) {
+        this.bazt = bazt;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
     }
 }

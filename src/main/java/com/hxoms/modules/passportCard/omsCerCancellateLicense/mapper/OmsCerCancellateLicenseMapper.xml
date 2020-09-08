@@ -121,10 +121,10 @@
 				<if test="zjlx != null">cc.zjlx=#{zjlx} and </if>
 				<if test="zhzxzt != null">occl.zhzxzt=#{zhzxzt} and </if>
 				<if test="applyQueryStartTime != null and applyQueryEndTime != null">
-					occl.CREATE_TIME between #{applyQueryStartTime} and #{applyQueryEndTime} and
+					(occl.CREATE_TIME between #{applyQueryStartTime} and #{applyQueryEndTime}) and
 				</if>
-				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
-				<if test="name != null">cc.name like concat('%',#{name},'%') and </if>
+				<if test="zjhm != null">(cc.zjhm like concat('%',#{zjhm},'%')) and </if>
+				<if test="name != null">(cc.name like concat('%',#{name},'%')) and </if>
 			</trim>
 		</where>
 		order by occl.CREATE_TIME desc

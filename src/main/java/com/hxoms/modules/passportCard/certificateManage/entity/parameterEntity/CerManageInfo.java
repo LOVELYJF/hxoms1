@@ -39,7 +39,7 @@ public class CerManageInfo {
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
     //证照形式
-    @ApiModelProperty(value="证件形式(0:本式证照,1:卡式证照)")
+    @ApiModelProperty(value="证件形式(0:本式,1:卡式)")
     private String zjxs;
     @ApiModelProperty(value="证件形式名称")
     private String zjxsName;//转换给前端显示

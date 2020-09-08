@@ -64,9 +64,9 @@
 				<if test="cabinetNum != null">oci.CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">oci.CARD_STATUS=#{cardStatus} and </if>
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
-				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
-					oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
+					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) and
 				</if>
 			</trim>
 		</where>
@@ -119,7 +119,7 @@
 		<where>
 			<trim suffixOverrides="and">
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
-				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
 					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
 				</if>
