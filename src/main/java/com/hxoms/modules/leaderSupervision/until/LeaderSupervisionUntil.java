@@ -40,7 +40,80 @@ public class LeaderSupervisionUntil {
 
     private static int  leaderstepNum;
 
+    public final static String prefixPdfStyle="<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+            "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+            "<head>\n" +
+            "  <meta charset=\"UTF-8\"/>\n" +
+            "  <title>表格样式</title>\n" +
+            "  <meta name=\"viewport\" content=\"initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width\"/>\n" +
+            "  <link rel=\"stylesheet\" href=\"https://static.loyalvalleycapital.com/web/css/frame.css\"/>\n" +
+            "  <style>\n" +
+            "  table.table-separate th{\n" +
+            "    font-weight:bold;\n" +
+            "    font-size:14px;\n" +
+            "    border-top:1px solid #F3EDE9 !important;\n" +
+            "  }\n" +
+            "  table.table-separate td{\n" +
+            "    padding: 13px 0;\n" +
+            "    font-weight:100;\n" +
+            "  }\n" +
+            "  .table-separate td.tit{\n" +
+            "    background-color: #f4f9fe;\n" +
+            "    font-weight:normal;\n" +
+            "    padding:22px 0;\n" +
+            "    width:15%;\n" +
+            "  }\n" +
+            "  .table-separate td.cont{\n" +
+            "    text-align: left;\n" +
+            "    padding:16px 22px;\n" +
+            "    width:85%;\n" +
+            "    line-height:175%;\n" +
+            "  }\n" +
+            "  .table-separate.no-border th{\n" +
+            "    border:none;\n" +
+            "    text-align: left;\n" +
+            "  }\n" +
+            "  .table-separate.no-border td{\n" +
+            "    text-align: left;\n" +
+            "    border:none;\n" +
+            "  }\n" +
+            " \n" +
+            "\ttable {\n" +
+            "\t\t\tborder-collapse: collapse;\n" +
+            "\t\t\ttable-layout: fixed;\n" +
+            "\t\t\tword-break:break-all;\n" +
+            "\t\t\tfont-size: 10px;\n" +
+            "\t\t\twidth: 100%;\n" +
+            "\t\t\ttext-align: center;\n" +
+            "\t}\n" +
+            "\ttd {\n" +
+            "\t\tword-break:break-all;\n" +
+            "\t\tword-wrap : break-word;\n" +
+            "\t}\n" +
+            "\t@page {\n" +
+            "\t\tsize:210mm 297mm;//纸张大小A4\n" +
+            "\t\tmargin: 0.25in;\n" +
+            "\t\t-fs-flow-bottom: \"footer\";\n" +
+            "\t\t-fs-flow-left: \"left\";\n" +
+            "\t\t-fs-flow-right: \"right\";\n" +
+            "\t\tpadding: 1em;\n" +
+            "\t\t}\n" +
+            "\t\t#footer {\n" +
+            "\t\tfont-size: 90%; font-style: italic;\n" +
+            "\t\tposition: absolute; top: 0; left: 0;\n" +
+            "\t\t-fs-move-to-flow: \"footer\";\n" +
+            "\t\t}\n" +
+            "\t\t#pagenumber:before {\n" +
+            "\t\tcontent: counter(page);\n" +
+            "\t\t}\n" +
+            "\t\t#pagecount:before {content: counter(pages);\n" +
+            "\t\t}\n" +
+            "</style>\n" +
+            "</head>\n" +
+            "<body class=\"bg-white pb-3\"  style = \"font-family: SimSun;\">"+
+            "<div id=\"footer\" style=\"\"/> ";
 
+    public final static String suffixPdfStyle="</body>\n" + "</html>";
 
 
 

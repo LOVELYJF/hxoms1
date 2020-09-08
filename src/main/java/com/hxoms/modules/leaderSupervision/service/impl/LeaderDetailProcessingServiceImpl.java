@@ -26,6 +26,7 @@ import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
+import com.hxoms.modules.leaderSupervision.until.FileTypeConvertUtil;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
@@ -100,6 +101,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 
 
+
     @Value("${omsAttachment.baseDir}")
     private String attachmentPath;
 
@@ -110,6 +112,20 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     public void setAttachmentPath(String attachmentPath) {
         this.attachmentPath = attachmentPath;
     }
+
+    @Value("${file.ueditorRealImgUrl}")
+    private String ueditorRealImgUrl;
+
+    public String getUeditorRealImgUrl() {
+        return ueditorRealImgUrl;
+    }
+
+    public void setUeditorRealImgUrl(String ueditorRealImgUrl) {
+        this.ueditorRealImgUrl = ueditorRealImgUrl;
+    }
+
+    @Value("${htmlTopdf.pdfName}")
+    private String pdfName;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -446,6 +462,24 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         }
     }
 
+    // 保存 备案附件 和人员的关系
+    private  void saveAttachmentByPutonRecord(String applyId,String pdfFilePath,int bussinessOccureStpet, String bussinessOccureStpetName){
+
+        // 保存 附件 表
+        OmsAttachment omsAttachment = new OmsAttachment();
+        omsAttachment.setId(UUIDGenerator.getPrimaryKey());
+        omsAttachment.setBussinessid(applyId);
+        omsAttachment.setName(pdfFilePath.split("\\.")[pdfFilePath.split("\\.").length-1]);
+        omsAttachment.setType("pdf");
+        omsAttachment.setUrl(pdfFilePath);
+        omsAttachment.setBussinessOccureStpet(bussinessOccureStpet+"");
+        omsAttachment.setBussinessOccureStpetName(bussinessOccureStpetName);
+        omsAttachment.setCreateTime(new Date());
+        omsAttachment.setCreateUser(UserInfoUtil.getUserInfo().getId());
+        omsAttachmentMapper.insert(omsAttachment);
+
+    }
+
     private void saveAttachmentAndAskforJiwei(MultipartFile file, String[] leaderBatchIds, int bussinessOccureStpet, String bussinessOccureStpetName, int i, String fileName, String url) {
         // 保存 附件 表
         OmsAttachment omsAttachment = new OmsAttachment();
@@ -566,6 +600,29 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     }
 
+    /**
+     *
+     * 生成人员备案表
+     * */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    public List<Map> createPutOnRecord(LeaderSupervisionVo leaderSupervisionVo){
+
+        // 对 参数进行校验
+        LeaderSupervisionUntil.throwableByParam(leaderSupervisionVo);
+        // 保存 审批记录  系统自动根据材料审核结果、纪委意见判断生成呈批单（通过）还是请示表（未通过），
+        // 判断依据：材料审核和纪委意见均通过的为通过，否则为不通过。
+
+        List<Map> lists =  leaderCommonDetailMapper.selectCreatePutOnRecord(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+
+        );
+
+        createOmsFileAndomsCreateFile(lists);
+
+        return lists;
+
+    }
+
     public void createOmsFileAndomsCreateFile(List<Map> lists){
 
        if(lists!=null && lists.size()>0){
@@ -666,6 +723,82 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(rollbackFor = CustomMessageException.class)
+    public OmsCreateFile insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName) {
+
+//        LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
+
+
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if (StringUtils.isBlank(omsCreateFile.getId())){
+            //新增
+            omsCreateFile.setId(UUIDGenerator.getPrimaryKey());
+            omsCreateFile.setCreateUser(userInfo.getId());
+            omsCreateFile.setIsSealhandle("0");
+            omsCreateFile.setCreateTime(new Date());
+            if (omsCreateFileMapper.insert(omsCreateFile) < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        }else{
+            //修改
+            omsCreateFile.setModifyTime(new Date());
+            omsCreateFile.setModifyUser(userInfo.getId());
+            if (omsCreateFileMapper.updateById(omsCreateFile) < 1){
+                throw new CustomMessageException("操作失败");
+            }
+        }
+
+//        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
+//
+//        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+//        bussinessTypeAndIdVo.setBussinessId(bussinessId);
+//        bussinessTypeAndIdVo.setBussinessName(type);
+//        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
+//
+//        //  (1) 保存 审批记录(通过)
+//        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
+//        //不通过
+//        // (2) 修改流程状态
+//        leaderCommonService.updteBussinessApplyStatue(bussinessTypeAndIdVosNum1, Constants.leader_businessName[4]);
+//        // 修改 业务流程申请 最终结论 (通过)
+//        leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,opinion,null);
+//        // 修改 业务流程申请 最终结论 (不通过)
+//        // 修改 批次状态
+//        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+//                bussinessTypeAndIdVosNum1.stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+//                Constants.leader_business[4]);
+
+        String pdfFilePath =   getPdfByHtml(omsCreateFile,userName);
+
+        saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
+        return omsCreateFile;
+    }
+
+    private String  getPdfByHtml(OmsCreateFile omsCreateFile,String userName) {
+
+        // 要转换的 html
+        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +omsCreateFile.getFrontContent()+LeaderSupervisionUntil.suffixPdfStyle;
+        // 生成 pdf的路径 +名称
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar calendar = Calendar.getInstance();
+        String fileName = df.format(calendar.getTime()) +userName+pdfName+".pdf" ;
+        log.info("文件的文件名为:" + fileName);
+
+
+        String filePath = attachmentPath+File.separator+"static"+File.separator;
+        try {
+            FileTypeConvertUtil.html2pdf(htmlstr,filePath+fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return filePath+fileName;
+
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = CustomMessageException.class)
     public OmsCreateFile insertOrUpadateCreateFileAndUpdateStaus(OmsCreateFile omsCreateFile, String bussinessId, String type,String pass) {
 
         LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
@@ -721,6 +854,14 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         return omsCreateFile;
     }
+
+
+
+
+
+
+
+
 
     // 处长批量审批
     @Transactional(rollbackFor = CustomMessageException.class)
@@ -1214,6 +1355,11 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         return null;
     }
 
+    public List<Map> selectGroupConditions(){
+
+        return  leaderCommonMapper.selectGroupConditions();
+    }
+
     @Override
     @Transactional(readOnly=true)
     public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo) {
@@ -1225,4 +1371,6 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         return pageInfo;
 
     }
+
+
 }
