@@ -38,4 +38,14 @@ public interface OmsCerInventoryMapper extends BaseMapper<OmsCerInventory> {
 	 * @Date: 2020/8/20 14:38
 	 */
 	List<Map<String, Object>> GetCerInventoryResult(Map<String, Object> map);
+
+
+	/**
+	 * <b>功能描述: 查询证照主键集合</b>
+	 * @Param: [map]
+	 * @Return: java.util.List<java.lang.String>
+	 * @Author: luoshuai
+	 * @Date: 2020/9/7 15:59
+	 */
+	List<String> selectOmsCerIdList(Map<String, Object> map);
 }

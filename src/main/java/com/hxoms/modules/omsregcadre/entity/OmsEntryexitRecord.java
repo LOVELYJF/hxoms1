@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -18,13 +19,13 @@ public class OmsEntryexitRecord {
     @ApiModelProperty(value="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "B0000",   FieldDescription="机构id")
-    @ApiModelProperty(value="机构id")
-    private String b0000;
-
     @ColumnAnnotation(FieldName = "PRIAPPLY_ID",   FieldDescription="因私出国申请记录id")
     @ApiModelProperty(value="因私出国申请记录id")
     private String priapplyId;
+
+    @ColumnAnnotation(FieldName = "B0000",   FieldDescription="机构id")
+    @ApiModelProperty(value="机构id")
+    private String b0000;
 
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
@@ -120,6 +121,7 @@ public class OmsEntryexitRecord {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date comparisonDate;
 
+    @TableField(exist = false)
     private OmsPriApply priApply;
 
     public String getId() {
@@ -312,5 +314,13 @@ public class OmsEntryexitRecord {
 
     public void setComparisonDate(Date comparisonDate) {
         this.comparisonDate = comparisonDate;
+    }
+
+    public OmsPriApply getPriApply() {
+        return priApply;
+    }
+
+    public void setPriApply(OmsPriApply priApply) {
+        this.priApply = priApply;
     }
 }

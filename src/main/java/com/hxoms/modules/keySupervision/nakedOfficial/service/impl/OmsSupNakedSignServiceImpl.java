@@ -1,5 +1,6 @@
 package com.hxoms.modules.keySupervision.nakedOfficial.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -75,11 +76,11 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 						"XZXGW", omsSupNakedSign.getXzxgw())
 				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
 						"FJGNF",omsSupNakedSign.getFjgnf())
-		        .like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
-				        "NAME", omsSupNakedSign.getName())
+				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						"NAME", omsSupNakedSign.getName())
 				.or()
 				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
-						"PINYIN", omsSupNakedSign.getName());
+						"PINYIN", omsSupNakedSign.getName()));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupNakedSign> resultList = omsSupNakedSignMapper.selectList(queryWrapper);
@@ -222,11 +223,11 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 						"XZXGW", omsSupNakedSign.getXzxgw())
 				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
 						"FJGNF",omsSupNakedSign.getFjgnf())
-				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
-				.or()
-				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
-						"PINYIN", omsSupNakedSign.getName());
+						.or()
+						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+								"PINYIN", omsSupNakedSign.getName()));
 
 		List<OmsSupNakedSign> list = omsSupNakedSignMapper.selectList(queryWrapper);
 

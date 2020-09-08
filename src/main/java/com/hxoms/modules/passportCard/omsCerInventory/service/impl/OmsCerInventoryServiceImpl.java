@@ -1,6 +1,5 @@
 package com.hxoms.modules.passportCard.omsCerInventory.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
@@ -61,7 +60,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(resultList.size() > 0){
-			throw new CustomMessageException("该证照柜已经完成盘点，查询请点击统计盘点结果");
+			throw new CustomMessageException("本月该证照柜已经完成盘点，查询请点击统计盘点结果");
 		}
 
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -74,6 +73,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			OmsCerInventory omsCerInventory1 = new OmsCerInventory();
 			omsCerInventory1.setId(UUIDGenerator.getPrimaryKey());
 			omsCerInventory1.setOmsId(cfCertificate.getOmsId());
+			omsCerInventory1.setCfId(cfCertificate.getId());
 			omsCerInventory1.setName(cfCertificate.getName());
 			omsCerInventory1.setA0100(cfCertificate.getA0100());
 			omsCerInventory1.setCsrq(cfCertificate.getCsrq());
@@ -90,7 +90,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			if(count < 1){
 				throw new CustomMessageException("保存到证照盘点表失败");
 			}else {
-				//将该条数据在证照信息表中的机柜、位置清空
 				cfCertificate.setCabinetNum("");
 				cfCertificate.setPlace("");
 				cfCertificate.setSaveStatus("1");           //全部将状态置为已取出
@@ -117,8 +116,11 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", "0");
-		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map);
-
+		//查询证照主键
+		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
+		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
+		queryWrapper.in(idList != null && idList.size() > 0,"ID",idList);
+		List<CfCertificate> list = cfCertificateMapper.selectList(queryWrapper);
 
 		//同步盘点结果到盘点表
 		for(CfCertificate cfCertificate : list){
@@ -131,13 +133,12 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 
 			//设置同步条件
 			String inventoryDate = UtilDateTime.formatCNMonth(new Date());
-			QueryWrapper<OmsCerInventory> queryWrapper = new QueryWrapper<OmsCerInventory>();
-			queryWrapper.eq("INVENTORY_DATE", inventoryDate)            //盘点年月
-					.eq("CABINET_NUM", omsCerInventory.getCabinetNum())     //机柜编号
+			QueryWrapper<OmsCerInventory> wrapper = new QueryWrapper<OmsCerInventory>();
+			wrapper.eq("INVENTORY_DATE", inventoryDate)            //盘点年月
 					.eq("ZJHM", cfCertificate.getZjhm())                //证件号码
 					.eq("YXQZ", cfCertificate.getYxqz());               //有效期至
 
-			omsCerInventoryMapper.update(omsCerInventory1, queryWrapper);
+			omsCerInventoryMapper.update(omsCerInventory1, wrapper);
 
 		}
 
@@ -194,7 +195,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", "0");
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
-		map.put("sameStatus","1");
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
 		if(list.size() < 1 || list == null){
@@ -311,7 +311,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("cardStatus", "0");
 		List<Map<String,Object>>  inventoryList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(inventoryList.size() > 0){
-			throw new CustomMessageException("该号码段内已经有盘点过得证照");
+			return inventoryList;
 		}
 
 
@@ -433,7 +433,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		map.put("cardStatus", "0");
-		map.put("sameStatus","1");
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -598,7 +597,6 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
-		map.put("sameStatus","1");
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
 
 

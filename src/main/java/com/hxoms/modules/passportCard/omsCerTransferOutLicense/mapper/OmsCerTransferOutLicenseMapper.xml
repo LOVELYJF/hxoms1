@@ -67,12 +67,12 @@
 				<if test="zjlx != null">octol.zjlx=#{zjlx} and </if>
 				<if test="batchNum != null">octol.BATCH_NUM=#{batchNum} and </if>
 				<if test="handoverStartQueryTime != null and handoverEndQueryTime != null">
-					octol.HANDOVER_TIME between #{handoverStartQueryTime} and #{handoverEndQueryTime} and
+					(octol.HANDOVER_TIME between #{handoverStartQueryTime} and #{handoverEndQueryTime}) and
 				</if>
 				<if test="exitStartQueryTime != null and exitEndQueryTime != null">
-					octol.EXIT_TIME between #{exitStartQueryTime} and #{exitEndQueryTime} and
+					(octol.EXIT_TIME between #{exitStartQueryTime} and #{exitEndQueryTime}) and
 				</if>
-				<if test="name != null">octol.name like concat('%',#{name},'%') and</if>
+				<if test="name != null">(octol.name like concat('%',#{name},'%')) and</if>
 			</trim>
 		</where>
 		order by octol.WORK_UNIT

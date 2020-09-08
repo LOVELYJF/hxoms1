@@ -70,12 +70,12 @@ public interface OmsCerCancellateLicenseApplyService {
 
 	/**
 	 * <b>功能描述: 更改申请状态</b>
-	 * @Param: [list]
+	 * @Param: [omsCerCancellateLicense]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 15:09
 	 */
-	void updateCancellateLicenseApplyStatus(List<OmsCerCancellateLicense> list);
+	void updateCancellateLicenseApplyStatus(OmsCerCancellateLicense omsCerCancellateLicense);
 
 
 	/**

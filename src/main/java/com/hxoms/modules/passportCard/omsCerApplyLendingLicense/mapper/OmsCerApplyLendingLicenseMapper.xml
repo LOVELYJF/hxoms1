@@ -52,12 +52,12 @@
 			<trim suffixOverrides="and">
 				<if test="sqjczt != null">ocall.sqjczt=#{sqjczt} and </if>
 				<if test="lendingQueryStartTime != null and lendingQueryEndTime != null">
-					ocall.CREATE_TIME between #{lendingQueryStartTime} and #{lendingQueryEndTime} and
+					(ocall.CREATE_TIME between #{lendingQueryStartTime} and #{lendingQueryEndTime}) and
 				</if>
-				<if test="name != null">ocall.name like concat('%',#{name},'%')
+				<if test="name != null">(ocall.name like concat('%',#{name},'%')
 					or
-					org.PY like concat('%',#{name},'%') and </if>
-				<if test="jbr != null">ocall.jbr like concat('%',#{jbr},'%') and </if>
+					org.PY like concat('%',#{name},'%')) and </if>
+				<if test="jbr != null">(ocall.jbr like concat('%',#{jbr},'%')) and </if>
 			</trim>
 		</where>
 		order by ocall.CREATE_TIME desc

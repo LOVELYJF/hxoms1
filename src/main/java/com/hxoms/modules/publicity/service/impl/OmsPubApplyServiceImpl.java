@@ -58,8 +58,27 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Override
-    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String keyword) {
-        return omsPubApplyMapper.selectPersonListByOrg(b0100, keyword);
+    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String type, String keyword) {
+        /** type 说明（1-经办人，2、管理员维护，3、因公、因私、特殊人员，4、调整期干部） */
+        List<PersonInfoVO> personInfoVOS = null;
+        ArrayList<String> a0165 = new ArrayList<>();
+        if("1".equals(type)){
+            //经办人、只能查询非省管、中管干部
+            a0165.add("01");
+            a0165.add("02");
+            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165);
+        }else if ("2".equals(type)){
+            //管理员维护：查询所有人员
+            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165);
+        }else if ("3".equals(type)){
+            //因公、因私、特殊人员查询登记备案库人员
+            personInfoVOS = omsPubApplyMapper.selectPersonListByOrg(b0100, keyword);
+        }else if ("4".equals(type)){
+            //调整期干部：查询省管干部
+            personInfoVOS = omsPubApplyMapper.selectPersonListForTZQGB();
+        }
+
+        return personInfoVOS;
     }
 
     @Override

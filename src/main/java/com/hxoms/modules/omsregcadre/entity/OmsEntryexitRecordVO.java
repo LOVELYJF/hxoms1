@@ -18,7 +18,9 @@ public class OmsEntryexitRecordVO{
 
 
     private String id;
-    @ApiModelProperty(value="姓名")
+    @ApiModelProperty(value="姓")
+    private String surname;
+    @ApiModelProperty(value="名")
     private String name;
     @ApiModelProperty(value="性别")
     private String sex;
@@ -89,6 +91,14 @@ public class OmsEntryexitRecordVO{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getSex() {

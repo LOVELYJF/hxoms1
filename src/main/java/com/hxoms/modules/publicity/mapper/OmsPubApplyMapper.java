@@ -154,4 +154,25 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/8/31 10:43
      */
     List<PWHTreeVO> getPWHList();
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人选择人员：查询非省管、中管干部〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.PersonInfoVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/8 14:42
+     */
+    List<PersonInfoVO> selectPersonListForOperator(@Param("a0165") List<String> a0165);
+
+    /**
+     * 功能描述: <br>
+     * 〈调整期干部选择人员：查询省管干部〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.PersonInfoVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/8 14:58
+     */
+    List<PersonInfoVO> selectPersonListForTZQGB();
+
 }

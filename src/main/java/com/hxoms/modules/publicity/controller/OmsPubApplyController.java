@@ -31,11 +31,13 @@ public class OmsPubApplyController {
      * 根据机构id查询人员
      *
      * @author sunqian
+     * type 说明 （1—经办人功能查询人员，2-管理员维护功能查询人员，
+     *            3-因公、因私、特殊人员查询人员，4-调整期干部查询人员）
      * @date 2020/4/21 17:16
      */
     @GetMapping("/selectPersonListByOrg")
-    public Result selectPersonListByOrg(String b0100, String keyword) {
-        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100, keyword);
+    public Result selectPersonListByOrg(String b0100, String keyword,String type) {
+        List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100, keyword,type);
         return Result.success(list);
     }
 

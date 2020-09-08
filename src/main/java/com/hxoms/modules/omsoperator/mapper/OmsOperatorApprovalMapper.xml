@@ -56,22 +56,32 @@
     </select>
     <select id="selectCountStatusByHandover"
             resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
-      select "1.撤销经办人" as label, "0" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "0"
+      select "第一步.确定撤销人" as label, "0" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "0"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
       union all
-      select "2.经办人交接" as label, "3" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "3"
+      select "第二步.注册新经办人" as label, "0" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "0"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
       union all
-      select "3.接手人确认" as label, "4" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "4"
+      select "第三步.确定接手人" as label, "0" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "0"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>
       union all
-      select "4.管理员确认" as label, "5" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "5"
+      select "第四步.经办人交接" as label, "3" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.OperatorId=cf.user_id where o.HandoverStatus = "3"
+      <if test="orgId != null and orgId != ''">
+        and cf.org_id = #{orgId}
+      </if>
+      union all
+      select "第五步.接手人确认" as label, "4" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "4"
+      <if test="orgId != null and orgId != ''">
+        and cf.org_id = #{orgId}
+      </if>
+      union all
+      select "第六步.管理员确认" as label, "5" as statusCode, count(0) as num from oms_operator_handover o INNER JOIN cf_user cf on o.HandoverId=cf.user_id where o.HandoverStatus = "5"
       <if test="orgId != null and orgId != ''">
         and cf.org_id = #{orgId}
       </if>

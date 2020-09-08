@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,8 +64,10 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
         if(createQrCodeApplyList.size()>0){
+            HttpServletRequest request = DomainObjectUtil.getRequest();
             String qrCodeId= UUIDGenerator.getPrimaryKey();
-            StringBuffer stringBuffer=new StringBuffer("获取请求路径");
+            //生成二维码URL
+            StringBuffer stringBuffer=new StringBuffer("http://"+request.getLocalAddr()+":"+request.getServerPort()+"/conuterGet/selectCanGetCer");
             stringBuffer.append("?").append("operatId=").append(userInfo.getId()).append("&qrCodeId=").append(qrCodeId);
             ByteArrayOutputStream bs=new ByteArrayOutputStream();
             try {

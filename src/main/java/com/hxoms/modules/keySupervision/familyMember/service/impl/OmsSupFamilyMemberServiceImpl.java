@@ -328,54 +328,47 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					omsRegProcpersonInfo.setCheckStatus("0");
 					omsRegProcpersonInfo.setModifyTime(new Date());
 					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
-					int count = omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
-					if(count < 1){
-						throw new CustomMessageException("裸官家庭成员撤销备案失败");
-					}else{
-						if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
-							//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
-							for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
-								if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
-										omsRegRevokeApply.getStatus().equals("0")){
-									//撤销登记备案表中已经存在
-									flag = true;
-									break;
-								}else {
-									continue;
-								}
+					omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
+
+					if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
+						//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
+						for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
+							if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&
+									omsRegRevokeApply.getStatus().equals("0")){
+								//撤销登记备案表中已经存在
+								flag = true;
+								break;
+							}else {
+								continue;
 							}
 						}
+					}
 
-						if(flag == false){
-							OmsRegRevokeapply omsRegRevokeApply = new OmsRegRevokeapply();
-							omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
-							omsRegRevokeApply.setCreateDate(new Date());
-							omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
-							omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
-							omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
-							omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
-							omsRegRevokeApply.setIdnumberGb(omsRegProcpersonInfo.getIdnumberGb());
-							omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
-							omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
-							omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
-							omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
-							omsRegRevokeApply.setIdentityCode(omsRegProcpersonInfo.getIdentityCode());
-							omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yyyy-MM-dd"));
-							omsRegRevokeApply.setStatus("0");
-							omsRegRevokeApply.setApplyReason("裸官取消限制性岗位");
+					if(flag == false){
+						OmsRegRevokeapply omsRegRevokeApply = new OmsRegRevokeapply();
+						omsRegRevokeApply.setId(UUIDGenerator.getPrimaryKey());
+						omsRegRevokeApply.setCreateDate(new Date());
+						omsRegRevokeApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
+						omsRegRevokeApply.setSurname(omsRegProcpersonInfo.getSurname());
+						omsRegRevokeApply.setName(omsRegProcpersonInfo.getName());
+						omsRegRevokeApply.setBirthDate(omsRegProcpersonInfo.getBirthDate());
+						omsRegRevokeApply.setIdnumberGb(omsRegProcpersonInfo.getIdnumberGb());
+						omsRegRevokeApply.setRegisteResidence(omsRegProcpersonInfo.getRegisteResidence());
+						omsRegRevokeApply.setWorkUnit(omsRegProcpersonInfo.getWorkUnit());
+						omsRegRevokeApply.setPost(omsRegProcpersonInfo.getPost());
+						omsRegRevokeApply.setIdentity(omsRegProcpersonInfo.getIdentity());
+						omsRegRevokeApply.setIdentityCode(omsRegProcpersonInfo.getIdentityCode());
+						omsRegRevokeApply.setExitDate(UtilDateTime.formatDate(new Date() , "yyyy-MM-dd"));
+						omsRegRevokeApply.setStatus("0");
+						omsRegRevokeApply.setApplyReason("裸官取消限制性岗位");
 
-							int result = omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
-							if(result < 1){
-								throw new CustomMessageException("保存到撤销登记备案失败");
-							}
-						}
+						omsRegRevokeApplyMapper.insert(omsRegRevokeApply);
+
 					}
 				}else {
 					continue;
 				}
 			}
-		}else {
-			throw new CustomMessageException("该裸官家属未备案");
 		}
 	}
 }

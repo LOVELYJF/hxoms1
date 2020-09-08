@@ -13,6 +13,9 @@ public class OmsCerInventory {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "CF_ID",   FieldDescription="证照表主键")
+    private String cfId;
+
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="登记备案ID主键")
     private String omsId;
 
@@ -90,6 +93,15 @@ public class OmsCerInventory {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+
+    public String getCfId() {
+        return cfId;
+    }
+
+    public void setCfId(String cfId) {
+        this.cfId = cfId == null ? null : cfId.trim();
     }
 
     public String getOmsId() {

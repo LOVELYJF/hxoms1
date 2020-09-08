@@ -8,13 +8,25 @@
     <result column="APPEND_PLACE" jdbcType="VARCHAR" property="appendPlace" />
     <result column="ZXYY" jdbcType="VARCHAR" property="zxyy" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="CRREATE_USER" jdbcType="VARCHAR" property="crreateUser" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, OMS_ID, APPLY_CER_INFO, APPEND_PLACE, ZXYY, CREATE_TIME, CRREATE_USER, MODIFY_USER, 
+    ID, OMS_ID, APPLY_CER_INFO, APPEND_PLACE, ZXYY, CREATE_TIME, CREATE_USER, MODIFY_USER,
     MODIFY_TIME
   </sql>
+
+    <!-- 根据申请主键查询单位信息 -->
+	<select id="getB0100ByApplyId" resultType="com.hxoms.support.b01.entity.B01">
+      select
+        b.b0100,
+        b.b0101
+      from oms_cer_cancellate_apply occa
+      join oms_reg_procpersoninfo org on occa.OMS_ID = org.ID
+      join b01 b on b.b0111 = org.RF_B0000
+      where occa.ID=#{applyId}
+
+    </select>
 
 </mapper>

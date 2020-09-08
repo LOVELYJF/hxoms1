@@ -151,7 +151,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
         //roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_leader_info");
         roleGrantMapper.deleteLeaderTypeGrantByLeaderTypeId(roleId,leaderTypeId);
         //------------yangbo----------
-        List<String> checkList = roleGrant.getCheckList();
+        List<String> checkList =    roleGrant.getCheckList();
         if (checkList == null || checkList.isEmpty()) {
             return;
         }

@@ -237,6 +237,36 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	}
 
 
+	/**
+	 * <b>功能描述: 处领导审批进行下一步</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/5 14:50
+	 */
+	public Map<String, Object> getCerCancellateLicenseBillApproval(List<OmsCerCancellateLicense> list) {
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择要打印呈批单的证照信息");
+		}
+
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerCancellateLicense omsCerCancellateLicense : list){
+			if(!omsCerCancellateLicense.getOmsId().equals(omsId)){
+				throw new CustomMessageException("选中的多个人员不是同一个人");
+			}
+			if(!omsCerCancellateLicense.getZhzxzt().equals(String.valueOf(Constants.CANCELL_STATUS[6]))){
+				throw new CustomMessageException("选择的证照还未通过处领导审批");
+			}
+		}
+
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate_approval");
+		map.put("procpersonId", list.get(0).getOmsId());
+		map.put("applyId", list.get(0).getCancellateApplyId());
+		return map;
+	}
+
 
 	/**
 	 * <b>功能描述: 处领导审批(可以批量审批)</b>
@@ -300,11 +330,14 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 16:48
 	 */
-	public void updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense) {
+	public Map<String,Object> updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense) {
+		Map<String,Object> map = new HashMap<String,Object>();
 		if(omsCerCancellateLicense.getBldyj().equals("1")){
 			//通过
 			omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[7]));  //生成注销函
-
+			map.put("tableCode", "oms_cer_cancellate_letter");
+			map.put("procpersonId",omsCerCancellateLicense.getOmsId());
+			map.put("applyId", omsCerCancellateLicense.getCancellateApplyId());
 		}else if(omsCerCancellateLicense.getBldyj().equals("0")){
 			//不通过
 			omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));  //拒绝
@@ -335,6 +368,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				throw new CustomMessageException("将记录插入到注销记录表失败");
 			}
 		}
+		return map;
 	}
 
 

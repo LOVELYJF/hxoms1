@@ -665,6 +665,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             }
         }
 
+
+        //职务转换
+
+
         //数据类型  1.干部    2 公安
         orpInfo.setDataType("1");
         //备案状态

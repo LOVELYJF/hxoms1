@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory">
 		<id column="ID" jdbcType="VARCHAR" property="id" />
 		<result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
+		<result column="CF_ID" jdbcType="VARCHAR" property="cfId" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="A0100" jdbcType="VARCHAR" property="a0100" />
 		<result column="CSRQ" jdbcType="DATE" property="csrq" />
@@ -26,7 +27,7 @@
 		<result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
 	</resultMap>
 	<sql id="Base_Column_List">
-    ID, OMS_ID, NAME, A0100, CSRQ, ZJLX, ZJHM, YXQZ, CARD_STATUS, BEFORE_INVENTORY_SAVE_STATUS,
+    ID, OMS_ID, CF_ID, NAME, A0100, CSRQ, ZJLX, ZJHM, YXQZ, CARD_STATUS, BEFORE_INVENTORY_SAVE_STATUS,
     AFTER_INVENTORY_SAVE_STATUS, CABINET_NUM, PLACE, COUNTER_NUM, COUNTER_START_QUERY, 
     COUNTER_END_QUERY, INVENTORY_RESULT, INVENTORY_DATE, CREATE_USER, CREATE_TIME, MODIFY_USER, 
     MODIFY_TIME
@@ -63,9 +64,9 @@
 				<if test="cabinetNum != null">oci.CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">oci.CARD_STATUS=#{cardStatus} and </if>
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
-				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
-					oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
+					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) and
 				</if>
 			</trim>
 		</where>
@@ -118,7 +119,7 @@
 		<where>
 			<trim suffixOverrides="and">
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
-				<if test="sameStatus != null">oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS and </if>
+				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
 					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
 				</if>
@@ -128,6 +129,17 @@
 					</foreach>
 					)and
 				</if>
+			</trim>
+		</where>
+	</select>
+
+
+	<select id="selectOmsCerIdList" resultType="java.lang.String">
+		select CF_ID from oms_cer_inventory
+		<where>
+			<trim suffixOverrides="and">
+				<if test="cabinetNum != null">CABINET_NUM=#{cabinetNum} and </if>
+				<if test="cardStatus != null">CARD_STATUS=#{cardStatus} and </if>
 			</trim>
 		</where>
 	</select>

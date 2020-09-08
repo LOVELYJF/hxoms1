@@ -190,6 +190,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             //将状态更改为处领导审批
             operator.setUserState(Constants.USER_STATUS[4]);
             cfUserMapper.updateByPrimaryKeySelective(operator);
+            approval.setStepname("处领导审批");
             approval.setApprovalopinion("同意");
             approval.setApprover(loginUser.getUserName());
             approval.setApprovaldate(new Date());
@@ -202,6 +203,8 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             approval.setApprover(loginUser.getUserName());
             approval.setApprovaldate(new Date());
             operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        }else {
+            throw new CustomMessageException("无操作权限!");
         }
     }
 
