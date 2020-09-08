@@ -58,7 +58,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
     @Override
-    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String type, String keyword) {
+    public List<PersonInfoVO> selectPersonListByOrg(String b0100, String keyword, String type) {
         /** type 说明（1-经办人，2、管理员维护，3、因公、因私、特殊人员，4、调整期干部） */
         List<PersonInfoVO> personInfoVOS = null;
         ArrayList<String> a0165 = new ArrayList<>();
