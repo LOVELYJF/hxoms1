@@ -96,8 +96,6 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 					if(count < 1){
 						throw new CustomMessageException("添加失败");
 					}
-				}else {
-					throw new CustomMessageException("添加的内容有重复");
 				}
 			}
 		}else {

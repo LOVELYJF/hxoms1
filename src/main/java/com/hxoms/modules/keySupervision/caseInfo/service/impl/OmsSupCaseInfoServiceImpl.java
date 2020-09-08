@@ -346,8 +346,15 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	 public void checkCaseDocumentNo(String documentNum){
 		 //检查立案信息的文书号是否出现缺号
-		 String yearNum = documentNum.substring(documentNum.indexOf("[") + 1, documentNum.indexOf("]"));
-		 String no = documentNum.substring(documentNum.indexOf("]") + 1, documentNum.indexOf("号"));
+		 String yearNum = null;
+		 String no = null;
+		 try {
+			 yearNum = documentNum.substring(documentNum.indexOf("[") + 1, documentNum.indexOf("]"));
+			 no = documentNum.substring(documentNum.indexOf("]") + 1, documentNum.indexOf("号"));
+		 }catch (StringIndexOutOfBoundsException e){
+		 	throw new CustomMessageException("文书号格式错误，正确的格式例如：琼纪琼监立通[2020]1号");
+		 }
+
 		 Integer num = Integer.parseInt(no);
 		 if(UtilDateTime.nowYear().equals(yearNum)){
 			 //根据当前年份查询数据库中的文书号数量

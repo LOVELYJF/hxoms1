@@ -46,7 +46,7 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
     private String dataSource;
 
     public String getOgeStatus() {
-        return ogeStatus.equals("1")?"出入境导入":"手工录入";
+        return ogeStatus.equals("1")?"出境":"入境";
     }
 
     public void setOgeStatus(String ogeStatus) {
@@ -62,7 +62,7 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
     }
 
     public String getSex() {
-        return sex;
+        return sex.equals("1")?"男":"女";
     }
 
     public void setSex(String sex) {
@@ -90,7 +90,7 @@ public class OmsEntryexitRecordModel  extends BaseRowModel {
             idType = "护照";
         }else if (idType.equals("2")){
             idType = "港澳通行证";
-        }else if (idType.equals("3")){
+        }else if (idType.equals("4")){
             idType = "台湾通行证";
         }
         return idType;

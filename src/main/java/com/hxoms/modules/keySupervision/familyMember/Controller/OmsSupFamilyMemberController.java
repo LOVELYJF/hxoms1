@@ -133,4 +133,15 @@ public class OmsSupFamilyMemberController {
 		return Result.success();
 	}
 
+
+	/**
+	 * <b>添加家庭成员</b>
+	 * @param a36
+	 * @return
+	 */
+	@PostMapping("/insertFamilyMember")
+	public Result insertFamilyMember(A36 a36){
+		omsSupFamilyMemberService.insertFamilyMember(a36);
+		return Result.success();
+	}
 }

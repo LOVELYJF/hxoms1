@@ -14,10 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -150,11 +147,11 @@ public class OmsRegExportController {
 
     /**
      * 导入出入境记录
-     * @param idStr
+     * @param ids
      * @throws IOException
      */
     @PostMapping("/exportZzCrjInfo")
-    public void  exportZzCrjInfo(String idStr) throws IOException {
+    public void  exportZzCrjInfo(@RequestBody List<String> ids) throws IOException {
 
         HttpServletResponse response = DomainObjectUtil.getResponse();
         response.setContentType("application/vnd.ms-excel");
@@ -164,7 +161,7 @@ public class OmsRegExportController {
         //指定文件输出位置
         ExcelWriter excelWriter = EasyExcelFactory.getWriter(outputStream);
         //将要输出的内容填充到Sheet里
-        Sheet sheet =new Sheet(1,0, ExcelModelORPinfo.class );
+        Sheet sheet =new Sheet(1,0, OmsEntryexitRecordModel.class );
         //设置sheet表名
         //sheet.setSheetName("my_excel");
         /**
@@ -172,7 +169,7 @@ public class OmsRegExportController {
          * 第一个参数：要写入的内容
          * 第二个参数：要写入的sheet目标
          */
-        excelWriter.write(exportEntryexitRecord(idStr),sheet);
+        excelWriter.write(exportEntryexitRecord(ids),sheet);
         excelWriter.finish();
         outputStream.close();
     }
@@ -180,12 +177,10 @@ public class OmsRegExportController {
 
     /**
      * 导出出入境记录
-     * @param idStr
+     * @param ids
      */
-    private List exportEntryexitRecord(String idStr) {
-        OmsEntryexitRecordIPagParam entryexitRecordIPagParam = new OmsEntryexitRecordIPagParam();
-        entryexitRecordIPagParam.setIds(idStr);
-        List<OmsEntryexitRecord> entryexitRecordsList =  entryexitRecordService.newexitRecordsList(entryexitRecordIPagParam);
+    private List exportEntryexitRecord(List<String> ids) {
+        List<OmsEntryexitRecordModel> entryexitRecordsList =  entryexitRecordService.newexitRecordsList(ids);
         return entryexitRecordsList;
     }
 

@@ -181,6 +181,7 @@
 		join a02 a02  on a.a0100 = a02.a0100
 		join b01 b  on a02.a0201b = b.b0111
 		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
+		join person_org_order poo on poo.a01000 = a.a0100
 		<where>
 			<trim suffixOverrides="and">
 				<if test="1 == 1">a.a0163 = '1' and a02.a0255 = '1' and a.is_deleted = '0' and </if>
@@ -193,6 +194,7 @@
 				<if test="name != null">a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%') and </if>
 			</trim>
 		</where>
+		order by poo.a0201b ,orderindex
 	</select>
 
 
