@@ -10,4 +10,6 @@ import java.util.Map;
 public interface LeaderCommonDetailMapper {
 
   List<Map> selectJiweiOpinionAndMaterialsCheckOpinion(@Param("bussinessIds") Object[] bussinessIds,@Param("type") String type);
+
+  List<Map> selectCreatePutOnRecord(@Param("bussinessIds") Object[] bussinessIds);
 }

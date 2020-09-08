@@ -317,6 +317,7 @@ INSERT INTO `hxoms`.`oms_file` (`ID`, `FILE_ID`, `B0100`, `FILE_NAME`, `FILE_SHO
 INSERT INTO `hxoms`.`oms_file` (`ID`, `FILE_ID`, `B0100`, `FILE_NAME`, `FILE_SHORTNAME`, `FRONT_CONTENT`, `BANK_CONTENT`, `FILE_TYPE`, `TABLE_CODE`, `IS_EDIT`, `SEAL_DESC`, `RUN_SQL`, `PRINT_NUM`, `ISFILE_LIST`, `CREATE_TIME`, `CREATE_USER`, `MODIFY_TIME`, `MODIFY_USER`, `SORT_ID`) VALUES ('312', NULL, NULL, '《因公请示表》', '请示表', '<div style=\"width:771px;font-size:40px;text-align:center;\">中共海南省委组织部来文处理单</div>\r\n        <table width=\"771\" border>\r\n            <tbody>\r\n                <tr style=\"height:45px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">来文单位</td>\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\"><br/></td>\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">来文编号</td>\r\n                    <td colspan=\"3\" style=\"font-size:20px;text-align:center;\"><br/></td>\r\n                </tr>\r\n                <tr style=\"height:45px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td  style=\"font-size:20px;text-align:center;\">收文时间</td>\r\n                    <td  style=\"width:150px;font-size:20px;text-align:center;\"><br/></td>\r\n                    <td  style=\"font-size:20px;text-align:center;\">办文编号</td>\r\n                    <td  style=\"width:150px;font-size:20px;text-align:center;\"><br/></td>\r\n                    <td  style=\"font-size:20px;text-align:center;\">密级</td>\r\n                    <td  style=\"width:80px;font-size:20px;text-align:center;\"><br/></td>\r\n                </tr>\r\n                <tr style=\"height:45px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">文件名称</td>\r\n                    <td colspan=\"5\" style=\"font-size:20px;text-align:center;\">关于建议不予办理$姓名$同志出国（境）备案手续的请示</td>\r\n                </tr>\r\n                <tr style=\"height:150px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"width:200px;font-size:20px;text-align:center;\">干部监督处拟办意见</td>\r\n                    <td colspan=\"5\" style=\"font-size:20px;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;近日，我处收到关于办理$姓名$同志赴$国家（地区）$备案手续的请示，$姓名$同志于$出境时间$至$入境时间$赴$国家（地区）$开展$出访任务$，在外停留$停留时间$天。经征求省纪委意见，省纪委对$姓名$出国（境）持异议，不予回复意见。建议不予办理$姓名$同志出国（境）备案手续。\r\n\r\n    <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;妥否，呈$分管部长$副部长审示。</td>\r\n                </tr>\r\n                <tr style=\"height:80px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">部领导批示：</td>\r\n                    <td colspan=\"5\" style=\"font-size:20px;text-align:center;\"><br/></td>\r\n                </tr>\r\n                <tr style=\"height:80px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">省领导批示：</td>\r\n                    <td colspan=\"5\" style=\"font-size:20px;text-align:center;\"><br/></td>\r\n                </tr>\r\n                <tr style=\"height:45px;border-top:1px solid #666;border-bottom:1px solid #666;\">\r\n                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\">承办结果</td>\r\n                    <td colspan=\"5\" style=\"font-size:20px;text-align:center;\"><br/></td>\r\n                </tr>\r\n            </tbody>\r\n        </table>', NULL, '1', 'oms_pub_apply_cadres', '2', '', 'SELECT\r\n	CONCAT(\r\n		IFNULL(orp.SURNAME, \'\'),\r\n		IFNULL(orp. NAME, \'\')\r\n	) AS NAME,\r\n	(\r\n		SELECT\r\n			item_name\r\n		FROM\r\n			sys_dict_item\r\n		WHERE\r\n			dict_code = \'GB2261\'\r\n		AND item_code = orp.SEX\r\n	) AS sex,\r\n	opa.POLITICAL_AFF AS politicalAffi,\r\n	orp.BIRTH_DATE_GB AS birthDate,\r\n	orp.HEALTH AS health,\r\n	orp.IDNUMBER_GB AS idnumber,\r\n	orp.REGISTE_RESIDENCE AS registeResidence,\r\n	(\r\n		SELECT\r\n			item_name\r\n		FROM\r\n			sys_dict_item\r\n		WHERE\r\n			dict_code = \'SMDJ\'\r\n		AND item_code = opa.CLASSIFICATION_LEVEL\r\n	) AS secretLevel,\r\n	DATE_FORMAT(opa.CGSJ,\'%Y.%m.%d\') AS abroadTime,\r\n	DATE_FORMAT(opa.HGSJ,\'%Y.%m.%d\') AS returnTime,\r\n	(\r\n		SELECT\r\n			GROUP_CONCAT(NAME_ZH)\r\n		FROM\r\n			country\r\n		WHERE\r\n			id IN (opa.GO_COUNTRY)\r\n	) AS goCountry,\r\n	opa.TLSJ AS outsideTime,\r\n\r\n	NOW() AS nowTime,\r\n  opa.PWH as pwh,\r\n  opa.cfrw as cfrw,\r\n	CONCAT(\r\n		IFNULL(orp.SURNAME, \'\'),\r\n		IFNULL(orp. NAME, \'\')\r\n	) AS contactPerson,\r\n	\'1\' AS approvalNo,\r\n	b.b0101 AS b0101,\r\n	opa.REVERT_LICENCE_TIME AS revertLicenceTime,\r\n	CONCAT(\r\n		IFNULL(orp.SURNAME, \'\'),\r\n		IFNULL(orp. NAME, \'\')\r\n	) AS nowUsername\r\n	\r\nFROM\r\n	\r\noms_pub_apply opa \r\nLEFT JOIN oms_reg_procpersoninfo orp ON opa.a0100 = orp.a0100\r\nLEFT JOIN b01 b ON opa.b0100 = b.b0111\r\nWHERE\r\n	opa.ID = \'@applyId\'', '1', '1', '2020-07-24 14:57:30', NULL, NULL, NULL, '2');
 
 
+
 #因公呈批单
 INSERT INTO `hxoms`.`oms_replace_keywords` (
     `ID`,
@@ -1085,3 +1086,583 @@ select
        NULL,
        NULL
 ;
+
+
+# 因公 备案表
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$姓名$',
+       'getName',
+       '姓名',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$性别$',
+       'getSex',
+       '性别',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$出生年月$',
+       'getBirthDate',
+       '出生年月',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$工作单位$',
+       'getB0101',
+       '工作单位',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$职务$',
+       'getPost',
+       '职务',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+-- INSERT INTO `hxoms`.`oms_replace_keywords` (
+--     `ID`,
+--     `FILE_ID`,
+--     `KEYWORD`,
+--     `REPLACE_FIELD`,
+--     `DESCRIPTION`,
+--     `TYPE`,
+--     `USE_TYPE`,
+--     `CREATE_TIME`,
+--     `CREATE_USER`,
+--     `MODIFY_TIME`,
+--     `MODIFY_USER`
+--     )
+-- select
+--
+--        REPLACE(uuid(),'-',''),
+--        '314',
+--        '$职称$',
+--        'getName',
+--        '职称',
+--        'oms_pri_apply_cadres',
+--        '1',
+--        now(),
+--        NULL,
+--        NULL,
+--        NULL
+-- ;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$出国任务$',
+       'getCfrw',
+       '出国任务',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$所赴国家(地区)$',
+       'getGoCountry',
+       '所赴国家(地区)',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$停留时间$',
+       'getOutsideTime',
+       '停留时间',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$出国任务审批单位$',
+       'getCgspdw',
+       '出国任务审批单位',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$批件文号$',
+       'getPwh',
+       '批件文号',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$组团单位名称$',
+       'getZtdw',
+       '组团单位名称',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$在团组中拟担任职务$',
+       'getZtnrzw',
+       '在团组中拟担任职务',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$备案单位$',
+       'getBazt',
+       '备案单位',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_replace_keywords` (
+    `ID`,
+    `FILE_ID`,
+    `KEYWORD`,
+    `REPLACE_FIELD`,
+    `DESCRIPTION`,
+    `TYPE`,
+    `USE_TYPE`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`
+    )
+select
+
+       REPLACE(uuid(),'-',''),
+       '317',
+       '$当前时间$',
+       'getNowTime',
+       '当前时间',
+       'oms_pri_apply_cadres',
+       '1',
+       now(),
+       NULL,
+       NULL,
+       NULL
+;
+
+INSERT INTO `hxoms`.`oms_file` (
+    `ID`,
+    `FILE_ID`,
+    `B0100`,
+    `FILE_NAME`,
+    `FILE_SHORTNAME`,
+    `FRONT_CONTENT`,
+    `BANK_CONTENT`,
+    `FILE_TYPE`,
+    `TABLE_CODE`,
+    `IS_EDIT`,
+    `SEAL_DESC`,
+    `RUN_SQL`,
+    `PRINT_NUM`,
+    `ISFILE_LIST`,
+    `CREATE_TIME`,
+    `CREATE_USER`,
+    `MODIFY_TIME`,
+    `MODIFY_USER`,
+    `SORT_ID`
+    )
+VALUES
+       (
+           '317',
+           NULL,
+           NULL,
+           '《因公出国（境）人员备案表》',
+           '人员备案表',
+           '<div>
+               <div style="width:771px;font-size:40px;text-align:center;">因公出国（境）人员备案表</div>
+               <table width="771" border>
+                   <tbody>
+                       <tr style="height:45px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td  style="font-size:20px;text-align:center;width:100px">姓名</td>
+                           <td  style="font-size:20px;text-align:center;">$姓名$</td>
+                           <td  style="font-size:20px;text-align:center;width:100px">性别</td>
+                           <td  style="font-size:20px;text-align:center;">$性别$</td>
+                           <td  style="font-size:20px;text-align:center;width:150px">出生年月</td>
+                           <td  style="font-size:20px;text-align:center;">$出生年月$</td>
+                       </tr>
+                       <tr style="height:45px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td colspan="1" style="font-size:20px;text-align:center;">工作单位及职务、职称</td>
+                           <td colspan="5" style="font-size:20px;text-align:center;">$工作单位$、$职务$、$职称$</td>
+                       </tr>
+                       <tr style="height:150px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td colspan="1" style="width:200px;font-size:20px;text-align:center;">出国任务和所赴国家<br/>（地区）及停留时间</td>
+                           <td colspan="5" style="font-size:20px;">$出国任务$和$所赴国家(地区)$及$停留时间$</td>
+                       </tr>
+                       <tr style="height:50px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td colspan="1" style="font-size:20px;text-align:center;">出国任务审批单位及批件文号</td>
+                           <td colspan="5" style="font-size:24px;text-align:center;">$出国任务审批单位$及$批件文号$</td>
+                       </tr>
+                       <tr style="height:50px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td colspan="1" style="font-size:20px;text-align:center;">组团单位名称、在团组中拟担任职务</td>
+                           <td colspan="5" style="font-size:24px;text-align:center;">$组团单位名称$、$在团组中拟担任职务$</td>
+                       </tr>
+                       <tr style="height:50px;border-top:1px solid #666;border-bottom:1px solid #666;">
+                           <td colspan="1" style="font-size:20px;text-align:center;">说明</td>
+                           <td colspan="5" style="font-size:24px;text-align:center;"><br/></td>
+                       </tr>
+
+                   </tbody>
+               </table>
+               <table width="771">
+                   <tr style="height:50px;border:none">
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;width:150px">备案单位：</td>
+                           <td colspan="1" style="font-size:20px;text-align:center;">$备案单位$</td>
+                       </tr>
+                       <tr style="height:50px;border:none">
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"><br/></td>
+                           <td colspan="1" style="font-size:20px;text-align:center;width:150px">$当前时间$</td>
+                           <td colspan="1" style="font-size:20px;text-align:center;"></td>
+                       </tr>
+               </table>
+           </div>',
+           NULL,
+           '1',
+           'oms_pub_apply_cadres',
+           '2',
+           '',
+           'SELECT
+         CONCAT(
+           IFNULL(orp.SURNAME, ''),
+           IFNULL(orp. NAME, '')
+         ) AS NAME,
+         (
+           SELECT
+             item_name
+           FROM
+             sys_dict_item
+           WHERE
+             dict_code = \'GB2261\'
+           AND item_code = orp.SEX
+         ) AS sex,
+         opa.POLITICAL_AFF AS politicalAffi,
+         orp.BIRTH_DATE_GB AS birthDate,
+
+         (
+           SELECT
+             item_name
+           FROM
+             sys_dict_item
+           WHERE
+             dict_code = \'SMDJ\'
+           AND item_code = opa.SMDJ
+         ) AS secretLevel,
+
+         (
+           SELECT
+             GROUP_CONCAT(NAME_ZH)
+           FROM
+             country
+           WHERE
+             id IN (opa.SDGJ)
+         ) AS goCountry,
+         opa.TLSJ AS outsideTime,
+
+        (select DATE_FORMAT(NOW(),\'%Y年%m月%d日\')) AS nowTime,
+
+         opa.PWH as pwh,
+         opa.cfrw as cfrw,
+         orp.POST as POST,
+         opa.ZTNRZW as ztnrzw,
+         CONCAT(
+           IFNULL(orp.SURNAME, ''),
+           IFNULL(orp. NAME, '')
+         ) AS contactPerson,
+         \'1\' AS approvalNo,
+         b.b0101 AS b0101,
+         CONCAT(
+           IFNULL(orp.SURNAME, ''),
+           IFNULL(orp. NAME, '')
+         ) AS nowUsername
+
+       FROM
+
+       oms_pub_apply opa
+       LEFT JOIN oms_reg_procpersoninfo orp ON opa.a0100 = orp.a0100
+       LEFT JOIN b01 b ON opa.b0100 = b.b0111
+       left join oms_pub_group_pre_approval gpa on opa.YSP_ID = gpa.id
+       WHERE
+         opa.ID = \'@applyId\'
+       ',
+           '1',
+           '1',
+           '2020-07-24 14:57:30',
+           NULL,
+           NULL,
+           NULL,
+           '3'
+           );

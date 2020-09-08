@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
@@ -13,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @authore:wjf
@@ -55,11 +55,11 @@ public class VerifyCheckController {
     }
     // 组团 单位查询条件
     @GetMapping("/selectGroupConditions")
-    public Result selectGroupConditions(LeaderSupervisionVo leaderSupervisionVo){
+    public Result selectGroupConditions(){
 
-        List<Map> lists =leaderCommonMapper.selectGroupConditions();
+        Set<Map> lists =new HashSet<>(leaderDetailProcessingService.selectGroupConditions());
 
-        return Result.success(lists);
+        return Result.success(lists!=null?lists:"");
     }
 
     /**
@@ -115,6 +115,30 @@ public class VerifyCheckController {
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
 
+    }
+
+    /**
+     *  生成 人员备案表
+     * **/
+
+    @PostMapping("/createPutOnRecord")
+    public Result createPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
+        List<Map> lists= leaderDetailProcessingService.createPutOnRecord(leaderSupervisionVo);
+
+        return Result.success(lists);
+    }
+
+    /**
+     * 保存或者更新(人员备案表)
+     *
+     */
+    @PostMapping("/insertOrUpadateCreateFileAndUpdateStaus")
+    public Result insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName){
+//        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
+        OmsCreateFile result = leaderDetailProcessingService.insertOrUpdatePutOnRecordFile(omsCreateFile,userName);
+
+        return Result.success(result);
     }
 
 }

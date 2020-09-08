@@ -2246,7 +2246,8 @@
 						pua.leader_batch_id as batchId, # 批次id
 						pua.SQZT   as applyStatus,    # 业务 流程状态
 						pua.PROCPERSON_ID as procpersonId , #登记备案人员id
-
+                        "人员备案表" as fileType, # 模板类型
+						"oms_pub_apply_cadres" as tableCode,
 						b.b0101 AS department,  # "部门名称"
 						a.a0101 AS userName, # 人员名称
 						DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
