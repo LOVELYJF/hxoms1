@@ -309,8 +309,11 @@
         from oms_reg_procpersoninfo orp
         LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
         <where>
-            <if test="b0100 != null and b0100 != ''">
-                and b.b0100 = #{b0100}
+            <if test="b0100 != null and b0100.size>0">
+                and b.b0100 in
+                <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                    #{b0100}
+                </foreach>
             </if>
             <if test="keyword != null and keyword != ''">
                 and (CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) like CONCAT('%',#{keyword},'%')
@@ -551,14 +554,24 @@
             JOIN a02 a2 ON a2.a0100 = a.a0100
             AND a2.a0281 = 'true'
             JOIN b01 b ON a2.a0201b = b.b0111
-        WHERE
-        <if test="a0165 != null and a0165.size>0">
-            and a.a0165 not in
-            <foreach collection="a0165" item="a0165" separator="," open="(" close=")">
-                #{a0165}
-            </foreach>
-        </if>
-
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and a.a0101 like CONCAT('%',#{keyword},'%')
+                or  a.a0102 like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="a0165 != null and a0165.size>0">
+                and a.a0165 not in
+                <foreach collection="a0165" item="a0165" separator="," open="(" close=")">
+                    #{a0165}
+                </foreach>
+            </if>
+            <if test="b0100 != null and b0100.size>0">
+                and b.b0100 in
+                <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                    #{b0100}
+                </foreach>
+            </if>
+        </where>
     </select>
     <select id="selectPersonListForTZQGB" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
         SELECT
@@ -580,6 +593,16 @@
             JOIN b01 b ON a2.a0201b = b.b0111
         WHERE
             a.a0165 = '02'
+        <if test="keyword != null and keyword != ''">
+            and a.a0101 like CONCAT('%',#{keyword},'%')
+            or  a.a0102 like CONCAT('%',#{keyword},'%'))
+        </if>
+        <if test="b0100 != null and b0100.size>0">
+            and b.b0100 in
+            <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                #{b0100}
+            </foreach>
+        </if>
     </select>
 
     <insert id="insertPubApplyList">
