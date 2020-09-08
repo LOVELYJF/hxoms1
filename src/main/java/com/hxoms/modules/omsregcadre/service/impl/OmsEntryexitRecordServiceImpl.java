@@ -29,9 +29,7 @@ import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
-import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -622,11 +620,13 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
 
     @Override
-    public List<OmsEntryexitRecord> queryExceptionPriApplyList(String omsId) {
-        QueryWrapper<OmsEntryexitRecord> exitWrapper = new QueryWrapper<OmsEntryexitRecord>();
-        exitWrapper.eq("PROCPERSON_ID", omsId);
-        exitWrapper.isNotNull("PRIAPPLY_ID");
-        List<OmsEntryexitRecord> exceptionPriApplylist = baseMapper.selectList(exitWrapper);
+    public List<OmsEntryexitRecordVO> queryExceptionPriApplyList(String omsId) {
+        OmsEntryexitRecordIPagParam record = new OmsEntryexitRecordIPagParam();
+        record.setOmsId(omsId);
+        //查询异常list
+        List<OmsEntryexitRecordVO> exceptionRecordsList = baseMapper.getExceptionPriApply(record);
+        //组装出入境记录后的list
+        List<OmsEntryexitRecordVO> exceptionPriApplylist = getNewList(exceptionRecordsList);
         return exceptionPriApplylist;
     }
 

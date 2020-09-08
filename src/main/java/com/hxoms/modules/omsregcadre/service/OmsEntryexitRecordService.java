@@ -72,7 +72,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     Map<String, Object> queryCompresultByYear(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 
-    List<OmsEntryexitRecord> queryExceptionPriApplyList(String omsId);
+    List<OmsEntryexitRecordVO> queryExceptionPriApplyList(String omsId);
 
     PageInfo<OmsEntryexitRecordVO> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 }
