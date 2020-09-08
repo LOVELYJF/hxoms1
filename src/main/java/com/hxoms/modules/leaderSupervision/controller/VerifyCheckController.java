@@ -133,7 +133,7 @@ public class VerifyCheckController {
      * 保存或者更新(人员备案表)
      *
      */
-    @PostMapping("/insertOrUpadateCreateFileAndUpdateStaus")
+    @PostMapping("/insertOrUpdatePutOnRecordFile")
     public Result insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName){
 //        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
         OmsCreateFile result = leaderDetailProcessingService.insertOrUpdatePutOnRecordFile(omsCreateFile,userName);

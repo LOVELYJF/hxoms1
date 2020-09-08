@@ -69,6 +69,7 @@ omsAttachment:
 #  linux:  /usr/local/bin/wkhtmltopdf                   #wkhtmltopdf 工具下载位置 linux系统
 
 # 在此定义pdf 大小以及样式
+
 htmlTopdf:
     pdfName:  备案表
 
