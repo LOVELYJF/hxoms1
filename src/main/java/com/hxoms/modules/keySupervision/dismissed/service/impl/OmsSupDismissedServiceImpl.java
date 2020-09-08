@@ -62,12 +62,12 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 				.in(list != null && list.size() > 0,"WORK_UNIT", list)
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
-				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 						"NAME", omsSupDismissed.getName())
-				.or()
-				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
-						"PINYIN", omsSupDismissed.getName())
-				.orderByDesc("DISMISSED_TIME");
+						.or()
+						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+								"PINYIN", omsSupDismissed.getName())
+				.orderByDesc("DISMISSED_TIME"));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupDismissed> resultList = omsSupDismissedMapper.selectList(queryWrapper);
@@ -150,12 +150,12 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
-				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 						"NAME", omsSupDismissed.getName())
-				.or()
-				.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
-						"PINYIN", omsSupDismissed.getName())
-				.orderByDesc("DISMISSED_TIME");
+						.or()
+						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+								"PINYIN", omsSupDismissed.getName())
+				.orderByDesc("DISMISSED_TIME"));
 
 		List<OmsSupDismissed> list = omsSupDismissedMapper.selectList(queryWrapper);
 

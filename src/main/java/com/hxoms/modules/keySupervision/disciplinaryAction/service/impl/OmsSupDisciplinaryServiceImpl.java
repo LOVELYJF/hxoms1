@@ -67,12 +67,12 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
 						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
-				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
 						"NAME", omsSupDisciplinary.getName())
-				.or()
-				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
-						"PINYIN", omsSupDisciplinary.getName())
-				.orderByDesc("DISCIPLINARY_TIME");
+						.or()
+						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+								"PINYIN", omsSupDisciplinary.getName())
+				.orderByDesc("DISCIPLINARY_TIME"));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupDisciplinary> resultList = omsSupDisciplinaryMapper.selectList(queryWrapper);
@@ -169,12 +169,12 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
 						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
-				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
 						"NAME", omsSupDisciplinary.getName())
-				.or()
-				.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
-						"PINYIN", omsSupDisciplinary.getName())
-				.orderByDesc("DISCIPLINARY_TIME");
+						.or()
+						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+								"PINYIN", omsSupDisciplinary.getName())
+				.orderByDesc("DISCIPLINARY_TIME"));
 
 		List<OmsSupDisciplinary> list = omsSupDisciplinaryMapper.selectList(queryWrapper);
 

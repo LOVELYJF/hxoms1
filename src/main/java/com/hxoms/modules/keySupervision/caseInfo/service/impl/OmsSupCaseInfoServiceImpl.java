@@ -74,12 +74,12 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
-				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
-				.or()
-				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
-						"PINYIN", omsSupCaseInfo.getName())
-				.orderByDesc("CASE_TIME");
+						.or()
+						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+								"PINYIN", omsSupCaseInfo.getName())
+				.orderByDesc("CASE_TIME"));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupCaseInfo> resultList = omsSupCaseInfoMapper.selectList(queryWrapper);
@@ -250,12 +250,12 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
-				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
-				.or()
-				.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
-						"PINYIN", omsSupCaseInfo.getName())
-				.orderByDesc("CASE_TIME");
+						.or()
+						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+								"PINYIN", omsSupCaseInfo.getName())
+				.orderByDesc("CASE_TIME"));
 
 		List<OmsSupCaseInfo> list = omsSupCaseInfoMapper.selectList(queryWrapper);
 
