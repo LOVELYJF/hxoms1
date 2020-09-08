@@ -86,4 +86,11 @@ public interface OmsSupFamilyMemberService {
 	 */
 	List<SysDictItem> getMigrationCategory();
 
+
+	/**
+	 * <b>添加家庭成员</b>
+	 * @param a36
+	 * @return
+	 */
+	void insertFamilyMember(A36 a36);
 }
