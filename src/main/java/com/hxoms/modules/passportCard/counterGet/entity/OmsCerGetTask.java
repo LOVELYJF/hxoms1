@@ -97,6 +97,10 @@ public class OmsCerGetTask {
     @ColumnAnnotation(FieldName = "SPB_GET_ELE_SIGN",   FieldDescription="审批表领取电子签名(BASE64数据)")
     private String spbGetEleSign;
 
+    @ApiModelProperty(value="备注")
+    @ColumnAnnotation(FieldName = "REMARKS",   FieldDescription="备注")
+    private String remarks;
+
     public String getId() {
         return id;
     }
@@ -247,5 +251,13 @@ public class OmsCerGetTask {
 
     public void setSpbGetEleSign(String spbGetEleSign) {
         this.spbGetEleSign = spbGetEleSign == null ? null : spbGetEleSign.trim();
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks == null ? null : remarks.trim();
     }
 }
