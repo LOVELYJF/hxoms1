@@ -351,6 +351,7 @@
 
   <select id="getExceptionPriApply" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO">
       select
+          rp.SURNAME as surname,
           rp.NAME as name,
           rp.SEX as sex,
           rp.WORK_UNIT as workUnit,
@@ -382,7 +383,11 @@
     <if test="year!=null and year!=''">
       and to_char(record.COMPARISON_DATE,'YYYY')=#{year}
     </if>
-    order by record.OGE_DATE asc
+    <if test="omsId!=null and omsId!=''">
+      and record.OMS_ID=#{omsId}
+    </if>
+
+      order by record.OGE_DATE asc
   </select>
 
 

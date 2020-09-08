@@ -124,7 +124,7 @@ public class OmsEntryexitRecordController {
     @PostMapping("/queryExceptionPriApplyList")
     public Result queryExceptionPriApplyList(String omsId) {
         try{
-            List<OmsEntryexitRecord> exceptionPriApplylist = entryexitRecordService.queryExceptionPriApplyList(omsId);
+            List<OmsEntryexitRecordVO> exceptionPriApplylist = entryexitRecordService.queryExceptionPriApplyList(omsId);
             return Result.success(exceptionPriApplylist);
         }catch (Exception e) {
             e.printStackTrace();
