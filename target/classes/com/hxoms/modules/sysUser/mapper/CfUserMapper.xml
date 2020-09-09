@@ -87,18 +87,12 @@
     select
     <include refid="Base_Column_List"/>
     from cf_user
-    <where>
+    where user_type != '6'
       <if test='userName != null and userName != ""'>
         and (user_name like CONCAT('%',#{userName},'%')
         or user_code like CONCAT('%',#{userName},'%'))
       </if>
-      <if test="orgId != null and orgId.size > 0">
-        and org_id in
-        <foreach collection="orgId" item="orgId" open="(" separator="," close=")">
-          #{orgId}
-        </foreach>
-      </if>
-    </where>
+
   </select>
   <select id="selectByUserCode" resultType="com.hxoms.modules.sysUser.entity.CfUser">
     select
@@ -173,6 +167,9 @@
             <if test='userType != null and userType != ""'>
                 and user_type = #{userType}
             </if>
+            <if test="state != null and state != ''">
+              and user_state=#{state,jdbcType=CHAR}
+            </if>
         </where>
     </select>
     <select id="getOperatorByIdnumAndState" resultType="com.hxoms.modules.sysUser.entity.CfUser">
@@ -190,6 +187,20 @@
                 and user_state = #{state,jdbcType=CHAR}
             </if>
         </where>
+    </select>
+    <select id="getOperatorByB0100" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+      select
+      *
+      from cf_user c
+      left join b01 b on c.org_id = b.b0111
+      where c.user_state = '1'
+        <if test="userType != null and userType != ''">
+            and c.user_type = #{userType}
+        </if>
+        <if test='b0100 != null and b0100 != ""'>
+            and b.b0100 = #{b0100}
+        </if>
+
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--

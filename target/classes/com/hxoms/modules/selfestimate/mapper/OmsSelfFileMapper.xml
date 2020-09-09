@@ -59,6 +59,7 @@
     FILE_NAME AS filename, id as fileId
     from oms_file
     where 1=1
+      and ISFILE_LIST = '1'
     <if test="b0100 != null and b0100 != ''">
       and B0100 = #{b0100}
     </if>

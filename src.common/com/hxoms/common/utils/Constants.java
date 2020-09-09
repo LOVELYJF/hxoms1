@@ -158,8 +158,8 @@ public class Constants {
     public static String[] TITLES = {"因公临时出国人员备案表","因公临时赴港澳人员备案表","因公临时赴台人员备案表"};
 
     /*******出国境 业务类型*****/
-    public static String[] oms_business={"oms_pub_apply","oms_pri_apply","oms_pri_delay_apply"};
-    public static String[] oms_businessName={"因公出国","因私出国","延期回国"};
+    public static String[] oms_business={"oms_pub_apply","oms_pri_apply","oms_pri_delay_apply","oms_cer_cancellate"};
+    public static String[] oms_businessName={"因公出国","因私出国","延期回国","注销证照"};
 
     /**
      * 因公 业务

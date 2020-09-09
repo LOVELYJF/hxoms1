@@ -3,6 +3,7 @@
 <mapper namespace="com.hxoms.modules.publicity.mapper.OmsPubApplyMapper">
     <resultMap id="BaseResultMap" type="com.hxoms.modules.publicity.entity.OmsPubApply">
         <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="PROCPERSON_ID" jdbcType="VARCHAR" property="procpersonId" />
         <result column="A0100" jdbcType="VARCHAR" property="a0100" />
         <result column="B0100" jdbcType="VARCHAR" property="b0100" />
         <result column="YSP_ID" jdbcType="VARCHAR" property="yspId" />
@@ -57,20 +58,25 @@
         <result column="MODIFY_TIME" jdbcType="DATE" property="modifyTime" />
         <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
         <result column="BAH" jdbcType="VARCHAR" property="bah" />
+        <result column="SFXD" jdbcType="INTEGER" property="sfxd" />
+        <result column="LEADER_BATCH_ID" jdbcType="VARCHAR" property="leaderBatchId" />
+        <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
+        <result column="ABROAD_PHONE" jdbcType="VARCHAR" property="abroadPhone" />
+        <result column="BZ" jdbcType="VARCHAR" property="bz" />
     </resultMap>
     <sql id="Base_Column_List">
-    ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH, SFSMRY, SMDJ, 
-    NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ, SDGJ, TLSJ, CFRW, 
-    CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP, SFZQJWYJ, SCZQJWYJSJ, 
-    SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX, DWJSXS, ZZJL, CXYY, 
-    SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID,
-    BAH
+    ID, PROCPERSON_ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH,
+    SFSMRY, SMDJ, NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ,
+    SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
+    SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
+    DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
+    MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
   </sql>
     <update id="repealAllPubApplyByPwh">
-        update OMS_PERSONINFO p
+        update oms_pub_apply p
         <set>
             <if test="cxyy != null and cxyy != ''">
-                p.CXYY = #{cxyy}
+                p.CXYY = #{cxyy},
             </if>
             <if test="sqzt != null and sqzt !=''">
                 p.SQZT = #{sqzt}
@@ -79,20 +85,24 @@
         where p.PWH = #{pwh}
     </update>
     <update id="repealPubApplyById">
-        update OMS_PERSONINFO p
+        update oms_pub_apply p
         <set>
             <if test="cxyy != null and cxyy != ''">
-                p.CXYY = #{cxyy}
+                p.CXYY = #{cxyy},
             </if>
             <if test="sqzt != null and sqzt !=''">
-                p.SQZT = #{sqzt}
+                p.SQZT = #{sqzt},
             </if>
+            p.SFBG = "1"
         </set>
         where p.ID = #{id}
     </update>
     <update id="updateByPwh">
         update oms_pub_apply
         <set>
+            <if test="procpersonId != null">
+                PROCPERSON_ID = #{procpersonId,jdbcType=VARCHAR},
+            </if>
             <if test="a0100 != null">
                 A0100 = #{a0100,jdbcType=VARCHAR},
             </if>
@@ -164,6 +174,9 @@
             </if>
             <if test="cgspdw != null">
                 CGSPDW = #{cgspdw,jdbcType=VARCHAR},
+            </if>
+            <if test="pwh != null">
+                PWH = #{pwh,jdbcType=VARCHAR},
             </if>
             <if test="zypwh != null">
                 ZYPWH = #{zypwh,jdbcType=VARCHAR},
@@ -252,39 +265,82 @@
             <if test="bah != null">
                 BAH = #{bah,jdbcType=VARCHAR},
             </if>
+            <if test="sfxd != null">
+                SFXD = #{sfxd,jdbcType=INTEGER},
+            </if>
+            <if test="leaderBatchId != null">
+                LEADER_BATCH_ID = #{leaderBatchId,jdbcType=VARCHAR},
+            </if>
+            <if test="isComparison != null">
+                IS_COMPARISON = #{isComparison,jdbcType=CHAR},
+            </if>
+            <if test="abroadPhone != null">
+                ABROAD_PHONE = #{abroadPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="bz != null">
+                BZ = #{bz,jdbcType=VARCHAR},
+            </if>
         </set>
         where PWH = #{pwh,jdbcType=VARCHAR}
     </update>
     <delete id="deletePubApplyById">
         delete from oms_pub_apply
-        where ID = {id}
+        where ID = #{id}
     </delete>
     <delete id="deletePubApplyByYSPId">
         delete from oms_pub_apply
-        where YSP_ID = {id}
+        where YSP_ID = #{id}
     </delete>
 
     <select id="selectPersonListByOrg" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
-    SELECT
-    op.*,orp.IDNUMBER as idnumber
-    from oms_personinfo op left join oms_reg_procpersoninfo orp on op.A0100 = orp.A0100
-    where op.b0100=#{b0100}
+        select orp.IDNUMBER_GB as idnumber,
+               orp.id as procpersonId,
+               orp.A0100 as a0100,
+               orp.SEX as sex,
+               CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) as name,
+               orp.BIRTH_DATE_GB as birthDate,
+               orp.POST as job,
+               orp.RF_B0000 as b0111,
+               orp.WORK_UNIT as b0101,
+               orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
+               orp.NATION_NAME as NATION,
+               orp.INCUMBENCY_STATUS as status,
+               b.b0100 as b0100
+        from oms_reg_procpersoninfo orp
+        LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
+        <where>
+            <if test="b0100 != null and b0100.size>0">
+                and b.b0100 in
+                <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                    #{b0100}
+                </foreach>
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) like CONCAT('%',#{keyword},'%')
+                or orp.PY like CONCAT('%',#{keyword},'%'))
+            </if>
+        </where>
   </select>
     <select id="selectBasePersonInfo" resultType="java.util.Map">
-        select distinct concat(p.SURNAME,p.NAME) as NAME
-        ,p.SEX
-        ,p.BIRTH_DATE
-        ,CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE
-        ,p.POLITICAL_AFFINAME
-        ,p.HEALTH
-        ,p.A0100
-        ,p.SECRET_LEVEL
-        ,p.NF
-        ,i.JOB
-        ,i.B0100
-        ,i.B0101
-         from oms_reg_procpersoninfo p inner join oms_personinfo i on p.a0100=i.a0100
-         where i.b0100=#{b0100} and i.a0100=#{a0100}
+        select distinct concat(IFNULL(p.SURNAME,''),IFNULL(p.NAME,'')) as NAME ,
+         p.id as procpersonId ,
+         p.SEX as SEX ,
+         p.BIRTH_DATE_GB as BIRTH_DATE_GB ,
+         CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE_GB,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE ,
+         p.POLITICAL_AFFINAME as POLITICAL_AFFINAME ,
+         p.HEALTH as HEALTH ,
+         p.A0100 as A0100 ,
+         p.SECRET_LEVEL as SECRET_LEVEL ,
+         p.NF as NF ,
+         p.POST as JOB ,
+         i.B0100 as B0100 ,
+         i.B0101 as B0101 ,
+         op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE
+         FROM oms_reg_procpersoninfo p
+         LEFT JOIN b01 i ON  i.b0111 = p.RF_B0000
+         LEFT JOIN oms_smr_personinfo op
+         ON p.id = op.PROC_PERSON_ID
+         where i.b0100=#{b0100} and p.a0100=#{a0100}
     </select>
     <select id="selectPubAbroadLatestInfo" resultType="com.hxoms.modules.publicity.entity.OmsPubApply">
         select * from oms_pub_apply p where p.cgsj
@@ -318,9 +374,10 @@
         ,GETDICTITEM('300',oms_pub_apply.SQZT,'0') as "SQZT"
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -339,7 +396,7 @@
         where a.id=#{applyId}
     </select>
     <select id="selectById" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
-        select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE,b.B0101
+        select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE_GB,b.B0101
         ,o.* from oms_pub_apply o inner join oms_reg_procpersoninfo r
         on o.a0100=r.a0100
         inner join b01 b on o.b0100=b.b0100
@@ -347,30 +404,16 @@
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
-        <where>
+        where oms_pub_apply.SFXD = '1'
               <if test="sqzt != null and sqzt.size>0">
                   and oms_pub_apply.SQZT in
                     <foreach collection="sqzt" item="sqzt" separator="," open="(" close=")">
@@ -384,7 +427,7 @@
                 <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
             <if test="hgsj != null and  hgsj != ''">
-                <![CDATA[ and oms_pub_apply.HGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+                <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
             <if test="ztdw != null and ztdw!= ''">
                 and oms_pub_apply.ZTDW = #{ztdw}
@@ -392,32 +435,20 @@
             <if test="pwh != null and pwh != ''">
                 and oms_pub_apply.pwh like CONCAT('%',#{pwh},'%')
             </if>
-        </where>
+            <if test="b0100 != null and b0100 != ''">
+                and oms_pub_apply.b0100 = #{b0100}
+            </if>
     </select>
     <select id="selectPubApplyListByPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
             <if test="pwh != null and pwh !=''">
@@ -427,29 +458,16 @@
     </select>
     <select id="selectByYSPId" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
-        ,oms_reg_procpersoninfo.NATION_NAME
-        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
-        ,oms_reg_procpersoninfo.IDNUMBER
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME as politicalAff
+        ,oms_reg_procpersoninfo.IDNUMBER_GB as idnumber
+        ,oms_reg_procpersoninfo.INCUMBENCY_STATUS as status
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         <where>
             <if test="yspId != null and yspId != ''">
@@ -459,26 +477,13 @@
     </select>
     <select id="selectPubAllyByStatusAndName" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
-        oms_pub_apply.ID
-        ,oms_pub_apply.CGSJ
-        ,oms_pub_apply.HGSJ
-        ,oms_pub_apply.CFRW
-        ,oms_pub_apply.SDGJ
-        ,oms_pub_apply.CFSY
-        ,oms_pub_apply.JOB
-        ,oms_pub_apply.CREATE_TIME
-        ,oms_pub_apply.SMDJ
-        ,oms_pub_apply.FMXX
-        ,oms_pub_apply.SFBG
-        ,oms_pub_apply.sflg
-        ,oms_pub_apply.sfzyld
-        ,oms_pub_apply.SFZYLD
-        ,oms_pub_apply.SQZT
+        oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
         ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
         ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
@@ -491,5 +496,387 @@
             </if>
         </where>
     </select>
+    <select id="selectPubCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
+        select "1.填写申请" as label, 1 as statusCode, count(0) as num from oms_pub_apply where SQZT = 1 and SFXD = 1
+        union all
+        select "2.生成材料" as label, 2 as statusCode, count(0) as num from oms_pub_apply where SQZT = 2 and SFXD = 1
+        union all
+        select "3.打印材料清单" as label, 3 as statusCode, count(0) as num from oms_pub_apply where SQZT = 3 and SFXD = 1
+        union all
+        select "4.自评" as label, 5 as statusCode, count(0) as num from oms_pub_apply where SQZT = 5 and SFXD = 1
+        union all
+        select "5.递交纸质材料" as label, 20 as statusCode, count(0) as num from oms_pub_apply where SQZT = 20 and SFXD = 1
+    </select>
+    <select id="getPubApplyList" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.*
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+        from oms_pub_apply
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        <where>
+            <if test="pwh != null and pwh !=''">
+                <![CDATA[ and oms_pub_apply.CGSJ >= now()]]>
+                and oms_pub_apply.PWH like CONCAT('%',#{pwh},'%')
+            </if>
+            <if test="sqzt != null">
+                and oms_pub_apply.SQZT <![CDATA[<>]]> #{sqzt}
+            </if>
+        </where>
+    </select>
+    <select id="getPWHList" resultType="com.hxoms.modules.publicity.entity.PWHTreeVO">
+        SELECT SUBSTRING(PWH,5,4) as year ,PWH
+        FROM oms_pub_apply
+        WHERE
+        oms_pub_apply.PWH like CONCAT('%','琼台赴字','%')
 
+        GROUP BY year,PWH ORDER BY year DESC
+    </select>
+    <select id="selectPersonListForOperator" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
+        SELECT
+            a.a0101 AS NAME,
+            a.a0184 AS idnumber,
+            a.a0100 AS a0100,
+            a.A0104 AS sex,
+            a.A0107 AS birthDate,
+            a.a0192a AS job,
+            b.b0111 AS b0111,
+            b.b0101 AS b0101,
+            b.b0100 AS b0100,
+            `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS `POLITICAL_AFFI`,
+            `GETDICTITEM` ( '01', `a`.`a0117`, '0' ) AS `NATION`
+        FROM
+            a01 a
+            JOIN a02 a2 ON a2.a0100 = a.a0100
+            AND a2.a0281 = 'true'
+            JOIN b01 b ON a2.a0201b = b.b0111
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and a.a0101 like CONCAT('%',#{keyword},'%')
+                or  a.a0102 like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="a0165 != null and a0165.size>0">
+                and a.a0165 not in
+                <foreach collection="a0165" item="a0165" separator="," open="(" close=")">
+                    #{a0165}
+                </foreach>
+            </if>
+            <if test="b0100 != null and b0100.size>0">
+                and b.b0100 in
+                <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                    #{b0100}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="selectPersonListForTZQGB" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
+        SELECT
+            a.a0101 AS NAME,
+            a.a0184 AS idnumber,
+            a.a0100 AS a0100,
+            a.A0104 AS sex,
+            a.A0107 AS birthDate,
+            a.a0192a AS job,
+            b.b0111 AS b0111,
+            b.b0101 AS b0101,
+            b.b0100 AS b0100,
+            `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS `POLITICAL_AFFI`,
+            `GETDICTITEM` ( '01', `a`.`a0117`, '0' ) AS `NATION`
+        FROM
+            a01 a
+            JOIN a02 a2 ON a2.a0100 = a.a0100
+            AND a2.a0281 = 'true'
+            JOIN b01 b ON a2.a0201b = b.b0111
+        WHERE
+            a.a0165 = '02'
+        <if test="keyword != null and keyword != ''">
+            and a.a0101 like CONCAT('%',#{keyword},'%')
+            or  a.a0102 like CONCAT('%',#{keyword},'%'))
+        </if>
+        <if test="b0100 != null and b0100.size>0">
+            and b.b0100 in
+            <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
+                #{b0100}
+            </foreach>
+        </if>
+    </select>
+
+    <insert id="insertPubApplyList">
+        insert into oms_pub_apply(
+        ID, PROCPERSON_ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH,
+        SFSMRY, SMDJ, NSSJ, YSMDJ1, YTMJSSJ1, YSMDJ2, YTMJSSJ2, ZTDW, ZTNRZW, CGSJ, HGSJ,
+        SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
+        SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
+        DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
+        MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.id},
+            #{item.procpersonId},
+            #{item.a0100},
+            #{item.b0100},
+            #{item.yspId},
+            #{item.yspdwId},
+            #{item.age},
+            #{item.politicalAff},
+            #{item.job},
+            #{item.health},
+            #{item.sfsmry},
+            #{item.smdj},
+            #{item.nssj},
+            #{item.ysmdj1},
+            #{item.ytmjssj1},
+            #{item.ysmdj2},
+            #{item.ytmjssj2},
+            #{item.ztdw},
+            #{item.ztnrzw},
+            #{item.cgsj},
+            #{item.hgsj},
+            #{item.sdgj},
+            #{item.tlsj},
+            #{item.cfrw},
+            #{item.cfsy},
+            #{item.cgspdw},
+            #{item.pwh},
+            #{item.zypwh},
+            #{item.zjcgqk},
+            #{item.sjcgsj},
+            #{item.sjhgsj},
+            #{item.nfgs},
+            #{item.sfysp},
+            #{item.sfzqjwyj},
+            #{item.sczqjwyjsj},
+            #{item.sfbczqjwyj},
+            #{item.jwjl},
+            #{item.clshsftg},
+            #{item.jdcjl},
+            #{item.sfzyld},
+            #{item.sflg},
+            #{item.poznsjd},
+            #{item.fmxx},
+            #{item.dwjsxs},
+            #{item.zzjl},
+            #{item.cxyy},
+            #{item.sftsry},
+            #{item.sfzb},
+            #{item.sfbg},
+            #{item.sqzt},
+            #{item.createUser},
+            #{item.createTime},
+            #{item.modifyUser},
+            #{item.modifyTime},
+            #{item.sortId},
+            #{item.bah},
+            #{item.sfxd},
+            #{item.leaderBatchId},
+            #{item.isComparison},
+            #{item.abroadPhone},
+            #{item.bz}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updatePubApplyList">
+        <foreach collection="list" item="item" index= "index" separator =";" close=";">
+            update oms_pub_apply
+                <set>
+                (
+                <if test="procpersonId != null">
+                    PROCPERSON_ID = #{item.procpersonId,jdbcType=VARCHAR},
+                </if>
+                <if test="a0100 != null">
+                    A0100 = #{item.a0100,jdbcType=VARCHAR},
+                </if>
+                <if test="b0100 != null">
+                    B0100 = #{item.b0100,jdbcType=VARCHAR},
+                </if>
+                <if test="yspId != null">
+                    YSP_ID = #{item.yspId,jdbcType=VARCHAR},
+                </if>
+                <if test="yspdwId != null">
+                    YSPDW_ID = #{item.yspdwId,jdbcType=VARCHAR},
+                </if>
+                <if test="age != null">
+                    AGE = #{item.age,jdbcType=VARCHAR},
+                </if>
+                <if test="politicalAff != null">
+                    POLITICAL_AFF = #{item.politicalAff,jdbcType=VARCHAR},
+                </if>
+                <if test="job != null">
+                    JOB = #{item.job,jdbcType=VARCHAR},
+                </if>
+                <if test="health != null">
+                    HEALTH = #{item.health,jdbcType=VARCHAR},
+                </if>
+                <if test="sfsmry != null">
+                    SFSMRY = #{item.sfsmry,jdbcType=CHAR},
+                </if>
+                <if test="smdj != null">
+                    SMDJ = #{item.smdj,jdbcType=VARCHAR},
+                </if>
+                <if test="nssj != null">
+                    NSSJ = #{item.nssj,jdbcType=DATE},
+                </if>
+                <if test="ysmdj1 != null">
+                    YSMDJ1 = #{item.ysmdj1,jdbcType=VARCHAR},
+                </if>
+                <if test="ytmjssj1 != null">
+                    YTMJSSJ1 = #{item.ytmjssj1,jdbcType=DATE},
+                </if>
+                <if test="ysmdj2 != null">
+                    YSMDJ2 = #{item.ysmdj2,jdbcType=VARCHAR},
+                </if>
+                <if test="ytmjssj2 != null">
+                    YTMJSSJ2 = #{item.ytmjssj2,jdbcType=DATE},
+                </if>
+                <if test="ztdw != null">
+                    ZTDW = #{item.ztdw,jdbcType=VARCHAR},
+                </if>
+                <if test="ztnrzw != null">
+                    ZTNRZW = #{item.ztnrzw,jdbcType=VARCHAR},
+                </if>
+                <if test="cgsj != null">
+                    CGSJ = #{item.cgsj,jdbcType=DATE},
+                </if>
+                <if test="hgsj != null">
+                    HGSJ = #{item.hgsj,jdbcType=DATE},
+                </if>
+                <if test="sdgj != null">
+                    SDGJ = #{item.sdgj,jdbcType=VARCHAR},
+                </if>
+                <if test="tlsj != null">
+                    TLSJ = #{item.tlsj,jdbcType=VARCHAR},
+                </if>
+                <if test="cfrw != null">
+                    CFRW = #{item.cfrw,jdbcType=VARCHAR},
+                </if>
+                <if test="cfsy != null">
+                    CFSY = #{item.cfsy,jdbcType=VARCHAR},
+                </if>
+                <if test="cgspdw != null">
+                    CGSPDW = #{item.cgspdw,jdbcType=VARCHAR},
+                </if>
+                <if test="pwh != null">
+                    PWH = #{item.pwh,jdbcType=VARCHAR},
+                </if>
+                <if test="zypwh != null">
+                    ZYPWH = #{item.zypwh,jdbcType=VARCHAR},
+                </if>
+                <if test="zjcgqk != null">
+                    ZJCGQK = #{item.zjcgqk,jdbcType=VARCHAR},
+                </if>
+                <if test="sjcgsj != null">
+                    SJCGSJ = #{item.sjcgsj,jdbcType=DATE},
+                </if>
+                <if test="sjhgsj != null">
+                    SJHGSJ = #{item.sjhgsj,jdbcType=DATE},
+                </if>
+                <if test="nfgs != null">
+                    NFGS = #{item.nfgs,jdbcType=CHAR},
+                </if>
+                <if test="sfysp != null">
+                    SFYSP = #{item.sfysp,jdbcType=CHAR},
+                </if>
+                <if test="sfzqjwyj != null">
+                    SFZQJWYJ = #{item.sfzqjwyj,jdbcType=CHAR},
+                </if>
+                <if test="sczqjwyjsj != null">
+                    SCZQJWYJSJ = #{item.sczqjwyjsj,jdbcType=DATE},
+                </if>
+                <if test="sfbczqjwyj != null">
+                    SFBCZQJWYJ = #{item.sfbczqjwyj,jdbcType=CHAR},
+                </if>
+                <if test="jwjl != null">
+                    JWJL = #{item.jwjl,jdbcType=CHAR},
+                </if>
+                <if test="clshsftg != null">
+                    CLSHSFTG = #{item.clshsftg,jdbcType=CHAR},
+                </if>
+                <if test="jdcjl != null">
+                    JDCJL = #{item.jdcjl,jdbcType=CHAR},
+                </if>
+                <if test="sfzyld != null">
+                    SFZYLD = #{item.sfzyld,jdbcType=CHAR},
+                </if>
+                <if test="sflg != null">
+                    SFLG = #{item.sflg,jdbcType=CHAR},
+                </if>
+                <if test="poznsjd != null">
+                    POZNSJD = #{item.poznsjd,jdbcType=CHAR},
+                </if>
+                <if test="fmxx != null">
+                    FMXX = #{item.fmxx,jdbcType=VARCHAR},
+                </if>
+                <if test="dwjsxs != null">
+                    DWJSXS = #{item.dwjsxs,jdbcType=CHAR},
+                </if>
+                <if test="zzjl != null">
+                    ZZJL = #{item.zzjl,jdbcType=CHAR},
+                </if>
+                <if test="cxyy != null">
+                    CXYY = #{item.cxyy,jdbcType=VARCHAR},
+                </if>
+                <if test="sftsry != null">
+                    SFTSRY = #{item.sftsry,jdbcType=CHAR},
+                </if>
+                <if test="sfzb != null">
+                    SFZB = #{item.sfzb,jdbcType=CHAR},
+                </if>
+                <if test="sfbg != null">
+                    SFBG = #{item.sfbg,jdbcType=CHAR},
+                </if>
+                <if test="sqzt != null">
+                    SQZT = #{item.sqzt,jdbcType=INTEGER},
+                </if>
+                <if test="createUser != null">
+                    CREATE_USER = #{item.createUser,jdbcType=VARCHAR},
+                </if>
+                <if test="createTime != null">
+                    CREATE_TIME = #{item.createTime,jdbcType=DATE},
+                </if>
+                <if test="modifyUser != null">
+                    MODIFY_USER = #{item.modifyUser,jdbcType=VARCHAR},
+                </if>
+                <if test="modifyTime != null">
+                    MODIFY_TIME = #{item.modifyTime,jdbcType=DATE},
+                </if>
+                <if test="sortId != null">
+                    SORT_ID = #{item.sortId,jdbcType=INTEGER},
+                </if>
+                <if test="bah != null">
+                    BAH = #{item.bah,jdbcType=VARCHAR},
+                </if>
+                <if test="sfxd != null">
+                    SFXD = #{item.sfxd,jdbcType=INTEGER},
+                </if>
+                <if test="leaderBatchId != null">
+                    LEADER_BATCH_ID = #{item.leaderBatchId,jdbcType=VARCHAR},
+                </if>
+                <if test="isComparison != null">
+                    IS_COMPARISON = #{item.isComparison,jdbcType=CHAR},
+                </if>
+                <if test="abroadPhone != null">
+                    ABROAD_PHONE = #{item.abroadPhone}
+                </if>
+                <if test="bz != null">
+                    BZ = #{item.bz}
+                </if>
+                )
+                </set>
+                where id = #{item.id,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+    <update id="updatePWH">
+        update oms_pub_apply
+        set
+        PWH = #{xPWH,jdbcType=VARCHAR}
+        where
+        PWH = #{yPWH,jdbcType=VARCHAR}
+    </update>
 </mapper>

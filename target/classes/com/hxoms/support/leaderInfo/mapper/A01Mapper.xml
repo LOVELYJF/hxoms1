@@ -125,7 +125,7 @@
 		from a01
 	</select>
 
-	<!-- 自动标识领导时查询领导信息 -->
+	<!-- 查询领导信息 -->
 	<select id="selectPersonInfo" parameterType="java.lang.String" resultType="java.util.Map">
 		SELECT
 			a.A0100 as 'a0100',
@@ -142,7 +142,8 @@
 		inner join a02 a2 on a.a0100=a2.a0100
 		inner join b01 b on a2.a0201b=b.b0111
 
-		where a.a0100 =#{a0100}
+		where a.a0100 =#{a0100} and
+		a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0' and a.a0165 = '02'
 	</select>
 
 	<!--根据机构ID查询-->
@@ -180,8 +181,10 @@
 		join a02 a02  on a.a0100 = a02.a0100
 		join b01 b  on a02.a0201b = b.b0111
 		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
+		join person_org_order poo on poo.a01000 = a.a0100
 		<where>
 			<trim suffixOverrides="and">
+				<if test="1 == 1">a.a0163 = '1' and a02.a0255 = '1' and a.is_deleted = '0' and </if>
 				<if test="idList != null">b.B0100 in
 					<foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
 						#{item}
@@ -191,6 +194,7 @@
 				<if test="name != null">a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%') and </if>
 			</trim>
 		</where>
+		order by poo.a0201b ,orderindex
 	</select>
 
 

@@ -184,7 +184,7 @@
 
     <!--修改字典映射表信息-->
     <update id="updateSysDictItem" parameterType="com.hxoms.support.sysdict.entity.SysDictItem">
-    UPDATE sys_dict_item SET dict_code=#{dictCode},item_name=#{itemName},item_num=#{itemNum},
+    UPDATE sys_dict_item SET dict_code=#{dictCode},item_code=#{itemCode},item_name=#{itemName},item_num=#{itemNum},
     item_levelcode=#{itemLevelcode},short_name=#{shortName},item_desc=#{itemDesc},
     comp_spell=#{compSpell},logo_spell=#{logoSpell},is_use=#{isUse},is_leaf=#{isLeaf},
     modify_user=#{modifyUser},modify_time=#{modifyTime},securitylevel=#{securitylevel},
@@ -286,5 +286,32 @@
 
     <select id="selectSysdictItemListByDictCode" resultMap="BaseResultMap">
         select * from sys_dict_item where dict_code=#{dictCode} and is_use='1' order by orderindex
+    </select>
+
+    <select id="getDictInfoByDictCodeAndGl" resultType="java.util.Map" parameterType="java.util.Map">
+        select item_code as "id",parent_item_code as "pId",item_name as "name",is_leaf as "isParent"
+        from SYS_DICT_ITEM t where IS_USE='1' and DICT_CODE = #{dictCode} and ITEM_CODE NOT IN(
+            select INFO_ID from oms_baseinfo_config where PARENT_ID is not NULL and PARENT_ID!=''
+        )
+    </select>
+
+
+    <!-- 查询证照模块字典状态 -->
+    <select id="getCfCertificateSysDictItem" parameterType="java.util.Map" resultType="com.hxoms.support.sysdict.entity.SysDictItem">
+        select
+            *
+        from
+            sys_dict_item
+        <where>
+            <if test="dictCode != null">DICT_CODE=#{dictCode} </if>
+        </where>
+        order by TIME_STAMP
+    </select>
+    
+    <!-- 查询字典编码 -->
+    <select id="selectByDictCodeAndItemCode"  resultMap="BaseResultMap">
+    SELECT *
+    FROM sys_dict_item
+    WHERE dict_code=#{dictCode} and item_code =#{itemCode} 
     </select>
 </mapper>

@@ -78,9 +78,10 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 						"FJGNF",omsSupNakedSign.getFjgnf())
 				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
-				.or()
-				.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
-						"PINYIN", omsSupNakedSign.getName()));
+						.or()
+						.isNotNull("ID")
+						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+								"PINYIN", omsSupNakedSign.getName()));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupNakedSign> resultList = omsSupNakedSignMapper.selectList(queryWrapper);
@@ -226,6 +227,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 								"PINYIN", omsSupNakedSign.getName()));
 
