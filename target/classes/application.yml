@@ -1,0 +1,120 @@
+server:
+  port: 5999
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    druid:
+#            username: HXOMS
+#            password: 12345abcde
+#            url: jdbc:dm://www.24hbs.com:5236/HXOMS
+#            driver-class-name: dm.jdbc.driver.DmDriver
+      username: root
+      password: 12345abcde
+      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
+      #username: root
+      #password: 123456
+      #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
+      driver-class-name: com.mysql.jdbc.Driver
+      initial-size: 0
+      min-idle: 1
+      max-active: 20
+      test-while-idle: true
+      validation-query: select 1
+      max-wait: 60000
+  jackson:
+    #default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+
+logging:
+  config: classpath:log4j2.xml
+
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      table-underline: true
+      #id-type: assign_uuid
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+#  global-config:
+#    db-config:
+
+#      logic-delete-value: 0
+#      logic-not-delete-value: 1
+#      id-type: assign_uuid
+#      table-underline: true
+#    configuration:
+#      map-underscore-to-camel-case: true
+#      cache-enabled: false
+omsFile:
+  baseDir: E:/oms #文件存储的路径
+#    mapper-locations: classpath:com/moneysun/*/mapper/*.xml
+
+file:
+  ueditorImgUrl: /ueditorImgUrl/ #富文本上传图片路径虚拟
+  ueditorRealImgUrl: F:/ueditorImgUrl/ #富文本上传图片路径真实
+
+omsAttachment:
+  baseDir: D:/oms/attachment   # 附件上传路径
+
+#htmlTopdf:
+#  window: D:\tools\pdf\wkhtmltox\bin\wkhtmltopdf.exe   #wkhtmltopdf 工具下载位置 windows系统
+#  linux:  /usr/local/bin/wkhtmltopdf                   #wkhtmltopdf 工具下载位置 linux系统
+
+# 在此定义pdf 大小以及样式
+
+htmlTopdf:
+    pdfName:  备案表
+
+
+
+
+#职务code
+postcode:
+  1A01: '001'
+  1A02: '002'
+  1A11: '003'
+  1A12: '004'
+  1A21: '005'
+  1A22: '006'
+  1A31: '007'
+  1A32: '008'
+  1A41: '009'
+  1A42: '010'
+  1A50: '011'
+  1A60: '012'
+  1A99: '999'
+
+#职务
+post:
+  '001': 国家主席、副主席、总理级
+  '002': 副总理
+  '003': 部、省级
+  '004': 副部、省级
+  '005': 厅、局级
+  '006': 副厅、局级
+  '007': 处级
+  '008': 副处级
+  '009': 科级
+  '010': 副科级
+  '011': 科员
+  '012': 办事员
+  '101': 正高
+  '102': 副高
+  '103': 中级
+  '104': 初级
+  '105': 技术员级
+  '201': 董事长、监事长、总经理、厂长、经理、书记
+  '202': 副董事长、副总经理、副厂长、副经理、副书记
+  '203': 部门经理
+  '204': 职员
+  '801': 国家工作人员配偶
+  '802': 国家工作人员子女
+  '999': 其他

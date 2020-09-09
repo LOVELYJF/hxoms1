@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="A0100" jdbcType="VARCHAR" property="a0100" />
+    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="PINYIN" jdbcType="VARCHAR" property="pinyin" />
+    <result column="CASE_POST" jdbcType="VARCHAR" property="casePost" />
+    <result column="CASE_TIME" jdbcType="DATE" property="caseTime" />
+    <result column="CASE_TIME_END" jdbcType="DATE" property="caseTimeEnd" />
+    <result column="CASE_TIME_START" jdbcType="DATE" property="caseTimeStart" />
+    <result column="CASE_DOCUMENT_NO" jdbcType="VARCHAR" property="caseDocumentNo" />
+    <result column="DISCIPLINARY_ACTION" jdbcType="CHAR" property="disciplinaryAction" />
+    <result column="WHY_CASE" jdbcType="VARCHAR" property="whyCase" />
+    <result column="DISCIPLINARY_ACTION_TYPE" jdbcType="VARCHAR" property="disciplinaryActionType" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="DISCIPLINARY_TIME" jdbcType="DATE" property="disciplinaryTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MODIFY_USER, MODIFY_TIME, A0100, WORK_UNIT, NAME, PINYIN, CASE_POST, CASE_TIME,
+    CASE_TIME_END, CASE_TIME_START, CASE_DOCUMENT_NO, DISCIPLINARY_ACTION, WHY_CASE,
+    DISCIPLINARY_ACTION_TYPE, CREATE_USER, CREATE_TIME,DISCIPLINARY_TIME
+  </sql>
+
+</mapper>
