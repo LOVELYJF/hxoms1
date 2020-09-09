@@ -40,6 +40,10 @@ public class PersonInfoVO {
     private String idnumber;
     //登记备案id
     private String procpersonId;
+    //核心涉密人员年审
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date SECRET_REVIEW_DATE;
 
     public String getA0100() {
         return a0100;
@@ -143,5 +147,13 @@ public class PersonInfoVO {
 
     public void setProcpersonId(String procpersonId) {
         this.procpersonId = procpersonId;
+    }
+
+    public Date getSECRET_REVIEW_DATE() {
+        return SECRET_REVIEW_DATE;
+    }
+
+    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
+        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
     }
 }

@@ -508,7 +508,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 //是否为涉密人员
                 omsPubApply.setSfsmry("0");
                 String smdj = (String) personInfo.get("SECRET_LEVEL");
-                if (!StringUtils.isBlank(smdj) && !"非涉密".equals(smdj)) {
+                if (!StringUtils.isBlank(smdj) && !"0".equals(smdj)) {
                     omsPubApply.setSfsmry("1");
                     //涉密等级
                     omsPubApply.setSmdj((String) personInfo.get("SECRET_LEVEL"));
