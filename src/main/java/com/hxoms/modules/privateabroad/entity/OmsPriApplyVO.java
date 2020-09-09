@@ -51,6 +51,8 @@ public class OmsPriApplyVO extends OmsPriApply{
     private List<Country> realCountries;
     //实际途径国家
     private List<Country> realPassCountries;
+    //所到国家
+    private String sdgj;
 
     public String getName() {
         return name;
@@ -178,5 +180,13 @@ public class OmsPriApplyVO extends OmsPriApply{
 
     public void setRealPassCountries(List<Country> realPassCountries) {
         this.realPassCountries = realPassCountries;
+    }
+
+    public String getSdgj() {
+        return sdgj;
+    }
+
+    public void setSdgj(String sdgj) {
+        this.sdgj = sdgj;
     }
 }

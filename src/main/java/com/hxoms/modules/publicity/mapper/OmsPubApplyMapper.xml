@@ -428,9 +428,9 @@
         select
         oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
-        ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
-        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.SEX as sex
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
+        ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
 
@@ -699,6 +699,22 @@
                 LEFT JOIN oms_pub_apply o on o.PROCPERSON_ID = p.id
             WHERE
                 o.id=#{id}
+    </select>
+    <select id="getPubApplyListBy3Year" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.*
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+        from oms_pub_apply
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+				WHERE
+				oms_pub_apply.CGSJ >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
+				and
+				oms_pub_apply.A0100 = #{a0100}
     </select>
 
     <insert id="insertPubApplyList">
