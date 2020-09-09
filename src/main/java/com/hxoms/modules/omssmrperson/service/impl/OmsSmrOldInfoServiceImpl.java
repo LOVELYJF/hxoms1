@@ -17,12 +17,8 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
 
 
     @Override
-    public IPage<OmsSmrOldInfo> getSmrOldInfoById(String id) throws ParseException {
-        if(!StringUtils.isBlank(id)){
-            return baseMapper.getSmrOldInfoList(id);
-        }else{
-            return null;
-        }
+    public IPage<OmsSmrOldInfo> getSmrOldInfoById(String id){
+        return baseMapper.getSmrOldInfoList(id);
     }
 
     @Override

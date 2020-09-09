@@ -23,6 +23,14 @@ public class OmsPubApplyVO extends OmsPubApply {
     private String checkResult;
     //人员状态
     private String applyStatus;
+    //涉密等級
+    private String SECRET_LEVEL;
+    //核心涉密人员年审
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date SECRET_REVIEW_DATE;
+    //健康情况
+    private String HEALTH;
 
 
     public String getB0101() {
@@ -89,4 +97,27 @@ public class OmsPubApplyVO extends OmsPubApply {
         this.applyStatus = applyStatus;
     }
 
+    public String getSECRET_LEVEL() {
+        return SECRET_LEVEL;
+    }
+
+    public void setSECRET_LEVEL(String SECRET_LEVEL) {
+        this.SECRET_LEVEL = SECRET_LEVEL;
+    }
+
+    public Date getSECRET_REVIEW_DATE() {
+        return SECRET_REVIEW_DATE;
+    }
+
+    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
+        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
+    }
+
+    public String getHEALTH() {
+        return HEALTH;
+    }
+
+    public void setHEALTH(String HEALTH) {
+        this.HEALTH = HEALTH;
+    }
 }
