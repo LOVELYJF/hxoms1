@@ -1,6 +1,5 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -43,9 +42,6 @@ public class CertificateCollectionApply {
     @ApiModelProperty(value="证件号码",required = true)
     private String zjhm;
 
-    @NotBlank(message = "数据来源不能为空")
-    @ApiModelProperty(value="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)",required = true)
-    private String dataSource;
 
     public String getOmsId() {
         return omsId;
@@ -103,11 +99,4 @@ public class CertificateCollectionApply {
         this.zjhm = zjhm;
     }
 
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
 }

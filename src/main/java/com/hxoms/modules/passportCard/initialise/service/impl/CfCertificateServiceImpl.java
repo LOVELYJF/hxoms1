@@ -12,12 +12,10 @@ import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.*;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerImportBatchMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.passportCard.initialise.service.OmsCerExitEntryImportManageService;
@@ -69,6 +67,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Autowired
     private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
+    @Autowired
+    private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
@@ -150,7 +150,10 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
             //验证通过，通过接口获取证照存储位置
             if("4".equals(certificateGa.getCardStatus())){
+                //通过接口查询证照机是否可以存，否则柜台存。
+                Integer counterNum=omsCerConuterNumberMapper.selectCounterNum(certificateGa.getSurelyUnit(),certificateGa.getZjlx(),certificateGa.getZjxs());
                 //保管方式
+
 
                 //保管位置
 
@@ -273,6 +276,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         for (CertificateCollectionApply certificateCollectionApply : certificateCollectionApplyList) {
             CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
             BeanUtils.copyProperties(certificateCollectionApply,cfCertificateCollection);
+            //数据来源
+            cfCertificateCollection.setDataSource("0");
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
         cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);

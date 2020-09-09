@@ -19,5 +19,16 @@
 	    ID, SURELY_UNIT, ZJLX, ZJXS, COUNTER_NUM, STATUS, IS_LOCK, CREATOR, CREATE_TIME, UPDATER,
 	    UPDATE_TIME
   </sql>
-
+<select id="selectCounterNum" resultType="java.lang.Integer">
+	SELECT
+	counter_num counterNum
+	FROM
+	oms_cer_counter_number
+	WHERE
+	STATUS = '0'
+	AND is_lock = '0'
+	AND surely_unit = #{surelyUnit}
+	AND zjlx = #{zjlx}
+	AND zjxs = #{zjxs};
+</select>
 </mapper>

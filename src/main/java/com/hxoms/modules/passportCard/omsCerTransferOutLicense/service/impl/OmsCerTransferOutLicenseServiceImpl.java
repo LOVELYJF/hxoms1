@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.mapper.OmsCerTransferOutLicenseMapper;
@@ -17,6 +18,7 @@ import springfox.documentation.schema.property.ObjectMapperBeanPropertyNamingStr
 
 import javax.management.Query;
 import java.io.ObjectStreamClass;
+import java.time.Year;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +110,13 @@ public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLic
 	 * @Date: 2020/8/10 15:07
 	 */
 	public void updateTransferOutRecord(List<String> list, OmsCerTransferOutLicense omsCerTransferOutLicense) {
-		String year = omsCerTransferOutLicense.getBatchNum().substring(0, (omsCerTransferOutLicense.getBatchNum()).indexOf("年"));
+		String year = null;
+		try {
+			year = omsCerTransferOutLicense.getBatchNum().substring(0, (omsCerTransferOutLicense.getBatchNum()).indexOf("年"));
+		}catch (StringIndexOutOfBoundsException e){
+			year = UtilDateTime.getYear(new Date());
+			e.printStackTrace();
+		}
 		omsCerTransferOutLicense.setYear(year);
 		omsCerTransferOutLicense.setTransferor(UserInfoUtil.getUserInfo().getName());
 		omsCerTransferOutLicense.setModifyTime(new Date());
