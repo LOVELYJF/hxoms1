@@ -284,7 +284,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 apply.getRealAbroadTime(),apply.getRealReturnTime(),newCountry.substring(0,newCountry.length()-1),
                 sensitiveCountry,info);
         //保存比对结果isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
-        if (result == null){
+        if (result == null || result==""){
             apply.setComparisonDate(new Date());
             apply.setComparisonResult("正常");
         }else {
@@ -381,6 +381,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 country=recOut.getDestination();
                 recOut.setComparisonResult("入境记录丢失");
                 i+=1;
+                continue;
             }
             //出境记录丢失
             else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[1] )
@@ -389,6 +390,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 country=recOut.getDestination();
                 recOut.setComparisonResult("出境记录丢失");
                 i+=1;
+                continue;
             }
             boolean hasApply=false;
             for (OmsPriApplyVO  app: apps){
@@ -415,7 +417,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
                             plsCountry,zzlist);
-                    if (result == null){
+                    if (result==""){
                         recOut.setPriapplyId(app.getId());
                         recOut.setComparisonDate(new Date());
                         recOut.setComparisonResult("正常");
@@ -447,7 +449,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
                                 plsCountry,zzlist);
-                        if (result == null){
+                        if (result==""){
                             recOut.setPriapplyId(app.getId());
                             recOut.setComparisonDate(new Date());
                             recOut.setComparisonResult("正常");
@@ -582,7 +584,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     vo=recOut;
                     vo.setRealAbroadTime(recOut.getOgeDate());
                     vo.setRealReturnTime(recIn.getOgeDate());
-                    exceptionlist.add(vo);
                     i += 2;
                 }
                 //入境记录丢失
@@ -590,17 +591,18 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 {
                     vo=recOut;
                     vo.setRealAbroadTime(recOut.getOgeDate());
-                    exceptionlist.add(vo);
                     i+=1;
+                    continue;
                 }
                 //出境记录丢失
                 else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[1] )
                 {
                     vo=recOut;
                     vo.setRealReturnTime(recOut.getOgeDate());
-                    exceptionlist.add(vo);
                     i+=1;
+                    continue;
                 }
+                exceptionlist.add(vo);
 
             }
         }
