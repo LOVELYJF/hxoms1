@@ -792,6 +792,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private String  getPdfByHtml(OmsCreateFile omsCreateFile,String userName) {
         //解析 html img 的src 标签
 
+
         String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
 
         // 要转换的 html
