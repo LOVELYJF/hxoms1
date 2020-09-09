@@ -52,6 +52,9 @@
     <result column="PY" jdbcType="VARCHAR" property="py" />
     <result column="SECRET_POST" jdbcType="VARCHAR" property="secretPost" />
     <result column="EXIT_DATE" jdbcType="DATE" property="exitDate" />
+    <result column="FINISH_TIME" jdbcType="DATE" property="finishTime"/>
+      <result column="RZ_DATE" jdbcType="DATE" property="rzDate"/>
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, RF_B0000, INBOUND_FLAG, RF_STATUS, CHECK_STATUS, INCUMBENCY_STATUS, DATA_TYPE, 
@@ -60,7 +63,7 @@
     REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, POST, PERSON_MANAGER,
     IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE, MAIN_LEADER,
     LICENCE_IDENTITY, NF, FJGNF, XRXGW, LQGZ, DQGZ, REPLYOPINION, ABROADTIME, REASON, CREATE_TIME,
-    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE
+    CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
   </sql>
 
 
@@ -77,30 +80,63 @@
     order by SURNAME,NAME,WORK_UNIT asc
   </select>
 
-  <select id="selectA0100ByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
-    select A0100,IDNUMBER
+  <select id="selectRegIdByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select id,A0100,IDNUMBER_GB idnumberGb,b.b0101 workUnit,RF_B0000,INCUMBENCY_STATUS incumbencyStatus
     from OMS_REG_PROCPERSONINFO t
+    LEFT JOIN b01 b ON b.b0111 = t.RF_B0000
     where 1=1
-    <if test="name!=null and name!=''">
-        and CONCAT(IFNULL(t.SURNAME,''),IFNULL(t.NAME,'')) = #{name}
+    <if test="b0100 !=null and b0100 !=''">
+        and b.b0100 = #{b0100}
     </if>
-    <if test="birthDay!=null and birthDay!=''">
-        and date_format(t.BIRTH_DATE, '%Y/%m') = #{birthDay}
+    <if test="idCardNum !=null and idCardNum !=''">
+        and t.IDNUMBER_GB = #{idCardNum}
     </if>
   </select>
 
-  <select id="selectPersonAndAllowRevoke" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="list">
+  <select id="selectRegPersonInfoList" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+      select * from oms_reg_procpersoninfo where 1=1
+      <if test="secretLevel !=null and secretLevel !=''">
+        and SECRET_LEVEL = #{secretLevel}
+      </if>
+      <if test="identityCode !=null and identityCode !=''">
+        and IDENTITY_CODE = #{identityCode}
+      </if>
+      <if test="incumbencyStatus !=null and incumbencyStatus !=''">
+        and INCUMBENCY_STATUS = #{incumbencyStatus}
+      </if>
+      <if test="inboundFlag !=null and inboundFlag !=''">
+        and INBOUND_FLAG = #{inboundFlag}
+      </if>
+      <if test="rfStatus !=null and rfStatus !=''">
+        and RF_STATUS = #{rfStatus}
+      </if>
+      <if test="checkStatus !=null and checkStatus !=''">
+        and CHECK_STATUS = #{checkStatus}
+      </if>
+      <if test="postCode !=null and postCode !=''">
+        and POST_CODE = #{postCode}
+      </if>
+      <if test="rfB0000 !=null and rfB0000 !=''">
+        and RF_B0000 = #{rfB0000}
+      </if>
+      <if test="name!=null and name!=''">
+        AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
+      </if>
+    order by SURNAME,NAME,WORK_UNIT asc
+  </select>
+
+  <select id="selectPersonAndAllowRevoke" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
     SELECT
       info.SURNAME,
       info.NAME,
-      info.A0100,
+      info.A0100
     FROM oms_reg_procpersoninfo info
            LEFT JOIN oms_smr_personinfo smr on info.A0100 = smr.A0100
            LEFT JOIN a01 a1 on info.A0100 = a1.a0100
            LEFT JOIN a30 a3 on a1.a0100 = a3.a0100
     WHERE a3.a3001='免职'
     <if test="name!=null and name!=''">
-      AND ((CONCAT(IFNULLLL(SURNAME,''),IFNULLLL(NAME,'')) LIKE '%${revokeapply.name}%') or (PY LIKE '%${name}%'))
+      AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
     </if>
   </select>
 
@@ -110,35 +146,37 @@
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
               NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB,NATION_CODE,
-              NATION_NAME, IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFI,
+              NATION_NAME, IDNUMBER_GB,IDNUMBER_GA, POLITICAL_AFFICODE,POLITICAL_AFFINAME,
               HEALTH, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE,
               WORK_UNIT, POST_CODE, POST,
               PERSON_MANAGER, IDENTITY_CODE, IDENTITY,
-              SECRET_LEVEL, SECRET_STARTDATE, SECRET_ENDDATE,
+              SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE,
               MAIN_LEADER, LICENCE_IDENTITY, NF,
               FJGNF, XRXGW, LQGZ, DQGZ,
               REPLYOPINION, ABROADTIME, REASON,
               CREATE_TIME,CREATE_USER,MODIFY_TIME,MODIFY_USER,
-              SORT_ID,PY,SECRET_POST,EXIT_DATE
+              SORT_ID,PY,SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
     )
     values
     <foreach collection="list" index="index" item="item" separator=",">
-      (#{id,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{rfB0000,jdbcType=VARCHAR},
-      #{inboundFlag,jdbcType=CHAR}, #{rfStatus,jdbcType=CHAR}, #{checkStatus,jdbcType=CHAR},
-      #{incumbencyStatus,jdbcType=CHAR}, #{dataType,jdbcType=CHAR}, #{surname,jdbcType=VARCHAR},
-      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE},
-      #{birthDateGb,jdbcType=DATE},#{nationCode,jdbcType=VARCHAR},
-      #{nationName,jdbcType=VARCHAR}, #{idnumber,jdbcType=CHAR}, #{politicalAffi,jdbcType=VARCHAR},
-      #{health,jdbcType=VARCHAR}, #{registeResidenceCode,jdbcType=VARCHAR}, #{registeResidence,jdbcType=VARCHAR},
-      #{workUnit,jdbcType=VARCHAR}, #{postCode,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
-      #{personManager,jdbcType=VARCHAR}, #{identityCode,jdbcType=CHAR}, #{identity,jdbcType=VARCHAR},
-      #{secretLevel,jdbcType=VARCHAR}, #{secretStartDate,jdbcType=DATE}, #{secretEndDate,jdbcType=DATE},
-      #{mainLeader,jdbcType=CHAR}, #{licenceIdentity,jdbcType=INTEGER}, #{nf,jdbcType=CHAR},
-      #{fjgnf,jdbcType=CHAR}, #{xrxgw,jdbcType=CHAR}, #{lqgz,jdbcType=CHAR}, #{dqgz,jdbcType=CHAR},
-      #{replyopinion,jdbcType=CHAR}, #{abroadtime,jdbcType=DATE}, #{reason,jdbcType=VARCHAR}
-      #{createTime,jdbcType=DATE}, #{createUser,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},
-      #{modifyUser,jdbcType=VARCHAR},#{sortId,jdbcType=VARCHAR},#{py,jdbcType=VARCHAR},
-      #{secretPost,jdbcType=VARCHAR},#{exitDate,jdbcType=DATE}
+      (#{item.id,jdbcType=VARCHAR}, #{item.a0100,jdbcType=VARCHAR}, #{item.rfB0000,jdbcType=VARCHAR},
+      #{item.inboundFlag,jdbcType=CHAR}, #{item.rfStatus,jdbcType=CHAR}, #{item.checkStatus,jdbcType=CHAR},
+      #{item.incumbencyStatus,jdbcType=CHAR}, #{item.dataType,jdbcType=CHAR}, #{item.surname,jdbcType=VARCHAR},
+      #{item.name,jdbcType=VARCHAR}, #{item.sex,jdbcType=VARCHAR}, #{item.birthDate,jdbcType=DATE},
+      #{item.birthDateGb,jdbcType=DATE},#{item.nationCode,jdbcType=VARCHAR},
+      #{item.nationName,jdbcType=VARCHAR}, #{item.idnumberGb,jdbcType=CHAR}, #{item.idnumberGa,jdbcType=CHAR},
+      #{item.politicalAfficode,jdbcType=VARCHAR},#{item.politicalAffiname,jdbcType=VARCHAR},
+      #{item.health,jdbcType=VARCHAR}, #{item.registeResidenceCode,jdbcType=VARCHAR}, #{item.registeResidence,jdbcType=VARCHAR},
+      #{item.workUnit,jdbcType=VARCHAR}, #{item.postCode,jdbcType=VARCHAR}, #{item.post,jdbcType=VARCHAR},
+      #{item.personManager,jdbcType=VARCHAR}, #{item.identityCode,jdbcType=CHAR}, #{item.identity,jdbcType=VARCHAR},
+      #{item.secretLevel,jdbcType=VARCHAR}, #{item.decryptStartdate,jdbcType=DATE}, #{item.decryptEnddate,jdbcType=DATE},
+      #{item.mainLeader,jdbcType=CHAR}, #{item.licenceIdentity,jdbcType=INTEGER}, #{item.nf,jdbcType=CHAR},
+      #{item.fjgnf,jdbcType=CHAR}, #{item.xrxgw,jdbcType=CHAR}, #{item.lqgz,jdbcType=CHAR}, #{item.dqgz,jdbcType=CHAR},
+      #{item.replyopinion,jdbcType=CHAR}, #{item.abroadtime,jdbcType=DATE}, #{item.reason,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=DATE}, #{item.createUser,jdbcType=VARCHAR},#{item.modifyTime,jdbcType=DATE},
+      #{item.modifyUser,jdbcType=VARCHAR},#{item.sortId,jdbcType=VARCHAR},#{item.py,jdbcType=VARCHAR},
+      #{item.secretPost,jdbcType=VARCHAR},#{item.exitDate,jdbcType=DATE},#{item.finishTime,jdbcType=DATE},
+      #{item.rzDate,jdbcType=DATE}
       )
     </foreach>
 
@@ -147,7 +185,7 @@
     <select id="selectInboudFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
       SELECT
         T_Status.CODE,
-        T_Status.NAM                                                  E,
+        T_Status.NAME,
         IFNULL(T_Main.Cnt, '0') VALUE
       FROM
         (
@@ -210,9 +248,40 @@
   <select id="selectMergeList" resultMap="BaseResultMap">
     select * from oms_reg_procpersoninfo where 1=1
     and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
-    <if test="dataType!=null and dataType!=''">
-      and DATA_TYPE=#{dataType}
+  </select>
+
+  <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
+    select * from oms_reg_procpersoninfo where 1=1
+    <if test="id!=null and id!=''">
+      and id in(#{id})
     </if>
   </select>
+
+
+    <update id="updateRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+        update oms_reg_procpersoninfo set  RF_STATUS = #{rfStatus}
+        where RF_STATUS!='1'
+        <if test="id!=null and id!=''">
+            and id in(#{id})
+        </if>
+    </update>
+
+    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="java.util.List">
+        select * from oms_reg_procpersoninfo where 1=1
+            and INBOUND_FLAG != 'D'
+            and DATA_TYPE = '2'
+            and INCUMBENCY_STATUS not in (1,7)
+            and ID not in (select rf_id from oms_reg_revokeapply where status!='7')
+        <if test="idnumberGa !=null and idnumberGa !=''">
+            and IDNUMBER_GA = #{idnumberGa}
+        </if>
+        <if test="name!=null and name!=''">
+            AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
+        </if>
+        order by SURNAME,NAME,WORK_UNIT asc
+    </select>
+    <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+        select * from oms_reg_procpersoninfo where IDNUMBER_GB = #{idCard} and DATA_TYPE = '1'
+    </select>
 
 </mapper>

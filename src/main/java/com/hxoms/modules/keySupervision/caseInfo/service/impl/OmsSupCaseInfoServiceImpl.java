@@ -75,6 +75,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 								"PINYIN", omsSupCaseInfo.getName()))
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
@@ -251,6 +252,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 						"NAME", omsSupCaseInfo.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
 								"PINYIN", omsSupCaseInfo.getName()))
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,

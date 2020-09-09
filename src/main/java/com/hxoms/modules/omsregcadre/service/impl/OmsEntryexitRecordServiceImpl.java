@@ -375,7 +375,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 i+=2;
             }
             //入境记录丢失
-            else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[0]))
+            else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[1]))
             {
                 exitDate=recOut.getOgeDate();
                 country=recOut.getDestination();
@@ -414,7 +414,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
-                            plsCountry,zzlist);
+                            sensitiveCountry,zzlist);
                     if (result == null){
                         recOut.setPriapplyId(app.getId());
                         recOut.setComparisonDate(new Date());
@@ -446,7 +446,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                         String result =  EntryexitRecordChecking(app.getCreateTime(),app.getId(),
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
-                                plsCountry,zzlist);
+                                sensitiveCountry,zzlist);
                         if (result == null){
                             recOut.setPriapplyId(app.getId());
                             recOut.setComparisonDate(new Date());
@@ -586,7 +586,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     i += 2;
                 }
                 //入境记录丢失
-                else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[0]))
+                else if(recOut.getOgeStatus()==Constants.OGE_STATUS_CODE[0] &&(recIn==null ||recIn.getOgeStatus()==Constants.OGE_STATUS_CODE[1]))
                 {
                     vo=recOut;
                     vo.setRealAbroadTime(recOut.getOgeDate());
