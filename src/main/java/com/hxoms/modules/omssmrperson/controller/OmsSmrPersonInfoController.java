@@ -50,7 +50,8 @@ public class OmsSmrPersonInfoController {
      * @param smrPersonInfoList
      */
     @PostMapping("/insertSmrPersonInfo")
-    public Result insertSmrPersonInfo(String importYear, String b0100,List<OmsSmrPersonInfo> smrPersonInfoList) {
+    public Result insertSmrPersonInfo(String importYear, String b0100,
+                                      @RequestBody List<OmsSmrPersonInfo> smrPersonInfoList) {
         return Result.success(smrPersonInfoService.insertSmrPersonInfo(importYear,b0100,smrPersonInfoList));
     }
 
@@ -59,7 +60,7 @@ public class OmsSmrPersonInfoController {
      * @param smrPersonInfo
      */
     @PostMapping("/updateSmrPersonInfo")
-    public Result updateSmrPersonInfo(OmsSmrPersonInfo smrPersonInfo) {
+    public Result updateSmrPersonInfo(@RequestBody OmsSmrPersonInfo smrPersonInfo) {
         return Result.success(smrPersonInfoService.updateSmrPersonInfo(smrPersonInfo));
     }
 
@@ -76,7 +77,7 @@ public class OmsSmrPersonInfoController {
      * @param
      */
     @PostMapping("/uploadSmrExcel")
-    public Result uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
+    public Result uploadSmrExcel(@RequestBody MultipartFile file, String importYear, String b0100) {
         try{
             Map<String, Object> resultMap = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
             return Result.success(resultMap);
@@ -181,7 +182,7 @@ public class OmsSmrPersonInfoController {
      * @param smrPersonInfoList
      */
     @PostMapping("/updateSmrPersonList")
-    public Result updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList) {
+    public Result updateSmrPersonList(@RequestBody List<OmsSmrPersonInfo> smrPersonInfoList) {
         try {
             boolean result = smrPersonInfoService.updateSmrPersonList(smrPersonInfoList);
             return Result.success(result);
@@ -195,7 +196,7 @@ public class OmsSmrPersonInfoController {
      * 获取涉密人员信息维护列表
      */
     @GetMapping("/getSmrMaintainList")
-    public Result getSmrMaintainList(OmsSmrPersonInfo smrPersonInfo) {
+    public Result getSmrMaintainList(@RequestBody OmsSmrPersonInfo smrPersonInfo) {
         try{
             Map<String, Object> resultMap = smrPersonInfoService.getSmrMaintainList(smrPersonInfo);
             return Result.success(resultMap);

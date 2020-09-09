@@ -14,7 +14,7 @@ import java.text.ParseException;
  */
 public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取涉密人员原涉密信息列表
-    IPage<OmsSmrOldInfo> getSmrOldInfoById(String A0100) throws ParseException;
+    IPage<OmsSmrOldInfo> getSmrOldInfoById(String id) throws ParseException;
     //添加涉密人员原涉密信息
     Object insert(OmsSmrOldInfo smrOldInfo);
     //修改涉密人员原涉密信息

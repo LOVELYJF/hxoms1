@@ -141,4 +141,19 @@ public class VerifyCheckController {
         return Result.success(result);
     }
 
+    /**
+     * 批量下载 人员备案表
+     * **/
+
+    public ResponseEntity<byte[]> batchDownloadPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo ){
+
+
+
+
+
+
+    return null;
+
+    }
+
 }

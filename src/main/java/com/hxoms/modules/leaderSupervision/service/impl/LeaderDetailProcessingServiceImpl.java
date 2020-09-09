@@ -27,6 +27,7 @@ import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.FileTypeConvertUtil;
+import com.hxoms.modules.leaderSupervision.until.HtmlUtils;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
@@ -775,6 +776,9 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
     private String  getPdfByHtml(OmsCreateFile omsCreateFile,String userName) {
+        //解析 html img 的src 标签
+
+        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
 
         // 要转换的 html
         String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +omsCreateFile.getFrontContent()+LeaderSupervisionUntil.suffixPdfStyle;

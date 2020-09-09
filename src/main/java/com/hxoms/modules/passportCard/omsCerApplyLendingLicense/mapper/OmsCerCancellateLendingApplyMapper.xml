@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerCancellateLendingApplyMapper">
+  <resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerCancellateLendingApply">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
+    <result column="LENDING_CER_INFO" jdbcType="VARCHAR" property="lendingCerInfo" />
+    <result column="LENDING_REASON" jdbcType="VARCHAR" property="lendingReason" />
+    <result column="RETURN_TIME" jdbcType="DATE" property="returnTime" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, OMS_ID, LENDING_CER_INFO, LENDING_REASON, RETURN_TIME, CREATE_TIME, CREATE_USER,
+    MODIFY_TIME, MODIFY_USER
+  </sql>
+
+</mapper>
