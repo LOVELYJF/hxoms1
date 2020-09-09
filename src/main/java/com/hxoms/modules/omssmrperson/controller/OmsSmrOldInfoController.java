@@ -24,12 +24,12 @@ public class OmsSmrOldInfoController {
 
     /**
      * 获取涉密人员原涉密信息列表
-     * @param A0100
+     * @param id(登记备案人员主键)
      */
     @GetMapping("/getSmrOldInfoById")
-    public Result getSmrOldInfoById(String A0100) {
+    public Result getSmrOldInfoById(String id) {
         try{
-            IPage<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(A0100);
+            IPage<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(id);
             return Result.success(oldInfoList);
         }catch (Exception e) {
             e.printStackTrace();

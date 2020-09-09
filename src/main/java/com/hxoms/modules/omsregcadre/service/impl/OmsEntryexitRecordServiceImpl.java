@@ -283,7 +283,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 apply.getAbroadTime(),apply.getReturnTime(),oldCountry.substring(0,oldCountry.length()-1),
                 apply.getRealAbroadTime(),apply.getRealReturnTime(),newCountry.substring(0,newCountry.length()-1),
                 sensitiveCountry,info);
-        //保存比对结果，李静好像没有加这个字段，isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
+        //保存比对结果isComparison是否已比对是以出入境记录比对时使用，这里不能设置值
         if (result == null){
             apply.setComparisonDate(new Date());
             apply.setComparisonResult("正常");
@@ -345,12 +345,11 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         if(omsEntryexitRecords.size()==0)return;
 
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
-        //key为国家，value为禁止性、限制性、敏感性类型
-        Map<String, String> sensitiveCountry = new HashMap<>();
-        List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
-        if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
-            for (Map<String, String> item : sensitiveCountrys){
-                sensitiveCountry.put(item.get("name"),item.get("type"));
+        Map<String, String> plsCountry = new HashMap<>();
+        List<Map<String, String>> plsCountrys = priApplyMapper.selectPLSCountry();
+        if(plsCountrys != null && plsCountrys.size() > 0){
+            for (Map<String, String> item : plsCountrys){
+                plsCountry.put(item.get("name"),item.get("type"));
             }
         }
 
@@ -415,7 +414,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
-                            sensitiveCountry,zzlist);
+                            plsCountry,zzlist);
                     if (result == null){
                         recOut.setPriapplyId(app.getId());
                         recOut.setComparisonDate(new Date());
@@ -428,7 +427,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     if(recIn!=null)
                     {
                         recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
-                        recOut.setComparisonDate(new Date());
+                        recIn.setComparisonDate(new Date());
                         recIn.setPriapplyId(app.getId());
                     }
                 }
@@ -447,7 +446,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                         String result =  EntryexitRecordChecking(app.getCreateTime(),app.getId(),
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
-                                sensitiveCountry,zzlist);
+                                plsCountry,zzlist);
                         if (result == null){
                             recOut.setPriapplyId(app.getId());
                             recOut.setComparisonDate(new Date());
