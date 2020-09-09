@@ -427,7 +427,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     if(recIn!=null)
                     {
                         recIn.setComparisonResult(recIn.getComparisonResult()+"\r\n"+result);
-                        recOut.setComparisonDate(new Date());
+                        recIn.setComparisonDate(new Date());
                         recIn.setPriapplyId(app.getId());
                     }
                 }
