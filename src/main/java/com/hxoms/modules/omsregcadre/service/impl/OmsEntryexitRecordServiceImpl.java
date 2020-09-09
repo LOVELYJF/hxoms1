@@ -345,6 +345,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         if(omsEntryexitRecords.size()==0)return;
 
         //跟罗帅协商获取禁止性、限制性、敏感性国家和地区
+        //key为国家，value为禁止性、限制性、敏感性类型
         Map<String, String> sensitiveCountry = new HashMap<>();
         List<Map<String, String>> sensitiveCountrys = priApplyMapper.selectSensitiveCountry();
         if(sensitiveCountrys != null && sensitiveCountrys.size() > 0){
