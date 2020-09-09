@@ -78,6 +78,7 @@
             <systemPath>${project.basedir}/src/lib/ojdbc6.jar</systemPath>
         </dependency>
 
+
         <dependency>
             <groupId>com.jsoup</groupId>
             <artifactId>jsoup</artifactId>
