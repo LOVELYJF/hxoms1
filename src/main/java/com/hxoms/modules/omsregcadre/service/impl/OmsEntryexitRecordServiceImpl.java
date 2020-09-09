@@ -414,7 +414,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     String result =  EntryexitRecordChecking(app.getApplyTime(),app.getId(),
                             app.getRealAbroadTime(),app.getRealReturnTime(),app.getRealGoCountry(),
                             exitDate,entryDate,country,
-                            sensitiveCountry,zzlist);
+                            plsCountry,zzlist);
                     if (result == null){
                         recOut.setPriapplyId(app.getId());
                         recOut.setComparisonDate(new Date());
@@ -446,7 +446,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                         String result =  EntryexitRecordChecking(app.getCreateTime(),app.getId(),
                                 app.getSjcgsj(),app.getSjhgsj(),app.getSdgj(),
                                 exitDate,entryDate,country,
-                                sensitiveCountry,zzlist);
+                                plsCountry,zzlist);
                         if (result == null){
                             recOut.setPriapplyId(app.getId());
                             recOut.setComparisonDate(new Date());
