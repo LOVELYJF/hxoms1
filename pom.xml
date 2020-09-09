@@ -79,6 +79,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/jsoup-1.8.1.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
