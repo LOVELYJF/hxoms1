@@ -402,7 +402,7 @@
         inner join b01 b on o.b0100=b.b0100
         where o.id=#{id}
     </select>
-    <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+    <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO" parameterType="com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam">
         select
         oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
@@ -414,29 +414,35 @@
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
         where oms_pub_apply.SFXD = '1'
-              <if test="sqzt != null and sqzt.size>0">
+              <if test="omsPubApplyQueryParam.sqzt != null and omsPubApplyQueryParam.sqzt.size>0">
                   and oms_pub_apply.SQZT in
-                    <foreach collection="sqzt" item="sqzt" separator="," open="(" close=")">
+                    <foreach collection="omsPubApplyQueryParam.sqzt" item="sqzt" separator="," open="(" close=")">
                         #{sqzt}
                     </foreach>
               </if>
-            <if test="name != null and name!= ''">
-                and concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) like CONCAT('%',#{name},'%')
+            <if test="omsPubApplyQueryParam.name != null and omsPubApplyQueryParam.name!= ''">
+                and concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) like CONCAT('%',#{omsPubApplyQueryParam.name},'%')
             </if>
-            <if test="cgsj != null and  cgsj != ''">
-                <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            <if test="omsPubApplyQueryParam.cgsj != null and  omsPubApplyQueryParam.cgsj != ''">
+                <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{omsPubApplyQueryParam.cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
-            <if test="hgsj != null and  hgsj != ''">
-                <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            <if test="omsPubApplyQueryParam.hgsj != null and  omsPubApplyQueryParam.hgsj != ''">
+                <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{omsPubApplyQueryParam.hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
-            <if test="ztdw != null and ztdw!= ''">
-                and oms_pub_apply.ZTDW = #{ztdw}
+            <if test="omsPubApplyQueryParam.ztdw != null and omsPubApplyQueryParam.ztdw!= ''">
+                and oms_pub_apply.ZTDW = #{omsPubApplyQueryParam.ztdw}
             </if>
-            <if test="pwh != null and pwh != ''">
-                and oms_pub_apply.pwh like CONCAT('%',#{pwh},'%')
+            <if test="omsPubApplyQueryParam.pwh != null and omsPubApplyQueryParam.pwh != ''">
+                and oms_pub_apply.pwh like CONCAT('%',#{omsPubApplyQueryParam.pwh},'%')
             </if>
-            <if test="b0100 != null and b0100 != ''">
-                and oms_pub_apply.b0100 = #{b0100}
+            <if test="omsPubApplyQueryParam.b0100 != null and omsPubApplyQueryParam.b0100 != ''">
+                and oms_pub_apply.b0100 = #{omsPubApplyQueryParam.b0100}
+            </if>
+            <if test="omsPubApplyQueryParam.procpersonId != null and omsPubApplyQueryParam.procpersonId != ''">
+                and oms_pub_apply.PROCPERSON_ID = #{omsPubApplyQueryParam.procpersonId}
+            </if>
+            <if test="omsPubApplyQueryParam.isComparison != null and omsPubApplyQueryParam.isComparison != ''">
+                and oms_pub_apply.IS_COMPARISON = #{omsPubApplyQueryParam.isComparison}
             </if>
     </select>
     <select id="selectPubApplyListByPwh" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">

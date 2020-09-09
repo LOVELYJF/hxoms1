@@ -73,4 +73,9 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      */
     List<Map<String, String>> selectSensitiveCountry();
 
+    /**
+     * 查询禁止性、限制性、敏感性国家和地区
+     * @return
+     */
+    List<Map<String, String>> selectPLSCountry();
 }

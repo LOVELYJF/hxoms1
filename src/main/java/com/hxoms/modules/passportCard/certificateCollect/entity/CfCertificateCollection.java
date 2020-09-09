@@ -70,8 +70,8 @@ public class CfCertificateCollection {
     @ApiModelProperty(value="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)")
     private String dataSource;
 
-    @ColumnAnnotation(FieldName = "CJ_STATUS",   FieldDescription="0:手动解除,1:已上缴,2:未上缴,3:自动解除")
-    @ApiModelProperty(value="0:手动解除,1:已上缴,2:未上缴,3:自动解除")
+    @ColumnAnnotation(FieldName = "CJ_STATUS",   FieldDescription="催缴状态(0:手动解除,1:已上缴,2:未上缴,3:自动解除)")
+    @ApiModelProperty(value="催缴状态(0:手动解除,1:已上缴,2:未上缴,3:自动解除)")
     private String cjStatus;
 
     @ColumnAnnotation(FieldName = "CJ_RESULT",   FieldDescription="催缴结果")

@@ -68,6 +68,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
 						"NAME", omsSupDisciplinary.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
 								"PINYIN", omsSupDisciplinary.getName()))
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
@@ -170,6 +171,7 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
 						"NAME", omsSupDisciplinary.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
 								"PINYIN", omsSupDisciplinary.getName()))
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,

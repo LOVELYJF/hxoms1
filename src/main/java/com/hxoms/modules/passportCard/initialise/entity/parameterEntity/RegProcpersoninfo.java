@@ -50,8 +50,8 @@ public class RegProcpersoninfo {
     @ApiModelProperty(value="工作单位")
     private String workUnit;
 
-    @ApiModelProperty(value="职务代码")
-    private String postCode;
+    @ApiModelProperty(value="职务")
+    private String post;
 
     public String getId() {
         return id;
@@ -149,11 +149,11 @@ public class RegProcpersoninfo {
         this.workUnit = workUnit;
     }
 
-    public String getPostCode() {
-        return postCode;
+    public String getPost() {
+        return post;
     }
 
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
+    public void setPost(String post) {
+        this.post = post;
     }
 }

@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
@@ -11,18 +13,27 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "保存催缴结果")
 public class SaveCjResult {
     //id
+    @NotBlank(message = "id不能为空")
     @ApiModelProperty(value = "数据列表id",required = true)
     private String id;
+
     //登陆用户id
+    @NotBlank(message = "登陆用户id不能为空")
     @ApiModelProperty(value = "登陆用户id",required = true)
     private String userId;
+
     //登陆用户姓名
+    @NotBlank(message = "登陆用户姓名不能为空")
     @ApiModelProperty(value = "登陆用户姓名",required = true)
     private String userName;
+
     //催缴情况
+    @NotBlank(message = "催缴情况不能为空")
     @ApiModelProperty(value = "催缴情况",required = true)
     private String cjResult;
+
     //催缴结果
+    @NotBlank(message = "催缴结果不能为空")
     @ApiModelProperty(value = "催缴结果",required = true)
     private String cjResultAdd;
 

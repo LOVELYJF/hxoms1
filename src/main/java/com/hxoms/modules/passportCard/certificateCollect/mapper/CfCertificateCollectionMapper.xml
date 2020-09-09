@@ -423,6 +423,7 @@
       (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
       a.zjhm,
       a.data_source dataSource,
+      (select item_name from sys_dict_item where dict_code='ZJCJSJLY' and item_code=a.data_source) dataSourceName,
       a.happen_Date happenDate,
       a.return_Date returnDate,
       a.cj_Result cjResult

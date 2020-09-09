@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -15,29 +17,37 @@ import java.util.Date;
 @ApiModel(value = "催缴内容参数")
 public class CjContentParam {
     //主键
+    @NotBlank(message = "id不能为空")
     @ApiModelProperty(value = "主键",required = true)
     private String id;
     //姓名
+    @NotBlank(message = "姓名不能为空")
     @ApiModelProperty(value = "姓名",required = true)
     private String name;
     //证照类型编码
+    @NotNull(message = "证照类型编码不能为空")
     @ApiModelProperty(value = "证照类型编码",required = true)
     private Integer zjlx;
     //证照类型名称
+    @NotBlank(message = "证照类型名称不能为空")
     @ApiModelProperty(value = "证照类型名称",required = true)
     private String zjlxName;
     //证照号码
+    @NotBlank(message = "证照号码不能为空")
     @ApiModelProperty(value = "证照号码",required = true)
     private String zjhm;
     //应归还时间
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @NotNull(message = "应归还时间不能为空")
     @ApiModelProperty(value = "应归还时间",required = true)
     private Date returnDate;
     //工作单位
+    @NotBlank(message = "工作单位不能为空")
     @ApiModelProperty(value = "工作单位",required = true)
     private String workUnit;
     //机构编码
+    @NotBlank(message = "机构编码不能为空")
     @ApiModelProperty(value = "机构编码",required = true)
     private String rfB0000;
 

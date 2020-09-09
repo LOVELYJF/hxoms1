@@ -63,6 +63,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 						"NAME", omsSupDismissed.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 								"PINYIN", omsSupDismissed.getName()))
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
@@ -151,6 +152,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 						"NAME", omsSupDismissed.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
 								"PINYIN", omsSupDismissed.getName()))
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,

@@ -283,22 +283,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         //设置传入页码，以及每页的大小
         PageHelper.startPage(pageNum, pageSize);
-        /**申请状态集合 */
-        List<Integer> status = omsPubApplyQueryParam.getStatus();
-        /**组团单位*/
-        String ztdw = omsPubApplyQueryParam.getZtdw();
-        /** 出国时间*/
-        Date cgsj = omsPubApplyQueryParam.getCgsj();
-        /** 回国时间*/
-        Date hgsj = omsPubApplyQueryParam.getHgsj();
-        /** 姓名*/
-        String name = omsPubApplyQueryParam.getName();
-        /** 通知书文号*/
-        String pwh = omsPubApplyQueryParam.getPwh();
-
-        /** 机构id*/
-        String b0100 = omsPubApplyQueryParam.getB0100();
-        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);
+        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(omsPubApplyQueryParam);
         PageInfo info = new PageInfo(list);
         return info;
     }
@@ -728,21 +713,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Override
     public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response) {
-        /**申请状态集合 */
-        List<Integer> status = omsPubApplyQueryParam.getStatus();
-        /**组团单位*/
-        String ztdw = omsPubApplyQueryParam.getZtdw();
-        /** 出国时间*/
-        Date cgsj = omsPubApplyQueryParam.getCgsj();
-        /** 回国时间*/
-        Date hgsj = omsPubApplyQueryParam.getHgsj();
-        /** 姓名*/
-        String name = omsPubApplyQueryParam.getName();
-        /** 通知书文号*/
-        String pwh = omsPubApplyQueryParam.getPwh();
-        /** 机构id*/
-        String b0100 = omsPubApplyQueryParam.getB0100();
-        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(status,name,cgsj,hgsj,ztdw,pwh,b0100);
+        List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(omsPubApplyQueryParam);
         if (list == null || list.size() < 1){
             throw new CustomMessageException("操作失败");
         }else {

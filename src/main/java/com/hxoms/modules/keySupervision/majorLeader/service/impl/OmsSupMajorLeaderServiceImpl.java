@@ -64,6 +64,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 								"PINYIN", omsSupMajorLeader.getName()));
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -229,6 +230,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 						"NAME", omsSupMajorLeader.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
 								"PINYIN", omsSupMajorLeader.getName()));
 
