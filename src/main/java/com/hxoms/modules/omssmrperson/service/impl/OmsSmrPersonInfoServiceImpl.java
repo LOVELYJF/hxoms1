@@ -84,7 +84,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return resultMap;
     }
 
-    /** 导入涉密人员信息 */
+    /** 插入涉密人员信息 */
     @Override
     public Object insertSmrPersonInfo(String importYear, String b0100,List<OmsSmrPersonInfo> smrPersonInfoList) {
         //插入涉密人员基本信息
