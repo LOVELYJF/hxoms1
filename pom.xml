@@ -43,6 +43,7 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -53,6 +54,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
 
         <!--达梦数据库驱动-->
         <dependency>
@@ -76,6 +78,14 @@
             <version>6.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/lib/ojdbc6.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/jsoup-1.8.1.jar</systemPath>
         </dependency>
 
         <dependency>
