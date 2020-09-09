@@ -6,7 +6,6 @@ import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,8 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
     List<PersonInfoVO> selectPersonListByOrg(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
 
     Map<String, Object> selectBasePersonInfo(@Param("b0100") String b0100, @Param("a0100") String a0100);
+
+    Map<String, Object> selectBasePerson( @Param("id") String id);
 
     /**
      * 最近一次因公出国情况
@@ -64,7 +65,7 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Author: 李逍遥
      * @Date: 2020/6/28 10:15
      */
-    List<OmsPubApplyVO> getPubAppListByCondition(OmsPubApplyQueryParam omsPubApplyQueryParam);
+    List<OmsPubApplyVO> getPubAppListByCondition(@Param("omsPubApplyQueryParam") OmsPubApplyQueryParam omsPubApplyQueryParam);
 
     /**
      * 功能描述: <br>
@@ -175,4 +176,22 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
     List<PersonInfoVO> selectPersonListForTZQGB(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
 
 
+    /**
+     * 功能描述: <br>
+     * 〈从团组预审批表获取负责人员姓名〉
+     * @Param: [a0100]
+     * @Return: java.lang.String
+     * @Author: 李逍遥
+     * @Date: 2020/9/8 19:39
+     */
+    String getStNameForGroup(@Param("a0100") String a0100);
+    /**
+     * 功能描述: <br>
+     * 〈从备案申请表表获取负责人姓名〉
+     * @Param: [a0100]
+     * @Return: java.lang.String
+     * @Author: 李逍遥
+     * @Date: 2020/9/8 19:50
+     */
+    String getStNameForPub(@Param("a0100") String a0100);
 }
