@@ -148,12 +148,20 @@ public class VerifyCheckController {
     public ResponseEntity<byte[]> batchDownloadPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo ){
 
 
+        Map map = leaderDetailProcessingService.batchDownloadPutOnRecord(leaderSupervisionVo);
 
+        ResponseEntity<byte[]> responseEntity=null;
+        try {
 
-
-
-    return null;
-
+            responseEntity=ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode(map.get("fileName").toString(), "utf-8")))
+                    .body((byte[]) map.get("array"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomMessageException("下载失败，原因："+e.getMessage());
+        }
+        return responseEntity;
     }
 
 }

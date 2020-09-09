@@ -173,7 +173,10 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
 			if(majorLeaderList.size() < 1 || majorLeaderList == null) {
 				//根据领导主键查询领导信息
-				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(a0100);
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("a0100", a0100);
+				map.put("a0201b", person.getA0201b());
+				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(map);
 
 				omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 				omsSupMajorLeader.setA0100((String) mapList.get(0).get("a0100"));

@@ -116,6 +116,10 @@ public interface LeaderDetailProcessingService {
 
     List<Map> selectGroupConditions();
 
+    /** 批量下载备案表***/
+
+    Map  batchDownloadPutOnRecord(LeaderSupervisionVo leaderSupervisionVo);
+
 
 }
 

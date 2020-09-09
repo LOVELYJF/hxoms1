@@ -19,6 +19,10 @@ public class BussinessTypeAndIdVo {
 
     private  String procpersonId; /** 登记备案人员id **/
 
+    private String  bussinessOccureStpet;  /** 发生在业务的哪一步code **/
+
+    private String  bussinessOccureStpetName; /**  发生在业务的哪一步code的名称 **/
+
 
     public String getBussinessId() {
         return bussinessId;
@@ -66,5 +70,21 @@ public class BussinessTypeAndIdVo {
 
     public void setProcpersonId(String procpersonId) {
         this.procpersonId = procpersonId;
+    }
+
+    public String getBussinessOccureStpet() {
+        return bussinessOccureStpet;
+    }
+
+    public void setBussinessOccureStpet(String bussinessOccureStpet) {
+        this.bussinessOccureStpet = bussinessOccureStpet;
+    }
+
+    public String getBussinessOccureStpetName() {
+        return bussinessOccureStpetName;
+    }
+
+    public void setBussinessOccureStpetName(String bussinessOccureStpetName) {
+        this.bussinessOccureStpetName = bussinessOccureStpetName;
     }
 }

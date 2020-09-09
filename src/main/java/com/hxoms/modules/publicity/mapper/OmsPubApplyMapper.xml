@@ -308,7 +308,7 @@
                op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE,
                b.b0100 as b0100
         from oms_reg_procpersoninfo orp
-        LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
+        LEFT JOIN b01 b ON b.b0100 = orp.RF_B0000
         LEFT JOIN oms_smr_personinfo op
         ON orp.id = op.PROC_PERSON_ID
         <where>
@@ -340,7 +340,7 @@
          i.B0101 as B0101 ,
          op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE
          FROM oms_reg_procpersoninfo p
-         LEFT JOIN b01 i ON  i.b0111 = p.RF_B0000
+         LEFT JOIN b01 i ON  i.b0100 = p.RF_B0000
          LEFT JOIN oms_smr_personinfo op
          ON p.id = op.PROC_PERSON_ID
          where i.b0100=#{b0100} and p.a0100=#{a0100}
@@ -694,7 +694,7 @@
                 op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
             FROM
                 oms_reg_procpersoninfo p
-                LEFT JOIN b01 i ON i.b0111 = p.RF_B0000
+                LEFT JOIN b01 i ON i.b0100 = p.RF_B0000
                 LEFT JOIN oms_smr_personinfo op ON p.id = op.PROC_PERSON_ID
                 LEFT JOIN oms_pub_apply o on o.PROCPERSON_ID = p.id
             WHERE
