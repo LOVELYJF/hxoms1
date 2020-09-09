@@ -724,7 +724,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(rollbackFor = CustomMessageException.class)
-    public OmsCreateFile insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName) {
+    public OmsCreateFile  insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName) {
 
 //        LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
 
@@ -749,12 +749,12 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             }
         }
 
-//        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
-//
-//        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
-//        bussinessTypeAndIdVo.setBussinessId(bussinessId);
-//        bussinessTypeAndIdVo.setBussinessName(type);
-//        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
+        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
+
+        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+        bussinessTypeAndIdVo.setBussinessId(omsCreateFile.getApplyId());
+        bussinessTypeAndIdVo.setBussinessName("因公");
+        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
 //
 //        //  (1) 保存 审批记录(通过)
 //        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
@@ -772,6 +772,20 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         String pdfFilePath =   getPdfByHtml(omsCreateFile,userName);
 
         saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
+
+                //  (1) 保存 审批记录(通过)
+        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,"通过", Constants.leader_businessName[8], Constants.leader_business[8],null);
+        //        // (2) 修改流程状态
+       leaderCommonService.updteBussinessApplyStatue(bussinessTypeAndIdVosNum1, Constants.leader_businessName[Constants.leader_businessName.length-1]);
+
+       leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,"1",null);
+
+        // 修改 批次状态
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                bussinessTypeAndIdVosNum1.stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                Constants.leader_business[Constants.leader_business.length-1]);
+//
+
         return omsCreateFile;
     }
 
@@ -781,7 +795,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
 
         // 要转换的 html
-        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +omsCreateFile.getFrontContent()+LeaderSupervisionUntil.suffixPdfStyle;
+        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
         // 生成 pdf的路径 +名称
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar calendar = Calendar.getInstance();
