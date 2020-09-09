@@ -149,7 +149,7 @@ public class RoleGrantServiceImpl implements RoleGrantService {
         //先删除已授权的模块
         //yangbo
         //roleGrantMapper.deleteGrantByTabName(roleId, "cf_role_leader_info");
-        roleGrantMapper.deleteLeaderTypeGrantByLeaderTypeId(roleId,leaderTypeId);
+//        roleGrantMapper.deleteLeaderTypeGrantByLeaderTypeId(roleId,leaderTypeId);
         //------------yangbo----------
         List<String> checkList =    roleGrant.getCheckList();
         if (checkList == null || checkList.isEmpty()) {
