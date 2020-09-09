@@ -66,8 +66,7 @@ public class OmsEntryexitRecordController {
 
 
 
-    /**
-     * 删除出入境记录
+     /*删除出入境记录
      * @param id
      * @return
      */

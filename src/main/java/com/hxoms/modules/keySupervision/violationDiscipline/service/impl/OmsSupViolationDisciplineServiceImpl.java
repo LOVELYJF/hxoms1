@@ -72,6 +72,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 								"PINYIN", omsSupViolationDiscipline.getName()))
 				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
@@ -163,6 +164,7 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
+						.isNotNull("ID")
 						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
 								"PINYIN", omsSupViolationDiscipline.getName()))
 				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,

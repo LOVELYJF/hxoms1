@@ -3,10 +3,7 @@ package com.hxoms.modules.publicity.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
-import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
-import com.hxoms.modules.publicity.entity.PWHTreeVO;
-import com.hxoms.modules.publicity.entity.PersonInfoVO;
+import com.hxoms.modules.publicity.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -62,12 +59,12 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
     /**
      * 功能描述: <br>
      * 〈根据条件查询备案申请列表〉
-     * @Param: [status, name, cgsj, hgsj, ztdw]
+     * @Param: omsPubApplyQueryParam
      * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApply>
      * @Author: 李逍遥
      * @Date: 2020/6/28 10:15
      */
-    List<OmsPubApplyVO> getPubAppListByCondition(@Param("sqzt") List<Integer> status, @Param("name") String name, @Param("cgsj") Date cgsj, @Param("hgsj") Date hgsj, @Param("ztdw") String ztdw, @Param("pwh") String pwh,@Param("b0100") String b0100);
+    List<OmsPubApplyVO> getPubAppListByCondition(OmsPubApplyQueryParam omsPubApplyQueryParam);
 
     /**
      * 功能描述: <br>
@@ -176,5 +173,6 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @param keyword
      */
     List<PersonInfoVO> selectPersonListForTZQGB(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
+
 
 }

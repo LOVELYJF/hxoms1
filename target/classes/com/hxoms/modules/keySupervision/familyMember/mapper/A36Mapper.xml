@@ -27,6 +27,7 @@
 		<result column="id_card" jdbcType="VARCHAR" property="idCard" />
 		<result column="hukou_location" jdbcType="VARCHAR" property="hukouLocation" />
 		<result column="person_status" jdbcType="VARCHAR" property="personStatus" />
+		<result column="is_abroad" jdbcType="VARCHAR" property="isAbroad" />
 	</resultMap>
 	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.keySupervision.familyMember.entity.A36">
 		<result column="time_stamp" jdbcType="LONGVARBINARY" property="timeStamp" />
@@ -35,7 +36,7 @@
 		a3600, a0100, a3601, a3604a, a3607, a3611, a3627, id, is_deleted, modify_user, modify_time,
 		node_id, sortid, operate_batch, is_normal, nationality, live_place, lmmigrate_number,
 		lmmigrate_type, lmmigrate_time, chinese_passport_number, id_card, hukou_location,
-		person_status
+		person_status, is_abroad
 	</sql>
 	<sql id="Blob_Column_List">
 		time_stamp
@@ -58,7 +59,8 @@
 			a.lmmigrate_time,
 			a.chinese_passport_number,
 			a.id_card,
-			a.hukou_location
+			a.hukou_location,
+			a.is_abroad
 		from a36 as a
 		<where>
 			a.a3604a in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')

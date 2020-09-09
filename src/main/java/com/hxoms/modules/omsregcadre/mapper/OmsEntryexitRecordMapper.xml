@@ -326,26 +326,38 @@
   </update>-->
 
   <select id="selectEntryexitRecordIPage" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultMap="BaseResultMap">
-    select * from oms_entryexit_record where 1=1
-    <if test="name!=null and name!=''">
-      AND NAME LIKE '%${name}%'
-    </if>
-    <if test="dataSource!=null and dataSource!=''">
-      AND DATA_SOURCE = #{dataSource}
-    </if>
-    <if test="ogeStatus!=null and ogeStatus!=''">
-      AND OGE_STATUS = #{ogeStatus}
-    </if>
-    <if test="ogeStartDate != null and ogeEndDate!=null">
-      and OGE_DATE &gt; #{ogeStartDate} and OGE_DATE &lt; #{ogeEndDate}
-    </if>
-    <if test="comparisonResult!=null and comparisonResult!=''">
-      and COMPARISON_RESULT LIKE '%${comparisonResult}%'
-    </if>
-    <if test="ids!=null and ids!=''">
-      and id in (#{ids})
-    </if>
-    order by OGE_DATE asc
+      select * from oms_entryexit_record where 1=1
+      <if test="name!=null and name!=''">
+          AND NAME LIKE '%${name}%'
+      </if>
+      <if test="dataSource!=null and dataSource!=''">
+          AND DATA_SOURCE = #{dataSource}
+      </if>
+      <if test="ogeStatus!=null and ogeStatus!=''">
+          AND OGE_STATUS = #{ogeStatus}
+      </if>
+      <if test="ogeStartDate != null and ogeEndDate!=null">
+          and OGE_DATE &gt;= #{ogeStartDate} and OGE_DATE &lt;= #{ogeEndDate}
+      </if>
+      <if test="ogeDate != null">
+          and OGE_DATE &gt;= #{ogeDate}
+      </if>
+      <if test="comparisonResult!=null and comparisonResult!=''">
+          and COMPARISON_RESULT LIKE '%${comparisonResult}%'
+      </if>
+      <if test="priapplyId==null">
+          AND PRIAPPLY_ID = null
+      </if>
+      <if test="omsId!=null and omsId!=''">
+          AND OMS_ID = #{omsId}
+      </if>
+      <if test="ogeStatus!=null and ogeStatus!=''">
+          AND OGE_STATUS = #{ogeStatus}
+      </if>
+      <if test="ids!=null and ids!=''">
+          and id in (#{ids})
+      </if>
+      order by OGE_DATE asc
   </select>
 
 

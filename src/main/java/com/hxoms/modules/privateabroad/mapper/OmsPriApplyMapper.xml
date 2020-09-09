@@ -321,5 +321,10 @@
         from oms_sensitive_maintain sm left join country co on sm.COUNTRY_ID = co.ID
            where SENSITIVE_LIMIT_ID='ABE3012D-A1AB-4C9C-9F75-EB47ABBA1B72'
     </select>
+    <select id="selectPLSCountry" resultType="java.util.Map">
+        select b.NAME_ZH as name,d.ITEM_NAME as type from oms_sensitive_maintain a
+          inner join country b on a.COUNTRY_ID=b.ID
+          inner join sys_dict_item d on a.SENSITIVE_LIMIT_ID=d.ITEM_ID and d.DICT_CODE='MGGJ';
+    </select>
 
 </mapper>

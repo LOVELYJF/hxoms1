@@ -109,8 +109,8 @@
 		ORDER BY a.a0201b
 	</select>
 
-	<select id="selectB0100ByA021b" parameterType="java.lang.String" resultType="java.lang.String">
-		select b01.b0100 from B01 b01 where b01.b0111 = #{a0201b}
+	<select id="selectB0101ByA0201b" parameterType="java.lang.String" resultType="java.lang.String">
+		select B0101 as b0101 from B01 where b0111 = #{a0201b}
 	</select>
 
 </mapper>

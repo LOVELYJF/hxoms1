@@ -9,22 +9,24 @@ spring:
       #            password: 12345abcde
       #            url: jdbc:dm://www.24hbs.com:5236/HXOMS
       #            driver-class-name: dm.jdbc.driver.DmDriver
+      #user11name: hxoms
+      #password: Hxyz-2020#
+      #url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
       username: root
       password: 12345abcde
-      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
+      url: jdbc:mysql://49.232.137.69:3306/hxoms?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
       #username: root
       #password: 123456
       #url: jdbc:mysql://localhost:3307/525hxoim?useUnicode=true&allowMultiQueries=true&characterEncoding=utf8&useSSL=false
       driver-class-name: com.mysql.jdbc.Driver
-      initial-size: 0
-      min-idle: 1
+      initial-size: 5
+      min-idle: 5
       max-active: 20
       test-while-idle: true
       validation-query: select 1
       max-wait: 60000
   jackson:
-    time-zone:GMT+8
-  #default-property-inclusion: non_null
+    #default-property-inclusion: non_null
   servlet:
     multipart:
       max-file-size: 100MB
@@ -60,10 +62,22 @@ omsFile:
 
 file:
   ueditorImgUrl: /ueditorImgUrl/ #富文本上传图片路径虚拟
-  ueditorRealImgUrl: E:/ueditorImgUrl/ #富文本上传图片路径真实
+  ueditorRealImgUrl: F:/ueditorImgUrl/ #富文本上传图片路径真实
 
 omsAttachment:
   baseDir: D:/oms/attachment   # 附件上传路径
+
+#htmlTopdf:
+#  window: D:\tools\pdf\wkhtmltox\bin\wkhtmltopdf.exe   #wkhtmltopdf 工具下载位置 windows系统
+#  linux:  /usr/local/bin/wkhtmltopdf                   #wkhtmltopdf 工具下载位置 linux系统
+
+# 在此定义pdf 大小以及样式
+
+htmlTopdf:
+    pdfName:  备案表
+
+
+
 
 #职务code
 postcode:

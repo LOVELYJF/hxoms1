@@ -25,12 +25,13 @@
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
     <result column="DATASOURCE" jdbcType="VARCHAR" property="dataSource" />
+    <result column="PROC_PERSON_ID" jdbcType="VARCHAR" property="procPersonId" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, ID_CARD_NUMBER, A0141, POST, PERSON_STATE, SECRET_RELATED_POST,
     SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, SECRET_RELATED_ORG, MAX_SECRET_RELATED_ORG, 
     MAX_SECRET_RELATED_LEVEL, MAX_FINISH_DATE, START_DATE, FINISH_DATE, UPDATE_USER_ID, 
-    UPDATE_TIME, IMPORT_YEAR
+    UPDATE_TIME, IMPORT_YEAR,PROC_PERSON_ID
   </sql>
 
   <!-- 查询涉密人员管理列表 -->
@@ -39,9 +40,9 @@
         t.ID,
         t.A0100,
         t.B0100,
-        b.B0101,
+        (select b.b0101 from b01 b where t.b0100 = b.B0100) b0101,
         concat(r.SURNAME,r.NAME) as NAME,
-        r.SEX,
+        case r.SEX when '1' then '男' when '2' then '女' end sex,
         t.ID_CARD_NUMBER,
         t.A0141,
         t.POST,
@@ -49,8 +50,8 @@
         t.SECRET_RELATED_POST,
         t.SECRET_RELATED_LEVEL,
         t.SECRET_REVIEW_DATE,
-        t.SECRET_RELATED_ORG,
-        t.MAX_SECRET_RELATED_ORG,
+        (select b.b0101 from b01 b where b.b0100 = t.SECRET_RELATED_ORG) SECRET_RELATED_ORG,
+        (select b.b0101 from b01 b where b.b0100 = t.MAX_SECRET_RELATED_ORG) MAX_SECRET_RELATED_ORG,
         t.MAX_SECRET_RELATED_LEVEL,
         t.MAX_FINISH_DATE,
         t.START_DATE,
@@ -61,7 +62,6 @@
     FROM
         oms_smr_personinfo t
         LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
-        LEFT JOIN b01 b on t.B0100 = b.B0100
     WHERE 1 = 1
         <if test="name !=null and name !=''">
           AND concat(r.SURNAME,r.NAME) like #{name}
@@ -81,7 +81,7 @@
         <if test="personState !=null and personState !=''">
           AND t.PERSON_STATE = #{personState}
         </if>
-        <if test="idList !=null and idList !=''">
+        <if test="idList != null and idList.size >0">
           AND t.B0100 IN
           <foreach collection="idList" item="item" index="index" open="(" close=")" separator=",">
             #{item}
@@ -151,4 +151,94 @@
         and t.IDNUMBER = #{idCardNumber}
         and t.INCUMBENCY_STATUS = '1'
   </select>
+
+  <!-- 获取脱密期确认列表 -->
+  <select id="getConfirmPeriodList" resultMap="BaseResultMap">
+    SELECT
+        t.*
+    FROM
+        oms_smr_personinfo t
+        LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
+    WHERE 1 = 1
+        <if test="name !=null and name !=''">
+            AND concat(r.SURNAME,r.NAME) like #{name}
+        </if>
+        <if test="namePy !=null and namePy !=''">
+            AND r.PY like #{namePy}
+        </if>
+        and r.WORK_UNIT = #{orgId}
+        and t.SECRET_RELATED_LEVEL = ''
+        and r.INCUMBENCY_STATUS = '1'
+  </select>
+
+  <!-- 获取涉密人员信息维护列表 -->
+  <select id="getSmrMaintainList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT
+        t.*
+    FROM
+        oms_smr_personinfo t
+        LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
+    WHERE 1 = 1
+        <if test="name !=null and name !=''">
+            AND concat(r.SURNAME,r.NAME) like #{name}
+        </if>
+        <if test="namePy !=null and namePy !=''">
+            AND r.PY like #{namePy}
+        </if>
+        and r.WORK_UNIT = #{orgId}
+        and t.SECRET_RELATED_LEVEL is not null
+        and r.INCUMBENCY_STATUS = '1'
+  </select>
+
+  <update id="updateSmrPersonList" parameterType="java.util.List">
+      update oms_smr_personinfo
+      <set>
+          <if test="isDeleted != null">
+              IS_DELETED = #{isDeleted,jdbcType=CHAR},
+          </if>
+          <if test="modifyUser != null">
+              MODIFY_USER = #{modifyUser,jdbcType=VARCHAR},
+          </if>
+          <if test="modifyTime != null">
+              MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="timeStamp != null">
+              TIME_STAMP = #{timeStamp,jdbcType=VARBINARY},
+          </if>
+          <if test="nodeId != null">
+              NODE_ID = #{nodeId,jdbcType=VARCHAR},
+          </if>
+          <if test="title != null">
+              TITLE = #{title,jdbcType=VARCHAR},
+          </if>
+          <if test="messageNumber != null">
+              MESSAGE_NUMBER = #{messageNumber,jdbcType=VARCHAR},
+          </if>
+          <if test="message != null">
+              MESSAGE = #{message,jdbcType=VARCHAR},
+          </if>
+          <if test="ngr != null">
+              NGR = #{ngr,jdbcType=VARCHAR},
+          </if>
+          <if test="ngsj != null">
+              NGSJ = #{ngsj,jdbcType=VARCHAR},
+          </if>
+          <if test="fwsj != null">
+              FWSJ = #{fwsj,jdbcType=VARCHAR},
+          </if>
+          <if test="zsdw != null">
+              ZSDW = #{zsdw,jdbcType=VARCHAR},
+          </if>
+          <if test="csdw != null">
+              CSDW = #{csdw,jdbcType=VARCHAR},
+          </if>
+          <if test="cfdw != null">
+              CFDW = #{cfdw,jdbcType=VARCHAR},
+          </if>
+          <if test="fwlx != null">
+              FWLX = #{fwlx,jdbcType=VARCHAR},
+          </if>
+      </set>
+      where ID = #{id,jdbcType=VARCHAR}
+  </update>
 </mapper>
