@@ -172,7 +172,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
-        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+//        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
 
 
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
@@ -183,14 +183,14 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
 
         //查询自评项目是否初始化
         QueryWrapper<OmsSelfFile> wrapper = new QueryWrapper<>();
-        wrapper.eq("B0100", b01.getB0100())
+        wrapper.eq("B0100", userInfo.getOrgId())
                 .eq("TYPE", type);
         if (omsSelfFileMapper.selectCount(wrapper) < 1){
             //初始化
-            initOmsSelfEstimate(type, b01.getB0100());
+            initOmsSelfEstimate(type, userInfo.getOrgId());
         }
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("b0100", b01.getB0100());
+        paramMap.put("b0100", userInfo.getOrgId());
         paramMap.put("type", type);
         paramMap.put("applyId", applyId);
         List<OmsSelfFileVO> omsSelfFileVOS = omsSelfFileMapper.selectFileList(paramMap);
@@ -244,7 +244,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
             }else{
                 throw new CustomMessageException("该申请单不存在");
             }
-        }else if(Constants.oms_business[3].equals(type)){
+        }else if("oms_cer_cancellate".equals(type)){
             //注销证照
             B01 b01 = omsCerCancellateApplyMapper.getB0100ByApplyId(applyId);
             omsSelfFileVO.setB0100(b01.getB0100());

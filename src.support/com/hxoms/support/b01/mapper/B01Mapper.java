@@ -115,4 +115,12 @@ public interface B01Mapper {
      * @return
      */
     B01 selectOrgByB0101(Map<String,Object> map);
+    
+    /**
+     * @description: 根据主键b0100查询
+     * @author : wuyezhen
+     * @date : 2020/9/10
+     * @return
+     */
+    B01 selectOrgByB0100(String b0100);
 }

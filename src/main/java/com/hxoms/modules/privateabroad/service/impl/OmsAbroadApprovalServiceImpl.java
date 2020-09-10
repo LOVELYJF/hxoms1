@@ -70,4 +70,20 @@ public class OmsAbroadApprovalServiceImpl implements OmsAbroadApprovalService {
         }
         return "操作成功";
     }
+
+	@Override
+	public List<OmsAbroadApproval> selcetByApplyIdAndStepCode(Integer stepCode, String applyId) {
+		if (StringUtils.isEmpty(applyId) ||stepCode ==null) {
+			 throw new CustomMessageException("操作失败");
+		}
+		return omsAbroadApprovalMapper.selcetByApplyIdAndStepCode(stepCode, applyId);
+	}
+
+	@Override
+	public void deleteById(String id) {
+		if (StringUtils.isEmpty(id)) {
+			 throw new CustomMessageException("操作失败");
+		}
+		omsAbroadApprovalMapper.deleteById(id);
+	}
 }

@@ -642,10 +642,12 @@
         select
         b.b0100,
         b.b0111 as "id",
-        b.b0101 as "label", b.b0121 as "pId" from cf_org_sub os
+        b.b0101 as "label", b.b0121 as "pId"
+        from cf_org_sub os
         inner join b01 b
         on os.managed_org=b.b0100
-        where os.b0111=#{orgId} order by b.sortid
+        where os.b0111=#{orgId}
+        order by b.sortid
     </select>
     <select id="selectUserGrantTree" resultType="com.hxoms.support.b01.entity.B01Tree">
         select b.b0100,b.b0111 as "id",b.b0101 as "label", b.b0121 as "pId"  from user_role_view urv
@@ -680,5 +682,10 @@
     <!-- 根据单位名称查询单位是否存在 -->
     <select id="selectOrgByB0101" parameterType="java.util.Map" resultMap="BaseResultMap">
         select b.B0100,b.b0111 FROM b01 b where b.b0101=#{b0101}
+    </select>
+    
+    <!-- 根据主键B0100查询-->
+    <select id="selectOrgByB0100"  resultMap="BaseResultMap">
+        select * FROM b01 b where b.B0100=#{b0100}
     </select>
 </mapper>

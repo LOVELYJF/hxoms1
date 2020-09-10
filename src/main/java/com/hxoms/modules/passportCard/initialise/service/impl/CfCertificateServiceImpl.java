@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -73,6 +75,24 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Autowired
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
+
+    /**
+     * @Desc: 初始化证照，导出未上缴证照统计
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: List<ExportNotProvicdeCer>
+     * @Date: 2020/9/10
+     */
+    @Override
+    public void exportNotProvicdeCer(List<String> ids, HttpServletResponse response){
+        if (ids==null||ids.size()<1){
+            throw new CustomMessageException("操作失败！");
+        }
+        List getList =cfCertificateMapper.exportNotProvicdeCer(ids);
+        String[] headers="姓名,性别,单位,任职状态,职务,证照类型,证件号码,有效期至,管理单位,出生日期,签发单位,签发日期,出生地".split(",");
+        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,getList,response);
+    }
+
 
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {

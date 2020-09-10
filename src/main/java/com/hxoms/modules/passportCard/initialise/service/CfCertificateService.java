@@ -8,11 +8,20 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
 public interface CfCertificateService extends IService<CfCertificate> {
 
+   /**
+    * @Desc: 初始化证照，导出未上缴证照统计
+    * @Author: wuqingfan
+    * @Param: [ids]
+    * @Return: List<ExportNotProvicdeCer>
+    * @Date: 2020/9/10
+    */
+   void exportNotProvicdeCer(List<String> ids, HttpServletResponse response);
 
    //查询所有证照的信息带分页
    PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam);
