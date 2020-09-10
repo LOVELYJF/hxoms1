@@ -5,7 +5,7 @@
     SELECT
         a.id,
         a.name,
-        a.sex,
+        if(a.sex='1','男',if(a.sex='2','女',a.sex)) sex,
         b.work_unit workUnit,
         b.incumbency_status incumbencyStatus,
       (
@@ -20,7 +20,9 @@
       AS incumbencyStatusName,
         b.post,
         a.zjlx,
+        (SELECT item.item_name FROM sys_dict_item item WHERE item.dict_code = 'zjlx' AND a.zjlx= item.item_code) zjlxName,
         a.xplx,
+        if(a.xplx='0','自带',if(a.xplx='1','粘贴',a.xplx)) xplxName,
         a.zjxs,
     (
     SELECT
@@ -45,7 +47,7 @@
     item.dict_code = 'ZJZT'
     AND a.card_Status= item.item_code
     )
-    AS cardStatus,
+    AS cardStatusName,
         a.save_Status saveStatus,
     (
     SELECT
@@ -112,10 +114,10 @@
 
   <select id="selectIsExist" resultType="java.lang.String">
     SELECT
-        1 fron cf_certificate
+        1 from cf_certificate
     WHERE
         zjlx = #{zjlx}
-    AND zjhm = #{zjhm};
+    AND zjhm = #{zjhm}
   </select>
   <select id="selectRegPerson" resultType="com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.RegProcpersoninfo">
     SELECT

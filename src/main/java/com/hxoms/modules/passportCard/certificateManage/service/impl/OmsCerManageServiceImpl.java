@@ -85,7 +85,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
             OmsRegProcpersoninfo omsRegProcpersoninfo=new OmsRegProcpersoninfo();
             omsRegProcpersoninfo.setId(regProcpersoninfo.getId());
-            omsRegProcpersoninfo.setLicenceIdentity(omsRegProcpersoninfo.getLicenceIdentity());
+            omsRegProcpersoninfo.setLicenceIdentity(regProcpersoninfo.getLicenceIdentity());
 
             cfCertificate.setOmsId(regProcpersoninfo.getId());
             cfCertificate.setA0100(regProcpersoninfo.getA0100());
@@ -130,50 +130,56 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void dealNewCer(UserInfo userInfo, CfCertificate cfCertificate, OmsRegProcpersoninfo omsRegProcpersoninfo) {
-        cfCertificate.setId(UUIDGenerator.getPrimaryKey());
-        cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
-        //已取出
-        cfCertificate.setSaveStatus("1");
-        //待验证
-        cfCertificate.setCardStatus("5");
-        cfCertificate.setUpdater(userInfo.getId());
-        cfCertificate.setUpdateTime(new Date());
-        if(cfCertificateMapper.insert(cfCertificate)==0)
-            throw new CustomMessageException("保存失败！");
-        //修改人员证件持有情况
-        OmsRegProcpersoninfo omsRegProcper=new OmsRegProcpersoninfo();
-        omsRegProcper.setId(omsRegProcpersoninfo.getId());
-        BigDecimal bigDecimal1=new BigDecimal(omsRegProcpersoninfo.getLicenceIdentity());
-        BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
-        omsRegProcper.setLicenceIdentity(bigDecimal1.add(bigDecimal2).intValue());
-        if(omsRegProcpersoninfoMapper.updateById(omsRegProcper)==0)
-            throw new CustomMessageException("人员的证件持有情况更新失败！");
-        //取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
-        List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
-        boolean isExist=false;
-        Date date=new Date();
-        CfCertificateCollection cfCerCollection=null;
-        for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
-            if(cfCertificate.getZjlx().equals(cfCertificateCollection.getZjlx())&&cfCertificate.getZjhm().equals(cfCertificateCollection.getZjhm())){
-                //按证件解除催缴
-                //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                cfCertificateCollection.setCjStatus("3");
-                cfCertificateCollection.setRemoveCjDesc("新领证件录入");
-                cfCertificateCollection.setUpdator(userInfo.getId());
-                cfCertificateCollection.setUpdatetime(date);
-                cfCertificateCollectionMapper.updateById(cfCertificateCollection);
-                isExist=true;
+        try {
+            cfCertificate.setId(UUIDGenerator.getPrimaryKey());
+            cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
+            //已取出
+            cfCertificate.setSaveStatus("1");
+            //待验证
+            cfCertificate.setCardStatus("5");
+            cfCertificate.setIsValid(0);
+            cfCertificate.setUpdater(userInfo.getId());
+            cfCertificate.setUpdateTime(new Date());
+            if(cfCertificateMapper.insert(cfCertificate)==0)
+                throw new CustomMessageException("保存失败！");
+            //修改人员证件持有情况
+            OmsRegProcpersoninfo omsRegProcper=new OmsRegProcpersoninfo();
+            omsRegProcper.setId(omsRegProcpersoninfo.getId());
+            BigDecimal bigDecimal1=new BigDecimal(omsRegProcpersoninfo.getLicenceIdentity());
+            BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
+            omsRegProcper.setLicenceIdentity(bigDecimal1.add(bigDecimal2).intValue());
+            if(omsRegProcpersoninfoMapper.updateById(omsRegProcper)==0)
+                throw new CustomMessageException("人员的证件持有情况更新失败！");
+            //取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
+            List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
+            boolean isExist=false;
+            Date date=new Date();
+            CfCertificateCollection cfCerCollection=null;
+            for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
+                if(cfCertificate.getZjlx().equals(cfCertificateCollection.getZjlx())&&cfCertificate.getZjhm().equals(cfCertificateCollection.getZjhm())){
+                    //按证件解除催缴
+                    //0:手动解除,1;已上缴,2:未上缴,3:自动解除
+                    cfCertificateCollection.setCjStatus("3");
+                    cfCertificateCollection.setRemoveCjDesc("新领证件录入");
+                    cfCertificateCollection.setUpdator(userInfo.getId());
+                    cfCertificateCollection.setUpdatetime(date);
+                    cfCertificateCollectionMapper.updateById(cfCertificateCollection);
+                    isExist=true;
+                }
+                if(cfCertificateCollection.getZjlx()==null&& StringUtils.isBlank(cfCertificateCollection.getZjhm()))
+                    cfCerCollection=cfCertificateCollection;
             }
-            if(cfCertificateCollection.getZjlx()==null&& StringUtils.isBlank(cfCertificateCollection.getZjhm()))
-                cfCerCollection=cfCertificateCollection;
-        }
-        //按人员解除催缴证件类型和证件号码为空的催缴任务
-        if(!isExist&&cfCerCollection!=null){
-            cfCerCollection.setCjStatus("3");
-            cfCerCollection.setRemoveCjDesc("新领证件录入");
-            cfCerCollection.setUpdator(userInfo.getId());
-            cfCerCollection.setUpdatetime(date);
-            cfCertificateCollectionMapper.updateById(cfCerCollection);
+            //按人员解除催缴证件类型和证件号码为空的催缴任务
+            if(!isExist&&cfCerCollection!=null){
+                cfCerCollection.setCjStatus("3");
+                cfCerCollection.setRemoveCjDesc("新领证件录入");
+                cfCerCollection.setUpdator(userInfo.getId());
+                cfCerCollection.setUpdatetime(date);
+                cfCertificateCollectionMapper.updateById(cfCerCollection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomMessageException(e.getMessage());
         }
     }
 }
