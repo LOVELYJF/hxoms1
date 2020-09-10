@@ -10,11 +10,12 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -215,4 +216,10 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      */
     CfCertificateSeeRes examineCertificate(@Param("passportNum")String passportNum,@Param("a0100")String a0100);
 
+	/**
+	 * 根据机构查询证照信息
+	 * @param b0100
+	 * @return
+	 */
+    List<ImportInterface> queryCertificateByOmsId(String b0100);
 }

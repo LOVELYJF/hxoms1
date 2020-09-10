@@ -377,6 +377,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         return list;
     }
 
+    @Override
+    public PageBean queryCertificateByOmsId(PageBean pageBean, String b0100) {
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        PageInfo<ImportInterface> pageInfo= new PageInfo<ImportInterface>(cfCertificateMapper.queryCertificateByOmsId(b0100));
+        return PageUtil.packagePage(pageInfo);
+    }
+
     /**
      * @Desc: 公安已注销证照，更新状态
      * @Author: wangyunquan
