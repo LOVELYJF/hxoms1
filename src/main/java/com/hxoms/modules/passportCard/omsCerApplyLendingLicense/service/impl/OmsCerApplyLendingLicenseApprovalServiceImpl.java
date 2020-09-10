@@ -127,7 +127,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 								omsCerGetTask.setName(omsCerApplyLendingLicense1.getName());
 								omsCerGetTask.setZjlx(Integer.parseInt(omsCerApplyLendingLicense1.getZjlx()));
 								omsCerGetTask.setDataSource("2");
-								omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getName());
+								omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getId());
 								omsCerGetTask.setCreateTime(new Date());
 								omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
 								omsCerGetTask.setOmsId(omsCerApplyLendingLicense1.getOmsId());
