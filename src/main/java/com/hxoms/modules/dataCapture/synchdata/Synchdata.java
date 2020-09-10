@@ -559,7 +559,7 @@ public class Synchdata {
         page.setCurrent(1);
         page.setSize(100000);
         OmsSupNakedSign nakedSign=new OmsSupNakedSign();
-        nakedSign.setIsDelete(0);
+        nakedSign.setIsDelete("0");
         List<OmsSupNakedSign> nakedSigns = omsSupNakedSignService.getNakedOfficialList(page,nakedSign,null).getRecords();
 
         //为退出干部设置脱密期
@@ -599,7 +599,7 @@ public class Synchdata {
                 //处理裸官
                 for(OmsSupNakedSign nakedSign1:nakedSigns){
                     if(nakedSign1.getA0100()!=a0100) continue;
-                    nakedSign1.setIsDelete(1);
+                    nakedSign1.setIsDelete("1");
                     omsSupNakedSignService.updateOmsNaked(nakedSign1);
                 }
 
