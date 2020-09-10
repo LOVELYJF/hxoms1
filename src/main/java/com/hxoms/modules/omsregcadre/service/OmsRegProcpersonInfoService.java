@@ -24,7 +24,7 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
 
-    Object mergeDataGBandGA(String idStr);
+    int mergeDataGBandGA(String idStr);
 
     PageInfo<OmsRegProcpersoninfo> getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
