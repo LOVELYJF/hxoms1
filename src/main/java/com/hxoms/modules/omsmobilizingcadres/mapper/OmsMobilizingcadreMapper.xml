@@ -39,7 +39,7 @@
     m.A0100 = o.A0100
     AND m.b0100 = o.b0100
       <if test="orgIds != null and orgIds.size > 0">
-        and o.b0111 in
+        and o.b0100 in
         <foreach collection="orgIds" item="orgIds" separator="," open="(" close=")">
           #{orgIds}
         </foreach>

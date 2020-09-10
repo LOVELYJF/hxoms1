@@ -2307,6 +2307,21 @@
 
 		where    pua.SQZT = '28'
 
+		<if test="bussinessIds != null and bussinessIds.length>0">
+
+			and pua.id in
+
+			<foreach item="item" index="id" collection="bussinessIds" open="("
+
+					 separator="," close=")">
+
+				#{item}
+
+			</foreach>
+
+		</if>
+
+
 	</select>
 
 
