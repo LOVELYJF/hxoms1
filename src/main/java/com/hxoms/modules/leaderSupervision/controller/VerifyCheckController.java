@@ -9,18 +9,21 @@ import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
+import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @authore:wjf
@@ -41,6 +44,9 @@ public class VerifyCheckController {
 
     @Autowired
     private LeaderDetailProcessingService leaderDetailProcessingService;
+
+    @Autowired
+    private LeaderEXportExcelService leaderEXportExcelService;
 
 
 
@@ -110,7 +116,7 @@ public class VerifyCheckController {
     @GetMapping("/putOnRecordsTable")
     public Result putOnRecordsTable(LeaderSupervisionVo leaderSupervisionVo){
 
-        PageInfo pageInfo =  leaderDetailProcessingService.createPutOnRecordList(leaderSupervisionVo);
+        PageInfo pageInfo =  leaderDetailProcessingService.createPutOnRecordList(leaderSupervisionVo,null);
 
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
@@ -144,7 +150,7 @@ public class VerifyCheckController {
     /**
      * 批量下载 人员备案表
      * **/
-
+    @PostMapping("/batchDownloadPutOnRecord")
     public ResponseEntity<byte[]> batchDownloadPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo ){
 
 
@@ -162,6 +168,35 @@ public class VerifyCheckController {
             throw new CustomMessageException("下载失败，原因："+e.getMessage());
         }
         return responseEntity;
+    }
+
+    /** 导出人员备案表 列表信息 ***/
+    @PostMapping("exportPutOnRecord")
+    public void exportPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo,HttpServletResponse response){
+
+
+
+        try {
+            HSSFWorkbook wb = leaderEXportExcelService.putonRecordExport(leaderSupervisionVo);
+            String date = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+
+
+
+
+
+
     }
 
 }

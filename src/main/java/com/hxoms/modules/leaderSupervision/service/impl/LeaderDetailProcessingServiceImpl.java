@@ -1382,11 +1382,11 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(readOnly=true)
-    public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo) {
+    public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,Object[] bussinessIds) {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map> lists =   leaderCommonMapper.createPutOnRecordList(leaderSupervisionVo);
+        List<Map> lists =   leaderCommonMapper.createPutOnRecordList(leaderSupervisionVo,null);
         PageInfo pageInfo = new PageInfo(lists);
         return pageInfo;
 

@@ -17,10 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import java.util.Arrays;
 import java.util.List;
 
 @Api(tags = "初始化证照库")
@@ -29,6 +32,22 @@ import java.util.List;
 @Validated
 public class CfCertificateController {
 
+    /**
+     * @Desc: 导出未上缴证照统计
+     * @Author: wuqingfan
+     * @Param: [pageBean]
+     * @Return:EXCEL
+     * @Date: 2020/9/10
+     */
+    @ApiOperation(value = "导出未上缴证照统计")
+    @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接",name = "ids",required = true,paramType = "query")
+    @PostMapping("/exportNotProvicdeCer")
+    public void  exportNotProvicdeCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response){
+//        String str="AC3300AF-B3D8-4D67-9119-C3412EEE3C63,AC3300AF-B458-4E95-B972-07A8159B5FFE";
+//        List<String> idss= Arrays.asList(str.split(","));
+//        cfCertificateService.exportNotProvicdeCer(idss,response);
+        cfCertificateService.exportNotProvicdeCer(Arrays.asList(ids.split(",")),response);
+    }
 
     @Autowired
     private CfCertificateService cfCertificateService;

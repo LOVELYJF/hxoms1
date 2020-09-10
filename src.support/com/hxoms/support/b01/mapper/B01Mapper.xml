@@ -642,10 +642,12 @@
         select
         b.b0100,
         b.b0111 as "id",
-        b.b0101 as "label", b.b0121 as "pId" from cf_org_sub os
+        b.b0101 as "label", b.b0121 as "pId"
+        from cf_org_sub os
         inner join b01 b
         on os.managed_org=b.b0100
-        where os.b0111=#{orgId} order by b.sortid
+        where os.b0111=#{orgId}
+        order by b.sortid
     </select>
     <select id="selectUserGrantTree" resultType="com.hxoms.support.b01.entity.B01Tree">
         select b.b0100,b.b0111 as "id",b.b0101 as "label", b.b0121 as "pId"  from user_role_view urv

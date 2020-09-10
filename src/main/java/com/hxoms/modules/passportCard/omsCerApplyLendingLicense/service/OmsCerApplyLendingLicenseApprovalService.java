@@ -47,5 +47,22 @@ public interface OmsCerApplyLendingLicenseApprovalService {
 	void updateApplyLendingLicenseApprovalResult(List<OmsCerApplyLendingLicense> list);
 
 
+	/**
+	 * <b>功能描述: 打印呈批单</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	Map<String, Object> getApplyLendingLicenseApprovalBill(List<OmsCerApplyLendingLicense> list);
 
+
+	/**
+	 * <b>功能描述: 打印请示表</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	Map<String, Object> getApplyLendingLicenseApprovalRequest(List<OmsCerApplyLendingLicense> list);
 }

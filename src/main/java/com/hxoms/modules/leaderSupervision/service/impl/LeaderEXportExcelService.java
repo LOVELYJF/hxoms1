@@ -475,5 +475,122 @@ public class LeaderEXportExcelService {
 
     }
 
+    /**人员备案表 导出 **/
+
+    public HSSFWorkbook putonRecordExport(LeaderSupervisionVo leaderSupervisionVo){
+
+
+        List<Map> dataList =  leaderCommonQueryMapper.createPutOnRecordList(
+                null,
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+
+        );
+
+//        pua.id AS id,   # 业务id
+//        pua.leader_batch_id as batchId, # 批次id
+//        pua.SQZT   as applyStatus,    # 业务 流程状态
+//        pua.PROCPERSON_ID as procpersonId , #登记备案人员id
+//        "人员备案表" as fileType, # 模板类型
+//        "28" as bussinessOccureStpet,
+//        "制作备案表" as bussinessOccureStpetName,
+//        "oms_pub_apply_cadres" as tableCode,
+//        b.b0101 AS department,  # "部门名称"
+//        a.a0101 AS userName, # 人员名称
+//        DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
+//        DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
+//        pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+//        pua.CFRW AS cfrw,  #  出访任务
+//        pua.CFSY as cfsy,  #出访事由
+//        mrp.DECRYPT_ENDDATE as decryptEndDate, # 脱密期 结束时间
+//
+//        "因公" AS businessType,  # 申请类型
+//        pua.CGSPDW AS cgspdw, # 审批单位
+//        IF (
+//                a.A0104 NOT IN ('1', '2'),
+//                '未知',
+//                IF (a.A0104 = 1, '男', '女')
+//        ) AS sex,  # 性别
+//        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
+//        pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+//        pua.JOB AS job,   #职务
+//        pua.BAH as bah, # 备案号
+//        "暂无" AS applyTime,   # 申请日期
+//        pua.SMDJ AS secretLevel,  # 涉密等级
+//        "暂无" AS declassificaEndTime,  # 脱密结束日期
+//        pua.SFLG AS sflg,  # 是否裸官
+//        mrp.IDENTITY AS identity, #身份类别
+//        pua.SFZYLD as sfzyld,  # 主要领导
+//        pua.FMXX AS fmxx, # 负面信息
+//        case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+//        case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj,  # 是否已征求纪委意见
+//
+//        case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+//        AS jwjl, # 纪委意见 结论
+//        case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+//        as verbaljwjl, # 口头纪委意见
+//        case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+//        as officaljwjl, # 书面纪委意见
+//        opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+//        opinionTemp.chulingdaoOpinion, # 处领导意见
+//        opinionTemp.bulingdaoOpinion,  # 部领导意见
+//        CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+//        pua.SFBG as sfbg # 是否变更
+
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");listV.add("序号");
+        listK.add("department");listV.add("工作单位");
+        listK.add("userName");listV.add("姓名");
+        listK.add("sex");listV.add("性别");
+        listK.add("birthDate");listV.add("出生日期");
+        listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+        listK.add("job");listV.add("职务");
+        listK.add("bah");listV.add("备案号");  // 少一列 健康情况
+        listK.add("abroadTime");listV.add("出境日期");
+        listK.add("returnTime");listV.add("入境日期");
+        listK.add("sdgj");listV.add("目的地");
+        listK.add("cfsy");listV.add("事由");
+        listK.add("cgspdw");listV.add("审批单位");
+
+        listK.add("jwjl");listV.add("纪委结论");
+        listK.add("clshsftg");listV.add("材料审核");
+        listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
+        listK.add("chulingdaoOpinion");listV.add("处领导意见");
+        listK.add("bulingdaoOpinion");listV.add("部领导意见");
+        listK.add("zzjl");listV.add("最终结论");
+
+
+//        listK.add("verbaljwjl");listV.add("口头意见");
+//        listK.add("officaljwjl");listV.add("书面意见");
+//        listK.add("businessType");listV.add("申请类型");
+
+        // listK.add("sex");listV.add("性别");
+        // listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+        // 少一列 备案号
+
+//        listK.add("daynums");listV.add("距离出境天数");
+
+
+//        listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
+        listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+        // listK.add("secretLevel");listV.add("涉密等级");
+        listK.add("declassificaEndTime");listV.add("脱密期结束时间");
+        listK.add("sflg");listV.add("裸官");
+        listK.add("identity");listV.add("身份类别");
+        listK.add("sfzyld");listV.add("主要领导");
+        listK.add("fmxx");listV.add("负面信息");
+//        listK.add("sfbg");listV.add("是否变更");
+//        listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
+//        listK.add("sczqjwyjsj");listV.add("上次征求时间");
+//        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
+
+
+
+        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"记录意见导出");
+
+
+    }
+
+
 
 }
