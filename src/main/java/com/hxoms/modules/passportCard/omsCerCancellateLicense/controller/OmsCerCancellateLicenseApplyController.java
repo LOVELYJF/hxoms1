@@ -169,20 +169,6 @@ public class OmsCerCancellateLicenseApplyController {
 	}
 
 
-//
-//	/**
-//	 * <b>功能描述: 注销证照生成材料最后一步，进行下一步打印材料清单</b>
-//	 * @Param: [omsCerCancellateLicense, applyId, tableCode]
-//	 * @Return: com.hxoms.common.utils.Result
-//	 * @Author: luoshuai
-//	 * @Date: 2020/9/4 9:11
-//	 */
-//	@GetMapping("/getCerCancellateMaterialList")
-//	public Result getCerCancellateMaterialList(OmsCerCancellateLicense omsCerCancellateLicense,String applyId,String tableCode){
-//		List<OmsCreateFile> list = omsCerCancellateLicenseApplyService.getCerCancellateMaterialList(omsCerCancellateLicense,applyId,tableCode);
-//		return Result.success(list);
-//	}
-
 }
 
 

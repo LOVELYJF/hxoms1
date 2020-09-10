@@ -13,7 +13,7 @@ public class OmsRegRevokeapply {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "RF_ID",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "RF_ID",   FieldDescription="备案id")
     private String rfId;
 
     @ColumnAnnotation(FieldName = "A0100",   FieldDescription="申请人")
