@@ -70,6 +70,7 @@
 		select
 			ocall.ID as id,
 			ocall.OMS_ID as omsId,
+		    ocall.LENDING_LICENSE_ID as lendingLicenseId,
 			ocall.NAME as name,
 			ocall.SQJCZT as sqjczt,  #申请借出状态
 			ocall.ZJLX as zjlx,			#证件类型
