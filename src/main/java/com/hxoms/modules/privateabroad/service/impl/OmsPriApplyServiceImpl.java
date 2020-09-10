@@ -98,7 +98,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100", procpersonId);
+        paramMap.put("a0100",omsPriApplyVO.getA0100() );
         paramMap.put("finishDate", "1");
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
@@ -273,7 +273,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         omsPriApplyVO.setOmsPriTogetherpeoples(omsPriTogetherpersonList);
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100", omsPriApplyVO.getProcpersonId());
+        paramMap.put("a0100", omsPriApplyVO.getA0100());
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
@@ -331,6 +331,14 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
                 throw new CustomMessageException("操作失败");
             }
         }
+        
+        //查询是否存在数据
+        List<OmsAbroadApproval> list = omsAbroadApprovalService.selcetByApplyIdAndStepCode(Constants.private_business[1], applyId);
+        if (list !=null ||list.size() !=0) {
+			for (OmsAbroadApproval abroadApproval : list) {
+				omsAbroadApprovalService.deleteById(abroadApproval.getId());
+			}
+		}
         //添加步骤
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         omsAbroadApproval.setApplyId(applyId);

@@ -19,4 +19,19 @@ public interface OmsAbroadApprovalService {
      * @return
      */
     String insertOmsAbroadApproval(OmsAbroadApproval omsAbroadApproval);
+    
+    
+    /**
+     * 根据申请id和步骤编码查询
+     * @param stepCode
+     * @param applyId
+     * @return
+     */
+    List<OmsAbroadApproval> selcetByApplyIdAndStepCode(Integer stepCode,String applyId);
+    
+    /**
+     * 根据id进行删除
+     * @param id
+     */
+    void  deleteById(String id);
 }
