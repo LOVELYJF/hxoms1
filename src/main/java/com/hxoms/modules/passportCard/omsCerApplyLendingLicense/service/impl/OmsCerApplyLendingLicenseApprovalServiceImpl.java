@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.CompressUtil;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -13,20 +12,16 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
-import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseApprovalService;
-import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <b>功能描述: 借出证照申请审批业务层接口实现类</b>
@@ -165,5 +160,62 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 		}else {
 			throw new CustomMessageException("请选择要审批的申请信息");
 		}
+	}
+
+
+	/**
+	 * <b>功能描述: 打印呈批单</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	public Map<String, Object> getApplyLendingLicenseApprovalBill(List<OmsCerApplyLendingLicense> list) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate_bill");
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择要借出的证照信息");
+		}
+
+		List<OmsCerApplyLendingLicense> resultList = new ArrayList<OmsCerApplyLendingLicense>();
+		resultList.add(list.get(0));
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
+				resultList.add(omsCerApplyLendingLicense);
+			}
+		}
+		map.put("list", resultList);
+		return map;
+	}
+
+
+
+	/**
+	 * <b>功能描述: 打印请示表</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	public Map<String, Object> getApplyLendingLicenseApprovalRequest(List<OmsCerApplyLendingLicense> list) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate_request");
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择要借出的证照信息");
+		}
+
+		List<OmsCerApplyLendingLicense> resultList = new ArrayList<OmsCerApplyLendingLicense>();
+		resultList.add(list.get(0));
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
+				resultList.add(omsCerApplyLendingLicense);
+			}
+		}
+		map.put("list", resultList);
+		return map;
 	}
 }
