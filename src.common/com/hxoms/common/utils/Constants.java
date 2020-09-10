@@ -193,10 +193,10 @@ public class Constants {
      */
     public static int[] pub_business={0,1};
     /**
-     *经办人交接业务类别{0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案}
+     *经办人交接业务类别{0.证照领取,1.因公出国（境）,2.因私出国（境），3.延期回国，4.撤销登记备案,5.注销证照}
      *
      */
-    public static String[] handover_type={"0","1","2","3","4"};
+    public static String[] handover_type={"0","1","2","3","4","5"};
     /**
      *经办人交接状态名称
      *
