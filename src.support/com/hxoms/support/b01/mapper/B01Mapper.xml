@@ -681,4 +681,9 @@
     <select id="selectOrgByB0101" parameterType="java.util.Map" resultMap="BaseResultMap">
         select b.B0100,b.b0111 FROM b01 b where b.b0101=#{b0101}
     </select>
+    
+    <!-- 根据主键B0100查询-->
+    <select id="selectOrgByB0100"  resultMap="BaseResultMap">
+        select * FROM b01 b where b.B0100=#{b0100}
+    </select>
 </mapper>
