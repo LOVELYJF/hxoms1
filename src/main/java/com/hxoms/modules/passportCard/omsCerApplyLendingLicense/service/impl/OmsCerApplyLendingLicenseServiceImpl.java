@@ -8,8 +8,12 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
+import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerCancellateLendingApply;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
+import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerCancellateLendingApplyMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.poi.hssf.usermodel.*;
@@ -22,10 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <b>功能描述: 借出证照申请业务层接口实现类</b>
@@ -43,6 +44,8 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	private OmsCerApplyLendingLicenseMapper omsCerApplyLendingLicenseMapper;
 	@Autowired
 	private SysDictItemMapper sysDictItemMapper;
+	@Autowired
+	private OmsCerCancellateLendingApplyMapper omsCerCancellateLendingApplyMapper;
 	/**
 	 * <b>功能描述: 根据主键查询该人员的证照信息</b>
 	 * @Param: [a0100]
@@ -62,26 +65,97 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
-	public void saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list) {
+	public Map<String,Object> saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate_lending");
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择要借出的证照信息");
+		}
+
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
+				throw new CustomMessageException("选中的多本证照不属于同一个人");
+			}
+		}
+		map.put("procpersonId", list.get(0).getOmsId());
+		map.put("name", list.get(0).getName());
+
+		//将集合中的多个证照信息合并
+		StringBuffer cerInfo = new StringBuffer();
+		if(list != null && list.size() > 0){
+			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+				cerInfo.append(Constants.CER_TYPE_NAME[Integer.parseInt(omsCerApplyLendingLicense.getZjlx())] + ":" + omsCerApplyLendingLicense.getZjhm() + "、");
+			}
+		}
+		//去掉结尾的“、”号
+		String applyCerInfo = cerInfo.toString().substring(0, cerInfo.toString().length() - 1);
+
+		//加入到借出证照申请表中
+		OmsCerCancellateLendingApply omsCerCancellateLendingApply = new OmsCerCancellateLendingApply();
+		omsCerCancellateLendingApply.setId(UUIDGenerator.getPrimaryKey());
+		omsCerCancellateLendingApply.setOmsId(list.get(0).getOmsId());
+		omsCerCancellateLendingApply.setLendingCerInfo(applyCerInfo);
+		omsCerCancellateLendingApply.setLendingReason(list.get(0).getLendReason());
+		omsCerCancellateLendingApply.setReturnTime(list.get(0).getReturnTime());
+		omsCerCancellateLendingApply.setCreateTime(new Date());
+		omsCerCancellateLendingApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
+		int count = omsCerCancellateLendingApplyMapper.insert(omsCerCancellateLendingApply);
+		if(count < 1){
+			throw new CustomMessageException("保存到注销证照申请表失败");
+		}
+		map.put("applyId", omsCerCancellateLendingApply.getId());
+
 		if(list != null && list.size() > 0){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setId(UUIDGenerator.getPrimaryKey());
+				omsCerApplyLendingLicense.setLendingLicenseId(omsCerCancellateLendingApply.getId());
 				omsCerApplyLendingLicense.setIsCommit("0");
 				omsCerApplyLendingLicense.setCreateTime(new Date());
 				omsCerApplyLendingLicense.setSqjczt("0");       //状态：申请
 				omsCerApplyLendingLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
 				omsCerApplyLendingLicense.setYear(UtilDateTime.nowYear());
 				omsCerApplyLendingLicense.setDocumentNum(UtilDateTime.formatCNDate(new Date()));
-				int count = omsCerApplyLendingLicenseMapper.insert(omsCerApplyLendingLicense);
-				if(count < 1){
+				int count1 = omsCerApplyLendingLicenseMapper.insert(omsCerApplyLendingLicense);
+				if(count1 < 1){
 					throw new CustomMessageException("借出申请保存失败");
 				}
 			}
 		}else {
 			throw new CustomMessageException("未选择借出的证照信息");
 		}
-
+		return map;
 	}
+
+
+	/**
+	 * <b>功能描述: 打印函件</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	public Map<String, Object> getApplyLendingprintLetter(List<OmsCerApplyLendingLicense> list) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tableCode", "oms_cer_cancellate_lending");
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择要借出的证照信息");
+		}
+
+		List<OmsCerApplyLendingLicense> resultList = new ArrayList<OmsCerApplyLendingLicense>();
+		resultList.add(list.get(0));
+		//判断选择的是否是同一个人
+		String omsId = list.get(0).getOmsId();
+		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
+			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
+				resultList.add(omsCerApplyLendingLicense);
+			}
+		}
+		map.put("list", resultList);
+		return map;
+	}
+
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息（首页查询）</b>
@@ -250,6 +324,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
 		return list;
 	}
+
+
+
 
 
 }

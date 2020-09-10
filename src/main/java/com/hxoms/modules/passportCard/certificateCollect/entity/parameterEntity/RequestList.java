@@ -16,7 +16,7 @@ import java.util.List;
 public class RequestList<T> {
     @NotEmpty(message = "数据集合Size不能为0")
     @Valid
-    @ApiModelProperty(value = "数据集合信息")
+    @ApiModelProperty(value = "数据集合信息",required = true)
     private List<T> list;
 
     public List<T> getList() {

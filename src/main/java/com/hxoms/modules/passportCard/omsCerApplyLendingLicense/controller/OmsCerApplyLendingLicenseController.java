@@ -26,7 +26,7 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 	@Autowired
 	private OmsCerApplyLendingLicenseService omsCerApplyLendingLicenseService;
 	/**
-	 * <b>功能描述: 根据主键查询该人员的证照信息(填写申请)</b>
+	 * <b>功能描述: 根据主键查询该人员的证照信息(填写申请,查询证照信息)</b>
 	 * @Param: [a0100]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
@@ -48,8 +48,22 @@ public class OmsCerApplyLendingLicenseController extends BaseController {
 	 */
 	@PostMapping("/saveApplyLendingLicenseInfo")
 	public Result saveApplyLendingLicenseInfo(@RequestBody List<OmsCerApplyLendingLicense> list){
-		omsCerApplyLendingLicenseService.saveApplyLendingLicenseInfo(list);
-		return Result.success();
+		Map<String,Object> map = omsCerApplyLendingLicenseService.saveApplyLendingLicenseInfo(list);
+		return Result.success(map);
+	}
+
+
+	/**
+	 * <b>功能描述: 打印函件</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	@GetMapping("/getApplyLendingprintLetter")
+	public Result getApplyLendingprintLetter(@RequestBody List<OmsCerApplyLendingLicense> list){
+		Map<String,Object> map = omsCerApplyLendingLicenseService.getApplyLendingprintLetter(list);
+		return Result.success(map);
 	}
 
 

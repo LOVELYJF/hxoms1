@@ -1,13 +1,7 @@
 package com.hxoms.modules.passportCard.certificateManage.service;
 
-import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo;
-import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageQueryParam;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-
-import java.util.List;
+import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.*;
 
 /**
  * @Desc：TODO
@@ -23,22 +17,25 @@ public interface OmsCerManageService {
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/13
      */
-    PageBean<PageInfo<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam);
+    PageBean<CerManageInfo> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam);
+
+
 
     /**
-     * @Desc: 查询登记备案人员
-     * @Author: wangyunquan     * @Param: [cfCertificate]
-     * @Return: java.util.List<com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo>
-     * @Date: 2020/8/17
-     */
-    List<OmsRegProcpersoninfo> selectRegPerson(CfCertificate cfCertificate);
-
-    /**
-     * @Desc: 新增证照
+     * @Desc: 新领证照录入
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
-     * @Return: void
+     * @Param: [readCerInfo]
+     * @Return: com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerAndPerson
      * @Date: 2020/8/17
      */
-    void insertCertificate(CfCertificate cfCertificate);
+    CerAndPerson insertCertificate(ReadCerInfo readCerInfo);
+
+    /**
+     * @Desc: 保存证照
+     * @Author: wangyunquan
+     * @Param: [cerInfoSave]
+     * @Return: void
+     * @Date: 2020/9/9
+     */
+    void saveCertificate(CerInfoSave cerInfoSave);
 }
