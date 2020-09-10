@@ -25,8 +25,11 @@
     select ID as "tableId",INFO_ID as "id",PARENT_ID as "pId",INFO_NAME as "label" from oms_baseinfo_config
     WHERE DICT_CODE =#{dictCode} ORDER BY INFO_ID
   </select>
+    <select id="selectPostInfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig">
+        select PARENT_ID,INFO_NAME from oms_baseinfo_config WHERE DICT_CODE = 'ZB08' AND INFO_ID = #{infoId}
+    </select>
 
-  <insert id="insertBatchList" parameterType="java.util.List">
+    <insert id="insertBatchList" parameterType="java.util.List">
       insert into oms_baseinfo_config (ID, INFO_ID, PARENT_ID, INFO_NAME, DICT_CODE)
         values
       <foreach collection="list" item="item" index="index" separator=",">

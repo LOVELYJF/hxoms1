@@ -33,7 +33,7 @@ public interface OmsCerApplyLendingLicenseService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
-	void saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list);
+	Map<String,Object> saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list);
 
 	/**
 	 * <b>功能描述: 查询证照借出申请信息</b>
@@ -82,4 +82,14 @@ public interface OmsCerApplyLendingLicenseService {
 	 * @Date: 2020/8/18 14:41
 	 */
 	List<SysDictItem> getApplyLendingLicenseStatus();
+
+
+	/**
+	 * <b>功能描述: 打印函件</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/8/11 8:41
+	 */
+	Map<String, Object> getApplyLendingprintLetter(List<OmsCerApplyLendingLicense> list);
 }

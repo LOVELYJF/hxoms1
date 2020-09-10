@@ -142,8 +142,8 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "获取导出短信催缴名单")
     @PostMapping("/getExportSMSCjList")
-    public Result<List<ExportSMSCjInfo>> getExportSMSCjList(@RequestBody  @Validated RequestList<Institution> requestList){
-        return Result.success(cfCertificateCollectionService.getExportSMSCjList(requestList));
+    public Result<List<ExportSMSCjInfo>> getExportSMSCjList(@RequestBody  @Validated RequestList<SMSCjInfo> requestList){
+        return Result.success(cfCertificateCollectionService.getExportSMSCjList(requestList.getList()));
     }
 
     @ApiOperation(value = "导出短信催缴名单")
@@ -187,6 +187,14 @@ public class CfCertificateCollectionController {
         cfCertificateCollectionService.insertSuspendUnit(supSuspendUnitApply);
         return Result.success();
     }
+
+    @ApiOperation(value = "催缴记录查询")
+    @ApiImplicitParam(value = "主键id",name = "id",required = true,paramType = "query")
+    @GetMapping("/selectCjRecord")
+    public Result<PageBean<CjRecord>> selectCjRecord(PageBean pageBean,@NotBlank(message = "id不能为空") String id){
+        return Result.success(cfCertificateCollectionRequestService.selectCjRecord(pageBean,id));
+    }
+
     /**
      *  条件查询所有的催缴名单
      * @param cfCertificateCollectionRequestParam

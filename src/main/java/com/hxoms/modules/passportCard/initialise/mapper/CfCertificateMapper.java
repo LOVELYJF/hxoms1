@@ -215,4 +215,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/9/04
      */
     CfCertificateSeeRes examineCertificate(@Param("passportNum")String passportNum,@Param("a0100")String a0100);
+
+	/**
+	 * 根据机构查询证照信息
+	 * @param b0100
+	 * @return
+	 */
+    List<ImportInterface> queryCertificateByOmsId(String b0100);
 }

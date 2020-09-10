@@ -1,6 +1,8 @@
 package com.hxoms.modules.privateabroad.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
@@ -77,6 +79,8 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @return
      */
     List<Map<String, String>> selectPLSCountry();
+
+    List<OmsEntryexitRecordVO> selectPriList(@Param("procpersonId") String omsId);
 
     /**
      * 功能描述: <br>

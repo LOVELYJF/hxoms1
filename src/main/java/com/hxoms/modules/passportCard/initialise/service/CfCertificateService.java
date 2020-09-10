@@ -175,4 +175,7 @@ public interface CfCertificateService extends IService<CfCertificate> {
     * @Date: 2020/8/27 14:41
     */
    List<SysDictItem> getCfCertificateSaveWay();
+
+
+   PageBean queryCertificateByOmsId(PageBean pageBean, String b0100);
 }

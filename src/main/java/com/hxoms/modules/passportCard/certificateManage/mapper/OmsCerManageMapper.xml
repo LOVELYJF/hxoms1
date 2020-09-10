@@ -109,4 +109,34 @@
       </if>
     </where>
   </select>
+
+  <select id="selectIsExist" resultType="java.lang.String">
+    SELECT
+        1 fron cf_certificate
+    WHERE
+        zjlx = #{zjlx}
+    AND zjhm = #{zjhm};
+  </select>
+  <select id="selectRegPerson" resultType="com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.RegProcpersoninfo">
+    SELECT
+    ID id,
+    A0100 a0100,
+    SURNAME surname,
+    NAME name,
+    if(SEX='1','男',if(SEX='2','女',SEX)) sex,
+    NATION_NAME nationName,
+    BIRTH_DATE birthDate,
+    IDNUMBER_GB idnumberGb,
+    REGISTE_RESIDENCE registeResidence,
+    POLITICAL_AFFINAME politicalAffiname,
+    (select item_name from sys_dict_item where dict_code='ZZZT' and item_code=INCUMBENCY_STATUS) incumbencyStatus,
+    WORK_UNIT workUnit,
+    POST post,
+    LICENCE_IDENTITY licenceIdentity
+    FROM
+    oms_reg_procpersoninfo
+    WHERE  CONCAT(SURNAME, NAME) = #{name}
+    AND BIRTH_DATE = DATE_FORMAT(#{csrq},'%Y-%m-%d')
+    AND CHECK_STATUS='1'
+  </select>
 </mapper>

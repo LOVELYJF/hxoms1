@@ -1,12 +1,9 @@
 package com.hxoms.modules.passportCard.certificateManage.controller;
 
-import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo;
-import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageQueryParam;
+import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.certificateManage.service.OmsCerManageService;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,36 +29,38 @@ public class OmsCerManageController {
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/13
      */
-    @ApiOperation(value = "查询证照信息分页")
+    @ApiOperation(value = "查询证照信息")
     @GetMapping("/selectCerInfo")
-    public Result<PageInfo<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
+    public Result<CerManageInfo> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
         return Result.success(omsCerManageService.selectCerInfo(pageBean, cerManageQueryParam));
     }
 
+
+
     /**
-     * @Desc: 查询登记备案人员
+     * @Desc: 新领证照录入
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/17
      */
-    @ApiOperation(value = "查询登记备案人员")
-    @GetMapping("/selectRegPerson")
-    public Result selectRegPerson(CfCertificate cfCertificate){
-        return Result.success(omsCerManageService.selectRegPerson(cfCertificate));
+    @ApiOperation(value = "新领证照录入")
+    @PostMapping("/insertCertificate")
+    public Result<CerAndPerson> insertCertificate(@RequestBody ReadCerInfo readCerInfo){
+        return Result.success(omsCerManageService.insertCertificate(readCerInfo));
     }
 
     /**
-     * @Desc: 新增证照
+     * @Desc: 保存证照
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/17
      */
-    @ApiOperation(value = "新增证照")
-    @PostMapping("/insertCertificate")
-    public Result insertCertificate(@RequestBody CfCertificate cfCertificate){
-        omsCerManageService.insertCertificate(cfCertificate);
+    @ApiOperation(value = "保存证照")
+    @PostMapping("/saveCertificate")
+    public Result saveCertificate(@RequestBody CerInfoSave cerInfoSave){
+        omsCerManageService.saveCertificate(cerInfoSave);
         return Result.success();
     }
 }

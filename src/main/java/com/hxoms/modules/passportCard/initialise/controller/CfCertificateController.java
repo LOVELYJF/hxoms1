@@ -60,6 +60,20 @@ public class CfCertificateController {
         return Result.success(cfCertificateService.selectAllCertificate(pageBean));
     }
 
+
+    /**
+     * @Desc: 查询所有证照根据机构
+     * @Author: lijiaojiao
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>>
+     * @Date: 2020/9/9
+     */
+    @ApiOperation(value = "查询所有证照根据机构")
+        @GetMapping("/queryCertificateByOmsId")
+    public Result<PageBean<ImportInterface>> queryCertificateByOmsId(PageBean pageBean,String b0100) throws Exception {
+        return Result.success(cfCertificateService.queryCertificateByOmsId(pageBean,b0100));
+    }
+
     /**
      * @Desc: 验证证照信息
      * @Author: wangyunquan

@@ -644,7 +644,7 @@
         b.b0111 as "id",
         b.b0101 as "label", b.b0121 as "pId" from cf_org_sub os
         inner join b01 b
-        on os.managed_org=b.b0111
+        on os.managed_org=b.b0100
         where os.b0111=#{orgId} order by b.sortid
     </select>
     <select id="selectUserGrantTree" resultType="com.hxoms.support.b01.entity.B01Tree">
@@ -653,7 +653,7 @@
         on urv.role_id=rb.role_id
         and urv.user_id=#{orgId}
         inner join b01 b
-        on rb.org_id=b.b0111
+        on rb.org_id=b.b0100
         inner join cf_org_sub os
         on b.b0111=os.managed_org
         inner join cf_user u
