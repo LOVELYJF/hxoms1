@@ -244,7 +244,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
             }else{
                 throw new CustomMessageException("该申请单不存在");
             }
-        }else if(Constants.oms_business[3].equals(type)){
+        }else if("oms_cer_cancellate".equals(type)){
             //注销证照
             B01 b01 = omsCerCancellateApplyMapper.getB0100ByApplyId(applyId);
             omsSelfFileVO.setB0100(b01.getB0100());
