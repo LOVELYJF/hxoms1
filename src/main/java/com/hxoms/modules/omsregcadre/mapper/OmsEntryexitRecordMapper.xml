@@ -345,9 +345,6 @@
       <if test="comparisonResult!=null and comparisonResult!=''">
           and COMPARISON_RESULT LIKE '%${comparisonResult}%'
       </if>
-      <if test="priapplyId==null">
-          AND PRIAPPLY_ID = null
-      </if>
       <if test="omsId!=null and omsId!=''">
           AND OMS_ID = #{omsId}
       </if>
@@ -441,6 +438,20 @@
                 #{id}
             </foreach>
         </if>
+    </select>
+    <select id="selectRecordPriList" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO" parameterType="java.lang.String">
+        SELECT
+                record.OMS_ID as omsId,
+                record.PRIAPPLY_ID as priapplyId,
+                record.OGE_DATE as ogeDate,
+                record.OGE_STATUS as ogeStatus,
+                record.DESTINATION as destination,
+                record.ID_TYPE as idType,
+                record.ENTRACE_EXIT as entraceExit,
+                record.COMPARISON_RESULT as comparisonResult,
+                record.ID_NUMBER as idNumber
+        FROM oms_entryexit_record record
+        where record.OMS_ID=#{omsId} and length(record.PRIAPPLY_ID) > 0
     </select>
 
 </mapper>

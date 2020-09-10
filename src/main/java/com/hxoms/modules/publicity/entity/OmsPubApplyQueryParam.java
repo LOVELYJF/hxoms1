@@ -43,6 +43,8 @@ public class OmsPubApplyQueryParam {
     private String isComparison;
     //备案id
     private String procpersonId;
+    //申請id
+    private String applyId;
 
     public String getPwh() {
         return pwh;
@@ -138,5 +140,13 @@ public class OmsPubApplyQueryParam {
 
     public void setProcpersonId(String procpersonId) {
         this.procpersonId = procpersonId;
+    }
+
+    public String getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(String applyId) {
+        this.applyId = applyId;
     }
 }

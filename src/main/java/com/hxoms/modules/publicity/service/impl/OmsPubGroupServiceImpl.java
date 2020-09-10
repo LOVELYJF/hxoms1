@@ -104,7 +104,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubApply.setTlsj(pubGroup.getTjgj());
                 pubApply.setCfrw(pubGroup.getCfrw());
                 pubApply.setCfsy(pubGroup.getCfsy());
-                pubApply.setYspId(pubGroup.getB0100());
+                pubApply.setYspdwId(pubGroup.getB0100());
                 applyList.add(pubApply);
             }
             pubApplyMapper.insertPubApplyList(applyList);
@@ -486,11 +486,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroup.setPwh(fileName);
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[3]);
             OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
-            omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
             List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(id);
             for (int i = 0; i < applyVOList.size(); i++) {
                 applyVOList.get(i).setSqzt(Constants.leader_business[7]);
             }
+            omsPubGroupAndApplyList.setOmsPubApplyVOList(applyVOList);
+            omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
             updatePubGroup(omsPubGroupAndApplyList);
             //保存批文
             if(saveFile(file,fileAllName,fileName,id) < 1){
@@ -715,7 +716,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubGroup.getCgsj());
         pubApply.setFmxx(fmxx);
         pubApply.setSfysp(Constants.IS_YES);
-        pubApply.setSqzt(Constants.private_business[8]);
+        pubApply.setSqzt(Constants.private_business[Constants.private_business.length-1]);
         pubApply.setSfxd(IS_NOT_ASSIGN);
         pubApply.setSfbg(Constants.IS_NOT);
         pubApply.setSfzb(Constants.IS_NOT);

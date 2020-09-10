@@ -162,6 +162,10 @@ public class CfCertificate {
     @ApiModelProperty(value="修改时间")
     private Date updateTime;
 
+    @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    @ApiModelProperty(value="比对结果")
+    private String comparisonResult;
+
     public String getId() {
         return id;
     }
@@ -432,5 +436,13 @@ public class CfCertificate {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getComparisonResult() {
+        return comparisonResult;
+    }
+
+    public void setComparisonResult(String comparisonResult) {
+        this.comparisonResult = comparisonResult;
     }
 }

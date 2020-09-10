@@ -2247,6 +2247,8 @@
 						pua.SQZT   as applyStatus,    # 业务 流程状态
 						pua.PROCPERSON_ID as procpersonId , #登记备案人员id
                         "人员备案表" as fileType, # 模板类型
+		                "28" as bussinessOccureStpet,
+		                "制作备案表" as bussinessOccureStpetName,
 						"oms_pub_apply_cadres" as tableCode,
 						b.b0101 AS department,  # "部门名称"
 						a.a0101 AS userName, # 人员名称
@@ -2304,6 +2306,21 @@
 							from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
 
 		where    pua.SQZT = '28'
+
+		<if test="bussinessIds != null and bussinessIds.length>0">
+
+			and pua.id in
+
+			<foreach item="item" index="id" collection="bussinessIds" open="("
+
+					 separator="," close=")">
+
+				#{item}
+
+			</foreach>
+
+		</if>
+
 
 	</select>
 

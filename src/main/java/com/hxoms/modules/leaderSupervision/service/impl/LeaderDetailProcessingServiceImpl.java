@@ -27,6 +27,7 @@ import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.FileTypeConvertUtil;
+import com.hxoms.modules.leaderSupervision.until.HtmlUtils;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BusinessTypeAndIdAndOnJobVo;
@@ -39,6 +40,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.user.entity.User;
 import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -723,7 +725,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(rollbackFor = CustomMessageException.class)
-    public OmsCreateFile insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName) {
+    public OmsCreateFile  insertOrUpdatePutOnRecordFile(OmsCreateFile omsCreateFile,String userName) {
 
 //        LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
 
@@ -748,12 +750,12 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             }
         }
 
-//        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
-//
-//        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
-//        bussinessTypeAndIdVo.setBussinessId(bussinessId);
-//        bussinessTypeAndIdVo.setBussinessName(type);
-//        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
+        List<BussinessTypeAndIdVo>  bussinessTypeAndIdVosNum1 = new ArrayList<>();
+
+        BussinessTypeAndIdVo bussinessTypeAndIdVo = new BussinessTypeAndIdVo();
+        bussinessTypeAndIdVo.setBussinessId(omsCreateFile.getApplyId());
+        bussinessTypeAndIdVo.setBussinessName("因公");
+        bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
 //
 //        //  (1) 保存 审批记录(通过)
 //        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
@@ -771,13 +773,31 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         String pdfFilePath =   getPdfByHtml(omsCreateFile,userName);
 
         saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
+
+                //  (1) 保存 审批记录(通过)
+        leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,"通过", Constants.leader_businessName[8], Constants.leader_business[8],null);
+        //        // (2) 修改流程状态
+       leaderCommonService.updteBussinessApplyStatue(bussinessTypeAndIdVosNum1, Constants.leader_businessName[Constants.leader_businessName.length-1]);
+
+       leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,"1",null);
+
+        // 修改 批次状态
+        leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
+                bussinessTypeAndIdVosNum1.stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
+                Constants.leader_business[Constants.leader_business.length-1]);
+//
+
         return omsCreateFile;
     }
 
     private String  getPdfByHtml(OmsCreateFile omsCreateFile,String userName) {
+        //解析 html img 的src 标签
+
+
+        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
 
         // 要转换的 html
-        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +omsCreateFile.getFrontContent()+LeaderSupervisionUntil.suffixPdfStyle;
+        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
         // 生成 pdf的路径 +名称
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar calendar = Calendar.getInstance();
@@ -1362,14 +1382,126 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
     @Override
     @Transactional(readOnly=true)
-    public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo) {
+    public PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,Object[] bussinessIds) {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map> lists =   leaderCommonMapper.createPutOnRecordList(leaderSupervisionVo);
+        List<Map> lists =   leaderCommonMapper.createPutOnRecordList(leaderSupervisionVo,null);
         PageInfo pageInfo = new PageInfo(lists);
         return pageInfo;
 
+    }
+    /** 批量下载 备案表**/
+    public Map batchDownloadPutOnRecord(LeaderSupervisionVo leaderSupervisionVo){
+
+        Map maps = new HashMap();
+        List<BussinessTypeAndIdVo>  lists = leaderSupervisionVo.getBussinessTypeAndIdVos();
+        byte[] fileDateByte=null;
+      if(lists!=null){
+          // 当只有一个pdf 现在本附件
+          if(lists.size()>0 && lists.size()==1){
+
+             BussinessTypeAndIdVo bussinessTypeAndIdVo =  lists.get(0);
+
+             String bussinessId = bussinessTypeAndIdVo.getBussinessId();
+             String bussinessOccureStpet   = bussinessTypeAndIdVo.getBussinessOccureStpet();
+             String bussinessOccureStpetName  = bussinessTypeAndIdVo.getBussinessOccureStpetName();
+
+              QueryWrapper<OmsAttachment> queryWrapper = new QueryWrapper<>();
+
+              queryWrapper.eq("bussinessId",bussinessId);
+              queryWrapper.eq("bussiness_occure_stpet",bussinessOccureStpet);
+              queryWrapper.eq("bussiness_occure_stpet_name",bussinessOccureStpetName);
+
+              List<OmsAttachment> attList =  omsAttachmentMapper.selectList(queryWrapper);
+
+              if(attList!=null&&attList.size()==1){
+                  // 获取文件路径
+                  String fileUrl=attList.get(0).getUrl();
+                  try {
+                      fileDateByte= LeaderSupervisionUntil.downloadFile(fileUrl);
+                  } catch (IOException e) {
+                      e.printStackTrace();
+                  }
+                  maps.put("fileName",attList.get(0).getName());
+                  maps.put("array",fileDateByte);
+
+                  return maps;
+
+
+              }else{
+                  throw new CustomMessageException("一个人员出现多个备案表,请仔细检查");
+              }
+
+
+
+
+          }
+          // 当有多个附件 显示压缩包
+          else if(lists.size()>0&& lists.size()>1){
+              // 文件集合
+              List<File> fileList=new ArrayList<>();
+              String zipFilePullPath=attachmentPath+File.separator+"static"+File.separator;
+              DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+              Calendar calendar = Calendar.getInstance();
+              String fileName = df.format(calendar.getTime()) +".zip" ;
+              log.info("文件的文件名为:" + fileName);
+              for(int i=0;i<lists.size();i++){
+                  BussinessTypeAndIdVo bussinessTypeAndIdVo = lists.get(0);
+                  String bussinessId = bussinessTypeAndIdVo.getBussinessId();
+                  String bussinessOccureStpet   = bussinessTypeAndIdVo.getBussinessOccureStpet();
+                  String bussinessOccureStpetName  = bussinessTypeAndIdVo.getBussinessOccureStpetName();
+
+                  QueryWrapper<OmsAttachment> queryWrapper = new QueryWrapper<>();
+
+                  queryWrapper.eq("bussinessId",bussinessId);
+                  queryWrapper.eq("bussiness_occure_stpet",bussinessOccureStpet);
+                  queryWrapper.eq("bussiness_occure_stpet_name",bussinessOccureStpetName);
+
+                  List<OmsAttachment> attList =  omsAttachmentMapper.selectList(queryWrapper);
+
+                  if(attList!=null &&attList.size()==1){
+
+                      String fileUrl =  attList.get(0).getUrl();
+
+                      File inputFile=new File(FilenameUtils.normalize(fileUrl));
+                      //判断文件是否存在
+                      if (inputFile.exists()&&inputFile.isFile()) {
+                          fileList.add(inputFile);
+                      }
+
+                  }else{
+                      throw new CustomMessageException("一个人员出现多个备案表,请仔细检查");
+
+                  }
+
+
+              }
+
+              ZIPUtils.zipFiles(fileList, new File(zipFilePullPath+fileName));
+              //zip文件下载
+              try {
+                  fileDateByte=LeaderSupervisionUntil.downloadFile(zipFilePullPath);
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+              //删除zip文件
+              FileUtil.deleteFile(zipFilePullPath+fileName);
+
+              maps.put("fileName",fileName);
+              maps.put("array",fileDateByte);
+
+              return maps;
+
+          }
+
+      }else{
+
+          throw new CustomMessageException("参数错误，请仔细检查");
+      }
+
+
+      return null;
     }
 
 

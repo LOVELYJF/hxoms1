@@ -112,9 +112,13 @@ public interface LeaderDetailProcessingService {
 
     /**备案表查询列表**/
 
-    PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo);
+    PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,Object[] bussinessIds);
 
     List<Map> selectGroupConditions();
+
+    /** 批量下载备案表***/
+
+    Map  batchDownloadPutOnRecord(LeaderSupervisionVo leaderSupervisionVo);
 
 
 }

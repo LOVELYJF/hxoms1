@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,6 +24,8 @@ public class SupSuspendUnitApply {
     @ApiModelProperty(value = "机构编码",required = true)
     private String b0100;
 
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @NotNull(message = "暂停开始时间不能为空")
     @ApiModelProperty(value = "暂停开始时间",required = true)
     private Date suspendTime;

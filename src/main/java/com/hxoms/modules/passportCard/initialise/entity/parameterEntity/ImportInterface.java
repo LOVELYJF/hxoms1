@@ -46,6 +46,9 @@ public class ImportInterface {
     @ApiModelProperty(value="出生地点",required = true)
     private String csdd;
 
+    @ApiModelProperty(value="比对结果",required = true)
+    private String comparisonResult;
+
     public String getName() {
         return name;
     }
@@ -124,5 +127,13 @@ public class ImportInterface {
 
     public void setCsdd(String csdd) {
         this.csdd = csdd;
+    }
+
+    public String getComparisonResult() {
+        return comparisonResult;
+    }
+
+    public void setComparisonResult(String comparisonResult) {
+        this.comparisonResult = comparisonResult;
     }
 }

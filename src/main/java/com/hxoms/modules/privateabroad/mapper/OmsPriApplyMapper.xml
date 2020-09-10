@@ -326,5 +326,36 @@
           inner join country b on a.COUNTRY_ID=b.ID
           inner join sys_dict_item d on a.SENSITIVE_LIMIT_ID=d.ITEM_ID and d.DICT_CODE='MGGJ';
     </select>
+    <select id="selectPriList" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO" parameterType="java.lang.String">
+        SELECT
+            rp.SURNAME as surname,
+            rp.NAME as name,
+            rp.SEX as sex,
+            rp.WORK_UNIT as workUnit,
+            rp.POST as post,
+            apply.ABROAD_REASONS as abroadReasons,
+            apply.ABROAD_TIME as abroadTime,
+            apply.RETURN_TIME as returnTime,
+            apply.GO_COUNTRY as goCountry
+        FROM oms_pri_apply apply
+        LEFT JOIN oms_reg_procpersoninfo rp on apply.PROCPERSON_ID = rp.ID
+        WHERE PROCPERSON_ID = #{procpersonId}
+    </select>
+    <select id="selectPriListBy3Year" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        select pa.*,
+            CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+            rp.SEX as sex,
+            rp.BIRTH_DATE_GB as birthDate,
+            ( SELECT GROUP_CONCAT( NAME_ZH ) FROM country WHERE id IN ( pa.GO_COUNTRY ) ) AS sdgj,
+            rp.WORK_UNIT as b0101,
+            rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        left join oms_reg_procpersoninfo rp1 on pa.CREATE_USER = rp1.ID
+        where
+            pa.ABROAD_TIME >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
+            AND pa.A0100 = #{a0100}
+    </select>
+
 
 </mapper>

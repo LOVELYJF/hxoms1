@@ -3,6 +3,7 @@
 <mapper namespace="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper">
 	<resultMap id="BaseResultMap" type="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
 		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="LENDING_LICENSE_ID" jdbcType="VARCHAR" property="lendingLicenseId" />
 		<result column="OMS_ID" jdbcType="VARCHAR" property="omsId" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="SQJCZT" jdbcType="CHAR" property="sqjczt" />
@@ -26,7 +27,7 @@
 		<result column="IS_COMMIT" jdbcType="CHAR" property="isCommit" />
 	</resultMap>
 	<sql id="Base_Column_List">
-    ID, OMS_ID, NAME, SQJCZT, ZJLX, ZJHM, JBR, RETURN_TIME, LEND_REASON, DOCUMENT_NUM, YEAR, CLDYJ,
+    ID, LENDING_LICENSE_ID, OMS_ID, NAME, SQJCZT, ZJLX, ZJHM, JBR, RETURN_TIME, LEND_REASON, DOCUMENT_NUM, YEAR, CLDYJ,
     BLDYJ, CLDYJLY, BLDYJLY, CREATE_TIME, CREATE_USER, MODIFY_USER, MODYFY_TIME,
     LENDING_QUERY_START_TIME, LENDING_QUERY_END_TIME, IS_COMMIT
   </sql>
@@ -36,6 +37,7 @@
 	<select id="selectApplyLendingLicenseInfo" resultType="java.util.Map">
 		select
 			ocall.ID as id,
+			ocall.LENDING_LICENSE_ID as lendingLicenseId,
 			ocall.OMS_ID as omsId,
 			ocall.NAME as name,
 			ocall.SQJCZT as sqjczt,
@@ -68,6 +70,7 @@
 		select
 			ocall.ID as id,
 			ocall.OMS_ID as omsId,
+		    ocall.LENDING_LICENSE_ID as lendingLicenseId,
 			ocall.NAME as name,
 			ocall.SQJCZT as sqjczt,  #申请借出状态
 			ocall.ZJLX as zjlx,			#证件类型

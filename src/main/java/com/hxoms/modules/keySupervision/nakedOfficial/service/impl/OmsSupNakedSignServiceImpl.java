@@ -76,6 +76,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 						"XZXGW", omsSupNakedSign.getXzxgw())
 				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
 						"FJGNF",omsSupNakedSign.getFjgnf())
+				.eq(omsSupNakedSign.getIsDelete() != null && omsSupNakedSign.getIsDelete() != "",
+						"IS_DELETE", omsSupNakedSign.getIsDelete())
 				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
 						.or()
@@ -102,7 +104,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	public void addOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 		//查询裸官是否已经存在
 		QueryWrapper<OmsSupNakedSign> queryNakedSign = new QueryWrapper<OmsSupNakedSign>();
-		queryNakedSign.eq("A0100", omsSupNakedSign.getA0100());
+		queryNakedSign.eq("A0100", omsSupNakedSign.getA0100())
+					  .eq("IS_DELETE", "0");
 		List<OmsSupNakedSign> nakedSignList = omsSupNakedSignMapper.selectList(queryNakedSign);
 		if(nakedSignList.size() < 1){
 			//查询政治面貌和人员拼音
@@ -112,6 +115,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
 			omsSupNakedSign.setXzxgw("0");
 			omsSupNakedSign.setFjgnf("0");
+			omsSupNakedSign.setIsDelete("0");
 			omsSupNakedSign.setCreateTime(new Date());
 			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案库中查询人员的身份证出生日期
@@ -138,8 +142,6 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 					throw new CustomMessageException("同步裸官信息到登记备案库失败");
 				}
 			}
-		}else {
-			throw new CustomMessageException("该裸官已经存在,请不要重复添加");
 		}
 	}
 
@@ -184,7 +186,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
-		int count =  omsSupNakedSignMapper.deleteById(omsSupNakedSign.getId());
+		omsSupNakedSign.setIsDelete("1");
+		omsSupNakedSign.setDeleteTime(new Date());
+		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
 		if(count < 1){
 			throw new CustomMessageException("取消裸官标识失败");
 		}else {
@@ -224,6 +228,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 						"XZXGW", omsSupNakedSign.getXzxgw())
 				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
 						"FJGNF",omsSupNakedSign.getFjgnf())
+				.eq("IS_DELETE", "0")
 				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
 						"NAME", omsSupNakedSign.getName())
 						.or()

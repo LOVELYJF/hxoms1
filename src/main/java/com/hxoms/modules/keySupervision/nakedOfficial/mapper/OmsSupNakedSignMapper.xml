@@ -21,10 +21,12 @@
 		<result column="DELETE_TIME" jdbcType="DATE" property="deleteTime" />
 		<result column="B0100" jdbcType="VARCHAR" property="b0100" />
 		<result column="FJGNF" jdbcType="VARCHAR" property="fjgnf" />
+		<result column="IS_DELETE" jdbcType="VARCHAR" property="isDelete" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		ID, MODIFY_USER, MODIFY_TIME, A0100, NAME, PINYIN, WORK_UNIT, SEX, BIRTH_DATE,
-		POLITICAL_AFFI, POST, RANK, XZXGW,CREATE_USER,CREATE_TIME,ADD_TIME,DELETE_TIME,B0100,FJGNF
+		POLITICAL_AFFI, POST, RANK, XZXGW,CREATE_USER,CREATE_TIME,ADD_TIME,DELETE_TIME,B0100,
+		FJGNF, IS_DELETE
 	</sql>
 
 </mapper>

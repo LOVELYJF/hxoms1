@@ -68,4 +68,33 @@ public class OmsCerApplyLendingLicenseApprovalController {
 		omsCerApplyLendingLicenseApprovalService.updateApplyLendingLicenseApprovalResult(insertList);
 		return Result.success();
 	}
+
+
+	/**
+	 * <b>功能描述: 打印呈批单</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	@GetMapping("/getApplyLendingLicenseApprovalBill")
+	public Result getApplyLendingLicenseApprovalBill(@RequestBody List<OmsCerApplyLendingLicense> list){
+		Map<String,Object> map = omsCerApplyLendingLicenseApprovalService.getApplyLendingLicenseApprovalBill(list);
+		return Result.success(map);
+	}
+
+
+	/**
+	 * <b>功能描述: 打印请示表</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/10 11:45
+	 */
+	@GetMapping("/getApplyLendingLicenseApprovalRequest")
+	public Result getApplyLendingLicenseApprovalRequest(@RequestBody List<OmsCerApplyLendingLicense> list){
+		Map<String,Object> map = omsCerApplyLendingLicenseApprovalService.getApplyLendingLicenseApprovalRequest(list);
+		return Result.success(map);
+	}
+
 }

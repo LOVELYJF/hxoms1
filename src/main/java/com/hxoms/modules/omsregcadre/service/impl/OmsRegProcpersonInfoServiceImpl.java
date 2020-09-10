@@ -18,6 +18,7 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPag
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Autowired
     private Environment environment;
+    @Autowired
+    private A01Mapper a011Mapper;
     @Autowired
     private A01EntityMapper a01Mapper;
     @Autowired
@@ -66,7 +69,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     public PageInfo<OmsRegProcpersoninfo> getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) throws ParseException {
 
         //查询数据来源为干部的登记备案人员信息ao
-        List<String> a0100str = baseMapper.selectRegProcpersonInfo();
+        String dataType = "1";
+        List<String> a0100str = baseMapper.selectRegProcpersonInfo(dataType);
         List<OmsRegProcpersoninfo> mepinfoList = null;
         //查询干部信息总库干部信息
         QueryWrapper<A01> a01qw = new QueryWrapper<A01>();
@@ -203,20 +207,22 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     @Transactional(rollbackFor=Exception.class)
     public int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list) {
-        int con = 0;
-        //批量添加的方法
-        int count = 30;
-        int n1 = list.size() / count;
-        int n2 = list.size() % count;
-        if (n2 > 0) {
-            n1 = n1 + 1;
-        }
-        for (int j = 0; j < n1; j++) {
-            if ((j + 1) * count > list.size()) {
-                //批量保存
-                con = baseMapper.batchAddorpInfo(list.subList(j * count, list.size()));
-            } else {
-                con = baseMapper.batchAddorpInfo(list.subList(j * count, (j + 1) * count));
+        int con=0;
+        //查询备案库中的公安数据身份证号集合
+        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+        queryWrapper.in("DATA_TYPE","2");
+        //查询备案库中的公安数据
+        List<OmsRegProcpersoninfo> oldgalist = baseMapper.selectList(queryWrapper);
+        for (OmsRegProcpersoninfo oldgaData:oldgalist){
+            for (OmsRegProcpersoninfo newgaData:list) {
+                //数据比对更新
+                if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName() .equals(newgaData.getName())){
+                    oldgaData.setIdnumberGb(oldgaData.getIdnumberGa());
+                    this.dataCompareAndUpdate(oldgaData,newgaData);
+                }else{
+                    con = baseMapper.insert(newgaData);
+                }
+
             }
         }
         return con;
@@ -264,8 +270,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Object mergeDataGBandGA(String idStr) {
-        int con =0;
+    public int mergeDataGBandGA(String idStr) {
+        int con=0;
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         queryWrapper.in("ID",idStr.split(","));
         queryWrapper.orderByAsc("DATA_TYPE");
@@ -273,33 +279,50 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         if (omsregList !=null && omsregList.size() >0){
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
-            //身份账号与名称一致
-            if (gbData.getIdnumberGb().equals(gaData.getIdnumberGa()) && gbData.getName() .equals(gaData.getName())){
+            //数据比对更新
+            this.dataCompareAndUpdate(gbData,gaData);
+        }
+        return con;
+    }
 
-                //更新干部相关信息从公安数据中维护
-                OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
-                omsreginfo.setId(gbData.getId());
-                //将公安的身份证号写入干部数据的公安身份证号字段里
-                omsreginfo.setIdnumberGa(gaData.getIdnumberGa());
-                //将公安的出生日期写入干部数据的公安出生日期字段里
-                omsreginfo.setBirthDate(gaData.getBirthDate());
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2) {
+        int con =0;
+        //身份账号与名称一致
+        if (data1.getIdnumberGb().equals(data2.getIdnumberGa()) && data1.getName() .equals(data2.getName())){
+            //更新干部相关信息从公安数据中维护
+            OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
+            omsreginfo.setId(data1.getId());
+            //将公安的身份证号写入干部数据的公安身份证号字段里
+            omsreginfo.setIdnumberGa(data2.getIdnumberGa());
+            //将公安的出生日期写入干部数据的公安出生日期字段里
+            omsreginfo.setBirthDate(data2.getBirthDate());
+            omsreginfo.setModifyTime(new Date());
+            //用公安数据的户口所在地
+            omsreginfo.setRegisteResidenceCode(data2.getRegisteResidenceCode());
+            omsreginfo.setRegisteResidence(data2.getRegisteResidence());
+
+            //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
+            if (data1.getWorkUnit().equals(data2)==false){
                 //入库标识  新增U  修改I  撤消D
-                omsreginfo.setInboundFlag(gaData.getInboundFlag());
+                omsreginfo.setInboundFlag("I");
+                //备案状态  0未备案，1已备案，2已确认
+                omsreginfo.setRfStatus("0");
+                //验收状态  1已验收，0待验收
+                omsreginfo.setCheckStatus("0");
+            }else{
+                //入库标识  新增U  修改I  撤消D
+                omsreginfo.setInboundFlag(data2.getInboundFlag());
                 //备案状态  0未备案，1已备案，2已确认
                 omsreginfo.setRfStatus("1");
                 //验收状态  1已验收，0待验收
                 omsreginfo.setCheckStatus("1");
-                omsreginfo.setModifyTime(new Date());
-                //用公安数据的户口所在地
-                omsreginfo.setRegisteResidenceCode(gaData.getRegisteResidenceCode());
-                omsreginfo.setRegisteResidence(gaData.getRegisteResidence());
-                con = baseMapper.updateById(omsreginfo);
-                if (con > 0){
-                    baseMapper.deleteById(gaData.getId());
-                }
-            }else{
-                throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
             }
+            con = baseMapper.updateById(omsreginfo);
+            if (con > 0){
+                con  = baseMapper.deleteById(data2.getId());
+            }
+        }else{
+            throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
         }
         return con;
     }
@@ -639,9 +662,25 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             orpInfo.setSurname(a01.getA0101().trim().substring(0,1));
             orpInfo.setName(a01.getA0101().trim().substring(1,a01.getA0101().trim().length()));
         }
-        QueryWrapper<A02> queryWrapper = new QueryWrapper<A02>();
-        queryWrapper.eq("a0100",a01.getA0100());
-        List<A02> list = a02Mapper.selectList(queryWrapper);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("a0100",a01.getA0100());
+        List<Map<String,Object>> mapList = a011Mapper.selectPersonInfo(map);
+        if (mapList!=null && mapList.size()>0){
+            //机构id
+            if (mapList.get(0).get("b0100")!=null){
+                orpInfo.setRfB0000((String)mapList.get(0).get("b0100"));
+            }
+            if (mapList.get(0).get("a0215b")!=null){
+                //职务转换
+                OmsBaseinfoConfig baseinfo = omsBaseinfoConfigMapper.selectPostInfo((String) mapList.get(0).get("a0215b"));
+                if (baseinfo!=null){
+                    orpInfo.setPostCode(baseinfo.getParentId());
+                    orpInfo.setPost(baseinfo.getInfoName());
+                }
+            }
+        }
+
+
         //工作单位
         orpInfo.setWorkUnit(a01.getA0192a());
         String incumbencyStatus = this.queryStatusByA0100(a01.getA0100());
@@ -664,10 +703,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 orpInfo.setBirthDateGb(sdf1.parse(a01.getA0107()));
             }
         }
-
-
-        //职务转换
-
 
         //数据类型  1.干部    2 公安
         orpInfo.setDataType("1");

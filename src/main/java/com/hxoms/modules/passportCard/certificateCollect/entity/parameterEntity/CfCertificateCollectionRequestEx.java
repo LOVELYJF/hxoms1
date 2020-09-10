@@ -1,7 +1,9 @@
 package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -55,12 +57,13 @@ public class CfCertificateCollectionRequestEx{
     @ApiModelProperty(value="催缴人",required = true)
     private String cjPerson;
 
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @NotNull(message = "催缴时间不能为空")
     @ApiModelProperty(value="催缴时间",required = true)
     private Date cjTime;
 
-    @NotBlank(message = "催缴情况不能为空")
-    @ApiModelProperty(value = "催缴情况",required = true)
+    @ApiModelProperty(value = "催缴情况")
     private String allCjResult;
 
     public String getCerCjId() {

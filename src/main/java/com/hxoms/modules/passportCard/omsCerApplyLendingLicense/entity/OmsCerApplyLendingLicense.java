@@ -15,6 +15,10 @@ public class OmsCerApplyLendingLicense {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "LENDING_LICENSE_ID",   FieldDescription="借出申请主键")
+    private String lendingLicenseId;
+
+
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID主键")
     private String omsId;
 
@@ -104,6 +108,14 @@ public class OmsCerApplyLendingLicense {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getLendingLicenseId() {
+        return lendingLicenseId;
+    }
+
+    public void setLendingLicenseId(String lendingLicenseId) {
+        this.lendingLicenseId = lendingLicenseId == null ? null : lendingLicenseId.trim();
     }
 
     public String getOmsId() {

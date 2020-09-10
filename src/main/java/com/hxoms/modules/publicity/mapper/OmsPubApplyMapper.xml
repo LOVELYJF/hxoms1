@@ -305,9 +305,12 @@
                orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
                orp.NATION_NAME as NATION,
                orp.INCUMBENCY_STATUS as status,
+               op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE,
                b.b0100 as b0100
         from oms_reg_procpersoninfo orp
-        LEFT JOIN b01 b ON b.b0111 = orp.RF_B0000
+        LEFT JOIN b01 b ON b.b0100 = orp.RF_B0000
+        LEFT JOIN oms_smr_personinfo op
+        ON orp.id = op.PROC_PERSON_ID
         <where>
             <if test="b0100 != null and b0100.size>0">
                 and b.b0100 in
@@ -337,7 +340,7 @@
          i.B0101 as B0101 ,
          op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE
          FROM oms_reg_procpersoninfo p
-         LEFT JOIN b01 i ON  i.b0111 = p.RF_B0000
+         LEFT JOIN b01 i ON  i.b0100 = p.RF_B0000
          LEFT JOIN oms_smr_personinfo op
          ON p.id = op.PROC_PERSON_ID
          where i.b0100=#{b0100} and p.a0100=#{a0100}
@@ -386,10 +389,29 @@
     </select>
     <select id="selectPersonInfoByApplyId" resultType="java.util.Map">
         select concat(b.SURNAME,b.name) as "NAME"
-        ,b.SEX,b.BIRTH_DATE,a.POLITICAL_AFF,b1.B0101,a.JOB,a.HEALTH
-        ,GETDICTITEM('37',a.SFSMRY,'0') as "SFSMRY",a.SMDJ,a.NSSJ
-        ,a.YSMDJ1,a.YTMJSSJ1,a.YSMDJ2,a.YTMJSSJ2,a.ZTDW,a.ZTNRZW,a.CGSJ
-        ,a.HGSJ,a.SDGJ,a.TLSJ,a.CFRW,a.CGSPDW,a.PWH,a.ZJCGQK
+        ,b.SEX
+        ,b.BIRTH_DATE
+        ,a.POLITICAL_AFF
+        ,b1.B0101
+        ,a.JOB
+        ,a.HEALTH
+        ,GETDICTITEM('37',a.SFSMRY,'0') as "SFSMRY"
+        ,a.SMDJ
+        ,a.NSSJ
+        ,a.YSMDJ1
+        ,a.YTMJSSJ1
+        ,a.YSMDJ2
+        ,a.YTMJSSJ2
+        ,a.ZTDW
+        ,a.ZTNRZW
+        ,a.CGSJ
+        ,a.HGSJ
+        ,a.SDGJ
+        ,a.TLSJ
+        ,a.CFRW
+        ,a.CGSPDW
+        ,a.PWH
+        ,a.ZJCGQK
         from oms_pub_apply a inner join oms_reg_procpersoninfo b
         on a.a0100=b.a0100
         inner join b01 b1 on a.b0100=b1.b0100
@@ -406,18 +428,26 @@
         select
         oms_pub_apply.*
         ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
-        ,oms_reg_procpersoninfo.SEX
-        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
-        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.SEX as sex
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
+        ,oms_reg_procpersoninfo.NATION_NAME
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+
+        ,oms_reg_procpersoninfo.SECRET_LEVEL AS SECRET_LEVEL
+        ,op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
+        ,oms_reg_procpersoninfo.NF AS NF
         from oms_pub_apply
         left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        LEFT JOIN oms_smr_personinfo op ON oms_reg_procpersoninfo.id = op.PROC_PERSON_ID
         where oms_pub_apply.SFXD = '1'
-              <if test="omsPubApplyQueryParam.sqzt != null and omsPubApplyQueryParam.sqzt.size>0">
+            <if test="omsPubApplyQueryParam.applyId != null and omsPubApplyQueryParam.applyId != ''">
+                and oms_pub_apply.ID = #{omsPubApplyQueryParam.applyId}
+            </if>
+              <if test="omsPubApplyQueryParam.status != null and omsPubApplyQueryParam.status.size>0">
                   and oms_pub_apply.SQZT in
-                    <foreach collection="omsPubApplyQueryParam.sqzt" item="sqzt" separator="," open="(" close=")">
-                        #{sqzt}
+                    <foreach collection="omsPubApplyQueryParam.status" item="status" separator="," open="(" close=")">
+                        #{status}
                     </foreach>
               </if>
             <if test="omsPubApplyQueryParam.name != null and omsPubApplyQueryParam.name!= ''">
@@ -492,7 +522,7 @@
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         <where>
             <if test="createUser != null and createUser != ''">
                 and oms_pub_apply.CREATE_USER = #{createUser}
@@ -609,6 +639,82 @@
                 #{b0100}
             </foreach>
         </if>
+    </select>
+    <select id="getStNameForGroup" resultType="java.lang.String">
+        SELECT
+            opg.TZFZR
+        FROM oms_pub_group_pre_approval opg
+        LEFT JOIN oms_pub_apply opa ON
+	        opg.id = opa.YSP_ID
+	    <where>
+            <if test="a0100 != null and a0100 != ''">
+                and opa.ID = #{a0100}
+            </if>
+        </where>
+    </select>
+    <select id="getStNameForPub" resultType="java.lang.String">
+        SELECT
+            CONCAT( IFNULL( orp.SURNAME, '' ), IFNULL( orp.NAME, '' ) ) AS NAME
+        FROM
+            oms_pub_apply opa,
+            (
+            SELECT
+                *
+            FROM
+                oms_pub_apply o1
+            WHERE
+                o1.PWH IN ( SELECT PWH FROM oms_pub_apply WHERE
+                <if test="a0100 != null and a0100 != ''">
+                    ID = #{a0100}
+                </if>
+                 )
+                AND o1.ZTNRZW = '团长'
+            ) p
+            LEFT JOIN oms_reg_procpersoninfo orp ON p.PROCPERSON_ID = orp.ID
+        WHERE
+            <if test="a0100 != null and a0100 !=''">
+                opa.ID = #{a0100}
+            </if>
+    </select>
+    <select id="selectBasePerson" resultType="java.util.Map">
+            SELECT DISTINCT
+                concat( IFNULL( p.SURNAME, '' ), IFNULL( p.NAME, '' ) ) AS NAME,
+                p.id AS procpersonId,
+                p.SEX AS SEX,
+                p.BIRTH_DATE_GB AS BIRTH_DATE_GB,
+                CONCAT( TIMESTAMPDIFF( YEAR, p.BIRTH_DATE_GB, DATE_FORMAT( NOW( ), '%Y.%m.%d' ) ), '' ) AS AGE,
+                p.POLITICAL_AFFINAME AS POLITICAL_AFFINAME,
+                p.HEALTH AS HEALTH,
+                p.A0100 AS A0100,
+                p.SECRET_LEVEL AS SECRET_LEVEL,
+                p.NF AS NF,
+                p.POST AS JOB,
+                i.B0100 AS B0100,
+                i.B0101 AS B0101,
+                op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
+            FROM
+                oms_reg_procpersoninfo p
+                LEFT JOIN b01 i ON i.b0100 = p.RF_B0000
+                LEFT JOIN oms_smr_personinfo op ON p.id = op.PROC_PERSON_ID
+                LEFT JOIN oms_pub_apply o on o.PROCPERSON_ID = p.id
+            WHERE
+                o.id=#{id}
+    </select>
+    <select id="getPubApplyListBy3Year" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.*
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_CODE
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+        from oms_pub_apply
+        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+				WHERE
+				oms_pub_apply.CGSJ >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
+				and
+				oms_pub_apply.A0100 = #{a0100}
     </select>
 
     <insert id="insertPubApplyList">
