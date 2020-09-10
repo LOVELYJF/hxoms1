@@ -188,12 +188,13 @@ public class OmsFileServiceImpl implements OmsFileService {
                     omsCreateFile.setPrintNum(omsFile.getPrintNum());
                     //替换关键词
                     replaceFile(omsFile, applyId, tableCode);
-//                    if ("因公临时出国（境）人员备案表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
-//                        String frontContent = getFrontContent(applyId,"因公临时出国（境）人员备案表");
-//                        omsFile.setFrontContent(frontContent);
-//                    }else if ("近三年出国（境）记录表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
-//
-//                    }
+                    if ("因公临时出国（境）人员备案表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
+                        String frontContent = getFrontContent(applyId,"因公临时出国（境）人员备案表");
+                        omsFile.setFrontContent(frontContent);
+                    }else if ("近三年出国（境）记录表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
+                        String frontContent = getFrontContent(applyId,"近三年出国（境）记录表");
+                        omsFile.setFrontContent(frontContent);
+                    }
 
 
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());
@@ -206,13 +207,16 @@ public class OmsFileServiceImpl implements OmsFileService {
     }
 
     private String getFrontContent(String applyId, String fileName) {
-        //获取近三年该干部因公出国境记录
-        //获取近三年该干部因私出国境记录
 
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日");
         OmsPubApplyQueryParam omsPubApplyQueryParam = new OmsPubApplyQueryParam();
         omsPubApplyQueryParam.setApplyId(applyId);
         List<OmsPubApplyVO> pubAppListByCondition = omsPubApplyMapper.getPubAppListByCondition(omsPubApplyQueryParam);
         OmsPubApplyVO omsPubApplyVO = pubAppListByCondition.get(0);
+        //获取近三年该干部因公出国境记录
+        List<OmsPubApplyVO> pubApplyListBy3Year = omsPubApplyMapper.getPubApplyListBy3Year(omsPubApplyVO.getA0100());
+        //获取近三年该干部因私出国境记录
+        List<OmsPriApplyVO> omsPriPubApplies = omsPriApplyMapper.selectPriListBy3Year(omsPubApplyVO.getA0100());
         StringBuffer stringBuffer = new StringBuffer();
         if ("因公临时出国（境）人员备案表".equals(fileName)){
             if ("1".equals(omsPubApplyVO.getSex())){
@@ -222,9 +226,9 @@ public class OmsFileServiceImpl implements OmsFileService {
             }
             String secret_level = omsPubApplyVO.getSECRET_LEVEL();
             if (!StringUtils.isBlank(secret_level) && !"0".equals(secret_level)){
-                omsPubApplyVO.setSfsmry("是");
-            }else {
                 omsPubApplyVO.setSfsmry("否");
+            }else {
+                omsPubApplyVO.setSfsmry("是");
             }
             if ("0".equals(secret_level)){
                 omsPubApplyVO.setSmdj("非涉密人员");
@@ -250,116 +254,154 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
 
             }
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">\n");
-            stringBuffer.append("        <colgroup>\n");
-            stringBuffer.append("            <col width=\"72\" style=\"width:72px\" span=\"5\"/>\n");
-            stringBuffer.append("            <col width=\"82\" style=\"width:82px\"/>\n" );
-            stringBuffer.append("            <col width=\"72\" style=\"width:72px\" span=\"3\"/>\n");
-            stringBuffer.append("            <col width=\"142\" style=\"width:142px\"/>\n");
-            stringBuffer.append("        </colgroup>\n");
-            stringBuffer.append("        <tbody>\n");
-            stringBuffer.append("        <tr style=\"height:54px\" class=\"firstRow\">\n");
-            stringBuffer.append("            <td colspan=\"10\" width=\"874\" style=\"\">\n");
-            stringBuffer.append("                <span style=\"font-size: 20px;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>\n");
-            stringBuffer.append("                <span style=\"font-size: 36px;\">&nbsp; \n");
-            stringBuffer.append("                    <span style=\"font-size: 24px;\">&nbsp;因公临时出国人员备案表&nbsp;</span>\n");
-            stringBuffer.append("                </span>\n");
-            stringBuffer.append("                <span style=\"font-size: 20px;\"><br/></span>\n");
-            stringBuffer.append("            </td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:35px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">姓名</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getName()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">性别</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getSex()+"</td>\n");
-            stringBuffer.append("            <td width=\"82\" style=\"\">出生年月</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getBirthDate()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">政治面貌</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getPoliticalAff()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:90px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">工作单位</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getB0101()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">职务</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"226\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getJob()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">健康状况（选项：健康/不健康)</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getHealth()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:90px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">是否为涉密人员</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getSfsmry()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">涉密等级（核心、重要、一般）</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"226\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getSmdj()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">核心涉密人员年审</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getSECRET_REVIEW_DATE()+"</td>\n");
-            stringBuffer.append("        </tr><tr style=\"height:90px\">\n");
-            stringBuffer.append("            <td rowspan=\"2\" width=\"72\" style=\"\">脱密期信息</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">在某一单位原为核心、重要、一般</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(0).getSecretRelatedLevel()+"</td>\n");
-            stringBuffer.append("            <td width=\"82\" style=\"\">脱密期(至年月)</td>\n");
-            stringBuffer.append("            <td colspan=\"4\" width=\"335\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsSmrOldInfoVOS.get(0).getQrFinishDate()+"</td>\n");
-            stringBuffer.append("        </tr><tr style=\"height:90px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">在某二单位原为核心、重要、一般</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(1).getSecretRelatedLevel()+"</td>\n");
-            stringBuffer.append("            <td width=\"82\" style=\"\">脱密期(至年月)</td>\n");
-            stringBuffer.append("            <td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsSmrOldInfoVOS.get(1).getQrFinishDate()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:198px\">\n");
-            stringBuffer.append("            <td rowspan=\"5\" width=\"72\" style=\"\">家庭主要成员情况</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">称谓</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">姓名</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">年龄</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">政治面貌</td>\n");
-            stringBuffer.append("            <td width=\"82\" style=\"\">工作单位</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">工作单位及职务(自动提取任免表)</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">居住地(手动填写)</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">是否在国（境）外（来自于干部监督处个人有关事项报告中的信息）</td>\n");
-            stringBuffer.append("            <td width=\"64\" style=\"\">是否取得外国国籍、境外长期或永久居留权（来自于干部监督处个人有关事项报告中的信息）</td>\n");
-            stringBuffer.append("        </tr>\n");
-            List<A36> a36List = otherPubApply.getA36List();
-            for (A36 a:a36List) {
-                if ("1".equals(a.getIsAbroad())){
-                    a.setIsAbroad("是");
-                }else {
-                    a.setIsAbroad("否");
-                }
-                stringBuffer.append("        <tr style=\"height:72px\">\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getA3604a()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getA3601()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getA3607()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getA3627()+"</td>\n");
-                stringBuffer.append("            <td width=\"82\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getLivePlace()+"</td>\n");
-                stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+a.getIsAbroad()+"</td>\n");
-                stringBuffer.append("            <td width=\"142\" style=\"\">无&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; □<br/>外国国籍&nbsp;&nbsp;&nbsp;&nbsp; □<br/>永久居留资格 □<br/>长期居留许可 □</td>\n");
-                stringBuffer.append("        </tr>\n");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<colgroup>");
+            stringBuffer.append("<col width=\"72\" style=\"width:72px\" span=\"5\"/>");
+            stringBuffer.append("<col width=\"82\" style=\"width:82px\"/>" );
+            stringBuffer.append("<col width=\"72\" style=\"width:72px\" span=\"3\"/>");
+            stringBuffer.append("<col width=\"142\" style=\"width:142px\"/>");
+            stringBuffer.append("</colgroup>");
+            stringBuffer.append("<tbody>");
+            stringBuffer.append("<tr style=\"height:54px\" class=\"firstRow\">");
+            stringBuffer.append("<td colspan=\"10\" width=\"874\" style=\"\">");
+            stringBuffer.append("<span style=\"font-size: 20px;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>");
+            stringBuffer.append("<span style=\"font-size: 36px;\">&nbsp;");
+            stringBuffer.append("<span style=\"font-size: 24px;\">&nbsp;因公临时出国人员备案表&nbsp;</span>");
+            stringBuffer.append("</span>");
+            stringBuffer.append("<span style=\"font-size: 20px;\"><br/></span>");
+            stringBuffer.append("</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:35px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getName()+"<br/></td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">性别</td>");
+
+            stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getSex()+"</td>");
+            stringBuffer.append("<td width=\"82\" style=\"\">出生年月</td>");
+            if (omsPubApplyVO.getBirthDate() != null){
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+sdf1.format(omsPubApplyVO.getBirthDate())+"</td>");
+            }else {
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"><br/></td>");
             }
-            stringBuffer.append("        <tr style=\"height:198px\">\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"144\" style=\"\">组团单位(省内单位勾选，省外单位为手工录入)</td>\n");
-            stringBuffer.append("            <td colspan=\"4\" width=\"298\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getZtdw()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">在团组中拟任职务（默认为团长、副团长、团员、其他（手工录入）</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"245\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getZtnrzw()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:82px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">于</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getCgsj()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">至</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getHgsj()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">赴</td>\n");
-            stringBuffer.append("            <td width=\"82\" style=\"word-break: break-all;\">"+omsPubApplyVO.getSdgj()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"word-break: break-all;\">停留"+omsPubApplyVO.getTlsj()+"天</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">开展</td>\n");
-            stringBuffer.append("            <td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getCfrw()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:140px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">出国任务审批单位</td>\n");
-            stringBuffer.append("            <td colspan=\"5\" width=\"370\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getCgspdw()+"</td>\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">文号</td>\n");
-            stringBuffer.append("            <td colspan=\"3\" width=\"245\" style=\"word-break: break-all;\">"+omsPubApplyVO.getPwh()+"</td>\n");
-            stringBuffer.append("        </tr>\n");
-            stringBuffer.append("        <tr style=\"height:144px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">最近一次因公出国时间、所赴国家（地区）及任务</td>\n");
+
+            stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getPoliticalAff()+"</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:90px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">工作单位</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getB0101()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">职务</td>");
+            stringBuffer.append("<td colspan=\"3\" width=\"226\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getJob()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">健康状况（选项：健康/不健康)</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getHealth()+"</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:90px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">是否为涉密人员</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getSfsmry()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">涉密等级（核心、重要、一般）</td>");
+            stringBuffer.append("<td colspan=\"3\" width=\"226\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getSmdj()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">核心涉密人员年审</td>");
+            if (omsPubApplyVO.getSECRET_REVIEW_DATE() != null){
+                stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsPubApplyVO.getSECRET_REVIEW_DATE())+"</td>");
+            }else {
+                stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
+            }
+            stringBuffer.append("</tr><tr style=\"height:90px\">");
+            stringBuffer.append("<td rowspan=\"2\" width=\"72\" style=\"\">脱密期信息</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">在某一单位原为核心、重要、一般</td>");
+            if (omsSmrOldInfoVOS != null && omsSmrOldInfoVOS.size()>= 2){
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(0).getSecretRelatedLevel()+"</td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"335\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsSmrOldInfoVOS.get(0).getQrFinishDate())+"</td>");
+                stringBuffer.append("</tr><tr style=\"height:90px\">");
+                stringBuffer.append("<td width=\"72\" style=\"\">在某二单位原为核心、重要、一般</td>");
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(1).getSecretRelatedLevel()+"</td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsSmrOldInfoVOS.get(1).getQrFinishDate())+"</td>");
+
+            }else {
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"335\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
+                stringBuffer.append("</tr><tr style=\"height:90px\">");
+                stringBuffer.append("<td width=\"72\" style=\"\">在某二单位原为核心、重要、一般</td>");
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
+
+            }
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:198px\">");
+            stringBuffer.append("<td rowspan=\"2\" width=\"72\" style=\"\">家庭主要成员情况</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">称谓</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">年龄</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
+            stringBuffer.append("<td width=\"82\" style=\"\">工作单位</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">工作单位及职务(自动提取任免表)</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">居住地(手动填写)</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">是否在国（境）外（来自于干部监督处个人有关事项报告中的信息）</td>");
+            stringBuffer.append("<td width=\"64\" style=\"\">是否取得外国国籍、境外长期或永久居留权（来自于干部监督处个人有关事项报告中的信息）</td>");
+            stringBuffer.append("</tr>");
+            List<A36> a36List = otherPubApply.getA36List();
+            if (a36List != null && a36List.size() >0){
+                for (A36 a:a36List) {
+                    if ("1".equals(a.getIsAbroad())){
+                        a.setIsAbroad("是");
+                    }else {
+                        a.setIsAbroad("否");
+                    }
+                    stringBuffer.append("<tr style=\"height:72px\">");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3604a()+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3601()+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+sdf1.format(a.getA3607())+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3627()+"</td>");
+                    stringBuffer.append("<td width=\"82\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getLivePlace()+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getIsAbroad()+"</td>");
+                    stringBuffer.append("<td width=\"142\" style=\"\">无&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; □<br/>外国国籍&nbsp;&nbsp;&nbsp;&nbsp; □<br/>永久居留资格 □<br/>长期居留许可 □</td>");
+                    stringBuffer.append("</tr>");
+                }
+            }else {
+                stringBuffer.append("<tr style=\"height:72px\">");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"82\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"142\" style=\"\">无&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; □<br/>外国国籍&nbsp;&nbsp;&nbsp;&nbsp; □<br/>永久居留资格 □<br/>长期居留许可 □</td>");
+                stringBuffer.append("</tr>");
+            }
+
+            stringBuffer.append("<tr style=\"height:198px\">");
+            stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"\">组团单位(省内单位勾选，省外单位为手工录入)</td>");
+            stringBuffer.append("<td colspan=\"4\" width=\"298\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getZtdw()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">在团组中拟任职务（默认为团长、副团长、团员、其他（手工录入）</td>");
+            stringBuffer.append("<td colspan=\"3\" width=\"245\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getZtnrzw()+"</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:82px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">于</td>");
+            stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+sdf1.format(omsPubApplyVO.getCgsj())+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">至</td>");
+            stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+sdf1.format(omsPubApplyVO.getHgsj())+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">赴</td>");
+            stringBuffer.append("<td width=\"82\" style=\"word-break: break-all;\">"+omsPubApplyVO.getSdgj()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">停留"+omsPubApplyVO.getTlsj()+"天</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">开展</td>");
+            stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getCfrw()+"</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:140px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">出国任务审批单位</td>");
+            stringBuffer.append("<td colspan=\"5\" width=\"370\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getCgspdw()+"</td>");
+            stringBuffer.append("<td width=\"72\" style=\"\">文号</td>");
+            stringBuffer.append("<td colspan=\"3\" width=\"245\" style=\"word-break: break-all;\">"+omsPubApplyVO.getPwh()+"</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:144px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">最近一次因公出国时间、所赴国家（地区）及任务</td>");
             //获取最近一次出国情况
             List<OmsPubApply> latestInfoList = omsPubApplyMapper.selectPubAbroadLatestInfo(omsPubApplyVO.getA0100());
             if (latestInfoList != null && !latestInfoList.isEmpty()) {
@@ -381,42 +423,54 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
                 omsPubApplyVO.setZjcgqk(sb.toString());
             }
-            stringBuffer.append("            <td colspan=\"9\" width=\"786\" style=\"word-break: break-all;\">"+omsPubApplyVO.getZjcgqk()+"</td>\n");
-            stringBuffer.append("        </tr><tr style=\"height:74px\">\n");
-            stringBuffer.append("            <td width=\"72\" style=\"\">人员派出单位意见</td>\n");
-            stringBuffer.append("            <td colspan=\"9\" width=\"786\" style=\"\">负责人签字：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 单位盖章<br/>年月日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 年月日</td></tr><tr style=\"height:31px\"><td width=\"72\" style=\"\">说明</td><td colspan=\"9\" width=\"786\" style=\"\">本表由因公临时出国人员所在单位填写，按照干部管理权限，报组织人事部门备案，并抄报外事审批部门。</td></tr></tbody></table><p><br/></p>\n");
+            stringBuffer.append("<td colspan=\"9\" width=\"786\" style=\"word-break: break-all;\">"+omsPubApplyVO.getZjcgqk()+"</td>");
+            stringBuffer.append("</tr><tr style=\"height:74px\">");
+            stringBuffer.append("<td width=\"72\" style=\"\">人员派出单位意见</td>");
+            stringBuffer.append("<td colspan=\"9\" width=\"786\" style=\"\">负责人签字：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 单位盖章<br/>年月日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 年月日</td></tr><tr style=\"height:31px\"><td width=\"72\" style=\"\">说明</td><td colspan=\"9\" width=\"786\" style=\"\">本表由因公临时出国人员所在单位填写，按照干部管理权限，报组织人事部门备案，并抄报外事审批部门。</td></tr></tbody></table><p><br/></p>");
 
         }else if ("近三年出国（境）记录表".equals(fileName)){
 
-        String s = "<table cellpadding=\"0\" cellspacing=\"0\">\n" +
-                "        <colgroup>\n" +
-                "            <col width=\"115\" style=\"width:86.25pt;\"/>\n" +
-                "            <col width=\"103\" style=\"width:77.25pt;\"/>\n" +
-                "            <col width=\"118\" style=\"width:88.50pt;\"/>\n" +
-                "            <col width=\"160\" style=\"width:120.00pt;\"/>\n" +
-                "            <col width=\"140\" style=\"width:105.00pt;\"/>\n" +
-                "        </colgroup><tbody><tr style=\"height:20.25pt;\" class=\"firstRow\">\n" +
-                "        <td colspan=\"5\" class=\"et4\" width=\"477\" style=\"word-break: break-all;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n" +
-                "            <span style=\"font-size: 20px;\">&nbsp;<strong>XX</strong><strong>干部近三年出访记录</strong></span>\n" +
-                "        </td>\n" +
-                "    </tr>\n" +
-                "    <tr style=\"height:18.75pt;\">\n" +
-                "        <td class=\"et5\" style=\"\">出访人员</td>\n" +
-                "        <td class=\"et5\" width=\"67\">出访时间</td>\n" +
-                "        <td class=\"et5\" width=\"15\">回国时间</td>\n" +
-                "        <td class=\"et5\">出访国家或地区</td>\n" +
-                "        <td class=\"et5\">出访事由</td>\n" +
-                "    </tr>\n" +
-                "    <tr style=\"height:20.25pt;\">\n" +
-                "        <td class=\"et6\" style=\"word-break: break-all;\">李</td>\n" +
-                "        <td class=\"et6\" width=\"67\" style=\"word-break: break-all;\">李</td>\n" +
-                "        <td class=\"et6\" width=\"15\" style=\"word-break: break-all;\">李</td>\n" +
-                "        <td class=\"et6\" style=\"word-break: break-all;\">李</td>\n" +
-                "        <td class=\"et6\" style=\"word-break: break-all;\">李</td>\n" +
-                "    </tr>\n" +
-                "    </tbody></table><p><br/></p>";
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<colgroup>");
+            stringBuffer.append("<col width=\"115\" style=\"width:86.25pt;\"/>");
+            stringBuffer.append("<col width=\"103\" style=\"width:77.25pt;\"/>");
+            stringBuffer.append("<col width=\"118\" style=\"width:88.50pt;\"/>");
+            stringBuffer.append("<col width=\"160\" style=\"width:120.00pt;\"/>");
+            stringBuffer.append("<col width=\"140\" style=\"width:105.00pt;\"/>");
+            stringBuffer.append("</colgroup><tbody><tr style=\"height:20.25pt;\" class=\"firstRow\">");
+            stringBuffer.append("<td colspan=\"5\" class=\"et4\" width=\"477\" style=\"word-break: break-all;\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;");
+            stringBuffer.append("<span style=\"font-size: 20px;\">&nbsp;<strong>"+omsPubApplyVO.getName()+"</strong><strong>干部近三年出访记录</strong></span>");
+            stringBuffer.append("</td>");
+            stringBuffer.append("</tr>");
+            stringBuffer.append("<tr style=\"height:18.75pt;\">");
+            stringBuffer.append("<td class=\"et5\" style=\"\">出访人员</td>");
+            stringBuffer.append("<td class=\"et5\" width=\"67\">出访时间</td>");
+            stringBuffer.append("<td class=\"et5\" width=\"15\">回国时间</td>");
+            stringBuffer.append("<td class=\"et5\">出访国家或地区</td>");
+            stringBuffer.append("<td class=\"et5\">出访事由</td>");
+            stringBuffer.append("</tr>");
 
+            //近3年因公出国记录
+            for (OmsPubApplyVO o:pubApplyListBy3Year) {
+                stringBuffer.append("<tr style=\"height:20.25pt;\">");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getName()+"</td>");
+                stringBuffer.append("<td class=\"et6\" width=\"67\" style=\"word-break: break-all;\">"+sdf1.format(o.getCgsj())+"</td>");
+                stringBuffer.append("<td class=\"et6\" width=\"15\" style=\"word-break: break-all;\">"+sdf1.format(o.getHgsj())+"</td>");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getSdgj()+"</td>");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getCfrw()+"</td>");
+                stringBuffer.append("</tr>");
 
+            }
+            //近3年因私出国记录
+            for (OmsPriApplyVO o:omsPriPubApplies) {
+                stringBuffer.append("<tr style=\"height:20.25pt;\">");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getName()+"</td>");
+                stringBuffer.append("<td class=\"et6\" width=\"67\" style=\"word-break: break-all;\">"+sdf1.format(o.getAbroadTime())+"</td>");
+                stringBuffer.append("<td class=\"et6\" width=\"15\" style=\"word-break: break-all;\">"+sdf1.format(o.getReturnTime())+"</td>");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getSdgj()+"</td>");
+                stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getAbroadReasons()+"</td>");
+                stringBuffer.append("</tr>");
+            }
         }
 
     return stringBuffer.toString();

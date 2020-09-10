@@ -194,4 +194,13 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/9/8 19:50
      */
     String getStNameForPub(@Param("a0100") String a0100);
+    /**
+     * 功能描述: <br>
+     * 〈查询该干部近3年的出国记录〉
+     * @Param: [a0100]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/9 16:15
+     */
+    List<OmsPubApplyVO> getPubApplyListBy3Year(@Param("a0100") String a0100);
 }

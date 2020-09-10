@@ -40,6 +40,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.user.entity.User;
 import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1389,6 +1390,118 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         PageInfo pageInfo = new PageInfo(lists);
         return pageInfo;
 
+    }
+    /** 批量下载 备案表**/
+    public Map batchDownloadPutOnRecord(LeaderSupervisionVo leaderSupervisionVo){
+
+        Map maps = new HashMap();
+        List<BussinessTypeAndIdVo>  lists = leaderSupervisionVo.getBussinessTypeAndIdVos();
+        byte[] fileDateByte=null;
+      if(lists!=null){
+          // 当只有一个pdf 现在本附件
+          if(lists.size()>0 && lists.size()==1){
+
+             BussinessTypeAndIdVo bussinessTypeAndIdVo =  lists.get(0);
+
+             String bussinessId = bussinessTypeAndIdVo.getBussinessId();
+             String bussinessOccureStpet   = bussinessTypeAndIdVo.getBussinessOccureStpet();
+             String bussinessOccureStpetName  = bussinessTypeAndIdVo.getBussinessOccureStpetName();
+
+              QueryWrapper<OmsAttachment> queryWrapper = new QueryWrapper<>();
+
+              queryWrapper.eq("bussinessId",bussinessId);
+              queryWrapper.eq("bussiness_occure_stpet",bussinessOccureStpet);
+              queryWrapper.eq("bussiness_occure_stpet_name",bussinessOccureStpetName);
+
+              List<OmsAttachment> attList =  omsAttachmentMapper.selectList(queryWrapper);
+
+              if(attList!=null&&attList.size()==1){
+                  // 获取文件路径
+                  String fileUrl=attList.get(0).getUrl();
+                  try {
+                      fileDateByte= LeaderSupervisionUntil.downloadFile(fileUrl);
+                  } catch (IOException e) {
+                      e.printStackTrace();
+                  }
+                  maps.put("fileName",attList.get(0).getName());
+                  maps.put("array",fileDateByte);
+
+                  return maps;
+
+
+              }else{
+                  throw new CustomMessageException("一个人员出现多个备案表,请仔细检查");
+              }
+
+
+
+
+          }
+          // 当有多个附件 显示压缩包
+          else if(lists.size()>0&& lists.size()>1){
+              // 文件集合
+              List<File> fileList=new ArrayList<>();
+              String zipFilePullPath=attachmentPath+File.separator+"static"+File.separator;
+              DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+              Calendar calendar = Calendar.getInstance();
+              String fileName = df.format(calendar.getTime()) +".zip" ;
+              log.info("文件的文件名为:" + fileName);
+              for(int i=0;i<lists.size();i++){
+                  BussinessTypeAndIdVo bussinessTypeAndIdVo = lists.get(0);
+                  String bussinessId = bussinessTypeAndIdVo.getBussinessId();
+                  String bussinessOccureStpet   = bussinessTypeAndIdVo.getBussinessOccureStpet();
+                  String bussinessOccureStpetName  = bussinessTypeAndIdVo.getBussinessOccureStpetName();
+
+                  QueryWrapper<OmsAttachment> queryWrapper = new QueryWrapper<>();
+
+                  queryWrapper.eq("bussinessId",bussinessId);
+                  queryWrapper.eq("bussiness_occure_stpet",bussinessOccureStpet);
+                  queryWrapper.eq("bussiness_occure_stpet_name",bussinessOccureStpetName);
+
+                  List<OmsAttachment> attList =  omsAttachmentMapper.selectList(queryWrapper);
+
+                  if(attList!=null &&attList.size()==1){
+
+                      String fileUrl =  attList.get(0).getUrl();
+
+                      File inputFile=new File(FilenameUtils.normalize(fileUrl));
+                      //判断文件是否存在
+                      if (inputFile.exists()&&inputFile.isFile()) {
+                          fileList.add(inputFile);
+                      }
+
+                  }else{
+                      throw new CustomMessageException("一个人员出现多个备案表,请仔细检查");
+
+                  }
+
+
+              }
+
+              ZIPUtils.zipFiles(fileList, new File(zipFilePullPath+fileName));
+              //zip文件下载
+              try {
+                  fileDateByte=LeaderSupervisionUntil.downloadFile(zipFilePullPath);
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+              //删除zip文件
+              FileUtil.deleteFile(zipFilePullPath+fileName);
+
+              maps.put("fileName",fileName);
+              maps.put("array",fileDateByte);
+
+              return maps;
+
+          }
+
+      }else{
+
+          throw new CustomMessageException("参数错误，请仔细检查");
+      }
+
+
+      return null;
     }
 
 
