@@ -32,7 +32,23 @@
     from oms_operator_handover_subform
     where ID = #{id,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <select id="getAllDataByHandoverId"
+            resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
+      select
+      <include refid="Base_Column_List" />
+      from oms_operator_handover_subform oh
+      <where>
+        <if test="zbId != null and zbId != ''">
+          and oh.HandoverFormID = #{zbId}
+        </if>
+        <if test="ywId != null and ywId != ''">
+          and oh.BusinessId = #{ywId}
+        </if>
+      </where>
+
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_handover_subform
     where HandoverFormID = #{id,jdbcType=VARCHAR}
   </delete>

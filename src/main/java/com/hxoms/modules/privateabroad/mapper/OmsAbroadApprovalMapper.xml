@@ -18,4 +18,15 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
   </resultMap>
+  
+  <!-- 根据申请id和步骤编码查询 -->
+   <select id="selcetByApplyIdAndStepCode" resultMap ="BaseResultMap">
+   SELECT
+	* 
+FROM
+	oms_abroad_approval 
+WHERE
+	APPLY_ID =#{applyId} 
+	AND STEP_CODE =#{stepCode}
+   </select>
 </mapper>

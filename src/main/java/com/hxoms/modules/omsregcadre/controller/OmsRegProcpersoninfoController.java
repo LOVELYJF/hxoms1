@@ -100,7 +100,7 @@ public class OmsRegProcpersoninfoController {
         try{
             List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA(file);
             if (uploadOmsRegGongAnlist!=null && uploadOmsRegGongAnlist.size()>0){
-                int con = mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
+                mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
                 return Result.success("上传成功");
             }else{
                 return Result.error("上传文件为空，请检查后再上传");
