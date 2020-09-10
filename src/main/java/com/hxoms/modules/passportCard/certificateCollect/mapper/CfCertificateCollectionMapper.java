@@ -47,14 +47,6 @@ public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateC
      */
     List<CfCertificatePhoneCjInfo> selectCerCjInfoByOrgan(String rfB0000);
 
-    /**
-     * @Desc: 查询生成催缴内容参数
-     * @Author: wangyunquan
-     * @Param: [rfB0000]
-     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjContentParam>
-     * @Date: 2020/9/3
-     */
-    List<CjContentParam> selectCjContentByOrgan(String rfB0000);
 
     /**
      * @Desc: 查询证件催缴信息
@@ -64,4 +56,5 @@ public interface CfCertificateCollectionMapper extends BaseMapper<CfCertificateC
      * @Date: 2020/9/4
      */
     List<CfCertificateCollectionRequest> selectCjInfoByOrgan(String rfB0000);
+
 }

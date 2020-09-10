@@ -6,10 +6,12 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
  * @Author: wangyunquan
  * @Date: 2020/8/17
  */
+@Service
 public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRepertoryMapper, OmsCerExitEntryRepertory> implements OmsExitEntryManageService {
    @Autowired
    private OmsCerExitEntryRepertoryMapper omsCerExitEntryRepertoryMapper;
@@ -26,14 +29,14 @@ public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRe
     /**
      * @Desc: 查询证照出入库记录
      * @Author: wangyunquan
-     * @Param: [pageBean, omsCerExitEntryRepertory]
+     * @Param: [pageBean, cerInfo]
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/17
      */
     @Override
-    public PageBean selectExitEntryRecord(PageBean pageBean, OmsCerExitEntryRepertory omsCerExitEntryRepertory) {
+    public PageBean selectExitEntryRecord(PageBean pageBean, CerInfo cerInfo) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
-        PageInfo<OmsCerExitEntryRepertory> pageInfo=new PageInfo<OmsCerExitEntryRepertory>(omsCerExitEntryRepertoryMapper.selectExitEntryRecord(omsCerExitEntryRepertory));
+        PageInfo<OmsCerExitEntryRepertory> pageInfo=new PageInfo<OmsCerExitEntryRepertory>(omsCerExitEntryRepertoryMapper.selectExitEntryRecord(cerInfo));
         return PageUtil.packagePage(pageInfo);
     }
 

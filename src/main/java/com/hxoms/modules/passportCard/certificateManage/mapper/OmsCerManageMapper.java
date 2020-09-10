@@ -2,7 +2,9 @@ package com.hxoms.modules.passportCard.certificateManage.mapper;
 
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageInfo;
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.CerManageQueryParam;
+import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.RegProcpersoninfo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,4 +22,23 @@ public interface OmsCerManageMapper {
      * @Date: 2020/8/13
      */
     List<CerManageInfo> selectCerInfo(CerManageQueryParam cerManageQueryParam);
+
+    /**
+     * @Desc: 查询证照是否存在
+     * @Author: wangyunquan
+     * @Param: [zjlx, zjhm]
+     * @Return: java.lang.String
+     * @Date: 2020/9/9
+     */
+    String selectIsExist(Integer zjlx, String zjhm);
+    /**
+     * @Desc: 查询备案人员
+     * @Author: wangyunquan
+     * @Param: [name, csrq]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.RegProcpersoninfo>
+     * @Date: 2020/9/9
+     */
+    List<RegProcpersoninfo> selectRegPerson(String name, Date csrq);
+
+
 }

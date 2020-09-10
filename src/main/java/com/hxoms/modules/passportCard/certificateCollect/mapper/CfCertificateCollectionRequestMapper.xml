@@ -273,5 +273,28 @@
 
   </select>
 
+  <select id="selectCjRecord" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjRecord">
+    SELECT
+        id,
+    IF (
+        CJ_WAY = '0',
+        '电话催缴',
+    IF (
+        CJ_WAY = '1',
+        '短信催缴',
+        CJ_WAY
+    )
+    ) cjWay,
+     CJ_MESSAGE cjMessage,
+     CJ_RESULT cjResult,
+     name,
+     phone,
+     CJ_PERSON cjPerson,
+     CJ_TIME cjTime
+    FROM
+        cf_certificate_collection_request
+    WHERE
+        CER_CJ_ID = #{cerCjId}
+  </select>
 
 </mapper>

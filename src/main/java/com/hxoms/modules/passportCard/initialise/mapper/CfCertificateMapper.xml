@@ -639,10 +639,12 @@
 		<choose>
 			<when test="id!=null">
 				WHERE ID = #{id}
+				AND CHECK_STATUS='1'
 			</when>
 			<otherwise>
 				WHERE  CONCAT(SURNAME, NAME) = #{name}
 				AND BIRTH_DATE = DATE_FORMAT(#{csrq},'%Y-%m-%d')
+				AND CHECK_STATUS='1'
 			</otherwise>
 		</choose>
 	</select>
@@ -890,6 +892,8 @@
 	<select id="selectCjTask" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection">
 		SELECT
 			id
+			zjlx,
+			zjhm
 		FROM
 			cf_certificate_collection
 		WHERE

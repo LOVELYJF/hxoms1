@@ -413,7 +413,7 @@
   <select id="selectCerCjInfoByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificatePhoneCjInfo">
        SELECT
       a.id,
-      c.name,
+      a.name name,
       if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
       c.birth_date csrq,
       c.rf_B0000 rfB0000,
@@ -434,22 +434,7 @@
         a.cj_status='2'
     AND a.rf_b0000=#{rfB0000}
   </select>
-  <select id="selectCjContentByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjContentParam">
-         SELECT
-        a.id,
-        c.name,
-        c.work_Unit workUnit,
-        a.zjlx,
-        (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
-        a.zjhm,
-        a.return_Date returnDate
-      FROM
-          cf_certificate_collection a
-      INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
-      WHERE
-          a.cj_status='2'
-      AND a.rf_b0000=#{rfB0000}
-    </select>
+
   <select id="selectCjInfoByOrgan" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest">
     SELECT
         id cerCjId,
