@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
@@ -12,7 +13,10 @@ import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
-import com.hxoms.modules.passportCard.initialise.entity.*;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
@@ -36,8 +40,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -69,6 +75,24 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Autowired
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
+
+    /**
+     * @Desc: 初始化证照，导出未上缴证照统计
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: List<ExportNotProvicdeCer>
+     * @Date: 2020/9/10
+     */
+    @Override
+    public void exportNotProvicdeCer(List<String> ids, HttpServletResponse response){
+        if (ids==null||ids.size()<1){
+            throw new CustomMessageException("操作失败！");
+        }
+        List getList =cfCertificateMapper.exportNotProvicdeCer(ids);
+        String[] headers="姓名,性别,单位,任职状态,职务,证照类型,证件号码,有效期至,管理单位,出生日期,签发单位,签发日期,出生地".split(",");
+        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,getList,response);
+    }
+
 
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {
@@ -371,6 +395,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         map.put("dictCode","zzbgfs");
         List<SysDictItem> list = sysDictItemMapper.getCfCertificateSysDictItem(map);
         return list;
+    }
+
+    @Override
+    public PageBean queryCertificateByOmsId(PageBean pageBean, String b0100) {
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        PageInfo<ImportInterface> pageInfo= new PageInfo<ImportInterface>(cfCertificateMapper.queryCertificateByOmsId(b0100));
+        return PageUtil.packagePage(pageInfo);
     }
 
     /**
@@ -683,7 +714,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     omsCerImportManage.setStatus("0");
                                     cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
                                     //证照持有情况
-                                    allHold=allHold+cfCertificate.getZjlx();
+                                    BigDecimal bigDecimal1=new BigDecimal(allHold);
+                                    BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
+                                    allHold=bigDecimal1.add(bigDecimal2).intValue();
                                     cfCertificateExport.setCfCertificate(cfCertificate);
                                 }
                             }else if("出入境记录".equals(mergedRegionValue)){

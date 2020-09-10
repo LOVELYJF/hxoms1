@@ -180,7 +180,14 @@
   </update>
   <select id="selectExitEntryRecord" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory">
       SELECT
-          *
+          id,
+          GET_ID getId,
+          STATUS status,
+          if(status='0','取出',if(status='1','归还',status)) statusName,
+          MODE mode,
+          if(mode='0','取出',if(mode='1','归还',status)) statusName,
+          OPERATOR operator,
+          OPERATE_TIME operateTime
       FROM
           oms_cer_exit_entry_repertory
       WHERE zjlx=#{zjlx}

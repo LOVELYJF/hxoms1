@@ -98,8 +98,8 @@ public class FileReplaceVO {
     //申请证照信息
     private String applyCerInfo;
 
-    //注销原因
-    private String zxyy;
+    //原因
+    private String reason;
     //随同姓名
     private String stName;
 
@@ -327,12 +327,12 @@ public class FileReplaceVO {
         this.applyCerInfo = applyCerInfo;
     }
 
-    public String getZxyy() {
-        return zxyy;
+    public String getReason() {
+        return reason;
     }
 
-    public void setZxyy(String zxyy) {
-        this.zxyy = zxyy;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public String getStName() {

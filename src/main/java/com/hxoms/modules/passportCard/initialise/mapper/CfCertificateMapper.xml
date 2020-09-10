@@ -41,6 +41,7 @@
 		<result column="EXCEPTION_SOLVEDATE" jdbcType="TIMESTAMP" property="exceptionSolvedate" />
 		<result column="UPDATER" jdbcType="VARCHAR" property="updater" />
 		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="COMPARISON_RESULT" jdbcType="VARCHAR" property="comparisonResult" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		<!--
@@ -639,10 +640,12 @@
 		<choose>
 			<when test="id!=null">
 				WHERE ID = #{id}
+				AND CHECK_STATUS='1'
 			</when>
 			<otherwise>
 				WHERE  CONCAT(SURNAME, NAME) = #{name}
 				AND BIRTH_DATE = DATE_FORMAT(#{csrq},'%Y-%m-%d')
+				AND CHECK_STATUS='1'
 			</otherwise>
 		</choose>
 	</select>
@@ -890,6 +893,8 @@
 	<select id="selectCjTask" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection">
 		SELECT
 			id
+			zjlx,
+			zjhm
 		FROM
 			cf_certificate_collection
 		WHERE
@@ -969,5 +974,74 @@
 		from cf_certificate c
 		LEFT JOIN oms_reg_procpersoninfo o on c.A0100 =o.A0100
 		where c.ZJHM = #{passportNum,jdbcType=VARCHAR}  and c.A0100 = #{a0100,jdbcType=VARCHAR}
-	</select>	
+	</select>
+	<select id="queryCertificateByOmsId" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface" parameterType="java.lang.String">
+		SELECT
+			cf.NAME name,
+			IF (
+					cf.SEX = '1',
+					'男',
+					IF (cf.SEX = '2', '女', cf.SEX)
+				) sex,
+			cf.ZJLX zjlx,
+			dic.item_name zjlxName,
+			cf.ZJHM zjhm,
+			cf.YXQZ yxqz,
+			cf.CSRQ csrq,
+			cf.QFJG qfjg,
+			cf.QFRQ qfrq,
+			cf.CSDD csdd,
+			reg.rf_B0000,
+			b01.b0101
+		FROM
+			cf_certificate cf
+				LEFT JOIN sys_dict_item dic ON cf.zjlx = dic.item_code
+				LEFT JOIN oms_reg_procpersoninfo reg on cf.OMS_ID = reg.ID
+				LEFT JOIN b01 b01 on reg.RF_B0000 = b01.B0100
+		WHERE
+		dic.dict_code = 'ZJLX'
+		<if test="b0100!=null and b0100!=''">
+			AND  reg.RF_B0000 = #{b0100}
+		</if>
+	</select>
+
+
+
+	<!-- WQF ADD 导出未上缴证照统计 -->
+	<sql id="exportNotProvicdeCerSql">
+      SELECT
+      	a.NAME name,
+      	if(a.sex='1','男',if(a.sex='2','女',a.sex)) sex,
+      	b.WORK_UNIT workUnit,
+      	(select item_name from sys_dict_item where dict_code='ZZZT' and item_code=b.INCUMBENCY_STATUS) incumbencyStatus,
+      	b.POST post,
+      	(select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
+      	a.zjhm zjhm,
+      	a.yxqz yxqz,
+      	if(a.SURELY_UNIT='0','干部监督处',if(a.SURELY_UNIT='1','省委统战部(台办)',a.SURELY_UNIT)) surelyUnit,
+      	a.CSRQ csrq,
+      	a.qfjg qfjg,
+      	a.QFRQ qfrq,
+      	a.CSDD csdd
+      FROM
+          cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+    </sql>
+	<select id="exportNotProvicdeCer" parameterType="java.util.List" resultType="com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer">
+		<include refid="exportNotProvicdeCerSql" />
+		LEFT JOIN cf_certificate_collection c ON a.id=c.cer_id
+		WHERE
+		a.SAVE_STATUS = '2'
+		AND a.CARD_STATUS = '5'
+		AND c.CJ_STATUS is null
+
+		AND a.ID in
+		<foreach collection="ids" index="index" item="item" open="("
+				 separator="," close=")">
+			#{item}
+		</foreach>
+
+	</select>
+
+
 </mapper>

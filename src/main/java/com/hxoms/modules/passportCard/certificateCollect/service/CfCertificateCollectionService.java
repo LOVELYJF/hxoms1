@@ -85,7 +85,7 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.ExportSMSCjInfo>
      * @Date: 2020/9/3
      */
-    List<ExportSMSCjInfo> getExportSMSCjList(RequestList<Institution> requestList);
+    List<ExportSMSCjInfo> getExportSMSCjList(List<SMSCjInfo> smsCjInfoList);
 
     /**
      * @Desc: 导出短信催缴名单

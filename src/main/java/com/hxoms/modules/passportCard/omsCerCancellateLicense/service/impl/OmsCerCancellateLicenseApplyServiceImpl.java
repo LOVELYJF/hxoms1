@@ -66,15 +66,10 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 			throw new CustomMessageException("请输入姓名或证件号码进行查询");
 		}
 
-//		//登录用户信息
-//		UserInfo userInfo = UserInfoUtil.getUserInfo();
-//		//查询机构信息
-//		B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", cfCertificate.getName());
 		map.put("zjhm", cfCertificate.getZjhm());
-//		map.put("b0100", b01.getB0100());
 		List<Map<String,Object>> list = cfCertificateMapper.getCancellateLicense(map);
 		if(list == null || list.size() < 1){
 			throw new CustomMessageException("没有查询到相关的证照信息");
