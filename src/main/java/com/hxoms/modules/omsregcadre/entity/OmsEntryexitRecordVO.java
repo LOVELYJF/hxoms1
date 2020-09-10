@@ -18,6 +18,7 @@ public class OmsEntryexitRecordVO{
 
 
     private String id;
+    private String omsId;
     @ApiModelProperty(value="姓")
     private String surname;
     @ApiModelProperty(value="名")
@@ -76,6 +77,8 @@ public class OmsEntryexitRecordVO{
     private Integer yssqcount;
     @ApiModelProperty(value="已比对的出入境记录总数")
     private Integer crjcount;
+    @ApiModelProperty(value="类别")
+    private String leibie;
 
     public String getId() {
         return id;
@@ -83,6 +86,14 @@ public class OmsEntryexitRecordVO{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOmsId() {
+        return omsId;
+    }
+
+    public void setOmsId(String omsId) {
+        this.omsId = omsId;
     }
 
     public String getName() {
@@ -275,5 +286,13 @@ public class OmsEntryexitRecordVO{
 
     public void setAbroadReasons(String abroadReasons) {
         this.abroadReasons = abroadReasons;
+    }
+
+    public String getLeibie() {
+        return leibie;
+    }
+
+    public void setLeibie(String leibie) {
+        this.leibie = leibie;
     }
 }

@@ -18,6 +18,7 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPag
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Autowired
     private Environment environment;
+    @Autowired
+    private A01Mapper a011Mapper;
     @Autowired
     private A01EntityMapper a01Mapper;
     @Autowired
@@ -639,9 +642,25 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             orpInfo.setSurname(a01.getA0101().trim().substring(0,1));
             orpInfo.setName(a01.getA0101().trim().substring(1,a01.getA0101().trim().length()));
         }
-        QueryWrapper<A02> queryWrapper = new QueryWrapper<A02>();
-        queryWrapper.eq("a0100",a01.getA0100());
-        List<A02> list = a02Mapper.selectList(queryWrapper);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("a0100",a01.getA0100());
+        List<Map<String,Object>> mapList = a011Mapper.selectPersonInfo(map);
+        if (mapList!=null && mapList.size()>0){
+            //机构id
+            if (mapList.get(0).get("b0100")!=null){
+                orpInfo.setRfB0000((String)mapList.get(0).get("b0100"));
+            }
+            if (mapList.get(0).get("a0215b")!=null){
+                //职务转换
+                OmsBaseinfoConfig baseinfo = omsBaseinfoConfigMapper.selectPostInfo((String) mapList.get(0).get("a0215b"));
+                if (baseinfo!=null){
+                    orpInfo.setPostCode(baseinfo.getParentId());
+                    orpInfo.setPost(baseinfo.getInfoName());
+                }
+            }
+        }
+
+
         //工作单位
         orpInfo.setWorkUnit(a01.getA0192a());
         String incumbencyStatus = this.queryStatusByA0100(a01.getA0100());
@@ -664,10 +683,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 orpInfo.setBirthDateGb(sdf1.parse(a01.getA0107()));
             }
         }
-
-
-        //职务转换
-
 
         //数据类型  1.干部    2 公安
         orpInfo.setDataType("1");

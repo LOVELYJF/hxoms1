@@ -20,4 +20,6 @@ public interface OmsEntryexitRecordMapper extends BaseMapper<OmsEntryexitRecord>
     OmsEntryexitRecordVO queryCompresultByYear(String year);
 
     List<OmsEntryexitRecordModel> newexitRecordsList(@Param("ids") List<String> ids);
+
+    List<OmsEntryexitRecordVO> selectRecordPriList(@Param("omsId")String omsId);
 }
