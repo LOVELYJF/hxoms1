@@ -126,7 +126,7 @@
 	</select>
 
 	<!-- 查询领导信息 -->
-	<select id="selectPersonInfo" parameterType="java.lang.String" resultType="java.util.Map">
+	<select id="selectPersonInfo" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT
 			a.A0100 as 'a0100',
 			a.A0101 as 'a0101',
@@ -142,8 +142,14 @@
 		inner join a02 a2 on a.a0100=a2.a0100
 		inner join b01 b on a2.a0201b=b.b0111
 
-		where a.a0100 =#{a0100} and
-		a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0' and a.a0165 = '02'
+		<where>
+			<trim suffixOverrides="and">
+				<if test="1 == 1">a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0' and a.a0165 = '02' and </if>
+				<if test="a0100 != null">a.a0100 =#{a0100} and </if>
+				<if test="a0201b != null">a2.a0201b =#{a0201b} and </if>
+			</trim>
+		</where>
+
 	</select>
 
 	<!--根据机构ID查询-->
