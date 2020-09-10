@@ -1,9 +1,12 @@
 package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -25,7 +28,9 @@ public class RemoveCjApply {
     @ApiModelProperty(value="解除催缴说明",required = true)
     private String removeCjDesc;
 
-    @NotBlank(message = "解除催缴时间不能为空")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @NotNull(message = "解除催缴时间不能为空")
     @ApiModelProperty(value="解除催缴时间",required = true)
     private Date updatetime;
 

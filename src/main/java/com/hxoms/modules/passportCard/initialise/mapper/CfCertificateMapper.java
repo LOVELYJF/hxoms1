@@ -10,12 +10,11 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -215,4 +214,5 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
      * @Date: 2020/9/04
      */
     CfCertificateSeeRes examineCertificate(@Param("passportNum")String passportNum,@Param("a0100")String a0100);
+
 }

@@ -28,8 +28,7 @@ public class SaveCjResult {
     private String userName;
 
     //催缴情况
-    @NotBlank(message = "催缴情况不能为空")
-    @ApiModelProperty(value = "催缴情况",required = true)
+    @ApiModelProperty(value = "催缴情况")
     private String cjResult;
 
     //催缴结果

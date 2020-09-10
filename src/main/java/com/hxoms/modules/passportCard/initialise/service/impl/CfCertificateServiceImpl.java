@@ -12,7 +12,10 @@ import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
-import com.hxoms.modules.passportCard.initialise.entity.*;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
@@ -38,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -683,7 +687,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     omsCerImportManage.setStatus("0");
                                     cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
                                     //证照持有情况
-                                    allHold=allHold+cfCertificate.getZjlx();
+                                    BigDecimal bigDecimal1=new BigDecimal(allHold);
+                                    BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
+                                    allHold=bigDecimal1.add(bigDecimal2).intValue();
                                     cfCertificateExport.setCfCertificate(cfCertificate);
                                 }
                             }else if("出入境记录".equals(mergedRegionValue)){
