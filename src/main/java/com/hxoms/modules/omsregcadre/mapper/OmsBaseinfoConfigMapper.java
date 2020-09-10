@@ -14,4 +14,6 @@ public interface OmsBaseinfoConfigMapper extends BaseMapper<OmsBaseinfoConfig> {
     int insertBatchList(@Param("list") List<OmsBaseinfoConfig> list);
 
     int deleteBaseInfoConfig(@Param("list") String[] infoIds);
+
+    OmsBaseinfoConfig selectPostInfo(String a0215b);
 }
