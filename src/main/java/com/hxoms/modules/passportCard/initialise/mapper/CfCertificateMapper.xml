@@ -991,6 +991,7 @@
 			cf.QFJG qfjg,
 			cf.QFRQ qfrq,
 			cf.CSDD csdd,
+		    cf.OMS_ID omsId,
 			reg.rf_B0000,
 			b01.b0101
 		FROM
