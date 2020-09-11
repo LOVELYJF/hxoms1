@@ -1647,13 +1647,112 @@
             #{item.a1707},
             #{item.is_normal},
             #{item.operate_batch}
-
             )
         </foreach>
     </insert>
 
+    <!-- 表 a30 退出信息集 -->
+    <sql id="a30sql">
+        a3000,
+           a0100,
+           a3001,
+           a3004,
+           a3007a,
+           a3034,
+           a3038,
+           3117a,
+           a3137,
+           a3101,
+           id,
+           is_deleted,
+           modify_user,
+           modify_time,
+           time_stamp,
+           node_id,
+           is_normal,
+           operate_batch
+    </sql>
 
+    <select id="getMasterA30" resultType="com.hxoms.common.LowerKeyMapTest">
+        select
+        <include refid="a30sql"/>
+        FROM A30
+        order by a3000
+        <include refid="mysql_paging"/>
+    </select>
 
+    <select id="getMasterA30Count" resultType="Integer">
+        select  count(1)  from A30
+    </select>
 
+    <update id="updateMasterA30">
+        <foreach collection="list" item="item" index="index" separator=";">
+            update A30
+            set
+            a0100 = #{item.a0100},
+            a3001 = #{item.a3001},
+            a3004 = #{item.a3004},
+            a3007a = #{item.a3007a},
+            a3034 = #{item.a3034},
+            a3038 = #{item.a3038},
+            a3117a = #{item.a3117a},
+            a3137 = #{item.a3137},
+            a3101 = #{item.a3101},
+            id = #{item.id},
+            is_deleted = #{item.is_deleted},
+            modify_user = #{item.modify_user},
+            modify_time = #{item.modify_time},
+            time_stamp = #{item.time_stamp},
+            node_id = #{item.node_id},
+            is_normal  = #{item.is_normal},
+            operate_batch  = #{item.operate_batch}
+            where a3000 = #{item.a3000}
+        </foreach>
+    </update>
 
+    <insert id="insertMasterA30">
+        insert into A30 (
+        a3000,
+        a0100,
+        a3001,
+        a3004,
+        a3007a,
+        a3034,
+        a3038,
+        a3117a,
+        a3137,
+        a3101,
+        id,
+        is_deleted,
+        modify_user,
+        modify_time,
+        time_stamp,
+        node_id,
+        is_normal,
+        operate_batch
+        )
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.a3000},
+            #{item.a0100},
+            #{item.a3001},
+            #{item.a3004},
+            #{item.a3007a},
+            #{item.a3034},
+            #{item.a3038},
+            #{item.a3117a},
+            #{item.a3137},
+            #{item.a3101},
+            #{item.id},
+            #{item.is_deleted},
+            #{item.modify_user},
+            #{item.modify_time},
+            #{item.time_stamp},
+            #{item.node_id},
+            #{item.is_normal},
+            #{item.operate_batch}
+            )
+        </foreach>
+    </insert>
 </mapper>
