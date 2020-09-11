@@ -2,6 +2,7 @@ package com.hxoms.modules.omsoperator.mapper;
 
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandover;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.omsoperator.entity.OmsPriDelayVO;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskVO;
@@ -52,5 +53,53 @@ public interface OmsOperatorHandoverMapper {
      * @return*/
     OmsOperatorHandover selectByOperatorIdAndHandover(@Param("operatorId") String operatorId, @Param("handoverId") String handoverId);
 
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的注销证照列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 10:51
+     */
+    List<OmsCerCancellateLicense> selectCerCancellateLicenseByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的证照领取列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 11:12
+     */
+    List<OmsCerGetTaskVO> selectOmsCerGetTaskByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的撤销登记备案列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 11:23
+     */
+    List<OmsRegRevokeapply> selectOmsRegRevokeapplyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的因私出国境备案列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.OmsPriApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 11:33
+     */
+    List<OmsPriApplyVO> selectOmsPriApplyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的延期回国备案列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsPriDelayVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 11:37
+     */
+    List<OmsPriDelayVO> selectOmsPriDelayApplyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 }

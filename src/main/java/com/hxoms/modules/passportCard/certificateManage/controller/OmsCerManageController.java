@@ -31,7 +31,7 @@ public class OmsCerManageController {
      */
     @ApiOperation(value = "查询证照信息")
     @GetMapping("/selectCerInfo")
-    public Result<CerManageInfo> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
+    public Result<PageBean<CerManageInfo>> selectCerInfo(PageBean pageBean, CerManageQueryParam cerManageQueryParam) {
         return Result.success(omsCerManageService.selectCerInfo(pageBean, cerManageQueryParam));
     }
 

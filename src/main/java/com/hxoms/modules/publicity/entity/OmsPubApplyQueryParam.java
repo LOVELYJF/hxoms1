@@ -39,11 +39,11 @@ public class OmsPubApplyQueryParam {
     private String tzmc;
     /** 机构id */
     private String b0100;
-    //对比标识
+    /** 对比标识*/
     private String isComparison;
-    //备案id
+    /** 备案id*/
     private String procpersonId;
-    //申請id
+    /** 申請id*/
     private String applyId;
 
     public String getPwh() {

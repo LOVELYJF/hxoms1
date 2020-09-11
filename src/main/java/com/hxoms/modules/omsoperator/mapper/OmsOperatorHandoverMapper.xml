@@ -137,7 +137,7 @@
         and oms_reg_revokeapply.CREATE_USER = #{userId}
       </if>
       <if test="status != null and status != ''">
-        oms_reg_revokeapply.STATUS <![CDATA[<>]]> #{status}
+        and oms_reg_revokeapply.STATUS <![CDATA[<>]]> #{status}
       </if>
     </where>
   </select>
@@ -172,6 +172,118 @@
         </if>
       </where>
   </select>
+  <select id="selectCerCancellateLicenseByParam"
+          resultType="com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense">
+    SELECT *
+      FROM oms_cer_cancellate_license occl
+      <where>
+        <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+          AND occl.CREATE_USER = #{userId}
+        </if>
+        <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+          <![CDATA[ and occl.CREATE_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+        </if>
+        <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+          <![CDATA[ and occl.CREATE_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+        </if>
+      </where>
+  </select>
+  <select id="selectOmsCerGetTaskByParam"
+          resultType="com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskVO">
+        SELECT
+        ocgt.*,
+        rp.IDNUMBER_GB AS idnumber,
+        rp.WORK_UNIT AS b0101,
+        a.OPERATE_TIME AS endTime,
+        rp.SEX AS sex,
+        rp.POST AS postrank
+        FROM
+        oms_cer_get_task ocgt
+        LEFT JOIN (
+        SELECT
+        oce.GET_ID,
+        oce.OPERATE_TIME
+        FROM
+        oms_cer_get_task ocgt
+        LEFT JOIN oms_cer_exit_entry_repertory oce ON ocgt.ID = oce.GET_ID
+        WHERE
+        oce.STATUS = '1'
+        ) a ON a.GET_ID = ocgt.id
+        LEFT JOIN oms_reg_procpersoninfo rp ON ocgt.OMS_ID = rp.ID
+        LEFT JOIN oms_cer_exit_entry_repertory oce ON ocgt.ID = oce.GET_ID
+        <where>
+          <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+            AND ocgt.GET_PEOPLE = #{userId}
+          </if>
+          <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+            <![CDATA[ and ocgt.GET_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+          </if>
+          <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+            <![CDATA[ and occl.GET_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+          </if>
+        </where>
+
+  </select>
+  <select id="selectOmsRegRevokeapplyByParam"
+          resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
+    SELECT * from oms_reg_revokeapply
+    <where>
+      <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+        AND oms_reg_revokeapply.CREATE_USER = #{userId}
+      </if>
+      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+        <![CDATA[ and oms_reg_revokeapply.CREATE_DATE >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+        <![CDATA[ and oms_reg_revokeapply.CREATE_DATE <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+
+    </where>
+  </select>
+  <select id="selectOmsPriApplyByParam" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+    select opa.*,
+           CONCAT(IFNULL(orp.SURNAME,''),IFNULL(orp.NAME,'')) as name,
+           orp.BIRTH_DATE as birthDate,
+           orp.SEX as sex,
+           orp.IDNUMBER_GB as idnumber,
+           orp.REGISTE_RESIDENCE as registeResidence,
+           orp.WORK_UNIT as b0101,
+           orp.IDENTITY as identifyType
+    from oms_pri_apply opa left join oms_reg_procpersoninfo orp on opa.PROCPERSON_ID = orp.ID
+    <where>
+      <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+        AND opa.CREATE_USER = #{userId}
+      </if>
+      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+        <![CDATA[ and opa.ABROAD_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+        <![CDATA[ and opa.ABROAD_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+    </where>
+  </select>
+  <select id="selectOmsPriDelayApplyByParam" resultType="com.hxoms.modules.omsoperator.entity.OmsPriDelayVO">
+    select pa.*,
+            rp.SEX as sex,
+            CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+            rp.IDNUMBER_GB as idnumber,
+            rp.WORK_UNIT as b0101,
+            rp.POST as postrank
+    from oms_pri_delay_apply pa
+    LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+    <where>
+      <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+        AND pa.CREATE_USER = #{userId}
+      </if>
+      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+        <![CDATA[ and pa.CREATE_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+        <![CDATA[ and pa.CREATE_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+      </if>
+    </where>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_handover
     where ID = #{id,jdbcType=VARCHAR}
