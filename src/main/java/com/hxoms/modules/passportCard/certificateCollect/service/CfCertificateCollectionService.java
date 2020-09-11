@@ -116,10 +116,10 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
     /**
      * @Desc: 发送催缴通知
      * @Author: wangyunquan
-     * @Param: [cjContentParam]
+     * @Param: [sendNotices]
      * @Return: void
      * @Date: 2020/9/3
      */
-    void sendCjNotice(CjContentParam cjContentParam);
+    void sendCjNotice(List<SendNotice> sendNotices);
 
 }

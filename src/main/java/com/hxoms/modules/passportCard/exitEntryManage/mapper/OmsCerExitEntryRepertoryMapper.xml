@@ -178,18 +178,19 @@
       OPERATE_TIME = #{operateTime,jdbcType=TIMESTAMP}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
-  <select id="selectExitEntryRecord" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory">
+  <select id="selectExitEntryRecord" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfo">
       SELECT
-          id,
-          GET_ID getId,
-          STATUS status,
-          if(status='0','取出',if(status='1','归还',status)) statusName,
-          MODE mode,
-          if(mode='0','取出',if(mode='1','归还',status)) statusName,
-          OPERATOR operator,
-          OPERATE_TIME operateTime
+          a.id,
+          a.GET_ID getId,
+          a.STATUS status,
+          if(a.status='0','取出',if(a.status='1','归还',a.status)) statusName,
+          a.MODE mode,
+          if(a.mode='0','证照机',if(a.mode='1','柜台',a.mode)) modeName,
+          b.user_name operator,
+          a.OPERATE_TIME operateTime
       FROM
-          oms_cer_exit_entry_repertory
+          oms_cer_exit_entry_repertory a
+      INNER JOIN cf_user b ON a.operator=b.user_id
       WHERE zjlx=#{zjlx}
       AND zjhm=#{zjhm}
       <if test="status!=null">
@@ -199,22 +200,23 @@
   <select id="selectSignById" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo">
     SELECT
         b.id,
-        b.get_people getPeople,
+        f.user_name get_people,
         b.get_time getTime,
         b.name,
+        d.sex,
         d.post,
         b.zjlx,
         b.zjhm,
         e.yxqz,
         b.cer_Get_Ele_Sign cerGetEleSign
     FROM
-        oms_cer_exit_entry_repertory a
-    INNER JOIN oms_cer_get_task b ON a.get_id = b.id
+     oms_cer_get_task b
     INNER JOIN oms_cer_get_task c ON b.cer_get_ele_sign = c.cer_get_ele_sign
     INNER JOIN oms_reg_procpersoninfo d ON b.oms_id = d.id
     INNER JOIN cf_certificate e ON b.cer_id = e.id
+    INNER JOIN cf_user f ON f.user_id=b.get_People
     WHERE
-        a.id = #{id}
+        b.id = #{id}
     AND date_format(b.get_time, '%Y-%m-%d') = date_format(c.get_time, '%Y-%m-%d')
   </select>
 </mapper>

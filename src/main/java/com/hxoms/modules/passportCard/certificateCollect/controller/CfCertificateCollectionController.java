@@ -169,8 +169,8 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value = "发送催缴通知")
     @PostMapping("/sendCjNotice")
-    public Result sendCjNotice(@RequestBody @Validated  CjContentParam cjContentParam){
-        cfCertificateCollectionService.sendCjNotice(cjContentParam);
+    public Result sendCjNotice(@RequestBody @Validated  RequestList<SendNotice> requestList){
+        cfCertificateCollectionService.sendCjNotice(requestList.getList());
         return Result.success();
     }
 
@@ -191,8 +191,8 @@ public class CfCertificateCollectionController {
     @ApiOperation(value = "催缴记录查询")
     @ApiImplicitParam(value = "主键id",name = "id",required = true,paramType = "query")
     @GetMapping("/selectCjRecord")
-    public Result<PageBean<CjRecord>> selectCjRecord(PageBean pageBean,@NotBlank(message = "id不能为空") String id){
-        return Result.success(cfCertificateCollectionRequestService.selectCjRecord(pageBean,id));
+    public Result<RequestList<CjRecord>> selectCjRecord(@NotBlank(message = "id不能为空") String id){
+        return Result.success(cfCertificateCollectionRequestService.selectCjRecord(id));
     }
 
     /**

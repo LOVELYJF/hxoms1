@@ -34,7 +34,6 @@ public class SupSuspendUnitApply {
     @ApiModelProperty(value = "暂停时长（月）",required = true)
     private String pauseTime;
 
-    @NotBlank(message = "暂停原因不能为空")
     @ApiModelProperty(value = "暂停原因")
     private String suspendReason;
 
