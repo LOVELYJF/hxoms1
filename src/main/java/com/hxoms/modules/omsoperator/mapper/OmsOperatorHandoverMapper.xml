@@ -283,6 +283,31 @@
       </if>
     </where>
   </select>
+  <select id="getOperatorWBJYW" resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO">
+    SELECT b.* ,
+    a.HandoverStatus as handoverStatus,
+    a.OperatorId as operatorId,
+    a.HandoverTime as jjTime,
+    (SELECT c.user_name FROM cf_user c , oms_operator_handover a WHERE c.user_id = a.OperatorId) as operatorName,
+    (SELECT c.user_name FROM cf_user c , oms_operator_handover a WHERE c.user_id = a.HandoverId) as handoverName
+    FROM oms_operator_handover a
+    INNER JOIN oms_operator_handover_subform b ON a.ID=b.HandoverFormID
+    INNER JOIN cf_user cu on cu.user_id = a.OperatorId
+    <where>
+      <if test="omsOperatorJBYWQueryParam.operatorId != null and omsOperatorJBYWQueryParam.operatorId != ''">
+        AND a.OperatorId = #{omsOperatorJBYWQueryParam.operatorId,jdbcType=VARCHAR}
+        or a.HandoverId = #{omsOperatorJBYWQueryParam.operatorId,jdbcType=VARCHAR}
+      </if>
+      <if test="omsOperatorJBYWQueryParam.handoverTime != null">
+        and a.HandoverTime = #{omsOperatorJBYWQueryParam.handoverTime}
+      </if>
+      ORDER BY a.HandoverTime DESC
+    </where>
+
+
+
+
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_handover
