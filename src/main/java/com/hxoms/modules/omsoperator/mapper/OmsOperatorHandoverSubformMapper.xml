@@ -69,115 +69,115 @@
   <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform">
     insert into oms_operator_handover_subform
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+      <if test="record.id != null">
         ID,
       </if>
-      <if test="handoverformid != null">
+      <if test="record.handoverformid != null">
         HandoverFormID,
       </if>
-      <if test="businessid != null">
+      <if test="record.businessid != null">
         BusinessId,
       </if>
-      <if test="businesstype != null">
+      <if test="record.businesstype != null">
         BusinessType,
       </if>
-      <if test="a0100 != null">
+      <if test="record.a0100 != null">
         A0100,
       </if>
-      <if test="name != null">
+      <if test="record.name != null">
         Name,
       </if>
-      <if test="sex != null">
+      <if test="record.sex != null">
         Sex,
       </if>
-      <if test="birthday != null">
+      <if test="record.birthday != null">
         Birthday,
       </if>
-      <if test="idcard != null">
+      <if test="record.idcard != null">
         IDCard,
       </if>
-      <if test="politicsstatus != null">
+      <if test="record.politicsstatus != null">
         PoliticsStatus,
       </if>
-      <if test="company != null">
+      <if test="record.company != null">
         Company,
       </if>
-      <if test="duty != null">
+      <if test="record.duty != null">
         Duty,
       </if>
-      <if test="handovertime != null">
+      <if test="record.handovertime != null">
         HandoverTime,
       </if>
-      <if test="handoverid != null">
+      <if test="record.handoverid != null">
         HandoverId,
       </if>
-      <if test="exitdate != null">
+      <if test="record.exitdate != null">
         ExitDate,
       </if>
-      <if test="entrydate != null">
+      <if test="record.entrydate != null">
         EntryDate,
       </if>
-      <if test="SM != null">
+      <if test="record.SM != null">
         SM,
       </if>
-      <if test="bz != null">
+      <if test="record.bz != null">
         BZ,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+      <if test="record.id != null">
+        #{record.id,jdbcType=VARCHAR},
       </if>
-      <if test="handoverformid != null">
-        #{handoverformid,jdbcType=VARCHAR},
+      <if test="record.handoverformid != null">
+        #{record.handoverformid,jdbcType=VARCHAR},
       </if>
-      <if test="businessid != null">
-        #{businessid,jdbcType=VARCHAR},
+      <if test="record.businessid != null">
+        #{record.businessid,jdbcType=VARCHAR},
       </if>
-      <if test="businesstype != null">
-        #{businesstype,jdbcType=VARCHAR},
+      <if test="record.businesstype != null">
+        #{record.businesstype,jdbcType=VARCHAR},
       </if>
-      <if test="a0100 != null">
-        #{a0100,jdbcType=VARCHAR},
+      <if test="record.a0100 != null">
+        #{record.a0100,jdbcType=VARCHAR},
       </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="record.name != null">
+        #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null">
-        #{sex,jdbcType=VARCHAR},
+      <if test="record.sex != null">
+        #{record.sex,jdbcType=VARCHAR},
       </if>
-      <if test="birthday != null">
-        #{birthday,jdbcType=DATE},
+      <if test="record.birthday != null">
+        #{record.birthday,jdbcType=DATE},
       </if>
-      <if test="idcard != null">
-        #{idcard,jdbcType=CHAR},
+      <if test="record.idcard != null">
+        #{record.idcard,jdbcType=CHAR},
       </if>
-      <if test="politicsstatus != null">
-        #{politicsstatus,jdbcType=VARCHAR},
+      <if test="record.politicsstatus != null">
+        #{record.politicsstatus,jdbcType=VARCHAR},
       </if>
-      <if test="company != null">
-        #{company,jdbcType=VARCHAR},
+      <if test="record.company != null">
+        #{record.company,jdbcType=VARCHAR},
       </if>
-      <if test="duty != null">
-        #{duty,jdbcType=VARCHAR},
+      <if test="record.duty != null">
+        #{record.duty,jdbcType=VARCHAR},
       </if>
-      <if test="handovertime != null">
-        #{handovertime,jdbcType=DATE},
+      <if test="record.handovertime != null">
+        #{record.handovertime,jdbcType=DATE},
       </if>
-      <if test="handoverid != null">
-        #{handoverid,jdbcType=VARCHAR},
+      <if test="record.handoverid != null">
+        #{record.handoverid,jdbcType=VARCHAR},
       </if>
-      <if test="exitdate != null">
-        #{exitdate,jdbcType=DATE},
+      <if test="record.exitdate != null">
+        #{record.exitdate,jdbcType=DATE},
       </if>
-      <if test="entrydate != null">
-        #{entrydate,jdbcType=DATE},
+      <if test="record.entrydate != null">
+        #{record.entrydate,jdbcType=DATE},
       </if>
-      <if test="SM != null">
-        #{sm,jdbcType=VARCHAR},
+      <if test="record.SM != null">
+        #{record.sm,jdbcType=VARCHAR},
       </if>
-      <if test="bz != null">
-        #{bz,jdbcType=VARCHAR},
+      <if test="record.bz != null">
+        #{record.bz,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

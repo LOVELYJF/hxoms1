@@ -102,4 +102,14 @@ public interface OmsOperatorHandoverMapper {
      * @Date: 2020/9/11 11:37
      */
     List<OmsPriDelayVO> selectOmsPriDelayApplyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+
+    /**
+     * 功能描述: <br>
+     * 〈通过条件查询经办人交接记录〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 16:47
+     */
+    //List<OmsOperatorHandoverSubformVO> getOperatorWBJYW(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 }
