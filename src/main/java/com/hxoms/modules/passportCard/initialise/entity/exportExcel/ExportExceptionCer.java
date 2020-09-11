@@ -2,6 +2,9 @@ package com.hxoms.modules.passportCard.initialise.entity.exportExcel;
 
 import java.util.Date;
 
+/**
+ * 导出证照查询表 模板
+ */
 public class ExportExceptionCer {
 
     private String name;//姓名

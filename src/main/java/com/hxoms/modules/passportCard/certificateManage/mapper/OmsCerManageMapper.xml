@@ -109,6 +109,16 @@
       <if test="xplx!=null">
         AND a.xplx=#{xplx}
       </if>
+
+<!--WQF ADD 勾选查询使用-->
+    <if test="ids!=null">
+      AND a.id in
+      <foreach collection="ids" index="index" item="item" open="("
+               separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+
     </where>
   </select>
 
