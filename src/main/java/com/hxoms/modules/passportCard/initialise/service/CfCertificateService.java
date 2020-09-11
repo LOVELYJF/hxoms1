@@ -14,6 +14,16 @@ import java.util.List;
 
 public interface CfCertificateService extends IService<CfCertificate> {
 
+
+   /**
+    * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+    * @Author: wuqingfan
+    * @Param: [ids]
+    * @Return: excel
+    * @Date: 2020/9/10
+    */
+   void exportExceptionCer(List<String> ids, HttpServletResponse response);
+
    /**
     * @Desc: 初始化证照，导出未上缴证照统计
     * @Author: wuqingfan

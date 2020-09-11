@@ -6,6 +6,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
+import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
@@ -19,6 +20,17 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
+
+	/**
+	 * @Desc: 初始化证照，导出未上缴证照统计
+	 * @Author: wuqingfan
+	 * @Param: [ids]
+	 * @Return: List<ExportNotProvicdeCer>
+	 * @Date: 2020/9/10
+	 */
+	List<ExportExceptionCer>  exportExceptionCer(@Param("ids") List<String> ids);
+
+
 	/**
 	 * @Desc: 初始化证照，导出未上缴证照统计
 	 * @Author: wuqingfan

@@ -114,7 +114,7 @@
     <if test="params.applyStartTime != null and params.applyStopTime != null">
       and pa.APPLY_TIME &gt; #{params.applyStartTime} and pa.APPLY_TIME &lt; #{params.applyStopTime}
     </if>
-    <if test="params.b0100 != null and params.b0100 != ''">
+    <if test="params.b0100 != null and params.b0100 != ''and params.b0100 !='1'">
       and pa.b0100 like CONCAT(#{params.b0100},'%')
     </if>
     <if test="params.procpersonId != null and params.procpersonId !=''">
