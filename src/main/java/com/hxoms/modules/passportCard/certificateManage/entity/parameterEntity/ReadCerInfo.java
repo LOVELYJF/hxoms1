@@ -26,8 +26,8 @@ public class ReadCerInfo {
     private String sex;
 
     @NotNull(message = "出生日期不能为空")
-    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="出生日期",required = true)
     private Date csrq;
 
@@ -62,15 +62,15 @@ public class ReadCerInfo {
     @ApiModelProperty(value="签发地点")
     private String qfdd;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="签发日期",required = true)
     @NotNull(message = "签发日期不能为空")
     private Date qfrq;
 
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="有效期至",required = true)
     @NotNull(message = "有效期至不能为空")
     private Date yxqz;

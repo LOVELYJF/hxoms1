@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 @ApiModel(value = "登记备案人员信息")
 public class RegProcpersoninfo {
-    @ApiModelProperty(value="主键")
+    @ApiModelProperty(value="备案表主键omsId")
     private String id;
 
     @ApiModelProperty(value="人员主键")
@@ -31,7 +32,8 @@ public class RegProcpersoninfo {
     @ApiModelProperty(value="民族")
     private String nationName;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="出生日期（身份证）")
     private Date birthDate;
 

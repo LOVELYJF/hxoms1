@@ -67,8 +67,11 @@
   </sql>
 
 
-  <select id="selectRegProcpersonInfo" resultType="java.lang.String">
-    select A0100 from OMS_REG_PROCPERSONINFO
+  <select id="selectRegProcpersonInfo" resultType="java.lang.String" parameterType="java.lang.String">
+    select A0100 from OMS_REG_PROCPERSONINFO where 1=1
+      <if test="dataType !=null and dataType !=''">
+          and DATA_TYPE = #{dataType}
+      </if>
   </select>
 
   <select id="selectProcpersoninfoList" resultMap="BaseResultMap" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
@@ -141,7 +144,7 @@
   </select>
 
 
-  <insert id="batchAddorpInfo" parameterType="list">
+<!--  <insert id="batchAddorpInfo" parameterType="list">
       insert into oms_reg_procpersoninfo (ID, A0100, RF_B0000,
               INBOUND_FLAG, RF_STATUS, CHECK_STATUS,
               INCUMBENCY_STATUS, DATA_TYPE, SURNAME,
@@ -180,7 +183,7 @@
       )
     </foreach>
 
-	</insert>
+	</insert>-->
 
     <select id="selectInboudFlagCount" resultType="com.hxoms.modules.omsregcadre.entity.StatisticsCountVo">
       SELECT
@@ -282,6 +285,12 @@
     </select>
     <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         select * from oms_reg_procpersoninfo where IDNUMBER_GB = #{idCard} and DATA_TYPE = '1'
+    </select>
+    <select id="selectIdnumberByType" resultType="java.lang.String" parameterType="java.lang.String">
+      select IDNUMBER_GA from oms_reg_procpersoninfo where 1=1
+        <if test="dataType !=null and dataType !=''">
+            and DATA_TYPE = #{dataType}
+        </if>
     </select>
 
 </mapper>

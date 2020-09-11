@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -60,7 +61,7 @@ public class ScheduleServiceImp {
 //    @Scheduled(cron = "0 24 17 * * ?")
     @Scheduled(cron = "${job.cron}")
 //    @Async   次注解是开启 异步 可以开启多线程 以后出现效率问题，在改造代码 用它优化
-    public void jobCron(){
+    public void jobCron() throws ParseException {
         Thread.currentThread().setName("cron表达式执行");
         Calendar calendar = Calendar.getInstance();
         logger.info("开始执行数据同步"+sdf.format(calendar.getTime()));

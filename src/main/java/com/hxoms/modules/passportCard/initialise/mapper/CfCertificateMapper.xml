@@ -892,7 +892,7 @@
 
 	<select id="selectCjTask" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection">
 		SELECT
-			id
+			id,
 			zjlx,
 			zjhm
 		FROM
@@ -991,6 +991,7 @@
 			cf.QFJG qfjg,
 			cf.QFRQ qfrq,
 			cf.CSDD csdd,
+		    cf.OMS_ID omsId,
 			reg.rf_B0000,
 			b01.b0101
 		FROM
@@ -1035,6 +1036,28 @@
 		AND a.CARD_STATUS = '5'
 		AND c.CJ_STATUS is null
 
+		AND a.ID in
+		<foreach collection="ids" index="index" item="item" open="("
+				 separator="," close=")">
+			#{item}
+		</foreach>
+
+	</select>
+
+
+	<!-- WQF ADD 导出存疑证照统计-导出证照查询-->
+	<select id="exportExceptionCer" resultType="com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer" parameterType="java.util.List">
+		SELECT
+		a.NAME name,
+		b.IDNUMBER_GB idnumberGb,
+		b.SEX sex,
+		b.BIRTH_DATE birthDate
+		FROM
+		cf_certificate a
+		INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+		WHERE
+		a.SAVE_STATUS = '1'
+		AND a.CARD_STATUS = '3'
 		AND a.ID in
 		<foreach collection="ids" index="index" item="item" open="("
 				 separator="," close=")">

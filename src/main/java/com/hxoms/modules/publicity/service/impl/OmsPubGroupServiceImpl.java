@@ -3,11 +3,15 @@ package com.hxoms.modules.publicity.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.mapper.OmsAttachmentMapper;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
@@ -91,23 +95,30 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[1]);
             pubGroup.setCreateUser(userInfo.getId());
             pubGroup.setCreateTime(new Date());
-            pubGroupMapper.insertPubGroup(pubGroup);
             //出国人员信息
             for(int i = 0; i < num; i++ ){
                 OmsPubApply pubApply = applyVOList.get(i);
+                for (int j = 0; j < num; j++) {
+                    if(i != j && pubApply.getProcpersonId().equals(applyVOList.get(j).getProcpersonId())){
+                        return "人员选择重复，请查证！";
+                    }
+                }
                 pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup,pubApply.getB0100());
                 pubApply.setYspId(id);
                 pubApply.setZtdw(pubGroup.getZtdw());
                 pubApply.setCgsj(pubGroup.getCgsj());
                 pubApply.setHgsj(pubGroup.getHgsj());
                 pubApply.setSdgj(pubGroup.getSdgj());
-                pubApply.setTlsj(pubGroup.getTjgj());
+                pubApply.setTlsj(String.valueOf(pubGroup.getZwtlsj()));
                 pubApply.setCfrw(pubGroup.getCfrw());
                 pubApply.setCfsy(pubGroup.getCfsy());
-                pubApply.setYspId(pubGroup.getB0100());
+                pubApply.setYspdwId(pubGroup.getB0100());
+                pubApply.setSortId(i);
                 applyList.add(pubApply);
             }
-            pubApplyMapper.insertPubApplyList(applyList);
+            if(pubGroupMapper.insertPubGroup(pubGroup) > 0){
+                pubApplyMapper.insertPubApplyList(applyList);
+            }
             return id;
         }else{
             return "未选择备案人员";
@@ -235,7 +246,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setCgsj(pubGroup.getCgsj());
         pubApply.setHgsj(pubGroup.getHgsj());
         pubApply.setSdgj(pubGroup.getSdgj());
-        pubApply.setTlsj(pubGroup.getTjgj());
+        pubApply.setTlsj(String.valueOf(pubGroup.getZwtlsj()));
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
         if(Constants.PUB_GROUP_STATUS_CODE[1] != pubGroup.getSqzt()){
@@ -486,11 +497,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             pubGroup.setPwh(fileName);
             pubGroup.setSqzt(Constants.PUB_GROUP_STATUS_CODE[3]);
             OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
-            omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
             List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(id);
             for (int i = 0; i < applyVOList.size(); i++) {
                 applyVOList.get(i).setSqzt(Constants.leader_business[7]);
             }
+            omsPubGroupAndApplyList.setOmsPubApplyVOList(applyVOList);
+            omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
             updatePubGroup(omsPubGroupAndApplyList);
             //保存批文
             if(saveFile(file,fileAllName,fileName,id) < 1){
@@ -691,7 +703,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setPoliticalAff(personInfo.getPoliticalAffiname());
         pubApply.setJob(personInfo.getPost());
         pubApply.setSfzyld(personInfo.getMainLeader());
-        pubApply.setSflg(personInfo.getNf());
         Date birthDay = personInfo.getBirthDateGb();
         if(birthDay != null){
             pubApply.setAge(getAge(birthDay));
@@ -711,11 +722,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             }
             pubApply.setZjcgqk(zjcgqk.toString());
         }
+        //是否裸官
+        pubApply.setSflg(StringUtils.isBlank(personInfo.getNf())?Constants.IS_NOT:personInfo.getNf());
         //负面信息
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubGroup.getCgsj());
         pubApply.setFmxx(fmxx);
         pubApply.setSfysp(Constants.IS_YES);
-        pubApply.setSqzt(Constants.private_business[8]);
+        pubApply.setSqzt(Constants.private_business[Constants.private_business.length-1]);
         pubApply.setSfxd(IS_NOT_ASSIGN);
         pubApply.setSfbg(Constants.IS_NOT);
         pubApply.setSfzb(Constants.IS_NOT);

@@ -2,10 +2,11 @@ package com.hxoms.modules.passportCard.certificateCollect.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCollectionRequestParam;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjRecord;
+
+import java.util.List;
 
 public interface CfCertificateCollectionRequestService extends IService<CfCertificateCollectionRequest> {
 
@@ -18,5 +19,5 @@ public interface CfCertificateCollectionRequestService extends IService<CfCertif
      * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.RequestList<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CjRecord>
      * @Date: 2020/9/9
      */
-    PageBean<CjRecord> selectCjRecord(PageBean pageBean,String id);
+    List<CjRecord> selectCjRecord(String id);
 }
