@@ -137,7 +137,7 @@
         and oms_reg_revokeapply.CREATE_USER = #{userId}
       </if>
       <if test="status != null and status != ''">
-        oms_reg_revokeapply.STATUS <![CDATA[<>]]> #{status}
+        and oms_reg_revokeapply.STATUS <![CDATA[<>]]> #{status}
       </if>
     </where>
   </select>
