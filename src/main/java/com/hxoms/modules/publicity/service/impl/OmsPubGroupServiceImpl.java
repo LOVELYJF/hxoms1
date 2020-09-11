@@ -312,13 +312,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if(pubGroupMapper.updatePubGroup(pubGroup) < 1){
                 throw new CustomMessageException("恢复失败!");
             }
-        }
-        //批量恢复人员
-        List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
-        if(applylist.size()>0){
-            for (int i = 0; i < applylist.size(); i++) {
-                if(pubGroup.getCxyy().equals(applylist.get(i).getCxyy())){
-                    pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),null, Constants.private_business[0]);
+            //批量恢复人员
+            List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
+            if(applylist.size()>0){
+                for (int i = 0; i < applylist.size(); i++) {
+                    if(pubGroup.getCxyy().equals(applylist.get(i).getCxyy())){
+                        pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),null, Constants.private_business[0]);
+                    }
                 }
             }
         }
