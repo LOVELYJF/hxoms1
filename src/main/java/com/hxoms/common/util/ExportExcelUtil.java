@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,36 @@ public class ExportExcelUtil {
 //    private  final static String  DEFAULT_DATEFORMAT_SET = "yyyy-MM-dd hh:mm:ss";
     private  final static String  DEFAULT_DATEFORMAT_SET = "yyyy.MM.dd";
     private final static String DEFAULT_SHEET_NAME="导出报表";
+
+    /**
+     * 获取减去年的日期
+     * @param subtrYear
+     * @return
+     */
+    public static  String getDateStr(int subtrYear){
+            Calendar cal = Calendar.getInstance();
+            int nowYear = cal.get(Calendar.YEAR);
+            int nowMonth=cal.get(Calendar.MONTH)+1;
+            int nowDay=cal.get(Calendar.DATE);
+
+            int lastYear = nowYear-subtrYear;
+            if (subtrYear!=0&&nowMonth==2&&nowDay==29){
+                nowDay=28;
+            }
+            StringBuffer bf=new StringBuffer();
+            bf.append(lastYear);
+            if (nowMonth<10){
+                bf.append("0").append(nowMonth);
+            }else {
+                bf.append(nowMonth);
+            }
+            if (nowDay<10){
+                bf.append("0").append(nowDay);
+            }else {
+                bf.append(nowDay);
+            }
+            return bf.toString();
+    }
 
     /**
      * 有标题的导出
@@ -167,11 +198,18 @@ public class ExportExcelUtil {
         title_font.setFontName("宋体");
         // 把字体 应用到当前样式
         title_style.setFont(title_font);
+        // 自动换行
+        title_style.setWrapText(true);
 
         //在sheet里创建第二行
         HSSFRow row2 = sheet.createRow(2);/**标题栏*/
         for (int t_num = 0; t_num < headers.length; t_num++) {
-            sheet.setColumnWidth(t_num, 15 * 256);
+            if (t_num==0){
+                sheet.setColumnWidth(t_num, 10 * 256);
+            }else
+            {
+                sheet.setColumnWidth(t_num, 16* 256);
+            }
 
             HSSFCell title_cell = row2.createCell(t_num);
             title_cell.setCellStyle(title_style);
@@ -342,11 +380,18 @@ public class ExportExcelUtil {
         title_font.setFontName("宋体");
         // 把字体 应用到当前样式
         title_style.setFont(title_font);
+        // 自动换行
+        title_style.setWrapText(true);
 
         //在sheet里创建第二行
         HSSFRow row2 = sheet.createRow(0);/**标题栏*/
         for (int t_num = 0; t_num < headers.length; t_num++) {
-            sheet.setColumnWidth(t_num, 15 * 256);
+            if (t_num==0){
+                sheet.setColumnWidth(t_num, 10 * 256);
+            }else
+            {
+                sheet.setColumnWidth(t_num, 16* 256);
+            }
             HSSFCell title_cell = row2.createCell(t_num);
             title_cell.setCellStyle(title_style);
             title_cell.setCellValue(headers[t_num]);

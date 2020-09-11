@@ -105,7 +105,7 @@ public class OmsEntryexitRecordController {
     public Result queryPriApplyList(String omsId) {
         try{
             Map<String, Object> map = entryexitRecordService.queryPriApplyList(omsId);
-            return Result.success(map);
+            return Result.success().setData(map);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");

@@ -214,7 +214,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         CfUser user = cfUserMapper.selectByPrimaryKey(operatorId);
         String userState = user.getUserState();
         //用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)
-        if (userState.equals(Constants.USER_STATUS[1])){
+        if (userState.equals(Constants.USER_STATUS[1]) || userState.equals(Constants.USER_STATUS[7])){
             //状态为正常时操作显示：【撤消】、【审批信息】，将状态置为“待撤消”，系统通知经办人：“请到经办人交接页面办理交接手续”
            cfUserMapper.updateUserState(user.getUserId(),Constants.USER_STATUS[6]);
             msc ="请到经办人交接页面办理交接手续!";
@@ -625,275 +625,39 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         /** 延期回国*/
         List<OmsPriDelayVO> omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByStatusAndName(user.getUserId(),Constants.leader_business[9]);
 
-        //往交接主表插入数据
-        //首先查询该经办人及接手人是否已经有记录了
-        OmsOperatorHandover omsOperatorHandovers =  omsOperatorHandoverMapper.selectByOperatorIdAndHandover(operatorId,handoverId);
-        //往交接主表插入数据、
-        String primaryKey = UUIDGenerator.getPrimaryKey();
-        if (omsOperatorHandovers == null ){
-            OmsOperatorHandover omsOperatorHandover = new OmsOperatorHandover();
-            //主键
-            omsOperatorHandover.setId(primaryKey);
-            //接手人ID
-            omsOperatorHandover.setHandoverid(handoverId);
-            //经办人主键
-            omsOperatorHandover.setOperatorid(operatorId);
-            //交接时间
-            omsOperatorHandover.setHandovertime(new Date());
-            //交接状态
-            omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
-            omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
+        if ((omsCerGetTasks != null && omsCerGetTasks.size() > 0)  || (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size() > 0) ||
+                (omsRegRevokeapplies != null && omsRegRevokeapplies.size() > 0  ) || (omsPubApplyVOS != null && omsPubApplyVOS.size() > 0 ) ||
+                (omsPriApplyVOS != null && omsPriApplyVOS.size() > 0 ) || (omsPriDelayVOS != null && omsPriDelayVOS.size() > 0)){
+            //往交接主表插入数据
+            //首先查询该经办人及接手人是否已经有记录了
+            OmsOperatorHandover omsOperatorHandovers =  omsOperatorHandoverMapper.selectByOperatorIdAndHandover(operatorId,handoverId);
+            //往交接主表插入数据、
+            String primaryKey = UUIDGenerator.getPrimaryKey();
+            if (omsOperatorHandovers == null ){
+                OmsOperatorHandover omsOperatorHandover = new OmsOperatorHandover();
+                //主键
+                omsOperatorHandover.setId(primaryKey);
+                //接手人ID
+                omsOperatorHandover.setHandoverid(handoverId);
+                //经办人主键
+                omsOperatorHandover.setOperatorid(operatorId);
+                //交接时间
+                omsOperatorHandover.setHandovertime(new Date());
+                //交接状态
+                omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
+                omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
 
-            //查询该经办人未完成的业务(往交接主表插入数据、查出数据后插入交接子表)
-            /**证照领取*/
-            if (omsCerGetTasks != null && omsCerGetTasks.size()>0) {
-                for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[0]);
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsCerGetTask.getName());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsCerGetTask.getIdnumber());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsCerGetTask.getB0101());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsCerGetTask.getPostrank());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //业务发生时间
-                    omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
-                    //说明
-
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-            /**注销证照*/
-            if (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size()>0) {
-                for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsCerCancellateLicense.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[5]);
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsCerCancellateLicense.getName());
-                    //性别
-                    omsOperatorHandoverSubform.setSex(omsCerCancellateLicense.getSex());
-                    //出生日期
-                    omsOperatorHandoverSubform.setBirthday(omsCerCancellateLicense.getCsrq());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsCerCancellateLicense.getZjhm());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsCerCancellateLicense.getWorkUnit());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsCerCancellateLicense.getPost());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //业务发生时间
-                    omsOperatorHandoverSubform.setExitdate(omsCerCancellateLicense.getCreateTime());
-                    //说明
-                    omsOperatorHandoverSubform.setSm(omsCerCancellateLicense.getZxsm());
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-
-            /**因公出国境*/
-            if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
-                for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[1]);
-                    //人员主键
-                    omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());
-                    //性别
-                    omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());
-                    //出生日期
-                    omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());
-                    //政治面貌
-                    omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //出国（境）时间
-                    omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());
-                    //入境时间
-                    omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
-                    //说明
-                    omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-            /**因私出国境*/
-            if (omsPriApplyVOS != null && omsPriApplyVOS.size()>0){
-                for (OmsPriApplyVO omsPriApplyVO:omsPriApplyVOS) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
-                    //人员主键
-                    omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getProcpersonId());
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
-                    //性别
-                    omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());
-                    //出生日期
-                    omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());
-                    //政治面貌
-                    omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //出国（境）时间
-                    omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());
-                    //入境时间
-                    omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
-                    //说明
-                    omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-            /**延期回国*/
-            if (omsPriDelayVOS != null && omsPriDelayVOS.size()>0){
-                for (OmsPriDelayVO omsPriDelayVO:omsPriDelayVOS) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
-                    //人员主键
-                    omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getProcpersonId());
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
-                    //性别
-                    omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //出国（境）时间
-                    omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());
-                    //入境时间
-                    omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
-                    //说明
-                    omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-            /**撤销登记备案*/
-            if (omsRegRevokeapplies != null && omsRegRevokeapplies.size()>0) {
-                for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
-                    Date date = new Date();
-                    // 查出数据后插入交接子表
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
-                    //交接子表主键
-                    omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
-                    //交接表主表主键
-                    omsOperatorHandoverSubform.setHandoverformid(primaryKey);
-                    //业务主键
-                    omsOperatorHandoverSubform.setBusinessid(omsRegRevokeapply.getId());
-                    //业务类别
-                    omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[4]);
-                    //人员主键
-                    omsOperatorHandoverSubform.setA0100(omsRegRevokeapply.getA0100());
-                    //姓名
-                    omsOperatorHandoverSubform.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
-                    //性别
-                    omsOperatorHandoverSubform.setSex(omsRegRevokeapply.getSex());
-                    //身份证号
-                    omsOperatorHandoverSubform.setIdcard(omsRegRevokeapply.getIdnumberGb());
-                    //工作单位
-                    omsOperatorHandoverSubform.setCompany(omsRegRevokeapply.getWorkUnit());
-                    //职务（级）
-                    omsOperatorHandoverSubform.setDuty(omsRegRevokeapply.getPost());
-                    //交接时间
-                    omsOperatorHandoverSubform.setHandovertime(date);
-                    //接手人ID
-                    omsOperatorHandoverSubform.setHandoverid(handoverId);
-                    //业务发生时间
-                    omsOperatorHandoverSubform.setExitdate(omsRegRevokeapply.getCreateDate());
-                    //说明
-                    omsOperatorHandoverSubform.setSm(omsRegRevokeapply.getApplyReason());
-                    omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                }
-            }
-
-        }else{
-            //通过主表id及业务id查询子表 是否有记录，有则更新，无则插入
-            //获取主表id
-            String id = omsOperatorHandovers.getId();
-            /**证照领取*/
-            if (omsCerGetTasks != null && omsCerGetTasks.size()>0) {
-                for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsCerGetTask.getId());
-                    if (omsOperatorHandoverSubform == null){
+                //查询该经办人未完成的业务(往交接主表插入数据、查出数据后插入交接子表)
+                /**证照领取*/
+                if (omsCerGetTasks != null && omsCerGetTasks.size()>0) {
+                    for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
                         //业务类别
@@ -907,7 +671,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsCerGetTask.getPostrank());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //业务发生时间
@@ -915,43 +679,18 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
 
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[0]);
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsCerGetTask.getName());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsCerGetTask.getIdnumber());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsCerGetTask.getB0101());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsCerGetTask.getPostrank());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //业务发生时间
-                        omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
-                        //说明
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                     }
                 }
-            }
-
-            /**注销证照*/
-            if (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size()>0) {
-                for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsCerCancellateLicense.getId());
-                    if (omsOperatorHandoverSubform == null){
+                /**注销证照*/
+                if (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size()>0) {
+                    for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsCerCancellateLicense.getId());
                         //业务类别
@@ -969,7 +708,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsCerCancellateLicense.getPost());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //业务发生时间
@@ -977,47 +716,19 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
                         omsOperatorHandoverSubform.setSm(omsCerCancellateLicense.getZxsm());
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsCerCancellateLicense.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[5]);
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsCerCancellateLicense.getName());
-                        //性别
-                        omsOperatorHandoverSubform.setSex(omsCerCancellateLicense.getSex());
-                        //出生日期
-                        omsOperatorHandoverSubform.setBirthday(omsCerCancellateLicense.getCsrq());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsCerCancellateLicense.getZjhm());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsCerCancellateLicense.getWorkUnit());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsCerCancellateLicense.getPost());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //业务发生时间
-                        omsOperatorHandoverSubform.setExitdate(omsCerCancellateLicense.getCreateTime());
-                        //说明
-                        omsOperatorHandoverSubform.setSm(omsCerCancellateLicense.getZxsm());
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                     }
                 }
-            }
 
-            /**因公出国境*/
-            if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
-                for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPubApplyVo.getId());
-                    if (omsOperatorHandoverSubform == null){
+                /**因公出国境*/
+                if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
+                    for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
                         //业务类别
@@ -1039,7 +750,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //出国（境）时间
@@ -1049,54 +760,18 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
                         omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[1]);
-                        //人员主键
-                        omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());
-                        //性别
-                        omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());
-                        //出生日期
-                        omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());
-                        //政治面貌
-                        omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //出国（境）时间
-                        omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());
-                        //入境时间
-                        omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
-                        //说明
-                        omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                     }
-
                 }
-            }
-
-            /**因私出国境*/
-            if (omsPriApplyVOS != null && omsPriApplyVOS.size()>0) {
-                for (OmsPriApplyVO omsPriApplyVO : omsPriApplyVOS) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPriApplyVO.getId());
-                    if (omsOperatorHandoverSubform == null){
+                /**因私出国境*/
+                if (omsPriApplyVOS != null && omsPriApplyVOS.size()>0){
+                    for (OmsPriApplyVO omsPriApplyVO:omsPriApplyVOS) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
                         //业务类别
@@ -1118,7 +793,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //出国（境）时间
@@ -1128,54 +803,18 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
                         omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
-                        //人员主键
-                        omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getProcpersonId());
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
-                        //性别
-                        omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());
-                        //出生日期
-                        omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());
-                        //政治面貌
-                        omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //出国（境）时间
-                        omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());
-                        //入境时间
-                        omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
-                        //说明
-                        omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                     }
-
                 }
-            }
-
-            /**延期回国*/
-            if (omsPriDelayVOS != null && omsPriDelayVOS.size()>0) {
-                for (OmsPriDelayVO omsPriDelayVO : omsPriDelayVOS) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPriDelayVO.getId());
-                    if (omsOperatorHandoverSubform == null){
+                /**延期回国*/
+                if (omsPriDelayVOS != null && omsPriDelayVOS.size()>0){
+                    for (OmsPriDelayVO omsPriDelayVO:omsPriDelayVOS) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
                         //业务类别
@@ -1193,7 +832,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //出国（境）时间
@@ -1203,49 +842,18 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
                         omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
-                        //人员主键
-                        omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getProcpersonId());
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
-                        //性别
-                        omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //出国（境）时间
-                        omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());
-                        //入境时间
-                        omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
-                        //说明
-                        omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                     }
                 }
-            }
-
-            /**撤销登记备案*/
-            if (omsRegRevokeapplies != null && omsRegRevokeapplies.size()>0) {
-                for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
-                    OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsRegRevokeapply.getId());
-                    if (omsOperatorHandoverSubform == null){
+                /**撤销登记备案*/
+                if (omsRegRevokeapplies != null && omsRegRevokeapplies.size()>0) {
+                    for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
+                        Date date = new Date();
                         // 查出数据后插入交接子表
-                        omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
                         //交接子表主键
                         omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
                         //交接表主表主键
-                        omsOperatorHandoverSubform.setHandoverformid(id);
+                        omsOperatorHandoverSubform.setHandoverformid(primaryKey);
                         //业务主键
                         omsOperatorHandoverSubform.setBusinessid(omsRegRevokeapply.getId());
                         //业务类别
@@ -1263,7 +871,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //职务（级）
                         omsOperatorHandoverSubform.setDuty(omsRegRevokeapply.getPost());
                         //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
+                        omsOperatorHandoverSubform.setHandovertime(date);
                         //接手人ID
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //业务发生时间
@@ -1271,37 +879,660 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         //说明
                         omsOperatorHandoverSubform.setSm(omsRegRevokeapply.getApplyReason());
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-                    }else {
-                        //业务主键
-                        omsOperatorHandoverSubform.setBusinessid(omsRegRevokeapply.getId());
-                        //业务类别
-                        omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[4]);
-                        //人员主键
-                        omsOperatorHandoverSubform.setA0100(omsRegRevokeapply.getA0100());
-                        //姓名
-                        omsOperatorHandoverSubform.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
-                        //性别
-                        omsOperatorHandoverSubform.setSex(omsRegRevokeapply.getSex());
-                        //身份证号
-                        omsOperatorHandoverSubform.setIdcard(omsRegRevokeapply.getIdnumberGb());
-                        //工作单位
-                        omsOperatorHandoverSubform.setCompany(omsRegRevokeapply.getWorkUnit());
-                        //职务（级）
-                        omsOperatorHandoverSubform.setDuty(omsRegRevokeapply.getPost());
-                        //交接时间
-                        omsOperatorHandoverSubform.setHandovertime(new Date());
-                        //接手人ID
-                        omsOperatorHandoverSubform.setHandoverid(handoverId);
-                        //业务发生时间
-                        omsOperatorHandoverSubform.setExitdate(omsRegRevokeapply.getCreateDate());
-                        //说明
-                        omsOperatorHandoverSubform.setSm(omsRegRevokeapply.getApplyReason());
-                        omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                    }
+                }
+
+            }else{
+                //通过主表id及业务id查询子表 是否有记录，有则更新，无则插入
+                //获取主表id
+                String id = omsOperatorHandovers.getId();
+                /**证照领取*/
+                if (omsCerGetTasks != null && omsCerGetTasks.size()>0) {
+                    for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsCerGetTask.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[0]);
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsCerGetTask.getName());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsCerGetTask.getIdnumber());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsCerGetTask.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsCerGetTask.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
+                            //说明
+
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[0]);
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsCerGetTask.getName());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsCerGetTask.getIdnumber());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsCerGetTask.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsCerGetTask.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
+                            //说明
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
+                    }
+                }
+
+                /**注销证照*/
+                if (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size()>0) {
+                    for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsCerCancellateLicense.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsCerCancellateLicense.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[5]);
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsCerCancellateLicense.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsCerCancellateLicense.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsCerCancellateLicense.getCsrq());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsCerCancellateLicense.getZjhm());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsCerCancellateLicense.getWorkUnit());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsCerCancellateLicense.getPost());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsCerCancellateLicense.getCreateTime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsCerCancellateLicense.getZxsm());
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsCerCancellateLicense.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[5]);
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsCerCancellateLicense.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsCerCancellateLicense.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsCerCancellateLicense.getCsrq());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsCerCancellateLicense.getZjhm());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsCerCancellateLicense.getWorkUnit());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsCerCancellateLicense.getPost());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsCerCancellateLicense.getCreateTime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsCerCancellateLicense.getZxsm());
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
+                    }
+                }
+
+                /**因公出国境*/
+                if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
+                    for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPubApplyVo.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[1]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());
+                            //政治面貌
+                            omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPubApplyVo.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[1]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPubApplyVo.getA0100());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPubApplyVo.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPubApplyVo.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsPubApplyVo.getBirthDate());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPubApplyVo.getIdnumber());
+                            //政治面貌
+                            omsOperatorHandoverSubform.setPoliticsstatus(omsPubApplyVo.getPoliticalAff());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPubApplyVo.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPubApplyVo.getJob());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPubApplyVo.getCgsj());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPubApplyVo.getHgsj());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
+
+                    }
+                }
+
+                /**因私出国境*/
+                if (omsPriApplyVOS != null && omsPriApplyVOS.size()>0) {
+                    for (OmsPriApplyVO omsPriApplyVO : omsPriApplyVOS) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPriApplyVO.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getProcpersonId());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());
+                            //政治面貌
+                            omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPriApplyVO.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[2]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPriApplyVO.getProcpersonId());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPriApplyVO.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPriApplyVO.getSex());
+                            //出生日期
+                            omsOperatorHandoverSubform.setBirthday(omsPriApplyVO.getBirthDate());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPriApplyVO.getIdnumber());
+                            //政治面貌
+                            omsOperatorHandoverSubform.setPoliticsstatus(omsPriApplyVO.getPoliticalOutlook());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPriApplyVO.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPriApplyVO.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPriApplyVO.getAbroadTime());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPriApplyVO.getReturnTime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
+
+                    }
+                }
+
+                /**延期回国*/
+                if (omsPriDelayVOS != null && omsPriDelayVOS.size()>0) {
+                    for (OmsPriDelayVO omsPriDelayVO : omsPriDelayVOS) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsPriDelayVO.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getProcpersonId());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsPriDelayVO.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[3]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsPriDelayVO.getProcpersonId());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsPriDelayVO.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsPriDelayVO.getSex());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsPriDelayVO.getIdnumber());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsPriDelayVO.getB0101());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsPriDelayVO.getPostrank());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //出国（境）时间
+                            omsOperatorHandoverSubform.setExitdate(omsPriDelayVO.getApplyTime());
+                            //入境时间
+                            omsOperatorHandoverSubform.setEntrydate(omsPriDelayVO.getEstimateReturntime());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsPriDelayVO.getDelayReason());
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
+                    }
+                }
+
+                /**撤销登记备案*/
+                if (omsRegRevokeapplies != null && omsRegRevokeapplies.size()>0) {
+                    for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
+                        OmsOperatorHandoverSubform omsOperatorHandoverSubform = omsOperatorHandoverSubformMapper.getAllDataByHandoverId(id,omsRegRevokeapply.getId());
+                        if (omsOperatorHandoverSubform == null){
+                            // 查出数据后插入交接子表
+                            omsOperatorHandoverSubform = new OmsOperatorHandoverSubform();
+                            //交接子表主键
+                            omsOperatorHandoverSubform.setId(UUIDGenerator.getPrimaryKey());
+                            //交接表主表主键
+                            omsOperatorHandoverSubform.setHandoverformid(id);
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsRegRevokeapply.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[4]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsRegRevokeapply.getA0100());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsRegRevokeapply.getSex());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsRegRevokeapply.getIdnumberGb());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsRegRevokeapply.getWorkUnit());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsRegRevokeapply.getPost());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsRegRevokeapply.getCreateDate());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsRegRevokeapply.getApplyReason());
+                            omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
+                        }else {
+                            //业务主键
+                            omsOperatorHandoverSubform.setBusinessid(omsRegRevokeapply.getId());
+                            //业务类别
+                            omsOperatorHandoverSubform.setBusinesstype(Constants.handover_type[4]);
+                            //人员主键
+                            omsOperatorHandoverSubform.setA0100(omsRegRevokeapply.getA0100());
+                            //姓名
+                            omsOperatorHandoverSubform.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
+                            //性别
+                            omsOperatorHandoverSubform.setSex(omsRegRevokeapply.getSex());
+                            //身份证号
+                            omsOperatorHandoverSubform.setIdcard(omsRegRevokeapply.getIdnumberGb());
+                            //工作单位
+                            omsOperatorHandoverSubform.setCompany(omsRegRevokeapply.getWorkUnit());
+                            //职务（级）
+                            omsOperatorHandoverSubform.setDuty(omsRegRevokeapply.getPost());
+                            //交接时间
+                            omsOperatorHandoverSubform.setHandovertime(new Date());
+                            //接手人ID
+                            omsOperatorHandoverSubform.setHandoverid(handoverId);
+                            //业务发生时间
+                            omsOperatorHandoverSubform.setExitdate(omsRegRevokeapply.getCreateDate());
+                            //说明
+                            omsOperatorHandoverSubform.setSm(omsRegRevokeapply.getApplyReason());
+                            omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
+                        }
                     }
                 }
             }
         }
+    }
 
+    /**
+     * 功能描述: <br>
+     * 〈查询经办人经办业务列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 9:58
+     */
+    @Override
+    public PageInfo getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
+        Integer pageNum = omsOperatorJBYWQueryParam.getPageNum();
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        Integer pageSize = omsOperatorJBYWQueryParam.getPageSize();
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
+        List<OmsOperatorJbywVO> omsOperatorJbywVOS = new ArrayList<>();
+        //业务类别集合
+        List<String> businessTypes = omsOperatorJBYWQueryParam.getBusinessType();
+        /**证照领取*/
+        List<OmsCerGetTaskVO> omsCerGetTasks = null;
+        /**注销证照*/
+        List<OmsCerCancellateLicense> omsCerCancellateLicenses = null;
+        /**撤销登记备案*/
+        List<OmsRegRevokeapply> omsRegRevokeapplies = null;
+        /**因公出国境*/
+        List<OmsPubApplyVO> omsPubApplyVOS = null;
+        /**因私出国境*/
+        List<OmsPriApplyVO> omsPriApplyVOS = null;
+        /** 延期回国*/
+        List<OmsPriDelayVO> omsPriDelayVOS = null;
+        if (businessTypes == null){
+            //查询所有
+            /**证照领取*/
+            omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+
+            /**注销证照*/
+            omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+
+            /**撤销登记备案*/
+            omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+
+            /**因公出国境*/
+            omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+
+            /**因私出国境*/
+            omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+
+            /** 延期回国*/
+            omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+
+        }else {
+            //根据类型查找相关的数据
+            for (String businessType:businessTypes) {
+                if (businessType.equals(Constants.handover_type[0])){
+                    /**证照领取*/
+                    omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[1])){
+                    /**因公出国境*/
+                    omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[2])){
+                    /**因私出国境*/
+                    omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[3])){
+                    /** 延期回国*/
+                    omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[4])){
+                    /**撤销登记备案*/
+                    omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[5])){
+                    /**注销证照*/
+                    omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+                }
+            }
+        }
+        /**证照领取*/
+        if (omsCerGetTasks != null){
+            for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[0]);
+                //姓名
+                omsOperatorJbywVO.setName(omsCerGetTask.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsCerGetTask.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerGetTask.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerGetTask.getPostrank());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerGetTask.getGetTime());
+                //业务结束时间
+                omsOperatorJbywVO.setEndTime(omsCerGetTask.getEndTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsCerGetTask.getRemarks());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因公出国境*/
+        if (omsPubApplyVOS != null){
+            for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[1]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPubApplyVo.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPubApplyVo.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPubApplyVo.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPubApplyVo.getJob());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPubApplyVo.getCgsj());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPubApplyVo.getHgsj());
+                //说明
+                omsOperatorJbywVO.setSm(omsPubApplyVo.getCfrw());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因私出国境*/
+        if (omsPriApplyVOS != null){
+            for (OmsPriApplyVO omsPriApplyVO:omsPriApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[2]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPriApplyVO.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPriApplyVO.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriApplyVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriApplyVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriApplyVO.getAbroadTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriApplyVO.getReturnTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriApplyVO.getAbroadReasons());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /** 延期回国*/
+        if (omsPriDelayVOS != null){
+            for (OmsPriDelayVO omsPriDelayVO:omsPriDelayVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[3]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPriDelayVO.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPriDelayVO.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriDelayVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriDelayVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriDelayVO.getApplyTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriDelayVO.getEstimateReturntime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriDelayVO.getDelayReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**撤销登记备案*/
+        if (omsRegRevokeapplies != null){
+            for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[4]);
+                //姓名
+                omsOperatorJbywVO.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsRegRevokeapply.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsRegRevokeapply.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsRegRevokeapply.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsRegRevokeapply.getCreateDate());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsRegRevokeapply.getApplyReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**注销证照*/
+        if (omsCerCancellateLicenses != null){
+            for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[5]);
+                //姓名
+                omsOperatorJbywVO.setName(omsCerCancellateLicense.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsCerCancellateLicense.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerCancellateLicense.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerCancellateLicense.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerCancellateLicense.getCreateTime());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsCerCancellateLicense.getZxsm());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+
+
+        PageInfo info = new PageInfo(omsOperatorJbywVOS);
+        return info;
     }
 
     /**
