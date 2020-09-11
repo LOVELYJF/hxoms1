@@ -56,13 +56,14 @@
 		SELECT
 		pua.id AS id,
 		'因公' AS type,
-		a.a0100 AS a0100,
-		a.a0101 AS userName,
+		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 		'人员备案表'  as fileType,
-		"oms_pub_apply_cadres" AS tableCode
+		"oms_pub_apply_cadres_putoncreate" AS tableCode
 		FROM
 		oms_pub_apply pua
-		LEFT JOIN a01 a ON pua.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
+
+		where 1=1
 		<if test="bussinessIds != null and bussinessIds.length>0">
 
 			and pua.id in
