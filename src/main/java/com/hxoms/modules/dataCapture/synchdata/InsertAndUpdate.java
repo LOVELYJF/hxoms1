@@ -172,7 +172,7 @@ public class InsertAndUpdate {
     }
 
     @SysLog("修改数据")
-    public void upDataTable(String tableName, List<Map> updateList, List<Map> idCardListByA01, Set<String> idCards){
+    public void upDataTable(String tableName, List<Map> updateList, List<Map> idCardListByA01){
 
         switch(tableName){
 
@@ -195,7 +195,7 @@ public class InsertAndUpdate {
 
                 a01Service.updateMasterA01ByIdCard(idCardListByA01);
                 }
-                idCards.clear();
+                //idCards.clear();
                 break;
             case "a0200" :
 

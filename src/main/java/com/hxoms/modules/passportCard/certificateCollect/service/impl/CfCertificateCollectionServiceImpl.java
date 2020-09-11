@@ -59,6 +59,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             throw new CustomMessageException("查询登陆用户信息失败！");
         List<CfCertificateCollection> cfCerList=new ArrayList<>();
         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
+            cfCertificateCollection.setId(UUIDGenerator.getPrimaryKey());
             //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
             if("0".equals(cfCertificateCollection.getDataSource())){
                 Date date = new Date();
@@ -340,16 +341,16 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      * @Date: 2020/9/3
      */
     @Override
-    public void sendCjNotice(CjContentParam cjContentParam) {
-        List<CjContentParam> cjContentParamList=new ArrayList<>();
-        cjContentParamList.add(cjContentParam);
-        //获取催缴内容
-        String CjNoticeContent=createCjcontent(cjContentParamList);
-        try {
-            omsPubTaskSuperviseService.preAndRecMessage(cjContentParam.getRfB0000(),CjNoticeContent,"6","1");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new CustomMessageException("发通知失败，原因："+e.getMessage());
+    public void sendCjNotice(List<SendNotice> sendNotices) {
+        for (SendNotice sendNotice : sendNotices) {
+            //获取催缴内容
+            String CjNoticeContent=createCjcontent(sendNotice.getCjContentParamList());
+            try {
+                omsPubTaskSuperviseService.preAndRecMessage(sendNotice.getRfB0000(),CjNoticeContent,"6","1");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new CustomMessageException("发通知失败，原因："+e.getMessage());
+            }
         }
     }
 

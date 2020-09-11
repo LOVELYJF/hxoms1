@@ -20,7 +20,7 @@ public class CerInfo {
     //证件号码
     @NotBlank(message = "证件号码不能为空")
     @ApiModelProperty(value = "证件号码",required = true)
-    private Integer zjhm;
+    private String zjhm;
     //状态
     @ApiModelProperty(value="状态(0:取出,1:归还)")
     private String status;
@@ -33,11 +33,11 @@ public class CerInfo {
         this.zjlx = zjlx;
     }
 
-    public Integer getZjhm() {
+    public String getZjhm() {
         return zjhm;
     }
 
-    public void setZjhm(Integer zjhm) {
+    public void setZjhm(String zjhm) {
         this.zjhm = zjhm;
     }
 
