@@ -17,6 +17,7 @@ import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
@@ -77,6 +78,27 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 
     /**
+     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/10
+     */
+    @Override
+    public void exportExceptionCer(List<String> ids, HttpServletResponse response) {
+        if (ids == null || ids.size() < 1) {
+            throw new CustomMessageException("操作失败！");
+        }
+        List<ExportExceptionCer> getList = cfCertificateMapper.exportExceptionCer(ids);
+        if (getList.size()>0){
+           getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));
+        }
+        String[] headers="序号,姓名,'',身份证号,性别(必填项)1：男；2女；,出生日期（必填项）19880101,出入境起始时间（20050101），最大查询5年的出入境记录".split(",");
+        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,(List) getList,response);
+    }
+
+
+    /**
      * @Desc: 初始化证照，导出未上缴证照统计
      * @Author: wuqingfan
      * @Param: [ids]
@@ -89,7 +111,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             throw new CustomMessageException("操作失败！");
         }
         List getList =cfCertificateMapper.exportNotProvicdeCer(ids);
-        String[] headers="姓名,性别,单位,任职状态,职务,证照类型,证件号码,有效期至,管理单位,出生日期,签发单位,签发日期,出生地".split(",");
+        String[] headers="序号,姓名,性别,单位,任职状态,职务,证照类型,证件号码,有效期至,管理单位,出生日期,签发单位,签发日期,出生地".split(",");
         ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,getList,response);
     }
 

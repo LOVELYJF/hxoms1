@@ -32,6 +32,25 @@ import java.util.List;
 @Validated
 public class CfCertificateController {
 
+
+    /**
+     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/10
+     */
+    @ApiOperation(value = "导出存疑证照统计-导出证照查询")
+    @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接", name = "ids", required = true, paramType = "query")
+    @PostMapping("/exportExceptionCer")
+    public void exportExceptionCer(@ApiIgnore  @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
+
+//        String str = "";
+//        List<String> list = Arrays.asList(str.split(","));
+//        cfCertificateService.exportExceptionCer(Arrays.asList(ids.split(",")), response);
+        cfCertificateService.exportExceptionCer(Arrays.asList(ids.split(",")),response);
+    }
+
     /**
      * @Desc: 导出未上缴证照统计
      * @Author: wuqingfan
