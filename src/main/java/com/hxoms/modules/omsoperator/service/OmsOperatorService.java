@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
@@ -227,4 +228,14 @@ public interface OmsOperatorService {
      * @Date: 2020/9/10 8:58
      */
     void getUnfinished(String operatorId, String handoverId);
+
+    /**
+     * 功能描述: <br>
+     * 〈查询经办人经办业务列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 9:57
+     */
+    PageInfo getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 }

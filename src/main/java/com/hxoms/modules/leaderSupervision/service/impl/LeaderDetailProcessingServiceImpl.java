@@ -685,6 +685,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
               if (!StringUtils.isBlank(applyId)){
                   QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
                   createFile.eq("TABLE_CODE", tableCode)
+//                          .eq("FILE_SHORTNAME",fileShortname)
                           .eq("APPLY_ID", applyId);
                   int count = omsCreateFileMapper.selectCount(createFile);
                   //没有生成时生成文件

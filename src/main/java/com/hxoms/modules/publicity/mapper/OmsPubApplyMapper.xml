@@ -453,10 +453,10 @@
             <if test="omsPubApplyQueryParam.name != null and omsPubApplyQueryParam.name!= ''">
                 and concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) like CONCAT('%',#{omsPubApplyQueryParam.name},'%')
             </if>
-            <if test="omsPubApplyQueryParam.cgsj != null and  omsPubApplyQueryParam.cgsj != ''">
+            <if test="omsPubApplyQueryParam.cgsj != null">
                 <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{omsPubApplyQueryParam.cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
-            <if test="omsPubApplyQueryParam.hgsj != null and  omsPubApplyQueryParam.hgsj != ''">
+            <if test="omsPubApplyQueryParam.hgsj != null">
                 <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{omsPubApplyQueryParam.hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
             </if>
             <if test="omsPubApplyQueryParam.ztdw != null and omsPubApplyQueryParam.ztdw!= ''">
@@ -715,6 +715,31 @@
 				oms_pub_apply.CGSJ >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
 				and
 				oms_pub_apply.A0100 = #{a0100}
+    </select>
+    <select id="selectPubAllyByParam" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
+        select
+        oms_pub_apply.*
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
+        ,oms_reg_procpersoninfo.SEX
+        ,oms_reg_procpersoninfo.BIRTH_DATE_GB
+        ,oms_reg_procpersoninfo.NATION_NAME
+        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
+        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+        from oms_pub_apply
+        inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
+        <where>
+            <if test="omsOperatorJBYWQueryParam.operatorId != null ">
+                AND oms_pub_apply.CREATE_USER = #{omsOperatorJBYWQueryParam.operatorId}
+            </if>
+            <if test="omsOperatorJBYWQueryParam.startTime != null">
+                <![CDATA[ and oms_pub_apply.CGSJ >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+            <if test="omsOperatorJBYWQueryParam.endTime != null">
+                <![CDATA[ and oms_pub_apply.CGSJ <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+        </where>
+
     </select>
 
     <insert id="insertPubApplyList">

@@ -1660,7 +1660,7 @@
            a3007a,
            a3034,
            a3038,
-           3117a,
+           a3117a,
            a3137,
            a3101,
            id,
@@ -1668,9 +1668,7 @@
            modify_user,
            modify_time,
            time_stamp,
-           node_id,
-           is_normal,
-           operate_batch
+           node_id
     </sql>
 
     <select id="getMasterA30" resultType="com.hxoms.common.LowerKeyMapTest">
@@ -1703,9 +1701,7 @@
             modify_user = #{item.modify_user},
             modify_time = #{item.modify_time},
             time_stamp = #{item.time_stamp},
-            node_id = #{item.node_id},
-            is_normal  = #{item.is_normal},
-            operate_batch  = #{item.operate_batch}
+            node_id = #{item.node_id}
             where a3000 = #{item.a3000}
         </foreach>
     </update>
@@ -1727,9 +1723,7 @@
         modify_user,
         modify_time,
         time_stamp,
-        node_id,
-        is_normal,
-        operate_batch
+        node_id
         )
         VALUES
         <foreach collection="list" index="index" item="item" separator=",">
@@ -1749,9 +1743,7 @@
             #{item.modify_user},
             #{item.modify_time},
             #{item.time_stamp},
-            #{item.node_id},
-            #{item.is_normal},
-            #{item.operate_batch}
+            #{item.node_id}
             )
         </foreach>
     </insert>

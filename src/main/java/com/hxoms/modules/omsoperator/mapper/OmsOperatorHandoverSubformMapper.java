@@ -8,7 +8,7 @@ public interface OmsOperatorHandoverSubformMapper {
 
     int insert(OmsOperatorHandoverSubform record);
 
-    int insertSelective(OmsOperatorHandoverSubform record);
+    int insertSelective(@Param("record") OmsOperatorHandoverSubform record);
 
     OmsOperatorHandoverSubform selectByPrimaryKey(String id);
 
