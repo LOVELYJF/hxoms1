@@ -159,6 +159,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	public void addMajorLeaderAuto() {
 		//查询每个单位的前两名作为主要领导
 		List<PersonOrgOrder> list = personOrgOrderMapper.selectMajorLeaderAuto();
+		//查询主要领导信息表
+		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
+		queryWrapper.select("A0100");
+		List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
+
+		boolean result = false;
 		//查询领导信息
 		for(PersonOrgOrder person : list){
 			boolean flag = false;
@@ -167,11 +173,13 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			//获得领导主键
 			String a0100 = person.getA01000();
 
-			//查询主要领导是否已经存在于主要领导信息表
-			QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>() ;
-			queryWrapper.eq("A0100", a0100);
-			List<OmsSupMajorLeader> majorLeaderList = omsSupMajorLeaderMapper.selectList(queryWrapper);
-			if(majorLeaderList.size() < 1 || majorLeaderList == null) {
+			for(OmsSupMajorLeader omsSupMajorLeader1 : majorLeaderList){
+				if(omsSupMajorLeader1.getA0100().equals(a0100)){
+					result = true;
+					break;
+				}
+			}
+			if(!result) {
 				//根据领导主键查询领导信息
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("a0100", a0100);
