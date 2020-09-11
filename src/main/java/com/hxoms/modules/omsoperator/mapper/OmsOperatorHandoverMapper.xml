@@ -178,12 +178,12 @@
       FROM oms_cer_cancellate_license occl
       <where>
         <if test="omsOperatorJBYWQueryParam.operatorId != null ">
-          AND occl.CREATE_USER = #{userId}
+          AND occl.CREATE_USER = #{omsOperatorJBYWQueryParam.operatorId}
         </if>
-        <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+        <if test="omsOperatorJBYWQueryParam.startTime != null">
           <![CDATA[ and occl.CREATE_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
         </if>
-        <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+        <if test="omsOperatorJBYWQueryParam.endTime != null">
           <![CDATA[ and occl.CREATE_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
         </if>
       </where>
@@ -213,12 +213,12 @@
         LEFT JOIN oms_cer_exit_entry_repertory oce ON ocgt.ID = oce.GET_ID
         <where>
           <if test="omsOperatorJBYWQueryParam.operatorId != null ">
-            AND ocgt.GET_PEOPLE = #{userId}
+            AND ocgt.GET_PEOPLE = #{omsOperatorJBYWQueryParam.operatorId}
           </if>
-          <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+          <if test="omsOperatorJBYWQueryParam.startTime != null ">
             <![CDATA[ and ocgt.GET_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
           </if>
-          <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+          <if test="omsOperatorJBYWQueryParam.endTime != null">
             <![CDATA[ and occl.GET_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
           </if>
         </where>
@@ -229,12 +229,12 @@
     SELECT * from oms_reg_revokeapply
     <where>
       <if test="omsOperatorJBYWQueryParam.operatorId != null ">
-        AND oms_reg_revokeapply.CREATE_USER = #{userId}
+        AND oms_reg_revokeapply.CREATE_USER = #{omsOperatorJBYWQueryParam.operatorId}
       </if>
-      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+      <if test="omsOperatorJBYWQueryParam.startTime != null">
         <![CDATA[ and oms_reg_revokeapply.CREATE_DATE >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
-      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+      <if test="omsOperatorJBYWQueryParam.endTime != null">
         <![CDATA[ and oms_reg_revokeapply.CREATE_DATE <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
 
@@ -252,12 +252,12 @@
     from oms_pri_apply opa left join oms_reg_procpersoninfo orp on opa.PROCPERSON_ID = orp.ID
     <where>
       <if test="omsOperatorJBYWQueryParam.operatorId != null ">
-        AND opa.CREATE_USER = #{userId}
+        AND opa.CREATE_USER = #{omsOperatorJBYWQueryParam.operatorId}
       </if>
-      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+      <if test="omsOperatorJBYWQueryParam.startTime != null">
         <![CDATA[ and opa.ABROAD_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
-      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+      <if test="omsOperatorJBYWQueryParam.endTime != null">
         <![CDATA[ and opa.ABROAD_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
     </where>
@@ -273,12 +273,12 @@
     LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
     <where>
       <if test="omsOperatorJBYWQueryParam.operatorId != null ">
-        AND pa.CREATE_USER = #{userId}
+        AND pa.CREATE_USER = #{omsOperatorJBYWQueryParam.operatorId}
       </if>
-      <if test="omsOperatorJBYWQueryParam.startTime != null and  omsOperatorJBYWQueryParam.startTime != ''">
+      <if test="omsOperatorJBYWQueryParam.startTime != null">
         <![CDATA[ and pa.CREATE_TIME >= to_date(#{omsOperatorJBYWQueryParam.startTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
-      <if test="omsOperatorJBYWQueryParam.endTime != null and  omsOperatorJBYWQueryParam.endTime != ''">
+      <if test="omsOperatorJBYWQueryParam.endTime != null">
         <![CDATA[ and pa.CREATE_TIME <= to_date(#{omsOperatorJBYWQueryParam.endTime,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
       </if>
     </where>

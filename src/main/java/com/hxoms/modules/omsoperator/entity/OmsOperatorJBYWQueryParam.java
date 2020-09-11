@@ -75,4 +75,12 @@ public class OmsOperatorJBYWQueryParam {
     public void setOperatorId(String operatorId) {
         this.operatorId = operatorId;
     }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 }
