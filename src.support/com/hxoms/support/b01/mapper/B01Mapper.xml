@@ -608,7 +608,7 @@
     b0191,b0191a,b0192,b0193,b0194,b0197,b0198,b0227,b0232,b0233,b0238,b0239,
     b0240,sortid,pad_as_unit,b0199,modify_user, modify_time,level_index,
     b0140,b0141,b0142,b0143,b0150,b0180,b0236,b0234,b0121,job_number_desc,ORGANIZATION_CODE,CONTACTS,PHONE
-    FROM  b01 WHERE b0111=#{b0111}
+    FROM  b01 WHERE b0100=#{b0111}
     </select>
 
     <!--获得下一个b0111-->

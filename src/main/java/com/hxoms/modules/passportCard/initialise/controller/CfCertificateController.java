@@ -32,6 +32,10 @@ import java.util.List;
 @Validated
 public class CfCertificateController {
 
+    @Autowired
+    private CfCertificateService cfCertificateService;
+
+
 
     /**
      * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
@@ -43,11 +47,7 @@ public class CfCertificateController {
     @ApiOperation(value = "导出存疑证照统计-导出证照查询")
     @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接", name = "ids", required = true, paramType = "query")
     @PostMapping("/exportExceptionCer")
-    public void exportExceptionCer(@ApiIgnore  @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
-
-//        String str = "";
-//        List<String> list = Arrays.asList(str.split(","));
-//        cfCertificateService.exportExceptionCer(Arrays.asList(ids.split(",")), response);
+    public void exportExceptionCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
         cfCertificateService.exportExceptionCer(Arrays.asList(ids.split(",")),response);
     }
 
@@ -62,14 +62,10 @@ public class CfCertificateController {
     @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接",name = "ids",required = true,paramType = "query")
     @PostMapping("/exportNotProvicdeCer")
     public void  exportNotProvicdeCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response){
-//        String str="AC3300AF-B3D8-4D67-9119-C3412EEE3C63,AC3300AF-B458-4E95-B972-07A8159B5FFE";
-//        List<String> idss= Arrays.asList(str.split(","));
-//        cfCertificateService.exportNotProvicdeCer(idss,response);
         cfCertificateService.exportNotProvicdeCer(Arrays.asList(ids.split(",")),response);
     }
 
-    @Autowired
-    private CfCertificateService cfCertificateService;
+
 
     /**
      * @Desc: 初始化证照，导入公安的证照信息

@@ -93,8 +93,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if (getList.size()>0){
            getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));
         }
-        String[] headers="序号,姓名,'',身份证号,性别(必填项)1：男；2女；,出生日期（必填项）19880101,出入境起始时间（20050101），最大查询5年的出入境记录".split(",");
-        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,(List) getList,response);
+        String[] headers="序号,姓名,,身份证号,性别(必填项)1：男；2女；,出生日期（必填项）19880101,出入境起始时间（20050101），最大查询5年的出入境记录".split(",");
+        ExportExcelUtil.exportNotTitleExcel("存疑证照统计",headers,(List) getList,"yyyyMMdd",response);
     }
 
 
