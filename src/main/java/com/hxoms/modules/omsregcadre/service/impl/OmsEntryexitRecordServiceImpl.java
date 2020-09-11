@@ -214,7 +214,6 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                 }else if ((vo.getAbroadTime()==null && vo.getReturnTime()==null)&&(vo.getRealAbroadTime()!=null && vo.getRealReturnTime()!=null)){
                     vo.setLeibie("填写");
                 }
-                priApplyList.add(vo);
             }
         }
         List<OmsEntryexitRecordVO> oldexitRecordslist = baseMapper.selectRecordPriList(omsId);
