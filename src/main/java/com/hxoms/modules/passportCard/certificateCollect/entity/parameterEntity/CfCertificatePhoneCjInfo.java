@@ -24,7 +24,7 @@ public class CfCertificatePhoneCjInfo {
     @ApiModelProperty(value = "性别")
     private String sex;
     //出生日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8" )
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
@@ -53,12 +53,12 @@ public class CfCertificatePhoneCjInfo {
     @ApiModelProperty(value = "来源名称")
     private String dataSourceName;
     //业务发生时间
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8" )
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "业务发生时间")
     private Date happenDate;
     //应归还时间
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8" )
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "应归还时间")
     private Date returnDate;

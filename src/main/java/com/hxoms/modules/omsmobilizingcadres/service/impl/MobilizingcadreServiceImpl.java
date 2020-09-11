@@ -10,14 +10,12 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.omsmobilizingcadres.mapper.OmsMobilizingcadreMapper;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
-import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MobilizingcadreServiceImpl implements MobilizingcadreService {
@@ -106,14 +104,8 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        if (orgIds == null){
-            //获取登录用户信息
-            UserInfo loginUser = UserInfoUtil.getUserInfo();
-            if (loginUser.getOrgId() != null ){
-                orgIds.add(loginUser.getOrgId());
-            }
-        }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         List<LinkedHashMap<String, Object>> list = mobilizingcadreMapper.selectAllMobilizingCadre(orgIds,name,status);
         PageInfo info = new PageInfo(list);
         return info;

@@ -77,6 +77,9 @@ public class OmsSupNakedSign {
     @ColumnAnnotation(FieldName = "FJGNF",   FieldDescription="家属受监管裸官")
     private String fjgnf;
 
+    @ColumnAnnotation(FieldName = "IS_DELETE",   FieldDescription="是否被删除")
+    private String isDelete;
+
 
     public String getId() {
         return id;
@@ -228,5 +231,13 @@ public class OmsSupNakedSign {
 
     public void setFjgnf(String fjgnf) {
         this.fjgnf = fjgnf;
+    }
+
+    public String getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(String isDelete) {
+        this.isDelete = isDelete == null ? null : isDelete.trim();
     }
 }

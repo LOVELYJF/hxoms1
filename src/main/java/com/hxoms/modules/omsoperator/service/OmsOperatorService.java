@@ -51,12 +51,12 @@ public interface OmsOperatorService {
     /**
      * 功能描述: <br>
      * 〈撤销经办人〉
-     * @Param: [operatorId,handoverId]
+     * @Param: [operatorId]
      * @Return: java.lang.String
      * @Author: 李逍遥
      * @Date: 2020/5/8 14:40
      */
-    String revokeOperator(String operatorId, String handoverId);
+    String revokeOperator(String operatorId);
 
     /**
      * 功能描述: <br>
@@ -217,4 +217,14 @@ public interface OmsOperatorService {
      * @Date: 2020/8/13 10:19
      */
     List<CfUser> getOperatorByB0100(String b0100);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取该撤销经办人未办结数据〉
+     * @Param: [operatorId, handoverId]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/10 8:58
+     */
+    void getUnfinished(String operatorId, String handoverId);
 }

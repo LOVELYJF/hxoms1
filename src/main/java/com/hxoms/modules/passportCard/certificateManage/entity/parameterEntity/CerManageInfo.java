@@ -38,6 +38,8 @@ public class CerManageInfo {
     //芯片类型
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
+    @ApiModelProperty(value="芯片类型名称")
+    private String xplxName;
     //证照形式
     @ApiModelProperty(value="证件形式(0:本式,1:卡式)")
     private String zjxs;
@@ -48,7 +50,7 @@ public class CerManageInfo {
     private String zjhm;
     //有效期至
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="有效期至")
     private Date yxqz;
     //管理单位
@@ -81,7 +83,7 @@ public class CerManageInfo {
     private Integer counterNum;
     //出生日期
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="出生日期")
     private Date csrq;
     //签发单位
@@ -89,7 +91,7 @@ public class CerManageInfo {
     private String qfjg;
     //签发日期
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value="签发日期")
     private Date qfrq;
     //出生地点
@@ -105,38 +107,6 @@ public class CerManageInfo {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getZjxsName() {
-        return zjxsName;
-    }
-
-    public String getCardStatusName() {
-        return cardStatusName;
-    }
-
-    public void setCardStatusName(String cardStatusName) {
-        this.cardStatusName = cardStatusName;
-    }
-
-    public String getSaveStatusName() {
-        return saveStatusName;
-    }
-
-    public void setSaveStatusName(String saveStatusName) {
-        this.saveStatusName = saveStatusName;
-    }
-
-    public String getSurelyWayName() {
-        return surelyWayName;
-    }
-
-    public void setSurelyWayName(String surelyWayName) {
-        this.surelyWayName = surelyWayName;
-    }
-
-    public void setZjxsName(String zjxsName) {
-        this.zjxsName = zjxsName;
     }
 
     public String getName() {
@@ -203,12 +173,28 @@ public class CerManageInfo {
         this.xplx = xplx;
     }
 
+    public String getXplxName() {
+        return xplxName;
+    }
+
+    public void setXplxName(String xplxName) {
+        this.xplxName = xplxName;
+    }
+
     public String getZjxs() {
         return zjxs;
     }
 
     public void setZjxs(String zjxs) {
         this.zjxs = zjxs;
+    }
+
+    public String getZjxsName() {
+        return zjxsName;
+    }
+
+    public void setZjxsName(String zjxsName) {
+        this.zjxsName = zjxsName;
     }
 
     public String getZjhm() {
@@ -243,6 +229,14 @@ public class CerManageInfo {
         this.cardStatus = cardStatus;
     }
 
+    public String getCardStatusName() {
+        return cardStatusName;
+    }
+
+    public void setCardStatusName(String cardStatusName) {
+        this.cardStatusName = cardStatusName;
+    }
+
     public String getSaveStatus() {
         return saveStatus;
     }
@@ -251,12 +245,28 @@ public class CerManageInfo {
         this.saveStatus = saveStatus;
     }
 
+    public String getSaveStatusName() {
+        return saveStatusName;
+    }
+
+    public void setSaveStatusName(String saveStatusName) {
+        this.saveStatusName = saveStatusName;
+    }
+
     public String getSurelyWay() {
         return surelyWay;
     }
 
     public void setSurelyWay(String surelyWay) {
         this.surelyWay = surelyWay;
+    }
+
+    public String getSurelyWayName() {
+        return surelyWayName;
+    }
+
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
     }
 
     public String getCabinetNum() {

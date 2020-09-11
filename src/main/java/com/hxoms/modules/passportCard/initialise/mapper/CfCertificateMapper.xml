@@ -892,7 +892,7 @@
 
 	<select id="selectCjTask" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection">
 		SELECT
-			id
+			id,
 			zjlx,
 			zjhm
 		FROM
