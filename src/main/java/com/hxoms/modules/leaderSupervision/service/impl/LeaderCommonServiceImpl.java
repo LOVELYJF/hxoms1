@@ -771,7 +771,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 //        saveApplyBussinessByBatchId(omsJiweiOpinionVo,omsJiweiOpinion.getId(),"jiwei_opinion_id");
 
-        // 修改 业务申请 状态  （第三步） 修改 为 记录意见
+        // 修改 业务申请 状态  （第三步） 修改 为 记录意见的下一步
         updteBussinessApplyStatueByWriteJiewei(omsJiweiOpinionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[3]);
 
         //在流程审批业务表 中记录纪委意见（第 三 点1 不）
@@ -1563,6 +1563,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
             if(currentStatus < Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)]){
 
                 String updateApplyStatusSql =   getUpdateStatusSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
+
+                // 因为 添加 干教 流程 此方法需要重写
+//                String updateApplyStatusSql
 
                 if(updateApplyStatusSql.length()>0){
 

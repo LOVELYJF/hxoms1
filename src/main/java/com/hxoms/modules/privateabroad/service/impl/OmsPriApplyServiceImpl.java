@@ -155,11 +155,11 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             omsPriApply.setApplyTime(new Date());
             omsPriApply.setCreateTime(new Date());
             //后续可能要做修改
-            omsPriApply.setCreateUser(userInfo.getUserName());
+            omsPriApply.setCreateUser(userInfo.getId());
             omsPriApplyMapper.insert(omsPriApply);
         } else {
         	  omsPriApply.setModifyTime(new Date());
-        	  omsPriApply.setModifyUser(userInfo.getUserName());
+        	  omsPriApply.setModifyUser(userInfo.getId());
             omsPriApplyMapper.updateById(omsPriApply);
             //删除随行人员
             QueryWrapper<OmsPriTogetherperson> queryWrapper = new QueryWrapper<>();

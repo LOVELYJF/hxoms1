@@ -12,35 +12,35 @@ import java.util.Date;
  * @date 2020/4/21 17:42
  */
 public class PersonInfoVO {
-    //人员主键
+    /** 人员主键*/
     private String a0100;
-    //姓名
+    /** 姓名*/
     private String name;
-    //性别
+    /** 性别*/
     private String sex;
-    //出生日期
+    /** 出生日期*/
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
-    //职务
+    /** 职务*/
     private String job;
-    //单位id
+    /** 单位id*/
     private String b0100;
-    //机构id
+    /** 机构id*/
     private String b0111;
-    //单位名称
+    /** 单位名称*/
     private String b0101;
-    //状态
+    /** 状态*/
     private String status;
-    //政治面貌
+    /** 政治面貌*/
     private String POLITICAL_AFFI;
-    //民族
+    /** 民族*/
     private String NATION;
-    //身份证号
+    /** 身份证号*/
     private String idnumber;
-    //登记备案id
+    /** 登记备案id*/
     private String procpersonId;
-    //核心涉密人员年审
+    /** 核心涉密人员年审*/
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date SECRET_REVIEW_DATE;

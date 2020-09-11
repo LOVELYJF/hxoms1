@@ -39,43 +39,44 @@
     <select id="selectBusinessUser" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
         SELECT
         *  from (
-        SELECT
-        pua.id AS id,   # 业务id
-        pua.leader_batch_id as batchId, # 批次id
-        pua.SQZT   as applyStatus,    # 业务 流程状态
-        b.b0101 AS department,  # "部门名称"
-        a.a0101 AS userName, # 人员名称
-        DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
-        DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
-        pua.SDGJ AS sdgj,  #  所到国境 == 目的地
-        pua.CFRW AS cfrw,  #  出访任务
-        "因公" AS businessType,  # 申请类型
-        "oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
-        pua.CGSPDW AS cgspdw, # 审批单位
-        IF (
-        a.A0104 NOT IN ('1', '2'),
-        '未知',
-        IF (a.A0104 = 1, '男', '女')
-        ) AS sex,  # 性别
-        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
-        pua.POLITICAL_AFF AS politcalAffi,  # 政治面貌
-        pua.JOB AS job,   #职务
-        DATE_FORMAT(pua.CREATE_TIME,'%Y.%m.%d') AS applyTime,   # 申请日期
-        pua.SMDJ AS secretLevel,  # 涉密等级
-        DATE_FORMAT(pua.YTMJSSJ1,'%Y.%m.%d') AS declassificaEndTime,  # 脱密结束日期
-        pua.SFLG AS sflg,  # 是否裸官
-        mrp.IDENTITY AS identity, #身份类别
-        pua.SFZYLD as sfzyld,  # 主要领导
-        pua.FMXX AS fmxx, # 负面信息
-        case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-        case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-        case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
-        case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
-        FROM
-        oms_pub_apply pua
-        LEFT JOIN b01 b ON pua.b0100 = b.b0100
-        LEFT JOIN a01 a ON pua.a0100 = a.a0100
-        LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		SELECT
+		pua.id AS id,   # 业务id
+		pua.leader_batch_id as batchId, # 批次id
+		pua.SQZT   as applyStatus,    # 业务 流程状态
+		b.b0101 AS department,  # "部门名称"
+		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+		DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
+		DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
+		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
+		pua.CFRW AS cfrw,  #  出访任务
+		case when pug.BAZT='1' then "干教" else "因公" end AS businessType,  # 申请类型
+		"oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
+		pua.CGSPDW AS cgspdw, # 审批单位
+		IF (
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,  # 性别
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		pua.POLITICAL_AFF AS politcalAffi,  # 政治面貌
+		pua.JOB AS job,   #职务
+		DATE_FORMAT(pua.CREATE_TIME,'%Y.%m.%d') AS applyTime,   # 申请日期
+		pua.SMDJ AS secretLevel,  # 涉密等级
+		DATE_FORMAT(pua.YTMJSSJ1,'%Y.%m.%d') AS declassificaEndTime,  # 脱密结束日期
+		pua.SFLG AS sflg,  # 是否裸官
+		mrp.IDENTITY AS identity, #身份类别
+		pua.SFZYLD as sfzyld,  # 主要领导
+		pua.FMXX AS fmxx, # 负面信息
+		case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
+		case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
+		case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+		case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
+		FROM
+		oms_pub_apply pua
+		LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
+
         UNION
         SELECT
         pra.id AS id, # 业务id
@@ -251,7 +252,7 @@
 							   pua.A0100 as a0100 , # 人员 id
 							   pua.SQZT   as applyStatus,    # 业务 流程状态
 							   b.b0101 AS department,  # "部门名称"
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 							   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -260,9 +261,9 @@
 							   "oms_pub_apply" as type, # 申请类型 表的名称 约束性条件 会用到
 							   pua.CGSPDW AS cgspdw, # 审批单位
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
+								   mrp.SEX NOT IN ('1', '2'),
 								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
+								   IF (mrp.SEX = 1, '男', '女')
 									   ) AS sex,  # 性别
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
@@ -281,8 +282,9 @@
 						FROM
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
+						where pug.BAZT !=1
 						UNION
 						SELECT
 							   pra.id AS id, # 业务id
@@ -565,20 +567,20 @@
 							   pua.leader_batch_id as batchId, # 批次id
 							   pua.SQZT   as applyStatus,    # 业务 流程状态
 							   b.b0101 AS department,  # "部门名称"
-							   a.a0101 AS userName, # 人员名称
+	                           concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 							   TIMESTAMPDIFF(DAY,now(),pua.CGSJ) as daynums, #  距离 出境天数
 							   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
 							   pua.CFRW AS cfrw,  #  出访任务
-							   "因公" AS businessType,  # 申请类型
+		                       case when pug.BAZT='1' then "干教" else "因公" end AS businessType,  # 申请类型
 							   pua.CGSPDW AS cgspdw, # 审批单位
-							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
-							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
+		                        IF (
+		                         mrp.SEX NOT IN ('1', '2'),
+		                               '未知',
+	                          	IF (mrp.SEX = 1, '男', '女')
+	                             	) AS sex,  # 性别
+		                       DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
 							   "暂无" AS applyTime,   # 申请日期
@@ -601,9 +603,10 @@
 
 						FROM
 							 oms_pub_apply pua
-								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		                    LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		                    LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		                    left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
+
 						UNION
 						SELECT
 							   pra.id AS id, # 业务id
@@ -769,19 +772,19 @@
 							   pua.leader_batch_id as batchId, # 批次id
 							   pua.SQZT   as applyStatus,    # 业务 流程状态
 							   b.b0101 AS department,  # "部门名称"
-							   a.a0101 AS userName, # 人员名称
+		                       concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 							   TIMESTAMPDIFF(DAY,now(),pua.CGSJ) as daynums, #  距离 出境天数
 							   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
 							   pua.CFRW AS cfrw,  #  出访任务
-							   "因公" AS businessType,  # 申请类型
-							   pua.CGSPDW AS cgspdw, # 审批单位
-							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		                       case when pug.BAZT='1' then "干教" else "因公" end AS businessType,  # 申请类型
+		                       pua.CGSPDW AS cgspdw, # 审批单位
+		                       IF (
+		                         mrp.SEX NOT IN ('1', '2'),
+	                         	'未知',
+		                         IF (mrp.SEX = 1, '男', '女')
+		                       ) AS sex,  # 性别
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
@@ -807,11 +810,11 @@
 
 
 						FROM
-							 oms_pub_apply pua
-								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
-								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
+		                oms_pub_apply pua
+	                	LEFT JOIN b01 b ON pua.b0100 = b.b0100
+		                LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		                left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
+					   LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 						UNION
 						SELECT
 							   pra.id AS id, # 业务id

@@ -2,6 +2,7 @@ package com.hxoms.modules.publicity.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.condition.entity.OmsCondition;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import org.apache.ibatis.annotations.Param;
@@ -203,4 +204,14 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/9/9 16:15
      */
     List<OmsPubApplyVO> getPubApplyListBy3Year(@Param("a0100") String a0100);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办的因公出国备案列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 11:28
+     */
+    List<OmsPubApplyVO> selectPubAllyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 }
