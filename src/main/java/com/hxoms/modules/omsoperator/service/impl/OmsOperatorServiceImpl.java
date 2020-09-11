@@ -214,7 +214,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         CfUser user = cfUserMapper.selectByPrimaryKey(operatorId);
         String userState = user.getUserState();
         //用户状态(注册0、正常1、撤销2、征求意见3、待审批4、拒绝5、待撤消6、暂停7)
-        if (userState.equals(Constants.USER_STATUS[1])){
+        if (userState.equals(Constants.USER_STATUS[1]) || userState.equals(Constants.USER_STATUS[7])){
             //状态为正常时操作显示：【撤消】、【审批信息】，将状态置为“待撤消”，系统通知经办人：“请到经办人交接页面办理交接手续”
            cfUserMapper.updateUserState(user.getUserId(),Constants.USER_STATUS[6]);
             msc ="请到经办人交接页面办理交接手续!";
@@ -1302,6 +1302,234 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             }
         }
 
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈查询经办人经办业务列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 9:58
+     */
+    @Override
+    public PageInfo getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
+        Integer pageNum = omsOperatorJBYWQueryParam.getPageNum();
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        Integer pageSize = omsOperatorJBYWQueryParam.getPageSize();
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
+        List<OmsOperatorJbywVO> omsOperatorJbywVOS = new ArrayList<>();
+        //业务类别集合
+        List<String> businessTypes = omsOperatorJBYWQueryParam.getBusinessType();
+        /**证照领取*/
+        List<OmsCerGetTaskVO> omsCerGetTasks = null;
+        /**注销证照*/
+        List<OmsCerCancellateLicense> omsCerCancellateLicenses = null;
+        /**撤销登记备案*/
+        List<OmsRegRevokeapply> omsRegRevokeapplies = null;
+        /**因公出国境*/
+        List<OmsPubApplyVO> omsPubApplyVOS = null;
+        /**因私出国境*/
+        List<OmsPriApplyVO> omsPriApplyVOS = null;
+        /** 延期回国*/
+        List<OmsPriDelayVO> omsPriDelayVOS = null;
+        if (businessTypes == null){
+            //查询所有
+            /**证照领取*/
+            omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+
+            /**注销证照*/
+            omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+
+            /**撤销登记备案*/
+            omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+
+            /**因公出国境*/
+            omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+
+            /**因私出国境*/
+            omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+
+            /** 延期回国*/
+            omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+
+        }else {
+            //根据类型查找相关的数据
+            for (String businessType:businessTypes) {
+                if (businessType.equals(Constants.handover_type[0])){
+                    /**证照领取*/
+                    omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[1])){
+                    /**因公出国境*/
+                    omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[2])){
+                    /**因私出国境*/
+                    omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[3])){
+                    /** 延期回国*/
+                    omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[4])){
+                    /**撤销登记备案*/
+                    omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[5])){
+                    /**注销证照*/
+                    omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+                }
+            }
+        }
+        /**证照领取*/
+        if (omsCerGetTasks != null){
+            for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[0]);
+                //姓名
+                omsOperatorJbywVO.setName(omsCerGetTask.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsCerGetTask.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerGetTask.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerGetTask.getPostrank());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerGetTask.getGetTime());
+                //业务结束时间
+                omsOperatorJbywVO.setEndTime(omsCerGetTask.getEndTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsCerGetTask.getRemarks());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因公出国境*/
+        if (omsPubApplyVOS != null){
+            for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[1]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPubApplyVo.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPubApplyVo.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPubApplyVo.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPubApplyVo.getJob());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPubApplyVo.getCgsj());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPubApplyVo.getHgsj());
+                //说明
+                omsOperatorJbywVO.setSm(omsPubApplyVo.getCfrw());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因私出国境*/
+        if (omsPriApplyVOS != null){
+            for (OmsPriApplyVO omsPriApplyVO:omsPriApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[2]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPriApplyVO.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPriApplyVO.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriApplyVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriApplyVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriApplyVO.getAbroadTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriApplyVO.getReturnTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriApplyVO.getAbroadReasons());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /** 延期回国*/
+        if (omsPriDelayVOS != null){
+            for (OmsPriDelayVO omsPriDelayVO:omsPriDelayVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[3]);
+                //姓名
+                omsOperatorJbywVO.setName(omsPriDelayVO.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsPriDelayVO.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriDelayVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriDelayVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriDelayVO.getApplyTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriDelayVO.getEstimateReturntime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriDelayVO.getDelayReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**撤销登记备案*/
+        if (omsRegRevokeapplies != null){
+            for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[4]);
+                //姓名
+                omsOperatorJbywVO.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsRegRevokeapply.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsRegRevokeapply.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsRegRevokeapply.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsRegRevokeapply.getCreateDate());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsRegRevokeapply.getApplyReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**注销证照*/
+        if (omsCerCancellateLicenses != null){
+            for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType(Constants.handover_type[5]);
+                //姓名
+                omsOperatorJbywVO.setName(omsCerCancellateLicense.getName());
+                //性别
+                omsOperatorJbywVO.setSex(omsCerCancellateLicense.getSex());
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerCancellateLicense.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerCancellateLicense.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerCancellateLicense.getCreateTime());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsCerCancellateLicense.getZxsm());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+
+
+        PageInfo info = new PageInfo(omsOperatorJbywVOS);
+        return info;
     }
 
     /**
