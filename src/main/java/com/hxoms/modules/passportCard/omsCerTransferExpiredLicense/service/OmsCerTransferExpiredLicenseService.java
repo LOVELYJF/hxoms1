@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -54,4 +55,14 @@ public interface OmsCerTransferExpiredLicenseService {
 	 * @Date: 2020/8/18 14:16
 	 */
 	void getTransferExpiredLicenseSave(List<CfCertificate> list);
+
+
+	/**
+	 * <b>功能描述: 打印二维码</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/11 14:16
+	 */
+	QrCode getTransferExpiredLicenseQrCode(List<CfCertificate> list);
 }
