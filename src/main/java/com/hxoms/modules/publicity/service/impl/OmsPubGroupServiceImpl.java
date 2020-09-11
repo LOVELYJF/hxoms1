@@ -52,8 +52,6 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     @Autowired
     private OmsPubDoccallbackdetailMapper pubDoccallbackdetailMapper;
     @Autowired
-    private OmsSupNakedSignMapper supNakedSignMapper;
-    @Autowired
     private OmsConditionService omsConditionService;
     @Autowired
     private OmsAttachmentMapper attachmentMapper;
