@@ -104,7 +104,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
-        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
+        	
 
 
 
@@ -117,12 +118,12 @@ public class OmsFileServiceImpl implements OmsFileService {
 
 
 
-        if (b01 == null){
-            throw new CustomMessageException("数据异常");
-        }
+//        if (b01 == null){
+//            throw new CustomMessageException("数据异常");
+//        }
         QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("TABLE_CODE", tableCode)
-                .eq("B0100", b01.getB0100())
+                .eq("B0100", userInfo.getOrgId())
                 .in("FILE_TYPE",fileType)
                 .orderByAsc("SORT_ID");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
@@ -140,7 +141,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 for (OmsFile omsfile : omsFileSystem) {
                     omsfile.setFileId(omsfile.getId());
                     omsfile.setId(UUIDGenerator.getPrimaryKey());
-                    omsfile.setB0100(b01.getB0100());
+                    omsfile.setB0100(userInfo.getOrgId());
                     omsfile.setCreateUser(userInfo.getId());
                     omsfile.setCreateTime(new Date());
                     int count = omsFileMapper.insert(omsfile);
@@ -151,16 +152,16 @@ public class OmsFileServiceImpl implements OmsFileService {
                 //复制文件
                 if (Constants.oms_business[1].equals(tableCode)){
                     //因私出国
-                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + b01.getB0100());
+                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + userInfo.getOrgId());
                 } else if(Constants.oms_business[2].equals(tableCode)){
                     //延期回国
-                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + b01.getB0100());
+                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
                 }
             }
             //重新查询
             queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
-                    .eq("B0100", b01.getB0100())
+                    .eq("B0100",userInfo.getOrgId())
                     .in("FILE_TYPE",fileType)
                     .orderByAsc("SORT_ID");
             omsFiles = omsFileMapper.selectList(queryWrapper);
@@ -488,7 +489,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
-        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+        
+//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
 
 
 //        //测试用的单位主键
@@ -502,7 +504,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         //查询文件
         QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
         queryWrapperFile.eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
-                .eq("B0100", b01.getB0100())
+                .eq("B0100", userInfo.getOrgId())
                 .eq("ID", abroadFileDestailParams.getFileId());
         OmsFile omsFile = omsFileMapper.selectOne(queryWrapperFile);
         if (omsFile == null){

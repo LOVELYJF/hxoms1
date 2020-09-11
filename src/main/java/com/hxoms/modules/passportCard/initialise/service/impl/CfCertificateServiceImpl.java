@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
@@ -16,6 +17,7 @@ import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
@@ -39,6 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -73,6 +76,45 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
 
     @Autowired
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
+
+    /**
+     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/10
+     */
+    @Override
+    public void exportExceptionCer(List<String> ids, HttpServletResponse response) {
+        if (ids == null || ids.size() < 1) {
+            throw new CustomMessageException("操作失败！");
+        }
+        List<ExportExceptionCer> getList = cfCertificateMapper.exportExceptionCer(ids);
+        if (getList.size()>0){
+           getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));
+        }
+        String[] headers="序号,姓名,'',身份证号,性别(必填项)1：男；2女；,出生日期（必填项）19880101,出入境起始时间（20050101），最大查询5年的出入境记录".split(",");
+        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,(List) getList,response);
+    }
+
+
+    /**
+     * @Desc: 初始化证照，导出未上缴证照统计
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: List<ExportNotProvicdeCer>
+     * @Date: 2020/9/10
+     */
+    @Override
+    public void exportNotProvicdeCer(List<String> ids, HttpServletResponse response){
+        if (ids==null||ids.size()<1){
+            throw new CustomMessageException("操作失败！");
+        }
+        List getList =cfCertificateMapper.exportNotProvicdeCer(ids);
+        String[] headers="序号,姓名,性别,单位,任职状态,职务,证照类型,证件号码,有效期至,管理单位,出生日期,签发单位,签发日期,出生地".split(",");
+        ExportExcelUtil.exportNotTitleExcel("未上缴证照统计",headers,getList,response);
+    }
+
 
     @Override
     public PageInfo<CfCertificate> selectCfCertificateIPage(CfCertificatePageParam cfCertificatePageParam) {

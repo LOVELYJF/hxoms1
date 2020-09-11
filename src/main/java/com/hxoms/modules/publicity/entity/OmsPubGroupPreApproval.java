@@ -74,7 +74,7 @@ public class OmsPubGroupPreApproval {
     @ColumnAnnotation(FieldName = "FYLYKZXM",   FieldDescription="费用来源开支项目")
     private String fylykzxm;
 
-    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源")
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源(0:填写，1：上传)")
     private String source;
 
 

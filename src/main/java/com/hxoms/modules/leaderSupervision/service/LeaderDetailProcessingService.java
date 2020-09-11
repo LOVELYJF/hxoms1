@@ -112,7 +112,7 @@ public interface LeaderDetailProcessingService {
 
     /**备案表查询列表**/
 
-    PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo);
+    PageInfo createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,Object[] bussinessIds);
 
     List<Map> selectGroupConditions();
 

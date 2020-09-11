@@ -46,6 +46,9 @@ public class ImportInterface {
     @ApiModelProperty(value="出生地点",required = true)
     private String csdd;
 
+    @ApiModelProperty(value="备案id",required = true)
+    private String omsId;
+
     @ApiModelProperty(value="比对结果",required = true)
     private String comparisonResult;
 
@@ -127,6 +130,14 @@ public class ImportInterface {
 
     public void setCsdd(String csdd) {
         this.csdd = csdd;
+    }
+
+    public String getOmsId() {
+        return omsId;
+    }
+
+    public void setOmsId(String omsId) {
+        this.omsId = omsId;
     }
 
     public String getComparisonResult() {

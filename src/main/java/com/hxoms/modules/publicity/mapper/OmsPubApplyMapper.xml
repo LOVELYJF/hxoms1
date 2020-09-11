@@ -522,7 +522,7 @@
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         <where>
             <if test="createUser != null and createUser != ''">
                 and oms_pub_apply.CREATE_USER = #{createUser}
