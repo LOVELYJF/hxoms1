@@ -111,5 +111,5 @@ public interface OmsOperatorHandoverMapper {
      * @Author: 李逍遥
      * @Date: 2020/9/11 16:47
      */
-    //List<OmsOperatorHandoverSubformVO> getOperatorWBJYW(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+    List<OmsOperatorHandoverSubformVO> getOperatorWBJYW(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
 }

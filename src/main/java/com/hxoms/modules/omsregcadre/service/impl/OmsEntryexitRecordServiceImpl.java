@@ -207,25 +207,43 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         exitWrapper.isNotNull("PRIAPPLY_ID");
         //因私申请出国境记录查询
         List<OmsEntryexitRecordVO> priApplyList = priApplyMapper.selectPriList(omsId);
+        List<OmsEntryexitRecordVO> newPriApplyList = new ArrayList<>();
         if (priApplyList!=null && priApplyList.size()>0){
-            for (OmsEntryexitRecordVO vo:priApplyList){
-                if ((vo.getAbroadTime()!=null && vo.getReturnTime()!=null)&&(vo.getRealAbroadTime()==null && vo.getRealReturnTime()==null)){
+            for (int i=0;i<priApplyList.size();i++){
+                OmsEntryexitRecordVO vo = priApplyList.get(i);
+                if ((vo.getAbroadTime()!=null && vo.getReturnTime()!=null)){
+                    vo.setNum(i+1);
                     vo.setLeibie("申报");
-                }else if ((vo.getAbroadTime()==null && vo.getReturnTime()==null)&&(vo.getRealAbroadTime()!=null && vo.getRealReturnTime()!=null)){
-                    vo.setLeibie("填写");
+                    newPriApplyList.add(vo);
+                }
+                if (vo.getRealAbroadTime()!=null && vo.getRealReturnTime()!=null){
+                    OmsEntryexitRecordVO txvo = new OmsEntryexitRecordVO();
+                    txvo.setNum(i+1);
+                    txvo = vo;
+                    txvo.setLeibie("填写");
+                    txvo.setAbroadTime(vo.getRealAbroadTime());
+                    txvo.setReturnTime(vo.getRealReturnTime());
+                    newPriApplyList.add(txvo);
+                }
+                List<OmsEntryexitRecordVO> oldexitRecordslist = baseMapper.selectRecordPriList(omsId);
+                if (oldexitRecordslist != null && oldexitRecordslist.size() > 0) {
+                    List<OmsEntryexitRecordVO> newexitRecordslist = getNewList(oldexitRecordslist);
+                    if (newexitRecordslist!=null && newexitRecordslist.size()>0){
+                        for (int j=0;j<newexitRecordslist.size();j++){
+                            OmsEntryexitRecordVO evo = newexitRecordslist.get(j);
+                            if (vo.getId().equals(evo.getPriapplyId())){
+                                evo.setNum(i+1);
+                                evo.setLeibie("公安");
+                                newPriApplyList.add(evo);
+                            }
+
+                        }
+                    }
                 }
             }
         }
-        List<OmsEntryexitRecordVO> oldexitRecordslist = baseMapper.selectRecordPriList(omsId);
-        if (oldexitRecordslist != null && oldexitRecordslist.size() > 0) {
-            List<OmsEntryexitRecordVO> newexitRecordslist = getNewList(oldexitRecordslist);
-            for (OmsEntryexitRecordVO evo:newexitRecordslist){
-                evo.setLeibie("公安");
-                priApplyList.add(evo);
-            }
-        }
         List<OmsEntryexitRecord> noMatchList = baseMapper.selectNoMatchList(omsId);
-        map.put("priApplyList", priApplyList);
+        map.put("newPriApplyList", newPriApplyList);
         map.put("noMatchList", noMatchList);
         return map;
     }
@@ -544,29 +562,28 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
          * 先判断是否延期回国，且晚于预计回国时间5天以上。
          * 若实际回国时间，在申请回国时间之后，且
          */
-        if (newEntry.after(oldEntry) && newEntry.compareTo(oldEntry)>5){
+        if (newEntry.after(oldEntry) && newEntry.compareTo(oldEntry)>5) {
             //判断是否有延期入境申请
-            boolean delay=CheckDelay(applyID,newEntry);
+            boolean delay = CheckDelay(applyID, newEntry);
             //没有申请延期，并且入境时间超过计划入境时间5天以上
-            if(delay==false && newEntry.compareTo(oldEntry)>5)
-            {
-                result+="未经申请延期入境\r\n";
+            if (delay == false && newEntry.compareTo(oldEntry) > 5) {
+                result += "未经申请延期入境\r\n";
             }
-            String[] dests=newDestination.split(",");
-            String oldDest=","+oldDestination+",";
-            for(int i=0;i<dests.length;i++)
-            {
-                if(dests[i].isEmpty()==false && oldDest.contains(","+dests[i]+",")==false)
-                {
-                    result+="擅自变更行程（"+dests[i]+"）\r\n";
-                }
-                if(sensitiveCountry.containsKey(dests[i]))
-                {
-                    result+="前往了"+sensitiveCountry.get(dests[i])+"（"+dests[i]+"）\r\n";
-                }
-            }
-
         }
+        String[] dests=newDestination.split(",");
+        String oldDest=","+oldDestination+",";
+        for(int i=0;i<dests.length;i++)
+        {
+            if(dests[i].isEmpty()==false && oldDest.contains(","+dests[i]+",")==false)
+            {
+                result+="擅自变更行程（"+dests[i]+"）\r\n";
+            }
+            if(sensitiveCountry.containsKey(dests[i]))
+            {
+                result+="前往了"+sensitiveCountry.get(dests[i])+"（"+dests[i]+"）\r\n";
+            }
+        }
+
         return result;
     }
 

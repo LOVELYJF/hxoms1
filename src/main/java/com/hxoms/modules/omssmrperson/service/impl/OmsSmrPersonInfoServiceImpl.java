@@ -11,8 +11,10 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
+import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrPersonInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
+import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -41,6 +43,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     private OmsSmrRecordInfoMapper smrRecordInfoMapper;
     @Autowired
     private OmsSmrCompareMapper smrCompareMapper;
+    @Autowired
+    private OmsSmrOldInfoMapper smrOldInfoMapper;
+    @Autowired
+    private OmsSmrOldInfoService smrOldInfoService;
 
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
 
@@ -133,102 +139,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     /** 导入涉密人员信息列表 */
-   /* @Override
-    public String uploadSmrExcel(String filePath, String importYear, String b0100, String userId) {
-        String msg = "";
-        List<Map<String, Object>> list = readExcel(filePath);
-        List<OmsSmrPersonInfo> srpList = new ArrayList<OmsSmrPersonInfo>();
-        List<OmsSmrRecordInfo> srrList = new ArrayList<OmsSmrRecordInfo>();
-        if(list.size() == 0){
-            msg = "选择的涉密人员统计表格式不正确，请下载模板后，按模板格式调整！";
-            return msg;
-        }
-        for(int i = 0; i <= list.size(); i++){
-            OmsSmrPersonInfo smrPersonInfo = new OmsSmrPersonInfo();
-            OmsSmrRecordInfo smrRecordInfo = new OmsSmrRecordInfo();
-            Map<String, Object> map = new HashMap<>();
-            map.put("name",list.get(i).get("name"));
-            map.put("birthDay",list.get(i).get("birthDay"));
-            List<OmsRegProcpersoninfo> rpList = regProcpersonInfoMapper.selectA0100ByMap(map);
-            String idCardNum = list.get(i).get("idCardNumber").toString();//身份证号
-            String srLevel = list.get(i).get("secretRelatedLevel").toString();//涉密等级
-            if(StringUtils.isNotBlank(idCardNum)){
-                if(idCardNum.length() != 18){
-                    msg = "姓名："+map.get("name")+",性别:"+map.get("sex")+",出生年月:"+map.get("birthDay");
-                    msg += ",身份证号码:"+idCardNum+",职务（级）:"+map.get("post")+",其身份证号码格式不正确;";
-                }
-            }
-            //封装涉密人员基本信息
-            smrPersonInfo.setId(UUIDGenerator.getPrimaryKey());
-            smrPersonInfo.setA0100(rpList.get(0).getA0100());
-            smrPersonInfo.setB0100(b0100);
-            smrPersonInfo.setIdCardNumber(idCardNum);
-            smrPersonInfo.setA0141(list.get(i).get("a0141").toString());
-            smrPersonInfo.setPost(list.get(i).get("post").toString());
-            smrPersonInfo.setPersonState(list.get(i).get("personState").toString());
-            smrPersonInfo.setSecretRelatedPost(list.get(i).get("secretRelatedPost").toString());
-            if(StringUtils.isNotBlank(srLevel)){
-                if(!"核心".equals(srLevel) && !"重要".equals(srLevel) && !"一般".equals(srLevel)){
-                    msg = "姓名："+map.get("name")+",性别:"+map.get("sex")+",出生年月:"+map.get("birthDay");
-                    msg += ",身份证号码:"+idCardNum+",职务（级）:"+map.get("post")+",其涉密等级格式不正确;";
-                }
-            }
-            smrPersonInfo.setSecretRelatedLevel(srLevel);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd ");
-            if(!"".equals(list.get(i).get("secretReviewDate").toString())){
-                try{
-                    Date srDate = simpleDateFormat.parse(list.get(i).get("secretReviewDate").toString());
-                    smrPersonInfo.setSecretReviewDate(srDate);
-                    smrRecordInfo.setSecretReviewDate(srDate);
-                } catch(ParseException px) {
-                    px.printStackTrace();
-                }
-            }
-            Date startDate = formatDate(list.get(i).get("startDate").toString());
-            if(startDate == null){
-                msg = "姓名："+map.get("name")+",性别:"+map.get("sex")+",出生年月:"+map.get("birthDay");
-                msg += ",身份证号码:"+idCardNum+",职务（级）:"+map.get("post")+",其脱密期管理开始日期格式不正确;";
-            }else{
-                smrPersonInfo.setStartDate(startDate);
-            }
-            Date finishDate = formatDate(list.get(i).get("finishDate").toString());
-            if(finishDate == null){
-                msg = "姓名："+map.get("name")+",性别:"+map.get("sex")+",出生年月:"+map.get("birthDay");
-                msg += ",身份证号码:"+idCardNum+",职务（级）:"+map.get("post")+",其脱密期管理结束日期格式不正确;";
-            }else{
-                smrPersonInfo.setFinishDate(finishDate);
-            }
-            smrPersonInfo.setUpdateUserId(userId);
-            smrPersonInfo.setUpdateTime(new Date());
-
-            srpList.add(smrPersonInfo);
-
-            //封装涉密人员备案信息
-            smrRecordInfo.setId(UUIDGenerator.getPrimaryKey());
-            smrRecordInfo.setB0100(b0100);
-            smrRecordInfo.setName(list.get(i).get("name").toString());
-            smrRecordInfo.setSex(list.get(i).get("sex").toString());
-            smrRecordInfo.setBirthDate(list.get(i).get("birthDay").toString());
-            smrRecordInfo.setIdCardNumber(idCardNum);
-            smrRecordInfo.setNation(list.get(i).get("nation").toString());
-            smrRecordInfo.setA0141(list.get(i).get("a0141").toString());
-            smrRecordInfo.setPost(list.get(i).get("post").toString());
-            smrRecordInfo.setSecretRelatedPost(list.get(i).get("secretRelatedPost").toString());
-            smrRecordInfo.setSecretRelatedLevel(srLevel);
-            smrRecordInfo.setStartDate(startDate);
-            smrRecordInfo.setFinishDate(finishDate);
-            smrRecordInfo.setImportUserId(userId);
-            smrRecordInfo.setImportDate(new Date());
-            smrRecordInfo.setImportYear(importYear);
-            String isMatching = getIsMatching(b0100,idCardNum) + "";
-            smrRecordInfo.setIsMatching(isMatching);
-
-            srrList.add(smrRecordInfo);
-        }
-        smrPersonInfoMapper.insertPersonList(srpList);
-        smrRecordInfoMapper.insertRecordList(srrList);
-        return msg;
-    }*/
     @Override
     public Map<String, Object> uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
         Map<String, Object> resultMap = new HashMap<>();

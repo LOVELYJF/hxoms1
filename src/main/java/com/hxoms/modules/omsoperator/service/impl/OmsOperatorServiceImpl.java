@@ -1317,16 +1317,9 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public PageInfo getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
-        Integer pageNum = omsOperatorJBYWQueryParam.getPageNum();
-        if (pageNum == null) {
-            pageNum = 1;
-        }
-        Integer pageSize = omsOperatorJBYWQueryParam.getPageSize();
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        //设置传入页码，以及每页的大小
-        PageHelper.startPage(pageNum, pageSize);
+        //分页
+        PageUtil.pageHelp(omsOperatorJBYWQueryParam.getPageNum() == null ? 1 : omsOperatorJBYWQueryParam.getPageNum(),
+                omsOperatorJBYWQueryParam.getPageSize() == null ? 10 : omsOperatorJBYWQueryParam.getPageSize());
         List<OmsOperatorJbywVO> omsOperatorJbywVOS = new ArrayList<>();
         //业务类别集合
         List<String> businessTypes = omsOperatorJBYWQueryParam.getBusinessType();
@@ -1532,6 +1525,24 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
 
 
         PageInfo info = new PageInfo(omsOperatorJbywVOS);
+        return info;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈通过条件查询经办人交接记录〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 16:47
+     */
+    @Override
+    public PageInfo getOperatorWBJYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
+//        //分页
+        PageUtil.pageHelp(omsOperatorJBYWQueryParam.getPageNum() == null ? 1 : omsOperatorJBYWQueryParam.getPageNum(),
+                omsOperatorJBYWQueryParam.getPageSize() == null ? 10 : omsOperatorJBYWQueryParam.getPageSize());
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorHandoverMapper.getOperatorWBJYW(omsOperatorJBYWQueryParam);
+        PageInfo info = new PageInfo(omsOperatorHandoverSubformVOS);
         return info;
     }
 
