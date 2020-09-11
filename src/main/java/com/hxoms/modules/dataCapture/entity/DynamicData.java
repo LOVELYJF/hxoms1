@@ -355,6 +355,27 @@ public class DynamicData {
             +  orcal_paging_last;
 
 
+    public static String commonSqlA30 = "" +
+            "        a3000," +
+            "        a0100," +
+            "        a3001," +
+            "        a3004," +
+            "        a3007a," +
+            "        a3034," +
+            "        a3038," +
+            "        3117a," +
+            "        a3137," +
+            "        a3101," +
+            "        id," +
+            "        is_deleted," +
+            "        modify_user," +
+            "        modify_time," +
+            "        time_stamp," +
+            "        node_id," +
+            "        sortid";
+    public static String orcalSqlA30 = orcal_paging_frist + commonSqlA30
+            + "  FROM A30 "
+            +  orcal_paging_last;
 
     static{
         String[] a02String = {

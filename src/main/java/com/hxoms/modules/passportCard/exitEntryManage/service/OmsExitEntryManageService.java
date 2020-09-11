@@ -27,9 +27,12 @@ public interface OmsExitEntryManageService extends IService<OmsCerExitEntryReper
     /**
      * @Desc: 查看签名
      * @Author: wangyunquan
-     * @Param: [id]
+     * @Param: [getId]
      * @Return: java.util.List<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo>
      * @Date: 2020/8/17
      */
-    List<ExitEntrySignInfo> selectSignById(String id);
+    List<ExitEntrySignInfo> selectSignByGetId(String getId);
+
 }
+
+

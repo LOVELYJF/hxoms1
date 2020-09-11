@@ -102,15 +102,29 @@ public class OmsOperatorController {
     /**
      * 功能描述: <br>
      * 〈撤销经办人〉
-     * @Param: [operatorId,handoverId]
+     * @Param: [operatorId]
      * @Return: com.hxoms.common.utils.Result
      * @Author: 李逍遥
      * @Date: 2020/5/8 14:39
      */
     @PostMapping("/revokeOperator")
-    public Result revokeOperator(String operatorId,String handoverId){
-        String smc = operatorService.revokeOperator(operatorId,handoverId);
+    public Result revokeOperator(String operatorId){
+        String smc = operatorService.revokeOperator(operatorId);
         return Result.success(smc);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取该撤销经办人未办结数据〉
+     * @Param: [operatorId, handoverId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/9/10 8:58
+     */
+    @GetMapping("/getUnfinished")
+    public Result getUnfinished(String operatorId,String handoverId){
+        operatorService.getUnfinished(operatorId,handoverId);
+        return Result.success();
     }
     /**
      * 功能描述: <br>

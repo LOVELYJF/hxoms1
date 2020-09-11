@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
@@ -30,25 +31,26 @@ public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRe
      * @Desc: 查询证照出入库记录
      * @Author: wangyunquan
      * @Param: [pageBean, cerInfo]
-     * @Return: com.hxoms.common.utils.PageBean
+     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfo>
      * @Date: 2020/8/17
      */
+
     @Override
-    public PageBean selectExitEntryRecord(PageBean pageBean, CerInfo cerInfo) {
+    public PageBean<CerExitEntryInfo> selectExitEntryRecord(PageBean pageBean, CerInfo cerInfo) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
-        PageInfo<OmsCerExitEntryRepertory> pageInfo=new PageInfo<OmsCerExitEntryRepertory>(omsCerExitEntryRepertoryMapper.selectExitEntryRecord(cerInfo));
+        PageInfo<CerExitEntryInfo> pageInfo=new PageInfo<CerExitEntryInfo>(omsCerExitEntryRepertoryMapper.selectExitEntryRecord(cerInfo));
         return PageUtil.packagePage(pageInfo);
     }
 
     /**
      * @Desc: 查看签名
      * @Author: wangyunquan
-     * @Param: [id]
+     * @Param: [cerId]
      * @Return: java.util.List<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo>
      * @Date: 2020/8/17
      */
     @Override
-    public List<ExitEntrySignInfo> selectSignById(String id) {
-        return omsCerExitEntryRepertoryMapper.selectSignById(id);
+    public List<ExitEntrySignInfo> selectSignByGetId(String getId) {
+        return omsCerExitEntryRepertoryMapper.selectSignById(getId);
     }
 }
