@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.certificateManage.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -20,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +46,34 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
 
     @Autowired
     private CfCertificateCollectionMapper cfCertificateCollectionMapper;
+
+    /**
+     * @Desc: 证照管理-证照信息管理-导出
+     * @Author: wuqingfan
+     * @Param: ids
+     * @Return: excel
+     * @Date: 2020/9/11
+     */
+    @Override
+    public  void exportSelectCerInfo(List<String> ids, HttpServletResponse response){
+        CerManageQueryParam param=new CerManageQueryParam();
+        param.setIds(ids);
+        List<CerManageInfo> getinfos=omsCerManageMapper.selectCerInfo(param);
+        List<ExportCerManageInfoVo> vos=new ArrayList<>();
+        if (getinfos.size()>0){
+            ExportCerManageInfoVo vo=null;
+            for (CerManageInfo m:getinfos){
+                vo=new ExportCerManageInfoVo();
+                BeanUtils.copyProperties(m,vo);
+                vos.add(vo);
+            }
+        }
+        String[] headers=("序号,姓名,性别,单位,任职状态,职务,证照类型,芯片类型,证照样式,证照号码,有效期至,管理单位,证照状态,保管状态," +
+                "人员状态,保管方式,机柜,位置,柜台编号,出生日期,签发单位,签发日期,出生地点,存疑信息").split(",");
+        ExportExcelUtil.exportNotTitleExcel("证照信息管理",headers,(List)vos,response);
+
+    }
+
     /**
      * @Desc: 查询证照信息
      * @Author: wangyunquan

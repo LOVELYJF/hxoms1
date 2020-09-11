@@ -1,6 +1,6 @@
 package com.hxoms.modules.omssmrperson.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
@@ -27,9 +27,9 @@ public class OmsSmrOldInfoController {
      * @param id(登记备案人员主键)
      */
     @GetMapping("/getSmrOldInfoById")
-    public Result getSmrOldInfoById(String id) {
+    public Result getSmrOldInfoById(Integer pageNum, Integer pageSize,String id) {
         try{
-            IPage<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(id);
+            PageInfo<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(pageNum,pageSize,id);
             return Result.success(oldInfoList);
         }catch (Exception e) {
             e.printStackTrace();

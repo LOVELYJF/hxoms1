@@ -19,7 +19,7 @@ import java.util.Map;
 @Repository
 public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
     //根据A0100获取涉密人员原涉密信息列表
-    IPage<OmsSmrOldInfo> getSmrOldInfoList(String a0100);
+    List<OmsSmrOldInfo> getSmrOldInfoList(String a0100);
 
     /**
      * 涉密信息列表
