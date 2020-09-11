@@ -20,7 +20,7 @@
       AS incumbencyStatusName,
         b.post,
         a.zjlx,
-        (SELECT item.item_name FROM sys_dict_item item WHERE item.dict_code = 'zjlx' AND a.zjlx= item.item_code) zjlxName,
+        (SELECT item.item_name FROM sys_dict_item item WHERE item.dict_code = 'ZJLX' AND a.zjlx= item.item_code) zjlxName,
         a.xplx,
         if(a.xplx='0','自带',if(a.xplx='1','粘贴',a.xplx)) xplxName,
         a.zjxs,
@@ -109,6 +109,16 @@
       <if test="xplx!=null">
         AND a.xplx=#{xplx}
       </if>
+
+<!--WQF ADD 勾选查询使用-->
+    <if test="ids!=null">
+      AND a.id in
+      <foreach collection="ids" index="index" item="item" open="("
+               separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+
     </where>
   </select>
 

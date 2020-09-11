@@ -333,10 +333,13 @@
             rp.SEX as sex,
             rp.WORK_UNIT as workUnit,
             rp.POST as post,
+            apply.ID as id,
             apply.ABROAD_REASONS as abroadReasons,
             apply.ABROAD_TIME as abroadTime,
             apply.RETURN_TIME as returnTime,
-            apply.GO_COUNTRY as goCountry
+            apply.GO_COUNTRY as goCountry,
+            apply.REAL_ABROAD_TIME as realAbroadTime,
+            apply.REAL_RETURN_TIME as realReturnTime
         FROM oms_pri_apply apply
         LEFT JOIN oms_reg_procpersoninfo rp on apply.PROCPERSON_ID = rp.ID
         WHERE PROCPERSON_ID = #{procpersonId}
