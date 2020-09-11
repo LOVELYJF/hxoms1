@@ -204,7 +204,12 @@ public class ExportExcelUtil {
         //在sheet里创建第二行
         HSSFRow row2 = sheet.createRow(2);/**标题栏*/
         for (int t_num = 0; t_num < headers.length; t_num++) {
-            sheet.setColumnWidth(t_num, 15 * 256);
+            if (t_num==0){
+                sheet.setColumnWidth(t_num, 10 * 256);
+            }else
+            {
+                sheet.setColumnWidth(t_num, 16* 256);
+            }
 
             HSSFCell title_cell = row2.createCell(t_num);
             title_cell.setCellStyle(title_style);
@@ -381,7 +386,12 @@ public class ExportExcelUtil {
         //在sheet里创建第二行
         HSSFRow row2 = sheet.createRow(0);/**标题栏*/
         for (int t_num = 0; t_num < headers.length; t_num++) {
-            sheet.setColumnWidth(t_num, 15 * 256);
+            if (t_num==0){
+                sheet.setColumnWidth(t_num, 10 * 256);
+            }else
+            {
+                sheet.setColumnWidth(t_num, 16* 256);
+            }
             HSSFCell title_cell = row2.createCell(t_num);
             title_cell.setCellStyle(title_style);
             title_cell.setCellValue(headers[t_num]);
