@@ -188,6 +188,8 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
 		omsSupNakedSign.setIsDelete("1");
 		omsSupNakedSign.setDeleteTime(new Date());
+		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
+		omsSupNakedSign.setModifyTime(new Date());
 		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
 		if(count < 1){
 			throw new CustomMessageException("取消裸官标识失败");
