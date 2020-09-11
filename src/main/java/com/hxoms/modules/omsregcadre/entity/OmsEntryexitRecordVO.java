@@ -17,6 +17,7 @@ import java.util.Date;
 public class OmsEntryexitRecordVO{
 
 
+    private int num;
     private String id;
     private String omsId;
     @ApiModelProperty(value="姓")
@@ -79,6 +80,14 @@ public class OmsEntryexitRecordVO{
     private Integer crjcount;
     @ApiModelProperty(value="类别")
     private String leibie;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public String getId() {
         return id;
