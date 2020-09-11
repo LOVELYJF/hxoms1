@@ -59,12 +59,10 @@ public class OmsPrintGetQrCodeController {
     @PostMapping("/printQrCode")
     public Result createPrintQrCode(@RequestBody RequestList<CreateQrCodeApply> requestList, HttpServletResponse httpServletResponse){
         try {
-            omsPrintGetQrCodeService.createPrintQrCode(requestList.getList());
+            return Result.success(omsPrintGetQrCodeService.createPrintQrCode(requestList.getList()));
         } catch (IOException e) {
-            e.printStackTrace();
             e.printStackTrace();
             throw new CustomMessageException("二维码生成失败，原因："+e.getMessage());
         }
-        return Result.success();
     }
 }
