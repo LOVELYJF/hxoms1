@@ -10,7 +10,7 @@ public class ExportCerManageInfoVo {
     private String workUnit;//单位
     private String incumbencyStatusName;//任职状态
     private String post;//职务
-    private Integer zjlx;//证照类型
+    private String zjlxName;//证照类型
     private String xplxName;//芯片类型
     private String zjxsName;//证照样式
     private String zjhm;//证照号码
@@ -69,12 +69,12 @@ public class ExportCerManageInfoVo {
         this.post = post;
     }
 
-    public Integer getZjlx() {
-        return zjlx;
+    public String getZjlxName() {
+        return zjlxName;
     }
 
-    public void setZjlx(Integer zjlx) {
-        this.zjlx = zjlx;
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
     }
 
     public String getXplxName() {
