@@ -35,6 +35,8 @@ public class CerManageInfo {
     //证照类型
     @ApiModelProperty(value = "证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
+    @ApiModelProperty(value = "证件类型名称")
+    private String zjlxName;
     //芯片类型
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
@@ -147,6 +149,14 @@ public class CerManageInfo {
 
     public void setIncumbencyStatusName(String incumbencyStatusName) {
         this.incumbencyStatusName = incumbencyStatusName;
+    }
+
+    public String getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
     }
 
     public String getPost() {
