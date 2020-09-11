@@ -1,5 +1,6 @@
 package com.hxoms.modules.dataCapture.synchdata;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
@@ -14,9 +15,7 @@ import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
-import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -438,22 +437,15 @@ public class Synchdata {
             String a0100 = targetMapA01.get(m).get("a0100").toString();
             targetPosts.put(a0100, new ArrayList<>());
         }
-        for (int i = 0; i < targetMapA02.size(); i++) {
-            Map map = targetMapA01.get(i);
-            String a0100 = map.get("a0100").toString();
-            List<Map> posts = targetPosts.get(a0100);
-            posts.add(map);
-        }
 
-        for (int j = 0; j < masterMapA02.size(); j++) {
-            Map map = masterMapA02.get(j);
-            String a0100 = map.get("a0100").toString();
-            List<Map> posts = masterPosts.get(a0100);
-            posts.add(map);
-        }
+        CachePost(targetMapA02, targetPosts);
+
+        CachePost(masterMapA02, masterPosts);
 
         for (int m = 0; m < targetMapA01.size(); m++) {
-            String a0100 = targetMapA01.get(m).get("a0100").toString();
+            Map cadreA01 = targetMapA01.get(m);
+            String a0100 = cadreA01.get("a0100").toString();
+
             //幹部庫職務
             List<Map> tposts = targetPosts.get(a0100);
             //出國境庫職務
@@ -468,7 +460,8 @@ public class Synchdata {
                     //沒有發生變化
                     if (tMap.get("A0200") == mMap.get("A0200") &&//職務表主鍵
                             tMap.get("a0201a") == mMap.get("a0201a") &&//任職機構名稱
-                            tMap.get("a0215a") == mMap.get("a0215a")) //職務名稱
+                            tMap.get("a0215a") == mMap.get("a0215a") &&//職務名稱
+                            tMap.get("a0255") == mMap.get("a0255")) //任职状态
                     {
                         exists = true;
                         break;
@@ -481,11 +474,14 @@ public class Synchdata {
                                     tMap.get("a0255") != mMap.get("a0255")))  //任职状态
                     {
                         exists = true;
-                        changePost = tMap;
+                        //在职的才处理职务变化，不在职的，全部职务都要处理脱密期，
+                        // 避免没有设置职务的免职时间而采用当前时间作为脱密期开始时间，
+                        //退出人员的脱密期开始时间取退出信息集的时间
+                        if (cadreA01.get("a0163").toString() == "1")
+                            changePost = tMap;
                         break;
                     }
                 }//mposts
-                String b0100 = "";
                 if (changePost != null) {
                     //缓存变化了的职务
                     hashMapUpdatedPost.put(a0100 + targetMapA01.get(m).get("a0201b").toString(), changePost);
@@ -494,6 +490,25 @@ public class Synchdata {
                     hashMapInsertedPost.put(a0100 + targetMapA01.get(m).get("a0201b").toString(), tMap);
                 }
             }//tposts
+
+            //如果干部库删除了的职务，出国境干部库对应的职务设置为不在职状态
+            List<Map> cadreDBDeletedPost = new ArrayList<>();
+            for (int i = 0; i < mposts.size(); i++) {
+                boolean find = false;
+                for (int j = 0; j < tposts.size(); j++) {
+                    if (tposts.get(j).get("id") == mposts.get(i).get("id")) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find == false) {
+                    mposts.get(i).put("a0255", "0");
+                    cadreDBDeletedPost.add(mposts.get(i));
+                }
+            }
+            if (cadreDBDeletedPost.size() > 0) {
+                insertAndUpdate.upDataTable("a0200", cadreDBDeletedPost, null);
+            }
         }//targetMapA01
     }//CacheDataToHashMap
 
@@ -512,7 +527,7 @@ public class Synchdata {
         for (String key : hashMapUpdatedPost.keySet()
         ) {
             Map updatePost = hashMapUpdatedPost.get(key);
-            String a0100 = updatePost.get("A0100").toString();
+            String a0100 = updatePost.get("a0100").toString();
             String b0100 = updatePost.get("a0201b").toString();
 
             List<Object> oldInfos = hashMapSmrOldPerson.get(a0100);
@@ -521,7 +536,10 @@ public class Synchdata {
             for (Object o : oldInfos
             ) {
                 OmsSmrOldInfo oldInfo = (OmsSmrOldInfo) o;
-                if (oldInfo.getA0100() != a0100 || oldInfo.getB0100() != b0100) continue;
+                //不是当前单位或者脱密开始时间已经设置，跳过
+                if (oldInfo.getA0100() != a0100 ||
+                        oldInfo.getB0100() != b0100 ||
+                        oldInfo.getStartDate() != null) continue;
 
                 CalcDeclassification(updatePost, oldInfo);
                 updateOldInfos.add(oldInfo);
@@ -555,14 +573,16 @@ public class Synchdata {
         CacheSmrOldInfo();
 
         //查询所有未撤销裸官
-        Page<OmsSupNakedSign> page=new Page<>();
+        Page<OmsSupNakedSign> page = new Page<>();
         page.setCurrent(1);
         page.setSize(100000);
-        OmsSupNakedSign nakedSign=new OmsSupNakedSign();
+        OmsSupNakedSign nakedSign = new OmsSupNakedSign();
         nakedSign.setIsDelete("0");
-        List<OmsSupNakedSign> nakedSigns = omsSupNakedSignService.getNakedOfficialList(page,nakedSign,null).getRecords();
+        List<OmsSupNakedSign> nakedSigns = omsSupNakedSignService.getNakedOfficialList(page, nakedSign, null).getRecords();
 
-        //为退出干部设置脱密期
+        //为退出干部设置脱密期，处理退出干部的裸官状态
+        //根据干综库的干部，如果出国境存在，并且状态不一致，且干综库的管理状态不是在职
+        //所有退出方式的干部都根据退出时间设置脱密期，没有设置退出信息集的，取当前时间作为脱密期开始时间
         List<OmsSmrOldInfo> smrOldInfos = new ArrayList<>();
         for (Map map : targetMapA01
         ) {
@@ -575,18 +595,22 @@ public class Synchdata {
                 //只处理脱密期没有计算过的，防止以前职务变化设置过脱密期的被修改
                 //以退出信息集的日期为脱密开始日期，没有退出信息的，以当前时间为脱密开始时间
 
+                //取原涉密信息
                 List<Object> oldInfos = hashMapSmrOldPerson.get(a0100);
                 if (oldInfos != null && oldInfos.size() > 0) {
                     String startDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
                     //检查是否有退出日期
                     Map exitMap = hashMapLeaveInfo.get(a0100);
                     if (exitMap != null && exitMap.get("A3004") != null && exitMap.get("A3004").toString().length() > 0) {
-                        startDate = exitMap.get("A3004").toString() + "01";
+                        startDate = exitMap.get("A3004").toString();
+                        if (startDate.length() < 7)
+                            startDate += "01";
                     }
                     Date declassificationStartDate = new SimpleDateFormat("yyyyMMdd").parse(startDate);
                     for (Object o : oldInfos
                     ) {
                         OmsSmrOldInfo oldInfo = (OmsSmrOldInfo) o;
+                        //已经设置过脱密期的，不再处理
                         if (oldInfo.getStartDate() != null) continue;
 
                         Date declassificationEndDate = CalcDeclassificationFinishDate(declassificationStartDate, oldInfo);
@@ -597,13 +621,11 @@ public class Synchdata {
                 }
 
                 //处理裸官
-                for(OmsSupNakedSign nakedSign1:nakedSigns){
-                    if(nakedSign1.getA0100()!=a0100) continue;
+                for (OmsSupNakedSign nakedSign1 : nakedSigns) {
+                    if (nakedSign1.getA0100() != a0100) continue;
                     nakedSign1.setIsDelete("1");
                     omsSupNakedSignService.updateOmsNaked(nakedSign1);
                 }
-
-
             }
         }
         if (smrOldInfos.size() > 0) {
@@ -611,24 +633,32 @@ public class Synchdata {
         }
 
         //处理调整期干部
-        PageInfo info = mobilizingcadreService.getAllMobilizingCadre(1,100000,null, "", "0");
+        PageInfo info = mobilizingcadreService.getAllMobilizingCadre(1, 100000, null, "", "0");
         List<Map> mobilizingCadres = info.getList();
-        for (Map map:mobilizingCadres
-             ) {
+        for (Map map : mobilizingCadres
+        ) {
             String a0100 = map.get("A0100").toString();
-            if(hashMapUpdatedPost.get(a0100)!=null||hashMapInsertedPost.get(a0100)!=null)
-            {
-                mobilizingcadreService.deleteMobilizingCadre(map.get("id").toString());
+            if (hashMapUpdatedPost.get(a0100) != null || hashMapInsertedPost.get(a0100) != null) {
+                mobilizingcadreService.updateStatus(a0100);
             }
+        }
+    }
+
+    private void CachePost(List<Map> a02, HashMap<String, List<Map>> post) {
+        for (int j = 0; j < a02.size(); j++) {
+            Map map = a02.get(j);
+            String a0100 = map.get("a0100").toString();
+            List<Map> posts = post.get(a0100);
+            posts.add(map);
         }
     }
 
     private void CalcDeclassification(Map post, OmsSmrOldInfo smrOldInfo) throws ParseException {
         String startDate = "";
-        if (post.get("B0100") == null || post.get("B0100").toString().length() <= 0) {
+        if (post.get("a0265") == null || post.get("a0265").toString().length() <= 0) {
             startDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
         } else {
-            startDate = post.get("A0265").toString();
+            startDate = post.get("a0265").toString();
         }
 
         Date declassificationStartDate = new SimpleDateFormat("yyyyMMdd").parse(startDate);
