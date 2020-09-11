@@ -5,6 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubform;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorHandoverSubformVO;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
@@ -308,5 +309,18 @@ public class OmsOperatorController {
     public Result getOperatorByB0100(String b0100){
         List<CfUser> users = operatorService.getOperatorByB0100(b0100);
         return Result.success(users);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈查询经办人经办业务列表〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 9:57
+     */
+    @GetMapping("/getOperatorJBYW")
+    public Result getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam){
+        PageInfo info = operatorService.getOperatorJBYW(omsOperatorJBYWQueryParam);
+        return Result.success(info.getList()).setTotal(info.getTotal());
     }
 }
