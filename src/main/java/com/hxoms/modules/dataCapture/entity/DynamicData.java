@@ -371,8 +371,7 @@ public class DynamicData {
             "        modify_user," +
             "        modify_time," +
             "        time_stamp," +
-            "        node_id," +
-            "        sortid";
+            "        node_id " ;
     public static String orcalSqlA30 = orcal_paging_frist + commonSqlA30
             + "  FROM A30 "
             +  orcal_paging_last;

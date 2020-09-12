@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc：TODO
@@ -46,6 +47,17 @@ public class CerGetTaskQueryParam {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "领取终止日期")
     private Date getEndTime;
+
+    //WQF add 为了导出增加的字段
+    private List<String> ids;//不必做swagger注释说明
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
+    }
 
     public String getRfB0000() {
         return rfB0000;

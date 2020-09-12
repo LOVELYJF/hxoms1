@@ -35,6 +35,11 @@ public class OmsOperatorJBYWQueryParam {
     /** 经办人ID*/
     private String operatorId;
 
+    /** 交接时间*/
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date handoverTime;
+
 
     public Integer getPageSize() {
         return pageSize;
@@ -74,5 +79,21 @@ public class OmsOperatorJBYWQueryParam {
 
     public void setOperatorId(String operatorId) {
         this.operatorId = operatorId;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Date getHandoverTime() {
+        return handoverTime;
+    }
+
+    public void setHandoverTime(Date handoverTime) {
+        this.handoverTime = handoverTime;
     }
 }

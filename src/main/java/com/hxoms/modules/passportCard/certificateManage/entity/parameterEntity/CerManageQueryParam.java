@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Desc：TODO
@@ -41,6 +42,9 @@ public class CerManageQueryParam {
     //芯片类型
     @ApiModelProperty(value="芯片类型(0:自带,1:粘贴)")
     private String xplx;
+
+    //WQF ADD 导出查询使用
+    private List<String> ids;
 
     public String getName() {
         return name;
@@ -112,5 +116,13 @@ public class CerManageQueryParam {
 
     public void setXplx(String xplx) {
         this.xplx = xplx;
+    }
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
     }
 }

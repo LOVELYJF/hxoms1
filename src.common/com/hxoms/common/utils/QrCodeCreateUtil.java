@@ -82,13 +82,13 @@ public class QrCodeCreateUtil {
      */
     public static void main(String[] args) throws IOException, WriterException {
 
-        String content = "http://localhost:5999/cfCertificate/excelToDB";
+        String content = "http://0:0:0:0:0:0:0:1:5999/conuterGet/selectCanGetCer?operatId=null&qrCodeId=AC340121-41E7-47AB-91E8-A67C81220B07";
         String path = "C:\\Users\\Lenovo\\Desktop\\qrCodeTest.jpg";
         ByteArrayOutputStream out=new ByteArrayOutputStream();
-        createQrCode(out, content,200,"JPEG");
+        createQrCode(out, content,190,"jpg");
         ByteArrayInputStream bin = new ByteArrayInputStream(out.toByteArray());
-        String info = readQrCode(bin);
-        System.out.println(info);
+        System.out.println(readQrCode(bin));
+        System.out.println("data:image/jpg;base64,"+Base64.encode(out.toByteArray()));
     }
 
 }

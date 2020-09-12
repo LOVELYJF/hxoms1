@@ -6,6 +6,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.keySupervision.nakedOfficial.controller.base.BaseController;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -90,6 +91,20 @@ public class OmsCerTransferExpiredLicenseController extends BaseController {
 	public Result getTransferExpiredLicenseSave(@RequestBody List<CfCertificate> list){
 		omsCerTransferExpiredLicenseService.getTransferExpiredLicenseSave(list);
 		return Result.success();
+	}
+
+
+	/**
+	 * <b>功能描述: 打印二维码</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/11 14:16
+	 */
+	@PostMapping("/getTransferExpiredLicenseQrCode")
+	public Result getTransferExpiredLicenseQrCode(@RequestBody List<CfCertificate> list){
+		QrCode qrCode = omsCerTransferExpiredLicenseService.getTransferExpiredLicenseQrCode(list);
+		return Result.success(qrCode);
 	}
 
 }

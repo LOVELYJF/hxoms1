@@ -22,7 +22,7 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     //获取省外办备案申请列表
     PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String, String> param) throws ParseException;
     //添加团体预备案申请信息
-    String insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception;
+    Map<String,String> insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception;
     //获取备案步骤任务数
     void updateTimeTask(OmsPubGroupAndApplyList pubGroupAndApplyList, String bgyy);
     //修改团体预备案申请信息

@@ -72,6 +72,12 @@ public class OmsSmrOldInfo {
     @ColumnAnnotation(FieldName = "PROC_PERSON_ID",   FieldDescription="人员备案表主键")
     private String procPersonId;
 
+    @ColumnAnnotation(FieldName = "PERSON_STATE",   FieldDescription="人员状态")
+    private String personState;
+
+    @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务职级")
+    private String post;
+
     public String getId() {
         return id;
     }
@@ -198,5 +204,21 @@ public class OmsSmrOldInfo {
 
     public void setProcPersonId(String procPersonId) {
         this.procPersonId = procPersonId;
+    }
+
+    public String getPersonState() {
+        return personState;
+    }
+
+    public void setPersonState(String personState) {
+        this.personState = personState;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
     }
 }
