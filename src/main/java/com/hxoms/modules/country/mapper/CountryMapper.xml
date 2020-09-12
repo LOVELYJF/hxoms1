@@ -45,7 +45,8 @@
 
 	<!-- 保存限制性国家信息 -->
 	<insert id="addSensitiveMaintain">
-		insert into oms_sensitive_maintain(COUNTRY_ID,SENSITIVE_LIMIT_ID) values (#{id},#{sensitiveLimitId})
+		insert into oms_sensitive_maintain(COUNTRY_ID,SENSITIVE_LIMIT_ID,IS_DELETE)
+		values (#{countryId},#{sensitiveLimitId},#{isDelete})
 	</insert>
 
 	<select id="selectIdByName" resultType="java.lang.String" parameterType="java.lang.String">

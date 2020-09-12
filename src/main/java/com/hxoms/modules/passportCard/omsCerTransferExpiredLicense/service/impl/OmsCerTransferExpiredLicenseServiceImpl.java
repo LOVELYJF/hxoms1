@@ -5,15 +5,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.CerTypeUtil;
-import com.hxoms.common.utils.Constants;
-import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.common.utils.UtilDateTime;
+import com.hxoms.common.utils.*;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CreateQrCodeApply;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
+import com.hxoms.modules.passportCard.printGetQrCode.service.OmsPrintGetQrCodeService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -27,10 +31,7 @@ import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <b>功能描述: 过期证照转存业务层接口实现类</b>
@@ -48,6 +49,12 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	private CfCertificateMapper cfCertificateMapper;
 	@Autowired
 	private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
+	@Autowired
+	private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
+	@Autowired
+	private OmsCerGetTaskMapper omsCerGetTaskMapper;
+	@Autowired
+	private OmsPrintGetQrCodeService omsPrintGetQrCodeService;
 	/**
 	 * <b>功能描述: 查询过期证照信息</b>
 	 * @Param: [page,list,expiredQueryStartTime,expiredQueryEndTime,cfCertificate]
@@ -258,5 +265,65 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 		}else {
 			throw new CustomMessageException("参数错误");
 		}
+	}
+
+
+	/**
+	 * <b>功能描述: 打印二维码</b>
+	 * @Param: [list]
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/9/11 14:16
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public QrCode getTransferExpiredLicenseQrCode(List<CfCertificate> list) {
+		List<CreateQrCodeApply> createQrCodeApplyList = new ArrayList<CreateQrCodeApply>();
+		for(CfCertificate cfCertificate : list){
+			if((cfCertificate.getSaveStatus()).equals(String.valueOf(Constants.CER_SAVE_STATUS[0]))){
+				//将正常保管的证照生成证照领取任务
+				OmsCerGetTask omsCerGetTask = new OmsCerGetTask();          //创建证照领取对象
+				omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
+				omsCerGetTask.setBusiId(cfCertificate.getId());
+				omsCerGetTask.setName(cfCertificate.getName());
+				omsCerGetTask.setZjlx(cfCertificate.getZjlx());
+				omsCerGetTask.setDataSource("3");
+				omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getId());
+				omsCerGetTask.setCreateTime(new Date());
+				omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
+				omsCerGetTask.setOmsId(cfCertificate.getOmsId());
+				omsCerGetTask.setGetStatus("0");                //未领取
+				omsCerGetTask.setHappenDate(new Date());
+				omsCerGetTask.setCerId(cfCertificate.getId());
+				omsCerGetTask.setZjhm(cfCertificate.getZjhm());
+
+				//根据备案主键在登记备案表中查询证照领取任务表中需要的信息
+				OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoMapper.selectById(cfCertificate.getOmsId());
+				omsCerGetTask.setRfB0000(omsRegProcpersoninfo.getRfB0000());
+
+				int count2 = omsCerGetTaskMapper.insert(omsCerGetTask);
+				if(count2 < 1){
+					throw new CustomMessageException("插入数据到证照领取任务表失败");
+				}
+
+				CreateQrCodeApply createQrCodeApply = new CreateQrCodeApply();
+				createQrCodeApply.setGetId(omsCerGetTask.getId());
+				createQrCodeApply.setName(cfCertificate.getName());
+				createQrCodeApply.setZjhm(cfCertificate.getZjhm());
+				createQrCodeApply.setZjlx(cfCertificate.getZjlx());
+				createQrCodeApplyList.add(createQrCodeApply);
+
+			}else {
+				throw new CustomMessageException("请选择正常保管的证照进行打印二维码");
+			}
+		}
+
+		QrCode qrCode = null;
+		try {
+			qrCode = omsPrintGetQrCodeService.createPrintQrCode(createQrCodeApplyList);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return qrCode;
 	}
 }
