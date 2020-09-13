@@ -1,11 +1,7 @@
 package com.hxoms.modules.passportCard.counterGet.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.PageBean;
-import com.hxoms.common.utils.PageUtil;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
@@ -116,14 +112,12 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
      * @Date: 2020/8/18
      */
     @Override
-    public PageBean<CerGetTaskInfo> selectCanGetCer(PageBean pageBean,CerGetTaskQueryParam cerGetTaskQueryParam) {
+    public List<CerGetTaskInfo> selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam) {
         //校验领取人与二维码打印者是否为同一个人
 /*        String exist=omsCerGetTaskMapper.selectUserIsExist(cerGetTaskQueryParam);
         if(exist==null)
             throw new CustomMessageException("领取人与二维码打印者不是同一个人，请核实！");*/
-        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageNum());
-        PageInfo<CerGetTaskInfo> pageInfo=new PageInfo<CerGetTaskInfo>(omsCerGetTaskMapper.selectCanGetCer(cerGetTaskQueryParam));
-        return PageUtil.packagePage(pageInfo);
+        return omsCerGetTaskMapper.selectCanGetCer(cerGetTaskQueryParam);
     }
 
     /**

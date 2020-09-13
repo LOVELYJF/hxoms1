@@ -122,4 +122,21 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      */
     void sendCjNotice(List<SendNotice> sendNotices);
 
+    /**
+     * @Desc: 生成打印文件
+     * @Author: wangyunquan
+     * @Param: [fileQueryList]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFile>
+     * @Date: 2020/9/13
+     */
+    List<PrintFile> createFileListByCode(List<FileQuery> fileQueryList);
+
+    /**
+     * @Desc: 打印文件详情
+     * @Author: wangyunquan
+     * @Param: [broadFileDestailParams]
+     * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFileDetail
+     * @Date: 2020/9/13
+     */
+    PrintFileDetail selectFileDestail(FileDestailParams fileDestailParams);
 }
