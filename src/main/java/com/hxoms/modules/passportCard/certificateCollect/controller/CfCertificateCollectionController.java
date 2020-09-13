@@ -203,8 +203,8 @@ public class CfCertificateCollectionController {
      * @Date: 2020/9/13
      */
     @ApiOperation(value="生成打印文件")
-    @GetMapping("/createFileListByCode")
-    public Result<List<PrintFile>> createFileListByCode(RequestList<FileQuery> requestList) {
+    @PostMapping("/createFileListByCode")
+    public Result<List<PrintFile>> createFileListByCode(@RequestBody @Validated RequestList<FileQuery> requestList) {
         return Result.success(cfCertificateCollectionService.createFileListByCode(requestList.getList()));
     }
 
@@ -217,7 +217,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value="富文本文件详情")
     @GetMapping("/selectFileDestail")
-    public Result<PrintFileDetail> selectFileDestail(FileDestailParams fileDestailParams){
+    public Result<PrintFileDetail> selectFileDestail(@Validated FileDestailParams fileDestailParams){
         return Result.success(cfCertificateCollectionService.selectFileDestail(fileDestailParams));
     }
 
