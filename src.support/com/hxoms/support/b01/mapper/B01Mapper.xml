@@ -40,9 +40,9 @@
         <result column="b0236" jdbcType="INTEGER" property="b0236"/>
         <result column="b0234" jdbcType="INTEGER" property="b0234"/>
         <result column="b0121" jdbcType="VARCHAR" property="b0121"/>
-        <result column="ORGANIZATION_CODE" jdbcType="VARCHAR" property="ORGANIZATION_CODE"/>
-        <result column="CONTACTS" jdbcType="VARCHAR" property="CONTACTS"/>
-        <result column="PHONE" jdbcType="VARCHAR" property="PHONE"/>
+        <result column="ORGANIZATION_CODE" jdbcType="VARCHAR" property="organization_code"/>
+        <result column="CONTACTS" jdbcType="VARCHAR" property="contacts"/>
+        <result column="PHONE" jdbcType="VARCHAR" property="phone"/>
         <result column="bx001" jdbcType="INTEGER" property="bx001"/>
         <result column="b0268" jdbcType="VARCHAR" property="b0268"/>
         <result column="b0269" jdbcType="VARCHAR" property="b0269"/>
@@ -93,8 +93,8 @@
         #{b0140,jdbcType=VARCHAR}, #{b0141,jdbcType=VARCHAR},
         #{b0142,jdbcType=VARCHAR}, #{b0143,jdbcType=VARCHAR}, #{b0150,jdbcType=INTEGER},
         #{b0236,jdbcType=INTEGER}, #{b0234,jdbcType=INTEGER}, #{b0121,jdbcType=VARCHAR},
-        #{b0180,jdbcType=LONGVARCHAR}, #{ORGANIZATION_CODE,jdbcType=VARCHAR}
-        , #{CONTACTS,jdbcType=VARCHAR}, #{PHONE,jdbcType=VARCHAR},
+        #{b0180,jdbcType=LONGVARCHAR}, #{organization_code,jdbcType=VARCHAR}
+        , #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
         #{bx001,jdbcType=INTEGER}, #{b0268,jdbcType=VARCHAR}, #{b0269,jdbcType=VARCHAR},
         #{POSICOUNTZJ,jdbcType=VARCHAR}, #{ORGPARTTYPE,jdbcType=VARCHAR}
         , #{ORGSTANDARDNAME,jdbcType=VARCHAR}, #{SUPERVISOR,jdbcType=VARCHAR})
@@ -437,8 +437,8 @@
     sortid=#{orderIndex},
     modify_user=#{modifyUser}, modify_time=#{modifyTime},
     b0140=#{b0140},b0141=#{b0141},b0142=#{b0142},b0143=#{b0143},b0150=#{b0150},b0180=#{b0180},
-    b0236=#{b0236},b0234=#{b0234},b0121=#{b0121},ORGANIZATION_CODE=#{ORGANIZATION_CODE},
-    CONTACTS=#{CONTACTS},PHONE=#{PHONE},bx001=#{bx001},
+    b0236=#{b0236},b0234=#{b0234},b0121=#{b0121},ORGANIZATION_CODE=#{organization_code},
+    CONTACTS=#{contacts},PHONE=#{phone},bx001=#{bx001},
     b0268=#{b0268},b0269=#{b0269},POSICOUNTZJ=#{POSICOUNTZJ},ORGPARTTYPE=#{ORGPARTTYPE},
     ORGSTANDARDNAME=#{ORGSTANDARDNAME},SUPERVISOR=#{SUPERVISOR}
     WHERE b0100=#{b0100}

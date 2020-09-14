@@ -51,7 +51,7 @@ public class DecisionServiceImpl implements DecisionService {
         if (pid == null){
             pid = "";
         }
-        String sql = "insert into sys_decision_analysis (id,pid,node_name,order_index) values (uuid.Nextval," +
+        String sql = "insert into sys_decision_analysis (id,pid,node_name,order_index) values (UUID()," +
                      "'"+pid+"'," +
                      "'"+decision.getNodeName()+"'," +
                      "'"+decision.getOrderIndex()+"');";
@@ -187,7 +187,7 @@ public class DecisionServiceImpl implements DecisionService {
         if (pid == null){
             pid = "";
         }
-        String sql = "insert into decision_show (id,pid,show_way,json) values(uuid.Nextval," +
+        String sql = "insert into decision_show (id,pid,show_way,json) values(UUID()," +
                      "'"+pid+"','"+decisionConfig.getShowWay()+"'," +
                      "'"+decisionConfig.getJson()+"')";
         SqlVo sqlVo = SqlVo.getInstance(sql);
