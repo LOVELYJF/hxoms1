@@ -141,7 +141,7 @@
 			b.B0101 as 'b0101'
 		from  a01 a
 		inner join a02 a2 on a.a0100=a2.a0100
-		inner join b01 b on a2.a0201b=b.b0111
+		inner join b01 b on a2.a0201b=b.b0100
 
 		<where>
 			<trim suffixOverrides="and">
@@ -160,11 +160,11 @@
     from a01 c inner join  a02 d
     on c.a0100 = d.a0100
     INNER JOIN
-    (select b0111 from b01) e
+    (select b0100 from b01) e
     ON
-    d.a0201b=e.b0111
+    d.a0201b=e.b0100
     where
-    e.b0111 = #{orgId,jdbcType=VARCHAR} and d.a0255='1'
+    e.b0100 = #{orgId,jdbcType=VARCHAR} and d.a0255='1'
   </select>
 
 	<!--查询数据信息集-->
@@ -186,7 +186,7 @@
 			a02.A0215A as 'post'
 		from a01 a
 		join a02 a02  on a.a0100 = a02.a0100
-		join b01 b  on a02.a0201b = b.b0111
+		join b01 b  on a02.a0201b = b.b0100
 		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
 		join person_org_order poo on poo.a01000 = a.a0100
 		<where>
@@ -302,9 +302,9 @@
     from a01 c inner join  a02 d
     on c.a0100 = d.a0100
     INNER JOIN
-    (select b0111 from b01) e
+    (select b0100 from b01) e
     ON
-    d.a0201b=e.b0111
+    d.a0201b=e.b0100
     where
     c.A0101 like "%"#{name,jdbcType=VARCHAR}"%" and d.a0255='1'
 

@@ -56,28 +56,28 @@
     <insert id="copyGrantModule">
        insert into cf_role_module
         (id, role_id, mu_id)
-        select uuid.Nextval,#{targetRoleId},rm.mu_id
+        select UUID(),#{targetRoleId},rm.mu_id
         from cf_role_module rm
         where rm.role_id=#{srcRoleId}
     </insert>
     <insert id="copyGrantOrg">
         insert into cf_roleb01
         (id, role_id, org_id)
-        select uuid.Nextval,#{targetRoleId},org_id
+        select UUID(),#{targetRoleId},org_id
         from cf_roleb01
         where role_id=#{srcRoleId}
     </insert>
     <insert id="copyGrantLeaderType">
         insert into cf_role_leader_info
         (id, role_id, leadertype_id,info_id)
-        select uuid.Nextval,#{targetRoleId},leadertype_id,info_id
+        select UUID(),#{targetRoleId},leadertype_id,info_id
         from cf_role_leader_info
         where role_id=#{srcRoleId}
         </insert>
     <insert id="copyGrantSystem">
         insert into cf_role_system
         (id, role_id, system_id)
-        select uuid.Nextval,#{targetRoleId},system_id
+        select UUID(),#{targetRoleId},system_id
         from cf_role_system
         where role_id=#{srcRoleId}
         </insert>
@@ -131,9 +131,9 @@
         ORDER BY orderindex
     </select>
     <select id="selectGrantOrg" resultType="java.lang.String">
-        select b.b0111  from cf_roleb01 rb
+        select b.b0100  from cf_roleb01 rb
         inner join b01 b
-        on rb.org_id=b.b0111
+        on rb.org_id=b.b0100
         where rb.role_id=#{roleId}
     </select>
 

@@ -96,11 +96,19 @@ public class SystemInfoServiceImpl implements SystemInfoService {
     public List<SystemInfo> selectCurrUserGrantSystemInfo() {
         User user = userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
         //查询用户所属机构的系统权限
-        List<SystemInfo> currUserSystemInfoList = systemInfoMapper.selectOrgGrantSystemInfo(user.getOrgId());
-        //判断用户是管理员还是普通用户;管理员直接返回,普通用户要重新查询和机构的权限取交集
-        if (!Constants.USER_TYPES[0].equals(user.getUserType())) {
+        List<SystemInfo> currUserSystemInfoList =null;
+        if (Constants.USER_TYPES[0].equals(user.getUserType())||//系统管理员
+                Constants.USER_TYPES[1].equals(user.getUserType())) {//超级管理员
+            currUserSystemInfoList = systemInfoMapper.selectAllSystem();
+        }
+        else if (Constants.USER_TYPES[4].equals(user.getUserType())){//各单位管理员直接查询所属机构所拥有的的机构权限
+            currUserSystemInfoList = systemInfoMapper.selectOrgGrantSystemInfo(user.getOrgId());
+        }
+        else {
+            //普通用户所拥有的权限
             currUserSystemInfoList = systemInfoMapper.selectUserGrantSystemInfo(user.getId());
         }
+
         return currUserSystemInfoList == null ? new ArrayList<>() : currUserSystemInfoList;
     }
 }

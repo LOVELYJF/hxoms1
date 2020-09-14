@@ -26,52 +26,14 @@ public class B01 {
     private String b0127;
     //单位性质类别
     private String b0131;
-    //单位所属行业
-    private String b0134;
-    //单位工作职能
-    private String b0137;
-    //隶属单位名称
-    private String b0144a;
-    //隶属单位代码
-    private String b0144b;
-    //领导班子主管单位名称
-    private String b0151a;
-    //领导班子主管单位代码
-    private String b0151b;
-    //领导班子协管单位名称
-    private String b0154a;
-    //领导班子协管单位代码
-    private String b0154b;
-    //归口管理单位名称
-    private String b0157a;
-    //归口管理单位代码
-    private String b0157b;
-    //单位负责人
-    private String b0161;
     //单位成立批准日期
     private String b0164;
     //单位成立批准文号
     private String b0167;
-    //单位成立批准机关名称
-    private String b0171a;
-    //单位成立批准机关代码
-    private String b0171b;
-    //有中共党员标识
-    private String b0174;
-    //有中共组织标识
-    private String b0177;
-    //单位撤销批准日期
-    private String b0181;
     //正职领导职数
     private Integer b0183;
-    //单位撤销批准文号
-    private String b0184;
     //副领导职数
     private Integer b0185;
-    //单位撤销批准机关名称
-    private String b0187a;
-    //单位撤销批准机关代码
-    private String b0187b;
     //同级正职非领导职数
     private String b0188;
     //同级副职非领导职数
@@ -88,10 +50,6 @@ public class B01 {
     private String b0193;
     //法人单位标识（1=法人 2=内设 3=机构分组）
     private String b0194;
-    //单位说明
-    private String b0197;
-    //图标
-    private String b0198;
     //行政编制数
     private Integer b0227;
     //参照公务员法管理事业编制数
@@ -102,20 +60,12 @@ public class B01 {
     private String b0238;
     //参照公务员法管理审批文号
     private String b0239;
-    //县以下机关标识
-    private String b0240;
     //排序
     private Integer orderIndex;
-    //出现在PAD移动端作为机构分类
-    private String padAsOrg;
-    //单位统计标识
-    private String b0199;
     //修改用户
     private String modifyUser;
     //修改时间
     private String modifyTime;
-    //机构级别
-    private String levelIndex;
     //统计单位编码
     private String b0140;
     //统计单位上级编码
@@ -134,14 +84,108 @@ public class B01 {
     private String b0121;
     //备注
     private String b0180;
-    //job_number_desc
-    private String jobNumberDesc;
+
+    public String getOrganization_code() {
+        return organization_code;
+    }
+
+    public void setOrganization_code(String organization_code) {
+        this.organization_code = organization_code;
+    }
+
+    public String getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     //组织机构代码
-    private String ORGANIZATION_CODE;
+    private String organization_code;
     //联系人
-    private String CONTACTS;
+    private String contacts;
     //联系电话
-    private String PHONE;
+    private String phone;
+
+    public Integer getBx001() {
+        return bx001;
+    }
+
+    public void setBx001(Integer bx001) {
+        this.bx001 = bx001;
+    }
+
+    public String getB0268() {
+        return b0268;
+    }
+
+    public void setB0268(String b0268) {
+        this.b0268 = b0268;
+    }
+
+    public String getB0269() {
+        return b0269;
+    }
+
+    public void setB0269(String b0269) {
+        this.b0269 = b0269;
+    }
+
+    public String getPOSICOUNTZJ() {
+        return POSICOUNTZJ;
+    }
+
+    public void setPOSICOUNTZJ(String POSICOUNTZJ) {
+        this.POSICOUNTZJ = POSICOUNTZJ;
+    }
+
+    public String getORGPARTTYPE() {
+        return ORGPARTTYPE;
+    }
+
+    public void setORGPARTTYPE(String ORGPARTTYPE) {
+        this.ORGPARTTYPE = ORGPARTTYPE;
+    }
+
+    public String getORGSTANDARDNAME() {
+        return ORGSTANDARDNAME;
+    }
+
+    public void setORGSTANDARDNAME(String ORGSTANDARDNAME) {
+        this.ORGSTANDARDNAME = ORGSTANDARDNAME;
+    }
+
+    public String getSUPERVISOR() {
+        return SUPERVISOR;
+    }
+
+    public void setSUPERVISOR(String SUPERVISOR) {
+        this.SUPERVISOR = SUPERVISOR;
+    }
+
+    //其他领导职数
+    private Integer bx001;
+    //参照公务员法管理申请日期
+    private String b0268;
+    //参照公务员法管理申请文号
+    private String b0269;
+    //职级公务员职数情况
+    private String POSICOUNTZJ;
+    //党委/党组
+    private String ORGPARTTYPE;
+    //机构标准简称
+    private String ORGSTANDARDNAME;
+    //上级主管单位
+    private String SUPERVISOR;
     public String getB0100() {
         return b0100;
     }
@@ -222,94 +266,6 @@ public class B01 {
         this.b0131 = b0131;
     }
 
-    public String getB0134() {
-        return b0134;
-    }
-
-    public void setB0134(String b0134) {
-        this.b0134 = b0134;
-    }
-
-    public String getB0137() {
-        return b0137;
-    }
-
-    public void setB0137(String b0137) {
-        this.b0137 = b0137;
-    }
-
-    public String getB0144a() {
-        return b0144a;
-    }
-
-    public void setB0144a(String b0144a) {
-        this.b0144a = b0144a;
-    }
-
-    public String getB0144b() {
-        return b0144b;
-    }
-
-    public void setB0144b(String b0144b) {
-        this.b0144b = b0144b;
-    }
-
-    public String getB0151a() {
-        return b0151a;
-    }
-
-    public void setB0151a(String b0151a) {
-        this.b0151a = b0151a;
-    }
-
-    public String getB0151b() {
-        return b0151b;
-    }
-
-    public void setB0151b(String b0151b) {
-        this.b0151b = b0151b;
-    }
-
-    public String getB0154a() {
-        return b0154a;
-    }
-
-    public void setB0154a(String b0154a) {
-        this.b0154a = b0154a;
-    }
-
-    public String getB0154b() {
-        return b0154b;
-    }
-
-    public void setB0154b(String b0154b) {
-        this.b0154b = b0154b;
-    }
-
-    public String getB0157a() {
-        return b0157a;
-    }
-
-    public void setB0157a(String b0157a) {
-        this.b0157a = b0157a;
-    }
-
-    public String getB0157b() {
-        return b0157b;
-    }
-
-    public void setB0157b(String b0157b) {
-        this.b0157b = b0157b;
-    }
-
-    public String getB0161() {
-        return b0161;
-    }
-
-    public void setB0161(String b0161) {
-        this.b0161 = b0161;
-    }
-
     public String getB0164() {
         return b0164;
     }
@@ -326,46 +282,6 @@ public class B01 {
         this.b0167 = b0167;
     }
 
-    public String getB0171a() {
-        return b0171a;
-    }
-
-    public void setB0171a(String b0171a) {
-        this.b0171a = b0171a;
-    }
-
-    public String getB0171b() {
-        return b0171b;
-    }
-
-    public void setB0171b(String b0171b) {
-        this.b0171b = b0171b;
-    }
-
-    public String getB0174() {
-        return b0174;
-    }
-
-    public void setB0174(String b0174) {
-        this.b0174 = b0174;
-    }
-
-    public String getB0177() {
-        return b0177;
-    }
-
-    public void setB0177(String b0177) {
-        this.b0177 = b0177;
-    }
-
-    public String getB0181() {
-        return b0181;
-    }
-
-    public void setB0181(String b0181) {
-        this.b0181 = b0181;
-    }
-
     public Integer getB0183() {
         return b0183;
     }
@@ -374,36 +290,12 @@ public class B01 {
         this.b0183 = b0183;
     }
 
-    public String getB0184() {
-        return b0184;
-    }
-
-    public void setB0184(String b0184) {
-        this.b0184 = b0184;
-    }
-
     public Integer getB0185() {
         return b0185;
     }
 
     public void setB0185(Integer b0185) {
         this.b0185 = b0185;
-    }
-
-    public String getB0187a() {
-        return b0187a;
-    }
-
-    public void setB0187a(String b0187a) {
-        this.b0187a = b0187a;
-    }
-
-    public String getB0187b() {
-        return b0187b;
-    }
-
-    public void setB0187b(String b0187b) {
-        this.b0187b = b0187b;
     }
 
     public String getB0188() {
@@ -470,22 +362,6 @@ public class B01 {
         this.b0194 = b0194;
     }
 
-    public String getB0197() {
-        return b0197;
-    }
-
-    public void setB0197(String b0197) {
-        this.b0197 = b0197;
-    }
-
-    public String getB0198() {
-        return b0198;
-    }
-
-    public void setB0198(String b0198) {
-        this.b0198 = b0198;
-    }
-
     public Integer getB0227() {
         return b0227;
     }
@@ -526,36 +402,12 @@ public class B01 {
         this.b0239 = b0239;
     }
 
-    public String getB0240() {
-        return b0240;
-    }
-
-    public void setB0240(String b0240) {
-        this.b0240 = b0240;
-    }
-
     public Integer getOrderIndex() {
         return orderIndex;
     }
 
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
-    }
-
-    public String getPadAsOrg() {
-        return padAsOrg;
-    }
-
-    public void setPadAsOrg(String padAsOrg) {
-        this.padAsOrg = padAsOrg;
-    }
-
-    public String getB0199() {
-        return b0199;
-    }
-
-    public void setB0199(String b0199) {
-        this.b0199 = b0199;
     }
 
     public String getModifyUser() {
@@ -572,14 +424,6 @@ public class B01 {
 
     public void setModifyTime(String modifyTime) {
         this.modifyTime = modifyTime;
-    }
-
-    public String getLevelIndex() {
-        return levelIndex;
-    }
-
-    public void setLevelIndex(String levelIndex) {
-        this.levelIndex = levelIndex;
     }
 
     public String getB0140() {
@@ -652,37 +496,5 @@ public class B01 {
 
     public void setB0180(String b0180) {
         this.b0180 = b0180;
-    }
-
-    public String getJobNumberDesc() {
-        return jobNumberDesc;
-    }
-
-    public void setJobNumberDesc(String jobNumberDesc) {
-        this.jobNumberDesc = jobNumberDesc;
-    }
-
-    public String getORGANIZATION_CODE() {
-        return ORGANIZATION_CODE;
-    }
-
-    public void setORGANIZATION_CODE(String ORGANIZATION_CODE) {
-        this.ORGANIZATION_CODE = ORGANIZATION_CODE;
-    }
-
-    public String getCONTACTS() {
-        return CONTACTS;
-    }
-
-    public void setCONTACTS(String CONTACTS) {
-        this.CONTACTS = CONTACTS;
-    }
-
-    public String getPHONE() {
-        return PHONE;
-    }
-
-    public void setPHONE(String PHONE) {
-        this.PHONE = PHONE;
     }
 }

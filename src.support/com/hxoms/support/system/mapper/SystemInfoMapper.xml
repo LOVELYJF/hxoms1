@@ -23,6 +23,11 @@
         from cf_system
         where id = #{id,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllSystem" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from cf_system
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from cf_system
     where id = #{id,jdbcType=VARCHAR}
