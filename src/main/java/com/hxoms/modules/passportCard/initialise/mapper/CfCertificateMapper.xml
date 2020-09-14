@@ -705,7 +705,7 @@
 		select
 		cc.ID as id,
 		cc.OMS_ID as omsId,
-		op.B0100 as b0100,
+		orp.RF_B0000 as b0100,
 		cc.NAME as name,
 		cc.SEX as sex,
 		cc.CSRQ as csrq,
@@ -722,10 +722,9 @@
 		cc.CSDD as csdd
 		from cf_certificate cc
 		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
-		join oms_personinfo op on op.B0111 = orp.RF_B0000
 		<where>
 			<trim suffixOverrides="and">
-				<if test="b0100 != null">op.B0100=#{b0100} and </if>
+				<if test="b0100 != null">orp.RF_B0000=#{b0100} and </if>
 				<if test="zjhm != null">cc.zjhm like concat('%',#{zjhm},'%') and </if>
 				<if test="name != null">cc.name like concat('%',#{name},'%')
 					or cc.PY like concat('%',#{name},'%') and
