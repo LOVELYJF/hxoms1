@@ -84,12 +84,37 @@ public class B01 {
     private String b0121;
     //备注
     private String b0180;
+
+    public String getOrganization_code() {
+        return organization_code;
+    }
+
+    public void setOrganization_code(String organization_code) {
+        this.organization_code = organization_code;
+    }
+
+    public String getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     //组织机构代码
-    private String ORGANIZATION_CODE;
+    private String organization_code;
     //联系人
-    private String CONTACTS;
+    private String contacts;
     //联系电话
-    private String PHONE;
+    private String phone;
 
     public Integer getBx001() {
         return bx001;
@@ -471,29 +496,5 @@ public class B01 {
 
     public void setB0180(String b0180) {
         this.b0180 = b0180;
-    }
-
-    public String getORGANIZATION_CODE() {
-        return ORGANIZATION_CODE;
-    }
-
-    public void setORGANIZATION_CODE(String ORGANIZATION_CODE) {
-        this.ORGANIZATION_CODE = ORGANIZATION_CODE;
-    }
-
-    public String getCONTACTS() {
-        return CONTACTS;
-    }
-
-    public void setCONTACTS(String CONTACTS) {
-        this.CONTACTS = CONTACTS;
-    }
-
-    public String getPHONE() {
-        return PHONE;
-    }
-
-    public void setPHONE(String PHONE) {
-        this.PHONE = PHONE;
     }
 }

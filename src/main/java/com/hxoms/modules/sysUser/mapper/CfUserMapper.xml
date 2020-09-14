@@ -92,7 +92,12 @@
         and (user_name like CONCAT('%',#{userName},'%')
         or user_code like CONCAT('%',#{userName},'%'))
       </if>
-
+    <if test='orgId != null and orgId.size > 0 '>
+      and org_id in
+      <foreach collection="orgId" item="orgId" separator="," open="(" close=")">
+        #{orgId}
+      </foreach>
+    </if>
   </select>
   <select id="selectByUserCode" resultType="com.hxoms.modules.sysUser.entity.CfUser">
     select
