@@ -16,6 +16,9 @@ public class CfCertificateCjInfo {
     //主键
     @ApiModelProperty(value = "主键")
     private String id;
+    //备案表id
+    @ApiModelProperty(value = "备案表id")
+    private String omsId;
     //姓名
     @ApiModelProperty(value = "姓名")
     private String name;
@@ -89,6 +92,14 @@ public class CfCertificateCjInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOmsId() {
+        return omsId;
+    }
+
+    public void setOmsId(String omsId) {
+        this.omsId = omsId;
     }
 
     public String getName() {

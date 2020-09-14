@@ -17,7 +17,7 @@
         (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=b.zjlx) zjlxName,
         b.zjhm,
         b.yxqz,
-        b.card_status cardStatus,
+        b.card_status cardStatus,7
         a.spb_get_ele_sign spb,
         b.surely_way surelyWay,
         b.cabinet_num cabinetNum,
@@ -59,6 +59,16 @@
         <if test="getEndTime!=null">
             AND a.get_Time &lt;= #{getEndTime}
         </if>
+
+        <!--WQF ADD 勾选查询使用-->
+        <if test="ids!=null">
+            AND a.id in
+            <foreach collection="ids" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
     </where>
   </select>
 </mapper>

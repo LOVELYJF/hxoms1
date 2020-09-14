@@ -22,6 +22,14 @@
         <result column="parent_item_code" jdbcType="VARCHAR" property="parentItemCode"/>
     </resultMap>
 
+    <!-- 删除当前的敏感国家信息 -->
+    <update id="updateSensitiveMaintain">
+        update oms_sensitive_maintain set IS_DELETE='1' where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
+    </update>
+    <update id="updateSensitiveMaintainToDelete">
+        update oms_sensitive_maintain set IS_DELETE='1' where SENSITIVE_LIMIT_ID=#{sensitiveLimitId} and COUNTRY_ID=#{countryId}
+    </update>
+
     <select id="selectOmsSensitiveLimit" parameterType="java.util.Map" resultMap="BaseResultMap">
         select * from sys_dict_item
         <where>
@@ -49,7 +57,7 @@
 
 
 	<select id="getSensitiveMaintain" resultType="java.lang.Integer">
-        select COUNTRY_ID from oms_sensitive_maintain where SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
+        select COUNTRY_ID from oms_sensitive_maintain where IS_DELETE='0' and SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
     </select>
 
 	<insert id="addSensitiveLimit" parameterType="java.util.Map">

@@ -339,6 +339,7 @@
   <select id="selectCerCjApply" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.CfCertificateCjInfo">
     SELECT
       a.id,
+      a.oms_id omsId,
       a.name,
       if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
       c.birth_date csrq,

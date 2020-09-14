@@ -248,4 +248,24 @@ public interface OmsOperatorService {
      * @Date: 2020/9/11 16:43
      */
     PageInfo getOperatorWBJYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办业务导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:51
+     */
+    void exportOperatorByJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam, HttpServletResponse response);
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接记录导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:52
+     */
+    void exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam, HttpServletResponse response);
 }
