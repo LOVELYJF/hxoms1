@@ -102,7 +102,7 @@
     <select id="selectGrantOrg" resultType="java.lang.String">
         select rb.managed_org  from cf_org_sub rb
         inner join b01 b
-        on rb.managed_org=b.b0111
+        on rb.managed_org=b.b0100
         where rb.b0111=#{orgId}
     </select>
     <select id="selectOrgGrantLeaderType" resultType="com.hxoms.common.tree.Tree">

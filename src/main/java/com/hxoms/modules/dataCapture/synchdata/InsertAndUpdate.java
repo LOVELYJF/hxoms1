@@ -22,305 +22,196 @@ public class InsertAndUpdate {
     private DynamicData dynamicData;
 
     @SysLog("插入数据")
-    public void insertTable(String tableName,List<Map> insertList){
-
-        switch(tableName){
-
-            case "a0100" :
-
-                //语句
-            //    a01Service.insertMasterA01(insertList);
-                List<List<Map>> splicUpdateListA01 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA01 !=null && splicUpdateListA01.size()>0){
-
-                    for(int i =0;i<splicUpdateListA01.size();i++){
-
+    public void insertTable(String tableName, List<Map> insertList) {
+        switch (tableName) {
+            case "a0100":
+                List<List<Map>> splicUpdateListA01 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA01 != null && splicUpdateListA01.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA01.size(); i++) {
                         a01Service.insertMasterA01(splicUpdateListA01.get(i));
-
                     }
-
                 }
                 break;
-            case "a0200" :
-
-                //语句
-//                a01Service.insertMasterA02(insertList);
-                List<List<Map>> splicUpdateListA02 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA02 !=null && splicUpdateListA02.size()>0){
-
-                    for(int i =0;i<splicUpdateListA02.size();i++){
-
+            case "a0200":
+                List<List<Map>> splicUpdateListA02 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA02 != null && splicUpdateListA02.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA02.size(); i++) {
                         a01Service.insertMasterA02(splicUpdateListA02.get(i));
-
                     }
-
                 }
-
                 break;
-
-            case "a0500" :
-
-                //语句
-//                a01Service.insertMasterA05(insertList);
-                List<List<Map>> splicUpdateListA05 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA05 !=null && splicUpdateListA05.size()>0){
-
-                    for(int i =0;i<splicUpdateListA05.size();i++){
-
+            case "a0500":
+                List<List<Map>> splicUpdateListA05 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA05 != null && splicUpdateListA05.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA05.size(); i++) {
                         a01Service.insertMasterA05(splicUpdateListA05.get(i));
-
                     }
-
                 }
                 break;
-            case "a0600" :
-
-                //语句
-//                a01Service.insertMasterA06(insertList);
-                List<List<Map>> splicUpdateListA06 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA06 !=null && splicUpdateListA06.size()>0){
-
-                    for(int i =0;i<splicUpdateListA06.size();i++){
-
+            case "a0600":
+                List<List<Map>> splicUpdateListA06 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA06 != null && splicUpdateListA06.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA06.size(); i++) {
                         a01Service.insertMasterA06(splicUpdateListA06.get(i));
-
                     }
-
                 }
                 break;
-            case "a0800" :
-
-                //语句
-//                a01Service.insertMasterA08(insertList);
-                List<List<Map>> splicUpdateListA08 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA08 !=null && splicUpdateListA08.size()>0){
-
-                    for(int i =0;i<splicUpdateListA08.size();i++){
-
+            case "a0800":
+                List<List<Map>> splicUpdateListA08 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA08 != null && splicUpdateListA08.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA08.size(); i++) {
                         a01Service.insertMasterA08(splicUpdateListA08.get(i));
-
                     }
-
                 }
                 break;
-            case "a1400" :
-
-                //语句
-//                a01Service.insertMasterA14(insertList);
-                List<List<Map>> splicUpdateListA14 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA14 !=null && splicUpdateListA14.size()>0){
-
-                    for(int i =0;i<splicUpdateListA14.size();i++){
-
+            case "a1400":
+                List<List<Map>> splicUpdateListA14 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA14 != null && splicUpdateListA14.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA14.size(); i++) {
                         a01Service.insertMasterA14(splicUpdateListA14.get(i));
-
                     }
-
                 }
                 break;
-            case "a1500" :
-
-                //语句
-//                a01Service.insertMasterA15(insertList);
-                List<List<Map>> splicUpdateListA15 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA15 !=null && splicUpdateListA15.size()>0){
-
-                    for(int i =0;i<splicUpdateListA15.size();i++){
-
+            case "a1500":
+                List<List<Map>> splicUpdateListA15 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA15 != null && splicUpdateListA15.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA15.size(); i++) {
                         a01Service.insertMasterA15(splicUpdateListA15.get(i));
-
                     }
-
                 }
                 break;
-            case "a1700" :
-
-                //语句
-//                a01Service.insertMasterA17(insertList);
-                List<List<Map>> splicUpdateListA17 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA17 !=null && splicUpdateListA17.size()>0){
-
-                    for(int i =0;i<splicUpdateListA17.size();i++){
-
+            case "a1700":
+                List<List<Map>> splicUpdateListA17 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA17 != null && splicUpdateListA17.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA17.size(); i++) {
                         a01Service.insertMasterA17(splicUpdateListA17.get(i));
-
                     }
-
                 }
-
                 break;
-            case "a3600" :
-
-                //语句
-//                a01Service.insertMasterA36(insertList);
-                List<List<Map>> splicUpdateListA36 = fixedGrouping(insertList,dynamicData.getInitSplic());
-                if(splicUpdateListA36 !=null && splicUpdateListA36.size()>0){
-
-                    for(int i =0;i<splicUpdateListA36.size();i++){
-
+            case "a3600":
+                List<List<Map>> splicUpdateListA36 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA36 != null && splicUpdateListA36.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA36.size(); i++) {
                         a01Service.insertMasterA36(splicUpdateListA36.get(i));
-
                     }
-
                 }
                 break;
-            default :
-
-                //语句
-
+            case "a3000":
+                List<List<Map>> splicUpdateListA30 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListA30 != null && splicUpdateListA30.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA30.size(); i++) {
+                        a01Service.insertMasterA30(splicUpdateListA30.get(i));
+                    }
+                }
+                break;
+            case "b0100":
+                List<List<Map>> splicUpdateListB01 = fixedGrouping(insertList, dynamicData.getInitSplic());
+                if (splicUpdateListB01 != null && splicUpdateListB01.size() > 0) {
+                    for (int i = 0; i < splicUpdateListB01.size(); i++) {
+                        a01Service.insertMasterB01(splicUpdateListB01.get(i));
+                    }
+                }
+                break;
+            default:
         }
     }
 
     @SysLog("修改数据")
-    public void upDataTable(String tableName, List<Map> updateList, List<Map> idCardListByA01){
-
-        switch(tableName){
-
-            case "a0100" :
-
-                //语句
-//                a01Service.updateMasterA01(updateList);
-                List<List<Map>> splicUpdateListA01 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA01 !=null && splicUpdateListA01.size()>0){
-
-                    for(int i =0;i<splicUpdateListA01.size();i++){
-
+    public void upDataTable(String tableName, List<Map> updateList, List<Map> idCardListByA01) {
+        switch (tableName) {
+            case "a0100":
+                List<List<Map>> splicUpdateListA01 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA01 != null && splicUpdateListA01.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA01.size(); i++) {
                         a01Service.updateMasterA01(splicUpdateListA01.get(i));
-
                     }
-
                 }
-
-                if(idCardListByA01 != null && idCardListByA01.size() > 0){
-
-                a01Service.updateMasterA01ByIdCard(idCardListByA01);
+                if (idCardListByA01 != null && idCardListByA01.size() > 0) {
+                    a01Service.updateMasterA01ByIdCard(idCardListByA01);
                 }
-                //idCards.clear();
                 break;
-            case "a0200" :
-
-                //语句
-//                a01Service.updateMasterA02(updateList);
-                List<List<Map>> splicUpdateListA02 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA02 !=null && splicUpdateListA02.size()>0){
-
-                    for(int i =0;i<splicUpdateListA02.size();i++){
-
+            case "a0200":
+                List<List<Map>> splicUpdateListA02 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA02 != null && splicUpdateListA02.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA02.size(); i++) {
                         a01Service.updateMasterA02(splicUpdateListA02.get(i));
-
                     }
-
                 }
                 break;
-            case "a0500" :
-
-                //语句
-//                a01Service.updateMasterA05(updateList);
-                List<List<Map>> splicUpdateListA05 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA05 !=null && splicUpdateListA05.size()>0){
-
-                    for(int i =0;i<splicUpdateListA05.size();i++){
-
+            case "a0500":
+                List<List<Map>> splicUpdateListA05 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA05 != null && splicUpdateListA05.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA05.size(); i++) {
                         a01Service.updateMasterA05(splicUpdateListA05.get(i));
-
                     }
-
                 }
                 break;
-            case "a0600" :
-
-                //语句
-//                a01Service.updateMasterA06(updateList);
-                List<List<Map>> splicUpdateListA06 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA06 !=null && splicUpdateListA06.size()>0){
-
-                    for(int i =0;i<splicUpdateListA06.size();i++){
-
+            case "a0600":
+                List<List<Map>> splicUpdateListA06 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA06 != null && splicUpdateListA06.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA06.size(); i++) {
                         a01Service.updateMasterA06(splicUpdateListA06.get(i));
-
                     }
-
                 }
-
                 break;
-            case "a0800" :
-
-                //语句
-//                a01Service.updateMasterA08(updateList);
-                List<List<Map>> splicUpdateListA08 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA08 !=null && splicUpdateListA08.size()>0){
-
-                    for(int i =0;i<splicUpdateListA08.size();i++){
-
+            case "a0800":
+                List<List<Map>> splicUpdateListA08 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA08 != null && splicUpdateListA08.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA08.size(); i++) {
                         a01Service.updateMasterA08(splicUpdateListA08.get(i));
-
                     }
-
                 }
                 break;
-            case "a1400" :
-
-                //语句
-//                a01Service.updateMasterA14(updateList);
-                List<List<Map>> splicUpdateListA14 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA14 !=null && splicUpdateListA14.size()>0){
-
-                    for(int i =0;i<splicUpdateListA14.size();i++){
-
+            case "a1400":
+                List<List<Map>> splicUpdateListA14 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA14 != null && splicUpdateListA14.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA14.size(); i++) {
                         a01Service.updateMasterA14(splicUpdateListA14.get(i));
-
                     }
-
                 }
                 break;
-
-            case "a1500" :
-
-                //语句
-//                a01Service.updateMasterA15(updateList);
-                List<List<Map>> splicUpdateListA15 = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateListA15 !=null && splicUpdateListA15.size()>0){
-
-                    for(int i =0;i<splicUpdateListA15.size();i++){
-
+            case "a1500":
+                List<List<Map>> splicUpdateListA15 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA15 != null && splicUpdateListA15.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA15.size(); i++) {
                         a01Service.updateMasterA15(splicUpdateListA15.get(i));
-
                     }
-
                 }
                 break;
-            case "a1700" :
-
-                //语句
-                List<List<Map>> splicUpdateList = fixedGrouping(updateList,dynamicData.getInitSplic());
-                if(splicUpdateList !=null && splicUpdateList.size()>0){
-
-                  for(int i =0;i<splicUpdateList.size();i++){
-
-                      a01Service.updateMasterA17(splicUpdateList.get(i));
-
-                  }
-
+            case "a1700":
+                List<List<Map>> splicUpdateList = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateList != null && splicUpdateList.size() > 0) {
+                    for (int i = 0; i < splicUpdateList.size(); i++) {
+                        a01Service.updateMasterA17(splicUpdateList.get(i));
+                    }
                 }
-
                 break;
-
-            case "a3600" :
-
-                //语句
+            case "a3600":
                 a01Service.updateMasterA36(updateList);
                 break;
-
-            default :
-
-                //语句
-
+            case "a3000":
+                List<List<Map>> splicUpdateListA30 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListA30 != null && splicUpdateListA30.size() > 0) {
+                    for (int i = 0; i < splicUpdateListA30.size(); i++) {
+                        a01Service.updateMasterA30(splicUpdateListA30.get(i));
+                    }
+                }
+                break;
+            case "b0100":
+                List<List<Map>> splicUpdateListB01 = fixedGrouping(updateList, dynamicData.getInitSplic());
+                if (splicUpdateListB01 != null && splicUpdateListB01.size() > 0) {
+                    for (int i = 0; i < splicUpdateListB01.size(); i++) {
+                        a01Service.updateMasterB01(splicUpdateListB01.get(i));
+                    }
+                }
+                break;
+            default:
         }
     }
 
 
     //TODO 切割集合 由于云上面的 mysql 效率低下，容易 让数据库失去连接 切割插入
-    public  <T> List<List<T>> fixedGrouping(List<T> source, int n) {
+    public <T> List<List<T>> fixedGrouping(List<T> source, int n) {
 
         if (null == source || source.size() == 0 || n <= 0)
             return null;

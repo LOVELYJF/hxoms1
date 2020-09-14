@@ -74,8 +74,8 @@ public class OrgController {
      * @ createDate: 2019/6/5 15:29
      */
     @RequestMapping("/deleteOrg")
-    public Result deleteOrg(String b0111){
-        orgService.deleteOrg(b0111);
+    public Result deleteOrg(String b0100){
+        orgService.deleteOrg(b0100);
         return Result.success();
     }
 
@@ -85,8 +85,8 @@ public class OrgController {
      * @ createDate: 2019/6/5 16:11
      */
     @RequestMapping("/sortOrg")
-    public Result sortOrg(String b0111s){
-        orgService.sortOrg(b0111s);
+    public Result sortOrg(String b0100){
+        orgService.sortOrg(b0100);
         return Result.success();
     }
 
@@ -107,8 +107,8 @@ public class OrgController {
      * @ createDate: 2019/6/7 15:44
      */
     @RequestMapping("/selectOrgByB0111")
-    public Result selectOrgByB0111(String b0111){
-        B01 b01=orgService.selectOrgByB0111(b0111);
+    public Result selectOrgByB0111(String b0100){
+        B01 b01=orgService.selectOrgByB0111(b0100);
         return Result.success(b01);
     }
 

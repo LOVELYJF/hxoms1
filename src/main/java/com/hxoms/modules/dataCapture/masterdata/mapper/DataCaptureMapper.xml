@@ -1747,4 +1747,132 @@
             )
         </foreach>
     </insert>
+
+    <!-- 表 b01 退出信息集 -->
+    <sql id="b01sql">
+       B0100	,
+        B0101	,
+        B0104	,
+        B0107	,
+        B0111	,
+        B0114	,
+        B0117	,
+        B0124	,
+        B0127	,
+        B0131	,
+        B0164	,
+        B0167	,
+        B0183	,
+        B0185	,
+        B0188	,
+        B0189	,
+        B0190	,
+        B0191	,
+        B0191A	,
+        B0192	,
+        B0193	,
+        B0194	,
+        B0227	,
+        B0232	,
+        B0233	,
+        B0238	,
+        B0239	,
+        SORTID	,
+        TIME_STAMP	,
+        MODIFY_USER	,
+        MODIFY_TIME	,
+        IS_DELETED	,
+        B0140	,
+        B0141	,
+        B0142	,
+        B0143	,
+        B0150	,
+        B0180	,
+        B0236	,
+        B0234	,
+        B0121	,
+        BX001	,
+        B0268	,
+        B0269	,
+        POSICOUNTZJ	,
+        ORGPARTTYPE	,
+        ORGSTANDARDNAME	,
+        SUPERVISOR
+    </sql>
+    <select id="getMasterB01" resultType="com.hxoms.common.LowerKeyMapTest">
+        select
+        <include refid="b01sql"/>
+        FROM B01
+        order by b0111
+        <include refid="mysql_paging"/>
+    </select>
+
+    <select id="getMasterB01Count" resultType="Integer">
+        select  count(1)  from B01
+    </select>
+
+    <update id="updateMasterB01">
+        <foreach collection="list" item="item" index="index" separator=";">
+            UPDATE b01 SET b0101=#{item.b0101},b0111=#{item.b0111},b0104=#{item.b0104},b0107=#{item.b0107},
+            b0114=#{item.b0114},b0117=#{item.b0117},
+            b0124=#{item.b0124},b0127=#{item.b0127},b0131=#{item.b0131},b0164=#{item.b0164},b0167=#{item.b0167},b0183=#{item.b0183},
+            b0185=#{item.b0185},b0188=#{item.b0188},b0189=#{item.b0189},b0190=#{item.b0190},
+            b0191=#{item.b0191},b0191a=#{item.b0191a},b0192=#{item.b0192},b0193=#{item.b0193},b0194=#{item.b0194},
+            b0227=#{item.b0227},b0232=#{item.b0232},b0233=#{item.b0233},b0238=#{item.b0238},b0239=#{item.b0239},
+            sortid=#{item.orderIndex},
+            modify_user=#{item.modifyUser}, modify_time=#{item.modifyTime},
+            b0140=#{item.b0140},b0141=#{item.b0141},b0142=#{item.b0142},b0143=#{item.b0143},b0150=#{item.b0150},b0180=#{item.b0180},
+            b0236=#{item.b0236},b0234=#{item.b0234},b0121=#{item.b0121},ORGANIZATION_CODE=#{item.ORGANIZATION_CODE},
+            CONTACTS=#{item.CONTACTS},PHONE=#{item.PHONE},bx001=#{item.bx001},
+            b0268=#{item.b0268},b0269=#{item.b0269},POSICOUNTZJ=#{item.POSICOUNTZJ},ORGPARTTYPE=#{item.ORGPARTTYPE},
+            ORGSTANDARDNAME=#{item.ORGSTANDARDNAME},SUPERVISOR=#{item.SUPERVISOR}
+            WHERE b0100=#{item.b0100}
+        </foreach>
+    </update>
+
+    <insert id="insertMasterB01">
+        insert into b01 (b0100,b0101, b0104, b0107,
+        b0111, b0114, b0117,
+        b0124, b0127, b0131,
+        b0164, b0167,
+        b0183, b0185,
+        b0188,
+        b0189, b0190, b0191,
+        b0191a, b0192, b0193,
+        b0194,
+        b0227, b0232, b0233,
+        b0238, b0239,
+        sortid,
+        modify_user, modify_time,
+        b0140, b0141,
+        b0142, b0143, b0150,
+        b0236, b0234, b0121,
+        b0180,ORGANIZATION_CODE,CONTACTS,PHONE,
+        bx001,b0268,b0269,POSICOUNTZJ,ORGPARTTYPE,ORGSTANDARDNAME,SUPERVISOR)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.b0100,jdbcType=VARCHAR}, #{item.b0101,jdbcType=VARCHAR}, #{item.b0104,jdbcType=VARCHAR}, #{item.b0107,jdbcType=VARCHAR},
+            #{item.b0111,jdbcType=VARCHAR}, #{item.b0114,jdbcType=VARCHAR}, #{item.b0117,jdbcType=VARCHAR},
+            #{item.b0124,jdbcType=VARCHAR}, #{item.b0127,jdbcType=VARCHAR}, #{item.b0131,jdbcType=VARCHAR},
+            #{item.b0164,jdbcType=VARCHAR}, #{item.b0167,jdbcType=VARCHAR},
+            #{item.b0183,jdbcType=INTEGER}, #{item.b0185,jdbcType=INTEGER},
+            #{item.b0188,jdbcType=VARCHAR},
+            #{item.b0189,jdbcType=VARCHAR}, #{item.b0190,jdbcType=VARCHAR}, #{item.b0191,jdbcType=VARCHAR},
+            #{item.b0191a,jdbcType=VARCHAR}, #{item.b0192,jdbcType=VARCHAR}, #{item.b0193,jdbcType=VARCHAR},
+            #{item.b0194,jdbcType=VARCHAR},
+            #{item.b0227,jdbcType=INTEGER}, #{item.b0232,jdbcType=INTEGER}, #{item.b0233,jdbcType=INTEGER},
+            #{item.b0238,jdbcType=VARCHAR}, #{item.b0239,jdbcType=VARCHAR},
+            #{item.orderIndex,jdbcType=INTEGER},
+            #{item.modifyUser,jdbcType=VARCHAR}, #{item.modifyTime,jdbcType=TIMESTAMP},
+            #{item.b0140,jdbcType=VARCHAR}, #{item.b0141,jdbcType=VARCHAR},
+            #{item.b0142,jdbcType=VARCHAR}, #{item.b0143,jdbcType=VARCHAR}, #{item.b0150,jdbcType=INTEGER},
+            #{item.b0236,jdbcType=INTEGER}, #{item.b0234,jdbcType=INTEGER}, #{item.b0121,jdbcType=VARCHAR},
+            #{item.b0180,jdbcType=LONGVARCHAR}, #{item.ORGANIZATION_CODE,jdbcType=VARCHAR}
+            , #{item.CONTACTS,jdbcType=VARCHAR}, #{item.PHONE,jdbcType=VARCHAR},
+            #{item.bx001,jdbcType=INTEGER}, #{item.b0268,jdbcType=VARCHAR}, #{item.b0269,jdbcType=VARCHAR},
+            #{item.POSICOUNTZJ,jdbcType=VARCHAR}, #{item.ORGPARTTYPE,jdbcType=VARCHAR}
+            , #{item.ORGSTANDARDNAME,jdbcType=VARCHAR}, #{item.SUPERVISOR,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
 </mapper>

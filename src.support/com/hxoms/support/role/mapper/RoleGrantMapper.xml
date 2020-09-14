@@ -131,9 +131,9 @@
         ORDER BY orderindex
     </select>
     <select id="selectGrantOrg" resultType="java.lang.String">
-        select b.b0111  from cf_roleb01 rb
+        select b.b0100  from cf_roleb01 rb
         inner join b01 b
-        on rb.org_id=b.b0111
+        on rb.org_id=b.b0100
         where rb.role_id=#{roleId}
     </select>
 
