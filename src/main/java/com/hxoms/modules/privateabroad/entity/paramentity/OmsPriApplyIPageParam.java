@@ -61,6 +61,16 @@ public class OmsPriApplyIPageParam {
     private String isComparison;
     @ApiModelProperty(value = "是否出入境")
     private String isAbroad;
+    @ApiModelProperty(value = "申请id")
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getIsComparison() {
         return isComparison;

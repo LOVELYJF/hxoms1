@@ -28,7 +28,6 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     Object deleteEntryexitRecord(String id);
 
-    Map<String, Object> selectCompareInfo(OmsPriApply priapply, OmsEntryexitRecord outinfo, OmsEntryexitRecord joininfo);
 
     Object clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit);
 
@@ -47,7 +46,7 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
      *  * @param reg 登记备案人员信息
      * @return:void
      **/
-    void entryexitRecordCompare(String omsId);
+    //void entryexitRecordCompare(String omsId);
     /**
      * @description:出入境记录检查
      * @author:李姣姣
@@ -79,4 +78,6 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
     PageInfo<OmsEntryexitRecordVO> getExceptionRecord(OmsEntryexitRecordIPagParam entryexitRecordIPagParam);
 
     List<OmsEntryexitRecordModel> newexitRecordsList(List<String> ids);
+
+    Map<String, Object> selectCompareInfo(String omsId,String priapplyId, List<String> recordIds);
 }
