@@ -79,39 +79,49 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 	public void addCountryInfo(List<String> countryIdList, String sensitiveLimitId) {
 		List<Integer> idList = new ArrayList<Integer>();
 		if(countryIdList != null && countryIdList.size() > 0){
-			for(String id : countryIdList){
-				Integer num = Integer.parseInt(id);
-				idList.add(num);
-			}
-		}
+			List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
+			if(list == null && list.size() < 1){
+				//当前不存在敏感信息，直接进行保存
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("sensitiveLimitId",sensitiveLimitId);
+				map.put("isDelete", "0");
+				for(String id : countryIdList){
+					map.put("countryId", String.valueOf(id));
+					countryMapper.addSensitiveMaintain(map);
+				}
 
-		//查询当前限制性对应的内容有哪些
-		List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("sensitiveLimitId", sensitiveLimitId);
-		if (list == null || list.size() < 1) {
-			if (idList != null && idList.size() > 0) {
-				for (Integer id : idList) {
-					map.put("id", id);
-					int result = countryMapper.addSensitiveMaintain(map);
-					if (result < 1) {
-						throw new CustomMessageException("保存失败");
+			}else {
+				//当前敏感信息上有国家信息
+				for(Integer integer : list){
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("sensitiveLimitId",sensitiveLimitId);
+					if(!countryIdList.contains(String.valueOf(integer))){
+						map.put("countryId", String.valueOf(integer));
+						//将此国家置为删除状态
+						omsSensitiveLimitMapper.updateSensitiveMaintainToDelete(map);
+					}else {
+						countryIdList.remove(String.valueOf(integer));
 					}
 				}
+
+				if(countryIdList != null && countryIdList.size() > 0){
+					//将剩余的进行保存
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("sensitiveLimitId",sensitiveLimitId);
+					map.put("isDelete", "0");
+					for(String id : countryIdList){
+						map.put("countryId", String.valueOf(id));
+						countryMapper.addSensitiveMaintain(map);
+					}
+				}
+
 			}
-		} else {
-			//将当前的限制性国家删除
-			int count = countryMapper.deleteSensitiveMaintain(sensitiveLimitId);
-			if (count > 0) {
-				if (idList != null && idList.size() > 0) {
-					for (Integer id : idList) {
-						map.put("id", id);
-						int result = countryMapper.addSensitiveMaintain(map);
-						if (result < 1) {
-							throw new CustomMessageException("保存失败");
-						}
-					}
-				}
+		}else {
+			//当前的敏感信息删除所有国家
+			//首先查询当前敏感性上是否存在国家
+			List<Integer> list = omsSensitiveLimitMapper.getSensitiveMaintain(sensitiveLimitId);
+			if(list != null && list.size() > 0){
+				omsSensitiveLimitMapper.updateSensitiveMaintain(sensitiveLimitId);
 			}
 		}
 	}

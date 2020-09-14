@@ -258,7 +258,7 @@
     d.user_id=#{id}
     AND a.get_status='0'
     <if test="overFlag!='Y'.toString()">
-      AND a.data_source !='3';
+      AND a.data_source !='3'
     </if>
   </select>
 </mapper>

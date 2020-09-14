@@ -84,6 +84,13 @@ public class CerGetTaskInfo {
     //来源名称
     @ApiModelProperty(value = "来源名称")
     private String dataSourceName;
+
+    //业务日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value = "业务日期")
+    private Date happenDate;
+
     //任务产生日期
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
@@ -94,6 +101,22 @@ public class CerGetTaskInfo {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "领取时间")
     private Date getTime;
+
+    //工作单位联系人
+    @ApiModelProperty(value = "工作单位联系人")
+    private String workUnitLinkman;
+
+    //联系电话
+    @ApiModelProperty(value = "联系电话")
+    private String linkmanPhone;
+
+    public Date getHappenDate() {
+        return happenDate;
+    }
+
+    public void setHappenDate(Date happenDate) {
+        this.happenDate = happenDate;
+    }
 
     public String getId() {
         return id;
@@ -285,5 +308,21 @@ public class CerGetTaskInfo {
 
     public void setGetTime(Date getTime) {
         this.getTime = getTime;
+    }
+
+    public String getWorkUnitLinkman() {
+        return workUnitLinkman;
+    }
+
+    public void setWorkUnitLinkman(String workUnitLinkman) {
+        this.workUnitLinkman = workUnitLinkman;
+    }
+
+    public String getLinkmanPhone() {
+        return linkmanPhone;
+    }
+
+    public void setLinkmanPhone(String linkmanPhone) {
+        this.linkmanPhone = linkmanPhone;
     }
 }

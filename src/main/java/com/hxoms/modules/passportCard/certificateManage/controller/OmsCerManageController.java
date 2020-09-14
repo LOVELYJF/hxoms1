@@ -69,7 +69,7 @@ public class OmsCerManageController {
      */
     @ApiOperation(value = "新领证照录入")
     @PostMapping("/insertCertificate")
-    public Result<CerAndPerson> insertCertificate(@RequestBody ReadCerInfo readCerInfo){
+    public Result<CerAndPerson> insertCertificate(@RequestBody @Validated ReadCerInfo readCerInfo){
         return Result.success(omsCerManageService.insertCertificate(readCerInfo));
     }
 
@@ -82,7 +82,7 @@ public class OmsCerManageController {
      */
     @ApiOperation(value = "保存证照")
     @PostMapping("/saveCertificate")
-    public Result saveCertificate(@RequestBody CerInfoSave cerInfoSave){
+    public Result saveCertificate(@RequestBody @Validated CerInfoSave cerInfoSave){
         omsCerManageService.saveCertificate(cerInfoSave);
         return Result.success();
     }

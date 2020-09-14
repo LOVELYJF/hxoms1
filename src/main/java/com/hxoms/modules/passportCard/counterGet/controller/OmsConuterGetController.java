@@ -112,8 +112,8 @@ public class OmsConuterGetController {
 
     @ApiOperation(value = "查询可领取证照")
     @GetMapping("/selectCanGetCer")
-    public Result<PageBean<CerGetTaskInfo>> selectCanGetCer(PageBean pageBean,@Validated CerGetTaskQueryParam cerGetTaskQueryParam){
-        return Result.success(omsCounterGetService.selectCanGetCer(pageBean,cerGetTaskQueryParam));
+    public Result<RequestList<CerGetTaskInfo>> selectCanGetCer(@Validated CerGetTaskQueryParam cerGetTaskQueryParam){
+        return Result.success(omsCounterGetService.selectCanGetCer(cerGetTaskQueryParam));
     }
 
     /**

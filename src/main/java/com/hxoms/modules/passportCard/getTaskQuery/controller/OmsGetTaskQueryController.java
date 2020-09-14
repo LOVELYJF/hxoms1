@@ -6,10 +6,16 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.getTaskQuery.service.OmsGetTaskQueryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 
 
 /**
@@ -27,6 +33,21 @@ public class OmsGetTaskQueryController {
 
     @Autowired
     private OmsGetTaskQueryService omsGetTaskQueryService;
+
+    /**
+     * @Desc: 证照管理-证照领取任务-导出
+     * @Author: wuqingfan
+     * @Param: ids
+     * @Return: excel
+     * @Date: 2020/9/12
+     */
+    @ApiOperation(value = "证照管理-证照领取任务-导出")
+    @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接", name = "ids", required = true, paramType = "query")
+    @PostMapping("/exportExceptionCer")
+    public void exportExceptionCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
+        omsGetTaskQueryService.exportSelectGetCer(Arrays.asList(ids.split(",")),response);
+    }
+
 
     /**
      * @Desc: 查询领取证照

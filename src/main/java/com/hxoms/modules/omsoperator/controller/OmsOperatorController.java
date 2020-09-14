@@ -336,4 +336,30 @@ public class OmsOperatorController {
         PageInfo info = operatorService.getOperatorWBJYW(omsOperatorJBYWQueryParam);
         return Result.success(info);
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办业务导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:50
+     */
+    @PostMapping("/exportOperatorByJBYW")
+    public void  exportOperatorByJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+        operatorService.exportOperatorByJBYW(omsOperatorJBYWQueryParam,response);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接记录导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:50
+     */
+    @PostMapping("/exportOperatorByJJJL")
+    public void  exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+        operatorService.exportOperatorByJJJL(omsOperatorJBYWQueryParam,response);
+    }
 }

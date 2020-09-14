@@ -61,6 +61,8 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         String enCodeStr=null;
         QrCode qrCode=new QrCode();
+        String imgFormat="jpg";
+        String base64Pre="data:image/"+imgFormat+";base64,";
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
         if(createQrCodeApplyList.size()>0){
@@ -71,8 +73,8 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
             stringBuffer.append("?").append("operatId=").append(userInfo.getId()).append("&qrCodeId=").append(qrCodeId);
             ByteArrayOutputStream bs=new ByteArrayOutputStream();
             try {
-                QrCodeCreateUtil.createQrCode(bs,stringBuffer.toString(),200,"JPEG");
-                enCodeStr = Base64.encode(bs.toByteArray());
+                QrCodeCreateUtil.createQrCode(bs,stringBuffer.toString(),190,imgFormat);
+                enCodeStr = base64Pre+Base64.encode(bs.toByteArray());
             } catch (WriterException|IOException e) {
                 e.printStackTrace();
                 throw new CustomMessageException("二维码生成失败，原因："+e.getMessage());

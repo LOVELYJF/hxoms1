@@ -196,6 +196,34 @@ public class CfCertificateCollectionController {
     }
 
     /**
+     * @Desc: 生成打印文件
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: com.hxoms.common.utils.Result<java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFile>>
+     * @Date: 2020/9/13
+     */
+    @ApiOperation(value="生成打印文件")
+    @PostMapping("/createFileListByCode")
+    public Result<List<PrintFile>> createFileListByCode(@RequestBody @Validated RequestList<FileQuery> requestList) {
+        return Result.success(cfCertificateCollectionService.createFileListByCode(requestList.getList()));
+    }
+
+    /**
+     * @Desc: 打印文件详情
+     * @Author: wangyunquan
+     * @Param: [fileDestailParams]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFileDetail>
+     * @Date: 2020/9/13
+     */
+    @ApiOperation(value="富文本文件详情")
+    @GetMapping("/selectFileDestail")
+    public Result<PrintFileDetail> selectFileDestail(@Validated FileDestailParams fileDestailParams){
+        return Result.success(cfCertificateCollectionService.selectFileDestail(fileDestailParams));
+    }
+
+
+
+    /**
      *  条件查询所有的催缴名单
      * @param cfCertificateCollectionRequestParam
      * @return
