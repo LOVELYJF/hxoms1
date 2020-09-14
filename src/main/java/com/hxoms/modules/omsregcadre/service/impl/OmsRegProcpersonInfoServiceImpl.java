@@ -72,10 +72,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         List<String> a0100str = baseMapper.selectRegProcpersonInfo(dataType);
         List<OmsRegProcpersoninfo> mepinfoList = null;
         //查询干部信息总库干部信息
-        QueryWrapper<A01> a01qw = new QueryWrapper<A01>();
-        a01qw.eq("A0165", "02");
-        a01qw.eq("is_deleted", "0");
-        List<A01> a01list = a01Mapper.selectList(a01qw);
+        List<A01> a01list = a01Mapper.selectA01List();
         int con = 0;
         OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
         List<OmsRegProcpersoninfo> orpInfoList = new ArrayList();
@@ -401,8 +398,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //数据类型 为干部的省管干部登记备案查询
         List<OmsRegProcpersoninfo> reginfolist = baseMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
-        //TODO:加条件，查询省管干部
-        List<A01> a01list = a01Mapper.selectList(null);
+        List<A01> a01list = a01Mapper.selectA01List();
         List<String> a0100s = new ArrayList<>();
         for (int i = 0; i < reginfolist.size(); i++) {
             a0100s.add(reginfolist.get(i).getA0100());
