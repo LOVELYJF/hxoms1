@@ -362,4 +362,6 @@ public class OmsOperatorController {
     public void  exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
         operatorService.exportOperatorByJJJL(omsOperatorJBYWQueryParam,response);
     }
+    //导入任免表
+    //todo
 }
