@@ -4,14 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
-import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 功能描述: <br>
@@ -83,4 +80,16 @@ public class MobilizingCadreController {
         return Result.success(info.getList()).setTotal(info.getTotal());
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈通过条件导出调整期干部〉
+     * @Param: [orgIds, name, status, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/14 10:02
+     */
+    @PostMapping("/exportMobilizingCadre")
+    public void  exportMobilizingCadre(@RequestParam(value ="orgIds",required = false) List<String> orgIds, String name, String status, HttpServletResponse response){
+        mobilizingcadreService.exportMobilizingCadre(orgIds,name,status,response);
+    }
 }
