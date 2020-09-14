@@ -56,7 +56,7 @@ public class ReportServiceImpl implements ReportService {
         }
         String sql = "insert into sys_report (id,pid,node_name," +
              //   "report_id," +  //1.1
-                "order_index) values (uuid.Nextval," +
+                "order_index) values (UUID()," +
                      "'"+pid+"'," +
                      "'"+decision.getNodeName()+"'," +
                  //    "'"+decision.getReportId()+"'," + //1.1
@@ -193,7 +193,7 @@ public class ReportServiceImpl implements ReportService {
         if (pid == null){
             pid = "";
         }
-        String sql = "insert into decision_show (id,pid,show_way,json) values(uuid.Nextval," +
+        String sql = "insert into decision_show (id,pid,show_way,json) values(UUID()," +
                      "'"+pid+"','"+decisionConfig.getShowWay()+"'," +
                      "'"+decisionConfig.getJson()+"')";
         SqlVo sqlVo = SqlVo.getInstance(sql);
