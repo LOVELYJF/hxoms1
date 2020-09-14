@@ -204,6 +204,9 @@
         select
         <include refid="Base_Column_List"/>
         from cf_module
+        <if test="mu_state!=null and mu_state!=''">
+        where mu_state=#{mu_state}
+    </if>
         order by order_index
     </select>
 
@@ -218,7 +221,7 @@
         inner join cf_role_module rm
         on urv.role_id=rm.role_id and urv.user_id=#{userId}
         inner join cf_module m
-        on rm.mu_id=m.mu_id
+        on rm.mu_id=m.mu_id and m.mu_state='1'
         inner join cf_org_module om
         on m.mu_id=om.mu_id
         inner join cf_user u

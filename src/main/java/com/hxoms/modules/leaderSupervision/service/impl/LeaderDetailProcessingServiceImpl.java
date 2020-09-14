@@ -1,7 +1,10 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
@@ -467,6 +470,18 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     // 保存 备案附件 和人员的关系
     private  void saveAttachmentByPutonRecord(String applyId,String pdfFilePath,int bussinessOccureStpet, String bussinessOccureStpetName){
 
+
+        LambdaQueryWrapper<OmsAttachment> lambdaQueryWrapper = Wrappers.<OmsAttachment>lambdaQuery();
+
+        lambdaQueryWrapper.eq(OmsAttachment::getBussinessid,applyId)
+                          .eq(OmsAttachment::getBussinessOccureStpet,bussinessOccureStpet)
+                          .eq(OmsAttachment::getBussinessOccureStpetName,bussinessOccureStpetName);
+
+         int rows =  omsAttachmentMapper.delete(lambdaQueryWrapper);
+
+         log.info("删除的条数"+rows);
+
+
         // 保存 附件 表
         OmsAttachment omsAttachment = new OmsAttachment();
         omsAttachment.setId(UUIDGenerator.getPrimaryKey());
@@ -773,6 +788,10 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         String pdfFilePath =   getPdfByHtml(omsCreateFile,userName);
 
+        //由于在某种未知的 情况 会产生多个备案表 保留最新的
+
+        LeaderSupervisionUntil.deleteFileById(omsCreateFile.getApplyId()+userName+pdfName+".pdf",attachmentPath+File.separator+"static");
+
         saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
 
                 //  (1) 保存 审批记录(通过)
@@ -799,16 +818,18 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         // 要转换的 html
         String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
+
+        String newHtmlStr = htmlstr.replaceAll("<br>","<br/>");
         // 生成 pdf的路径 +名称
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar calendar = Calendar.getInstance();
-        String fileName = df.format(calendar.getTime()) +userName+pdfName+".pdf" ;
+        String fileName = df.format(calendar.getTime())+omsCreateFile.getApplyId() +userName+pdfName+".pdf" ;
         log.info("文件的文件名为:" + fileName);
 
 
         String filePath = attachmentPath+File.separator+"static"+File.separator;
         try {
-            FileTypeConvertUtil.html2pdf(htmlstr,filePath+fileName);
+            FileTypeConvertUtil.html2pdf(newHtmlStr,filePath+fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1431,7 +1452,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
               }else{
-                  throw new CustomMessageException("一个人员出现多个备案表,请仔细检查");
+                  throw new CustomMessageException("备案表不存在,请仔细检查");
               }
 
 

@@ -233,6 +233,26 @@ public class DataCaptureServiceImpl implements DataCaptureService {
         dataCaptureMapper.insertMasterA36(insertList);
     }
 
+    @Override
+    public List<Map> getMasterB01(int offset, int rows) {
+        return dataCaptureMapper.getMasterB01(offset,rows);
+    }
+
+    @Override
+    public int getMasterB01Count() {
+        return dataCaptureMapper.getMasterB01Count();
+    }
+
+    @Override
+    public void updateMasterB01(List<Map> updateList) {
+        dataCaptureMapper.updateMasterB01(updateList);
+    }
+
+    @Override
+    public void insertMasterB01(List<Map> insertList) {
+        dataCaptureMapper.insertMasterB01(insertList);
+    }
+
 //    /**
 //     * 目标数据源向主数据源同步数据
 //     */

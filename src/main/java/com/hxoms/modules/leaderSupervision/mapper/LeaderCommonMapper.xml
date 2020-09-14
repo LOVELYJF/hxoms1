@@ -472,7 +472,7 @@
 		SELECT
 			   status
 		from(
-			select APPLY_STATUS  as status from oms_pub_apply
+			select sqzt  as status from oms_pub_apply
 
 			where leader_batch_id = #{batchId}
 
