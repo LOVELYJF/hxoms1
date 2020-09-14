@@ -582,12 +582,55 @@ public class LeaderSupervisionUntil {
 
 
 
+    }
 
 
+    public static String getUpdateStatusByJieWei(String busessId,String bussinesType,String leaderStatusName,String bussinessName){
 
+        String updateSql = "update "+bussinesType;
+
+        String setSql = " set  " ;
+
+        String whereCondition = " where id = '" + busessId+"'";
+
+
+        for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+            if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+                String status =  applyStatus.getApplySatus();
+
+                if("干教".equals(bussinessName)){
+                    // todo 干教 流程 到征求纪委意见 就走完了 将状态 置为 已完结
+
+                    setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+
+                }else{
+
+                    // 干部监督处的状态
+                    setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+
+
+                }
+
+                // 干部监督处的状态
+//                setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+
+                break;
+
+
+            }
+
+        }
+
+        return  updateSql+setSql+whereCondition;
 
 
     }
+
+
+
 
 
     public static void main(String[] args){
