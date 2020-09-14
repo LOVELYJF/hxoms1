@@ -65,7 +65,7 @@ public class ModuleServiceImpl implements ModuleService {
         if (pId == null) {
             throw new CustomMessageException("参数pId不能为空");
         }
-        List<Module> moduleList = moduleMapper.selectModuleList();
+        List<Module> moduleList = moduleMapper.selectModuleList(null);
         if (moduleList != null && !moduleList.isEmpty()) {
             Iterator<Module> iterator = moduleList.iterator();
             while (iterator.hasNext()) {
@@ -116,10 +116,16 @@ public class ModuleServiceImpl implements ModuleService {
         //获取当前登录用户
         User user = userMapper.selectByPrimaryKey(userId);
         List<Module> currModuleList = null;
-        if (Constants.USER_TYPES[0].equals(user.getUserType())) {
-            //管理员权限
+        if (Constants.USER_TYPES[0].equals(user.getUserType())||//系统管理员权限
+                Constants.USER_TYPES[1].equals(user.getUserType())) //超级管理员权限
+        {
+
+            currModuleList = moduleMapper.selectModuleList("1");
+        }
+        else if (Constants.USER_TYPES[4].equals(user.getUserType())){//各单位管理员权限
             currModuleList = moduleMapper.selectOrgGrantModule(user.getOrgId());
-        } else {
+        }
+        else {
             //普通用户权限
             currModuleList = moduleMapper.selectUserGrantModules(user.getId());
         }

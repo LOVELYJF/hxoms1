@@ -49,10 +49,14 @@ public class OrgServiceImpl implements OrgService {
         User user = userMapper.selectByPrimaryKey(UserInfoUtil.getUserInfo().getId());
         //判断用户类型根据类型不同用不同的方式查询
         List<Tree> treeList = null;
-        if (Constants.USER_TYPES[0].equals(user.getUserType())) {
-            //管理员直接查询所属机构所拥有的的机构权限
+        if (Constants.USER_TYPES[0].equals(user.getUserType())||//系统管理员
+                Constants.USER_TYPES[1].equals(user.getUserType())) {//超级管理员
+            treeList = b01Mapper.selectAllOrgTree();
+        }
+        else if (Constants.USER_TYPES[4].equals(user.getUserType())){//各单位管理员直接查询所属机构所拥有的的机构权限
             treeList = b01Mapper.selectOrgGrantTree(user.getOrgId());
-        } else {
+        }
+        else {
             //普通用户所拥有的权限
             treeList = b01Mapper.selectUserGrantTree(user.getId());
         }
@@ -133,15 +137,15 @@ public class OrgServiceImpl implements OrgService {
      */
     @Override
     @Transactional
-    public void deleteOrg(String b0111) {
-        if (StringUtils.isBlank(b0111)) {
+    public void deleteOrg(String b0100) {
+        if (StringUtils.isBlank(b0100)) {
             throw new CustomMessageException("机构代码不能为空");
         }
-        int count = b01Mapper.selectOrgByPid(b0111);
+        int count = b01Mapper.selectOrgByPid(b0100);
         if (count > 0) {
             throw new CustomMessageException("该机构有下级机构，无法删除！");
         }
-        b01Mapper.deleteOrg(b0111);
+        b01Mapper.deleteOrg(b0100);
     }
 
     /**
@@ -150,11 +154,11 @@ public class OrgServiceImpl implements OrgService {
      * @ createDate: 2019/6/5 16:13
      */
     @Override
-    public void sortOrg(String b0111s) {
-        if (StringUtils.isBlank(b0111s)) {
+    public void sortOrg(String b0100) {
+        if (StringUtils.isBlank(b0100)) {
             throw new CustomMessageException("排序机构不能为空");
         }
-        String[] b01s = b0111s.split(",");
+        String[] b01s = b0100.split(",");
         b01Mapper.sortOrg(b01s);
     }
 
@@ -178,11 +182,11 @@ public class OrgServiceImpl implements OrgService {
      * @ createDate: 2019/6/7 15:50
      */
     @Override
-    public B01 selectOrgByB0111(String b0111) {
-        if (StringUtils.isBlank(b0111)) {
+    public B01 selectOrgByB0111(String b0100) {
+        if (StringUtils.isBlank(b0100)) {
             throw new CustomMessageException("机构代码不能为空");
         }
-        return b01Mapper.selectOrgByB0111(b0111);
+        return b01Mapper.selectOrgByB0111(b0100);
     }
 
     @Override

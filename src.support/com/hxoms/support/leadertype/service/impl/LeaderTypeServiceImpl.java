@@ -43,10 +43,14 @@ public class LeaderTypeServiceImpl implements LeaderTypeService {
         // 查询当前用户所属机构的信息集,根据干部类别id
         List<DataTable> dataTableList;
         // 判断用户是普通用户还是管理员
-        if (Constants.USER_TYPES[0].equals(user.getUserType())) {
+        if (Constants.USER_TYPES[0].equals(user.getUserType())||//系统管理员权限
+                Constants.USER_TYPES[1].equals(user.getUserType())) {//超级管理员权限
             // 管理员直接返回机构所拥有的信息集权限
+            dataTableList = dataTableMapper.selectDataTable();
+        }
+        else if (Constants.USER_TYPES[4].equals(user.getUserType())){//各单位管理员权限
             dataTableList = dataTableMapper.selectGrantLeaderTypeInfo(user.getOrgId(), leaderTypeId);
-        } else {
+        }else {
             // 普通用户需要查询用户角色下的信息集权限和机构的取交集
             dataTableList = dataTableMapper.selectUserGrantLeaderTypeInfo(user.getId(), leaderTypeId);
         }

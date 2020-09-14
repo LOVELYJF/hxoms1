@@ -28,6 +28,7 @@ import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -212,18 +213,32 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
             for (int i=0;i<priApplyList.size();i++){
                 OmsEntryexitRecordVO vo = priApplyList.get(i);
                 if ((vo.getAbroadTime()!=null && vo.getReturnTime()!=null)){
-                    vo.setNum(i+1);
-                    vo.setLeibie("申报");
-                    newPriApplyList.add(vo);
+                    OmsEntryexitRecordVO txvo1 = new OmsEntryexitRecordVO();
+                    txvo1.setNum(i+1);
+                    txvo1.setOmsId(vo.getOmsId());
+                    txvo1.setAbroadTime(vo.getAbroadTime());
+                    txvo1.setReturnTime(vo.getReturnTime());
+                    txvo1.setPriapplyId(vo.getPriapplyId());
+                    txvo1.setComparisonResult(vo.getComparisonResult());
+                    txvo1.setIdType(vo.getIdType());
+                    txvo1.setIdNumber(vo.getIdNumber());
+                    txvo1.setGoCountry(vo.getGoCountry());
+                    txvo1.setLeibie("申报");
+                    newPriApplyList.add(txvo1);
                 }
                 if (vo.getRealAbroadTime()!=null && vo.getRealReturnTime()!=null){
-                    OmsEntryexitRecordVO txvo = new OmsEntryexitRecordVO();
-                    txvo.setNum(i+1);
-                    txvo = vo;
-                    txvo.setLeibie("填写");
-                    txvo.setAbroadTime(vo.getRealAbroadTime());
-                    txvo.setReturnTime(vo.getRealReturnTime());
-                    newPriApplyList.add(txvo);
+                    OmsEntryexitRecordVO txvo2 = new OmsEntryexitRecordVO();
+                    txvo2.setNum(i+1);
+                    txvo2.setOmsId(vo.getOmsId());
+                    txvo2.setAbroadTime(vo.getAbroadTime());
+                    txvo2.setReturnTime(vo.getReturnTime());
+                    txvo2.setPriapplyId(vo.getPriapplyId());
+                    txvo2.setComparisonResult(vo.getComparisonResult());
+                    txvo2.setIdType(vo.getIdType());
+                    txvo2.setIdNumber(vo.getIdNumber());
+                    txvo2.setGoCountry(vo.getDestination());
+                    txvo2.setLeibie("填写");
+                    newPriApplyList.add(txvo2);
                 }
                 List<OmsEntryexitRecordVO> oldexitRecordslist = baseMapper.selectRecordPriList(omsId);
                 if (oldexitRecordslist != null && oldexitRecordslist.size() > 0) {

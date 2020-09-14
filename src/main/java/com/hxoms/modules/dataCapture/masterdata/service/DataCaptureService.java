@@ -101,7 +101,13 @@ public interface DataCaptureService {
     void updateMasterA36(List<Map> updateList);
     void insertMasterA36(List<Map> insertList);
 
-
+    /**
+     * B01表的相关操作
+     **/
+    List<Map> getMasterB01(int offset, int rows);
+    int getMasterB01Count();
+    void updateMasterB01(List<Map> updateList);
+    void insertMasterB01(List<Map> insertList);
 //    /**
 //     * 目标数据源向主数据同步
 //     */

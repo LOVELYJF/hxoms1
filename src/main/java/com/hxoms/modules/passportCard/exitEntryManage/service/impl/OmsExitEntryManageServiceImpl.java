@@ -3,17 +3,23 @@ package com.hxoms.modules.passportCard.exitEntryManage.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfo;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfoExport;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +32,34 @@ public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRe
    @Autowired
    private OmsCerExitEntryRepertoryMapper omsCerExitEntryRepertoryMapper;
 
+    /**
+     * @Desc: 证照信息管理-出入库记录-导出
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/14
+     */
+    @Override
+    public void exitEntryRecordExport(List<String> ids, HttpServletResponse response){
+        if (ids == null || ids.size() < 1) {
+            throw new CustomMessageException("操作失败！");
+        }
+        CerInfo param=new CerInfo();
+        param.setIds(ids);
+        List<CerExitEntryInfo> getList=omsCerExitEntryRepertoryMapper.selectExitEntryRecord(param);
+       List<CerExitEntryInfoExport> exports=new ArrayList<>();
+        CerExitEntryInfoExport vo=null;
+       if (getList.size()>0){
+           for (CerExitEntryInfo info:getList){
+               vo=new CerExitEntryInfoExport();
+               BeanUtils.copyProperties(info,vo);
+               exports.add(vo);
+           }
+       }
+
+        String[] headers="序号,进出方式,存取日期,存取人,存取方式".split(",");
+        ExportExcelUtil.exportNotTitleExcel("出入库记录",headers,(List) getList,response);
+    }
 
     /**
      * @Desc: 查询证照出入库记录

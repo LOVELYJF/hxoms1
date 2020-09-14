@@ -196,6 +196,16 @@
       <if test="status!=null">
         AND status=#{status}
       </if>
+
+    <!--WQF ADD 勾选查询使用-->
+    <if test="ids!=null">
+      AND a.id in
+      <foreach collection="ids" index="index" item="item" open="("
+               separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+
   </select>
   <select id="selectSignById" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo">
     SELECT
