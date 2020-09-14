@@ -10,6 +10,7 @@ import com.hxoms.modules.dataCapture.synchdata.Synchdata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,16 @@ public class ExtractController {
 
     @Autowired
     private SysLogService sysLogService;
+    @Value("${omsFile.baseDir}")
+    private String omsfilepath;
+
+    public String getOmsfilepath() {
+        return omsfilepath;
+    }
+
+    public void setOmsfilepath(String omsfilepath) {
+        this.omsfilepath = omsfilepath;
+    }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -53,6 +64,8 @@ public class ExtractController {
 //      List<Map> masterList1 =  a01Service.getMasterA01();
 //      log.info("从主数据源查询的数据条数"+masterList1.size()+"2次");
         sysLogService.deleteAndsave();
+
+        System.out.println(omsfilepath);
         return null;
     }
 }

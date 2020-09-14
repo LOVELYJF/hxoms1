@@ -12,8 +12,8 @@
 		select '做成审核意见' as statusName, '23' as applyStatus,'0' as num  union
 		select '处领导审批' as statusName, '24' as applyStatus,'0' as num  union
 		select '部领导审批' as statusName, '25' as applyStatus,'0' as num  union
-		select '核实批件' as statusName, '26' as applyStatus,'0' as num  union
-		select '制作备案表' as statusName, '27' as applyStatus,'0' as num
+		select '核实批件' as statusName, '27' as applyStatus,'0' as num  union
+		select '制作备案表' as statusName, '28' as applyStatus,'0' as num
 		) b
 
 	</sql>
@@ -74,7 +74,7 @@
 		FROM
 		oms_pub_apply pua
 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.id
 		left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
 
         UNION
@@ -87,7 +87,7 @@
 
         b.b0101 AS department, 	# "部门名称"
 
-        a.a0101 AS userName, # 人员名称
+        concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
         DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -102,11 +102,11 @@
 
         "无" AS cgspdw,  # 审批单位
 
-        IF (
-        a.A0104 NOT IN ('1', '2'),
-        '未知',
-        IF (a.A0104 = 1, '男', '女')
-        ) AS sex,  # 性别
+		IF (
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,  # 性别
 
         DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -137,7 +137,7 @@
         oms_pri_apply pra
         LEFT JOIN b01 b ON pra.b0100 = b.b0100
         LEFT JOIN a01 a ON pra.a0100 = a.a0100
-        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 
         UNION
 
@@ -150,7 +150,7 @@
 
         b.b0101 AS department, 	# "部门名称"
 
-        a.a0101 AS userName, # 人员名称
+        concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
         DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -165,11 +165,11 @@
 
         "无" AS cgspdw,  # 审批单位
 
-        IF (
-        a.A0104 NOT IN ('1', '2'),
-        '未知',
-        IF (a.A0104 = 1, '男', '女')
-        ) AS sex,  # 性别
+		IF (
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,  # 性别
 
         DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -199,14 +199,13 @@
         oms_pri_delay_apply  prda
         LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
         LEFT JOIN b01 b ON pra.b0100 = b.b0100
-        LEFT JOIN a01 a ON pra.a0100 = a.a0100
-        LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+        LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
         ) temp
 
 
         <where>
 
-			applyStatus = #{applyStatus}   # 查询 所以 业务流程 走到 业务受理模块
+			applyStatus >= #{applyStatus}   # 查询 所以 业务流程 走到 业务受理模块 或大于业务受理模块 应为 此流程可能先走了 第二步
             and (batchId is null or batchId = '')
 
 		<if test="leaderBtachId !=null and leaderBtachId !='' ">
@@ -282,7 +281,7 @@
 						FROM
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 								 left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
 						where pug.BAZT !=1
 						UNION
@@ -297,7 +296,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -313,10 +312,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -345,7 +344,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 
 						UNION
 
@@ -360,7 +359,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -376,10 +375,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -409,8 +408,8 @@
 							 oms_pri_delay_apply  prda
 								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 						) temp
 		# 业务受理 或 征求纪委意见 或 纪委意见填写
 		where applyStatus IN ('20','21','22')
@@ -499,25 +498,44 @@
 	<select id="selectBusinessFlowWithASNum" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
 
 		SELECT
-			   b.statusName, -- 业务名称
-			   IFNULL(a.num,b.num)  -- 业务数量
+			   CONCAT("第",
+					  case num
+						  when 1 then '一'
+						  when 2 then '二'
+						  when 3 then '三'
+						  when 4 then '四'
+						  when 5 then '五'
+						  when 6 then '六'
+						  when 7 then '七'
+						  when 8 then '八'
+						  else '' end,
+					  '步.',statusName,' (',nums,')'
+					   )  as context
 		from(
-			select *,count(1) as num from (
-		    SELECT pua.APPLY_STATUS as applyStatus from oms_pub_apply  pua where pua.leader_batch_id is not null
-		    UNION
-            select pra.APPLY_STATUS as applyStatus from oms_pri_apply pra where pra.leader_batch_id is not NULL
-		    UNION
-		    select prda.APPLY_STATUS applyStatus from oms_pri_delay_apply prda where prda.leader_batch_id is not null
-			 ) temp  group by applyStatus ) a RIGHT JOIN (
-				select '业务办理' as statusName, '20' as applyStatus,'0' as num  union
-			  	select '征求意见' as statusName, '21' as applyStatus,'0' as num  union
-				select '记录意见' as statusName, '22' as applyStatus,'0' as num  union
-				select '做成审核意见' as statusName, '23' as applyStatus,'0' as num  union
-				select '处领导审批' as statusName, '24' as applyStatus,'0' as num  union
-			  	select '部领导审批' as statusName, '25' as applyStatus,'0' as num  union
-				select '核实批件' as statusName, '26' as applyStatus,'0' as num  union
-			  	select '制作备案表' as statusName, '27' as applyStatus,'0' as num
-			  	) b  on  a.applyStatus = b.applyStatus
+
+			SELECT
+				   (@num:=@num+1)  num,
+				   b.statusName, -- 业务名称
+				   IFNULL(a.num,b.num) nums  -- 业务数量
+			from(
+				select *,count(1) as num from (
+											  SELECT pua.sqzt as applyStatus from oms_pub_apply  pua where pua.leader_batch_id is not null
+											  UNION
+											  select pra.APPLY_STATUS as applyStatus from oms_pri_apply pra where pra.leader_batch_id is not NULL
+											  UNION
+											  select prda.APPLY_STATUS applyStatus from oms_pri_delay_apply prda where prda.leader_batch_id is not null
+											  ) temp  group by applyStatus ) a RIGHT JOIN (
+																						  select '业务办理' as statusName, '20' as applyStatus,'0' as num  union
+																						  select '征求意见' as statusName, '21' as applyStatus,'0' as num  union
+																						  select '记录意见' as statusName, '22' as applyStatus,'0' as num  union
+																						  select '做成审核意见' as statusName, '23' as applyStatus,'0' as num  union
+																						  select '处领导审批' as statusName, '24' as applyStatus,'0' as num  union
+																						  select '部领导审批' as statusName, '25' as applyStatus,'0' as num  union
+																						  select '核实批件' as statusName, '27' as applyStatus,'0' as num  union
+																						  select '制作备案表' as statusName, '28' as applyStatus,'0' as num
+																						  ) b  on  a.applyStatus = b.applyStatus, (select   @num:=0)cc
+
+			) temp1
 	</select>
 
 
@@ -604,7 +622,7 @@
 						FROM
 							 oms_pub_apply pua
 		                    LEFT JOIN b01 b ON pua.b0100 = b.b0100
-		                    LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		                    LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 		                    left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
 
 						UNION
@@ -616,7 +634,7 @@
 							   pra.APPLY_STATUS as applyStatus,
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -633,10 +651,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -671,7 +689,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 
 						UNION
 
@@ -683,7 +701,7 @@
 							   prda.APPLY_STATUS as applyStatus,
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
@@ -699,10 +717,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -737,8 +755,8 @@
 							 oms_pri_delay_apply  prda
 								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 						) temp
 
 				#	where temp.clshsftg <![CDATA[ <> ]]> ''
@@ -812,7 +830,7 @@
 						FROM
 		                oms_pub_apply pua
 	                	LEFT JOIN b01 b ON pua.b0100 = b.b0100
-		                LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		                LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 		                left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
 					   LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 						UNION
@@ -824,7 +842,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -841,10 +859,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -882,7 +900,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
 
 						UNION
@@ -894,7 +912,7 @@
 							   prda.APPLY_STATUS as applyStatus,
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 							   TIMESTAMPDIFF(DAY,now(),pra.ABROAD_TIME) as daynums, #  距离 出境天数
@@ -910,10 +928,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -951,8 +969,8 @@
 							 oms_pri_delay_apply  prda
 								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
 
 						) temp
@@ -993,7 +1011,7 @@
                                          oms_pub_apply pua
                                              LEFT JOIN b01 b ON pua.b0100 = b.b0100
                                              LEFT JOIN a01 a ON pua.a0100 = a.a0100
-                                             LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+                                             LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
                                              LEFT JOIN oms_leader_batch batch on pua.leader_batch_id = batch.id
                                     UNION
                                     SELECT
@@ -1007,7 +1025,7 @@
                                          oms_pri_apply pra
                                              LEFT JOIN b01 b ON pra.b0100 = b.b0100
                                              LEFT JOIN a01 a ON pra.a0100 = a.a0100
-                                             LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+                                             LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
                                              LEFT JOIN oms_leader_batch batch on pra.leader_batch_id = batch.id
                                     UNION
 
@@ -1024,8 +1042,8 @@
                                          oms_pri_delay_apply  prda
                                              LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
                                              LEFT JOIN b01 b ON pra.b0100 = b.b0100
-                                             LEFT JOIN a01 a ON pra.a0100 = a.a0100
-                                             LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+
+                                             LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
                                              LEFT JOIN oms_leader_batch batch on prda.leader_batch_id = batch.id
 
                                     ) temp
@@ -1044,7 +1062,7 @@
 
 	 b.b0101 AS department, 	# "部门名称"
 
-	 a.a0101 AS userName, # 人员名称
+	 concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 	 DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -1057,12 +1075,11 @@
 	 '因私' AS businessType,  # 申请类型
 
 	 "无" AS cgspdw,  # 审批单位
-
-	 IF (
-		   a.A0104 NOT IN ('1', '2'),
-		   '未知',
-		   IF (a.A0104 = 1, '男', '女')
-			   ) AS sex,  # 性别
+		IF (
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,  # 性别
 
 	 DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1087,7 +1104,7 @@
 	 oms_pri_apply pra
 	 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 	 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-	 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+	 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 	 left join ( select
 	 apply_id as applyId,
 	 min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
@@ -1132,7 +1149,7 @@
 		pua.leader_batch_id as batchId, # 批次id
 
 		b.b0101 AS department,  # "部门名称"
-		a.a0101 AS userName, # 人员名称
+		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 		DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 		DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 		pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -1140,9 +1157,9 @@
 		"因公" AS businessType,  # 申请类型
 		pua.CGSPDW AS cgspdw, # 审批单位
 		IF (
-		a.A0104 NOT IN ('1', '2'),
+		mrp.SEX NOT IN ('1', '2'),
 		'未知',
-		IF (a.A0104 = 1, '男', '女')
+		IF (mrp.SEX = 1, '男', '女')
 		) AS sex,  # 性别
 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
@@ -1164,7 +1181,7 @@
 		oms_pub_apply pua
 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
 		LEFT JOIN a01 a ON pua.a0100 = a.a0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 		left join ( select
 		apply_id as applyId,
 		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
@@ -1211,7 +1228,7 @@
 
 		b.b0101 AS department, 	# "部门名称"
 
-		a.a0101 AS userName, # 人员名称
+		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -1226,9 +1243,9 @@
 		"无" AS cgspdw,  # 审批单位
 
 		IF (
-		a.A0104 NOT IN ('1', '2'),
+		mrp.SEX NOT IN ('1', '2'),
 		'未知',
-		IF (a.A0104 = 1, '男', '女')
+		IF (mrp.SEX = 1, '男', '女')
 		) AS sex,  # 性别
 
 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
@@ -1254,8 +1271,7 @@
 		oms_pri_delay_apply  prda
 		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
-		LEFT JOIN a01 a ON pra.a0100 = a.a0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 		left join ( select
 		apply_id as applyId,
 		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
@@ -1347,14 +1363,14 @@
 							   pua.leader_batch_id as batchId, # 批次id
 
 							   b.b0101 AS department,  # "部门名称"
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   "因公" AS businessType,  # 申请类型
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 								-- 			 mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
@@ -1366,7 +1382,7 @@
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 								 left join oms_jiwei_opinion jio on pua.jiwei_opinion_id=jio.id
 						UNION
 						SELECT
@@ -1377,7 +1393,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 
 
@@ -1386,10 +1402,10 @@
 								-- 	 "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1403,7 +1419,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 								 left join oms_jiwei_opinion jio  on pra.jiwei_opinion_id =jio.id
 
 
@@ -1427,7 +1443,7 @@
 		   pua.SQZT   as applyStatus,    # 业务 流程状态
 		   'oms_pub_apply' as type,
 		   b.b0101 AS department,  # "部门名称"
-		   a.a0101 AS userName, # 人员名称
+		   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 		   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 		   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 		   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -1444,10 +1460,10 @@
 		   as officaljwjl, # 书面纪委意见
 		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
 		   IF (
-		   a.A0104 NOT IN ('1', '2'),
-		   '未知',
-		   IF (a.A0104 = 1, '男', '女')
-		   ) AS sex,  # 性别
+			   mrp.SEX NOT IN ('1', '2'),
+			   '未知',
+			   IF (mrp.SEX = 1, '男', '女')
+				   ) AS sex,  # 性别
 		   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 		   pua.JOB AS job,   #职务
@@ -1463,7 +1479,7 @@
 		   oms_pub_apply pua
 		   LEFT JOIN b01 b ON pua.b0100 = b.b0100
 		   LEFT JOIN a01 a ON pua.a0100 = a.a0100
-		   LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+		   LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 		   LEFT JOIN oms_jiwei_opinion jio on pua.id = jio.id  # 纪委意见
 		   left join oms_abroad_approval  aba on pua.id = aba.APPLY_ID and aba.STEP_CODE = '23'
 
@@ -1493,7 +1509,7 @@
 
 			b.b0101 AS department, 	# "部门名称"
 
-			a.a0101 AS userName, # 人员名称
+			concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 			"无" AS cfrw,    #出访任务
 
@@ -1502,10 +1518,10 @@
 			"无" AS cgspdw,  # 审批单位
 
 			IF (
-			a.A0104 NOT IN ('1', '2'),
-			'未知',
-			IF (a.A0104 = 1, '男', '女')
-			) AS sex,  # 性别
+				mrp.SEX NOT IN ('1', '2'),
+				'未知',
+				IF (mrp.SEX = 1, '男', '女')
+					) AS sex,  # 性别
 
 			DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1556,7 +1572,7 @@
 			oms_pri_apply pra
 			LEFT JOIN b01 b ON pra.b0100 = b.b0100
 			LEFT JOIN a01 a ON pra.a0100 = a.a0100
-			LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+			LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 
 			LEFT JOIN oms_jiwei_opinion jio on pra.id = jio.id  # 纪委意见
 			left join oms_abroad_approval  aba on pra.id = aba.APPLY_ID  and aba.STEP_CODE = '23'
@@ -1583,7 +1599,7 @@
 			'oms_pri_delay_apply' as type,
 			b.b0101 AS department, 	# "部门名称"
 
-			a.a0101 AS userName, # 人员名称
+			concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 			"无" AS cfrw,    #出访任务
 
@@ -1646,8 +1662,7 @@
 			oms_pri_delay_apply  prda
 			LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 			LEFT JOIN b01 b ON pra.b0100 = b.b0100
-			LEFT JOIN a01 a ON pra.a0100 = a.a0100
-			LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+			LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 
 			LEFT JOIN oms_jiwei_opinion jio on prda.id = jio.id  # 纪委意见
 			left join oms_abroad_approval  aba on prda.id = aba.APPLY_ID  and aba.STEP_CODE = '23'
@@ -1671,7 +1686,7 @@
 							   pua.PROCPERSON_ID as procpersonId , #登记备案人员id
 
 							   b.b0101 AS department,  # "部门名称"
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 							   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 							   pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -1680,10 +1695,10 @@
 							   "因公" AS businessType,  # 申请类型
 							   pua.CGSPDW AS cgspdw, # 审批单位
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 							   pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
@@ -1711,7 +1726,7 @@
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 								 left join( select
 												   apply_id as applyId,
@@ -1732,7 +1747,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -1748,10 +1763,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1790,7 +1805,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
 
 								 left join ( select
@@ -1812,7 +1827,7 @@
 
 							   b.b0101 AS department, 	# "部门名称"
 
-							   a.a0101 AS userName, # 人员名称
+							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 							   DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -1829,10 +1844,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-								   a.A0104 NOT IN ('1', '2'),
-								   '未知',
-								   IF (a.A0104 = 1, '男', '女')
-									   ) AS sex,  # 性别
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1870,8 +1885,8 @@
 							 oms_pri_delay_apply  prda
 								 LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
-								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.A0100 = mrp.a0100
+
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =prda.id
 
 								 left join ( select
@@ -1908,7 +1923,7 @@
 										pua.PROCPERSON_ID as procpersonId , #登记备案人员id
 
 										b.b0101 AS department,  # "部门名称"
-										a.a0101 AS userName, # 人员名称
+										concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 										DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 										DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 										pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -1916,9 +1931,9 @@
 										"因公" AS businessType,  # 申请类型
 										pua.CGSPDW AS cgspdw, # 审批单位
 										IF (
-											a.A0104 NOT IN ('1', '2'),
+											mrp.SEX NOT IN ('1', '2'),
 											'未知',
-											IF (a.A0104 = 1, '男', '女')
+											IF (mrp.SEX = 1, '男', '女')
 												) AS sex,  # 性别
 										DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 										pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
@@ -1948,7 +1963,7 @@
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 
 								 left join( select
@@ -1970,7 +1985,7 @@
 
 										b.b0101 AS department, 	# "部门名称"
 
-										a.a0101 AS userName, # 人员名称
+										concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
 										DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
@@ -1983,11 +1998,10 @@
 										'因私' AS businessType,  # 申请类型
 
 										"无" AS cgspdw,  # 审批单位
-
 										IF (
-											a.A0104 NOT IN ('1', '2'),
+											mrp.SEX NOT IN ('1', '2'),
 											'未知',
-											IF (a.A0104 = 1, '男', '女')
+											IF (mrp.SEX = 1, '男', '女')
 												) AS sex,  # 性别
 
 										DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
@@ -2028,7 +2042,7 @@
 							 oms_pri_apply pra
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.A0100 = mrp.a0100
+								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
 								 LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
 
 								 left join ( select
@@ -2057,7 +2071,7 @@
 			   pua.leader_batch_id as batchId, # 批次id
 		       '因公' AS businessType,  # 申请类型
 			   b.b0101 AS department,  # "部门名称"
-			   a.a0101 AS userName, # 人员名称
+			   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 			   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 			   TLSJ,  # 停留时间
 			   DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
@@ -2065,11 +2079,11 @@
 			   pua.CFRW AS cfrw,  #  出访任务
 			   pua.PWH  as pwh,   #批文
 			   pua.CGSPDW AS cgspdw, # 审批单位
-			   IF (
-				   a.A0104 NOT IN ('1', '2'),
-				   '未知',
-				   IF (a.A0104 = 1, '男', '女')
-					   ) AS sex,  # 性别
+		 IF (
+		 mrp.SEX NOT IN ('1', '2'),
+		 '未知',
+		 IF (mrp.SEX = 1, '男', '女')
+		 ) AS sex,  # 性别
 			   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 
 			   pua.JOB AS job,   #职务
@@ -2083,7 +2097,7 @@
 			 oms_pub_apply pua
 				 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 				 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-				 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+				 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 				 left join oms_pub_group_pre_approval gpa on pua.YSP_ID = gpa.id
 
 				 left join( select
@@ -2254,7 +2268,7 @@
 		                "制作备案表" as bussinessOccureStpetName,
 						"oms_pub_apply_cadres" as tableCode,
 						b.b0101 AS department,  # "部门名称"
-						a.a0101 AS userName, # 人员名称
+						concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 						DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
 						DATE_FORMAT(pua.HGSJ,'%Y.%m.%d') AS returnTime,  #  回国时间 == 入境日期
 						pua.SDGJ AS sdgj,  #  所到国境 == 目的地
@@ -2264,11 +2278,11 @@
 
 						"因公" AS businessType,  # 申请类型
 						pua.CGSPDW AS cgspdw, # 审批单位
-						IF (
-							a.A0104 NOT IN ('1', '2'),
-							'未知',
-							IF (a.A0104 = 1, '男', '女')
-								) AS sex,  # 性别
+		IF (
+		mrp.SEX NOT IN ('1', '2'),
+		'未知',
+		IF (mrp.SEX = 1, '男', '女')
+		) AS sex,  # 性别
 						DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 						pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
 						pua.JOB AS job,   #职务
@@ -2298,7 +2312,7 @@
 			 oms_pub_apply pua
 				 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 				 LEFT JOIN a01 a ON pua.a0100 = a.a0100
-				 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.a0100
+				 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 				 LEFT JOIN oms_jiwei_opinion jio on jio.id =pua.id
 
 				 left join( select
