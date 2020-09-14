@@ -45,4 +45,24 @@ public interface OmsSensitiveLimitMapper {
      * @Date: 2020/7/14 20:17
      */
 	List<Integer> getSensitiveMaintain(String sensitiveLimitId);
+
+
+	/**
+	 * <b>功能描述: 删除当前敏感信息的国家信息</b>
+	 * @Param: [sensitiveLimitId]
+	 * @Return: void
+	 * @Author: luoshuai
+	 * @Date: 2020/9/12 13:52
+	 */
+    void updateSensitiveMaintain(String sensitiveLimitId);
+
+
+    /**
+     * <b>功能描述: 删除敏感信息上的国家</b>
+     * @Param: [map]
+     * @Return: void
+     * @Author: luoshuai
+     * @Date: 2020/9/12 14:20
+     */
+	void updateSensitiveMaintainToDelete(Map<String, Object> map);
 }

@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -1317,16 +1318,12 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public PageInfo getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
-        Integer pageNum = omsOperatorJBYWQueryParam.getPageNum();
-        if (pageNum == null) {
-            pageNum = 1;
+        if (StringUtils.isBlank(omsOperatorJBYWQueryParam.getOperatorId())){
+            throw new CustomMessageException("经办人ID为空!");
         }
-        Integer pageSize = omsOperatorJBYWQueryParam.getPageSize();
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        //设置传入页码，以及每页的大小
-        PageHelper.startPage(pageNum, pageSize);
+        //分页
+        PageUtil.pageHelp(omsOperatorJBYWQueryParam.getPageNum() == null ? 1 : omsOperatorJBYWQueryParam.getPageNum(),
+                omsOperatorJBYWQueryParam.getPageSize() == null ? 10 : omsOperatorJBYWQueryParam.getPageSize());
         List<OmsOperatorJbywVO> omsOperatorJbywVOS = new ArrayList<>();
         //业务类别集合
         List<String> businessTypes = omsOperatorJBYWQueryParam.getBusinessType();
@@ -1342,7 +1339,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         List<OmsPriApplyVO> omsPriApplyVOS = null;
         /** 延期回国*/
         List<OmsPriDelayVO> omsPriDelayVOS = null;
-        if (businessTypes == null){
+        if (businessTypes == null || businessTypes.size() <= 0){
             //查询所有
             /**证照领取*/
             omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
@@ -1533,6 +1530,528 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
 
         PageInfo info = new PageInfo(omsOperatorJbywVOS);
         return info;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈通过条件查询经办人交接记录〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 16:47
+     */
+    @Override
+    public PageInfo getOperatorWBJYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam) {
+        if (StringUtils.isBlank(omsOperatorJBYWQueryParam.getOperatorId())){
+            throw new CustomMessageException("经办人ID为空!");
+        }
+        //分页
+        PageUtil.pageHelp(omsOperatorJBYWQueryParam.getPageNum() == null ? 1 : omsOperatorJBYWQueryParam.getPageNum(),
+                omsOperatorJBYWQueryParam.getPageSize() == null ? 10 : omsOperatorJBYWQueryParam.getPageSize());
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorHandoverMapper.getOperatorWBJYW(omsOperatorJBYWQueryParam);
+        PageInfo info = new PageInfo(omsOperatorHandoverSubformVOS);
+        return info;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办业务导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:51
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void exportOperatorByJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam, HttpServletResponse response) {
+        if (StringUtils.isBlank(omsOperatorJBYWQueryParam.getOperatorId())){
+            throw new CustomMessageException("经办人ID为空!");
+        }
+        List<OmsOperatorJbywVO> omsOperatorJbywVOS = new ArrayList<>();
+        //业务类别集合
+        List<String> businessTypes = omsOperatorJBYWQueryParam.getBusinessType();
+        /**证照领取*/
+        List<OmsCerGetTaskVO> omsCerGetTasks = null;
+        /**注销证照*/
+        List<OmsCerCancellateLicense> omsCerCancellateLicenses = null;
+        /**撤销登记备案*/
+        List<OmsRegRevokeapply> omsRegRevokeapplies = null;
+        /**因公出国境*/
+        List<OmsPubApplyVO> omsPubApplyVOS = null;
+        /**因私出国境*/
+        List<OmsPriApplyVO> omsPriApplyVOS = null;
+        /** 延期回国*/
+        List<OmsPriDelayVO> omsPriDelayVOS = null;
+        if (businessTypes == null || businessTypes.size() <= 0 ){
+            //查询所有
+            /**证照领取*/
+            omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+
+            /**注销证照*/
+            omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+
+            /**撤销登记备案*/
+            omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+
+            /**因公出国境*/
+            omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+
+            /**因私出国境*/
+            omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+
+            /** 延期回国*/
+            omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+
+        }else {
+            //根据类型查找相关的数据
+            for (String businessType:businessTypes) {
+                if (businessType.equals(Constants.handover_type[0])){
+                    /**证照领取*/
+                    omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[1])){
+                    /**因公出国境*/
+                    omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[2])){
+                    /**因私出国境*/
+                    omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[3])){
+                    /** 延期回国*/
+                    omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[4])){
+                    /**撤销登记备案*/
+                    omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
+                }
+                if (businessType.equals(Constants.handover_type[5])){
+                    /**注销证照*/
+                    omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
+                }
+            }
+        }
+        /**证照领取*/
+        if (omsCerGetTasks != null || omsCerGetTasks.size() <= 0){
+            for (OmsCerGetTaskVO omsCerGetTask : omsCerGetTasks) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("证照领取");
+                //姓名
+                omsOperatorJbywVO.setName(omsCerGetTask.getName());
+                //性别
+                if ("1".equals(omsCerGetTask.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsCerGetTask.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerGetTask.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerGetTask.getPostrank());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerGetTask.getGetTime());
+                //业务结束时间
+                omsOperatorJbywVO.setEndTime(omsCerGetTask.getEndTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsCerGetTask.getRemarks());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因公出国境*/
+        if (omsPubApplyVOS != null){
+            for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("因公出国境");
+                //姓名
+                omsOperatorJbywVO.setName(omsPubApplyVo.getName());
+                //性别
+                if ("1".equals(omsPubApplyVo.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsPubApplyVo.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPubApplyVo.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPubApplyVo.getJob());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPubApplyVo.getCgsj());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPubApplyVo.getHgsj());
+                //说明
+                omsOperatorJbywVO.setSm(omsPubApplyVo.getCfrw());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**因私出国境*/
+        if (omsPriApplyVOS != null){
+            for (OmsPriApplyVO omsPriApplyVO:omsPriApplyVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("因私出国境");
+                //姓名
+                omsOperatorJbywVO.setName(omsPriApplyVO.getName());
+                //性别
+                if ("1".equals(omsPriApplyVO.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsPriApplyVO.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriApplyVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriApplyVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriApplyVO.getAbroadTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriApplyVO.getReturnTime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriApplyVO.getAbroadReasons());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /** 延期回国*/
+        if (omsPriDelayVOS != null){
+            for (OmsPriDelayVO omsPriDelayVO:omsPriDelayVOS) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("延期回国");
+                //姓名
+                omsOperatorJbywVO.setName(omsPriDelayVO.getName());
+                //性别
+                if ("1".equals(omsPriDelayVO.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsPriDelayVO.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsPriDelayVO.getB0101());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsPriDelayVO.getPostrank());
+                //出国（境）时间
+                omsOperatorJbywVO.setStartTime(omsPriDelayVO.getApplyTime());
+                //入境时间
+                omsOperatorJbywVO.setEndTime(omsPriDelayVO.getEstimateReturntime());
+                //说明
+                omsOperatorJbywVO.setSm(omsPriDelayVO.getDelayReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**撤销登记备案*/
+        if (omsRegRevokeapplies != null){
+            for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("撤销登记备案");
+                //姓名
+                omsOperatorJbywVO.setName(omsRegRevokeapply.getSurname()+omsRegRevokeapply.getName());
+                //性别
+                if ("1".equals(omsRegRevokeapply.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsRegRevokeapply.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsRegRevokeapply.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsRegRevokeapply.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsRegRevokeapply.getCreateDate());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsRegRevokeapply.getApplyReason());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        /**注销证照*/
+        if (omsCerCancellateLicenses != null){
+            for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
+                OmsOperatorJbywVO omsOperatorJbywVO = new OmsOperatorJbywVO();
+                //业务类别
+                omsOperatorJbywVO.setBusinessType("注销证照");
+                //姓名
+                omsOperatorJbywVO.setName(omsCerCancellateLicense.getName());
+                //性别
+                if ("1".equals(omsCerCancellateLicense.getSex())){
+                    omsOperatorJbywVO.setSex("男");
+                }else if ("2".equals(omsCerCancellateLicense.getSex())){
+                    omsOperatorJbywVO.setSex("女");
+                }
+                //工作单位
+                omsOperatorJbywVO.setCompany(omsCerCancellateLicense.getWorkUnit());
+                //职务（级）
+                omsOperatorJbywVO.setDuty(omsCerCancellateLicense.getPost());
+                //业务发生时间
+                omsOperatorJbywVO.setStartTime(omsCerCancellateLicense.getCreateTime());
+                //业务结束时间
+
+                //说明
+                omsOperatorJbywVO.setSm(omsCerCancellateLicense.getZxsm());
+                omsOperatorJbywVOS.add(omsOperatorJbywVO);
+            }
+        }
+        if (omsOperatorJbywVOS == null || omsOperatorJbywVOS.size() < 1){
+            throw new CustomMessageException("操作失败");
+        }else {
+            /** 开始导出 */
+            //创建HSSFWorkbook对象(excel的文档对象)
+            HSSFWorkbook wb = new HSSFWorkbook();
+            //创建文件样式对象
+            HSSFCellStyle style = wb.createCellStyle();
+            //获得字体对象
+            HSSFFont font = wb.createFont();
+            //建立新的sheet对象（excel的表单）
+            HSSFSheet sheet=wb.createSheet("经办人经办业务记录");
+            //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
+            HSSFRow row1=sheet.createRow(0);
+            //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
+            HSSFCell cell=row1.createCell(0);
+            //设置标题字体大小
+            font.setFontHeightInPoints((short) 16);
+            //加粗
+            font.setBold(true);
+            // 左右居中 
+            style.setAlignment(HorizontalAlignment.CENTER);
+            // 上下居中 
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+            style.setFont(font);
+            cell.setCellStyle(style);
+            //设置标题单元格内容
+            cell.setCellValue("经办人经办业务记录");
+            //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+            sheet.addMergedRegion(new CellRangeAddress(0,1,0,8));
+            //在sheet里创建第二行
+            HSSFRow row2=sheet.createRow(2);
+
+            //创建单元格并设置单元格内容
+            row2.createCell(0).setCellValue("序号");
+            row2.createCell(1).setCellValue("业务类别");
+            row2.createCell(2).setCellValue("单位");
+            row2.createCell(3).setCellValue("姓名");
+            row2.createCell(4).setCellValue("性别");
+            row2.createCell(5).setCellValue("职务（级）");
+            row2.createCell(6).setCellValue("业务开始时间");
+            row2.createCell(7).setCellValue("业务结束时间");
+            row2.createCell(8).setCellValue("说明");
+            //在sheet里添加数据
+            //创建文件样式对象
+            HSSFCellStyle style1 = wb.createCellStyle();
+
+            //获得字体对象
+            HSSFFont font1 = wb.createFont();
+            //设置单元格字体大小
+            font1.setFontHeightInPoints((short) 12);
+            //居左
+            style1.setAlignment(HorizontalAlignment.LEFT);
+            style1.setFont(font1);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            HSSFRow row = null;
+            for(int i = 0; i < omsOperatorJbywVOS.size(); i++){
+                row = sheet.createRow(i + 3);
+                row.createCell(0).setCellValue(i + 1);
+                row.createCell(1).setCellValue(omsOperatorJbywVOS.get(i).getBusinessType());
+                row.createCell(2).setCellValue(omsOperatorJbywVOS.get(i).getCompany());
+                row.createCell(3).setCellValue(omsOperatorJbywVOS.get(i).getName());
+                row.createCell(4).setCellValue(omsOperatorJbywVOS.get(i).getSex());
+                row.createCell(5).setCellValue(omsOperatorJbywVOS.get(i).getDuty());
+                Date startTime = omsOperatorJbywVOS.get(i).getStartTime();
+                if (startTime != null){
+                    row.createCell(6).setCellValue(sdf.format(startTime));
+                }else {
+                    row.createCell(6).setCellValue("");
+                }
+                Date endTime = omsOperatorJbywVOS.get(i).getEndTime();
+                if (endTime != null){
+                    row.createCell(7).setCellValue(sdf.format(endTime));
+                }else {
+                    row.createCell(7).setCellValue("");
+                }
+                row.createCell(8).setCellValue(omsOperatorJbywVOS.get(i).getSm());
+                //设置单元格字体大小
+                for(int j = 0;j < 9;j++){
+                    row.getCell(j).setCellStyle(style1);
+                }
+            }
+            //输出Excel文件
+            OutputStream output= null;
+            try {
+                output = response.getOutputStream();
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "utf-8");
+
+                wb.write(output);
+                output.flush();
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接记录导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:53
+     */
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public void exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam, HttpServletResponse response) {
+        if (StringUtils.isBlank(omsOperatorJBYWQueryParam.getOperatorId())){
+            throw new CustomMessageException("经办人ID为空!");
+        }
+        List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorHandoverMapper.getOperatorWBJYW(omsOperatorJBYWQueryParam);
+
+        if (omsOperatorHandoverSubformVOS == null || omsOperatorHandoverSubformVOS.size() < 1){
+            throw new CustomMessageException("操作失败");
+        }else {
+            /** 开始导出 */
+            //创建HSSFWorkbook对象(excel的文档对象)
+            HSSFWorkbook wb = new HSSFWorkbook();
+            //创建文件样式对象
+            HSSFCellStyle style = wb.createCellStyle();
+            //获得字体对象
+            HSSFFont font = wb.createFont();
+            //建立新的sheet对象（excel的表单）
+            HSSFSheet sheet=wb.createSheet("经办人交接记录");
+            //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
+            HSSFRow row1=sheet.createRow(0);
+            //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
+            HSSFCell cell=row1.createCell(0);
+            //设置标题字体大小
+            font.setFontHeightInPoints((short) 16);
+            //加粗
+            font.setBold(true);
+            // 左右居中 
+            style.setAlignment(HorizontalAlignment.CENTER);
+            // 上下居中 
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+            style.setFont(font);
+            cell.setCellStyle(style);
+            //设置标题单元格内容
+            cell.setCellValue("经办人交接记录");
+
+            //副标题样式
+            HSSFCellStyle style1 = wb.createCellStyle();
+            HSSFFont font1 = wb.createFont();
+            //字体加粗
+            font1.setBold(false);
+            //设置字体的大小
+            font1.setFontHeightInPoints((short)12);
+            //设置字体
+            font1.setFontName("黑体");
+            style1.setFont(font1);
+            //在sheet里创建第二行
+            HSSFRow row2=sheet.createRow(2);
+            HSSFCell cell1 = row2.createCell(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            cell1.setCellValue("交接时间："+sdf.format(omsOperatorHandoverSubformVOS.get(0).getJjTime())+"       接手人："+omsOperatorHandoverSubformVOS.get(0).getHandoverName());
+            cell1.setCellStyle(style1);
+
+            //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+            sheet.addMergedRegion(new CellRangeAddress(0,1,0,9));
+            sheet.addMergedRegion(new CellRangeAddress(2,2,0,9));
+            //在sheet里创建第三行
+            HSSFRow row3=sheet.createRow(3);
+            //创建单元格并设置单元格内容
+            row3.createCell(0).setCellValue("序号");
+            row3.createCell(1).setCellValue("单位");
+            row3.createCell(2).setCellValue("姓名");
+            row3.createCell(3).setCellValue("性别");
+            row3.createCell(4).setCellValue("职务（级）");
+            row3.createCell(5).setCellValue("业务类别");
+            row3.createCell(6).setCellValue("业务开始时间");
+            row3.createCell(7).setCellValue("业务结束时间");
+            row3.createCell(8).setCellValue("说明");
+            row3.createCell(9).setCellValue("备注");
+            //在sheet里添加数据
+
+            //创建文件样式对象
+            HSSFCellStyle style2 = wb.createCellStyle();
+            //获得字体对象
+            HSSFFont font2 = wb.createFont();
+            //设置单元格字体大小
+            font2.setFontHeightInPoints((short) 12);
+            //居左
+            style2.setAlignment(HorizontalAlignment.LEFT);
+            style2.setFont(font2);
+
+            HSSFRow row = null;
+            for(int i = 0; i < omsOperatorHandoverSubformVOS.size(); i++){
+                row = sheet.createRow(i + 4);
+                row.createCell(0).setCellValue(i + 1);
+                row.createCell(1).setCellValue(omsOperatorHandoverSubformVOS.get(i).getCompany());
+                row.createCell(2).setCellValue(omsOperatorHandoverSubformVOS.get(i).getName());
+                if ("1".equals(omsOperatorHandoverSubformVOS.get(i).getSex())){
+                    row.createCell(3).setCellValue("男");
+                }else if ("2".equals(omsOperatorHandoverSubformVOS.get(i).getSex())){
+                    row.createCell(3).setCellValue("女");
+                }else {
+                    row.createCell(3).setCellValue("");
+                }
+
+                row.createCell(4).setCellValue(omsOperatorHandoverSubformVOS.get(i).getDuty());
+                String businesstype = omsOperatorHandoverSubformVOS.get(i).getBusinesstype();
+                if (businesstype.equals(Constants.handover_type[0])){
+                    row.createCell(5).setCellValue("证照领取");
+
+                }else if (businesstype.equals(Constants.handover_type[1])){
+                    row.createCell(5).setCellValue("因公出国");
+
+                }else if (businesstype.equals(Constants.handover_type[2])){
+                    row.createCell(5).setCellValue("因私出国");
+
+                }else if (businesstype.equals(Constants.handover_type[3])){
+                    row.createCell(5).setCellValue("延期回国");
+
+                }else if (businesstype.equals(Constants.handover_type[4])){
+                    row.createCell(5).setCellValue("撤销登记备案");
+
+                }else if (businesstype.equals(Constants.handover_type[5])){
+                    row.createCell(5).setCellValue("注销证照");
+
+                }
+                Date exitdate = omsOperatorHandoverSubformVOS.get(i).getExitdate();
+                if (exitdate != null){
+                    row.createCell(6).setCellValue(sdf.format(exitdate));
+                }else {
+                    row.createCell(6).setCellValue("");
+                }
+                Date entrydate = omsOperatorHandoverSubformVOS.get(i).getEntrydate();
+                if (entrydate != null){
+                    row.createCell(7).setCellValue(sdf.format(entrydate));
+                }else {
+                    row.createCell(7).setCellValue("");
+                }
+                row.createCell(8).setCellValue(omsOperatorHandoverSubformVOS.get(i).getSm());
+                row.createCell(9).setCellValue(omsOperatorHandoverSubformVOS.get(i).getBz());
+                //设置单元格字体大小
+                for(int j = 0;j < 9;j++){
+                    row.getCell(j).setCellStyle(style2);
+                }
+            }
+
+            //输出Excel文件
+            OutputStream output= null;
+            try {
+                output = response.getOutputStream();
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "utf-8");
+
+                wb.write(output);
+                output.flush();
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**

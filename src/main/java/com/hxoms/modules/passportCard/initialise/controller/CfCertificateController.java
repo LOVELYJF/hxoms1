@@ -44,7 +44,7 @@ public class CfCertificateController {
      * @Return: excel
      * @Date: 2020/9/10
      */
-    @ApiOperation(value = "导出存疑证照统计-导出证照查询")
+    @ApiOperation(value = "证照管理-导出证照查询表（涉及到的模板可共用）")
     @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接", name = "ids", required = true, paramType = "query")
     @PostMapping("/exportExceptionCer")
     public void exportExceptionCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {

@@ -13,12 +13,12 @@ import javax.validation.constraints.NotBlank;
 @ApiModel(value = "领取证照")
 public class CerGetTaskQueryParam {
     //姓名
-    @NotBlank(message = "姓名不能为空")
-    @ApiModelProperty(value="姓名",required = true)
+    //@NotBlank(message = "姓名不能为空")
+    @ApiModelProperty(value="姓名")
     private String name;
     //身份证号
-    @NotBlank(message = "身份证号不能为空")
-    @ApiModelProperty(value="身份证号",required = true)
+    //@NotBlank(message = "身份证号不能为空")
+    @ApiModelProperty(value="身份证号")
     private String idNo;
     //经办人Id
     @NotBlank(message = "经办人Id不能为空")

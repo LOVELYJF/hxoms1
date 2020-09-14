@@ -5,6 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
+
+import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
+import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
@@ -44,6 +47,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
 
     @Autowired
     private OmsPubTaskSuperviseService omsPubTaskSuperviseService;
+
+    @Autowired
+    private OmsFileService omsFileService;
     /**
      * @Desc: 生成催缴任务
      * @Author: wangyunquan
@@ -377,6 +383,63 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         int result = omsSupSuspendUnitMapper.insert(omsSupSuspendUnit);
         if(result==0)
             throw new CustomMessageException("保存失败！");
+    }
+
+    /**
+     * @Desc: 生成打印文件
+     * @Author: wangyunquan
+     * @Param: [fileListRequestList]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFile>
+     * @Date: 2020/9/13
+     */
+    @Override
+    public List<PrintFile> createFileListByCode(List<FileQuery> fileQueryList) {
+        List<PrintFile> printFileList=new ArrayList<>();
+        for (FileQuery fileQuery : fileQueryList) {
+            PrintFile printFile=new PrintFile();
+            List<com.hxoms.modules.file.entity.OmsFile> omsFileList = omsFileService.selectFileListByCode(fileQuery.getTableCode(), fileQuery.getProcpersonId(), fileQuery.getApplyId());
+            BeanUtils.copyProperties(omsFileList.get(0),printFile);
+            printFileList.add(printFile);
+        }
+        return printFileList;
+    }
+
+    /**
+     * @Desc: 打印文件详情
+     * @Author: wangyunquan
+     * @Param: [broadFileDestailParams]
+     * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFileDetail
+     * @Date: 2020/9/13
+     */
+    @Override
+    public PrintFileDetail selectFileDestail(FileDestailParams fileDestailParams) {
+        AbroadFileDestailParams abroadFileDestailParams=new AbroadFileDestailParams();
+        BeanUtils.copyProperties(fileDestailParams,abroadFileDestailParams);
+        Map<String, Object> detailMap = omsFileService.selectFileDestail(abroadFileDestailParams);
+        PrintFileDetail printFileDetail=new PrintFileDetail();
+        com.hxoms.modules.file.entity.OmsFile omsFile= (com.hxoms.modules.file.entity.OmsFile) detailMap.get("omsFile");
+        OmsFile targetOmsFile=new OmsFile();
+        if(omsFile!=null){
+            BeanUtils.copyProperties(omsFile,targetOmsFile);
+            printFileDetail.setOmsFile(targetOmsFile);
+        }
+        com.hxoms.modules.file.entity.OmsCreateFile omsCreateFile= (com.hxoms.modules.file.entity.OmsCreateFile) detailMap.get("omsCreateFile");
+        OmsCreateFile targetOmsCreateFile=new OmsCreateFile();
+        if(omsCreateFile!=null){
+            BeanUtils.copyProperties(omsCreateFile,targetOmsCreateFile);
+            printFileDetail.setOmsCreateFile(targetOmsCreateFile);
+        }
+        List<com.hxoms.modules.file.entity.OmsReplaceKeywords>  omsReplaceKeywordsList= (List<com.hxoms.modules.file.entity.OmsReplaceKeywords>) detailMap.get("omsReplaceKeywordList");
+        if(omsReplaceKeywordsList!=null){
+            List<OmsReplaceKeywords> targetOmsReplaceKeywordsList=new ArrayList<>();
+            for (com.hxoms.modules.file.entity.OmsReplaceKeywords SourceOmsReplaceKeywords : omsReplaceKeywordsList) {
+                OmsReplaceKeywords targetOmsReplaceKeywords=new OmsReplaceKeywords();
+                BeanUtils.copyProperties(SourceOmsReplaceKeywords,targetOmsReplaceKeywords);
+                targetOmsReplaceKeywordsList.add(targetOmsReplaceKeywords);
+            }
+            printFileDetail.setOmsReplaceKeywordsList(targetOmsReplaceKeywordsList);
+        }
+        return printFileDetail;
     }
 
     /**

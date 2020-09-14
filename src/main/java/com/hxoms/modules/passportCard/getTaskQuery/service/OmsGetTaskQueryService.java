@@ -4,9 +4,19 @@ package com.hxoms.modules.passportCard.getTaskQuery.service;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface OmsGetTaskQueryService {
+
+    /**
+     * @Desc: 证照管理-证照领取任务-导出
+     * @Author: wuqingfan
+     * @Param: ids
+     * @Return: excel
+     * @Date: 2020/9/12
+     */
+    void exportSelectGetCer(List<String> ids, HttpServletResponse response);
 
     /**
      * @Desc: 查询领取证照

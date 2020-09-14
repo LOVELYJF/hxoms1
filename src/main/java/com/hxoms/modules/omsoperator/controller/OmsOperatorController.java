@@ -321,6 +321,45 @@ public class OmsOperatorController {
     @GetMapping("/getOperatorJBYW")
     public Result getOperatorJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam){
         PageInfo info = operatorService.getOperatorJBYW(omsOperatorJBYWQueryParam);
-        return Result.success(info.getList()).setTotal(info.getTotal());
+        return Result.success(info);
+    }
+    /**
+     * 功能描述: <br>
+     * 〈通过条件查询经办人交接记录〉
+     * @Param: [omsOperatorJBYWQueryParam]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/9/11 16:43
+     */
+    @GetMapping("/getOperatorWBJYW")
+    public Result getOperatorWBJYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam){
+        PageInfo info = operatorService.getOperatorWBJYW(omsOperatorJBYWQueryParam);
+        return Result.success(info);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人经办业务导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:50
+     */
+    @PostMapping("/exportOperatorByJBYW")
+    public void  exportOperatorByJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+        operatorService.exportOperatorByJBYW(omsOperatorJBYWQueryParam,response);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈经办人交接记录导出〉
+     * @Param: [omsOperatorJBYWQueryParam, response]
+     * @Return: void
+     * @Author: 李逍遥
+     * @Date: 2020/9/12 9:50
+     */
+    @PostMapping("/exportOperatorByJJJL")
+    public void  exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+        operatorService.exportOperatorByJJJL(omsOperatorJBYWQueryParam,response);
     }
 }

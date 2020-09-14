@@ -1,6 +1,8 @@
 package com.hxoms.modules.publicity.controller;
 
+import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubGroupService;
@@ -56,11 +58,16 @@ public class OmsPubGroupController {
     @PostMapping("/insertPubGroup")
     public Result insertPubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            String msg = pubGroupService.insertPubGroup(pubGroupAndApplyList);
-            if(msg.length() > 0){
+            Map<String,String> resultMap = pubGroupService.insertPubGroup(pubGroupAndApplyList);
+            String code = resultMap.get("code");
+            String msg = resultMap.get("msg");
+            if(Constants.IS_NOT.equals(code)){
                 return Result.error(msg);
             }
-            return Result.success();
+            if(Constants.IS_YES.equals(code)){
+                return Result.success(msg);
+            }
+            return Result.error("操作失败,请联系管理员");
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");

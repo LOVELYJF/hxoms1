@@ -361,7 +361,7 @@
         b.csrq,
         c.post,
         a.get_status getStatus,
-        (select item_name from sys_dict_item where dict_code='zjlqzt' and item_code=a.get_status)  getStatus, getStatusName,
+        (select item_name from sys_dict_item where dict_code='zjlqzt' and item_code=a.get_status)  getStatusName,
         b.zjlx,
         (select item_name from sys_dict_item where dict_code='zjlx' and item_code=b.zjlx)  zjlxName,
         b.zjhm,
@@ -387,7 +387,7 @@
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
     WHERE o.QR_CODE_ID=#{qrCodeId}
-    <if test="overFlag!='Y'.toString()">
+    <if test="overFlag='Y'.toString()">
     union
     <include refid="calGetCerSql" />
     cf_user o
@@ -395,7 +395,7 @@
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
     AND a.get_status='0'
-    AND a.data_source ='3';
+    AND a.data_source ='3'
     </if>
   </select>
 
