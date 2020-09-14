@@ -12,10 +12,14 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,6 +34,21 @@ public class OmsExitEntryManageController {
 
     @Autowired
     private OmsExitEntryManageService omsExitEntryManageService;
+
+    /**
+     * @Desc: 证照信息管理-出入库记录-导出
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/14
+     */
+    @ApiOperation(value = "证照信息管理-出入库记录-导出")
+    @ApiImplicitParam(value = "选中列表ID，利用','隔开拼接",name = "ids",required = true,paramType = "query")
+    @PostMapping("/exitEntryRecordExport")
+    public void exitEntryRecordExport (@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response){
+        omsExitEntryManageService.exitEntryRecordExport(Arrays.asList(ids.split(",")),response);
+    }
+
 
     /**
      * @Desc: 查询证照出入库记录
