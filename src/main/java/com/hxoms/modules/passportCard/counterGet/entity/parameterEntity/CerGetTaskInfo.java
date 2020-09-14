@@ -37,13 +37,13 @@ public class CerGetTaskInfo {
     @ApiModelProperty(value="职务（级）或职称")
     private String post;
     //领取状态
-    @ApiModelProperty(value="领取状态")
+    @ApiModelProperty(value="领取状态(0:未领取,1:已领取)")
     private String getStatus;
     //领取状态
     @ApiModelProperty(value="领取状态名称")
     private String getStatusName;
     //证照类型
-    @ApiModelProperty(value="证照类型")
+    @ApiModelProperty(value="证件类型(1:护照,2:港澳通行证,4:台湾通行证)")
     private Integer zjlx;
     //证照类型名称
     @ApiModelProperty(value="证照类型名称")
@@ -57,7 +57,7 @@ public class CerGetTaskInfo {
     @ApiModelProperty(value="有效期至")
     private Date yxqz;
     //证照状态
-    @ApiModelProperty(value="证照状态")
+    @ApiModelProperty(value="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
     //证照状态名称
     @ApiModelProperty(value="证照状态名称")
@@ -66,7 +66,7 @@ public class CerGetTaskInfo {
     @ApiModelProperty(value="审批表")
     private String spb;
     //保管方式
-    @ApiModelProperty(value="保管方式")
+    @ApiModelProperty(value="保管方式(0:证照机,1:柜台)")
     private String surelyWay;
     //机柜
     @ApiModelProperty(value="机柜")

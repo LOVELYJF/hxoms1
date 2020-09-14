@@ -2,7 +2,6 @@ package com.hxoms.modules.passportCard.counterGet.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.*;
 
@@ -59,11 +58,11 @@ public interface OmsCounterGetService extends IService<OmsCerGetTask> {
      * @Desc: 查询可领取证照
      * @Author: wangyunquan
      * @Param: [ cerGetTaskQueryParam]
-     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo>
+     * @Return: java.util.List<com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.CerGetTaskInfo>
      * @Date: 2020/8/18
      */
 
-    PageBean<CerGetTaskInfo> selectCanGetCer(PageBean pageBean,CerGetTaskQueryParam cerGetTaskQueryParam);
+    List<CerGetTaskInfo> selectCanGetCer(CerGetTaskQueryParam cerGetTaskQueryParam);
 
     /**
      * @Desc: 确认领取证照，保存签名

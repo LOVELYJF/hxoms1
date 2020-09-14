@@ -5,13 +5,19 @@ import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrap
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableSwagger2
@@ -43,13 +49,20 @@ public class SwaggerConfig{
     }
     @Bean
     public Docket certificateModulDocket(){
+        //添加head参数start
+        ParameterBuilder tokenPar = new ParameterBuilder();
+        List<Parameter> pars = new ArrayList<Parameter>();
+        tokenPar.name("hx-token").description("令牌").modelRef(new ModelRef("string")).parameterType("header").defaultValue("HXeyJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwibG9naW5EYXRlIjoxNTkzNDE3NzE3MDA0LCJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMCIsInVzZXJOYW1lIjoi57O757uf566h55CG5ZGYIiwidXNlckNvZGUiOiJhZG1pbiJ9").required(false).build();
+        pars.add(tokenPar.build());
+        //添加head参数end
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .enable(true)
                 .groupName("证照管理")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hxoms.modules.passportCard"))
-                .build();
+                .build()
+                .globalOperationParameters(pars);
     }
 
     @Bean
