@@ -64,6 +64,7 @@ public class LeaderOtherStatisticalQueryController {
     @GetMapping("/selectBatchlist")
     public Result  selectBatchlist(){
 
+
         List<Map>  lists  =  leaderCommonMapper.selectLeaderBatch();
 
 
