@@ -221,7 +221,46 @@ public class CfCertificateCollectionController {
         return Result.success(cfCertificateCollectionService.selectFileDestail(fileDestailParams));
     }
 
+    /**
+     * @Desc: 保存富文本文件（模板）
+     * @Author: wangyunquan
+     * @Param: [omsFile]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/9/14
+     */
+    @ApiOperation(value="保存富文本文件（模板）")
+    @PostMapping("/saveTextOmsFile")
+    public Result saveTextOmsFile(OmsFile omsFile){
+        cfCertificateCollectionService.saveTextOmsFile(omsFile);
+        return Result.success();
+    }
 
+   /**
+    * @Desc: 保存或者更新打印文件
+    * @Author: wangyunquan
+    * @Param: [omsCreateFile]
+    * @Return: com.hxoms.common.utils.Result
+    * @Date: 2020/9/14
+    */
+    @ApiOperation(value="保存或者更新打印文件")
+    @PostMapping("/insertOrUpdate")
+    public Result insertOrUpdate(OmsCreateFile omsCreateFile){
+        cfCertificateCollectionService.insertOrUpdate(omsCreateFile);
+        return Result.success();
+    }
+
+    /**
+     * @Desc: 重新生成文件
+     * @Author: wangyunquan
+     * @Param: [printFile]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.PrintFile>
+     * @Date: 2020/9/14
+     */
+    @ApiOperation(value="重新生成文件")
+    @GetMapping("/selectFileDestailNew")
+    public Result<OmsFile> selectFileDestailNew(PrintFile printFile){
+        return Result.success(cfCertificateCollectionService.selectFileDestailNew(printFile));
+    }
 
     /**
      *  条件查询所有的催缴名单

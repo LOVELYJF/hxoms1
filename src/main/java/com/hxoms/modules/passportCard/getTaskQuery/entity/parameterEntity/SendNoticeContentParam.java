@@ -21,9 +21,9 @@ public class SendNoticeContentParam {
     @ApiModelProperty(value = "姓名",required = true)
     private String name;
     //状态
-    @NotBlank(message = "状态不能为空")
-    @ApiModelProperty(value = "状态",required = true)
-    private String getStatusName;
+    @NotBlank(message = "领取状态不能为空")
+    @ApiModelProperty(value = "领取状态(0:未领取,1:已领取)",required = true)
+    private String getStatus;
     //证件类型名称
     @NotBlank(message = "证件类型名称不能为空")
     @ApiModelProperty(value = "证件类型名称",required = true)
@@ -49,12 +49,12 @@ public class SendNoticeContentParam {
         this.name = name;
     }
 
-    public String getGetStatusName() {
-        return getStatusName;
+    public String getGetStatus() {
+        return getStatus;
     }
 
-    public void setGetStatusName(String getStatusName) {
-        this.getStatusName = getStatusName;
+    public void setGetStatus(String getStatus) {
+        this.getStatus = getStatus;
     }
 
     public String getZjlxName() {
