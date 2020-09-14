@@ -239,6 +239,7 @@
         b.yxqz,
         a.spb_get_ele_sign spb,
         b.surely_way surelyWay,
+        if(b.surely_way='0','证照机',if(b.surely_way='1','柜台',b.surely_way)) surelyWayName,
         b.cabinet_num cabinetNum,
         b.place,
         b.counter_num counterNum,
