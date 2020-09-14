@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @Desc：TODO
@@ -15,15 +16,18 @@ import javax.validation.constraints.NotNull;
 public class CerInfo {
     //证件类型
     @NotNull(message = "证件类型不能为空")
-    @ApiModelProperty(value = "证件类型",required = true)
+    @ApiModelProperty(value = "证件类型", required = true)
     private Integer zjlx;
     //证件号码
     @NotBlank(message = "证件号码不能为空")
-    @ApiModelProperty(value = "证件号码",required = true)
+    @ApiModelProperty(value = "证件号码", required = true)
     private String zjhm;
     //状态
-    @ApiModelProperty(value="状态(0:取出,1:归还)")
+    @ApiModelProperty(value = "状态(0:取出,1:归还)")
     private String status;
+
+    //WQF ADD 导出查询使用
+    private List<String> ids;
 
     public Integer getZjlx() {
         return zjlx;
@@ -47,5 +51,13 @@ public class CerInfo {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
     }
 }
