@@ -376,6 +376,60 @@ public class DynamicData {
             + "  FROM A30 "
             +  orcal_paging_last;
 
+    public static String commonSqlB01 = "" +
+            "        	B0100	," +
+            "        	B0101	," +
+            "        	B0104	," +
+            "        	B0107	," +
+            "        	B0111	," +
+            "        	B0114	," +
+            "        	B0117	," +
+            "        	B0124	," +
+            "        	B0127	," +
+            "        	B0131	," +
+            "        	B0164	," +
+            "        	B0167	," +
+            "        	B0183	," +
+            "        	B0185	," +
+            "        	B0188	," +
+            "        	B0189	," +
+            "        	B0190	," +
+            "        	B0191	," +
+            "        	B0191A	," +
+            "        	B0192	," +
+            "        	B0193	," +
+            "        	B0194	," +
+            "        	B0227	," +
+            "        	B0232	," +
+            "        	B0233	," +
+            "        	B0238	," +
+            "        	B0239	," +
+            "        	SORTID	," +
+            "        	TIME_STAMP	," +
+            "        	MODIFY_USER	," +
+            "        	MODIFY_TIME	," +
+            "        	IS_DELETED	," +
+            "        	B0140	," +
+            "        	B0141	," +
+            "        	B0142	," +
+            "        	B0143	," +
+            "        	B0150	," +
+            "        	B0180	," +
+            "        	B0236	," +
+            "        	B0234	," +
+            "        	B0121	," +
+            "        	BX001	," +
+            "        	B0268	," +
+            "        	B0269	," +
+            "        	POSICOUNTZJ	," +
+            "        	ORGPARTTYPE	," +
+            "        	ORGSTANDARDNAME	," +
+            "        	SUPERVISOR	" ;
+
+    public static String orcalSqlB01 = orcal_paging_frist + commonSqlB01
+            + "  FROM B01 "
+            +  orcal_paging_last;
+
     static{
         String[] a02String = {
                 "A0200",

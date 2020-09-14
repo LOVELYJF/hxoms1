@@ -22,9 +22,9 @@ public interface OrgService {
 
     List<B01> selectOrg(B01 b01);
 
-    void deleteOrg(String b0111);
+    void deleteOrg(String b0100);
 
-    void sortOrg(String b0111s);
+    void sortOrg(String b0100);
 
     /**
      * @ description: 查询下级机构列表
@@ -33,7 +33,7 @@ public interface OrgService {
      */
     List<B01> selectOrgById(B01 b01);
 
-    B01 selectOrgByB0111(String b0111);
+    B01 selectOrgByB0111(String b0100);
 
     /**
      * @desc: 所有机构列表

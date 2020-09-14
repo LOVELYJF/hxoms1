@@ -32,7 +32,7 @@ public interface ModuleMapper {
      * @Date 14:01 2019/6/4
      * @Param [userInfo]
      */
-    List<Module> selectModuleList();
+    List<Module> selectModuleList(String mu_state);
 
     /**
      * @return com.hxoms.support.module.entity.Module

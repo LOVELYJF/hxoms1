@@ -10,6 +10,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import io.swagger.models.auth.In;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -516,6 +518,128 @@ public class LeaderSupervisionUntil {
         return fileDateByte;
     }
 
+    // 自定义删除 相似 文件
+    public static void deleteFileById(String commentStr,String fileDirectoryPaht){
+
+     // String commentStr = "蒋超良备案表"+".pdf";
+
+      long maxNum = 0; // 找到一个 最大随机数 (最大的 表示 最新的 不用删)
+
+      List<String> deletePaths ;  // 需要删除的集合
+
+      File file = new File(FilenameUtils.normalize(fileDirectoryPaht));
+//      File file = new File(FilenameUtils.normalize("D:\\oms\\attachment\\static"));
+
+      List<String> filepaths = new ArrayList<>();
+
+      if(file.isDirectory()){
+        File[] files =  file.listFiles();
+
+        if(files!=null && files.length>0){
+
+            for(int i=0;i<files.length;i++){
+
+                File f = files[i];
+                if(f.getName().contains(commentStr)){
+
+                 String numstr =    f.getName().replaceAll(commentStr,"").trim();
+
+                   long num =Long.parseLong(numstr);
+                   if(num >maxNum){
+
+                       maxNum =num;
+                   }
+                    filepaths.add(f.getName());
+                }
+            }
+        }
+      }
+
+      final long maxnum1 =maxNum;
+
+
+      if(filepaths!=null && filepaths.size()==1){
+
+
+      }else{
+
+          deletePaths=  filepaths.stream().filter((String s) -> Long.valueOf(s.replaceAll(commentStr,"").trim())<maxnum1 ).collect(Collectors.toList());
+
+          if(deletePaths!=null&& deletePaths.size()>0){
+
+              for(int i=0;i<deletePaths.size();i++){
+
+                  File file1 = new File(fileDirectoryPaht+File.separator+deletePaths.get(i));
+
+                  file1.delete();
+
+              }
+
+
+          }
+
+      }
+
+
+
+    }
+
+
+    public static String getUpdateStatusByJieWei(String busessId,String bussinesType,String leaderStatusName,String bussinessName){
+
+        String updateSql = "update "+bussinesType;
+
+        String setSql = " set  " ;
+
+        String whereCondition = " where id = '" + busessId+"'";
+
+
+        for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+            if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+                String status =  applyStatus.getApplySatus();
+
+                if("干教".equals(bussinessName)){
+                    // todo 干教 流程 到征求纪委意见 就走完了 将状态 置为 已完结
+
+                    setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+
+                }else{
+
+                    // 干部监督处的状态
+                    setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+
+
+                }
+
+                // 干部监督处的状态
+//                setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+
+                break;
+
+
+            }
+
+        }
+
+        return  updateSql+setSql+whereCondition;
+
+
+    }
+
+
+
+
+
+    public static void main(String[] args){
+
+
+//        deleteFileById();
+
+
+    }
 
 
 
