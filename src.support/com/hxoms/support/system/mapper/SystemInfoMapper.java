@@ -19,7 +19,7 @@ public interface SystemInfoMapper {
     int insertSelective(SystemInfo record);
 
     SystemInfo selectByPrimaryKey(String id);
-
+    List<SystemInfo> selectAllSystem();
     int updateByPrimaryKeySelective(SystemInfo record);
 
     int updateByPrimaryKey(SystemInfo record);

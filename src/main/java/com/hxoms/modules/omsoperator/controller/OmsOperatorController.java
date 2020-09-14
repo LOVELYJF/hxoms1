@@ -346,7 +346,7 @@ public class OmsOperatorController {
      * @Date: 2020/9/12 9:50
      */
     @PostMapping("/exportOperatorByJBYW")
-    public void  exportOperatorByJBYW(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+    public void  exportOperatorByJBYW(@RequestBody OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
         operatorService.exportOperatorByJBYW(omsOperatorJBYWQueryParam,response);
     }
 
@@ -359,7 +359,8 @@ public class OmsOperatorController {
      * @Date: 2020/9/12 9:50
      */
     @PostMapping("/exportOperatorByJJJL")
-    public void  exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
+
+    public void  exportOperatorByJJJL(@RequestBody OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
         operatorService.exportOperatorByJJJL(omsOperatorJBYWQueryParam,response);
     }
     //导入任免表

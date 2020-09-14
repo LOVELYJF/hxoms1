@@ -102,4 +102,13 @@ public interface DataCaptureMapper {
     Integer getMasterA30Count();
     void      updateMasterA30(List<Map> updateList);
     void      insertMasterA30(List<Map> insertList);
+
+    /**
+     *B01 表
+     *
+     */
+    List<Map> getMasterB01(@Param("offset") int offset, @Param("rows") int rows);
+    Integer getMasterB01Count();
+    void      updateMasterB01(List<Map> updateList);
+    void      insertMasterB01(List<Map> insertList);
 }

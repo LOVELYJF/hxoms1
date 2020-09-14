@@ -6,6 +6,7 @@ import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepe
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -14,6 +15,15 @@ import java.util.List;
  * @Date: 2020/8/17
  */
 public interface OmsExitEntryManageService extends IService<OmsCerExitEntryRepertory> {
+
+    /**
+     * @Desc: 证照信息管理-出入库记录-导出
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/14
+     */
+    void exitEntryRecordExport(List<String> ids, HttpServletResponse response);
 
     /**
      * @Desc: 查询证照出入库记录

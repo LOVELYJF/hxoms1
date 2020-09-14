@@ -28,6 +28,7 @@ import com.hxoms.modules.publicity.entity.OmsPubApply;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,10 +91,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public Map<String, Object> selectCompareInfo(OmsPriApply priapply, OmsEntryexitRecord outinfo, OmsEntryexitRecord joininfo) {
+    public Map<String, Object> selectCompareInfo(String omsId,String priapplyId, List<String> recordIds) {
         Map<String, Object> map = new HashMap<>();
-        if (priapply!=null && outinfo!=null && joininfo!=null){
-            entryexitRecordCompare(null);
+        if (priapplyId!=null && recordIds!=null){
+            entryexitRecordCompare(omsId,priapplyId,recordIds);
         }else{
             throw new CustomMessageException("请选择数据后进行匹配");
         }
@@ -103,7 +104,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     @Override
     public Object clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit) {
         int con=0;
-        if (supSuspendUnit!=null && supSuspendUnit.getSuspendTime()!=null && supSuspendUnit.getPauseTime()!=null){
+        if (supSuspendUnit!=null
+                && supSuspendUnit.getSuspendTime()!=null
+                && supSuspendUnit.getPauseTime()!=null
+                && supSuspendUnit.getB0100()!=null){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             supSuspendUnit.setId(UUIDGenerator.getPrimaryKey());
@@ -137,7 +141,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
     @Override
     public Map<String, Object> queryPriApplyList(String omsId) {
-        entryexitRecordCompare(omsId);
+        entryexitRecordCompare(omsId,null,null);
         Map<String, Object> map = this.selectComparisionList(omsId);
         return map;
     }
@@ -177,7 +181,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     OmsRegProcpersoninfo reg = new OmsRegProcpersoninfo();
                     reg.setId(omsId);
                     //调用比对方法
-                    entryexitRecordCompare(omsId);
+                    entryexitRecordCompare(omsId,null,null);
                     eRecordCompbatch.setCurrentFinishsum(x+1);
                     eRecordCompbatch.setStatus("2");
                     entryexitRecordCompbatchMapper.updateById(eRecordCompbatch);
@@ -212,18 +216,32 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
             for (int i=0;i<priApplyList.size();i++){
                 OmsEntryexitRecordVO vo = priApplyList.get(i);
                 if ((vo.getAbroadTime()!=null && vo.getReturnTime()!=null)){
-                    vo.setNum(i+1);
-                    vo.setLeibie("申报");
-                    newPriApplyList.add(vo);
+                    OmsEntryexitRecordVO txvo1 = new OmsEntryexitRecordVO();
+                    txvo1.setNum(i+1);
+                    txvo1.setOmsId(vo.getOmsId());
+                    txvo1.setAbroadTime(vo.getAbroadTime());
+                    txvo1.setReturnTime(vo.getReturnTime());
+                    txvo1.setPriapplyId(vo.getPriapplyId());
+                    txvo1.setComparisonResult(vo.getComparisonResult());
+                    txvo1.setIdType(vo.getIdType());
+                    txvo1.setIdNumber(vo.getIdNumber());
+                    txvo1.setGoCountry(vo.getGoCountry());
+                    txvo1.setLeibie("申报");
+                    newPriApplyList.add(txvo1);
                 }
                 if (vo.getRealAbroadTime()!=null && vo.getRealReturnTime()!=null){
-                    OmsEntryexitRecordVO txvo = new OmsEntryexitRecordVO();
-                    txvo.setNum(i+1);
-                    txvo = vo;
-                    txvo.setLeibie("填写");
-                    txvo.setAbroadTime(vo.getRealAbroadTime());
-                    txvo.setReturnTime(vo.getRealReturnTime());
-                    newPriApplyList.add(txvo);
+                    OmsEntryexitRecordVO txvo2 = new OmsEntryexitRecordVO();
+                    txvo2.setNum(i+1);
+                    txvo2.setOmsId(vo.getOmsId());
+                    txvo2.setAbroadTime(vo.getAbroadTime());
+                    txvo2.setReturnTime(vo.getReturnTime());
+                    txvo2.setPriapplyId(vo.getPriapplyId());
+                    txvo2.setComparisonResult(vo.getComparisonResult());
+                    txvo2.setIdType(vo.getIdType());
+                    txvo2.setIdNumber(vo.getIdNumber());
+                    txvo2.setGoCountry(vo.getDestination());
+                    txvo2.setLeibie("填写");
+                    newPriApplyList.add(txvo2);
                 }
                 List<OmsEntryexitRecordVO> oldexitRecordslist = baseMapper.selectRecordPriList(omsId);
                 if (oldexitRecordslist != null && oldexitRecordslist.size() > 0) {
@@ -326,6 +344,8 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
 
         priApplyMapper.updateById(apply);
     }
+
+
     /**
      * @description: 单人出入境记录比对
      * @author:李姣姣
@@ -333,8 +353,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
      *  * @param reg 登记备案人员信息
      * @return:void
      **/
-    @Override
-    public void entryexitRecordCompare(String omsId) {
+    public void entryexitRecordCompare(String omsId,String priapplyId,List<String> recordIds) {
         int con=0;
         //查询未比对的因私出国境申请
         OmsPriApplyIPageParam pp=new OmsPriApplyIPageParam();
@@ -344,6 +363,9 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         pp.setProcpersonId(omsId);
         //只查询未比对的
         pp.setIsComparison("0");
+        if (priapplyId!=null){
+            pp.setId(priapplyId);
+        }
         //注意要按申请时间升序排序，后面的出入境记录只取第一条申请记录申请时间之后的
         List<OmsPriApplyVO> apps = priApplyMapper.selectOmsPriApplyIPage(pp);
         //没有申请不做比对
@@ -371,6 +393,9 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
         entryexitRecordIPagParam.setPriapplyId(null);
         //查询指定人员的出入境记录
         entryexitRecordIPagParam.setOmsId(omsId);
+        if (recordIds!=null && recordIds.size()>0){
+            entryexitRecordIPagParam.setIds(recordIds);
+        }
         //注意要按出国境时间排序（升序）
         List<OmsEntryexitRecord> omsEntryexitRecords = omsEntryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam).getList();
         //没有出入境记录不做比对

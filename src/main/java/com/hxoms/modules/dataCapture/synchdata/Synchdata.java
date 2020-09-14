@@ -1,10 +1,10 @@
 package com.hxoms.modules.dataCapture.synchdata;
 
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.general.select.entity.SqlVo;
+import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.dataCapture.dataconfig.service.CutTargetDataSourceService;
 import com.hxoms.modules.dataCapture.entity.DataSource;
 import com.hxoms.modules.dataCapture.entity.DefultTargetDataSource;
@@ -54,6 +54,9 @@ public class Synchdata {
     @Autowired
     MobilizingcadreService mobilizingcadreService;
 
+    @Autowired
+    private SelectMapper selectMapper;  // 通用 自定义sql
+
     // 需要插入的集合
     private List<Map> insertList;
     // 需要修改的集合
@@ -96,6 +99,12 @@ public class Synchdata {
             dataSource.setDatasourceId(defultTargetDataSource.getDatasourceId());
         }
 
+        //单位
+        int b01counts = a01Service.getMasterB01Count();
+        int b01targetCounts = extractData.getTargetB01Count(dataSource);
+        List<Map> targetMapB01 = splicCountTarget(dataSource, b01targetCounts, "b0100");
+        List<Map> masterMapB01 = splicCount(b01counts, "b0100");
+        diffListMap(targetMapB01, masterMapB01, "b0100");
 
         //基本信息
         int a01counts = a01Service.getMasterA01Count();
@@ -175,6 +184,82 @@ public class Synchdata {
         List<Map> targetMapA36 = splicCountTarget(dataSource, a36targetCounts, "a3600");
         List<Map> masterMapA36 = splicCount(a36counts, "a3600");
         diffListMap(targetMapA36, masterMapA36, "a3600");
+
+        InitialRights();
+    }
+
+    /**
+     * @description:初始化权限
+     * @author:杨波
+     * @date:2020-09-12 * @param
+     * @return:void
+     **/
+    private void InitialRights() {
+
+        //检查机构模块是否有数据，有数据代表已经初始化
+        String sql = "select count(1) as count from cf_org_module";
+        SqlVo instance = SqlVo.getInstance(sql);
+        List<LinkedHashMap<String, Object>> result = selectMapper.select(instance);
+        if (result.get(0).get("count").toString().equals("0") ) {
+            //修改机构的上级机构ID，因为机构主键不一样，干综以b0111为主键，出国境以b0100为主键
+            sql = "update b01 inner join b01 as pb01 on b01.b0121=pb01.b0111 set b01.b0121=pb01.B0100";
+            instance = SqlVo.getInstance(sql);
+            selectMapper.update(instance);
+
+            //查找顶级机构作为管理员所在机构
+            sql = "select b0100 from b01 where b0121 is null";
+            instance = SqlVo.getInstance(sql);
+            result = selectMapper.select(instance);
+
+            String b0100 = result.get(0).get("b0100").toString();
+            if (b0100 != null && b0100.length() > 0) {
+
+                //为机构分配模块权限
+                sql="delete from cf_org_module where b0111='"+b0100+"'";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.delete(instance);
+                sql = "insert into cf_org_module(id, b0111, mu_id,modify_user,modify_time) select UUID(),'" + b0100 +
+                        "',mu_id,'admin','" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "' from cf_module";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.insert(instance);
+
+                //修改管理员所在机构
+                sql = "update cf_user set org_id='" + b0100 + "' where user_id='00000000-0000-0000-0000-000000000000' ";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.update(instance);
+
+                //修改角色所在机构
+                sql="update cf_role set org_id='" + b0100 + "'";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.update(instance);
+
+                //为管理员分配管理员角色
+                sql="delete from cf_user_roles where user_id='00000000-0000-0000-0000-000000000000'";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.delete(instance);
+                sql = "insert into cf_user_roles(id,user_id,role_id) values(UUID(),'00000000-0000-0000-0000-000000000000','88888888-8888-8888-8888-8888888888')";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.insert(instance);
+
+                //为管理员角色分配机构权限
+                sql="delete from cf_roleb01 where role_id='88888888-8888-8888-8888-8888888888'";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.delete(instance);
+                sql = "insert into cf_roleb01(id,org_id,role_id,modify_user,modify_time) select UUID(),b0100,'88888888-8888-8888-8888-8888888888','admin','" +
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "' from b01";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.insert(instance);
+
+                //为顶级机构分配能管理的机构
+                sql="delete from cf_org_sub where b0111='"+b0100+"'";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.delete(instance);
+                sql = "insert into cf_org_sub(id,b0111,managed_org,modify_user,modify_time) select UUID(),'"+b0100+"',b0100,'admin','" +
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "' from b01 ";
+                instance = SqlVo.getInstance(sql);
+                selectMapper.insert(instance);
+            }
+        }
     }
 
     //TODO
@@ -221,7 +306,7 @@ public class Synchdata {
                 insertList = targetMapList.stream().filter((Map m) -> !sameA0100.contains(m.get(tabelName))).collect(Collectors.toList());
 
                 //------yangbo-------
-                log.info("需要进行身份证号修改集合长度为" + idCardListByA01.size() + "\t" + tabelName);
+//                log.info("需要进行身份证号修改集合长度为" + idCardListByA01.size() + "\t" + tabelName);
             } else {
                 insertList = targetMapList.stream().filter((Map m) -> !sameA0100.contains(m.get(tabelName))).collect(Collectors.toList());
             }
@@ -314,6 +399,11 @@ public class Synchdata {
 
                     masterListMap.addAll(masterMapA30);
                     break;
+                case "b0100":
+                    List<Map> masterMapB01 = a01Service.getMasterB01(offset, rows);
+
+                    masterListMap.addAll(masterMapB01);
+                    break;
                 default:
             }
         }
@@ -390,6 +480,11 @@ public class Synchdata {
 
                     targetListMap.addAll(targetMapA30);
                     break;
+                case "b0100":
+                    List<Map<String, Object>> targetMapB01 = extractData.getTargetB01(dataSource, maxpage, minpage);
+
+                    targetListMap.addAll(targetMapB01);
+                    break;
                 default:
             }
         }
@@ -398,14 +493,15 @@ public class Synchdata {
 
     private void CacheSmrOldInfo() throws ParseException {
         hashMapSmrOldPerson.clear();
-        IPage<OmsSmrOldInfo> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById("");
+        List<OmsSmrOldInfo> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
         //原涉密信息
-        for (Object o : smrOldInfo.getRecords()
+        for (Object o : smrOldInfo
         ) {
             OmsSmrOldInfo oldInfo = (OmsSmrOldInfo) o;
 
             List<Object> oldInfos = hashMapSmrOldPerson.get(oldInfo.getA0100());
-            oldInfos.add(oldInfo);
+            if (oldInfos != null)
+                oldInfos.add(oldInfo);
         }
 
     }
@@ -428,7 +524,7 @@ public class Synchdata {
         //退出信息
         for (int i = 0; i < targetMapA30.size(); i++) {
             Map map = targetMapA30.get(i);
-            hashMapLeaveInfo.put(map.get("A0100").toString(), map);
+            hashMapLeaveInfo.put(map.get("a0100").toString(), map);
         }
 
 
@@ -448,67 +544,76 @@ public class Synchdata {
 
             //幹部庫職務
             List<Map> tposts = targetPosts.get(a0100);
+            if (tposts == null) continue;
             //出國境庫職務
             List<Map> mposts = masterPosts.get(a0100);
             for (int i = 0; i < tposts.size(); i++) {
                 Map tMap = tposts.get(i);
+                if (tMap.get("a0201b") == null || tMap.get("a0201b").toString().length() < 0)
+                    continue;
                 //判斷幹部庫的職務是否導入，導入后是否發生變化
                 Map changePost = null;
                 boolean exists = false;
-                for (int j = 0; j < mposts.size(); j++) {
-                    Map mMap = mposts.get(j);
-                    //沒有發生變化
-                    if (tMap.get("A0200") == mMap.get("A0200") &&//職務表主鍵
-                            tMap.get("a0201a") == mMap.get("a0201a") &&//任職機構名稱
-                            tMap.get("a0215a") == mMap.get("a0215a") &&//職務名稱
-                            tMap.get("a0255") == mMap.get("a0255")) //任职状态
-                    {
-                        exists = true;
-                        break;
-                    }
+                if (mposts != null) {
+                    for (int j = 0; j < mposts.size(); j++) {
+                        Map mMap = mposts.get(j);
+                        //沒有發生變化
+                        if (tMap.get("a0200") == mMap.get("a0200") &&//職務表主鍵
+                                tMap.get("a0201a") == mMap.get("a0201a") &&//任職機構名稱
+                                tMap.get("a0215a") == mMap.get("a0215a") &&//職務名稱
+                                tMap.get("a0255") == mMap.get("a0255")) //任职状态
+                        {
+                            exists = true;
+                            break;
+                        }
 
-                    //職務發生變化
-                    if (tMap.get("A0200") == mMap.get("A0200") &&//職務表主鍵
-                            (tMap.get("a0201a") != mMap.get("a0201a") ||//任職機構名稱
-                                    tMap.get("a0215a") != mMap.get("a0215a") ||//職務名稱
-                                    tMap.get("a0255") != mMap.get("a0255")))  //任职状态
-                    {
-                        exists = true;
-                        //在职的才处理职务变化，不在职的，全部职务都要处理脱密期，
-                        // 避免没有设置职务的免职时间而采用当前时间作为脱密期开始时间，
-                        //退出人员的脱密期开始时间取退出信息集的时间
-                        if (cadreA01.get("a0163").toString() == "1")
-                            changePost = tMap;
-                        break;
-                    }
-                }//mposts
+                        //職務發生變化
+                        if (tMap.get("a0200") == mMap.get("a0200") &&//職務表主鍵
+                                (tMap.get("a0201a") != mMap.get("a0201a") ||//任職機構名稱
+                                        tMap.get("a0215a") != mMap.get("a0215a") ||//職務名稱
+                                        tMap.get("a0255") != mMap.get("a0255")))  //任职状态
+                        {
+                            exists = true;
+                            //在职的才处理职务变化，不在职的，全部职务都要处理脱密期，
+                            // 避免没有设置职务的免职时间而采用当前时间作为脱密期开始时间，
+                            //退出人员的脱密期开始时间取退出信息集的时间
+                            if (cadreA01.get("a0163").toString() == "1")
+                                changePost = tMap;
+                            break;
+                        }
+                    }//mposts
+                }
+
                 if (changePost != null) {
                     //缓存变化了的职务
-                    hashMapUpdatedPost.put(a0100 + targetMapA01.get(m).get("a0201b").toString(), changePost);
+                    hashMapUpdatedPost.put(a0100 + changePost.get("a0201b").toString(), changePost);
                 } else if (exists == false) {
                     //缓存新加的职务
-                    hashMapInsertedPost.put(a0100 + targetMapA01.get(m).get("a0201b").toString(), tMap);
+                    hashMapInsertedPost.put(a0100 + tMap.get("a0201b").toString(), tMap);
                 }
             }//tposts
 
             //如果干部库删除了的职务，出国境干部库对应的职务设置为不在职状态
-            List<Map> cadreDBDeletedPost = new ArrayList<>();
-            for (int i = 0; i < mposts.size(); i++) {
-                boolean find = false;
-                for (int j = 0; j < tposts.size(); j++) {
-                    if (tposts.get(j).get("id") == mposts.get(i).get("id")) {
-                        find = true;
-                        break;
+            if (mposts != null) {
+                List<Map> cadreDBDeletedPost = new ArrayList<>();
+                for (int i = 0; i < mposts.size(); i++) {
+                    boolean find = false;
+                    for (int j = 0; j < tposts.size(); j++) {
+                        if (tposts.get(j).get("id") == mposts.get(i).get("id")) {
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find == false) {
+                        mposts.get(i).put("a0255", "0");
+                        cadreDBDeletedPost.add(mposts.get(i));
                     }
                 }
-                if (find == false) {
-                    mposts.get(i).put("a0255", "0");
-                    cadreDBDeletedPost.add(mposts.get(i));
+                if (cadreDBDeletedPost.size() > 0) {
+                    insertAndUpdate.upDataTable("a0200", cadreDBDeletedPost, null);
                 }
             }
-            if (cadreDBDeletedPost.size() > 0) {
-                insertAndUpdate.upDataTable("a0200", cadreDBDeletedPost, null);
-            }
+
         }//targetMapA01
     }//CacheDataToHashMap
 
@@ -555,12 +660,12 @@ public class Synchdata {
             Map insertPost = hashMapInsertedPost.get(key);
             OmsSmrOldInfo smrOld = new OmsSmrOldInfo();
             smrOld.setId(UUIDGenerator.getPrimaryKey());
-            smrOld.setA0100(insertPost.get("A0100").toString());
+            smrOld.setA0100(insertPost.get("a0100").toString());
             smrOld.setB0100(insertPost.get("a0201b").toString());
             smrOld.setImportYear(new SimpleDateFormat("yyyy").format(new Date()));
 
             //为不在职的设置脱密期，有可能添加以免职务
-            if (insertPost.get("A0255") == "0") {
+            if (insertPost.get("a0255") == "0") {
                 CalcDeclassification(insertPost, smrOld);
             }
             newOldInfos.add(smrOld);
@@ -590,8 +695,8 @@ public class Synchdata {
 
             Map masterCadre = hashMapMasterA01.get(a0100);
             //如果不在职了，要处理脱密期，先不判断退出类型，都给生成脱密期
-            if (masterCadre != null && masterCadre.get("A0163").toString() != map.get("A0163").toString() &&
-                    map.get("A0163").toString() != "1") {
+            if (masterCadre != null && masterCadre.get("a0163").toString() != map.get("a0163").toString() &&
+                    map.get("a0163").toString() != "1") {
                 //只处理脱密期没有计算过的，防止以前职务变化设置过脱密期的被修改
                 //以退出信息集的日期为脱密开始日期，没有退出信息的，以当前时间为脱密开始时间
 
@@ -601,8 +706,8 @@ public class Synchdata {
                     String startDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
                     //检查是否有退出日期
                     Map exitMap = hashMapLeaveInfo.get(a0100);
-                    if (exitMap != null && exitMap.get("A3004") != null && exitMap.get("A3004").toString().length() > 0) {
-                        startDate = exitMap.get("A3004").toString();
+                    if (exitMap != null && exitMap.get("a3004") != null && exitMap.get("a3004").toString().length() > 0) {
+                        startDate = exitMap.get("a3004").toString();
                         if (startDate.length() < 7)
                             startDate += "01";
                     }
@@ -637,7 +742,7 @@ public class Synchdata {
         List<Map> mobilizingCadres = info.getList();
         for (Map map : mobilizingCadres
         ) {
-            String a0100 = map.get("A0100").toString();
+            String a0100 = map.get("a0100").toString();
             if (hashMapUpdatedPost.get(a0100) != null || hashMapInsertedPost.get(a0100) != null) {
                 mobilizingcadreService.updateStatus(a0100);
             }

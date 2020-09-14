@@ -204,6 +204,20 @@ public class ExtractData {
         return getTargetCount(dataSource,sql,values);
     }
 
+    public List<Map<String,Object>>  getTargetB01(DataSource dataSource,Object... values){
+        Connection connection = Datasourceinfo.getConnection(dataSource);
+        List<Map<String, Object>> targetlist = Datasourceinfo.executeQueryList(connection, DynamicData.orcalSqlB01,values);
+
+        System.out.println(targetlist.size());
+        return  targetlist;
+    }
+
+    public int  getTargetB01Count(DataSource dataSource,Object... values){
+        String   sql = "select count(1) as num  from b01";
+
+        return getTargetCount(dataSource,sql,values);
+    }
+
     public List<Map<String,Object>>  getMasterA01(){
 
         DataSource dataSource = new DataSource();

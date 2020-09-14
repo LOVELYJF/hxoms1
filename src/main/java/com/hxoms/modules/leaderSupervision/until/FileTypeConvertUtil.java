@@ -248,18 +248,18 @@ public class FileTypeConvertUtil {
                 "                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;width:150px\">$当前时间$</td>\n" +
                 "                    <td colspan=\"1\" style=\"font-size:20px;text-align:center;\"></td>\n" +
                 "                </tr>\n" +
-                " <tr><td colspan=\"3\" ><p> <img src=\"F:\\ueditorImgUrl\\AC2D011B-94DF-445A-8953-E9FE6CA9B593.jpg\" /> </p></td></tr>\n" +
+                " <tr><td style=\"width:500px;height:200px;  \" colspan=\"3\" ><p> <img style=\"width:200px;height:150\"  src=\"F:\\ueditorImgUrl\\AC2D011B-94DF-445A-8953-E9FE6CA9B593.jpg\" /> </p></td></tr>\n" +
 
                 "        </table>\n" +
                 "    </div>  ");
 
-        HtmlUtils.replaceTag(strContext.toString(),"src","F:/ueditorImgUrl/");
+         String newSTR = HtmlUtils.replaceTag(strContext.toString(),"src","F:/ueditorImgUrl/");
         String str = LeaderSupervisionUntil.prefixPdfStyle
-                +strContext.toString()+
+                +newSTR+
                 LeaderSupervisionUntil.suffixPdfStyle;
         try {
             FileTypeConvertUtil.html2pdf(
-                    str,
+                    str.replaceAll("<br>","<br/>"),
                     "C:\\Users\\Administrator\\Desktop\\createSamplePDF3.pdf");
         } catch (FileNotFoundException e) {
             e.printStackTrace();

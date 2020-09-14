@@ -588,10 +588,10 @@
             a01 a
             JOIN a02 a2 ON a2.a0100 = a.a0100
             AND a2.a0281 = 'true'
-            JOIN b01 b ON a2.a0201b = b.b0111
+            JOIN b01 b ON a2.a0201b = b.b0100
         <where>
             <if test="keyword != null and keyword != ''">
-                and a.a0101 like CONCAT('%',#{keyword},'%')
+                and (a.a0101 like CONCAT('%',#{keyword},'%')
                 or  a.a0102 like CONCAT('%',#{keyword},'%'))
             </if>
             <if test="a0165 != null and a0165.size>0">
@@ -625,11 +625,11 @@
             a01 a
             JOIN a02 a2 ON a2.a0100 = a.a0100
             AND a2.a0281 = 'true'
-            JOIN b01 b ON a2.a0201b = b.b0111
+            JOIN b01 b ON a2.a0201b = b.b0100
         WHERE
             a.a0165 = '02'
         <if test="keyword != null and keyword != ''">
-            and a.a0101 like CONCAT('%',#{keyword},'%')
+            and (a.a0101 like CONCAT('%',#{keyword},'%')
             or  a.a0102 like CONCAT('%',#{keyword},'%'))
         </if>
         <if test="b0100 != null and b0100.size>0">

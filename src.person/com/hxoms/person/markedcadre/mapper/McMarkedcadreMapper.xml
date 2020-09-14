@@ -367,7 +367,7 @@
   </insert>
   <!--添加至名单-->
     <insert id="insertToList" parameterType="com.hxoms.person.markedcadre.entity.McA01">
-      insert into mc_a01 (id,mc_id,a01_id) values (uuid.Nextval,#{mcId},#{a01Id})
+      insert into mc_a01 (id,mc_id,a01_id) values (UUID(),#{mcId},#{a01Id})
     </insert>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.hxoms.person.markedcadre.entity.McMarkedcadre">

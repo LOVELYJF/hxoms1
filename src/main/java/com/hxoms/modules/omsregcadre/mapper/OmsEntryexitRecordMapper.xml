@@ -352,7 +352,10 @@
           AND OGE_STATUS = #{ogeStatus}
       </if>
       <if test="ids!=null and ids!=''">
-          and id in (#{ids})
+          and ID in
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
       </if>
       order by OGE_DATE asc
   </select>
