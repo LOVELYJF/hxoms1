@@ -104,7 +104,10 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
     @Override
     public Object clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit) {
         int con=0;
-        if (supSuspendUnit!=null && supSuspendUnit.getSuspendTime()!=null && supSuspendUnit.getPauseTime()!=null){
+        if (supSuspendUnit!=null
+                && supSuspendUnit.getSuspendTime()!=null
+                && supSuspendUnit.getPauseTime()!=null
+                && supSuspendUnit.getB0100()!=null){
             //登录用户信息
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             supSuspendUnit.setId(UUIDGenerator.getPrimaryKey());

@@ -86,7 +86,8 @@ public class OmsEntryexitRecordController {
     @ApiOperation(value="锁定出国申请", notes="锁定出国申请")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "suspendTime", value = "暂停开始时间", required = true, dataType = "Date"),
-            @ApiImplicitParam(name = "pauseTime", value = "暂停时长（月）", required = true, dataType = "String")
+            @ApiImplicitParam(name = "pauseTime", value = "暂停时长（月）", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "b0100", value = "锁定单位", required = true, dataType = "String")
     })
     @PostMapping("/clockGoAbroadApply")
     public Result clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit) {
