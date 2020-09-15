@@ -345,4 +345,13 @@ public class Constants {
 
     //出入境状态 1出境 2 入境
     public static final int[] OGE_STATUS_CODE ={1,2};
+    //出入境状态 1出境 2 入境
+    public static final String[] OGE_STATUS_NAME ={"出境","入境"};
+
+    //撤销备案申请状态 1.申请 2.受理 3.撤销 4.已备案 5.处领导审批 6.部领导审批 7.拒批
+
+    public static int[] REVOKE_RF_CODE={1,2,3,4,5,6,7};
+
+    //撤销备案申请状态 1.申请 2.受理 3.撤销 4.已备案 5.处领导审批 6.部领导审批 7.拒批
+    public static String[] REVOKE_RF_NAME={"申请","受理","撤销","已备案","处领导审批","部领导审批","拒批"};
 }
