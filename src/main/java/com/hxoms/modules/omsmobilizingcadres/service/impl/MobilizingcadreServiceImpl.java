@@ -212,7 +212,13 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
                 row.createCell(0).setCellValue(i + 1);
                 row.createCell(1).setCellValue((String) list.get(i).get("WORK_UNIT"));
                 row.createCell(2).setCellValue((String) list.get(i).get("NAME"));
-                row.createCell(3).setCellValue((String) list.get(i).get("SEX"));
+                if ("1".equals((String) list.get(i).get("SEX"))){
+                    row.createCell(3).setCellValue("男");
+                }else if("2".equals((String) list.get(i).get("SEX"))){
+                    row.createCell(3).setCellValue("女");
+                }else {
+                    row.createCell(3).setCellValue("");
+                }
                 row.createCell(4).setCellValue((String) list.get(i).get("BIRTH_DATE"));
                 row.createCell(5).setCellValue((String) list.get(i).get("JOB"));
                 row.createCell(6).setCellValue((String) list.get(i).get("POLITICAL_AFFI"));
