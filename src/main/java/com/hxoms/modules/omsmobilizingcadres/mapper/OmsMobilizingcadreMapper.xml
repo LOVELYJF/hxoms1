@@ -23,34 +23,34 @@
   <select id="selectAllMobilizingCadre" resultType="java.util.LinkedHashMap">
     SELECT
     m.ID AS 'id',
-    o.B0101 AS 'WORK_UNIT',
-    o.NAME AS 'NAME',
-    o.SEX AS 'SEX',
-    o.BIRTH_DATE AS 'BIRTH_DATE',
-    o.JOB AS 'JOB',
-    o.POLITICAL_AFFI AS 'POLITICAL_AFFI',
+    b.b0101 AS 'WORK_UNIT',
+    a.a0101 AS 'NAME',
+    a.A0104 AS 'SEX',
+    a.A0107 AS 'BIRTH_DATE',
+    a.a0192a AS 'JOB',
+    `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS 'POLITICAL_AFFI',
     m.Adjustment_time AS 'Adjustment_time',
     m.Completion_time AS 'Completion_time',
     m.STATUS AS 'status'
-    FROM
-    oms_personinfo o,
-    oms_mobilizingcadre m
-    WHERE
-    m.A0100 = o.A0100
-    AND m.b0100 = o.b0100
+    FROM oms_mobilizingcadre m
+    join a01 a on a.a0100 = m.a0100
+    JOIN a02 a2 ON a2.a0100 = a.a0100
+    AND a2.a0281 = 'true'
+    JOIN b01 b ON a2.a0201b = b.b0100
+    <where>
       <if test="orgIds != null and orgIds.size > 0">
-        and o.b0100 in
+        and m.b0100 in
         <foreach collection="orgIds" item="orgIds" separator="," open="(" close=")">
           #{orgIds}
         </foreach>
       </if>
       <if test="name != null and name != ''">
-        and o.name like CONCAT('%',#{name},'%')
+        and a.a0101 like CONCAT('%',#{name},'%')
       </if>
       <if test="status != null and status != ''">
         and m.status = #{status}
       </if>
-
+    </where>
   </select>
     <select id="getAllMobilizingCadreByStatus"
             resultType="com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre">
