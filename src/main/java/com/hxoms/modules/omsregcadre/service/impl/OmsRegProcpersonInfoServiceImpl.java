@@ -208,18 +208,31 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list) {
         int con = 0;
-        //查询备案库中的公安数据身份证号集合
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         queryWrapper.in("DATA_TYPE", "2");
         //查询备案库中的公安数据
         List<OmsRegProcpersoninfo> oldgalist = baseMapper.selectList(queryWrapper);
-        for (OmsRegProcpersoninfo oldgaData : oldgalist) {
-            for (OmsRegProcpersoninfo newgaData : list) {
+        for (OmsRegProcpersoninfo newgaData : list) {
+            for (OmsRegProcpersoninfo oldgaData : oldgalist) {
                 //数据比对更新
                 if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName().equals(newgaData.getName())) {
-                    oldgaData.setIdnumberGb(oldgaData.getIdnumberGa());
+                    oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
                     this.dataCompareAndUpdate(oldgaData, newgaData);
                 } else {
+
+                    //是否复姓。拆除
+                    boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(newgaData.getName().trim());
+                    //是复姓
+                    if (isCompoundSurname) {
+                        //姓
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 2));
+                        //名
+                        newgaData.setName(newgaData.getName().trim().substring(2, newgaData.getName().trim().length()));
+                    } else {
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 1));
+                        newgaData.setName(newgaData.getName().trim().substring(1, newgaData.getName().trim().length()));
+                    }
+
                     con = baseMapper.insert(newgaData);
                 }
 
@@ -229,9 +242,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<OmsRegProcpersoninfo> selectMergeList() {
+    public List<OmsRegProcpersoninfo> selectMergeList(String sortType) {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
-        return baseMapper.selectMergeList();
+        return baseMapper.selectMergeList(sortType);
     }
 
     @Override
@@ -291,34 +304,32 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //身份账号与名称一致
         if (data1.getIdnumberGb().equals(data2.getIdnumberGa()) && data1.getName().equals(data2.getName())) {
             //更新干部相关信息从公安数据中维护
-            OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
-            omsreginfo.setId(data1.getId());
             //将公安的身份证号写入干部数据的公安身份证号字段里
-            omsreginfo.setIdnumberGa(data2.getIdnumberGa());
+            data1.setIdnumberGa(data2.getIdnumberGa());
             //将公安的出生日期写入干部数据的公安出生日期字段里
-            omsreginfo.setBirthDate(data2.getBirthDate());
-            omsreginfo.setModifyTime(new Date());
+            data1.setBirthDate(data2.getBirthDate());
+            data1.setModifyTime(new Date());
             //用公安数据的户口所在地
-            omsreginfo.setRegisteResidenceCode(data2.getRegisteResidenceCode());
-            omsreginfo.setRegisteResidence(data2.getRegisteResidence());
+            data1.setRegisteResidenceCode(data2.getRegisteResidenceCode());
+            data1.setRegisteResidence(data2.getRegisteResidence());
 
             //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
             if (data1.getWorkUnit().equals(data2) == false) {
                 //入库标识  新增U  修改I  撤消D
-                omsreginfo.setInboundFlag("I");
+                data1.setInboundFlag("I");
                 //备案状态  0未备案，1已备案，2已确认
-                omsreginfo.setRfStatus("0");
+                data1.setRfStatus("0");
                 //验收状态  1已验收，0待验收
-                omsreginfo.setCheckStatus("0");
+                data1.setCheckStatus("0");
             } else {
                 //入库标识  新增U  修改I  撤消D
-                omsreginfo.setInboundFlag(data2.getInboundFlag());
+                data1.setInboundFlag(data2.getInboundFlag());
                 //备案状态  0未备案，1已备案，2已确认
-                omsreginfo.setRfStatus("1");
+                data1.setRfStatus("1");
                 //验收状态  1已验收，0待验收
-                omsreginfo.setCheckStatus("1");
+                data1.setCheckStatus("1");
             }
-            con = baseMapper.updateById(omsreginfo);
+            con = baseMapper.updateById(data1);
             if (con > 0) {
                 con = baseMapper.deleteById(data2.getId());
             }
@@ -838,6 +849,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     public int insertBaseInfoConfig(List<OmsBaseinfoConfig> list) {
+
         for (OmsBaseinfoConfig omsBaseinfoConfig : list) {
             omsBaseinfoConfig.setId(UUIDGenerator.getPrimaryKey());
         }
