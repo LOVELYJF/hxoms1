@@ -122,8 +122,8 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/selectMergeList")
-    public Result selectMergeList(){
-        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList();
+    public Result selectMergeList(String sortType){
+        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList(sortType);
         return Result.success(list);
     }
 
@@ -273,7 +273,7 @@ public class OmsRegProcpersoninfoController {
     private static List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");//注意月份是MM
         // 读取Excel文件
-        InputStream inputStream = new FileInputStream("D:/example.xls");
+        InputStream inputStream = new FileInputStream("D:/example1.xls");
         Workbook workbook = new HSSFWorkbook(inputStream);
         //检查文件
        // checkFile(file);
@@ -294,7 +294,7 @@ public class OmsRegProcpersoninfoController {
                 //获得当前sheet的结束行
                 int lastRowNum = sheet.getLastRowNum();
                 //循环除了第一行的所有行,去掉最后三行
-                for (int rowNum = firstRowNum + 3; rowNum <= lastRowNum - 3; rowNum++) {
+                for (int rowNum = firstRowNum; rowNum <= lastRowNum; rowNum++) {
                     //获得当前行
                     Row row = sheet.getRow(rowNum);
                     if (row == null) {
@@ -303,7 +303,8 @@ public class OmsRegProcpersoninfoController {
 
                     // 将单元格中的内容存入集合
                     OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
-                    //姓
+                    //姓名
+
                     Cell cell = row.getCell(1);
 
                     if (cell == null) {
@@ -447,33 +448,6 @@ public class OmsRegProcpersoninfoController {
 
 
 
-
-    /**
-     * 导出
-     *
-     * @return
-     * @throws Exception
-     */
-    /*public Result exportToExcel(String idStr) throws Exception {
-        List<OmsRegProcpersoninfo> list = mrpinfoService.selectListById(idStr);
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        try {
-
-            // session 用户信息
-            UserInfo userInfo = CommonCode.getUserInfo(getRequest());
-
-            paramMap.put("uAreacode", userInfo.getuAreacode());
-            list = a01Service.findA01InformationList(paramMap);
-            String titlels = getParameter("titlels");
-            String colsls = getParameter("colsls");
-            ExcelUtil.exportInfo(titlels, colsls, list, getResponse(), "干部人员信息", "干部人员信息");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }*/
 
 
     /**
