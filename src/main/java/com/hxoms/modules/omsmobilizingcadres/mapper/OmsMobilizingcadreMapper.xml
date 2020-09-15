@@ -34,9 +34,7 @@
     m.STATUS AS 'status'
     FROM oms_mobilizingcadre m
     join a01 a on a.a0100 = m.a0100
-    JOIN a02 a2 ON a2.a0100 = a.a0100
-    AND a2.a0281 = 'true'
-    JOIN b01 b ON a2.a0201b = b.b0100
+    JOIN b01 b ON m.b0100 = b.b0100
     <where>
       <if test="orgIds != null and orgIds.size > 0">
         and m.b0100 in
