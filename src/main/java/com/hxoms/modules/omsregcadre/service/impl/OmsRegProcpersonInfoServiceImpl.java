@@ -219,6 +219,20 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
                     this.dataCompareAndUpdate(oldgaData, newgaData);
                 } else {
+
+                    //是否复姓。拆除
+                    boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(newgaData.getName().trim());
+                    //是复姓
+                    if (isCompoundSurname) {
+                        //姓
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 2));
+                        //名
+                        newgaData.setName(newgaData.getName().trim().substring(2, newgaData.getName().trim().length()));
+                    } else {
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 1));
+                        newgaData.setName(newgaData.getName().trim().substring(1, newgaData.getName().trim().length()));
+                    }
+
                     con = baseMapper.insert(newgaData);
                 }
 
@@ -228,9 +242,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<OmsRegProcpersoninfo> selectMergeList() {
+    public List<OmsRegProcpersoninfo> selectMergeList(String sortType) {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
-        return baseMapper.selectMergeList();
+        return baseMapper.selectMergeList(sortType);
     }
 
     @Override
