@@ -97,14 +97,13 @@ public class OmsRegRevokeApplyController {
 
 
     /**
-     * 录入处领导审批结果
+     * 录入处领导审批结果（上报干部监督处）
      * @param
      * @return
      */
     @PostMapping("/updateApplyStatusByCLD")
-    public Result updateApplyStatusByCLD(OmsRegRevokeapply revokeApply, String applyIds) {
-        revokeApply.setStatus("2");
-        return Result.success(revokeApplyService.updateApplyStatusByCLD(revokeApply,applyIds));
+    public Result updateApplyStatusByCLD(String status, String applyIds) {
+        return Result.success(revokeApplyService.updateApplyStatusByCLD(status,applyIds));
     }
 
 

@@ -242,8 +242,7 @@
       count(orp.SECRET_LEVEL=2) as dcount,-- 一般涉密人员
       count(orp.REPLYOPINION=1)as ecount,-- 纪委不回复意见人员1是，0否
       count(orp.LQGZ=1)as fcount, -- 离琼挂职
-      count(orp.DQGZ=1)as gcount, -- 到琼挂职
-      (select count(1) from oms_reg_procpersoninfo orp left join oms_sup_suspend_person oss on orp.A0100 = oss.A0100 where oss.status=0)as hcount  -- 锁定出国
+      count(orp.DQGZ=1)as gcount  -- 到琼挂职
     from oms_reg_procpersoninfo orp
   </select>
 
