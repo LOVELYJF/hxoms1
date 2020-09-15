@@ -52,4 +52,24 @@
 	<select id="selectIdByName" resultType="java.lang.String" parameterType="java.lang.String">
 		select ID from country where NAME like '%${name}%'
 	</select>
+
+	<!-- 在敏感信息中查询国家信息 -->
+	<select id="selectCountryInfo" resultType="com.hxoms.modules.country.entity.Country">
+		select
+		<include refid="Base_Column_List"></include>
+		from
+		country
+		join oms_sensitive_maintain osm on osm.COUNTRY_ID = ID
+		where osm.SENSITIVE_LIMIT_ID=#{id} and IS_DELETE = '0'
+	</select>
+
+	<!-- 查询已撤销国家信息 -->
+	<select id="selectOmsSensitiveCountry" resultType="com.hxoms.modules.country.entity.Country">
+		select	distinct
+			<include refid="Base_Column_List"></include>
+		from country
+		join oms_sensitive_maintain osm on osm.COUNTRY_ID = ID
+		where IS_DELETE = '1'
+	</select>
+
 </mapper>
