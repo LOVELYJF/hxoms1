@@ -2,6 +2,7 @@ package com.hxoms.modules.omsoperator.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.omsoperator.service.OmsOperatorApprovalService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,5 +108,19 @@ public class OmsOperatorApprovalController {
         operatorApprovalService.agreeToApprovalById(operatorId);
         return Result.success();
 
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取经办人审批信息〉
+     * @Param: [operatorId]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/9/14 20:14
+     */
+    @GetMapping("/getApprovaByOperatorId")
+    public Result getApprovaByOperatorId(String operatorId){
+        OmsOperatorApproval omsOperatorApproval = operatorApprovalService.getApprovaByOperatorId(operatorId);
+        return Result.success(omsOperatorApproval);
     }
 }
