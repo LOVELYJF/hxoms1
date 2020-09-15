@@ -6,6 +6,7 @@ import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CanGetCerInfo;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CreateQrCodeApply;
+import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.RequestList;
 import com.hxoms.modules.passportCard.printGetQrCode.service.OmsPrintGetQrCodeService;
 import io.swagger.annotations.Api;
@@ -57,7 +58,7 @@ public class OmsPrintGetQrCodeController {
      */
     @ApiOperation(value = "生成打印二维码")
     @PostMapping("/printQrCode")
-    public Result createPrintQrCode(@RequestBody RequestList<CreateQrCodeApply> requestList, HttpServletResponse httpServletResponse){
+    public Result<QrCode> createPrintQrCode(@RequestBody RequestList<CreateQrCodeApply> requestList, HttpServletResponse httpServletResponse){
         try {
             return Result.success(omsPrintGetQrCodeService.createPrintQrCode(requestList.getList()));
         } catch (IOException e) {

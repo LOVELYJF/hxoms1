@@ -41,7 +41,7 @@ public class CerGetTaskInfo {
     @ApiModelProperty(value = "职务（级）或职称")
     private String post;
     //领取状态
-    @ApiModelProperty(value = "领取状态")
+    @ApiModelProperty(value = "领取状态(0:未领取,1:已领取)")
     private String getStatus;
     //领取状态名称
     @ApiModelProperty(value = "领取状态名称")
@@ -61,14 +61,20 @@ public class CerGetTaskInfo {
     @ApiModelProperty(value = "有效期至")
     private Date yxqz;
     //证照状态
-    @ApiModelProperty(value = "证照状态")
+    @ApiModelProperty(value="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
+    //证照状态
+    @ApiModelProperty(value = "证照状态名称")
+    private String cardStatusName;
     //审批表
     @ApiModelProperty(value = "审批表")
     private String spb;
     //保管方式
-    @ApiModelProperty(value = "保管方式")
+    @ApiModelProperty(value="保管方式(0:证照机,1:柜台)")
     private String surelyWay;
+    //保管方式名称
+    @ApiModelProperty(value="保管方式名称")
+    private String surelyWayName;
     //机柜
     @ApiModelProperty(value = "机柜")
     private String cabinetNum;
@@ -109,14 +115,6 @@ public class CerGetTaskInfo {
     //联系电话
     @ApiModelProperty(value = "联系电话")
     private String linkmanPhone;
-
-    public Date getHappenDate() {
-        return happenDate;
-    }
-
-    public void setHappenDate(Date happenDate) {
-        this.happenDate = happenDate;
-    }
 
     public String getId() {
         return id;
@@ -238,6 +236,14 @@ public class CerGetTaskInfo {
         this.cardStatus = cardStatus;
     }
 
+    public String getCardStatusName() {
+        return cardStatusName;
+    }
+
+    public void setCardStatusName(String cardStatusName) {
+        this.cardStatusName = cardStatusName;
+    }
+
     public String getSpb() {
         return spb;
     }
@@ -252,6 +258,14 @@ public class CerGetTaskInfo {
 
     public void setSurelyWay(String surelyWay) {
         this.surelyWay = surelyWay;
+    }
+
+    public String getSurelyWayName() {
+        return surelyWayName;
+    }
+
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
     }
 
     public String getCabinetNum() {
@@ -292,6 +306,14 @@ public class CerGetTaskInfo {
 
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
+    }
+
+    public Date getHappenDate() {
+        return happenDate;
+    }
+
+    public void setHappenDate(Date happenDate) {
+        this.happenDate = happenDate;
     }
 
     public Date getCreateTime() {

@@ -224,4 +224,21 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         }
         cfUserMapper.updateByPrimaryKeySelective(operator);
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取经办人审批信息〉
+     * @Param: [operatorId]
+     * @Return: com.hxoms.modules.omsoperator.entity.OmsOperatorApproval
+     * @Author: 李逍遥
+     * @Date: 2020/9/14 20:15
+     */
+    @Override
+    public OmsOperatorApproval getApprovaByOperatorId(String operatorId) {
+        if (StringUtils.isBlank(operatorId)){
+            throw new CustomMessageException("参数为空!");
+        }
+        OmsOperatorApproval omsOperatorApproval = operatorApprovalMapper.selectByUserId(operatorId);
+        return omsOperatorApproval;
+    }
 }

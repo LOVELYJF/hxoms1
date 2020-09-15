@@ -5,8 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
-
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
+import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
@@ -50,6 +50,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
 
     @Autowired
     private OmsFileService omsFileService;
+
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
     /**
      * @Desc: 生成催缴任务
      * @Author: wangyunquan
@@ -399,6 +402,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             PrintFile printFile=new PrintFile();
             List<com.hxoms.modules.file.entity.OmsFile> omsFileList = omsFileService.selectFileListByCode(fileQuery.getTableCode(), fileQuery.getProcpersonId(), fileQuery.getApplyId());
             BeanUtils.copyProperties(omsFileList.get(0),printFile);
+            printFile.setApplyId(fileQuery.getApplyId());
             printFileList.add(printFile);
         }
         return printFileList;
@@ -440,6 +444,50 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             printFileDetail.setOmsReplaceKeywordsList(targetOmsReplaceKeywordsList);
         }
         return printFileDetail;
+    }
+
+    /**
+     * @Desc: 保存富文本文件（模板）
+     * @Author: wangyunquan
+     * @Param: [omsFile]
+     * @Return: void
+     * @Date: 2020/9/14
+     */
+    @Override
+    public void saveTextOmsFile(OmsFile omsFile) {
+        com.hxoms.modules.file.entity.OmsFile SourceOmsFile=new com.hxoms.modules.file.entity.OmsFile ();
+        BeanUtils.copyProperties(omsFile,SourceOmsFile);
+        String result = omsFileService.saveTextOmsFile(SourceOmsFile);
+    }
+
+    /**
+     * @param omsCreateFile
+     * @Desc: 保存或者更新打印文件
+     * @Author: wangyunquan
+     * @Param: [omsCreateFile]
+     * @Return: void
+     * @Date: 2020/9/14
+     */
+    @Override
+    public void insertOrUpdate(OmsCreateFile omsCreateFile) {
+        com.hxoms.modules.file.entity.OmsCreateFile sourceOmsCreateFile1=new com.hxoms.modules.file.entity.OmsCreateFile();
+        BeanUtils.copyProperties(omsCreateFile,sourceOmsCreateFile1);
+        omsCreateFileService.insertOrUpdate(sourceOmsCreateFile1);
+    }
+
+    /**
+     * @Desc: 重新生成文件
+     * @Author: wangyunquan
+     * @Param: [printFile]
+     * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OmsFile
+     * @Date: 2020/9/14
+     */
+    @Override
+    public OmsFile selectFileDestailNew(PrintFile printFile) {
+        com.hxoms.modules.file.entity.OmsFile omsFile = omsFileService.selectFileDestailNew(printFile.getId(), printFile.getApplyId(), printFile.getTableCode());
+        OmsFile targetOmsFile=new OmsFile();
+        BeanUtils.copyProperties(omsFile,targetOmsFile);
+        return targetOmsFile;
     }
 
     /**

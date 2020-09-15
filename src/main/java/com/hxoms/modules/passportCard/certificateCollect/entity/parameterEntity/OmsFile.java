@@ -3,6 +3,8 @@ package com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
@@ -11,13 +13,14 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "模板信息")
 public class OmsFile {
 
-    @ApiModelProperty(value = "主键")
+    @NotBlank(message = "id不能为空")
+    @ApiModelProperty(value = "模板主键",required = true)
     private String id;
 
     @ApiModelProperty(value = "文件ID")
     private String fileId;
 
-    @ApiModelProperty(value = "可编辑文件（正面，第一页）")
+    @ApiModelProperty(value = "可编辑文件（正面，第一页）",required = true)
     private String frontContent;
 
     @ApiModelProperty(value = "可编辑文件（反面，第二页）")
@@ -26,7 +29,7 @@ public class OmsFile {
     @ApiModelProperty(value = "文件类别（1系统 2非涉密人员 3涉密人员 4涉密人员（重要，一般不是本单位））")
     private String fileType;
 
-    @ApiModelProperty(value = "文件类型(oms_cer_certificateCollect_cpd:证件催缴打印呈批单,oms_cer_certificateCollect_bzh:证件催缴打印标准函)", required = true)
+    @ApiModelProperty(value = "文件类型(oms_cer_certificateCollect_cpd:证件催缴打印呈批单,oms_cer_certificateCollect_bzh:证件催缴打印标准函)")
     private String tableCode;
 
     public String getId() {

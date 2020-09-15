@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsoperator.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
 import java.util.List;
@@ -72,4 +73,14 @@ public interface OmsOperatorApprovalService {
      * @Date: 2020/7/14 15:29
      */
     void saveOperator(CfUser operator);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取经办人审批信息〉
+     * @Param: [operatorId]
+     * @Return: com.hxoms.modules.omsoperator.entity.OmsOperatorApproval
+     * @Author: 李逍遥
+     * @Date: 2020/9/14 20:14
+     */
+    OmsOperatorApproval getApprovaByOperatorId(String operatorId);
 }

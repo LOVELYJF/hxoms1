@@ -139,4 +139,31 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      * @Date: 2020/9/13
      */
     PrintFileDetail selectFileDestail(FileDestailParams fileDestailParams);
+
+    /**
+     * @Desc: 保存富文本文件（模板）
+     * @Author: wangyunquan
+     * @Param: [omsFile]
+     * @Return: void
+     * @Date: 2020/9/14
+     */
+    void saveTextOmsFile(OmsFile omsFile);
+
+    /**
+     * @Desc: 保存或者更新打印文件
+     * @Author: wangyunquan
+     * @Param: [omsCreateFile]
+     * @Return: void
+     * @Date: 2020/9/14
+     */
+    void insertOrUpdate(OmsCreateFile omsCreateFile);
+
+    /**
+     * @Desc: 重新生成文件
+     * @Author: wangyunquan
+     * @Param: [printFile]
+     * @Return: com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OmsFile
+     * @Date: 2020/9/14
+     */
+    OmsFile selectFileDestailNew(PrintFile printFile);
 }
