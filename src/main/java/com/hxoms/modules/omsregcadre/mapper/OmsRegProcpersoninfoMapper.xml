@@ -248,9 +248,17 @@
   </select>
 
 
-  <select id="selectMergeList" resultMap="BaseResultMap">
+  <select id="selectMergeList" resultMap="BaseResultMap" parameterType="java.lang.String">
     select * from oms_reg_procpersoninfo where 1=1
     and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
+    <if test="sortType!=null and sortType!=''">
+        <if test="sortType='1'">
+            ORDER BY IDNUMBER_GB IS NULL,IDNUMBER_GB
+        </if>
+        <if test="sortType='2'">
+            ORDER BY SURNAME,NAME,WORK_UNIT
+        </if>
+    </if>
   </select>
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
@@ -283,9 +291,11 @@
         </if>
         order by SURNAME,NAME,WORK_UNIT asc
     </select>
+
     <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         select * from oms_reg_procpersoninfo where IDNUMBER_GB = #{idCard} and DATA_TYPE = '1'
     </select>
+
     <select id="selectIdnumberByType" resultType="java.lang.String" parameterType="java.lang.String">
       select IDNUMBER_GA from oms_reg_procpersoninfo where 1=1
         <if test="dataType !=null and dataType !=''">
