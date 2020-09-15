@@ -24,9 +24,18 @@
   </select>
     <select id="selectByUserId" resultType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
       select
-      <include refid="Base_Column_List" />
-      from oms_operator_approval
-      where OperatorId = #{userId,jdbcType=VARCHAR}
+      o.id,
+      o.OperatorId,
+      o.StepName,
+      o.SubmissionTime,
+      cf.user_name as submitter,
+      o.ApprovalDate,
+      o.Approver,
+      o.ApprovalResult,
+      o.ApprovalOpinion
+      from oms_operator_approval o
+      left join cf_user cf  on o.OperatorId = cf.user_id
+      where o.OperatorId = #{userId,jdbcType=VARCHAR}
     </select>
     <select id="selectCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
         select "1.注册" as label, "0" as statusCode, count(0) as num from cf_user where user_state = "0"

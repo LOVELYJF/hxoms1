@@ -86,7 +86,8 @@ public class OmsEntryexitRecordController {
     @ApiOperation(value="锁定出国申请", notes="锁定出国申请")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "suspendTime", value = "暂停开始时间", required = true, dataType = "Date"),
-            @ApiImplicitParam(name = "pauseTime", value = "暂停时长（月）", required = true, dataType = "String")
+            @ApiImplicitParam(name = "pauseTime", value = "暂停时长（月）", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "b0100", value = "锁定单位", required = true, dataType = "String")
     })
     @PostMapping("/clockGoAbroadApply")
     public Result clockGoAbroadApply(OmsSupSuspendUnit supSuspendUnit) {
@@ -142,10 +143,16 @@ public class OmsEntryexitRecordController {
      * 选择数据进行匹配
      * @return
      */
+    @ApiOperation(value="选择数据进行匹配", notes="选择数据进行匹配")
     @GetMapping("/selectCompareInfo")
-    public Result selectCompareInfo(OmsPriApply priapply, OmsEntryexitRecord outinfo, OmsEntryexitRecord joininfo) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "omsId", value = "备案id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "priapplyId", value = "因私申请id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "recordIds", value = "出入境记录id字符串（数组）", required = true, dataType = "String")
+    })
+    public Result selectCompareInfo(String omsId,String priapplyId,List<String> recordIds) {
         try{
-            Map<String, Object> map = entryexitRecordService.selectCompareInfo(priapply,outinfo,joininfo);
+            Map<String, Object> map = entryexitRecordService.selectCompareInfo(omsId,priapplyId,recordIds);
             return Result.success(map);
         }catch (Exception e) {
             e.printStackTrace();

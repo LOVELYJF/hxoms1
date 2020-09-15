@@ -27,7 +27,7 @@ public class CanGetCerInfo {
     @ApiModelProperty(value = "性别")
     private String sex;
     //出生日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
@@ -47,13 +47,32 @@ public class CanGetCerInfo {
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //有效期至
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "有效期至")
     private Date yxqz;
     //审批表
     @ApiModelProperty(value = "审批表")
     private String spb;
+    //保管方式
+    @ApiModelProperty(value = "保管方式(0:证照机,1:柜台)")
+    private String surelyWay;
+    //保管方式名称
+    @ApiModelProperty(value = "保管方式名称")
+    private String surelyWayName;
+
+    //机柜编号
+    @ApiModelProperty(value = "机柜编号")
+    private String cabinetNum;
+
+    //机柜位置
+    @ApiModelProperty(value = "机柜位置")
+    private String place;
+
+    //柜台编号
+    @ApiModelProperty(value = "柜台编号")
+    private String counterNum;
+
     //来源
     @ApiModelProperty(value = "来源")
     private String dataSource;
@@ -61,12 +80,12 @@ public class CanGetCerInfo {
     @ApiModelProperty(value = "来源名称")
     private String dataSourceName;
     //业务日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "业务日期")
     private Date happenDate;
     //生成日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value = "生成日期")
     private Date createTime;
@@ -165,6 +184,46 @@ public class CanGetCerInfo {
 
     public void setSpb(String spb) {
         this.spb = spb;
+    }
+
+    public String getSurelyWay() {
+        return surelyWay;
+    }
+
+    public void setSurelyWay(String surelyWay) {
+        this.surelyWay = surelyWay;
+    }
+
+    public String getSurelyWayName() {
+        return surelyWayName;
+    }
+
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
+    }
+
+    public String getCabinetNum() {
+        return cabinetNum;
+    }
+
+    public void setCabinetNum(String cabinetNum) {
+        this.cabinetNum = cabinetNum;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getCounterNum() {
+        return counterNum;
+    }
+
+    public void setCounterNum(String counterNum) {
+        this.counterNum = counterNum;
     }
 
     public String getDataSource() {

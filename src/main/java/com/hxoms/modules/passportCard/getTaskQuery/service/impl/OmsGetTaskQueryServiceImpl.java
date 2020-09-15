@@ -66,7 +66,7 @@ public class OmsGetTaskQueryServiceImpl implements OmsGetTaskQueryService {
      */
     @Override
     public PageBean<CerGetTaskInfo> selectGetCer(PageBean pageBean,CerGetTaskQueryParam cerGetTaskQueryParam) {
-        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageNum());
+        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
         PageInfo<CerGetTaskInfo> pageInfo=new PageInfo<CerGetTaskInfo>(omsGetTaskQueryMapper.selectGetCer(cerGetTaskQueryParam));
         return PageUtil.packagePage(pageInfo);
     }
@@ -88,7 +88,7 @@ public class OmsGetTaskQueryServiceImpl implements OmsGetTaskQueryService {
         for (SendNoticeContentParam sendNoticeContentParam : sendNoticeContentParamList) {
             StringBuffer partStr=new StringBuffer();
             rfB0000 = sendNoticeContentParam.getRfB0000();
-            if("1".equals(sendNoticeContentParam.getGetStatusName()))
+            if("1".equals(sendNoticeContentParam.getGetStatus()))
                 throw new CustomMessageException(sendNoticeContentParam.getZjlxName()+"("+ sendNoticeContentParam.getZjhm()+")"+"已领取，不能发通知，请重新选择！");
             //张三的护照（E9435）
             partStr.append(sendNoticeContentParam.getName()).append("的").append(sendNoticeContentParam.getZjlxName()).append("（"+ sendNoticeContentParam.getZjhm()+"）");

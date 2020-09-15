@@ -38,28 +38,28 @@
     <insert id="copyGrantModule">
        insert into cf_org_module
         (id, b0111, mu_id)
-        select uuid.Nextval,#{tarOrgId},rm.mu_id
+        select UUID(),#{tarOrgId},rm.mu_id
         from cf_org_module rm
         where rm.b0111=#{srcOrgId}
     </insert>
     <insert id="copyGrantOrg">
         insert into cf_org_sub
         (id, b0111, managed_org)
-        select uuid.Nextval,#{tarOrgId},managed_org
+        select UUID(),#{tarOrgId},managed_org
         from cf_org_sub
         where b0111=#{srcOrgId}
     </insert>
     <insert id="copyGrantLeaderType">
         insert into cf_org_leadertype
         (id, b0111, leadertype_id,info_id)
-        select uuid.Nextval,#{tarOrgId},leadertype_id,info_id
+        select UUID(),#{tarOrgId},leadertype_id,info_id
         from cf_org_leadertype
         where b0111=#{srcOrgId}
         </insert>
     <insert id="copyGrantSystem">
         insert into cf_org_system
         (id, b0111, system_id)
-        select uuid.Nextval,#{tarOrgId},system_id
+        select UUID(),#{tarOrgId},system_id
         from cf_org_system
         where b0111=#{srcOrgId}
         </insert>

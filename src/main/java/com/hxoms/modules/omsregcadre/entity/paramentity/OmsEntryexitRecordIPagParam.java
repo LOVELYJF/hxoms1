@@ -5,6 +5,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 出入境记录记录参数实体类
@@ -27,7 +28,7 @@ public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
     //根据年份查询对应比对数据
     private String year;
     //导出出入境记录批量id串
-    private String ids;
+    private List<String> ids;
     public String getYear() {
         return year;
     }
@@ -68,11 +69,11 @@ public class OmsEntryexitRecordIPagParam extends OmsEntryexitRecord {
         this.ogeEndDate = ogeEndDate;
     }
 
-    public String getIds() {
+    public List<String> getIds() {
         return ids;
     }
 
-    public void setIds(String ids) {
+    public void setIds(List<String> ids) {
         this.ids = ids;
     }
 }

@@ -110,5 +110,18 @@
     OPERATE_BATCH, ZGXL, ZGXLB, ZGXLXX, ZGXW, ZGXWXX, GSFAQK, CFQN, AGE_2, A0196B, A0192D,
     A0229, CHANGE_STATE, ZJ_TYPE,A0192, A14Z101, A15Z101, A1701, RXZ_DATES, A17Z1
   </sql>
+    <select id="selectA01List" resultType="com.hxoms.modules.omsregcadre.entity.A01">
+      SELECT
+        a.*,
+        a2.A0215A as 'a0215a',
+        a2.A0215B as 'a0215b',
+        a2.a0221 as 'A0221',
+        b.B0100 as 'b0100',
+        b.B0101 as 'b0101'
+      from  a01 a
+              inner join a02 a2 on a.a0100=a2.a0100
+              inner join b01 b on a2.a0201b=b.b0100
+      where a.is_deleted = '0' and a.a0165 = '02'
+    </select>
 
 </mapper>

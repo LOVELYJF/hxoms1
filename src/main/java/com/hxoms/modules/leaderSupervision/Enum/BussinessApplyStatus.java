@@ -27,6 +27,8 @@ public enum BussinessApplyStatus {
     private int    leaderNeedInitializeStatus;
 
 
+
+
     BussinessApplyStatus(String tableName,String applySatus,int leaderNeedInitializeStatus){
         this.tableName = tableName;
 
