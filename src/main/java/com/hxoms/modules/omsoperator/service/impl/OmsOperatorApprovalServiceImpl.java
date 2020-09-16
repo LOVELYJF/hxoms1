@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsoperator.entity.OmsOperatorApproval;
@@ -120,14 +121,23 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         operator.setUserState(Constants.USER_STATUS[1]);
         cfUserMapper.updateByPrimaryKeySelective(operator);
         //获取审批对象
-        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operator.getUserId());
-        if (approval == null){
-            throw new CustomMessageException("此经办人无审批信息!");
-        }
-        approval.setApprovalresult("同意");
-        approval.setApprover(loginUser.getUserName());
-        approval.setApprovaldate(new Date());
-        operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        OmsOperatorApproval  omsOperatorApproval = new OmsOperatorApproval();
+        //经办人审批表主键、
+        omsOperatorApproval.setId(UUIDGenerator.getPrimaryKey());
+        // 经办人主键、
+        omsOperatorApproval.setOperatorid(operator.getUserId());
+        //步骤名称（1.监督处审核 2.处领导审批）、
+        omsOperatorApproval.setStepname("指纹登记");
+        omsOperatorApproval.setApprovalopinion("同意");
+        omsOperatorApproval.setApprovalresult("同意");
+        // 提交时间
+        omsOperatorApproval.setSubmissiontime(new Date());
+        // 提交人
+        omsOperatorApproval.setSubmitter(loginUser.getUserName());
+        //提交人id
+        omsOperatorApproval.setSubmitterid(loginUser.getId());
+        //新增经办人审批信息
+        operatorApprovalMapper.insertSelective(omsOperatorApproval);
     }
 
     /**
@@ -147,19 +157,49 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         //点击【不通过】按钮，将经办人申请的状态置为“拒绝”。
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
+        String userType = loginUser.getUserType();
         CfUser operator = cfUserMapper.selectByPrimaryKey(operatorId);
         operator.setUserState(Constants.USER_STATUS[5]);
         cfUserMapper.updateByPrimaryKeySelective(operator);
-        //获取审批对象
-        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operatorId);
-        if (approval == null){
-            throw new CustomMessageException("此经办人无审批信息!");
-        }
-        approval.setApprovalopinion("拒绝");
-        approval.setApprovalresult("拒绝");
-        approval.setApprover(loginUser.getUserName());
-        approval.setApprovaldate(new Date());
-        operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+        //创建审批对象
+        OmsOperatorApproval  approval = new OmsOperatorApproval();
+       if (userType.equals(Constants.USER_TYPES[5])){
+            //经办人审批表主键、
+           approval.setId(UUIDGenerator.getPrimaryKey());
+           // 经办人主键、
+           approval.setOperatorid(operatorId);
+           //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+           approval.setStepname("监督处审核");
+           // 提交时间
+           approval.setSubmissiontime(new Date());
+           // 提交人
+           approval.setSubmitter(loginUser.getUserName());
+           //提交人id
+           approval.setSubmitterid(loginUser.getId());
+           approval.setApprovalresult("拒绝");
+           approval.setApprovalopinion("拒绝");
+           //新增经办人审批信息
+           operatorApprovalMapper.insertSelective(approval);
+       }else if (userType.equals(Constants.USER_TYPES[13])){
+            //经办人审批表主键、
+           approval.setId(UUIDGenerator.getPrimaryKey());
+           // 经办人主键、
+           approval.setOperatorid(operatorId);
+           //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+           approval.setStepname("处领导审批");
+           // 提交时间
+           approval.setSubmissiontime(new Date());
+           // 提交人
+           approval.setSubmitter(loginUser.getUserName());
+           //提交人id
+           approval.setSubmitterid(loginUser.getId());
+           approval.setApprovalresult("拒绝");
+           approval.setApprovalopinion("拒绝");
+           //新增经办人审批信息
+           operatorApprovalMapper.insertSelective(approval);
+       }else {
+           throw new CustomMessageException("无操作权限!");
+       }
     }
 
     /**
@@ -180,7 +220,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         CfUser operator = cfUserMapper.selectByPrimaryKey(operatorId);
         //获取审批对象
-        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(operatorId);
+        OmsOperatorApproval approval = new OmsOperatorApproval();
         if (approval == null){
             throw new CustomMessageException("此经办人无审批信息!");
         }
@@ -190,19 +230,42 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             //将状态更改为处领导审批
             operator.setUserState(Constants.USER_STATUS[4]);
             cfUserMapper.updateByPrimaryKeySelective(operator);
-            approval.setStepname("处领导审批");
+            //经办人审批表主键、
+            approval.setId(UUIDGenerator.getPrimaryKey());
+            // 经办人主键、
+            approval.setOperatorid(operatorId);
+            //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+            approval.setStepname("监督处审核");
+            // 提交时间
+            approval.setSubmissiontime(new Date());
+            // 提交人
+            approval.setSubmitter(loginUser.getUserName());
+            //提交人id
+            approval.setSubmitterid(loginUser.getId());
+            approval.setApprovalresult("同意");
             approval.setApprovalopinion("同意");
-            approval.setApprover(loginUser.getUserName());
-            approval.setApprovaldate(new Date());
-            operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+            //新增经办人审批信息
+            operatorApprovalMapper.insertSelective(approval);
         }else if (loginUserType.equals(Constants.USER_TYPES[13])){
             //将状态改为身份认证
             operator.setUserState(Constants.USER_STATUS[8]);
             cfUserMapper.updateByPrimaryKeySelective(operator);
+            //经办人审批表主键、
+            approval.setId(UUIDGenerator.getPrimaryKey());
+            // 经办人主键、
+            approval.setOperatorid(operatorId);
+            //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+            approval.setStepname("处领导审批");
+            // 提交时间
+            approval.setSubmissiontime(new Date());
+            // 提交人
+            approval.setSubmitter(loginUser.getUserName());
+            //提交人id
+            approval.setSubmitterid(loginUser.getId());
             approval.setApprovalresult("同意");
-            approval.setApprover(loginUser.getUserName());
-            approval.setApprovaldate(new Date());
-            operatorApprovalMapper.updateByPrimaryKeySelective(approval);
+            approval.setApprovalopinion("同意");
+            //新增经办人审批信息
+            operatorApprovalMapper.insertSelective(approval);
         }else {
             throw new CustomMessageException("无操作权限!");
         }
@@ -232,13 +295,14 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
      * @Return: com.hxoms.modules.omsoperator.entity.OmsOperatorApproval
      * @Author: 李逍遥
      * @Date: 2020/9/14 20:15
+     * @return
      */
     @Override
-    public OmsOperatorApproval getApprovaByOperatorId(String operatorId) {
+    public List<OmsOperatorApproval> getApprovaByOperatorId(String operatorId) {
         if (StringUtils.isBlank(operatorId)){
             throw new CustomMessageException("参数为空!");
         }
-        OmsOperatorApproval omsOperatorApproval = operatorApprovalMapper.selectByUserId(operatorId);
+        List<OmsOperatorApproval> omsOperatorApproval = operatorApprovalMapper.selectByUserId(operatorId);
         return omsOperatorApproval;
     }
 }

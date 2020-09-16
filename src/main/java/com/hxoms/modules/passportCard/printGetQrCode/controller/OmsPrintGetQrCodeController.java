@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
@@ -58,7 +57,7 @@ public class OmsPrintGetQrCodeController {
      */
     @ApiOperation(value = "生成打印二维码")
     @PostMapping("/printQrCode")
-    public Result<QrCode> createPrintQrCode(@RequestBody RequestList<CreateQrCodeApply> requestList, HttpServletResponse httpServletResponse){
+    public Result<QrCode> createPrintQrCode(@RequestBody RequestList<CreateQrCodeApply> requestList){
         try {
             return Result.success(omsPrintGetQrCodeService.createPrintQrCode(requestList.getList()));
         } catch (IOException e) {

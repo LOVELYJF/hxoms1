@@ -66,8 +66,9 @@ public interface OmsOperatorService {
      * @Return: com.hxoms.modules.omsoperator.entity.OmsOperatorApproval
      * @Author: 李逍遥
      * @Date: 2020/5/11 9:14
+     * @return
      */
-    OmsOperatorApproval getOperatorApprovalByUid(String userId);
+    List<OmsOperatorApproval> getOperatorApprovalByUid(String userId);
 
     /**
      * 功能描述: <br>

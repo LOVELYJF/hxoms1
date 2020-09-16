@@ -20,7 +20,7 @@ public interface OmsOperatorApprovalMapper {
 
     int updateByPrimaryKey(OmsOperatorApproval record);
 
-    OmsOperatorApproval selectByUserId(String userId);
+    List<OmsOperatorApproval> selectByUserId(String userId);
     /**
      * 功能描述: <br>
      * 〈经办人——基本数据流程统计〉

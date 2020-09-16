@@ -88,8 +88,8 @@ public class OmsGetTaskQueryServiceImpl implements OmsGetTaskQueryService {
         for (SendNoticeContentParam sendNoticeContentParam : sendNoticeContentParamList) {
             StringBuffer partStr=new StringBuffer();
             rfB0000 = sendNoticeContentParam.getRfB0000();
-            if("1".equals(sendNoticeContentParam.getGetStatus()))
-                throw new CustomMessageException(sendNoticeContentParam.getZjlxName()+"("+ sendNoticeContentParam.getZjhm()+")"+"已领取，不能发通知，请重新选择！");
+            if(!"0".equals(sendNoticeContentParam.getGetStatus()))
+                throw new CustomMessageException(sendNoticeContentParam.getZjlxName()+"("+ sendNoticeContentParam.getZjhm()+")"+"不是未领取状态，不能发通知，请重新选择！");
             //张三的护照（E9435）
             partStr.append(sendNoticeContentParam.getName()).append("的").append(sendNoticeContentParam.getZjlxName()).append("（"+ sendNoticeContentParam.getZjhm()+"）");
             String value = noticeMap.get(sendNoticeContentParam.getRfB0000());
