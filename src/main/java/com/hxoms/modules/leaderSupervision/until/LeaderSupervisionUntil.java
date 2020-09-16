@@ -385,114 +385,173 @@ public class LeaderSupervisionUntil {
         return  wb;
     }
 
-    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList,String sheetName) {
+    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList,String sheetName1,String sheetName2) {
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
-        HSSFSheet sheet0 = wb.createSheet(sheetName);
-//        HSSFSheet sheet1 = wb.createSheet(sheetName);
+        HSSFSheet sheet0 = wb.createSheet(sheetName1);
+        HSSFSheet sheet1 = wb.createSheet(sheetName2);
 
         List<HSSFSheet> sheetList=new ArrayList<HSSFSheet>();
         sheetList.add(sheet0);
-//        sheetList.add(sheet1);
+        sheetList.add(sheet1);
         //设置标题样式
         HSSFCellStyle titleStyle=  getTitleStyle(wb);
         //设置单元格样式
         HSSFCellStyle cellStyle= getCellStyle(wb);
-
+        int f=0;
         for (HSSFSheet sheet:sheetList) {
-            //创建第一行
-            Row row = sheet.createRow(0);
-            Cell cell1 = row.createCell(0);
-            cell1.setCellValue("国家工作人员登记备案表");
-            cell1.setCellStyle(titleStyle);
-            //创建第二行
-            Row row2 = sheet.createRow(1);
-            Cell cell2 = row2.createCell(0);
-            cell2.setCellValue("报备单位名称（盖章）：");
-            cell2.setCellStyle(cellStyle);
+            f++;
+            if (f==1){
+                //创建第一行
+                Row row = sheet.createRow(0);
+                Cell cell1 = row.createCell(0);
+                cell1.setCellValue("国家工作人员登记备案表");
+                cell1.setCellStyle(titleStyle);
+                //创建第二行
+                Row row2 = sheet.createRow(1);
+                Cell cell2 = row2.createCell(0);
+                cell2.setCellValue("报备单位名称（盖章）：");
+                cell2.setCellStyle(cellStyle);
 
 
-            CellRangeAddress regionNum1 = new CellRangeAddress(0,0 , 0, listV.size()-1);
-            CellRangeAddress regionNum2 = new CellRangeAddress(1,1 , 0, listV.size()-1);
-            sheet.addMergedRegion(regionNum1);
-            sheet.addMergedRegion(regionNum2);
-            //创建第三行
-            Row rowNum3 = sheet.createRow(2);
-            Cell cell = null;
+                CellRangeAddress regionNum1 = new CellRangeAddress(0,0 , 0, listV.size()-1);
+                CellRangeAddress regionNum2 = new CellRangeAddress(1,1 , 0, listV.size()-1);
+                sheet.addMergedRegion(regionNum1);
+                sheet.addMergedRegion(regionNum2);
+                //创建第三行
+                Row rowNum3 = sheet.createRow(2);
+                Cell cell = null;
 
-            //创建标题
-            for (int i = 2; i < listV.size(); i++) {
+                //创建标题
+                for (int i = 2; i < listV.size(); i++) {
 
-                cell = rowNum3.createCell(i);
-                cell.setCellValue(listV.get(i).toString());
+                    cell = rowNum3.createCell(i);
+                    cell.setCellValue(listV.get(i).toString());
 
-                cell.setCellStyle(titleStyle);
+                    cell.setCellStyle(titleStyle);
 
-                //自动设置列宽
-                sheet.setColumnWidth(i, 512 * 4);
-            }
+                    //自动设置列宽
+                    sheet.setColumnWidth(i, 512 * 4);
+                }
 
-            //填充内容
+                //填充内容
 
-            //绘制内容
-            String k;
-            String s;
+                //绘制内容
+                String k;
+                String s;
 
-            //循环多少行
-            for(int i=0;i<dataList.size();i++){
+                //循环多少行
+                for(int i=0;i<dataList.size();i++){
 
-                Row nextrow = sheet.createRow(i+3); //第i行
-                Cell cell3  =nextrow.createCell(0);
-                cell3.setCellValue(String.valueOf(i+1));
+                    Row nextrow = sheet.createRow(i+3); //第i行
+                    Cell cell3  =nextrow.createCell(0);
+                    cell3.setCellValue(String.valueOf(i+1));
 
 
 
-                Map temp = dataList.get(i);
-                for (int j = 1; j < listK.size(); j++) {
-                    cell3  =nextrow.createCell(j);
-                    if (temp.get(listK.get(j)) != null) {
+                    Map temp = dataList.get(i);
+                    for (int j = 1; j < listK.size(); j++) {
+                        cell3  =nextrow.createCell(j);
+                        if (temp.get(listK.get(j)) != null) {
 
-                        k = temp.get(listK.get(j)).toString();
+                            k = temp.get(listK.get(j)).toString();
 
-                        s = (listK.get(j).toString()).toLowerCase();
-                        if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
-                            if (k.length() > 10) {
-                                k = k.substring(0, 10);
+                            s = (listK.get(j).toString()).toLowerCase();
+                            if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
+                                if (k.length() > 10) {
+                                    k = k.substring(0, 10);
+                                }
+
                             }
+                            cell3.setCellValue(k);
+                            cell3.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j, k, sheet, currWidth);
+                        }else {
+                            String m = "";
+                            cell3.setCellValue(m);
+                            cell3.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j,m,sheet,currWidth);
 
                         }
-                        cell3.setCellValue(k);
-                        cell3.setCellStyle(cellStyle);
-                        int currWidth = sheet.getColumnWidth(j);
-                        autoSizeColumnOne(j, k, sheet, currWidth);
-                    }else {
-                        String m = "";
-                        cell3.setCellValue(m);
-                        cell3.setCellStyle(cellStyle);
-                        int currWidth = sheet.getColumnWidth(j);
-                        autoSizeColumnOne(j,m,sheet,currWidth);
+                    }
+                }
 
+                CellRangeAddress regionNum3 = new CellRangeAddress(dataList.size()+3,dataList.size()+3 , 0, listV.size()-1);
+                CellRangeAddress regionNum4 = new CellRangeAddress(dataList.size()+3+1,dataList.size()+3+1 , 0, listV.size()-1);
+                sheet.addMergedRegion(regionNum3);
+                sheet.addMergedRegion(regionNum4);
+                Row nextrow1 = sheet.createRow(dataList.size()+3); //第i行
+                Cell celladdOther1 =  nextrow1.createCell(0);
+                celladdOther1.setCellValue("本次备案共  页 人（首页填写）             此为第  页                              报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
+                celladdOther1.setCellStyle(cellStyle);
+                Row nextrow2 = sheet.createRow(dataList.size()+3+1); //第i行
+                Cell celladdOther2 =  nextrow2.createCell(0);
+                celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                        联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nj");
+                celladdOther2.setCellStyle(cellStyle);
+            }
+            if (f==2){
+                //创建第一行
+                Row row = sheet.createRow(0);
+                Cell cell = null;
+
+                //创建标题
+                for (int i = 0; i < listV.size(); i++) {
+                    cell = row.createCell(i);
+                    cell.setCellValue(listV.get(i).toString());
+
+                    cell.setCellStyle(titleStyle);
+
+                    //自动设置列宽
+                    sheet.setColumnWidth(i, 512 * 4);
+                }
+
+                //填充内容
+
+                //绘制内容
+                String k;
+                String s;
+
+                //循环多少行
+                for(int i=0;i<dataList.size();i++){
+
+                    Row nextrow = sheet.createRow(i+1); //第i行
+                    Cell cell2  =nextrow.createCell(0);
+                    cell2.setCellValue(String.valueOf(i+1));
+
+
+
+                    Map temp = dataList.get(i);
+                    for (int j = 1; j < listK.size(); j++) {
+                        cell2  =nextrow.createCell(j);
+                        if (temp.get(listK.get(j)) != null) {
+
+                            k = temp.get(listK.get(j)).toString();
+
+                            s = (listK.get(j).toString()).toLowerCase();
+                            if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
+                                if (k.length() > 10) {
+                                    k = k.substring(0, 10);
+                                }
+
+                            }
+                            cell2.setCellValue(k);
+                            cell2.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j, k, sheet, currWidth);
+                        }else {
+                            String m = "";
+                            cell2.setCellValue(m);
+                            cell2.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j,m,sheet,currWidth);
+
+                        }
                     }
                 }
             }
-
-            CellRangeAddress regionNum3 = new CellRangeAddress(dataList.size()+3,dataList.size()+3 , 0, listV.size()-1);
-            CellRangeAddress regionNum4 = new CellRangeAddress(dataList.size()+3+1,dataList.size()+3+1 , 0, listV.size()-1);
-            sheet.addMergedRegion(regionNum3);
-            sheet.addMergedRegion(regionNum4);
-            Row nextrow1 = sheet.createRow(dataList.size()+3); //第i行
-            Cell celladdOther1 =  nextrow1.createCell(0);
-            celladdOther1.setCellValue("本次备案共  页 人（首页填写）             此为第  页                              报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
-            celladdOther1.setCellStyle(cellStyle);
-            Row nextrow2 = sheet.createRow(dataList.size()+3+1); //第i行
-            Cell celladdOther2 =  nextrow2.createCell(0);
-            celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                        联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nj");
-            celladdOther2.setCellStyle(cellStyle);
-
-
-
         }
-
         return  wb;
     }
 

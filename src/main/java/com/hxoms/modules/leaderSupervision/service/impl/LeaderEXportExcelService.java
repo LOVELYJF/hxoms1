@@ -695,32 +695,7 @@ public class LeaderEXportExcelService {
         listK.add("暂无数据");listV.add("联系电话");
         listK.add("暂无数据");listV.add("入库批号");
 
-
-
-        List list2K = new ArrayList();
-        List list2V = new ArrayList();
-        listK.add("num");listV.add("序号");
-        listK.add("surname");listV.add("中文姓");
-        listK.add("name");listV.add("中文名");
-        listK.add("sex");listV.add("性别");
-        listK.add("birthDateGb");listV.add("出生日期");  // 少一列 健康情况
-        listK.add("idnumberGb");listV.add("身份证号");               // 少一列 备案号
-        listK.add("registeResidence");listV.add("户口所在地");
-        listK.add("inboundFlag");listV.add("入库标识");
-        listK.add("workUnit");listV.add("工作单位");
-        listK.add("post");listV.add("职务(级)或职称");  //  少一列 状态
-        listK.add("personManager");listV.add("人事主管单位");
-        listK.add("暂无数据");listV.add("报送单位组织机构代码");
-        listK.add("暂无数据");listV.add("报送单位名称");
-        listK.add("暂无数据");listV.add("报送单位类别");
-        listK.add("暂无数据");listV.add("报送单位联系人");
-        listK.add("暂无数据");listV.add("联系电话");
-        listK.add("暂无数据");listV.add("入库批号");
-
-
-
-
-        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）");
+        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表1（电子）");
     }
 
 
