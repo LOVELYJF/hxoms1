@@ -29,11 +29,11 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<OmsRegProcpersoninfo> selectMergeList(String sortType);
 
-    List<OmsRegProcpersoninfo> selectListById(String id);
+    List<OmsRegProcpersoninfo> selectListById(@Param(value = "ids")List<String> ids);
 
     List<OmsRegProcpersoninfo> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    int updateRegProcpersoninfo(OmsRegProcpersoninfo info);
+    int updateRegProcpersoninfo(@Param(value = "info")OmsRegProcpersoninfoIPagParam info);
 
     List<OmsRegProcpersoninfo> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 

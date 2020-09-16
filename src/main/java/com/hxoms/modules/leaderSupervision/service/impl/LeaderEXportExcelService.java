@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -603,12 +600,8 @@ public class LeaderEXportExcelService {
 
     /** 登记备案导出 **/
     public HSSFWorkbook exportRfInfo(String idStr){
-
-
-
-
-
-        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(idStr);
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
         List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(idStr);
         List listK = new ArrayList();
         List listV = new ArrayList();

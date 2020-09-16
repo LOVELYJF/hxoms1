@@ -506,7 +506,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //数据比对更新
                 if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName().equals(newgaData.getName())) {
                     oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
-                    this.dataCompareAndUpdate(oldgaData, newgaData);
+                    this.dataCompareAndUpdate(oldgaData, newgaData,false);
                 } else {
 
                     //是否复姓。拆除
@@ -538,10 +538,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public List<OmsRegProcpersoninfo> selectListById(String idStr) {
+        List<String> ids = Arrays.asList(idStr.split(","));
         List<OmsRegProcpersoninfo> list = new ArrayList<>();
         if (idStr != null) {
-            String id = idStr.split(",").toString();
-            list = baseMapper.selectListById(id);
+            list = baseMapper.selectListById(ids);
         } else {
             list = baseMapper.selectListById(null);
         }
@@ -550,13 +550,14 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public int updateRegProcpersoninfo(String idStr) {
+
         List<OmsRegProcpersoninfo> list = new ArrayList<>();
-        OmsRegProcpersoninfo info = new OmsRegProcpersoninfo();
+        OmsRegProcpersoninfoIPagParam info = new OmsRegProcpersoninfoIPagParam();
         info.setRfStatus("1");
         int con = 0;
         if (idStr != null) {
-            String id = idStr.split(",").toString();
-            info.setId(id);
+            List<String> ids = Arrays.asList(idStr.split(","));
+            info.setIds(ids);
             con = baseMapper.updateRegProcpersoninfo(info);
         } else {
             con = baseMapper.updateRegProcpersoninfo(info);
@@ -575,21 +576,24 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public int mergeDataGBandGA(String idStr) {
         int con = 0;
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectListById(idStr);
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectListById(ids);
         if (omsregList != null && omsregList.size() > 0) {
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
-            //数据比对更新
-            this.dataCompareAndUpdate(gbData, gaData);
+            boolean flag =true;
+            this.dataCompareAndUpdate(gbData, gaData,flag);
         }
         return con;
     }
 
-    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2) {
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2,boolean flag) {
         int con = 0;
         //身份账号与名称一致
-        if (data1.getIdnumberGb().equals(data2.getIdnumberGa()) && data1.getName().equals(data2.getName())) {
+        if (flag==true ||
+                (data1.getIdnumberGb().equals(data2.getIdnumberGa())
+                        && data1.getName().equals(data2.getName())
+                        && data1.getSurname().equals(data2.getSurname()))) {
             //更新干部相关信息从公安数据中维护
             //将公安的身份证号写入干部数据的公安身份证号字段里
             data1.setIdnumberGa(data2.getIdnumberGa());
@@ -733,7 +737,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
                 //根据身份证号和姓名找到了公安数据，合并
                 if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
-                    dataCompareAndUpdate(regProcpersoninfo, omsreginfo);
+                    dataCompareAndUpdate(regProcpersoninfo, omsreginfo,false);
                     adds.add(regProcpersoninfo);
                     omsRegProcpersonInfoService.deleteRpinfo(omsreginfo.getId());
                 }

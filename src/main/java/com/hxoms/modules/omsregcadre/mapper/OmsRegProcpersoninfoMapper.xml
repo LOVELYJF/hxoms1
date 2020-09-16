@@ -335,9 +335,9 @@
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
     select * from oms_reg_procpersoninfo where 1=1
-      <if test="id!=null and id!=''">
+      <if test="ids!=null and ids.size>0">
           and ID in
-          <foreach collection="id" item="id" open="(" close=")" separator=",">
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
               #{id}
           </foreach>
       </if>
@@ -402,7 +402,7 @@
       FROM
       oms_reg_procpersoninfo
       WHERE 1 = 1
-      <if test="id!=null and id!=''">
+      <if test="id!=null and id.size > 0">
           and ID in
           <foreach collection="id" item="id" open="(" close=")" separator=",">
               #{id}
@@ -412,11 +412,14 @@
 
 
 
-    <update id="updateRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
-        update oms_reg_procpersoninfo set  RF_STATUS = #{rfStatus}
+    <update id="updateRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam">
+        update oms_reg_procpersoninfo set  RF_STATUS = #{info.rfStatus}
         where RF_STATUS!='1'
-        <if test="id!=null and id!=''">
-            and id in(#{id})
+        <if test="info.ids!=null and info.ids.size>0">
+            and ID in
+            <foreach collection="info.ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
         </if>
     </update>
 
