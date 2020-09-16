@@ -25,6 +25,7 @@ import com.hxoms.support.user.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +86,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 11:50
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public Map<String,Object> saveCancellateLicenseChoose(List<OmsCerCancellateLicense> list) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("tableCode", "oms_cer_cancellate");
@@ -217,6 +219,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Author: luoshuai
 	 * @Date: 2020/8/5 15:09
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void removeCancellateLicenseApply(List<OmsCerCancellateLicense> list) {
 		if(list != null && list.size() > 0){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){

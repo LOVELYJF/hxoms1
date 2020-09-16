@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 @TableAnnotation(TableName = "sys_dict_item", TableDescription="")
-public class OmsSensitiveLimit {
+public class OmsSensitiveLimit<T> {
     /**
      *
      */
@@ -131,13 +131,13 @@ public class OmsSensitiveLimit {
     @ColumnAnnotation(FieldName = "parent_item_code",  FieldDescription="PARENT_ITEM_CODE")
     private String parentItemCode;
 
-   private List<OmsSensitiveLimit> list;
+   private List<T> list;
 
-    public List<OmsSensitiveLimit> getList() {
+    public List<T> getList() {
         return list;
     }
 
-    public void setList(List<OmsSensitiveLimit> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 

@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -13,9 +14,11 @@ import java.util.Date;
  */
 @ApiModel(value = "管理员取证页面查询信息")
 public class AdmintorGetCerInfo {
-    //证照表主键
-    @ApiModelProperty(value = "证照表主键")
+    @ApiModelProperty(value = "主键")
     private String id;
+    //证照表主键
+    @ApiModelProperty(value = "证照表id")
+    private String cerId;
     //登记备案表主键
     @ApiModelProperty(value = "登记备案表主键")
     private String omsId;
@@ -32,39 +35,76 @@ public class AdmintorGetCerInfo {
     @ApiModelProperty(value = "性别")
     private String sex;
     //任职状态
-    @ApiModelProperty(value = "任职状态")
+    @ApiModelProperty(value = "任职状态(1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它)")
     private String incumbencyStatus;
+    @ApiModelProperty(value = "任职状态名称")
+    private String incumbencyStatusName;
     //职务
     @ApiModelProperty(value = "职务")
     private String post;
     //证照类型
     @ApiModelProperty(value = "证照类型")
     private Integer zjlx;
+    //证照类型
+    @ApiModelProperty(value = "证照类型名称")
+    private String zjlxName;
     //芯片类型
     @ApiModelProperty(value = "芯片类型")
     private String xplx;
+    @ApiModelProperty(value = "芯片类型名称")
+    private String xplxName;
     //证照形式
     @ApiModelProperty(value = "证照形式")
     private String zjxs;
+    @ApiModelProperty(value = "证照形式名称")
+    private String zjxsName;
     //证件号码
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //有效期至
     @ApiModelProperty(value = "有效期至")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     private Date yxqz;
+
+    @ApiModelProperty(value = "取证人")
+    private String operator;
+
+    @ApiModelProperty(value = "取证原因")
+    private String getCause;
+
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
+    @ApiModelProperty(value = "申请时间")
+    private String operateTime;
+
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
+    @ApiModelProperty(value = "取出时间")
+    private String getTime;
     //管理单位
     @ApiModelProperty(value = "管理单位")
     private String surelyUnit;
+
+    //管理单位
+    @ApiModelProperty(value = "管理单位名称")
+    private String surelyUnitName;
     //证照状态
     @ApiModelProperty(value = "证照状态")
     private String cardStatus;
     //保管状态
     @ApiModelProperty(value = "保管状态")
     private String saveStatus;
+
+    //保管状态
+    @ApiModelProperty(value = "保管状态")
+    private String saveStatusName;
     //保管方式
     @ApiModelProperty(value = "保管方式")
     private String surelyWay;
+
+    @ApiModelProperty(value = "保管方式名称")
+    private String surelyWayName;
     //机柜
     @ApiModelProperty(value = "机柜")
     private String cabinetNum;
@@ -76,14 +116,16 @@ public class AdmintorGetCerInfo {
     private Integer counterNum;
     //出生日期
     @ApiModelProperty(value = "出生日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     private Date csrq;
     //签发单位
     @ApiModelProperty(value = "签发单位")
     private String qfjg;
     //签发日期
     @ApiModelProperty(value = "签发日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     private Date qfrq;
     //出生地点
     @ApiModelProperty(value = "出生地点")
@@ -98,6 +140,14 @@ public class AdmintorGetCerInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCerId() {
+        return cerId;
+    }
+
+    public void setCerId(String cerId) {
+        this.cerId = cerId;
     }
 
     public String getOmsId() {
@@ -148,6 +198,14 @@ public class AdmintorGetCerInfo {
         this.incumbencyStatus = incumbencyStatus;
     }
 
+    public String getIncumbencyStatusName() {
+        return incumbencyStatusName;
+    }
+
+    public void setIncumbencyStatusName(String incumbencyStatusName) {
+        this.incumbencyStatusName = incumbencyStatusName;
+    }
+
     public String getPost() {
         return post;
     }
@@ -164,6 +222,14 @@ public class AdmintorGetCerInfo {
         this.zjlx = zjlx;
     }
 
+    public String getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
+    }
+
     public String getXplx() {
         return xplx;
     }
@@ -172,12 +238,28 @@ public class AdmintorGetCerInfo {
         this.xplx = xplx;
     }
 
+    public String getXplxName() {
+        return xplxName;
+    }
+
+    public void setXplxName(String xplxName) {
+        this.xplxName = xplxName;
+    }
+
     public String getZjxs() {
         return zjxs;
     }
 
     public void setZjxs(String zjxs) {
         this.zjxs = zjxs;
+    }
+
+    public String getZjxsName() {
+        return zjxsName;
+    }
+
+    public void setZjxsName(String zjxsName) {
+        this.zjxsName = zjxsName;
     }
 
     public String getZjhm() {
@@ -196,12 +278,52 @@ public class AdmintorGetCerInfo {
         this.yxqz = yxqz;
     }
 
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public String getGetCause() {
+        return getCause;
+    }
+
+    public void setGetCause(String getCause) {
+        this.getCause = getCause;
+    }
+
+    public String getOperateTime() {
+        return operateTime;
+    }
+
+    public void setOperateTime(String operateTime) {
+        this.operateTime = operateTime;
+    }
+
+    public String getGetTime() {
+        return getTime;
+    }
+
+    public void setGetTime(String getTime) {
+        this.getTime = getTime;
+    }
+
     public String getSurelyUnit() {
         return surelyUnit;
     }
 
     public void setSurelyUnit(String surelyUnit) {
         this.surelyUnit = surelyUnit;
+    }
+
+    public String getSurelyUnitName() {
+        return surelyUnitName;
+    }
+
+    public void setSurelyUnitName(String surelyUnitName) {
+        this.surelyUnitName = surelyUnitName;
     }
 
     public String getCardStatus() {
@@ -220,12 +342,28 @@ public class AdmintorGetCerInfo {
         this.saveStatus = saveStatus;
     }
 
+    public String getSaveStatusName() {
+        return saveStatusName;
+    }
+
+    public void setSaveStatusName(String saveStatusName) {
+        this.saveStatusName = saveStatusName;
+    }
+
     public String getSurelyWay() {
         return surelyWay;
     }
 
     public void setSurelyWay(String surelyWay) {
         this.surelyWay = surelyWay;
+    }
+
+    public String getSurelyWayName() {
+        return surelyWayName;
+    }
+
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
     }
 
     public String getCabinetNum() {

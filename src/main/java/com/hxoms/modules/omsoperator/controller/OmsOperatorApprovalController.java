@@ -120,7 +120,7 @@ public class OmsOperatorApprovalController {
      */
     @GetMapping("/getApprovaByOperatorId")
     public Result getApprovaByOperatorId(String operatorId){
-        OmsOperatorApproval omsOperatorApproval = operatorApprovalService.getApprovaByOperatorId(operatorId);
+        List<OmsOperatorApproval> omsOperatorApproval = operatorApprovalService.getApprovaByOperatorId(operatorId);
         return Result.success(omsOperatorApproval);
     }
 }

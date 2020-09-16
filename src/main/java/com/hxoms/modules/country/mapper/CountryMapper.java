@@ -44,4 +44,23 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 * @return
 	 */
 	String selectIdByName(String name);
+
+
+	/**
+	 * <b>功能描述: 查询国家信息</b>
+	 * @Param: [id]
+	 * @Return: com.hxoms.modules.country.entity.Country
+	 * @Author: luoshuai
+	 * @Date: 2020/9/14 9:13
+	 */
+	List<Country> selectCountryInfo(String id);
+
+	/**
+	 * <b>功能描述: 查询已撤销国家信息</b>
+	 * @Param: []
+	 * @Return: java.util.List<com.hxoms.modules.country.entity.Country>
+	 * @Author: luoshuai
+	 * @Date: 2020/9/14 9:27
+	 */
+	List<Country> selectOmsSensitiveCountry();
 }
