@@ -294,10 +294,10 @@
       AND b.data_type = '2'
       )
     <if test="sortType!=null and sortType!=''">
-        <if test="sortType='1'">
+        <if test="sortType==1">
             ORDER BY CASE WHEN IDNUMBER_GB IS NULL THEN IDNUMBER_GA ELSE IDNUMBER_GB END
         </if>
-        <if test="sortType='2'">
+        <if test="sortType==2">
             order by SURNAME,`NAME`,WORK_UNIT
         </if>
     </if>
