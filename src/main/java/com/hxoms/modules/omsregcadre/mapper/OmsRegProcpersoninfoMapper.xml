@@ -66,9 +66,9 @@
     CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
   </sql>
 
-
-  <select id="selectRegProcpersonInfo" resultType="java.lang.String" parameterType="java.lang.String">
-    select A0100 from OMS_REG_PROCPERSONINFO where 1=1
+<!--目前只用于初始化登记备案和提取登记备案时使用-->
+  <select id="selectRegProcpersonInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from OMS_REG_PROCPERSONINFO where IDENTITY_CODE='1'
       <if test="dataType !=null and dataType !=''">
           and DATA_TYPE = #{dataType}
       </if>
@@ -248,31 +248,178 @@
 
 
   <select id="selectMergeList" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select * from oms_reg_procpersoninfo where 1=1
-    and (RF_STATUS = '0' AND DATA_TYPE = '1') or (CHECK_STATUS = '0' AND DATA_TYPE = '2')
-    <if test="sortType!=null and sortType!=''">
-        <if test="sortType='1'">
-            ORDER BY IDNUMBER_GB IS NULL,IDNUMBER_GB
-        </if>
-        <if test="sortType='2'">
-            ORDER BY SURNAME,NAME,WORK_UNIT
-        </if>
-    </if>
+      SELECT
+      ID,
+      A0100,
+      CASE
+      WHEN data_type = '1' THEN
+      '干部'
+      ELSE
+      '公安'
+      END AS Data_Type,
+      CONCAT(SURNAME, `NAME`) AS 'Name',
+      CASE
+      WHEN SEX = '1' THEN
+      '男'
+      ELSE
+      '女'
+      END AS SEX,
+      CASE
+      WHEN IDNUMBER_GB IS NULL THEN
+      IDNUMBER_GA
+      ELSE
+      IDNUMBER_GB
+      END AS IDNUMBER_GB,
+      WORK_UNIT,
+      POST
+      FROM
+      oms_reg_procpersoninfo
+      WHERE 1=1
+        <if test="sortType!=null and sortType!=''">
+          <if test="sortType==1">
+              AND  id IN (
+              SELECT
+              a.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              OR id IN (
+              SELECT
+              b.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              ORDER BY
+              CASE
+              WHEN IDNUMBER_GB IS NULL THEN
+              IDNUMBER_GA
+              ELSE
+              IDNUMBER_GB
+              END
+          </if>
+          <if test="sortType==2">
+              AND id IN (
+              SELECT
+              a.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.SURNAME = b.SURNAME
+              AND a.`NAME` = B.`NAME`
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              OR id IN (
+              SELECT
+              b.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.SURNAME = b.SURNAME
+              AND a.`NAME` = B.`NAME`
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              ORDER BY
+              SURNAME,
+              `NAME`,
+              WORK_UNIT
+          </if>
+      </if>
+
   </select>
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
     select * from oms_reg_procpersoninfo where 1=1
-    <if test="id!=null and id!=''">
-      and id in(#{id})
-    </if>
+      <if test="ids!=null and ids.size>0">
+          and ID in
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
+    order by DATA_TYPE
+  </select>
+
+  <select id="selectRegInfoListById" resultType="java.util.LinkedHashMap" parameterType="java.lang.String">
+      SELECT
+          ID AS id,
+          A0100 AS a0100,
+          RF_B0000 AS rfB0000,
+          INBOUND_FLAG AS inboundFlag,
+          RF_STATUS AS rfStatus,
+          CHECK_STATUS AS checkStatus,
+          INCUMBENCY_STATUS AS incumbencyStatus,
+          DATA_TYPE AS dataType,
+          SURNAME AS surname,
+          NAME AS name,
+          SEX AS sex,
+          BIRTH_DATE AS birthDate,
+          BIRTH_DATE_GB AS birthDateGb,
+          IDNUMBER_GA AS idnumberGa,
+          NATION_CODE AS nationCode,
+          NATION_NAME AS nationName,
+          IDNUMBER_GB AS idnumberGb,
+          IDNUMBER_GA AS idnumberGa,
+          POLITICAL_AFFICODE AS politicalAfficode,
+          POLITICAL_AFFINAME AS politicalAffiname,
+          HEALTH_CODE AS healthCode,
+          HEALTH AS health,
+          REGISTE_RESIDENCE_CODE AS registeResidenceCode,
+          REGISTE_RESIDENCE AS registeResidence,
+          WORK_UNIT AS workUnit,
+          POST_CODE AS postCode,
+          POST AS post,
+          PERSON_MANAGER AS personManager,
+          IDENTITY_CODE AS identityCode,
+          IDENTITY AS identity,
+          SECRET_LEVEL AS secretLevel,
+          DECRYPT_STARTDATE AS decryptStartdate,
+          DECRYPT_ENDDATE AS decryptEnddate,
+          MAIN_LEADER AS mainLeader,
+          LICENCE_IDENTITY AS licenceIdentity,
+          NF AS nf,
+          FJGNF AS fjgnf,
+          XRXGW AS xrxgw,
+          LQGZ AS lqgz,
+          DQGZ AS dqgz,
+          REPLYOPINION AS replyopinion,
+          ABROADTIME AS abroadtime,
+          REASON AS reason,
+          CREATE_TIME AS createTime,
+          CREATE_USER AS createUser,
+          MODIFY_TIME AS modifyTime,
+          MODIFY_USER AS modifyUser,
+          SORT_ID AS sortId,
+          PY AS py,
+          SECRET_POST AS secretPost,
+          EXIT_DATE AS exitDate,
+          FINISH_TIME AS finishTime,
+          RZ_DATE AS finishTime
+      FROM
+      oms_reg_procpersoninfo
+      WHERE 1 = 1
+      <if test="id!=null and id.size > 0">
+          and ID in
+          <foreach collection="id" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
   </select>
 
 
-    <update id="updateRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
-        update oms_reg_procpersoninfo set  RF_STATUS = #{rfStatus}
+
+    <update id="updateRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam">
+        update oms_reg_procpersoninfo set  RF_STATUS = #{info.rfStatus}
         where RF_STATUS!='1'
-        <if test="id!=null and id!=''">
-            and id in(#{id})
+        <if test="info.ids!=null and info.ids.size>0">
+            and ID in
+            <foreach collection="info.ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
         </if>
     </update>
 

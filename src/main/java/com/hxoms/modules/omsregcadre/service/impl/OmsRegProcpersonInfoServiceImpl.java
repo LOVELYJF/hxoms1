@@ -9,14 +9,22 @@ import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
+import com.hxoms.message.message.entity.Message;
+import com.hxoms.message.message.entity.paramentity.SendMessageParam;
+import com.hxoms.message.message.service.MessageService;
+import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.keySupervision.majorLeader.entity.A02;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
+import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import com.hxoms.support.parameter.service.ParameterService;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.security.ssl.Debug;
 
+import java.io.Console;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -36,9 +46,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private Environment environment;
     @Autowired
-    private A01Mapper a011Mapper;
-    @Autowired
-    private A01EntityMapper a01Mapper;
+    private A01Mapper a01Mapper;
     @Autowired
     private A30Mapper a30Mapper;
     @Autowired
@@ -46,7 +54,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
     @Autowired
-    private OmsRegRevokeApplyMapper revokeApplyMapper;
+    private OmsRegRevokeApplyService revokeApplyService;
     @Autowired
     private OmsRegYearcheckinfoMapper yearcheckInfoMapper;
     @Autowired
@@ -56,6 +64,13 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Autowired
     private SysDictItemMapper sysDictItemMapper;
 
+    @Autowired
+    private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
+
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private ParameterService parameterService;
 
     /**
      * 初始化登记备案信息
@@ -67,72 +82,346 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public PageInfo<OmsRegProcpersoninfo> getInitialReginfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) throws ParseException {
 
-        //查询数据来源为干部的登记备案人员信息ao
-        String dataType = "1";
-        List<String> a0100str = baseMapper.selectRegProcpersonInfo(dataType);
-        List<OmsRegProcpersoninfo> mepinfoList = null;
+        //缓存登记备案人员到哈希表中
+        HashMap<String, OmsRegProcpersoninfo> hashMapReg = CacheRegProcpersonInfo(null);
+
         //查询干部信息总库干部信息
-        List<A01> a01list = a01Mapper.selectA01List();
-        int con = 0;
-        OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
-        List<OmsRegProcpersoninfo> orpInfoList = new ArrayList();
-        if (a01list != null && a0100str != null) {
+        List<A01> a01list = a01Mapper.extractCadreForRegister();
+
+        //缓存职务
+        HashMap<String, List<Map<String, Object>>> hashMapA02 = CachePost(a01list);
+
+        //提取省管干部退出信息并缓存
+        HashMap<String, A30> hashMapA30 = CacheA30();
+
+        //缓存职务对应关系
+        HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = CachePostMapping();
+
+        //登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+
+        List<OmsRegProcpersoninfo> updateRegList = new ArrayList();
+        List<OmsRegProcpersoninfo> insertRegList = new ArrayList();
+
+        if (a01list != null && hashMapReg.size() > 0) {
             for (A01 a01 : a01list) {
-                orpInfo = initData(a01);
+                OmsRegProcpersoninfo orpInfo = hashMapReg.get(a01.getA0100());
+
+                boolean isNew = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+
                 //登记备案信息中存在此数据，则更新其对应信息
-                if (a0100str.contains(a01.getA0100())) {
-                    QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-                    queryWrapper.eq("A0100", a01.getA0100());
+                if (isNew == false) {
                     orpInfo.setModifyTime(new Date());
-                    con = baseMapper.update(orpInfo, queryWrapper);
+                    orpInfo.setModifyUser(loginUser.getId());
+                    updateRegList.add(orpInfo);
                 } else {//不包含直接新增
-                    //备案状态
-                    orpInfo.setRfStatus("0");
-                    //入库状态
-                    orpInfo.setInboundFlag("U");
-                    //验收状态
-                    orpInfo.setCheckStatus("0");
-                    orpInfo.setCreateTime(new Date());
-                    orpInfoList.add(orpInfo);
+                    AddRegisterState(orpInfo);
+                    insertRegList.add(orpInfo);
                 }
             }
-        } else if (a01list != null && a0100str == null) {
+        } else if (a01list != null && hashMapReg.size() == 0) {
             for (A01 a01 : a01list) {
-                orpInfo = initData(a01);
+                OmsRegProcpersoninfo orpInfo = null;
+                initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                insertRegList.add(orpInfo);
             }
-            orpInfoList.add(orpInfo);
         }
-        if (orpInfoList != null && orpInfoList.size() > 0) {
-            //批量添加的方法
-            int count = 30;
-            int n1 = orpInfoList.size() / count;
-            int n2 = orpInfoList.size() % count;
-            if (n2 > 0) {
-                n1 = n1 + 1;
-            }
-            for (int j = 0; j < n1; j++) {
-                if ((j + 1) * count > orpInfoList.size()) {
-                    //批量保存
-                    con = baseMapper.batchAddorpInfo(orpInfoList.subList(j * count, orpInfoList.size()));
-                } else {
-                    con = baseMapper.batchAddorpInfo(orpInfoList.subList(j * count, (j + 1) * count));
-                }
-            }
-        } else {
-            throw new CustomMessageException("当前无可初始化的干部数据");
-        }
+        if (insertRegList.size() > 0)
+            baseMapper.batchAddorpInfo(insertRegList);
+        if (updateRegList.size() > 0)
+            omsRegProcpersonInfoService.updateBatchById(updateRegList);
+
         PageInfo<OmsRegProcpersoninfo> pageInfo = null;
         //分页
         PageUtil.pageHelp(personInfoIPagParam.getPageNum(), personInfoIPagParam.getPageSize());
-        if (con > 0) {
+        if (a01list.size() > 0) {
 
             OmsRegProcpersoninfo info = new OmsRegProcpersoninfo();
-            info.setRfB0000(personInfoIPagParam.getRfB0000());
-            mepinfoList = baseMapper.selectProcpersoninfoList(info);
+            //info.setRfB0000(personInfoIPagParam.getRfB0000());
+            List<OmsRegProcpersoninfo> mepinfoList = baseMapper.selectRegProcpersonInfo(null);
             //返回数据
             pageInfo = new PageInfo(mepinfoList);
         }
         return pageInfo;
+    }
+
+    /**
+     * 初始化信息
+     *
+     * @param a01
+     * @return
+     */
+    private boolean initData(OmsRegProcpersoninfo orpInfo, A01 a01,
+                             HashMap<String, List<Map<String, Object>>> hashMapA02,
+                             HashMap<String, A30> hashMapA30,
+                             HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) throws ParseException {
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy");
+
+        boolean isNew = false;
+        if (orpInfo == null) {
+            isNew = true;
+            orpInfo = new OmsRegProcpersoninfo();
+            orpInfo.setId(UUIDGenerator.getPrimaryKey());
+        }
+
+        SplitName(orpInfo, a01.getA0101().trim());
+
+        SetPost(a01, orpInfo, hashMapA02, hashMapBaseInfo);
+
+        //处理在职状态，退出人员要细分退出方式
+        String incumbencyStatus = this.queryStatusByA0100(a01, hashMapA30);
+        orpInfo.setIncumbencyStatus(incumbencyStatus);
+
+        orpInfo.setA0100(a01.getA0100());
+        if (!StringUtils.isBlank(a01.getA0184())) {
+            //身份证号
+            orpInfo.setIdnumberGb(a01.getA0184());
+            //根据身份证号截取对应的出生日期
+            String birthDay = OmsRegInitUtil.getBirthByIdNumber(a01.getA0184());
+            //出生日期(身份证)
+            if (!StringUilt.stringIsNullOrEmpty(birthDay))
+                orpInfo.setBirthDate(sdf1.parse(birthDay));
+        }
+        //出生日期(干部)
+        if (a01.getA0107() != null) {
+            if (a01.getA0107().length() > 1 && a01.getA0107().length() < 5) {
+                orpInfo.setBirthDateGb(sdf3.parse(a01.getA0107()));
+            } else if (a01.getA0107().length() > 5 && a01.getA0107().length() < 7) {
+                orpInfo.setBirthDateGb(sdf2.parse(a01.getA0107()));
+            } else if (a01.getA0107().length() > 7 && a01.getA0107().length() < 9) {
+                orpInfo.setBirthDateGb(sdf1.parse(a01.getA0107()));
+            }
+        }
+
+        //数据类型  1.干部    2 公安
+        orpInfo.setDataType("1");
+
+        //性别
+        orpInfo.setSex(a01.getA0104());
+        //民族
+        orpInfo.setNationCode(a01.getA0117());
+        orpInfo.setNationName(a01.getA0117A());
+        //政治面貌
+        orpInfo.setPoliticalAfficode(a01.getA0141());
+        //健康状态
+        orpInfo.setHealthCode(a01.getA0127());
+        orpInfo.setHealth(a01.getA0128());
+        //身份情况 1.省管干部
+        orpInfo.setIdentityCode("1");
+        orpInfo.setIdentity("省管干部");
+        //人事主管单位
+        orpInfo.setPersonManager("海南省委组织部");
+        //任职时间
+        orpInfo.setRzDate(a01.getRxzDate());
+        return isNew;
+    }
+
+    /**
+     * 查询A0100对应的退出管理退出方式
+     *
+     * @param
+     * @return
+     */
+    private String queryStatusByA0100(A01 a01, HashMap<String, A30> hashMapA30) {
+        String incumbencyStatus = "";
+        A30 a30 = hashMapA30.get(a01.getA0100());
+        if (a01.getA0163().equals("2") && a30 != null && !StringUtils.isEmpty(a30.getA3001())) {
+            //退出方式
+            String a3001 = a30.getA3001().substring(0, 1);
+            //退出状态 1退休 2调出 3死亡 4辞职 8转出 9其它(开除)
+            //在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管  8其它 99 未匹配
+            if (!StringUtils.isEmpty(a3001)) {
+                if (a3001.equals("1")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Retirement.getIndex());
+                } else if (a3001.equals("2")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dispatch.getIndex());
+                } else if (a3001.equals("3")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Death.getIndex());
+                } else if (a3001.equals("4")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Resignation.getIndex());
+                } else if (a3001.equals("9")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Expel.getIndex());
+                } else {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Other.getIndex());
+                }
+            }
+        } else if (a01.getA0163().equals("1") && a01.getA0165().equals("01")) {
+            incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.ProvinceToCentral.getIndex());//省管变中管
+        } else if (a01.getA0163().equals("1")) {
+            incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Working.getIndex());//在职
+        } else {
+            incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Unmatched.getIndex());
+        }
+        return incumbencyStatus;
+    }
+
+    /**
+     * @description:缓存登记备案信息表到内存，key为身份证号（配偶子女）或A0100（干部）
+     * @author:杨波
+     * @date:2020-09-15 * @param
+     * @return:java.util.HashMap<java.lang.String,com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo>
+     **/
+    private HashMap<String, OmsRegProcpersoninfo> CacheRegProcpersonInfo(HashMap<String, OmsRegProcpersoninfo> nameAndIDCard) {
+
+        List<OmsRegProcpersoninfo> omsRegProcpersoninfos = baseMapper.selectRegProcpersonInfo(null);
+        //缓存登记备案人员到哈希表中
+        HashMap<String, OmsRegProcpersoninfo> hashMapReg = new HashMap<>();
+        for (OmsRegProcpersoninfo omsReg : omsRegProcpersoninfos
+        ) {
+            if (StringUilt.stringIsNullOrEmpty(omsReg.getA0100()))
+                hashMapReg.put(omsReg.getIdnumberGa(), omsReg);//配偶子女没有A0100
+            else
+                hashMapReg.put(omsReg.getA0100(), omsReg);//干部
+
+            if (nameAndIDCard != null) {
+                nameAndIDCard.put(omsReg.getIdnumberGa() + omsReg.getSurname() + omsReg.getName(), omsReg);
+            }
+        }
+        return hashMapReg;
+    }
+
+    /**
+     * @description:取人员职务并缓存，以a0100为key，每个key对应一个职务列表 在初始化登记备案和登记备案管理中提取需备案省管干部时用到
+     * @author:杨波
+     * @date:2020-09-15 * @param a01list 出国境a01中省管干部
+     * @return:java.util.HashMap<java.lang.String,java.util.List<java.util.Map<java.lang.String,java.lang.Object>>>
+     **/
+    private HashMap<String, List<Map<String, Object>>> CachePost(List<A01> a01list) {
+        //取职务并缓存
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<Map<String, Object>> A02s = a01Mapper.selectPersonInfo(params);
+        HashMap<String, List<Map<String, Object>>> hashMapA02 = new HashMap<>();
+        for (A01 a01 : a01list) {
+            hashMapA02.put(a01.getA0100(), new ArrayList<>());
+        }
+        for (Map map : A02s
+        ) {
+            String a0100 = map.get("a0100").toString();
+            List<Map<String, Object>> a02s = hashMapA02.get(a0100);
+            a02s.add(map);
+        }
+        return hashMapA02;
+    }
+
+    /**
+     * @description:缓存省管干部的退出信息，以a0100为key，A30为value
+     * @author:杨波
+     * @date:2020-09-15 * @param
+     * @return:java.util.HashMap<java.lang.String,com.hxoms.modules.omsregcadre.entity.A30>
+     **/
+    private HashMap<String, A30> CacheA30() {
+        List<A30> a30s = a30Mapper.extractForRegister();
+        HashMap<String, A30> hashMapA30 = new HashMap<>();
+        for (A30 a30 : a30s
+        ) {
+            //防止一个人有两条退出信息，因为是按人员和退出时间倒序的，只缓存最近一条
+            try {
+                hashMapA30.put(a30.getA0100(), a30);
+            } catch (Exception ep) {
+                ep.printStackTrace();
+            }
+        }
+        return hashMapA30;
+    }
+
+    /**
+     * @description:缓存干综职务与出入境职务的对应关系
+     * @author:杨波
+     * @date:2020-09-15 * @param
+     * @return:java.util.HashMap<java.lang.String,com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig>
+     **/
+    private HashMap<String, OmsBaseinfoConfig> CachePostMapping() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<OmsBaseinfoConfig> baseInfos = omsBaseinfoConfigMapper.selectPostInfo(params);
+        HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = new HashMap<>();
+        for (OmsBaseinfoConfig baseInfo : baseInfos
+        ) {
+            //InfoId为出国境职务字典，parentid为出入境管理局职务字典
+            if (baseInfo.getInfoId() != null && StringUilt.stringIsNullOrEmpty(baseInfo.getInfoId()) == false)
+                hashMapBaseInfo.put(baseInfo.getInfoId(), baseInfo);
+        }
+        return hashMapBaseInfo;
+    }
+
+    public void SplitName(OmsRegProcpersoninfo orpInfo, String name) {
+        //是否复姓。拆除
+        boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(name);
+        //是复姓
+        if (isCompoundSurname) {
+            //姓
+            orpInfo.setSurname(name.substring(0, 2));
+            //名
+            orpInfo.setName(name.substring(2, name.length()));
+        } else {
+            orpInfo.setSurname(name.substring(0, 1));
+            orpInfo.setName(name.substring(1, name.length()));
+        }
+        //拼音简称
+        String py = PingYinUtil.getFirstSpell(name);
+        orpInfo.setPy(py);
+    }
+
+    private void SetPost(A01 a01, OmsRegProcpersoninfo orpInfo,
+                         HashMap<String, List<Map<String, Object>>> hashMapA02,
+                         HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) {
+        //现任职务全称
+        orpInfo.setPost(a01.getA0192a());
+
+        //处理职务代码并和出入境的对应
+        List<Map<String, Object>> mapList = hashMapA02.get(a01.getA0100());
+        if (mapList != null && mapList.size() > 0) {
+            //首先取主职务，没有主职务取第一个职务
+            Map<String, Object> post = null;
+            for (Map map : mapList
+            ) {
+                Object a0279 = map.get("a0279");//是否主职务
+                if (a0279 == null || a0279.toString() == "0") continue;
+                post = map;
+            }
+            if (post == null) post = mapList.get(0);
+
+            //工作单位
+            orpInfo.setWorkUnit(post.get("b0101").toString());
+
+            //机构id
+            if (post.get("b0100") != null) {
+                orpInfo.setRfB0000((String) post.get("b0100"));
+            }
+            if (post.get("a0215b") != null) {
+                //职务转换
+                OmsBaseinfoConfig baseinfo = hashMapBaseInfo.get(post.get("a0215b").toString());
+                if (baseinfo != null) {
+                    orpInfo.setPostCode(baseinfo.getParentId());
+                }
+            }
+        }
+    }
+
+    private void ChangeRegisterState(OmsRegProcpersoninfo regProcpersoninfo) {
+        //入库标识  新增U  修改I  撤消D
+        regProcpersoninfo.setInboundFlag("I");
+        //备案状态  0未备案，1已备案，2已确认
+        regProcpersoninfo.setRfStatus("0");
+        //验收状态  1已验收，0待验收
+        regProcpersoninfo.setCheckStatus("0");
+        regProcpersoninfo.setModifyUser(UserInfoUtil.getUserId());
+        regProcpersoninfo.setModifyTime(new Date());
+    }
+
+    private void AddRegisterState(OmsRegProcpersoninfo regProcpersoninfo) {
+        //入库标识  新增U  修改I  撤消D
+        regProcpersoninfo.setInboundFlag("U");
+        //备案状态  0未备案，1已备案，2已确认
+        regProcpersoninfo.setRfStatus("0");
+        //验收状态  1已验收，0待验收
+        regProcpersoninfo.setCheckStatus("0");
+        regProcpersoninfo.setCreateTime(new Date());
+        regProcpersoninfo.setCreateUser(UserInfoUtil.getUserId());
+        regProcpersoninfo.setModifyUser(UserInfoUtil.getUserId());
+        regProcpersoninfo.setModifyTime(new Date());
     }
 
     @Override
@@ -217,7 +506,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //数据比对更新
                 if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName().equals(newgaData.getName())) {
                     oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
-                    this.dataCompareAndUpdate(oldgaData, newgaData);
+                    this.dataCompareAndUpdate(oldgaData, newgaData,false);
                 } else {
 
                     //是否复姓。拆除
@@ -249,10 +538,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public List<OmsRegProcpersoninfo> selectListById(String idStr) {
+        List<String> ids = Arrays.asList(idStr.split(","));
         List<OmsRegProcpersoninfo> list = new ArrayList<>();
         if (idStr != null) {
-            String id = idStr.split(",").toString();
-            list = baseMapper.selectListById(id);
+            list = baseMapper.selectListById(ids);
         } else {
             list = baseMapper.selectListById(null);
         }
@@ -261,13 +550,14 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public int updateRegProcpersoninfo(String idStr) {
+
         List<OmsRegProcpersoninfo> list = new ArrayList<>();
-        OmsRegProcpersoninfo info = new OmsRegProcpersoninfo();
+        OmsRegProcpersoninfoIPagParam info = new OmsRegProcpersoninfoIPagParam();
         info.setRfStatus("1");
         int con = 0;
         if (idStr != null) {
-            String id = idStr.split(",").toString();
-            info.setId(id);
+            List<String> ids = Arrays.asList(idStr.split(","));
+            info.setIds(ids);
             con = baseMapper.updateRegProcpersoninfo(info);
         } else {
             con = baseMapper.updateRegProcpersoninfo(info);
@@ -286,23 +576,24 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public int mergeDataGBandGA(String idStr) {
         int con = 0;
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        queryWrapper.in("ID", idStr.split(","));
-        queryWrapper.orderByAsc("DATA_TYPE");
-        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectList(queryWrapper);
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectListById(ids);
         if (omsregList != null && omsregList.size() > 0) {
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
-            //数据比对更新
-            this.dataCompareAndUpdate(gbData, gaData);
+            boolean flag =true;
+            this.dataCompareAndUpdate(gbData, gaData,flag);
         }
         return con;
     }
 
-    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2) {
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2,boolean flag) {
         int con = 0;
         //身份账号与名称一致
-        if (data1.getIdnumberGb().equals(data2.getIdnumberGa()) && data1.getName().equals(data2.getName())) {
+        if (flag==true ||
+                (data1.getIdnumberGb().equals(data2.getIdnumberGa())
+                        && data1.getName().equals(data2.getName())
+                        && data1.getSurname().equals(data2.getSurname()))) {
             //更新干部相关信息从公安数据中维护
             //将公安的身份证号写入干部数据的公安身份证号字段里
             data1.setIdnumberGa(data2.getIdnumberGa());
@@ -400,103 +691,152 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @throws ParseException
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Object extractRegPersonInfo() throws ParseException {
         int con = 0;
 
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        queryWrapper.eq("DATA_TYPE", "1");
-
-        //数据类型 为干部的省管干部登记备案查询
-        List<OmsRegProcpersoninfo> reginfolist = baseMapper.selectList(queryWrapper);
         //干综档案人员基本信息查询
-        List<A01> a01list = a01Mapper.selectA01List();
-        List<String> a0100s = new ArrayList<>();
-        for (int i = 0; i < reginfolist.size(); i++) {
-            a0100s.add(reginfolist.get(i).getA0100());
-        }
-        OmsRegProcpersoninfo orpInfo = null;
+        List<A01> a01list = a01Mapper.extractCadreForRegister();
+
+        //缓存职务
+        HashMap<String, List<Map<String, Object>>> hashMapA02 = CachePost(a01list);
+
+        //提取省管干部退出信息并缓存
+        HashMap<String, A30> hashMapA30 = CacheA30();
+
+        //缓存职务对应关系
+        HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = CachePostMapping();
+
+        //根据身份证号和姓名缓存
+        HashMap<String, OmsRegProcpersoninfo> nameAndIDCard = new HashMap<>();
+        //缓存登记备案人员到哈希表中
+        HashMap<String, OmsRegProcpersoninfo> hashMapReg = CacheRegProcpersonInfo(nameAndIDCard);
+
+        List<OmsRegProcpersoninfo> updates = new ArrayList<>();
+        List<OmsRegProcpersoninfo> adds = new ArrayList<>();
+
+        //循环处理干部
         for (A01 a01 : a01list) {
-            if (a0100s.contains(a01.getA0100())) {
-                //获取当前a0100对应的下标
-                int index = a0100s.indexOf(a01.getA0100());
-                OmsRegProcpersoninfo omsreginfo = reginfolist.get(index);
-                for (OmsRegProcpersoninfo orpi : reginfolist) {
-                    //状态为“不在职”入库标识为“撤消” 而干部库状态为“在职”
-                    if (orpi.getIncumbencyStatus() != "1"
-                            && orpi.getIncumbencyStatus() != "8"
-                            && orpi.getIncumbencyStatus() != "9"
-                            && orpi.getInboundFlag().equals("D")
-                            && a01.getA0163().equals("1")) {
-                        orpInfo = initData(a01);
-                        con = baseMapper.insert(orpInfo);
-                    }
-                    if (orpi.getIncumbencyStatus() != "1" && orpi.getIncumbencyStatus() != "8" && orpi.getIncumbencyStatus() != "9") {
-                        QueryWrapper<OmsRegRevokeapply> queryinfo = new QueryWrapper<OmsRegRevokeapply>();
-                        queryinfo.eq("RF_ID", orpi.getId());
-                        OmsRegRevokeapply apply = revokeApplyMapper.selectOne(queryinfo);
-                        //撤销登记备案申请状态已审批并且入库标识为撤销
-                        if (apply.getStatus().equals("2") && orpi.getInboundFlag() != "D") {
-                            //入库标识  新增U  修改I  撤消D
-                            omsreginfo.setInboundFlag("D");
-                            //备案状态  0未备案，1已备案，2已确认
-                            omsreginfo.setRfStatus("0");
-                            //验收状态  1已验收，0待验收
-                            omsreginfo.setCheckStatus("0");
-                            con = baseMapper.updateById(omsreginfo);
-                        }
+            String a0100 = a01.getA0100();
+            //判断是否已登记备案过
+            OmsRegProcpersoninfo omsreginfo = hashMapReg.get(a0100);
 
-                    }
+            //已登记备案过
+            if (omsreginfo != null) {
+                DealRegistered(omsreginfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                updates.add(omsreginfo);
+            }
+            //未找到登记备案信息
+            else {
+                omsreginfo = nameAndIDCard.get(a01.getA0184() + a01.getA0101());
+
+                OmsRegProcpersoninfo regProcpersoninfo = null;
+
+                if (omsreginfo == null || (omsreginfo != null && "2".equals(omsreginfo.getDataType())))
+                    initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+
+                //根据身份证号和姓名找到了公安数据，合并
+                if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
+                    dataCompareAndUpdate(regProcpersoninfo, omsreginfo,false);
+                    adds.add(regProcpersoninfo);
+                    omsRegProcpersonInfoService.deleteRpinfo(omsreginfo.getId());
                 }
-
-                QueryWrapper<A02> queryWrapper1 = new QueryWrapper<A02>();
-                queryWrapper1.eq("a0100", a01.getA0100());
-                List<A02> list = a02Mapper.selectList(queryWrapper1);
-                if (list != null && list.size() > 0) {
-                    //主职务
-                    String a0279 = list.get(0).getA0279();
-                    if (!StringUtils.isBlank(a0279) && !a0279.equals(omsreginfo.getPostCode())) {
-                        //如果职务不变不做任何操作，职务改变，需更新职务，并更新入库状态
-                        String code = environment.getProperty("postcode." + a0279);
-                        String zhiwu = environment.getProperty("post." + code);
-                        //职务code
-                        omsreginfo.setPostCode(code);
-                        //职务
-                        omsreginfo.setPost(zhiwu);
-                        //工作单位
-                        omsreginfo.setWorkUnit(a0279);
-                        //入库标识  新增U  修改I  撤消D
-                        omsreginfo.setInboundFlag("I");
-                        //备案状态  0未备案，1已备案，2已确认
-                        omsreginfo.setRfStatus("0");
-                        //验收状态  1已验收，0待验收
-                        omsreginfo.setCheckStatus("0");
-                        con = baseMapper.updateById(omsreginfo);
-                    }
-                }
-
-            } else {
-                orpInfo = initData(a01);
-                //从登记备案数据当中调取身份证号码相同的户口所在地信息及与之相关联的多个身份证号码信息
-                String idnumber = a01.getA0184();
-                QueryWrapper<OmsRegProcpersoninfo> qw = new QueryWrapper<OmsRegProcpersoninfo>();
-                qw.eq("IDNUMBER", idnumber);
-                //查询身份证号所对应的信息
-                OmsRegProcpersoninfo info = baseMapper.selectOne(qw);
-                //如果存在更新，不存在新增
-                if (info != null) {
-                    OmsRegProcpersoninfo entity = new OmsRegProcpersoninfo();
-                    entity.setA0100(orpInfo.getA0100());
-                    entity.setPost(orpInfo.getPost());
-                    entity.setPostCode(orpInfo.getPostCode());
-                    entity.setInboundFlag("U");
-                    con = baseMapper.updateById(entity);
+                //根据身份证号和姓名找到了干部数据，重新设置A0100和职务
+                else if (omsreginfo != null && "1".equals(omsreginfo.getDataType())) {
+                    omsreginfo.setA0100(a0100);
+                    SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
+                    ChangeRegisterState(omsreginfo);
+                    updates.add(omsreginfo);
                 } else {
-                    con = baseMapper.insert(orpInfo);
+                    AddRegisterState(regProcpersoninfo);
+                    adds.add(regProcpersoninfo);
                 }
-
             }
         }
+        //处理撤销登记备案
+        OmsRegRevokeApplyIPagParam param = new OmsRegRevokeApplyIPagParam();
+        param.setPageNum(1);
+        param.setPageSize(100000);
+        param.setStatus("6");//部长审批
+        List<OmsRegRevokeapply> applies = revokeApplyService.queryRevokeApplyList(param).getList();
+        for (OmsRegRevokeapply apply : applies
+        ) {
+            OmsRegProcpersoninfo reginfo = hashMapReg.get(apply.getRfId());
+            //入库标识  新增U  修改I  撤消D
+            reginfo.setInboundFlag("D");
+            //备案状态  0未备案，1已备案，2已确认
+            reginfo.setRfStatus("0");
+            //验收状态  1已验收，0待验收
+            reginfo.setCheckStatus("0");
+            updates.add(reginfo);
+
+            apply.setStatus("8");//已抽取
+        }
+        if (updates.size() > 0)
+            omsRegProcpersonInfoService.updateBatchById(updates);
+        if (adds.size() > 0)
+            omsRegProcpersonInfoService.saveBatch(adds);
+
+        if (applies != null && applies.size() > 0)
+            revokeApplyService.updateBatchById(applies);
         return con;
+    }
+
+    /**
+     * @param a01             干部信息
+     * @param hashMapA02      干部职务
+     * @param hashMapA30      干部退出信息
+     * @param hashMapBaseInfo 干部库和出入境职务映射
+     * @description:已登记备案人员的处理
+     * @author:杨波
+     * @date:2020-09-15 * @param omsreginfo 已登记备案信息
+     * @return:void
+     **/
+    private void DealRegistered(OmsRegProcpersoninfo omsreginfo, A01 a01,
+                                HashMap<String, List<Map<String, Object>>> hashMapA02,
+                                HashMap<String, A30> hashMapA30,
+                                HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) {
+
+        //身份证号姓名一致
+        if ((omsreginfo.getSurname() + omsreginfo.getName()).equals(a01.getA0101()) &&
+                omsreginfo.getIdnumberGa().equals(a01.getA0184())) {
+
+            //在职状态沒有发生变化
+            if (a01.getA0163().equals(omsreginfo.getIncumbencyStatus()) ||
+                    ("2".equals(a01.getA0163()) && !omsreginfo.getIncumbencyStatus().equals("1"))) {
+                //職務发生变化
+                if (!a01.getA0192a().equals(omsreginfo.getPost())) {
+                    //变更登记备案
+                    ChangeRegisterState(omsreginfo);
+                }
+            }
+            //在职状态发生变化
+            else {
+                //处理在职状态，退出人员要细分退出方式
+                String incumbencyStatus = this.queryStatusByA0100(a01, hashMapA30);
+                omsreginfo.setIncumbencyStatus(incumbencyStatus);
+
+                //如果干部是在职状态，登记备案人员已经撤销，需要以新增方式重新登记备案
+                if ("1".equals(a01.getA0163()) && omsreginfo.getInboundFlag().equals("D")) {
+                    AddRegisterState(omsreginfo);
+                }
+                //如果干部是在职状态，更新职务信息，并以更新方式重新登记备案
+                //调出后，还没有撤消登记备案又调回来
+                else if ("1".equals(a01.getA0163())) {
+                    //更新职务信息
+                    SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
+                    ChangeRegisterState(omsreginfo);
+                }
+            }
+        }
+        //身份证号姓名不一致
+        else {
+            try {
+                SendMessage(a01.getA0101() + "(" + a01.getA0184() + ")的身份证号或姓名与登记备案不一致，请核查！", "ExtractCadreForRegisterIDCardIllegal");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -657,152 +997,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     /**
-     * 初始化信息
-     *
-     * @param a01
-     * @return
-     */
-    private OmsRegProcpersoninfo initData(A01 a01) throws ParseException {
-        //登录用户信息
-        UserInfo loginUser = UserInfoUtil.getUserInfo();
-
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
-        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy");
-        OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
-        orpInfo.setId(UUIDGenerator.getPrimaryKey());
-        //是否复姓。拆除
-        boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(a01.getA0101().trim());
-        //是复姓
-        if (isCompoundSurname) {
-            //姓
-            orpInfo.setSurname(a01.getA0101().trim().substring(0, 2));
-            //名
-            orpInfo.setName(a01.getA0101().trim().substring(2, a01.getA0101().trim().length()));
-        } else {
-            orpInfo.setSurname(a01.getA0101().trim().substring(0, 1));
-            orpInfo.setName(a01.getA0101().trim().substring(1, a01.getA0101().trim().length()));
-        }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("a0100", a01.getA0100());
-        List<Map<String, Object>> mapList = a011Mapper.selectPersonInfo(map);
-        if (mapList != null && mapList.size() > 0) {
-            //机构id
-            if (mapList.get(0).get("b0100") != null) {
-                orpInfo.setRfB0000((String) mapList.get(0).get("b0100"));
-            }
-            if (mapList.get(0).get("a0215b") != null) {
-                //职务转换
-                OmsBaseinfoConfig baseinfo = omsBaseinfoConfigMapper.selectPostInfo((String) mapList.get(0).get("a0215b"));
-                if (baseinfo != null) {
-                    orpInfo.setPostCode(baseinfo.getParentId());
-                    orpInfo.setPost(baseinfo.getInfoName());
-                }
-            }
-        }
-
-
-        //工作单位
-        orpInfo.setWorkUnit(a01.getA0192a());
-        String incumbencyStatus = this.queryStatusByA0100(a01.getA0100());
-        orpInfo.setA0100(a01.getA0100());
-        if (!StringUtils.isBlank(a01.getA0184())) {
-            //身份证号
-            orpInfo.setIdnumberGb(a01.getA0184());
-            //根据身份证号截取对应的出生日期
-            String birthDay = OmsRegInitUtil.getBirthByIdNumber(a01.getA0184());
-            //出生日期(身份证)
-            if (!StringUilt.stringIsNullOrEmpty(birthDay))
-                orpInfo.setBirthDate(sdf1.parse(birthDay));
-        }
-        //出生日期(干部)
-        if (a01.getA0107() != null) {
-            if (a01.getA0107().length() > 1 && a01.getA0107().length() < 5) {
-                orpInfo.setBirthDateGb(sdf3.parse(a01.getA0107()));
-            } else if (a01.getA0107().length() > 5 && a01.getA0107().length() < 7) {
-                orpInfo.setBirthDateGb(sdf2.parse(a01.getA0107()));
-            } else if (a01.getA0107().length() > 7 && a01.getA0107().length() < 9) {
-                orpInfo.setBirthDateGb(sdf1.parse(a01.getA0107()));
-            }
-        }
-
-        //数据类型  1.干部    2 公安
-        orpInfo.setDataType("1");
-        //备案状态
-        orpInfo.setRfStatus("0");
-        //入库状态
-        orpInfo.setInboundFlag("U");
-        //验收状态
-        orpInfo.setCheckStatus("0");
-        //拼音简称
-        String py = PingYinUtil.getFirstSpell(a01.getA0101());
-        orpInfo.setPy(py);
-
-        //查询A0100对应的退出管理退出方式录入在职状态
-        orpInfo.setIncumbencyStatus(incumbencyStatus);
-        //性别
-        orpInfo.setSex(a01.getA0104());
-        //民族
-        orpInfo.setNationCode(a01.getA0117());
-        orpInfo.setNationName(a01.getA0117A());
-        //政治面貌
-        orpInfo.setPoliticalAfficode(a01.getA0141());
-        //健康状态
-        orpInfo.setHealthCode(a01.getA0127());
-        orpInfo.setHealth(a01.getA0128());
-        //身份情况 1.省管干部
-        orpInfo.setIdentityCode("1");
-        orpInfo.setIdentity("省管干部");
-        //人事主管单位
-        orpInfo.setPersonManager("海南省委组织部");
-        //任职时间
-        orpInfo.setRzDate(a01.getRxzDate());
-        orpInfo.setCreateTime(new Date());
-        orpInfo.setCreateUser(loginUser.getId());
-        return orpInfo;
-    }
-
-    /**
-     * 查询A0100对应的退出管理退出方式
-     *
-     * @param a0100
-     * @return
-     */
-    private String queryStatusByA0100(String a0100) {
-        String incumbencyStatus = "";
-        //在职状态
-        QueryWrapper<A30> queryWrapper1 = new QueryWrapper<A30>();
-        queryWrapper1.eq("A0100", a0100);
-        System.out.println("a0100============" + a0100);
-        A30 a30 = a30Mapper.selectOne(queryWrapper1);
-        if (a30 != null && !StringUtils.isEmpty(a30.getA3001())) {
-            //退出方式
-            String a3001 = a30.getA3001().substring(0, 1);
-            //退出状态 1退休 2调出 3死亡 4辞职 8转出 9其它(开除)
-            //在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它
-            if (!StringUtils.isEmpty(a3001)) {
-                if (a3001.equals("1")) {
-                    incumbencyStatus = "3";
-                } else if (a3001.equals("2")) {
-                    incumbencyStatus = "6";
-                } else if (a3001.equals("3")) {
-                    incumbencyStatus = "4";
-                } else if (a3001.equals("4")) {
-                    incumbencyStatus = "2";
-                } else if (a3001.equals("9")) {
-                    incumbencyStatus = "5";
-                } else {
-                    incumbencyStatus = "7";
-                }
-            }
-        } else {
-            incumbencyStatus = "1";
-        }
-        return incumbencyStatus;
-    }
-
-
-    /**
      * <b>查询登记备案库中的人员信息（出生日期）</b>
      *
      * @param a0100
@@ -872,5 +1066,50 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         return yearcheckInfoMapper.selectCheckModelList(year);
     }
 
+
+    @Override
+    public List<Map> selectRegInfoListById(String idStr) {
+        List<Map> list= new ArrayList<Map>();
+        if (idStr != null) {
+            String id = idStr.split(",").toString();
+            list = baseMapper.selectRegInfoListById(id);
+        } else {
+            list = baseMapper.selectRegInfoListById(null);
+        }
+        return list;
+    }
+
+    /**
+     * @param paramCode 接收人的系统参数编码，格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
+     * @description:发送消息通用方法
+     * @author:杨波
+     * @date:2020-09-15 * @param msg 要发送的消息
+     * @return:void
+     **/
+    @Override
+    public void SendMessage(String msg, String paramCode) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+        SendMessageParam param = new SendMessageParam();
+        Message message = new Message();
+        message.setContent(msg);
+        param.setMessage(message);
+
+        String receiver = parameterService.selectPValueByCode(paramCode);
+
+        //格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
+        String[] receivers = receiver.split(",");
+
+        Map<String, List<MsgUser>> msgUserMap = new HashMap<>();
+        List<MsgUser> msgUsers = new ArrayList<>();
+        MsgUser msgUser = new MsgUser();
+        msgUser.setHandleIdentify(receivers[0]);//类型
+        msgUser.setReceiveUserId(receivers[1]);//机构或处室ID
+        msgUser.setReceiveUsername(receivers[2]);//机构或处室名称
+        msgUsers.add(msgUser);
+        msgUserMap.put(receivers[0], msgUsers);
+
+        param.setMsgUserMap(msgUserMap);
+
+        messageService.sendMessage(param);
+    }
 
 }

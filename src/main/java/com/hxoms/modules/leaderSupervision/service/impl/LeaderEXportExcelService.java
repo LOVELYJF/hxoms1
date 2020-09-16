@@ -6,15 +6,16 @@ import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,9 +29,11 @@ public class LeaderEXportExcelService {
     @Autowired
     private LeaderCommonMapper leaderCommonQueryMapper;
 
- @Autowired
- private SelectMapper selectMapper;  // 通用 自定义sql
+     @Autowired
+     private SelectMapper selectMapper;  // 通用 自定义sql
 
+    @Autowired
+    private OmsRegProcpersoninfoMapper mrpinfoMapper;
 
     /** 因公出国境管理 导出 **/
     public HSSFWorkbook pubApplyMangerExport(){
@@ -591,6 +594,102 @@ public class LeaderEXportExcelService {
 
     }
 
+
+
+
+
+    /** 登记备案导出 **/
+    public HSSFWorkbook exportRfInfo(String idStr){
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
+        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(idStr);
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");listV.add("序号");
+        listK.add("surname");listV.add("中文姓");
+        listK.add("name");listV.add("中文名");
+        listK.add("sex");listV.add("性别");
+        listK.add("birthDateGb");listV.add("出生日期");  // 少一列 健康情况
+        listK.add("idnumberGb");listV.add("身份证号");               // 少一列 备案号
+        listK.add("registeResidence");listV.add("户口所在地");
+        listK.add("inboundFlag");listV.add("入库标识");
+        listK.add("workUnit");listV.add("工作单位");
+        listK.add("post");listV.add("职务(级)或职称");  //  少一列 状态
+        listK.add("personManager");listV.add("人事主管单位");
+        listK.add("");listV.add("报送单位组织机构代码");
+        listK.add("");listV.add("报送单位名称");
+        listK.add("");listV.add("报送单位类别");
+        listK.add("");listV.add("报送单位联系人");
+        listK.add("");listV.add("联系电话");
+        listK.add("");listV.add("入库批号");
+
+        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"登记备案导出");
+
+
+    }
+
+
+
+    public HSSFWorkbook exportRfInfo1() {
+
+//            List<ExcelModelORPinfo> list = new ArrayList<>();
+//            List<OmsRegProcbatchPerson> orpbplist = new ArrayList<>();
+//            //查询登记备案信息根据备案id
+//            List<OmsRegProcpersoninfo> rflist = mrpinfoService.selectListById(idStr);
+//            //查询批次相关信息
+//            OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
+//            for (int i = 0; i < rflist.size(); i++) {
+//                OmsRegProcpersoninfo info = rflist.get(i);
+//                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
+//                //为批次人员表复制相同字段的数据
+//                BeanUtils.copyProperties(rflist, batchperson);
+//                batchperson.setId(UUIDGenerator.getPrimaryKey());
+//                batchperson.setRfId(info.getId());
+//                batchperson.setBatchId(batchinfo.getBatchNo());
+//                orpbplist.add(batchperson);
+//                //为excel录入数据
+//                ExcelModelORPinfo excelMode = new ExcelModelORPinfo();
+//                //登记备案信息录入
+//                BeanUtils.copyProperties(info, excelMode);
+//                excelMode.setNo(i);
+//                //批次相关信息录入
+//                BeanUtils.copyProperties(batchinfo, excelMode);
+//                list.add(excelMode);
+//            }
+//            int con = orpbatchService.batchinsertInfo(orpbplist);
+//            if (con > 0) {
+//                //修改批次表备案状态0未备案，1已备案，2已确认
+//                batchinfo.setStatus("1");
+//                int con1 = orpbatchService.updateOrpbatch(batchinfo);
+//                if (con1 > 0) {
+//                    mrpinfoService.updateRegProcpersoninfo(idStr);
+//                }
+//            }
+
+
+        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(null);
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");listV.add("序号");
+        listK.add("surname");listV.add("中文姓");
+        listK.add("name");listV.add("中文名");
+        listK.add("sex");listV.add("性别");
+        listK.add("birthDateGb");listV.add("出生日期");
+        listK.add("idnumberGb");listV.add("身份证号");
+        listK.add("registeResidence");listV.add("户口所在地");
+        listK.add("inboundFlag");listV.add("入库标识");
+        listK.add("workUnit");listV.add("工作单位");
+        listK.add("post");listV.add("职务(级)或职称");
+        listK.add("personManager");listV.add("人事主管单位");
+        listK.add("暂无数据");listV.add("报送单位组织机构代码");
+        listK.add("暂无数据");listV.add("报送单位名称");
+        listK.add("暂无数据");listV.add("报送单位类别");
+        listK.add("暂无数据");listV.add("报送单位联系人");
+        listK.add("暂无数据");listV.add("联系电话");
+        listK.add("暂无数据");listV.add("入库批号");
+
+        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表1（电子）");
+    }
 
 
 }
