@@ -335,8 +335,8 @@
         c.post,
         a.ZJLX,
         (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
-        z.zjhm,
-        b.SPB_GET_ELE_SIGN spbGetEleSign,
+        a.zjhm,
+        b.SPB_GET_ELE_SIGN spb,
         d.surely_way surelyWay,
     IF (
         d.surely_way = '0',
@@ -350,10 +350,10 @@
     ) surelyWayName,
      d.cabinet_num cabinetNum,
      d.place,
-     d.counter_num counterNum,
+     d.counter_num counterNum
     FROM
         oms_cer_admintor_get_apply a
-    INNER JOIN oms_cer_get_task b a.id = b.busi_id
+    INNER JOIN oms_cer_get_task b ON a.id = b.busi_id
     INNER JOIN oms_reg_procpersoninfo c ON a.OMS_ID = c.id
     INNER JOIN cf_certificate d ON a.CER_ID = d.id
     WHERE

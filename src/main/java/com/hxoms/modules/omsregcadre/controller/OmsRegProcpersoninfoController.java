@@ -1,5 +1,7 @@
 package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.util.PingYinUtil;
+import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig;
@@ -8,7 +10,10 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegYearcheckinfo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
+import com.hxoms.modules.omsregcadre.mapper.OmsBaseinfoConfigMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
+import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -19,7 +24,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +42,10 @@ public class OmsRegProcpersoninfoController {
     private OmsRegProcpersonInfoService mrpinfoService;
     @Autowired
     private Environment environment;
+    @Autowired
+    private SysDictItemMapper sysDictItemMapper;
+    @Autowired
+    private OmsBaseinfoConfigMapper omsBaseinfoConfigMapper;
     /**
      * 初始化
      * @author lijiaojiao
@@ -270,15 +278,32 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/readOmsDataGA")
-    private static List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");//注意月份是MM
+    private List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
+        //缓存行政区划
+        List<SysDictItem> xzqhs = sysDictItemMapper.selectItemCodeByDictCode("ZB01");
+        HashMap<String,SysDictItem> hashMapXZQH=new HashMap<>();
+        for (SysDictItem xzqh:xzqhs
+             ) {
+            hashMapXZQH.put(xzqh.getItemName(),xzqh);
+        }
+
+        //缓存职务映射关系
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<OmsBaseinfoConfig> baseInfos = omsBaseinfoConfigMapper.selectPostInfo(params);
+        HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = new HashMap<>();
+        for (OmsBaseinfoConfig baseInfo : baseInfos
+        ) {
+                hashMapBaseInfo.put(baseInfo.getInfoName(), baseInfo);
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");//注意月份是MM
         // 读取Excel文件
-        InputStream inputStream = new FileInputStream("D:/example1.xls");
-        Workbook workbook = new HSSFWorkbook(inputStream);
+//        InputStream inputStream = new FileInputStream("D:/example.xls");
+//        Workbook workbook = new HSSFWorkbook(inputStream);
         //检查文件
-       // checkFile(file);
+        checkFile(file);
         //获得Workbook工作薄对象
-        //Workbook workbook = getWorkBook(file);
+        Workbook workbook = getWorkBook(file);
         //创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回
         //List<String[]> list = new ArrayList<String[]>();
         List<OmsRegProcpersoninfo> list = new ArrayList<OmsRegProcpersoninfo>();
@@ -286,102 +311,85 @@ public class OmsRegProcpersoninfoController {
             for (int sheetNum = 0; sheetNum < workbook.getNumberOfSheets(); sheetNum++) {
                 //获得当前sheet工作表
                 Sheet sheet = workbook.getSheetAt(sheetNum);
-                if (sheet == null) {
-                    continue;
-                }
-                //获得当前sheet的开始行
+                if (sheet == null) continue;
+                if(sheet.getRow(0).getCell(1).getStringCellValue().equals("中文姓名")==false) continue;
+                if(sheet.getRow(0).getCell(2).getStringCellValue().equals("性别")==false) continue;
+                if(sheet.getRow(0).getCell(3).getStringCellValue().equals("出生日期")==false) continue;
+                if(sheet.getRow(0).getCell(4).getStringCellValue().equals("身份证号码")==false) continue;
+                if(sheet.getRow(0).getCell(5).getStringCellValue().equals("户口所在地")==false) continue;
+
+                    //获得当前sheet的开始行
                 int firstRowNum = sheet.getFirstRowNum();
                 //获得当前sheet的结束行
                 int lastRowNum = sheet.getLastRowNum();
                 //循环除了第一行的所有行,去掉最后三行
-                for (int rowNum = firstRowNum; rowNum <= lastRowNum; rowNum++) {
+                for (int rowNum = firstRowNum + 1; rowNum <= lastRowNum ; rowNum++) {
                     //获得当前行
                     Row row = sheet.getRow(rowNum);
-                    if (row == null) {
-                        continue;
-                    }
+                    if (row == null)   continue;
 
                     // 将单元格中的内容存入集合
                     OmsRegProcpersoninfo orpInfo = new OmsRegProcpersoninfo();
+
                     //姓名
-
                     Cell cell = row.getCell(1);
-
-                    if (cell == null) {
-                        continue;
-                    }
-                    orpInfo.setSurname(cell.getStringCellValue());
-                    //名
-                    cell = row.getCell(2);
-                    if (cell == null) {
-                        continue;
-                    }
-                    orpInfo.setName(cell.getStringCellValue());
+                    if (cell == null)  continue;
+                    mrpinfoService.SplitName(orpInfo,cell.getStringCellValue().trim());
 
                     //性别
-                    cell = row.getCell(3);
-                    if (cell == null) {
-                        continue;
-                    }
-                    orpInfo.setSex(cell.getStringCellValue());
+                    cell = row.getCell(2);
+                    if (cell == null) continue;
+                    orpInfo.setSex(cell.getStringCellValue().equals("男")?"1":"2");
 
                     //出生日期(身份证号(公安))
-                    cell = row.getCell(4);
-                    //设置单元格类型
-                    cell.setCellType(CellType.STRING);
-                    if (cell == null) {
-                        continue;
-                    }
+                    cell = row.getCell(3);
+                    if (cell == null)  continue;
                     orpInfo.setBirthDate(simpleDateFormat.parse(cell.getStringCellValue()));
 
                     //身份证号（公安）
-                    cell = row.getCell(5);
-                    if (cell == null) {
-                        continue;
-                    }
+                    cell = row.getCell(4);
+                    if (cell == null)   continue;
                     orpInfo.setIdnumberGa(cell.getStringCellValue());
 
                     //户口所在地
-                    cell = row.getCell(6);
-                    if (cell == null) {
-                        continue;
+                    cell = row.getCell(5);
+                    if (cell == null)  continue;
+                    SysDictItem hk=hashMapXZQH.get(cell.getStringCellValue());
+                    if(hk!=null)
+                    {
+                        orpInfo.setRegisteResidenceCode(hk.getItemCode());
                     }
                     orpInfo.setRegisteResidence(cell.getStringCellValue());
 
                     //入库标识
-                    cell = row.getCell(7);
-                    if (cell == null) {
-                        continue;
-                    }
+                    cell = row.getCell(6);
+                    if (cell == null)   continue;
                     orpInfo.setInboundFlag(cell.getStringCellValue());
 
                     //工作单位
-                    cell = row.getCell(8);
-                    if (cell == null) {
-                        continue;
-                    }
+                    cell = row.getCell(7);
+                    if (cell == null)  continue;
                     orpInfo.setWorkUnit(cell.getStringCellValue());
 
                     //职务(级)或职称
-                    cell = row.getCell(9);
-                    //设置单元格类型
-                    cell.setCellType(CellType.STRING);
-                    if (cell == null) {
-                        continue;
-                    }
-                    orpInfo.setPostCode(cell.getStringCellValue());
+                    cell = row.getCell(8);
+                    if (cell == null)  continue;
+                    OmsBaseinfoConfig baseinfoConfig = hashMapBaseInfo.get(cell.getStringCellValue());
+                    if(baseinfoConfig!=null)
+                        orpInfo.setPostCode(baseinfoConfig.getParentId());
+                    orpInfo.setPost(cell.getStringCellValue());
 
                     //人事主管单位
-                    cell = row.getCell(10);
-                    if (cell == null) {
-                        continue;
-                    }
+                    cell = row.getCell(9);
+                    if (cell == null)   continue;
                     orpInfo.setPersonManager(cell.getStringCellValue());
+
                     orpInfo.setId(UUIDGenerator.getPrimaryKey());
                     //数据来源标注为“公安”，备案状态标记为“已备案”，验收状态标注为“未验收”。
                     orpInfo.setDataType("2");
                     orpInfo.setRfStatus("1");
                     orpInfo.setCheckStatus("0");
+                    orpInfo.setIncumbencyStatus(String.valueOf(Constants.emIncumbencyStatus.Unmatched.getIndex()) );
                     list.add(orpInfo);
                 }
             }

@@ -12,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class CanGetCerInfo {
     //领取表id
     @ApiModelProperty(value = "领取表id")
-    private String id;
+    private String getId;
     //工作单位
     @ApiModelProperty(value = "工作单位")
     private String workUnit;
@@ -56,13 +56,12 @@ public class CanGetCerInfo {
     private String counterNum;
 
 
-
-    public String getId() {
-        return id;
+    public String getGetId() {
+        return getId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGetId(String getId) {
+        this.getId = getId;
     }
 
     public String getWorkUnit() {
@@ -87,6 +86,14 @@ public class CanGetCerInfo {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
     }
 
     public Integer getZjlx() {
@@ -160,5 +167,4 @@ public class CanGetCerInfo {
     public void setCounterNum(String counterNum) {
         this.counterNum = counterNum;
     }
-
 }
