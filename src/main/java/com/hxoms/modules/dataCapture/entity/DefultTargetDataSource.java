@@ -30,6 +30,18 @@ public class DefultTargetDataSource  {
     @Value("${job.cron}")
      String cron;
 
+    @Value("${omsFile.baseDir}")
+    private String omsfileBaseDir;
+
+
+    public String getOmsfileBaseDir() {
+        return omsfileBaseDir;
+    }
+
+    public void setOmsfileBaseDir(String omsfileBaseDir) {
+        this.omsfileBaseDir = omsfileBaseDir;
+    }
+
     public String getDatasourceId() {
         return datasourceId;
     }
@@ -79,6 +91,8 @@ public class DefultTargetDataSource  {
     }
 
     public String getCron() {
+
+        System.out.println(omsfileBaseDir+"33333333333333333333");
         return cron;
     }
 
