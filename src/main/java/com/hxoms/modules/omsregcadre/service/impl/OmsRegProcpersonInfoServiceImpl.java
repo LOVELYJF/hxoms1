@@ -1065,7 +1065,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public List<Map> selectRegInfoListById(String idStr) {
-        List<Map> list=new ArrayList<Map>();
+        List<Map> list= new ArrayList<Map>();
         if (idStr != null) {
             String id = idStr.split(",").toString();
             list = baseMapper.selectRegInfoListById(id);
