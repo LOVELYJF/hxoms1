@@ -63,6 +63,7 @@
         <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
         <result column="ABROAD_PHONE" jdbcType="VARCHAR" property="abroadPhone" />
         <result column="BZ" jdbcType="VARCHAR" property="bz" />
+        <result column="SOURCE" jdbcType="VARCHAR" property="source" />
     </resultMap>
     <sql id="Base_Column_List">
     ID, PROCPERSON_ID, A0100, B0100, YSP_ID, YSPDW_ID, AGE, POLITICAL_AFF, JOB, HEALTH,
@@ -70,7 +71,7 @@
     SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
     SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
     DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
-    MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
+    MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ,SOURCE
   </sql>
     <update id="repealAllPubApplyByPwh">
         update oms_pub_apply p
@@ -279,6 +280,9 @@
             </if>
             <if test="bz != null">
                 BZ = #{bz,jdbcType=VARCHAR},
+            </if>
+            <if test="source != null">
+                SOURCE = #{source,jdbcType=VARCHAR},
             </if>
         </set>
         where PWH = #{pwh,jdbcType=VARCHAR}
@@ -747,7 +751,7 @@
         SDGJ, TLSJ, CFRW, CFSY, CGSPDW, PWH, ZYPWH, ZJCGQK, SJCGSJ, SJHGSJ, NFGS, SFYSP,
         SFZQJWYJ, SCZQJWYJSJ, SFBCZQJWYJ, JWJL, CLSHSFTG, JDCJL, SFZYLD, SFLG, POZNSJD, FMXX,
         DWJSXS, ZZJL, CXYY, SFTSRY, SFZB, SFBG, SQZT, CREATE_USER, CREATE_TIME, MODIFY_USER,
-        MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ
+        MODIFY_TIME, SORT_ID, BAH, SFXD, LEADER_BATCH_ID, IS_COMPARISON, ABROAD_PHONE, BZ,SOURCE
         )
         values
         <foreach collection="list" item="item" index= "index" separator =",">
@@ -812,7 +816,8 @@
             #{item.leaderBatchId},
             #{item.isComparison},
             #{item.abroadPhone},
-            #{item.bz}
+            #{item.bz},
+            #{item.source}
             )
         </foreach>
     </insert>
@@ -1000,6 +1005,9 @@
                 </if>
                 <if test="item.bz != null">
                     BZ = #{item.bz}
+                </if>
+                <if test="item.source != null">
+                    SOURCE = #{item.source}
                 </if>
                 </set>
                 where id = #{item.id,jdbcType=VARCHAR};
