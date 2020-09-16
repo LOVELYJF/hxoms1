@@ -583,48 +583,58 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
             boolean flag = true;
-            this.dataCompareAndUpdate(gbData, gaData, flag);
+            //数据比对更新
+            this.dataCompareAndUpdate(gbData, gaData,flag);
+            con = baseMapper.updateById(gbData);
+            if (con > 0) {
+                con = baseMapper.deleteById(gaData.getId());
+            }
         }
         return con;
     }
 
-    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2, boolean flag) {
+
+
+
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo dataGB, OmsRegProcpersoninfo dataGA,boolean flag) {
         int con = 0;
         //身份账号与名称一致
-        if (flag == true ||
-                (data1.getIdnumberGb().equals(data2.getIdnumberGa())
-                        && data1.getName().equals(data2.getName())
-                        && data1.getSurname().equals(data2.getSurname()))) {
+        if ( flag == true ||
+                (dataGB.getIdnumberGb().equals(dataGA.getIdnumberGa())
+                        &&dataGB.getName().equals(dataGA.getName())
+                        &&dataGB.getSurname().equals(dataGA.getSurname()))) {
             //更新干部相关信息从公安数据中维护
             //将公安的身份证号写入干部数据的公安身份证号字段里
-            data1.setIdnumberGa(data2.getIdnumberGa());
+            dataGB.setIdnumberGa(dataGA.getIdnumberGa());
             //将公安的出生日期写入干部数据的公安出生日期字段里
-            data1.setBirthDate(data2.getBirthDate());
-            data1.setModifyTime(new Date());
+            dataGB.setBirthDate(dataGA.getBirthDate());
+            dataGB.setModifyTime(new Date());
             //用公安数据的户口所在地
-            data1.setRegisteResidenceCode(data2.getRegisteResidenceCode());
-            data1.setRegisteResidence(data2.getRegisteResidence());
+            dataGB.setRegisteResidenceCode(dataGA.getRegisteResidenceCode());
+            dataGB.setRegisteResidence(dataGA.getRegisteResidence());
 
             //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
-            if (data1.getWorkUnit().equals(data2) == false) {
+            if ((dataGB.getWorkUnit()==null && dataGA.getWorkUnit()!=null)||
+                    (dataGB.getWorkUnit()!=null && dataGA.getWorkUnit()==null)||
+                    (dataGB.getWorkUnit()!=null &&dataGA.getWorkUnit()!=null && dataGB.getWorkUnit().equals(dataGA.getWorkUnit()) == false) ||
+                    (dataGB.getPost()==null&&dataGA.getPost()!=null)||
+                    (dataGB.getPost()!=null&&dataGA.getPost()==null)||
+                    (dataGB.getPost()!=null&&dataGA.getPost()!=null && dataGB.getPost().equals(dataGA.getPost()) == false)) {
                 //入库标识  新增U  修改I  撤消D
-                data1.setInboundFlag("I");
+                dataGB.setInboundFlag("I");
                 //备案状态  0未备案，1已备案，2已确认
-                data1.setRfStatus("0");
+                dataGB.setRfStatus("0");
                 //验收状态  1已验收，0待验收
-                data1.setCheckStatus("0");
+                dataGB.setCheckStatus("0");
             } else {
                 //入库标识  新增U  修改I  撤消D
-                data1.setInboundFlag(data2.getInboundFlag());
+                dataGB.setInboundFlag(dataGA.getInboundFlag());
                 //备案状态  0未备案，1已备案，2已确认
-                data1.setRfStatus("1");
+                dataGB.setRfStatus("1");
                 //验收状态  1已验收，0待验收
-                data1.setCheckStatus("1");
+                dataGB.setCheckStatus("1");
             }
-            con = baseMapper.updateById(data1);
-            if (con > 0) {
-                con = baseMapper.deleteById(data2.getId());
-            }
+
         } else {
             throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
         }
@@ -1072,8 +1082,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     public List<Map> selectRegInfoListById(String idStr) {
         List<Map> list = new ArrayList<Map>();
         if (idStr != null) {
-            String id = idStr.split(",").toString();
-            list = baseMapper.selectRegInfoListById(id);
+            List<String> ids = Arrays.asList(idStr.split(","));
+            list = baseMapper.selectRegInfoListById(ids);
         } else {
             list = baseMapper.selectRegInfoListById(null);
         }
