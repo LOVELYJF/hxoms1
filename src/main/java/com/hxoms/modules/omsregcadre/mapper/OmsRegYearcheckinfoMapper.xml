@@ -77,8 +77,8 @@
     T_5.item_name as CHECK_STATUS,
     T_6.item_name as POLITICAL_AFFI,
     T_7.item_name as SECRET_LEVEL,
-    a.RF_ID, a.INBOUND_FLAG,
-    a.DATA_TYPE, a.SURNAME, a.NAME, a.BIRTH_DATE, a.NATION, a.IDNUMBER,
+    T_8.item_name as DATA_TYPE,
+    a.RF_ID, a.INBOUND_FLAG, a.SURNAME, a.NAME, a.BIRTH_DATE, a.NATION, a.IDNUMBER,
     a.REGISTE_RESIDENCE_CODE, a.REGISTE_RESIDENCE, a.WORK_UNIT, a.POST_CODE, a.POST, a.PERSON_MANAGER,
     a.IDENTITY_CODE, a.IDENTITY, a.DECRYPT_STARTDATE, a.DECRYPT_ENDDATE, a.MAIN_LEADER,
     a.LICENCE_IDENTITY, a.NF, a.FJGNF, a.XRXGW, a.LQGZ, a.DQGZ, a.REPLYOPINION, a.ABROADTIME, a.REASON
@@ -97,6 +97,8 @@
     AND T_6.DICT_CODE = sd.DICT_CODE) T_6 ON a.POLITICAL_AFFI = T_6.item_code
     LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7,SYS_DICT sd WHERE sd.DICT_CODE = 'SMDJ'  -- 涉密等级
     AND T_7.DICT_CODE = sd.DICT_CODE) T_7 ON a.SECRET_LEVEL = T_7.item_code
+    LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8,SYS_DICT sd WHERE sd.DICT_CODE = 'SJLY' -- 数据来源
+    AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON a.DATA_TYPE = T_8.item_code
     <if test="year!=null and year!=''">
       AND a.CREATE_DATE = #{year}
     </if>
