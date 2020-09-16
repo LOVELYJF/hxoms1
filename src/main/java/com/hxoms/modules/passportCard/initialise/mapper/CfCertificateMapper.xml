@@ -1055,13 +1055,15 @@
 		cf_certificate a
 		INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
 		WHERE
-		a.SAVE_STATUS = '1'
-		AND a.CARD_STATUS = '3'
+		'1'= '1'
+		<!--WQF ADD 勾选查询使用-->
+		<if test="ids!=null">
 		AND a.ID in
 		<foreach collection="ids" index="index" item="item" open="("
 				 separator="," close=")">
 			#{item}
 		</foreach>
+		</if>
 
 	</select>
 
