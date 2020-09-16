@@ -7,13 +7,12 @@
     <result column="StepName" jdbcType="VARCHAR" property="stepname" />
     <result column="SubmissionTime" jdbcType="DATE" property="submissiontime" />
     <result column="Submitter" jdbcType="VARCHAR" property="submitter" />
-    <result column="ApprovalDate" jdbcType="DATE" property="approvaldate" />
-    <result column="Approver" jdbcType="VARCHAR" property="approver" />
+    <result column="SubmitterId" jdbcType="VARCHAR" property="submitterid" />
     <result column="ApprovalResult" jdbcType="VARCHAR" property="approvalresult" />
     <result column="ApprovalOpinion" jdbcType="VARCHAR" property="approvalopinion" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, OperatorId, StepName, SubmissionTime, Submitter, ApprovalDate, Approver, ApprovalResult, 
+    ID, OperatorId, StepName, SubmissionTime, Submitter, SubmitterId, ApprovalResult,
     ApprovalOpinion
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -28,13 +27,11 @@
       o.OperatorId,
       o.StepName,
       o.SubmissionTime,
-      cf.user_name as submitter,
-      o.ApprovalDate,
-      o.Approver,
+      o.submitter,
+      o.submitterid,
       o.ApprovalResult,
       o.ApprovalOpinion
       from oms_operator_approval o
-      left join cf_user cf  on o.OperatorId = cf.user_id
       where o.OperatorId = #{userId,jdbcType=VARCHAR}
     </select>
     <select id="selectCountStatus" resultType="com.hxoms.modules.privateabroad.entity.CountStatusResult">
@@ -122,13 +119,11 @@
   </delete>
   <insert id="insert" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
     insert into oms_operator_approval (ID, OperatorId, StepName, 
-      SubmissionTime, Submitter, ApprovalDate, 
-      Approver, ApprovalResult, ApprovalOpinion
-      )
-    values (#{id,jdbcType=VARCHAR}, #{operatorid,jdbcType=VARCHAR}, #{stepname,jdbcType=VARCHAR}, 
-      #{submissiontime,jdbcType=DATE}, #{submitter,jdbcType=VARCHAR}, #{approvaldate,jdbcType=DATE}, 
-      #{approver,jdbcType=VARCHAR}, #{approvalresult,jdbcType=VARCHAR}, #{approvalopinion,jdbcType=VARCHAR}
-      )
+      SubmissionTime, Submitter, SubmitterId,
+      ApprovalResult, ApprovalOpinion)
+    values (#{id,jdbcType=VARCHAR}, #{operatorid,jdbcType=VARCHAR}, #{stepname,jdbcType=VARCHAR},
+      #{submissiontime,jdbcType=DATE}, #{submitter,jdbcType=VARCHAR}, #{submitterid,jdbcType=VARCHAR},
+      #{approvalresult,jdbcType=VARCHAR}, #{approvalopinion,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hxoms.modules.omsoperator.entity.OmsOperatorApproval">
     insert into oms_operator_approval
@@ -148,11 +143,8 @@
       <if test="submitter != null">
         Submitter,
       </if>
-      <if test="approvaldate != null">
-        ApprovalDate,
-      </if>
-      <if test="approver != null">
-        Approver,
+      <if test="submitterid != null">
+        SubmitterId,
       </if>
       <if test="approvalresult != null">
         ApprovalResult,
@@ -177,11 +169,8 @@
       <if test="submitter != null">
         #{submitter,jdbcType=VARCHAR},
       </if>
-      <if test="approvaldate != null">
-        #{approvaldate,jdbcType=DATE},
-      </if>
-      <if test="approver != null">
-        #{approver,jdbcType=VARCHAR},
+      <if test="submitterid != null">
+        #{submitterid,jdbcType=VARCHAR},
       </if>
       <if test="approvalresult != null">
         #{approvalresult,jdbcType=VARCHAR},
@@ -206,11 +195,8 @@
       <if test="submitter != null">
         Submitter = #{submitter,jdbcType=VARCHAR},
       </if>
-      <if test="approvaldate != null">
-        ApprovalDate = #{approvaldate,jdbcType=DATE},
-      </if>
-      <if test="approver != null">
-        Approver = #{approver,jdbcType=VARCHAR},
+      <if test="submitterid != null">
+        SubmitterId = #{submitterid,jdbcType=VARCHAR},
       </if>
       <if test="approvalresult != null">
         ApprovalResult = #{approvalresult,jdbcType=VARCHAR},
@@ -227,8 +213,7 @@
       StepName = #{stepname,jdbcType=VARCHAR},
       SubmissionTime = #{submissiontime,jdbcType=DATE},
       Submitter = #{submitter,jdbcType=VARCHAR},
-      ApprovalDate = #{approvaldate,jdbcType=DATE},
-      Approver = #{approver,jdbcType=VARCHAR},
+      SubmitterId = #{submitterid,jdbcType=VARCHAR},
       ApprovalResult = #{approvalresult,jdbcType=VARCHAR},
       ApprovalOpinion = #{approvalopinion,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=VARCHAR}
