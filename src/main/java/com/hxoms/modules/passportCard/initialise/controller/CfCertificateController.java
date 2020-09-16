@@ -11,7 +11,6 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -20,9 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
 import java.util.List;
 
@@ -220,14 +217,14 @@ public class CfCertificateController {
     /**
      * @Desc: 存疑处理，以证照信息为准。
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "存疑处理，以证照信息为准，保存处理结果")
     @PostMapping("/updateCerForCerIsRight")
-    public Result updateCerForCerIsRight(@RequestBody  @Validated QureyDealRequestInfo qureyDealRequestInfo){
-        cfCertificateService.updateCerForCerIsRight(qureyDealRequestInfo);
+    public Result updateCerForCerIsRight(@RequestBody  @Validated QureyDealRequestInfoEx qureyDealRequestInfoEx){
+        cfCertificateService.updateCerForCerIsRight(qureyDealRequestInfoEx);
         return Result.success();
     }
 

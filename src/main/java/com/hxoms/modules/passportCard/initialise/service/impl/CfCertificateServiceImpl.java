@@ -273,8 +273,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
         //已取出
         cfCertificate.setSaveStatus("1");
-        //验证失败
-        cfCertificate.setCardStatus("3");
+        //待验证
+        cfCertificate.setCardStatus("5");
         //异常原因不能修改，耶稣说的。
         cfCertificate.setExceptionMessage("公安无对应证照数据");
         cfCertificate.setUpdater(userInfo.getId());
@@ -472,14 +472,14 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑处理，以证照信息为准
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: void
      * @Date: 2020/8/10
      */
     @Override
-    public void updateCerForCerIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
+    public void updateCerForCerIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx) {
         CfCertificate cfCertificate=new CfCertificate();
-        BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
+        BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
         cfCertificate.setSaveStatus("1");
         cfCertificate.setCardStatus("4");
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
@@ -577,7 +577,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Param: [inputStream, fileName]
      * @Return: java.lang.String
      * @Date: 2020/7/24
-     * 处理业务：1、导入（证照管理导入、正常证照导入）2、去重 3、证照验证 4、修改证照持有情况 5、无证照解除催缴任务
+     * 处理业务：1、导入（证照管理导入、正常证照导入）2、去重 3、证照验证 (已取出，待验证) 4、修改证照持有情况 5、无证照解除催缴任务
      */
     public void readExcel(InputStream inputStream, String fileName) throws IOException {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
@@ -734,8 +734,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                         for (CfCertificate cfCertificateExist : cfCertificateExistList) {
                                             if(cfCertificateExist.getZjlx()==cfCertificate.getZjlx()
                                                     &&cfCertificateExist.getZjhm().equals(cfCertificate.getZjhm())){
-                                                //验证失败，且为公安无对应数据情况，此处要验证证照
-                                                if("3".equals(cfCertificateExist.getCardStatus())&&"公安无对应证照数据".equals(cfCertificateExist.getExceptionMessage())){
+                                                //已取出待验证证照，此处要验证证照
+                                                if("1".equals(cfCertificateExist.getSaveStatus())&&"5".equals(cfCertificateExist.getCardStatus())){
                                                     validateCerInfo(cfCertificateExist,cfCertificate);
                                                     cfCertificateExist.setUpdater(userInfo.getId());
                                                     cfCertificateExist.setUpdateTime(importDate);

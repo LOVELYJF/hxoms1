@@ -28,18 +28,18 @@ public class ImportInterface {
     @ApiModelProperty(value="证件号码",required = true)
     private String zjhm;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value="有效期至",required = true)
     private Date yxqz;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value="出生日期",required = true)
     private Date csrq;
 
     @ApiModelProperty(value="签发机关",required = true)
     private String qfjg;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value="签发日期",required = true)
     private Date qfrq;
 

@@ -274,40 +274,74 @@
       POST
       FROM
       oms_reg_procpersoninfo
-      WHERE
-      id IN (
-      SELECT
-      a.ID
-      FROM
-      oms_reg_procpersoninfo a
-      INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
-      AND a.data_type = '1'
-      AND b.data_type = '2'
-      )
-      OR id IN (
-      SELECT
-      b.ID
-      FROM
-      oms_reg_procpersoninfo a
-      INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
-      AND a.data_type = '1'
-      AND b.data_type = '2'
-      )
-    <if test="sortType!=null and sortType!=''">
-        <if test="sortType==1">
-            ORDER BY CASE WHEN IDNUMBER_GB IS NULL THEN IDNUMBER_GA ELSE IDNUMBER_GB END
-        </if>
-        <if test="sortType==2">
-            order by SURNAME,`NAME`,WORK_UNIT
-        </if>
-    </if>
+      WHERE 1=1
+        <if test="sortType!=null and sortType!=''">
+          <if test="sortType==1">
+              AND  id IN (
+              SELECT
+              a.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              OR id IN (
+              SELECT
+              b.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.IDNUMBER_GB = b.IDNUMBER_GA
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              ORDER BY
+              CASE
+              WHEN IDNUMBER_GB IS NULL THEN
+              IDNUMBER_GA
+              ELSE
+              IDNUMBER_GB
+              END
+          </if>
+          <if test="sortType==2">
+              AND id IN (
+              SELECT
+              a.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.SURNAME = b.SURNAME
+              AND a.`NAME` = B.`NAME`
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              OR id IN (
+              SELECT
+              b.ID
+              FROM
+              oms_reg_procpersoninfo a
+              INNER JOIN oms_reg_procpersoninfo b ON a.SURNAME = b.SURNAME
+              AND a.`NAME` = B.`NAME`
+              AND a.data_type = '1'
+              AND b.data_type = '2'
+              )
+              ORDER BY
+              SURNAME,
+              `NAME`,
+              WORK_UNIT
+          </if>
+      </if>
+
   </select>
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
     select * from oms_reg_procpersoninfo where 1=1
-    <if test="id!=null and id!=''">
-      and id in(#{id})
-    </if>
+      <if test="id!=null and id!=''">
+          and ID in
+          <foreach collection="id" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
+    order by DATA_TYPE
   </select>
 
   <select id="selectRegInfoListById" resultType="java.util.LinkedHashMap" parameterType="java.lang.String">
@@ -368,9 +402,12 @@
       FROM
       oms_reg_procpersoninfo
       WHERE 1 = 1
-        <if test="id!=null and id!=''">
-            and id in(#{id})
-        </if>
+      <if test="id!=null and id!=''">
+          and ID in
+          <foreach collection="id" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
   </select>
 
 

@@ -118,11 +118,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 存疑处理，以证照信息为准
     * @Author: wangyunquan
-    * @Param: [qureyDealRequestInfo]
+    * @Param: [qureyDealRequestInfoEx]
     * @Return: void
     * @Date: 2020/8/10
     */
-    void updateCerForCerIsRight(QureyDealRequestInfo qureyDealRequestInfo);
+    void updateCerForCerIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx);
 
     /**
      * @Desc: 存疑处理，以公安信息为准

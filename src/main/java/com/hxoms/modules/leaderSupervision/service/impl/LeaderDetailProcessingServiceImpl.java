@@ -1,6 +1,5 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -14,10 +13,8 @@ import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
-import com.hxoms.modules.file.entity.FileReplaceVO;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsReplaceKeywords;
 import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
@@ -27,7 +24,6 @@ import com.hxoms.modules.leaderSupervision.entity.AttachmentAskforjiwei;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
 import com.hxoms.modules.leaderSupervision.mapper.*;
-import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.FileTypeConvertUtil;
 import com.hxoms.modules.leaderSupervision.until.HtmlUtils;
@@ -38,10 +34,10 @@ import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
-import com.hxoms.support.user.entity.User;
-import dm.jdbc.dbaccess.Const;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +52,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,6 +67,8 @@ import java.util.stream.Collectors;
 @Service("leaderDetailProcessingService")
 public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessingService {
 
+    @Autowired
+    private OmsPubApplyMapper omsPubApplyMapper;
 
     @Autowired
     private MessageService messageService;
@@ -807,6 +804,10 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 Constants.leader_business[Constants.leader_business.length-1]);
 //
 
+        //更新因公出国境备案号（1：已备案，0：未备案，默认为0）
+        OmsPubApply omsPubApply = omsPubApplyMapper.selectById(omsCreateFile.getApplyId());
+        omsPubApply.setBah("1");
+        omsPubApplyMapper.updateById(omsPubApply);
         return omsCreateFile;
     }
 
