@@ -268,7 +268,7 @@ public class OmsOperatorController {
      */
     @GetMapping("/getOperatorApprovalByUid")
     public Result getOperatorApprovalByUid(String userId){
-        OmsOperatorApproval approval = operatorService.getOperatorApprovalByUid(userId);
+        List<OmsOperatorApproval> approval = operatorService.getOperatorApprovalByUid(userId);
         return Result.success(approval);
     }
     /**

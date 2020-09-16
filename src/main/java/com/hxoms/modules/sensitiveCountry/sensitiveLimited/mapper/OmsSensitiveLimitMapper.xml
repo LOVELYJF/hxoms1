@@ -60,7 +60,7 @@
         select COUNTRY_ID from oms_sensitive_maintain where IS_DELETE='0' and SENSITIVE_LIMIT_ID=#{sensitiveLimitId}
     </select>
 
-	<insert id="addSensitiveLimit" parameterType="java.util.Map">
+    <insert id="addSensitiveLimit" parameterType="java.util.Map">
         insert into oms_sensitive_limit(SENSITIVE_ITEM,SENSITIVE_LIMIT_ID,PUB_PRI)
         values (#{sensitiveItem},#{sensitiveLimitId},#{pubPri})
     </insert>

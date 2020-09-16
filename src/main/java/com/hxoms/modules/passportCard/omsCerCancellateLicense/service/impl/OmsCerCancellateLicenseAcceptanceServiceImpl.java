@@ -93,6 +93,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/7 16:43
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void getCerCancellateLicenseForce(List<OmsCerCancellateLicense> list) {
 		if(list != null && list.size() > 0){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
@@ -134,6 +135,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/7 16:43
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void updateCerCancellateLicenseAcceptance(OmsCerCancellateLicense omsCerCancellateLicense) {
 		omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));        //证照申请注销状态（处领导审批）
 		omsCerCancellateLicense.setZxfs(String.valueOf(Constants.CANCELL_MODE_STATUS[1]));          //注销方式（委托）
@@ -169,6 +171,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/7 16:43
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void updateCerCancellateLicenseAcceptanceNext(OmsCerCancellateLicense omsCerCancellateLicense) {
 		omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerCancellateLicense.setModifyTime(new Date());
@@ -275,6 +278,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 16:43
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void updateCerCancellateLicenseApproval(List<String> list, OmsCerCancellateLicense omsCerCancellateLicense) {
 		if(list == null || list.size() < 1){
 			throw new CustomMessageException("未选择要审批的人员");
@@ -330,6 +334,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 16:48
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public Map<String,Object> updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(omsCerCancellateLicense.getBldyj().equals("1")){
@@ -383,7 +388,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 * @Author: luoshuai
 	 * @Date: 2020/8/10 11:48
 	 */
-//	@Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateCerCancellateLicenseApprovalComplete(OmsCerCancellateLicense omsCerCancellateLicense) {
 		if(omsCerCancellateLicense.getGatshyj().equals("1")){
 			//公安厅通过

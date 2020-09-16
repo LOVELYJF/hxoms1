@@ -1,5 +1,6 @@
 package com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper;
 
+import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 
 import java.util.List;
@@ -65,4 +66,5 @@ public interface OmsSensitiveLimitMapper {
      * @Date: 2020/9/12 14:20
      */
 	void updateSensitiveMaintainToDelete(Map<String, Object> map);
+
 }

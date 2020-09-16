@@ -662,12 +662,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                     Integer allHold=0;
                     for (int i = firstRow+1; i <= lastRow; i++) {
                         //获取合并单元格值
-                        String mergedRegionValue=getMergedRegionValue(sheet,i,1);;
-                        if(!StringUtils.isBlank(mergedRegionValue)){
+                        String regionValue=sheet.getRow(i).getCell(1).toString();
+                        if(!StringUtils.isBlank(regionValue)){
                             Row row =sheet.getRow(i);
                             int column=2;
                             //证件信息读取
-                            if("证件信息".equals(mergedRegionValue)){
+                            if("证件信息".equals(regionValue)){
                                 CfCertificate cfCertificate=new CfCertificate();
                                 cfCertificate.setId(UUIDGenerator.getPrimaryKey());
                                 cfCertificate.setImportPerson(userInfo.getId());
@@ -741,7 +741,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     allHold=bigDecimal1.add(bigDecimal2).intValue();
                                     cfCertificateExport.setCfCertificate(cfCertificate);
                                 }
-                            }else if("出入境记录".equals(mergedRegionValue)){
+                            }else if("出入境记录".equals(regionValue)){
                                 //出入境记录读取
                                 OmsEntryexitRecord omsEntryexitRecord=new OmsEntryexitRecord();
                                 omsEntryexitRecord.setId(UUIDGenerator.getPrimaryKey());

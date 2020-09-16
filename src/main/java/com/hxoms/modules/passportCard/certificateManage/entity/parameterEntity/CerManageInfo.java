@@ -25,7 +25,7 @@ public class CerManageInfo {
     @ApiModelProperty(value = "单位")
     private String workUnit;
     //任职状态
-    @ApiModelProperty(value = "任职状态")
+    @ApiModelProperty(value = "任职状态(1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它)")
     private String incumbencyStatus;
     @ApiModelProperty(value = "任职状态名称")
     private String incumbencyStatusName;//转换给前端
