@@ -335,9 +335,13 @@
 
   <select id="selectListById" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="java.lang.String">
     select * from oms_reg_procpersoninfo where 1=1
-    <if test="id!=null and id!=''">
-      and id in(#{id})
-    </if>
+      <if test="id!=null and id!=''">
+          and ID in
+          <foreach collection="id" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
+    order by DATA_TYPE
   </select>
 
   <select id="selectRegInfoListById" resultType="java.util.LinkedHashMap" parameterType="java.lang.String">
@@ -398,9 +402,12 @@
       FROM
       oms_reg_procpersoninfo
       WHERE 1 = 1
-        <if test="id!=null and id!=''">
-            and id in(#{id})
-        </if>
+      <if test="id!=null and id!=''">
+          and ID in
+          <foreach collection="id" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+      </if>
   </select>
 
 

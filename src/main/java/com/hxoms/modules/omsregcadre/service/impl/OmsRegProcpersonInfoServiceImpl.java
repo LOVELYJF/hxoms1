@@ -576,9 +576,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     public int mergeDataGBandGA(String idStr) {
         int con = 0;
         QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        queryWrapper.in("ID", idStr.split(","));
-        queryWrapper.orderByAsc("DATA_TYPE");
-        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectList(queryWrapper);
+        List<OmsRegProcpersoninfo> omsregList = baseMapper.selectListById(idStr);
         if (omsregList != null && omsregList.size() > 0) {
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
