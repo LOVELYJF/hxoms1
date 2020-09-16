@@ -133,7 +133,9 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
         // 提交时间
         omsOperatorApproval.setSubmissiontime(new Date());
         // 提交人
-        omsOperatorApproval.setSubmitter(loginUser.getId());
+        omsOperatorApproval.setSubmitter(loginUser.getUserName());
+        //提交人id
+        omsOperatorApproval.setSubmitterid(loginUser.getId());
         //新增经办人审批信息
         operatorApprovalMapper.insertSelective(omsOperatorApproval);
     }
@@ -171,7 +173,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
            // 提交时间
            approval.setSubmissiontime(new Date());
            // 提交人
-           approval.setSubmitter(loginUser.getName());
+           approval.setSubmitter(loginUser.getUserName());
            //提交人id
            approval.setSubmitterid(loginUser.getId());
            approval.setApprovalresult("拒绝");
@@ -188,7 +190,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
            // 提交时间
            approval.setSubmissiontime(new Date());
            // 提交人
-           approval.setSubmitter(loginUser.getName());
+           approval.setSubmitter(loginUser.getUserName());
            //提交人id
            approval.setSubmitterid(loginUser.getId());
            approval.setApprovalresult("拒绝");
@@ -237,7 +239,7 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             // 提交时间
             approval.setSubmissiontime(new Date());
             // 提交人
-            approval.setSubmitter(loginUser.getName());
+            approval.setSubmitter(loginUser.getUserName());
             //提交人id
             approval.setSubmitterid(loginUser.getId());
             approval.setApprovalresult("同意");
@@ -257,11 +259,11 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
             // 提交时间
             approval.setSubmissiontime(new Date());
             // 提交人
-            approval.setSubmitter(loginUser.getName());
+            approval.setSubmitter(loginUser.getUserName());
             //提交人id
             approval.setSubmitterid(loginUser.getId());
-            approval.setApprovalresult("拒绝");
-            approval.setApprovalopinion("拒绝");
+            approval.setApprovalresult("同意");
+            approval.setApprovalopinion("同意");
             //新增经办人审批信息
             operatorApprovalMapper.insertSelective(approval);
         }else {

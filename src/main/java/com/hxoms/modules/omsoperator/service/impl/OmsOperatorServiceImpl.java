@@ -168,7 +168,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             // 提交时间
             omsOperatorApproval.setSubmissiontime(new Date());
             // 提交人
-            omsOperatorApproval.setSubmitter(loginUser.getName());
+            omsOperatorApproval.setSubmitter(loginUser.getUserName());
             //提交人id
             omsOperatorApproval.setSubmitterid(loginUser.getId());
             omsOperatorApproval.setApprovalresult("同意");
