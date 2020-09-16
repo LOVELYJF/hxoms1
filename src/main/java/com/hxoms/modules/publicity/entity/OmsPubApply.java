@@ -277,6 +277,9 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "BZ",   FieldDescription="备注")
     @ApiModelProperty(value="备注")
     private String bz;
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：上传）")
+    @ApiModelProperty(value="数据来源（0：填写，1：上传）")
+    private String source;
 
     public String getId() {
         return id;
@@ -764,5 +767,13 @@ public class OmsPubApply {
 
     public void setBz(String bz) {
         this.bz = bz == null ? null : bz.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source == null ? null : source.trim();
     }
 }

@@ -167,28 +167,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApply.setSqzt(Constants.private_business[1]);
             //是否下达(1-是,0-否)
             omsPubApply.setSfxd(1);
-//            //如果是琼赴台，往预备案表插入数据
-//            if (omsPubApply.getPwh().contains("琼台赴")){
-//                OmsPubGroupPreApproval selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(omsPubApply.getPwh());
-//                if (selectOmsPubGroupPreApproval == null) {
-//                    OmsPubGroupPreApproval omsPubGroupPreApproval = new OmsPubGroupPreApproval();
-//                    //将台办通知书文号作为主键
-//                    omsPubGroupPreApproval.setId(omsPubApply.getPwh());
-//                    //出境时间、
-//                    omsPubGroupPreApproval.setCgsj(omsPubApply.getCgsj());
-//                    // 入境时间、
-//                    omsPubGroupPreApproval.setHgsj(omsPubApply.getHgsj());
-//                    // 任务、
-//                    omsPubGroupPreApproval.setCfrw(omsPubApply.getCfrw());
-//                    // 事由
-//                    omsPubGroupPreApproval.setCfsy(omsPubApply.getCfsy());
-//                    //创建人
-//                    omsPubGroupPreApproval.setCreateUser(loginUser.getId());
-//                    //创建时间
-//                    omsPubGroupPreApproval.setCreateTime(new Date());
-//                    omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
-//                }
-//            }
+            //数据来源（0：填写，1：上传）
+            omsPubApply.setSource("0");
             omsPubApplyMapper.insert(omsPubApply);
         }
         //判断校验类型
