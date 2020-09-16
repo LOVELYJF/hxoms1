@@ -18,9 +18,9 @@
         <result column="sys_info" jdbcType="VARCHAR" property="sysInfo"/>
     </resultMap>
     <sql id="Base_Column_List">
-    mu_id, mu_code, mu_name, mu_type, mu_desc, mu_state, mu_iconpath, mu_pid, url, order_index,
-    modify_user, modify_time,assembly,sys_info
-  </sql>
+       mu_id, mu_code, mu_name, mu_type, mu_desc, mu_state, mu_iconpath, mu_pid, url, order_index,
+       modify_user, modify_time,assembly,sys_info
+    </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -237,8 +237,24 @@
         ORDER BY order_index
     </select>
     <select id="selectRouterList" resultMap="BaseResultMap">
-        select t.mu_id, t.mu_code, t.mu_name, t.mu_type, t.mu_desc, t.mu_state, t.mu_iconpath, t.mu_pid, t.url, t.order_index,
-        t.modify_user, t.modify_time,t.assembly
-        from cf_module t where t.url !='' and t.assembly !=''
+        SELECT
+            t.mu_id,
+            t.mu_code,
+            t.mu_name,
+            t.mu_type,
+            t.mu_desc,
+            t.mu_state,
+            t.mu_iconpath,
+            t.mu_pid,
+            t.url,
+            t.order_index,
+            t.modify_user,
+            t.modify_time,
+            t.assembly
+        FROM
+            cf_module t
+        WHERE
+            t.url != ''
+            AND t.assembly != ''
     </select>
 </mapper>
