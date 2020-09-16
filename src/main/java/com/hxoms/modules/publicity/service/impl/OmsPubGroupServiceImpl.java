@@ -3,15 +3,11 @@ package com.hxoms.modules.publicity.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.condition.service.OmsConditionService;
-import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
-import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.mapper.OmsAttachmentMapper;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
@@ -741,6 +737,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setSfzb(Constants.IS_NOT);
         pubApply.setSftsry(Constants.IS_NOT);
         pubApply.setDwjsxs(Constants.IS_NOT);
+        pubApply.setSource(pubGroup.getSource());
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());
         return pubApply;

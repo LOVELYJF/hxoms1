@@ -41,7 +41,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<String> selectIdnumberByType(String dataType);
 
-    List<Map> selectRegInfoListById(String idStr);
+    List<Map> selectRegInfoListById(String id);
 }
 
 

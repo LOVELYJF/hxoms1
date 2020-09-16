@@ -31,7 +31,7 @@ public class RegProcpersoninfo {
     @ApiModelProperty(value="民族")
     private String nationName;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value="出生日期（身份证）")
     private Date birthDate;
 

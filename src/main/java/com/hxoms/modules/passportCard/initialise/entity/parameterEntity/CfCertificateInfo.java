@@ -47,7 +47,7 @@ public class CfCertificateInfo {
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
     //有效期至
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value = "有效期至")
     private Date yxqz;
     //保管单位
@@ -63,14 +63,14 @@ public class CfCertificateInfo {
     @ApiModelProperty(value = "位置")
     private String place;
     //出生日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
     //签发单位
     @ApiModelProperty(value = "签发单位")
     private String qfjg;
     //签发日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value = "签发日期")
     private  Date qfrq;
     //出生地
