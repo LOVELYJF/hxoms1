@@ -563,15 +563,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         }
     }
 
-    /** 获取脱密期确认列表 */
-    @Override
-    public Map<String, Object> getConfirmPeriodList() {
-        Map<String, Object> resultMap = new LinkedHashMap<>();
-        List<OmsSmrPersonInfo> list = smrPersonInfoMapper.getConfirmPeriodList();
-        resultMap.put("result", list);
-        return resultMap;
-    }
-
     /** 批量修改涉密人员信息（确认脱密期、涉密人员信息维护） */
     @Override
     public boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList) {

@@ -25,8 +25,6 @@ public interface OmsSmrPersonInfoMapper  extends BaseMapper<OmsSmrPersonInfo> {
     List<String> getFailReportOrg();
     //获取差异数据列表
     List<OmsSmrPersonInfo> getDifferentData();
-    //获取脱密期确认列表
-    List<OmsSmrPersonInfo> getConfirmPeriodList();
     //获取涉密人员信息维护列表
     List<OmsSmrPersonInfo> getSmrMaintainList(Map<String, Object> param);
     //批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
