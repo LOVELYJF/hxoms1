@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 
 import java.text.ParseException;
+import java.util.Map;
 
 /**
  * 涉密人员原涉密信息管理
@@ -22,4 +23,6 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     Object update(OmsSmrOldInfo smrOldInfo);
     //删除涉密人员原涉密信息
     Object delete(String id);
+    //获取脱密期确认列表
+    Map<String, Object> getConfirmPeriodList();
 }

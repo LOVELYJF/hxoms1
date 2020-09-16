@@ -3,14 +3,16 @@ package com.hxoms.modules.passportCard.admintorGet.controller;
 
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetApplyList;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetCerInfo;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetQueryParam;
+import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.*;
 import com.hxoms.modules.passportCard.admintorGet.service.OmsAdmintorGetService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "管理员取证")
 @RestController
 @RequestMapping("/admintorGet")
+@Validated
 public class OmsAdmintorGetController {
 
     @Autowired
@@ -42,16 +45,42 @@ public class OmsAdmintorGetController {
     }
 
     /**
-     * @Desc: 保存管理员取证申请
+     * @Desc: 查询人员证照
      * @Author: wangyunquan
-     * @Param: [admintorGetApplyList]
-     * @Return: com.hxoms.common.utils.Result
-     * @Date: 2020/8/18
+     * @Param: [omsId]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.RequestList<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo>>
+     * @Date: 2020/9/14
      */
-    @ApiOperation(value = "保存管理员取证申请")
+    @ApiOperation(value = "查询人员证照")
+    @ApiImplicitParam(value = "备案表id",name = "omsId",required = true,paramType = "query")
+    @GetMapping("/selectInfoByName")
+    public Result<RequestList<PersonInfo>> selectInfoByOmsId(@NotBlank(message = "omsId不能为空") String omsId){
+        return Result.success(omsAdmintorGetService.selectInfoByOmsId(omsId));
+    }
+
+   /**
+    * @Desc: 保存管理员取证申请并打印二维码
+    * @Author: wangyunquan
+    * @Param: [admintorGetApplyList]
+    * @Return: com.hxoms.common.utils.Result
+    * @Date: 2020/9/14
+    */
+    @ApiOperation(value = "保存管理员取证申请并打印二维码")
     @PostMapping("/insertAdmintorGetApply")
-    public Result insertAdmintorGetApply(@RequestBody AdmintorGetApplyList admintorGetApplyList){
-        omsAdmintorGetService.insertAdmintorGetApply(admintorGetApplyList);
-        return Result.success();
+    public Result<GetCerInfoAndQrCode> insertAdmintorGetApply(@RequestBody @Validated RequestList<AdminGetCerApply> admintorGetApplyList){
+        return Result.success(omsAdmintorGetService.insertAdmintorGetApply(admintorGetApplyList.getList()));
+    }
+
+    /**
+     * @Desc: 打印二维码
+     * @Author: wangyunquan
+     * @Param: [requestList]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.GetCerInfoAndQrCode>
+     * @Date: 2020/9/15
+     */
+    @ApiOperation(value = "打印二维码")
+    @PostMapping("/createPrintQrCode")
+    public Result<GetCerInfoAndQrCode> createPrintQrCode(@RequestBody @Validated RequestList<PrintQrCodeParams> requestList){
+        return Result.success(omsAdmintorGetService.createPrintQrCode(requestList.getList()));
     }
 }

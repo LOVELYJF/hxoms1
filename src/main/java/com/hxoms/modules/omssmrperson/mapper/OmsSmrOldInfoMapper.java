@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -23,8 +24,10 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
 
     /**
      * 涉密信息列表
-     * @param paramMap 参数
+     * @param paramMap 参数a
      * @return
      */
     List<OmsSmrOldInfoVO> getSmrOldInfoVOList(Map<String, String> paramMap);
+
+    List<OmsSmrOldInfo> getConfirmPeriodList();
 }

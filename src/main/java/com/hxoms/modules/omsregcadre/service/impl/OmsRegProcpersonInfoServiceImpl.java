@@ -525,9 +525,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     }
 
     @Override
-    public List<OmsRegProcpersoninfo> selectMergeList() {
+    public List<OmsRegProcpersoninfo> selectMergeList(String sortType) {
         //显示待备案干部数据 和 在职状态为“未匹配”的公安数据
-        return baseMapper.selectMergeList();
+        return baseMapper.selectMergeList(sortType);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
@@ -44,10 +45,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Autowired
     private OmsSmrCompareMapper smrCompareMapper;
     @Autowired
-    private OmsSmrOldInfoMapper smrOldInfoMapper;
-    @Autowired
     private OmsSmrOldInfoService smrOldInfoService;
-
+    @Autowired
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
 
     /** 获取涉密人员信息列表 */
@@ -94,8 +93,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Override
     public Object insertSmrPersonInfo(String importYear, String b0100,List<OmsSmrPersonInfo> smrPersonInfoList) {
         //插入涉密人员基本信息
-        boolean a = smrPersonInfoMapper.insertPersonList(smrPersonInfoList) > 0 ? true : false;
-        if(a){
+        boolean flag = smrPersonInfoMapper.insertPersonList(smrPersonInfoList) > 0;
+        if(flag){
             //封装涉密人员备案信息
             List<OmsSmrRecordInfo> srrList = new ArrayList<>();
             for(int i=0; i<smrPersonInfoList.size(); i++){
@@ -120,9 +119,12 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 smrRecordInfo.setIsMatching(isMatching);
                 srrList.add(smrRecordInfo);
             }
-            return smrRecordInfoMapper.insertRecordList(srrList) > 0;
+            flag = smrRecordInfoMapper.insertRecordList(srrList) > 0;
+            if(flag){//插入省国家保密局备案涉密人员表
+                flag = initSmrOldInfoList(smrPersonInfoList);//插入原涉密信息表
+            }
         }
-        return false;
+        return flag;
 
     }
 
@@ -142,84 +144,106 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Override
     public Map<String, Object> uploadSmrExcel(MultipartFile file, String importYear, String b0100) {
         Map<String, Object> resultMap = new HashMap<>();
-        String msg = "";
-        int errOrgNum = 0;
-        String userId = UserInfoUtil.getUserId();
-        OmsSmrPersonInfo smrPersonInfo = new OmsSmrPersonInfo();
-        List<Map<String, Object>> list = readExcel(file);
-        List<OmsSmrPersonInfo> srpList = new ArrayList<OmsSmrPersonInfo>();
-        if(list.size() == 0){
-            msg = "选择的涉密人员统计表格式不正确，请下载模板后，按模板格式调整！";
-            srpList.add(smrPersonInfo);
-        }else{
-            for(int i = 0; i <= list.size(); i++){
-                Map<String, Object> map = new HashMap<>();
-                String idCardNum = list.get(i).get("idCardNumber").toString();//身份证号
-                if(StringUtils.isNotBlank(idCardNum)){
-                    if(idCardNum.length() != 18){
-                        msg = "姓名："+list.get(i).get("name")+",性别:"+list.get(i).get("sex")+",出生年月:"+list.get(i).get("birthDay");
-                        msg += ",身份证号码:"+idCardNum+",职务（级）:"+list.get(i).get("post")+",其身份证号码格式不正确;";
-                    }
-                }
-                map.put("b0100",b0100);
-                map.put("idCardNum",idCardNum);
-                OmsRegProcpersoninfo rppInfo = regProcpersonInfoMapper.selectRegIdByMap(map);
-                //判断所选机构和人员机构是否一致
-                if(!b0100.equals(rppInfo.getRfB0000())){
-                    errOrgNum += 1;
-                }
-                String srLevel = list.get(i).get("secretRelatedLevel").toString();//涉密等级
-                //封装涉密人员基本信息
-                smrPersonInfo.setId(UUIDGenerator.getPrimaryKey());
-                smrPersonInfo.setA0100(rppInfo.getId());
-                smrPersonInfo.setB0100(b0100);
-                smrPersonInfo.setIdCardNumber(idCardNum);
-                smrPersonInfo.setA0141(list.get(i).get("a0141").toString());
-                smrPersonInfo.setPost(list.get(i).get("post").toString());
-                smrPersonInfo.setPersonState(list.get(i).get("personState").toString());
-                smrPersonInfo.setSecretRelatedPost(list.get(i).get("secretRelatedPost").toString());
-                if(StringUtils.isNotBlank(srLevel)){
-                    if(!"核心".equals(srLevel) && !"重要".equals(srLevel) && !"一般".equals(srLevel)){
-                        msg = "姓名："+list.get(i).get("name")+",性别:"+list.get(i).get("sex")+",出生年月:"+list.get(i).get("birthDay");
-                        msg += ",身份证号码:"+idCardNum+",职务（级）:"+list.get(i).get("post")+",其涉密等级格式不正确;";
-                    }
-                }
-                smrPersonInfo.setSecretRelatedLevel(srLevel);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd ");
-                if(!"".equals(list.get(i).get("secretReviewDate").toString())){
-                    try{
-                        Date srDate = simpleDateFormat.parse(list.get(i).get("secretReviewDate").toString());
-                        smrPersonInfo.setSecretReviewDate(srDate);
-                    } catch(ParseException px) {
-                        px.printStackTrace();
-                    }
-                }
-                Date startDate = formatDate(list.get(i).get("startDate").toString());
-                if(startDate == null){
-                    msg = "姓名："+list.get(i).get("name")+",性别:"+list.get(i).get("sex")+",出生年月:"+list.get(i).get("birthDay");
-                    msg += ",身份证号码:"+idCardNum+",职务（级）:"+list.get(i).get("post")+",其脱密期管理开始日期格式不正确;";
-                }else{
-                    smrPersonInfo.setStartDate(startDate);
-                }
-                Date finishDate = formatDate(list.get(i).get("finishDate").toString());
-                if(finishDate == null){
-                    msg = "姓名："+list.get(i).get("name")+",性别:"+list.get(i).get("sex")+",出生年月:"+list.get(i).get("birthDay");
-                    msg += ",身份证号码:"+idCardNum+",职务（级）:"+list.get(i).get("post")+",其脱密期管理结束日期格式不正确;";
-                }else{
-                    smrPersonInfo.setFinishDate(finishDate);
-                }
-                smrPersonInfo.setUpdateUserId(userId);
-                smrPersonInfo.setUpdateTime(new Date());
-                smrPersonInfo.setMsg(msg);
-
+        try{
+            boolean flag = smrOldInfoService.getSmrOldInfoById(1,10000,"").getList().size() > 0;//判断是否初次导入
+            String msg = "";
+            int errOrgNum = 0;
+            String userId = UserInfoUtil.getUserId();
+            OmsSmrPersonInfo smrPersonInfo = new OmsSmrPersonInfo();
+            List<Map<String, Object>> list = readExcel(file);
+            List<OmsSmrPersonInfo> srpList = new ArrayList<OmsSmrPersonInfo>();
+            if(list.size() == 0){
+                msg = "选择的涉密人员统计表格式不正确，请下载模板后，按模板格式调整！";
                 srpList.add(smrPersonInfo);
+            }else{
+                for(int i = 0; i <= list.size(); i++){
+                    Map<String, Object> dataMap = list.get(i);
+                    String personStatu = dataMap.get("personState").toString();
+                    Date finishDate = formatDate(dataMap.get("finishDate").toString());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    if(flag){//非初次导入
+                        if(personStatu == null){
+                            msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
+                            msg += ",在职状态为空";
+                            continue;
+                        }
+                        if (!"在编".equals(personStatu)){//非在职人员
+                            continue;
+                        }
+                        if (finishDate != null &&finishDate.compareTo(formatDate(sdf.format(new Date()))) <= 0){
+                            continue;
+                        }
+                    }
+                    Map<String, Object> map = new HashMap<>();
+                    String idCardNum = dataMap.get("idCardNumber").toString();//身份证号
+                    if(StringUtils.isNotBlank(idCardNum)){
+                        if(idCardNum.length() != 18){
+                            msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
+                            msg += ",身份证号码:"+idCardNum+",职务（级）:"+dataMap.get("post")+",其身份证号码格式不正确;";
+                        }
+                    }
+                    map.put("b0100",b0100);
+                    map.put("idCardNum",idCardNum);
+                    OmsRegProcpersoninfo rppInfo = regProcpersonInfoMapper.selectRegIdByMap(map);
+                    //判断所选机构和人员机构是否一致
+                    if(!b0100.equals(rppInfo.getRfB0000())){
+                        errOrgNum += 1;
+                    }
+                    String srLevel = dataMap.get("secretRelatedLevel").toString();//涉密等级
+                    //封装涉密人员基本信息
+                    smrPersonInfo.setId(UUIDGenerator.getPrimaryKey());
+                    smrPersonInfo.setA0100(rppInfo.getId());
+                    smrPersonInfo.setB0100(b0100);
+                    smrPersonInfo.setIdCardNumber(idCardNum);
+                    smrPersonInfo.setA0141(dataMap.get("a0141").toString());
+                    smrPersonInfo.setPost(dataMap.get("post").toString());
+                    smrPersonInfo.setPersonState(dataMap.get("personState").toString());
+                    smrPersonInfo.setSecretRelatedPost(dataMap.get("secretRelatedPost").toString());
+                    if(StringUtils.isNotBlank(srLevel)){
+                        if(!"核心".equals(srLevel) && !"重要".equals(srLevel) && !"一般".equals(srLevel)){
+                            msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
+                            msg += ",身份证号码:"+idCardNum+",职务（级）:"+dataMap.get("post")+",其涉密等级格式不正确;";
+                        }
+                    }
+                    smrPersonInfo.setSecretRelatedLevel(srLevel);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd ");
+                    if(!"".equals(dataMap.get("secretReviewDate").toString())){
+                        try{
+                            Date srDate = simpleDateFormat.parse(dataMap.get("secretReviewDate").toString());
+                            smrPersonInfo.setSecretReviewDate(srDate);
+
+                        } catch(ParseException px) {
+                            px.printStackTrace();
+                        }
+                    }
+                    Date startDate = formatDate(dataMap.get("startDate").toString());
+                    if(startDate == null){
+                        msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
+                        msg += ",身份证号码:"+idCardNum+",职务（级）:"+dataMap.get("post")+",其脱密期管理开始日期格式不正确;";
+                    }else{
+                        smrPersonInfo.setStartDate(startDate);
+                    }
+                    if(finishDate == null){
+                        msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
+                        msg += ",身份证号码:"+idCardNum+",职务（级）:"+dataMap.get("post")+",其脱密期管理结束日期格式不正确;";
+                    }else{
+                        smrPersonInfo.setFinishDate(finishDate);
+                    }
+                    smrPersonInfo.setUpdateUserId(userId);
+                    smrPersonInfo.setUpdateTime(new Date());
+                    smrPersonInfo.setMsg(msg);
+
+                    srpList.add(smrPersonInfo);
+                }
             }
+            if(errOrgNum > 0 && errOrgNum/srpList.size() > 0.5){
+                msg = "所导入涉密人员单位与选择的单位不一致率大于50%，请确认所选单位是否正确！";
+            }
+            resultMap.put("msg",msg);
+            resultMap.put("resultList",srpList);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        if(errOrgNum > 0 && errOrgNum/srpList.size() > 0.5){
-            msg = "所导入涉密人员单位与选择的单位不一致率大于50%，请确认所选单位是否正确！";
-        }
-        resultMap.put("msg",msg);
-        resultMap.put("resultList",srpList);
         return resultMap;
     }
 
@@ -318,22 +342,23 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
         HSSFRow row = null;
         for(int i = 0; i < list.size(); i++){
+            OmsSmrPersonInfo smrPersonInfoNew = new OmsSmrPersonInfo();
             row = sheet.createRow(i + 2);
             row.createCell(0).setCellValue(i + 1);
-            row.createCell(1).setCellValue(list.get(i).getB0101());
-            row.createCell(2).setCellValue(list.get(i).getName());
-            row.createCell(3).setCellValue(list.get(i).getSex());
-            row.createCell(4).setCellValue(list.get(i).getPost());
-            row.createCell(5).setCellValue(list.get(i).getA0141());
-            row.createCell(6).setCellValue(list.get(i).getPersonState());
-            row.createCell(7).setCellValue(list.get(i).getMaxSecretRelatedOrg());
-            row.createCell(8).setCellValue(list.get(i).getMaxSecretRelatedLevel());
-            row.createCell(9).setCellValue(list.get(i).getMaxFinishDate());
-            row.createCell(10).setCellValue(list.get(i).getSecretRelatedPost());
-            row.createCell(11).setCellValue(list.get(i).getSecretRelatedLevel());
-            row.createCell(12).setCellValue(list.get(i).getSecretReviewDate());
-            row.createCell(13).setCellValue(list.get(i).getStartDate());
-            row.createCell(14).setCellValue(list.get(i).getFinishDate());
+            row.createCell(1).setCellValue(smrPersonInfoNew.getB0101());
+            row.createCell(2).setCellValue(smrPersonInfoNew.getName());
+            row.createCell(3).setCellValue(smrPersonInfoNew.getSex());
+            row.createCell(4).setCellValue(smrPersonInfoNew.getPost());
+            row.createCell(5).setCellValue(smrPersonInfoNew.getA0141());
+            row.createCell(6).setCellValue(smrPersonInfoNew.getPersonState());
+            row.createCell(7).setCellValue(smrPersonInfoNew.getMaxSecretRelatedOrg());
+            row.createCell(8).setCellValue(smrPersonInfoNew.getMaxSecretRelatedLevel());
+            row.createCell(9).setCellValue(smrPersonInfoNew.getMaxFinishDate());
+            row.createCell(10).setCellValue(smrPersonInfoNew.getSecretRelatedPost());
+            row.createCell(11).setCellValue(smrPersonInfoNew.getSecretRelatedLevel());
+            row.createCell(12).setCellValue(smrPersonInfoNew.getSecretReviewDate());
+            row.createCell(13).setCellValue(smrPersonInfoNew.getStartDate());
+            row.createCell(14).setCellValue(smrPersonInfoNew.getFinishDate());
             //设置单元格字体大小
             for(int j = 0;j < 8;j++){
                 row.getCell(j).setCellStyle(style1);
@@ -538,23 +563,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         }
     }
 
-    /** 获取脱密期确认列表 */
-    @Override
-    public Map<String, Object> getConfirmPeriodList() {
-        Map<String, Object> resultMap = new LinkedHashMap<>();
-        List<OmsSmrPersonInfo> list = smrPersonInfoMapper.getConfirmPeriodList();
-        resultMap.put("result", list);
-        return resultMap;
-    }
-
     /** 批量修改涉密人员信息（确认脱密期、涉密人员信息维护） */
     @Override
     public boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList) {
-        boolean b = false;
-        if(smrPersonInfoMapper.updateSmrPersonList(smrPersonInfoList) > 0){
-            b = true;
-        }
-        return b;
+        return smrPersonInfoMapper.updateSmrPersonList(smrPersonInfoList) > 0?true:false;
     }
 
     /** 获取涉密人员信息维护列表 */
@@ -786,4 +798,31 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return "0";
     }
 
+    private boolean initSmrOldInfoList(List<OmsSmrPersonInfo> smrPersonInfoList){
+        List<OmsSmrOldInfo> smrOldInfoList = new ArrayList<>();
+        int size = smrPersonInfoList.size();
+        if(size > 0){
+            for (int i = 0; i < size; i++) {
+                OmsSmrPersonInfo smrPersonInfo = smrPersonInfoList.get(i);
+                //封装原涉密信息
+                OmsSmrOldInfo smrOldInfo = new OmsSmrOldInfo();
+                smrOldInfo.setId(UUIDGenerator.getPrimaryKey());
+                smrOldInfo.setProcPersonId(smrPersonInfo.getProcPersonId());
+                smrOldInfo.setA0100(smrPersonInfo.getA0100());
+                smrOldInfo.setB0100(smrPersonInfo.getB0100());
+                smrOldInfo.setSecretRelatedPost(smrPersonInfo.getSecretRelatedPost());
+                smrOldInfo.setSecretRelatedLevel(smrPersonInfo.getSecretRelatedLevel());
+                smrOldInfo.setSecretReviewDate(smrPersonInfo.getSecretReviewDate());
+                smrOldInfo.setStartDate(smrPersonInfo.getStartDate());
+                smrOldInfo.setFinishDate(smrPersonInfo.getFinishDate());
+                smrOldInfo.setImportYear(smrPersonInfo.getImportYear());
+                smrOldInfo.setPersonState(smrPersonInfo.getPersonState());
+                smrOldInfo.setPost(smrPersonInfo.getPost());
+
+                smrOldInfoList.add(smrOldInfo);
+            }
+            return smrOldInfoService.saveBatch(smrOldInfoList);
+        }
+        return false;
+    }
 }

@@ -36,7 +36,6 @@ public class CfCertificateController {
     private CfCertificateService cfCertificateService;
 
 
-
     /**
      * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
      * @Author: wuqingfan
@@ -49,6 +48,20 @@ public class CfCertificateController {
     @PostMapping("/exportExceptionCer")
     public void exportExceptionCer(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
         cfCertificateService.exportExceptionCer(Arrays.asList(ids.split(",")),response);
+    }
+
+    /**
+     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/10
+     */
+    @ApiOperation(value = "证照管理-导出证照查询表omsID（涉及到的模板可共用）")
+    @ApiImplicitParam(value = "选中列表中的omsId，利用','隔开拼接", name = "ids", required = true, paramType = "query")
+    @PostMapping("/exportExceptionCerForOmsId")
+    public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
+        cfCertificateService.exportExceptionCerForOmsId(Arrays.asList(ids.split(",")),response);
     }
 
     /**

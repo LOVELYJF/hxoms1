@@ -85,6 +85,26 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/9/10
      */
     @Override
+    public void exportExceptionCerForOmsId(List<String> ids, HttpServletResponse response) {
+        if (ids == null || ids.size() < 1) {
+            throw new CustomMessageException("操作失败！");
+        }
+        List<ExportExceptionCer> getList = cfCertificateMapper.exportExceptionCerForOmsId(ids);
+        if (getList.size()>0){
+            getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));
+        }
+        String[] headers="序号,姓名,,身份证号,性别(必填项)1：男；2女；,出生日期（必填项）19880101,出入境起始时间（20050101），最大查询5年的出入境记录".split(",");
+        ExportExcelUtil.exportNotTitleExcel("存疑证照统计",headers,(List) getList,"yyyyMMdd",response);
+    }
+
+    /**
+     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+     * @Author: wuqingfan
+     * @Param: [ids]
+     * @Return: excel
+     * @Date: 2020/9/10
+     */
+    @Override
     public void exportExceptionCer(List<String> ids, HttpServletResponse response) {
         if (ids == null || ids.size() < 1) {
             throw new CustomMessageException("操作失败！");
@@ -662,12 +682,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                     Integer allHold=0;
                     for (int i = firstRow+1; i <= lastRow; i++) {
                         //获取合并单元格值
-                        String mergedRegionValue=getMergedRegionValue(sheet,i,1);;
-                        if(!StringUtils.isBlank(mergedRegionValue)){
+                        String regionValue=sheet.getRow(i).getCell(1).toString();
+                        if(!StringUtils.isBlank(regionValue)){
                             Row row =sheet.getRow(i);
                             int column=2;
                             //证件信息读取
-                            if("证件信息".equals(mergedRegionValue)){
+                            if("证件信息".equals(regionValue)){
                                 CfCertificate cfCertificate=new CfCertificate();
                                 cfCertificate.setId(UUIDGenerator.getPrimaryKey());
                                 cfCertificate.setImportPerson(userInfo.getId());
@@ -741,7 +761,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     allHold=bigDecimal1.add(bigDecimal2).intValue();
                                     cfCertificateExport.setCfCertificate(cfCertificate);
                                 }
-                            }else if("出入境记录".equals(mergedRegionValue)){
+                            }else if("出入境记录".equals(regionValue)){
                                 //出入境记录读取
                                 OmsEntryexitRecord omsEntryexitRecord=new OmsEntryexitRecord();
                                 omsEntryexitRecord.setId(UUIDGenerator.getPrimaryKey());

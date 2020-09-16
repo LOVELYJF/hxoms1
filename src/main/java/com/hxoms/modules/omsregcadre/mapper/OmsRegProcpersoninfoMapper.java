@@ -27,7 +27,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<StatisticsCountVo> selectAllFlagCount();
 
-    List<OmsRegProcpersoninfo> selectMergeList();
+    List<OmsRegProcpersoninfo> selectMergeList(String sortType);
 
     List<OmsRegProcpersoninfo> selectListById(String id);
 

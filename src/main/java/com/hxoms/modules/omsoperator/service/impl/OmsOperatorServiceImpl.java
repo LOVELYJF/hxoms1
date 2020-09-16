@@ -127,8 +127,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         String msc ="";
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        //创建审批对象
-        OmsOperatorApproval  omsOperatorApproval = new OmsOperatorApproval();
+
         if (StringUilt.isStrOrnull(user.getUserId())) {
             //更新
             //修改人
@@ -158,21 +157,24 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //新增经办人信息
             cfUserMapper.insertSelective(user);
         }
-        OmsOperatorApproval omsOperatorApproval1 = operatorApprovalMapper.selectByUserId(user.getUserId());
-        if(omsOperatorApproval1 == null){
+        //创建审批对象
+        OmsOperatorApproval  omsOperatorApproval = new OmsOperatorApproval();
             //经办人审批表主键、
             omsOperatorApproval.setId(UUIDGenerator.getPrimaryKey());
             // 经办人主键、
             omsOperatorApproval.setOperatorid(user.getUserId());
-            //步骤名称（1.监督处审核 2.处领导审批）、
-            omsOperatorApproval.setStepname("监督处审核");
+            //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+            omsOperatorApproval.setStepname("上报");
             // 提交时间
             omsOperatorApproval.setSubmissiontime(new Date());
             // 提交人
-            omsOperatorApproval.setSubmitter(loginUser.getId());
+            omsOperatorApproval.setSubmitter(loginUser.getUserName());
+            //提交人id
+            omsOperatorApproval.setSubmitterid(loginUser.getId());
+            omsOperatorApproval.setApprovalresult("同意");
+            omsOperatorApproval.setApprovalopinion("同意");
             //新增经办人审批信息
             operatorApprovalMapper.insertSelective(omsOperatorApproval);
-        }
         return "请通知经办人持单位审批后的申请表及身份证到干部监督处办理审批手续";
     }
 
@@ -241,13 +243,14 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Return: com.hxoms.modules.omsoperator.entity.OmsOperatorApproval
      * @Author: 李逍遥
      * @Date: 2020/5/11 9:16
+     * @return
      */
     @Override
-    public OmsOperatorApproval getOperatorApprovalByUid(String userId) {
+    public List<OmsOperatorApproval> getOperatorApprovalByUid(String userId) {
         if (StringUtils.isBlank(userId)) {
             throw new CustomMessageException("参数为空！");
         }
-        OmsOperatorApproval approval = operatorApprovalMapper.selectByUserId(userId);
+        List<OmsOperatorApproval> approval = operatorApprovalMapper.selectByUserId(userId);
         return approval;
     }
 

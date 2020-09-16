@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-public class OmsEntryexitRecordModel  extends BaseRowModel {
+public class OmsEntryexitRecordModel{
 
     @ExcelProperty(value = "出入境状态 出1，入2", index = 0)
     private String ogeStatus;

@@ -186,11 +186,13 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
 
 
     @Override
-    public Object updateApplyStatusByCLD(OmsRegRevokeapply revokeApply,String applyIds) {
+    public Object updateApplyStatusByCLD(String status,String applyIds) {
         String[] num = applyIds.split(",");
+        OmsRegRevokeapply apply = new OmsRegRevokeapply();
+        apply.setStatus(status);
         QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.in("ID",num);
-        return baseMapper.update(revokeApply,queryWrapper);
+        return baseMapper.update(apply,queryWrapper);
     }
 
     @Override

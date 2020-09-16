@@ -22,8 +22,8 @@ public class OmsCerAdmintorGetApply {
     @ApiModelProperty(value="备案信息表ID")
     private String omsId;
 
-    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照领取表ID")
-    @ApiModelProperty(value="证照领取表ID")
+    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照管理表ID")
+    @ApiModelProperty(value="证照管理表ID")
     private String cerId;
 
     @ColumnAnnotation(FieldName = "NAME",   FieldDescription="姓名")

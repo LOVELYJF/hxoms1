@@ -130,8 +130,8 @@ public class OmsRegProcpersoninfoController {
      * @return
      */
     @PostMapping("/selectMergeList")
-    public Result selectMergeList(){
-        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList();
+    public Result selectMergeList(String sortType){
+        List<OmsRegProcpersoninfo> list = mrpinfoService.selectMergeList(sortType);
         return Result.success(list);
     }
 
@@ -456,33 +456,6 @@ public class OmsRegProcpersoninfoController {
 
 
 
-
-    /**
-     * 导出
-     *
-     * @return
-     * @throws Exception
-     */
-    /*public Result exportToExcel(String idStr) throws Exception {
-        List<OmsRegProcpersoninfo> list = mrpinfoService.selectListById(idStr);
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        try {
-
-            // session 用户信息
-            UserInfo userInfo = CommonCode.getUserInfo(getRequest());
-
-            paramMap.put("uAreacode", userInfo.getuAreacode());
-            list = a01Service.findA01InformationList(paramMap);
-            String titlels = getParameter("titlels");
-            String colsls = getParameter("colsls");
-            ExcelUtil.exportInfo(titlels, colsls, list, getResponse(), "干部人员信息", "干部人员信息");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }*/
 
 
     /**

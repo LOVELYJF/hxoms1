@@ -4,9 +4,9 @@ package com.hxoms.modules.passportCard.admintorGet.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.admintorGet.entity.OmsCerAdmintorGetApply;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetApplyList;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetCerInfo;
-import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.AdmintorGetQueryParam;
+import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.*;
+
+import java.util.List;
 
 public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> {
 
@@ -21,11 +21,29 @@ public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> 
     PageBean<AdmintorGetCerInfo> selectCerInfo(PageBean pageBean, AdmintorGetQueryParam admintorGetQueryParam);
 
     /**
-     * @Desc: 保存管理员取证申请
+     * @Desc: 保存管理员取证申请并打印二维码
      * @Author: wangyunquan
      * @Param: [admintorGetApplyList]
      * @Return: void
      * @Date: 2020/8/18
      */
-    void insertAdmintorGetApply(AdmintorGetApplyList admintorGetApplyList);
+    GetCerInfoAndQrCode insertAdmintorGetApply(List<AdminGetCerApply> adminGetCerApplyList);
+
+    /**
+     * @Desc: 查询人员证照
+     * @Author: wangyunquan
+     * @Param: [omsId]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo>
+     * @Date: 2020/9/14
+     */
+    List<PersonInfo> selectInfoByOmsId(String omsId);
+
+    /**
+     * @Desc: 打印二维码
+     * @Author: wangyunquan
+     * @Param: [printQrCodeParamsList]
+     * @Return: com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.GetCerInfoAndQrCode
+     * @Date: 2020/9/15
+     */
+    GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList);
 }
