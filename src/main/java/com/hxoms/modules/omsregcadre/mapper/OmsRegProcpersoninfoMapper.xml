@@ -269,7 +269,7 @@
       IDNUMBER_GA
       ELSE
       IDNUMBER_GB
-      END AS idnumberGb,
+      END AS IDNUMBER_GB,
       WORK_UNIT,
       POST
       FROM
