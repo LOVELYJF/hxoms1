@@ -696,7 +696,7 @@
 		<include refid="commonSql" />
 		WHERE
 		a.SAVE_STATUS = '1'
-		AND a.CARD_STATUS = '3'
+		AND a.CARD_STATUS in ('3','5')
 	</select>
 
 
@@ -1047,7 +1047,7 @@
 	<!-- WQF ADD 导出存疑证照统计-导出证照查询-->
 	<select id="exportExceptionCer" resultType="com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer" parameterType="java.util.List">
 		SELECT
-		a.NAME name,
+		concat(b.surName,b.name) name,
 		b.IDNUMBER_GB idnumberGb,
 		b.SEX sex,
 		b.BIRTH_DATE birthDate
@@ -1070,13 +1070,12 @@
 	<!-- WQF ADD 导出存疑证照统计-导出证照查询-->
 	<select id="exportExceptionCerForOmsId" resultType="com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer" parameterType="java.util.List">
 		SELECT
-		a.NAME name,
+		concat(b.surName,b.name) name,
 		b.IDNUMBER_GB idnumberGb,
 		b.SEX sex,
 		b.BIRTH_DATE birthDate
 		FROM
-		cf_certificate a
-		INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+		 oms_reg_procpersoninfo b
 		WHERE
 		'1'= '1'
 		<!--WQF ADD 勾选查询使用-->
