@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Author: luoshuai
 	 * @Date: 2020/8/11 8:41
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public Map<String,Object> saveApplyLendingLicenseInfo(List<OmsCerApplyLendingLicense> list) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("tableCode", "oms_cer_cancellate_lending");

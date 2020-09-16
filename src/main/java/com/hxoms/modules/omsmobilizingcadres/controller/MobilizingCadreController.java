@@ -2,6 +2,7 @@ package com.hxoms.modules.omsmobilizingcadres.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingVO;
 import com.hxoms.modules.omsmobilizingcadres.entity.OmsMobilizingcadre;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +90,7 @@ public class MobilizingCadreController {
      * @Date: 2020/9/14 10:02
      */
     @PostMapping("/exportMobilizingCadre")
-    public void  exportMobilizingCadre(@RequestParam(value ="orgIds",required = false) List<String> orgIds, String name, String status, HttpServletResponse response){
-        mobilizingcadreService.exportMobilizingCadre(orgIds,name,status,response);
+    public void  exportMobilizingCadre(@RequestBody OmsMobilizingVO omsMobilizingVO, HttpServletResponse response){
+        mobilizingcadreService.exportMobilizingCadre(omsMobilizingVO.getOrgIds(),omsMobilizingVO.getName(),omsMobilizingVO.getStatus(),response);
     }
 }
