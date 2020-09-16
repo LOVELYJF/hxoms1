@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoninfo> {
 
-    List<String> selectRegProcpersonInfo(String dataType);
+    List<OmsRegProcpersoninfo> selectRegProcpersonInfo(String dataType);
 
     int batchAddorpInfo(@Param(value = "list")List<OmsRegProcpersoninfo> subList);
 

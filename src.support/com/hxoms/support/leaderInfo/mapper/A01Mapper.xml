@@ -122,10 +122,14 @@
 		<include refid="Base_Column_List" />
 		,
 		<include refid="Blob_Column_List" />
-		from a01
+		from a01 where is_deleted='0'
 	</select>
 
-	<!-- 查询领导信息 -->
+	<!-- 根据管理状态、人员编号、机构id查询领导职务信息
+	只返回中管和省管干部，且职务状态为在职、未删除的人、未删除的职务
+	按人员和职务序号排序
+	目前用于登记备案和设置主要领导
+	 -->
 	<select id="selectPersonInfo" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT
 			a.A0100 as 'a0100',
@@ -137,6 +141,7 @@
 			a2.A0215A as 'a0215a',
 			a2.A0215B as 'a0215b',
 			a2.a0221 as 'A0221',
+			a2.a0279 as 'a0279',
 			b.B0100 as 'b0100',
 			b.B0101 as 'b0101'
 		from  a01 a
@@ -145,12 +150,16 @@
 
 		<where>
 			<trim suffixOverrides="and">
-				<if test="1 == 1">a.a0163 = '1' and a2.a0255 = '1' and a.is_deleted = '0' and a.a0165 = '02' and </if>
+				<if test="1 == 1"> a2.a0255 = '1' and a2.is_deleted = '0' and a.is_deleted = '0' and a.a0165 in('01','02')   and
+					a.a0100 in (select a02.a0100
+					from a02 inner join b01 on a02.a0201b=b01.b0100
+					where b01.b0111 like '001.001%') and </if>
+				<if test="a0163 != null">a.a0163 =#{a0163} and </if>
 				<if test="a0100 != null">a.a0100 =#{a0100} and </if>
 				<if test="a0201b != null">a2.a0201b =#{a0201b} and </if>
 			</trim>
 		</where>
-
+       order by a2.a0100,a2.a0223
 	</select>
 
 	<!--根据机构ID查询-->
@@ -163,7 +172,7 @@
     (select b0100 from b01) e
     ON
     d.a0201b=e.b0100
-    where
+    where c.is_deleted='0' and
     e.b0100 = #{orgId,jdbcType=VARCHAR} and d.a0255='1'
   </select>
 
@@ -1447,4 +1456,22 @@
       zj_type = #{zjType,jdbcType=VARCHAR}
     where a0100 = #{a0100,jdbcType=VARCHAR}
   </update>
+	<!--按身份证号分组取最近任现职时间，是防止同一个人在干综系统中有两条数据，只取最近一条。
+	因为干综有两套机构，按机构编号like，保证只取省管干部，不会取到公务员的数据。
+	该sql用于初始化登记备案和提取需要登记备案的人员
+	-->
+	<select id="extractCadreForRegister" resultMap="BaseResultMap">
+	SELECT
+        a.*
+      from  a01 a inner join
+      (SELECT
+			a.A0184,
+			max(a.RXZ_DATE) as  RXZ_DATE
+		from  a01 a group by a.A0184) b on
+		a.A0184=b.A0184 and a.RXZ_DATE=b.RXZ_DATE
+      where a.is_deleted = '0' and a.a0165 in('01','02')  and
+      a.a0100 in (select a02.a0100
+      from a02 inner join b01 on a02.a0201b=b01.b0100
+       where b01.b0111 like '001.001%')
+    </select>
 </mapper>

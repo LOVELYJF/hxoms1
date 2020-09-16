@@ -26,7 +26,10 @@
     WHERE DICT_CODE =#{dictCode} ORDER BY INFO_ID
   </select>
     <select id="selectPostInfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig">
-        select PARENT_ID,INFO_NAME from oms_baseinfo_config WHERE DICT_CODE = 'ZB08' AND INFO_ID = #{infoId}
+        select INFO_ID,PARENT_ID,INFO_NAME from oms_baseinfo_config WHERE DICT_CODE = 'ZB08'
+        <if test="infoId!=null" >
+         AND INFO_ID = #{infoId}
+         </if>
     </select>
 
     <insert id="insertBatchList" parameterType="java.util.List">

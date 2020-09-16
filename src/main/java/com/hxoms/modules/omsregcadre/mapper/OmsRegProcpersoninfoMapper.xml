@@ -66,9 +66,9 @@
     CREATE_USER, MODIFY_TIME,MODIFY_USER, SORT_ID, PY, SECRET_POST,EXIT_DATE,FINISH_TIME,RZ_DATE
   </sql>
 
-
-  <select id="selectRegProcpersonInfo" resultType="java.lang.String" parameterType="java.lang.String">
-    select A0100 from OMS_REG_PROCPERSONINFO where 1=1
+<!--目前只用于初始化登记备案和提取登记备案时使用-->
+  <select id="selectRegProcpersonInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from OMS_REG_PROCPERSONINFO where IDENTITY_CODE='1'
       <if test="dataType !=null and dataType !=''">
           and DATA_TYPE = #{dataType}
       </if>
