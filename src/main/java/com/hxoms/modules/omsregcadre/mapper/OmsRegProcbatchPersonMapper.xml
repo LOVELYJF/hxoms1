@@ -57,14 +57,14 @@
         )
     values
     <foreach collection="list" index="index" item="item" separator=",">
-      (#{id,jdbcType=VARCHAR}, #{batchId,jdbcType=VARCHAR}, #{surname,jdbcType=VARCHAR},
-      #{rfId,jdbcType=VARCHAR}, #{a0100,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
-      #{sex,jdbcType=VARCHAR}, #{birthDate,jdbcType=DATE}, #{birthDateGb,jdbcType=DATE},
-      #{idnumberGb,jdbcType=VARCHAR}, #{idnumberGa,jdbcType=INTEGER}, #{registeResidenceCode,jdbcType=VARCHAR},
-      #{registeResidence,jdbcType=VARCHAR}, #{workUnit,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR},
-      #{postCode,jdbcType=VARCHAR}, #{personManager,jdbcType=VARCHAR}, #{identityCode,jdbcType=VARCHAR},
-      #{identity,jdbcType=VARCHAR}, #{secretLevel,jdbcType=CHAR}, #{decryptStartdate,jdbcType=DATE},
-      #{decryptEnddate,jdbcType=DATE}
+      (#{item.id,jdbcType=VARCHAR}, #{item.batchId,jdbcType=VARCHAR}, #{item.surname,jdbcType=VARCHAR},
+      #{item.rfId,jdbcType=VARCHAR}, #{item.a0100,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR},
+      #{item.sex,jdbcType=VARCHAR}, #{item.birthDate,jdbcType=DATE}, #{item.birthDateGb,jdbcType=DATE},
+      #{item.idnumberGb,jdbcType=VARCHAR}, #{item.idnumberGa,jdbcType=INTEGER}, #{item.registeResidenceCode,jdbcType=VARCHAR},
+      #{item.registeResidence,jdbcType=VARCHAR}, #{item.workUnit,jdbcType=VARCHAR}, #{item.post,jdbcType=VARCHAR},
+      #{item.postCode,jdbcType=VARCHAR}, #{item.personManager,jdbcType=VARCHAR}, #{item.identityCode,jdbcType=VARCHAR},
+      #{item.identity,jdbcType=VARCHAR}, #{item.secretLevel,jdbcType=CHAR}, #{item.decryptStartdate,jdbcType=DATE},
+      #{item.decryptEnddate,jdbcType=DATE}
       )
     </foreach>
   </insert>

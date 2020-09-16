@@ -106,7 +106,7 @@ public interface A01Mapper extends BaseMapper<A01> {
      * @param map
      * @return
      */
-    List<Map<String,Object>> selectPersonInfo(Map<String,Object> map);
+    List<Map<String, Object>> selectPersonInfo(Map<String,Object> map);
 
 
     /**
@@ -115,4 +115,12 @@ public interface A01Mapper extends BaseMapper<A01> {
      * @return
      */
 	List<Map<String, Object>> selectPersonInfoForfamily(Map<String, Object> map);
+	/**
+	* @description: 从干部库提取人员用于登记备案
+	* @author:杨波
+	* @date:2020-09-15
+	*  * @param null
+	* @return:
+	**/
+	List<A01> extractCadreForRegister();
 }

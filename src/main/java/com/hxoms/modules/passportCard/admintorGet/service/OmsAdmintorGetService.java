@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.modules.passportCard.admintorGet.entity.OmsCerAdmintorGetApply;
 import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.*;
-import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> {
@@ -29,7 +27,7 @@ public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> 
      * @Return: void
      * @Date: 2020/8/18
      */
-    QrCode insertAdmintorGetApply(List<AdminGetCerApply> adminGetCerApplyList);
+    GetCerInfoAndQrCode insertAdmintorGetApply(List<AdminGetCerApply> adminGetCerApplyList);
 
     /**
      * @Desc: 查询人员证照
@@ -47,5 +45,5 @@ public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> 
      * @Return: com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.GetCerInfoAndQrCode
      * @Date: 2020/9/15
      */
-    GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList) throws IOException;
+    GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList);
 }

@@ -6,6 +6,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsBaseinfoConfig;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OmsBaseinfoConfigMapper extends BaseMapper<OmsBaseinfoConfig> {
 
@@ -15,5 +16,5 @@ public interface OmsBaseinfoConfigMapper extends BaseMapper<OmsBaseinfoConfig> {
 
     int deleteBaseInfoConfig(@Param("list") String[] infoIds);
 
-    OmsBaseinfoConfig selectPostInfo(String a0215b);
+    List<OmsBaseinfoConfig> selectPostInfo(Map<String,Object> map);
 }

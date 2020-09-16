@@ -31,4 +31,14 @@
     time_stamp
   </sql>
 
+  <select id="extractForRegister" resultMap="BaseResultMap">
+    	SELECT
+        a.*
+      from  a30 a
+      where a.is_deleted = '0' and
+      a.a0100 in (select a02.a0100
+      from a02 inner join b01 on a02.a0201b=b01.b0100
+       where b01.b0111 like '001.001%')
+       order by A3004 desc
+  </select>
 </mapper>
