@@ -81,20 +81,28 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
      * @Return: void
      * @Date: 2020/8/18
      */
-    @Override
+    public GetCerInfoAndQrCode insertAdmintorGetApply(List<AdminGetCerApply> adminGetCerApplyList){
+        //保存数据
+        List<String> ids = saveData(adminGetCerApplyList);
+        //查询证照并生成打印二维码
+        return getCerInfoAndCreateQrCode(ids);
+    }
+
     @Transactional(rollbackFor = Exception.class)
-    public QrCode insertAdmintorGetApply(List<AdminGetCerApply> adminGetCerApplyList) {
+    public List<String> saveData(List<AdminGetCerApply> adminGetCerApplyList) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
         List<OmsCerGetTask> omsCerGetTaskList=new ArrayList<>();
         List<OmsCerAdmintorGetApply> omsCerAdmintorGetApplyList=new ArrayList<>();
         List<CfCertificate> cfCertificateList=new ArrayList<>();
+        List<String> ids=new ArrayList<>();
         for (AdminGetCerApply adminGetCerApply : adminGetCerApplyList) {
             Date date=new Date();
             OmsCerAdmintorGetApply omsCerAdmintorGetApply=new OmsCerAdmintorGetApply();
             BeanUtils.copyProperties(adminGetCerApply,omsCerAdmintorGetApply);
             omsCerAdmintorGetApply.setId(UUIDGenerator.getPrimaryKey());
+            ids.add(omsCerAdmintorGetApply.getId());
             omsCerAdmintorGetApply.setOperator(userInfo.getId());
             omsCerAdmintorGetApplyList.add(omsCerAdmintorGetApply);
             //新增领取任务
@@ -130,9 +138,7 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
         //更新证照状态
         if(!cfCertificateService.updateBatchById(cfCertificateList))
             throw new CustomMessageException("证照表更新失败！");
-        //查询证照并打印生成二维码
-
-        return null;
+        return ids;
     }
 
     /**
@@ -143,13 +149,24 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
      * @Date: 2020/9/15
      */
     @Override
-    public GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList) throws IOException {
+    public GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList){
         List<String> ids=new ArrayList<>();
         for (PrintQrCodeParams printQrCodeParams : printQrCodeParamsList) {
             if(!"7".equals(printQrCodeParams.getCardStatus()))
                 throw new CustomMessageException(printQrCodeParams.getZjlxName()+"("+ printQrCodeParams.getZjhm()+")"+"不是未领取状态，不能打印二维码，请重新选择！");
             ids.add(printQrCodeParams.getId());
         }
+        return getCerInfoAndCreateQrCode(ids);
+    }
+
+    /**
+     * @Desc: 获取证照信息及生成打印二维码
+     * @Author: wangyunquan
+     * @Param: [ids]
+     * @Return: com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.GetCerInfoAndQrCode
+     * @Date: 2020/9/16
+     */
+    private GetCerInfoAndQrCode getCerInfoAndCreateQrCode(List<String> ids) {
         List<CanGetCerInfo> canGetCerInfoList=omsCerAdmintorGetApplyMapper.selectPrintCerInfo(ids);
         List<CreateQrCodeApply> createQrCodeApplies=new ArrayList<>();
         for (CanGetCerInfo canGetCerInfo : canGetCerInfoList) {
@@ -157,7 +174,13 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
             BeanUtils.copyProperties(canGetCerInfo,createQrCodeApply);
             createQrCodeApplies.add(createQrCodeApply);
         }
-        QrCode printQrCode = omsPrintGetQrCodeService.createPrintQrCode(createQrCodeApplies);
+        QrCode printQrCode=null;
+        try {
+            printQrCode = omsPrintGetQrCodeService.createPrintQrCode(createQrCodeApplies);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException(e.getMessage());
+        }
         GetCerInfoAndQrCode getCerInfoAndQrCode=new GetCerInfoAndQrCode();
         getCerInfoAndQrCode.setCanGetCerInfoList(canGetCerInfoList);
         getCerInfoAndQrCode.setQrCode(printQrCode.getQrCodeStr());
