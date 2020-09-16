@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * 涉密人员原涉密信息管理
  * @author gaozhenyuan
@@ -64,6 +66,19 @@ public class OmsSmrOldInfoController {
         return Result.success(smrOldInfoService.delete(id));
     }
 
+    /**
+     * 获取脱密期确认列表
+     */
+    @GetMapping("/getConfirmPeriodList")
+    public Result getConfirmPeriodList() {
+        try{
+            Map<String, Object> resultMap = smrOldInfoService.getConfirmPeriodList();
+            return Result.success(resultMap);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
 
 
 }

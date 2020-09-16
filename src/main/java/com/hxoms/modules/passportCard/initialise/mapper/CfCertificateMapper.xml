@@ -1055,13 +1055,38 @@
 		cf_certificate a
 		INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
 		WHERE
-		a.SAVE_STATUS = '1'
-		AND a.CARD_STATUS = '3'
+		'1'= '1'
+		<!--WQF ADD 勾选查询使用-->
+		<if test="ids!=null">
 		AND a.ID in
 		<foreach collection="ids" index="index" item="item" open="("
 				 separator="," close=")">
 			#{item}
 		</foreach>
+		</if>
+
+	</select>
+
+	<!-- WQF ADD 导出存疑证照统计-导出证照查询-->
+	<select id="exportExceptionCerForOmsId" resultType="com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer" parameterType="java.util.List">
+		SELECT
+		a.NAME name,
+		b.IDNUMBER_GB idnumberGb,
+		b.SEX sex,
+		b.BIRTH_DATE birthDate
+		FROM
+		cf_certificate a
+		INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+		WHERE
+		'1'= '1'
+		<!--WQF ADD 勾选查询使用-->
+		<if test="ids!=null">
+			AND b.ID in
+			<foreach collection="ids" index="index" item="item" open="("
+					 separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 
 	</select>
 

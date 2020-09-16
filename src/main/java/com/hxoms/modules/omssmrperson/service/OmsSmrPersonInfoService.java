@@ -35,8 +35,6 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     List<OmsSmrPersonInfo> getDifferentData();
     //导出差异数据列表
     boolean exportDifferentData(HttpServletResponse response);
-    //获取脱密期确认列表
-    Map<String, Object> getConfirmPeriodList();
     //批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
     boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList);
     //获取涉密人员信息维护列表
