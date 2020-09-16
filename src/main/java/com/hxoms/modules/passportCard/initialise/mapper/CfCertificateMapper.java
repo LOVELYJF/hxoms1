@@ -28,8 +28,16 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Return: List<ExportNotProvicdeCer>
 	 * @Date: 2020/9/10
 	 */
-	List<ExportExceptionCer>  exportExceptionCer(@Param("ids") List<String> ids);
+	List<ExportExceptionCer>  exportExceptionCerForOmsId(@Param("ids") List<String> ids);
 
+	/**
+	 * @Desc: 初始化证照，导出未上缴证照统计
+	 * @Author: wuqingfan
+	 * @Param: [ids]
+	 * @Return: List<ExportNotProvicdeCer>
+	 * @Date: 2020/9/10
+	 */
+	List<ExportExceptionCer>  exportExceptionCer(@Param("ids") List<String> ids);
 
 	/**
 	 * @Desc: 初始化证照，导出未上缴证照统计
