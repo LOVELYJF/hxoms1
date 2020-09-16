@@ -222,7 +222,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     /**
      * 查询A0100对应的退出管理退出方式
      *
-     * @param a0100
+     * @param
      * @return
      */
     private String queryStatusByA0100(A01 a01, HashMap<String, A30> hashMapA30) {
@@ -497,30 +497,36 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list) {
         int con = 0;
-        List<OmsRegProcpersoninfo> newReg = new ArrayList<>();
-        List<OmsRegProcpersoninfo> editReg = new ArrayList<>();
-
-        List<OmsRegProcpersoninfo> oldgalist = omsRegProcpersonInfoService.selectListById(null);
-        HashMap<String, OmsRegProcpersoninfo> hashMapOld = new HashMap<>();
-        for (OmsRegProcpersoninfo oldgaData : oldgalist) {
-            hashMapOld.put(oldgaData.getSurname() + oldgaData.getName() + oldgaData.getIdnumberGb(), oldgaData);
-        }
+        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+        queryWrapper.in("DATA_TYPE", "2");
+        //查询备案库中的公安数据
+        List<OmsRegProcpersoninfo> oldgalist = baseMapper.selectList(queryWrapper);
         for (OmsRegProcpersoninfo newgaData : list) {
-            OmsRegProcpersoninfo oldgaData = hashMapOld.get(newgaData.getSurname() + newgaData.getName() + newgaData.getIdnumberGa());
+            for (OmsRegProcpersoninfo oldgaData : oldgalist) {
+                //数据比对更新
+                if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName().equals(newgaData.getName())) {
+                    oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
+                    this.dataCompareAndUpdate(oldgaData, newgaData);
+                } else {
 
-            //数据比对更新
-            if (oldgaData != null) {
-                this.dataCompareAndUpdate(oldgaData, newgaData);
-                editReg.add(oldgaData);
-            } else {
-                newReg.add(newgaData);
-                log.debug(newgaData.getId());
+                    //是否复姓。拆除
+                    boolean isCompoundSurname = OmsRegInitUtil.isCompoundSurname(newgaData.getName().trim());
+                    //是复姓
+                    if (isCompoundSurname) {
+                        //姓
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 2));
+                        //名
+                        newgaData.setName(newgaData.getName().trim().substring(2, newgaData.getName().trim().length()));
+                    } else {
+                        newgaData.setSurname(newgaData.getName().trim().substring(0, 1));
+                        newgaData.setName(newgaData.getName().trim().substring(1, newgaData.getName().trim().length()));
+                    }
+
+                    con = baseMapper.insert(newgaData);
+                }
+
             }
         }
-        if (newReg.size() > 0)
-            omsRegProcpersonInfoService.saveBatch(newReg);
-        if (editReg.size() > 0)
-            omsRegProcpersonInfoService.updateBatchById(editReg);
         return con;
     }
 
@@ -578,52 +584,44 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             OmsRegProcpersoninfo gaData = omsregList.get(1);
             //数据比对更新
             this.dataCompareAndUpdate(gbData, gaData);
-            con = baseMapper.updateById(gbData);
-            if (con > 0) {
-                con = baseMapper.deleteById(gaData.getId());
-            }
         }
         return con;
     }
 
-    private int dataCompareAndUpdate(OmsRegProcpersoninfo dataGB, OmsRegProcpersoninfo dataGA) {
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2) {
         int con = 0;
         //身份账号与名称一致
-        if (dataGB.getIdnumberGb().equals(dataGA.getIdnumberGa()) &&
-                dataGB.getName().equals(dataGA.getName()) &&
-                dataGB.getSurname().equals(dataGA.getSurname())) {
+        if (data1.getIdnumberGb().equals(data2.getIdnumberGa()) && data1.getName().equals(data2.getName())) {
             //更新干部相关信息从公安数据中维护
             //将公安的身份证号写入干部数据的公安身份证号字段里
-            dataGB.setIdnumberGa(dataGA.getIdnumberGa());
+            data1.setIdnumberGa(data2.getIdnumberGa());
             //将公安的出生日期写入干部数据的公安出生日期字段里
-            dataGB.setBirthDate(dataGA.getBirthDate());
-            dataGB.setModifyTime(new Date());
+            data1.setBirthDate(data2.getBirthDate());
+            data1.setModifyTime(new Date());
             //用公安数据的户口所在地
-            dataGB.setRegisteResidenceCode(dataGA.getRegisteResidenceCode());
-            dataGB.setRegisteResidence(dataGA.getRegisteResidence());
+            data1.setRegisteResidenceCode(data2.getRegisteResidenceCode());
+            data1.setRegisteResidence(data2.getRegisteResidence());
 
             //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
-            if ((dataGB.getWorkUnit()==null && dataGA.getWorkUnit()!=null)||
-                    (dataGB.getWorkUnit()!=null && dataGA.getWorkUnit()==null)||
-                    (dataGB.getWorkUnit()!=null &&dataGA.getWorkUnit()!=null&&dataGB.getWorkUnit().equals(dataGA.getWorkUnit()) == false) ||
-                    (dataGB.getPost()==null&&dataGA.getPost()!=null)||
-                    (dataGB.getPost()!=null&&dataGA.getPost()==null)||
-                    (dataGB.getPost()!=null&&dataGA.getPost()!=null&&dataGB.getPost().equals(dataGA.getPost()) == false)) {
+            if (data1.getWorkUnit().equals(data2) == false) {
                 //入库标识  新增U  修改I  撤消D
-                dataGB.setInboundFlag("I");
+                data1.setInboundFlag("I");
                 //备案状态  0未备案，1已备案，2已确认
-                dataGB.setRfStatus("0");
+                data1.setRfStatus("0");
                 //验收状态  1已验收，0待验收
-                dataGB.setCheckStatus("0");
+                data1.setCheckStatus("0");
             } else {
                 //入库标识  新增U  修改I  撤消D
-                dataGB.setInboundFlag(dataGA.getInboundFlag());
+                data1.setInboundFlag(data2.getInboundFlag());
                 //备案状态  0未备案，1已备案，2已确认
-                dataGB.setRfStatus("1");
+                data1.setRfStatus("1");
                 //验收状态  1已验收，0待验收
-                dataGB.setCheckStatus("1");
+                data1.setCheckStatus("1");
             }
-
+            con = baseMapper.updateById(data1);
+            if (con > 0) {
+                con = baseMapper.deleteById(data2.getId());
+            }
         } else {
             throw new CustomMessageException("当前选择数据姓名、身份证号不一致，请进行人工核对后再合并。");
         }
@@ -1064,6 +1062,19 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Override
     public List<ExcelCheckModelORPinfo> selectCheckModelList(String year) {
         return yearcheckInfoMapper.selectCheckModelList(year);
+    }
+
+
+    @Override
+    public List<Map> selectRegInfoListById(String idStr) {
+        List<Map> list=new ArrayList<Map>();
+        if (idStr != null) {
+            String id = idStr.split(",").toString();
+            list = baseMapper.selectRegInfoListById(id);
+        } else {
+            list = baseMapper.selectRegInfoListById(null);
+        }
+        return list;
     }
 
     /**

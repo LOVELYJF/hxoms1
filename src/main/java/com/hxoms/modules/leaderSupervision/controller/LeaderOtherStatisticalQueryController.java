@@ -73,6 +73,33 @@ public class LeaderOtherStatisticalQueryController {
     }
 
 
+    /**
+     * 征求 纪委意见 导出
+     *
+     * **/
+
+    @PostMapping("/export2222")
+    public void exportJiweiExcel(HttpServletResponse response){
+
+
+        try {
+            HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo1();
+            String date = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+    }
+
+
 
 
 

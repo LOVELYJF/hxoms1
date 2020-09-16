@@ -73,5 +73,8 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     List<ExcelCheckModelORPinfo> selectCheckModelList(String year);
 
     void SplitName(OmsRegProcpersoninfo orpInfo,String name);
+
     void SendMessage(String msg,String paramCode) throws IllegalAccessException, ClassNotFoundException, InstantiationException;
+
+    List<Map> selectRegInfoListById(String idStr);
 }
