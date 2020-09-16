@@ -32,7 +32,7 @@ public class OmsSupNakedSignController extends BaseController {
 	 */
 	@GetMapping("/getOmsNakedSign")
 	public Result getOmsNakedSign( Page<OmsSupNakedSign> page,@RequestParam(value = "idList",required = false) List<String> idList,
-	                              OmsSupNakedSign omsSupNakedSign){
+	                               OmsSupNakedSign omsSupNakedSign){
 		//查询裸官基本信息
 		page = omsNakedOfficialService.getNakedOfficialList(page,omsSupNakedSign,idList);
 		return Result.success(page);
