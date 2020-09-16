@@ -346,65 +346,67 @@
 
   <select id="selectRegInfoListById" resultType="java.util.LinkedHashMap" parameterType="java.lang.String">
       SELECT
-          ID AS id,
-          A0100 AS a0100,
-          RF_B0000 AS rfB0000,
-          INBOUND_FLAG AS inboundFlag,
-          RF_STATUS AS rfStatus,
-          CHECK_STATUS AS checkStatus,
-          INCUMBENCY_STATUS AS incumbencyStatus,
-          DATA_TYPE AS dataType,
-          SURNAME AS surname,
-          NAME AS name,
-          SEX AS sex,
-          BIRTH_DATE AS birthDate,
-          BIRTH_DATE_GB AS birthDateGb,
-          IDNUMBER_GA AS idnumberGa,
-          NATION_CODE AS nationCode,
-          NATION_NAME AS nationName,
-          IDNUMBER_GB AS idnumberGb,
-          IDNUMBER_GA AS idnumberGa,
-          POLITICAL_AFFICODE AS politicalAfficode,
-          POLITICAL_AFFINAME AS politicalAffiname,
-          HEALTH_CODE AS healthCode,
-          HEALTH AS health,
-          REGISTE_RESIDENCE_CODE AS registeResidenceCode,
-          REGISTE_RESIDENCE AS registeResidence,
-          WORK_UNIT AS workUnit,
-          POST_CODE AS postCode,
-          POST AS post,
-          PERSON_MANAGER AS personManager,
-          IDENTITY_CODE AS identityCode,
-          IDENTITY AS identity,
-          SECRET_LEVEL AS secretLevel,
-          DECRYPT_STARTDATE AS decryptStartdate,
-          DECRYPT_ENDDATE AS decryptEnddate,
-          MAIN_LEADER AS mainLeader,
-          LICENCE_IDENTITY AS licenceIdentity,
-          NF AS nf,
-          FJGNF AS fjgnf,
-          XRXGW AS xrxgw,
-          LQGZ AS lqgz,
-          DQGZ AS dqgz,
-          REPLYOPINION AS replyopinion,
-          ABROADTIME AS abroadtime,
-          REASON AS reason,
-          CREATE_TIME AS createTime,
-          CREATE_USER AS createUser,
-          MODIFY_TIME AS modifyTime,
-          MODIFY_USER AS modifyUser,
-          SORT_ID AS sortId,
-          PY AS py,
-          SECRET_POST AS secretPost,
-          EXIT_DATE AS exitDate,
-          FINISH_TIME AS finishTime,
-          RZ_DATE AS finishTime
-      FROM
-      oms_reg_procpersoninfo
+          p.ID AS id,
+          p.A0100 AS a0100,
+          p.RF_B0000 AS rfB0000,
+          p.INBOUND_FLAG AS inboundFlag,
+          p.RF_STATUS AS rfStatus,
+          p.CHECK_STATUS AS checkStatus,
+          p.INCUMBENCY_STATUS AS incumbencyStatus,
+          p.DATA_TYPE AS dataType,
+          p.SURNAME AS surname,
+          p.NAME AS name,
+          p.SEX AS sex,
+          p.BIRTH_DATE AS birthDate,
+          p.BIRTH_DATE_GB AS birthDateGb,
+          p.IDNUMBER_GA AS idnumberGa,
+          p.NATION_CODE AS nationCode,
+          p.NATION_NAME AS nationName,
+          p.IDNUMBER_GB AS idnumberGb,
+          p.IDNUMBER_GA AS idnumberGa,
+          p.POLITICAL_AFFICODE AS politicalAfficode,
+          p.POLITICAL_AFFINAME AS politicalAffiname,
+          p.HEALTH_CODE AS healthCode,
+          p.HEALTH AS health,
+          p.REGISTE_RESIDENCE_CODE AS registeResidenceCode,
+          p.REGISTE_RESIDENCE AS registeResidence,
+          p.WORK_UNIT AS workUnit,
+          p.POST_CODE AS postCode,
+          p.POST AS post,
+          p.PERSON_MANAGER AS personManager,
+          p.IDENTITY_CODE AS identityCode,
+          p.IDENTITY AS identity,
+          p.SECRET_LEVEL AS secretLevel,
+          p.DECRYPT_STARTDATE AS decryptStartdate,
+          p.DECRYPT_ENDDATE AS decryptEnddate,
+          p.MAIN_LEADER AS mainLeader,
+          p.LICENCE_IDENTITY AS licenceIdentity,
+          p.NF AS nf,
+          p.FJGNF AS fjgnf,
+          p.XRXGW AS xrxgw,
+          p.LQGZ AS lqgz,
+          p.DQGZ AS dqgz,
+          p.REPLYOPINION AS replyopinion,
+          p.ABROADTIME AS abroadtime,
+          p.REASON AS reason,
+          p.CREATE_TIME AS createTime,
+          p.CREATE_USER AS createUser,
+          p.MODIFY_TIME AS modifyTime,
+          p.MODIFY_USER AS modifyUser,
+          p.SORT_ID AS sortId,
+          p.PY AS py,
+          p.SECRET_POST AS secretPost,
+          p.EXIT_DATE AS exitDate,
+          p.FINISH_TIME AS finishTime,
+          p.RZ_DATE AS finishTime,
+          b.ORGANIZATION_CODE AS organizationCode,
+          b.CONTACTS AS contacts,
+          b.PHONE AS phone
+      FROM oms_reg_procpersoninfo p left join b01 b on p.RF_B0000 = b.B0100
       WHERE 1 = 1
-      <if test="id!=null and id.size > 0">
-          and ID in
-          <foreach collection="id" item="id" open="(" close=")" separator=",">
+      <if test="ids!=null and ids.size > 0">
+          and p.ID in
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
               #{id}
           </foreach>
       </if>
@@ -425,10 +427,10 @@
 
     <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="java.util.List">
         select * from oms_reg_procpersoninfo where 1=1
-            and INBOUND_FLAG != 'D'
-            and DATA_TYPE = '2'
-            and INCUMBENCY_STATUS not in (1,7)
-            and ID not in (select rf_id from oms_reg_revokeapply where status!='7')
+        and INBOUND_FLAG != 'D'
+        and DATA_TYPE = '2'
+        and INCUMBENCY_STATUS not in (1,7)
+        and ID not in (select rf_id from oms_reg_revokeapply where status!='7')
         <if test="idnumberGa !=null and idnumberGa !=''">
             and IDNUMBER_GA = #{idnumberGa}
         </if>
