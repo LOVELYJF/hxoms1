@@ -107,7 +107,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = hashMapReg.get(a01.getA0100());
 
-                boolean isNew = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                boolean isNew = (orpInfo == null ? true : false);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
 
                 //登记备案信息中存在此数据，则更新其对应信息
                 if (isNew == false) {
@@ -122,7 +123,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         } else if (a01list != null && hashMapReg.size() == 0) {
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = null;
-                initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
                 insertRegList.add(orpInfo);
             }
         }
@@ -151,18 +152,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @param a01
      * @return
      */
-    private boolean initData(OmsRegProcpersoninfo orpInfo, A01 a01,
-                             HashMap<String, List<Map<String, Object>>> hashMapA02,
-                             HashMap<String, A30> hashMapA30,
-                             HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) throws ParseException {
+    private OmsRegProcpersoninfo initData(OmsRegProcpersoninfo orpInfo, A01 a01,
+                                          HashMap<String, List<Map<String, Object>>> hashMapA02,
+                                          HashMap<String, A30> hashMapA30,
+                                          HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) throws ParseException {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy");
 
-        boolean isNew = false;
         if (orpInfo == null) {
-            isNew = true;
             orpInfo = new OmsRegProcpersoninfo();
             orpInfo.setId(UUIDGenerator.getPrimaryKey());
         }
@@ -216,7 +215,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setPersonManager("海南省委组织部");
         //任职时间
         orpInfo.setRzDate(a01.getRxzDate());
-        return isNew;
+        return orpInfo;
     }
 
     /**
@@ -301,6 +300,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         ) {
             String a0100 = map.get("a0100").toString();
             List<Map<String, Object>> a02s = hashMapA02.get(a0100);
+            if (a02s == null)
+                continue;
             a02s.add(map);
         }
         return hashMapA02;
@@ -506,7 +507,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //数据比对更新
                 if (oldgaData.getIdnumberGb().equals(newgaData.getIdnumberGa()) && oldgaData.getName().equals(newgaData.getName())) {
                     oldgaData.setIdnumberGa(newgaData.getIdnumberGa());
-                    this.dataCompareAndUpdate(oldgaData, newgaData,false);
+                    this.dataCompareAndUpdate(oldgaData, newgaData, false);
                 } else {
 
                     //是否复姓。拆除
@@ -581,16 +582,16 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         if (omsregList != null && omsregList.size() > 0) {
             OmsRegProcpersoninfo gbData = omsregList.get(0);
             OmsRegProcpersoninfo gaData = omsregList.get(1);
-            boolean flag =true;
-            this.dataCompareAndUpdate(gbData, gaData,flag);
+            boolean flag = true;
+            this.dataCompareAndUpdate(gbData, gaData, flag);
         }
         return con;
     }
 
-    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2,boolean flag) {
+    private int dataCompareAndUpdate(OmsRegProcpersoninfo data1, OmsRegProcpersoninfo data2, boolean flag) {
         int con = 0;
         //身份账号与名称一致
-        if (flag==true ||
+        if (flag == true ||
                 (data1.getIdnumberGb().equals(data2.getIdnumberGa())
                         && data1.getName().equals(data2.getName())
                         && data1.getSurname().equals(data2.getSurname()))) {
@@ -733,11 +734,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 OmsRegProcpersoninfo regProcpersoninfo = null;
 
                 if (omsreginfo == null || (omsreginfo != null && "2".equals(omsreginfo.getDataType())))
-                    initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                    regProcpersoninfo = initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
 
                 //根据身份证号和姓名找到了公安数据，合并
                 if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
-                    dataCompareAndUpdate(regProcpersoninfo, omsreginfo,false);
+                    dataCompareAndUpdate(regProcpersoninfo, omsreginfo, false);
                     adds.add(regProcpersoninfo);
                     omsRegProcpersonInfoService.deleteRpinfo(omsreginfo.getId());
                 }
@@ -1069,7 +1070,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public List<Map> selectRegInfoListById(String idStr) {
-        List<Map> list= new ArrayList<Map>();
+        List<Map> list = new ArrayList<Map>();
         if (idStr != null) {
             String id = idStr.split(",").toString();
             list = baseMapper.selectRegInfoListById(id);
