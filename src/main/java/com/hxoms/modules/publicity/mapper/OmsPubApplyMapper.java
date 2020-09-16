@@ -6,10 +6,11 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-
+@Repository
 public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
 
     OmsPubApply selectById(@Param("id") String id);
