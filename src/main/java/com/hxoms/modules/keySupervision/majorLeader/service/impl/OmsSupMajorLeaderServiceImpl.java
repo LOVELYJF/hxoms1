@@ -14,6 +14,7 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
@@ -115,7 +116,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			}else {
 				//在备案库中设置该对象为主要领导
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-				omsRegProcpersonInfo.setMainLeader("1");
+				omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.YES.getCode());
 				omsRegProcpersonInfo.setModifyTime(new Date());
 				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -148,7 +149,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 		}else {
 			//在备案库中取消主要领导标识
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setMainLeader("0");
+			omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.NO.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -192,7 +193,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			if(!result) {
 				//根据领导主键查询领导信息
 				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("a0163", "1");
+				map.put("a0163", YesOrNoEnum.YES.getCode());
 				map.put("a0100", a0100);
 				map.put("a0201b", person.getA0201b());
 				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(map);
@@ -225,7 +226,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 			//在备案库中设置该对象为主要领导
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setMainLeader("1");
+			omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.YES.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
