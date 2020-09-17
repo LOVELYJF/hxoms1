@@ -3,30 +3,54 @@
 <mapper namespace="com.hxoms.modules.passportCard.counterReturn.mapper.OmsCounterReturnMapper">
     <select id="selectCerByQua" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
     SELECT
-        id,
-        oms_id omsId,
-        card_status cardStatus
+        *
     FROM
         cf_certificate
     WHERE
         zjlx =#{zjlx}
     AND zjhm =#{zjhm}
-    AND NAME =#{name}
     </select>
-    <select id="selectPriApplyInfo" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApply">
+    <select id="selectPriApplyInfo" resultType="com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.PriApplyInfo">
     SELECT
         b.id,
-        a.name,
-        a.work_Unit workUnit,
+        concat(c.surname, c.name) name,
+        c.work_unit workUnit,
         b.CLASSIFICATION_LEVEL classificationLevel,
-        b.ABROAD_REASONS abroadReasons
+        b.ABROAD_REASONS abroadReasons,
+        b.paper zjlx,
+    IF (
+        b.paper = 1,
+        b.PASSPORT_NUM,
+
+    IF (
+        b.paper = 2,
+        b.HONGKONGANDMACAO_PASSPORT_NUM,
+
+    IF (
+        b.paper = 4,
+        b.TAIWAN_PASSPORT_NUM,
+        NULL
+    )
+    )
+    ) zjhm,
+     b.ABROAD_TIME abroadTime,
+     b.REAL_ABROAD_TIME realAbroadTime,
+     b.RETURN_TIME returnTime,
+     b.REAL_RETURN_TIME realReturnTime,
+     b.OUTSIDE_TIME outsideTime,
+     b.REAL_OUTSIDE_TIME realOutsideTime,
+     b.GO_COUNTRY goCountry,
+     b.REAL_GO_COUNTRY realGoCountry,
+     b.REAL_PASS_COUNTRY realPassCountry
     FROM
         cf_certificate_collection a
     INNER JOIN oms_pri_apply b ON a.busi_id = b.id
+    INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
     WHERE
-        a.oms_id = ''
+        a.oms_id = #{omsId}
     AND a.data_source = '1'
     AND a.cj_status = '2'
+    AND a.zjlx = #{zjlx}
     ORDER BY
         a.CREATETIME DESC
     LIMIT 1

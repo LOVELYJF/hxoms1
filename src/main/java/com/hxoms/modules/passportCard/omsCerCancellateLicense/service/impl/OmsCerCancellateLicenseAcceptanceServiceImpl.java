@@ -520,7 +520,6 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 
 					CfCertificate cfCertificate = new CfCertificate();
 					cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));       //注销
-					cfCertificate.setIsValid(1);        //证照设置成无效
 					QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 					queryWrapper.eq("ZJHM", omsCerCancellateLicense.getZjhm());
 					int count4 = cfCertificateMapper.update(cfCertificate, queryWrapper);

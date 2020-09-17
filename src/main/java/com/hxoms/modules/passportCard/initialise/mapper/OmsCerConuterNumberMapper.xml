@@ -19,8 +19,9 @@
 	    ID, SURELY_UNIT, ZJLX, ZJXS, COUNTER_NUM, STATUS, IS_LOCK, CREATOR, CREATE_TIME, UPDATER,
 	    UPDATE_TIME
   </sql>
-<select id="selectCounterNum" resultType="java.lang.Integer">
+<select id="selectCounterNum" resultType="com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber">
 	SELECT
+	id,
 	counter_num counterNum
 	FROM
 	oms_cer_counter_number
@@ -29,6 +30,7 @@
 	AND is_lock = '0'
 	AND surely_unit = #{surelyUnit}
 	AND zjlx = #{zjlx}
-	AND zjxs = #{zjxs};
+	AND zjxs = #{zjxs}
+	ORDER BY counter_num DESC LIMIT 1
 </select>
 </mapper>

@@ -26,7 +26,7 @@ public class CfCertificateCjInfo {
     @ApiModelProperty(value = "性别")
     private String sex;
     //出生日期
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value = "出生日期")
     private Date csrq;
     //身份证号
@@ -75,11 +75,11 @@ public class CfCertificateCjInfo {
     @ApiModelProperty(value = "来源名称")
     private String dataSourceName;
     //业务发生时间
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value = "业务发生时间")
     private Date happenDate;
     //应归还时间
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @ApiModelProperty(value = "应归还时间")
     private Date returnDate;
     //催缴情况
