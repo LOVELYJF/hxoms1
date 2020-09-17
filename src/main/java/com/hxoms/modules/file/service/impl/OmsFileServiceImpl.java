@@ -30,7 +30,6 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OtherPubApply;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
-import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,7 +254,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
 
             }
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"72\" style=\"width:72px\" span=\"5\"/>");
             stringBuffer.append("<col width=\"82\" style=\"width:82px\"/>" );
@@ -431,7 +430,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         }else if ("近三年出国（境）记录表".equals(fileName)){
 
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"115\" style=\"width:86.25pt;\"/>");
             stringBuffer.append("<col width=\"103\" style=\"width:77.25pt;\"/>");
