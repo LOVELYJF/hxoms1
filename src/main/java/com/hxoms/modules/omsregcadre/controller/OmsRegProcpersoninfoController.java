@@ -63,7 +63,6 @@ public class OmsRegProcpersoninfoController {
         }
     }
 
-
     /**
      * 新增登记备案人员
      * @author lijiaojiao
@@ -73,7 +72,6 @@ public class OmsRegProcpersoninfoController {
     public Result insertRpinfo(OmsRegProcpersoninfo orpInfo) {
         return Result.success(mrpinfoService.insertRpinfo(orpInfo));
     }
-
 
     /**
      * 修改登记备案人员
@@ -96,8 +94,6 @@ public class OmsRegProcpersoninfoController {
         return Result.success(mrpinfoService.deleteRpinfo(id));
     }
 
-
-
     /* 上传登记备案记录(出入境（公安）)
      * @param
      * @return
@@ -108,21 +104,17 @@ public class OmsRegProcpersoninfoController {
         try{
             List<OmsRegProcpersoninfo> uploadOmsRegGongAnlist = readOmsDataGA(file);
             if (uploadOmsRegGongAnlist!=null && uploadOmsRegGongAnlist.size()>0){
-                mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
-                return Result.success("上传成功");
+                String result = mrpinfoService.insertOmsRegGongAn(uploadOmsRegGongAnlist);
+                return Result.success(result);
             }else{
                 return Result.error("上传文件为空，请检查后再上传");
             }
-            /*//获取缓存
-            Cache<String,Object> cache = GuavaCache.getCache();
-            cache.put("uploadOmsRegGongAnlist", uploadOmsRegGongAnlist);*/
 
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("系统错误");
+            return Result.error("上传成功失败,原因："+e.getMessage());
         }
     }
-
 
     /**
      * 手工匹配列表查询
@@ -135,8 +127,6 @@ public class OmsRegProcpersoninfoController {
         return Result.success(list);
     }
 
-
-
     /**
      * 合并干部和公安数据
      * @param idStr
@@ -144,9 +134,8 @@ public class OmsRegProcpersoninfoController {
      */
     @PostMapping("/mergeDataGBandGA")
     public Result mergeDataGBandGA(String idStr) {
-        return Result.success(mrpinfoService.mergeDataGBandGA(idStr));
+        return mrpinfoService.mergeDataGBandGA(idStr);
     }
-
 
     /**
      * 查询省管干部登记备案信息
@@ -165,7 +154,6 @@ public class OmsRegProcpersoninfoController {
         }
     }
 
-
     /**
      * 提取备案人员
      * @author lijiaojiao
@@ -173,10 +161,8 @@ public class OmsRegProcpersoninfoController {
      */
     @PostMapping("/extractRegPersonInfo")
     public Result extractRegPersonInfo() throws ParseException {
-        return Result.success(mrpinfoService.extractRegPersonInfo());
+        return mrpinfoService.extractRegPersonInfo();
     }
-
-
 
     /**
      * 登记备案数据浏览
@@ -194,7 +180,6 @@ public class OmsRegProcpersoninfoController {
         }
     }
 
-
     /**
      * 根据批次编号查询批次所对应的人员
      * @return
@@ -209,7 +194,6 @@ public class OmsRegProcpersoninfoController {
             return Result.error("系统错误");
         }
     }
-
 
 
     /* 大检查上传登记备案记录(出入境（公安）)c

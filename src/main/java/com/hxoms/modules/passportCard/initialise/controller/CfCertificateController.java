@@ -57,7 +57,7 @@ public class CfCertificateController {
     @ApiOperation(value = "证照管理-导出证照查询表omsID（涉及到的模板可共用）")
     @ApiImplicitParam(value = "选中列表中的omsId，利用','隔开拼接", name = "ids", required = true, paramType = "query")
     @PostMapping("/exportExceptionCerForOmsId")
-    public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
+    public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") @RequestBody String ids, @ApiIgnore HttpServletResponse response) {
         cfCertificateService.exportExceptionCerForOmsId(Arrays.asList(ids.split(",")),response);
     }
 
