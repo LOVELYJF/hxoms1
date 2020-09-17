@@ -59,8 +59,6 @@ public class CfCertificateController {
     @ApiImplicitParam(value = "选中列表中的omsId，利用','隔开拼接", name = "ids", required = true, paramType = "query")
     @PostMapping("/exportExceptionCerForOmsId")
     public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") @RequestBody String ids, @ApiIgnore HttpServletResponse response) {
-        cfCertificateService.exportExceptionCerForOmsId(Arrays.asList(ids.split(",")),response);
-    public void exportExceptionCerForOmsId(@ApiIgnore String ids, @ApiIgnore HttpServletResponse response) {
         List<String> idss = null;
         if (!StringUtils.isBlank(ids)){
             idss = Arrays.asList(ids.split(","));
