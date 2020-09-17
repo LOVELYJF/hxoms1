@@ -104,7 +104,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = hashMapReg.get(a01.getA0100());
 
-                boolean isNew = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                boolean isNew = (orpInfo == null ? true : false);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+
 
                 //登记备案信息中存在此数据，则更新其对应信息
                 if (isNew == false) {
@@ -119,7 +121,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         } else if (a01list != null && hashMapReg.size() == 0) {
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = null;
-                initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
                 insertRegList.add(orpInfo);
             }
         }
@@ -148,7 +150,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @param a01
      * @return
      */
-    private boolean initData(OmsRegProcpersoninfo orpInfo, A01 a01,
+    private OmsRegProcpersoninfo initData(OmsRegProcpersoninfo orpInfo, A01 a01,
                              HashMap<String, List<Map<String, Object>>> hashMapA02,
                              HashMap<String, A30> hashMapA30,
                              HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) throws ParseException {
@@ -157,9 +159,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy");
 
-        boolean isNew = false;
         if (orpInfo == null) {
-            isNew = true;
             orpInfo = new OmsRegProcpersoninfo();
             orpInfo.setId(UUIDGenerator.getPrimaryKey());
         }
@@ -213,7 +213,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setPersonManager("海南省委组织部");
         //任职时间
         orpInfo.setRzDate(a01.getRxzDate());
-        return isNew;
+        return orpInfo;
     }
 
     /**
@@ -730,7 +730,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 OmsRegProcpersoninfo regProcpersoninfo = null;
 
                 if (omsreginfo == null || (omsreginfo != null && "2".equals(omsreginfo.getDataType())))
-                    initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                    regProcpersoninfo = initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
 
                 //根据身份证号和姓名找到了公安数据，合并
                 if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
