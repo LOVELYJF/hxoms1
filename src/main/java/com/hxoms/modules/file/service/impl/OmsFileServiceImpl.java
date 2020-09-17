@@ -30,6 +30,7 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OtherPubApply;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
+import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
