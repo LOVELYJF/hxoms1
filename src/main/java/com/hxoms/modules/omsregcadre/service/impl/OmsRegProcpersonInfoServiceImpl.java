@@ -540,7 +540,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Override
     public int updateRegProcpersoninfo(String idStr) {
-        List<OmsRegProcpersoninfo> list = new ArrayList<>();
         OmsRegProcpersoninfoIPagParam info = new OmsRegProcpersoninfoIPagParam();
         info.setRfStatus("1");
         int con = 0;
