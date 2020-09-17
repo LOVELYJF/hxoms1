@@ -78,12 +78,10 @@ public class LeaderOtherStatisticalQueryController {
      *
      * **/
 
-    @PostMapping("/export2222")
-    public void exportJiweiExcel(HttpServletResponse response){
-
-
+    @PostMapping("/exportRfInfo")
+    public void exportRfInfo(HttpServletResponse response,String idStr){
         try {
-            HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo1();
+            HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo1(idStr);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");

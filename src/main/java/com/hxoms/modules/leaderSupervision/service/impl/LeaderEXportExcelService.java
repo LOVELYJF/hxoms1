@@ -1,24 +1,25 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +38,12 @@ public class LeaderEXportExcelService {
 
     @Autowired
     private OmsRegProcpersoninfoMapper mrpinfoMapper;
+
+    @Autowired
+    private OmsRegProcbatchService orpbatchService;
+
+    @Autowired
+    private OmsRegProcpersonInfoService mrpinfoService;
 
     /** 因公出国境管理 导出 **/
     public HSSFWorkbook pubApplyMangerExport(){
@@ -603,13 +610,9 @@ public class LeaderEXportExcelService {
 
     /** 登记备案导出 **/
     public HSSFWorkbook exportRfInfo(String idStr){
-
-
-
-
-
-        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(idStr);
-        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(idStr);
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
+        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(ids);
         List listK = new ArrayList();
         List listV = new ArrayList();
         listK.add("num");listV.add("序号");
@@ -637,44 +640,11 @@ public class LeaderEXportExcelService {
 
 
 
-    public HSSFWorkbook exportRfInfo1() {
-
-//            List<ExcelModelORPinfo> list = new ArrayList<>();
-//            List<OmsRegProcbatchPerson> orpbplist = new ArrayList<>();
-//            //查询登记备案信息根据备案id
-//            List<OmsRegProcpersoninfo> rflist = mrpinfoService.selectListById(idStr);
-//            //查询批次相关信息
-//            OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
-//            for (int i = 0; i < rflist.size(); i++) {
-//                OmsRegProcpersoninfo info = rflist.get(i);
-//                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
-//                //为批次人员表复制相同字段的数据
-//                BeanUtils.copyProperties(rflist, batchperson);
-//                batchperson.setId(UUIDGenerator.getPrimaryKey());
-//                batchperson.setRfId(info.getId());
-//                batchperson.setBatchId(batchinfo.getBatchNo());
-//                orpbplist.add(batchperson);
-//                //为excel录入数据
-//                ExcelModelORPinfo excelMode = new ExcelModelORPinfo();
-//                //登记备案信息录入
-//                BeanUtils.copyProperties(info, excelMode);
-//                excelMode.setNo(i);
-//                //批次相关信息录入
-//                BeanUtils.copyProperties(batchinfo, excelMode);
-//                list.add(excelMode);
-//            }
-//            int con = orpbatchService.batchinsertInfo(orpbplist);
-//            if (con > 0) {
-//                //修改批次表备案状态0未备案，1已备案，2已确认
-//                batchinfo.setStatus("1");
-//                int con1 = orpbatchService.updateOrpbatch(batchinfo);
-//                if (con1 > 0) {
-//                    mrpinfoService.updateRegProcpersoninfo(idStr);
-//                }
-//            }
-
-
-        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(null);
+    public HSSFWorkbook exportRfInfo1(String idStr) {
+        List<String> ids = Arrays.asList(idStr.split(","));
+        //处理批次数据，下载后改变状态
+        dealDataRFByRfId(idStr);
+        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(ids);
         List listK = new ArrayList();
         List listV = new ArrayList();
         listK.add("num");listV.add("序号");
@@ -696,6 +666,34 @@ public class LeaderEXportExcelService {
         listK.add("暂无数据");listV.add("入库批号");
 
         return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表1（电子）");
+    }
+
+    private void dealDataRFByRfId(String idStr) {
+        List<String> ids = Arrays.asList(idStr.split(","));
+        List<OmsRegProcbatchPerson> orpbplist = new ArrayList<>();
+        //查询登记备案信息根据备案id
+        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
+        //查询批次相关信息
+        OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
+        for (int i = 0; i < rflist.size(); i++) {
+            OmsRegProcpersoninfo info = rflist.get(i);
+            OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
+            //为批次人员表复制相同字段的数据
+            BeanUtils.copyProperties(rflist, batchperson);
+            batchperson.setId(UUIDGenerator.getPrimaryKey());
+            batchperson.setRfId(info.getId());
+            batchperson.setBatchId(batchinfo.getBatchNo());
+            orpbplist.add(batchperson);
+        }
+        int con = orpbatchService.batchinsertInfo(orpbplist);
+        if (con > 0) {
+            //修改批次表备案状态0未备案，1已备案，2已确认
+            batchinfo.setStatus("1");
+            int con1 = orpbatchService.updateOrpbatch(batchinfo);
+            if (con1 > 0) {
+                mrpinfoService.updateRegProcpersoninfo(idStr);
+            }
+        }
     }
 
 
