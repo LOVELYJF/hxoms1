@@ -5,19 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
-import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -66,14 +65,14 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 
 		QueryWrapper<OmsSupViolationDiscipline> queryWrapper = new QueryWrapper<OmsSupViolationDiscipline>();
 		queryWrapper
-				.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
+				.in(!ListUtil.isEmpty(list),"WORK_UNIT", list)
+				.eq(!StringUtils.isBlank( omsSupViolationDiscipline.getViolationDisType()),
 						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
-				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank( omsSupViolationDiscipline.getName()),
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+						.like(!StringUtils.isBlank( omsSupViolationDiscipline.getName()),
 								"PINYIN", omsSupViolationDiscipline.getName()))
 				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
 						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())
@@ -96,6 +95,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupViolationDiscipline.getA0100());
@@ -117,7 +119,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
-
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupViolationDiscipline.setModifyTime(new Date());
 		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
@@ -134,6 +138,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline) {
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupViolationDisciplineMapper.deleteById(omsSupViolationDiscipline.getId());
 		if(count < 1){
 			throw new CustomMessageException("删除违反外事纪律人员失败");
@@ -158,14 +165,14 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 
 		QueryWrapper<OmsSupViolationDiscipline> queryWrapper = new QueryWrapper<OmsSupViolationDiscipline>();
 		queryWrapper
-				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
-				.eq(omsSupViolationDiscipline.getViolationDisType() != null && omsSupViolationDiscipline.getViolationDisType() != "",
+				.in(!ListUtil.isEmpty(list1),"WORK_UNIT", list1)
+				.eq(!StringUtils.isBlank( omsSupViolationDiscipline.getViolationDisType()),
 						"VIOLATION_DIS_TYPE", omsSupViolationDiscipline.getViolationDisType())
-				.and(wrapper->wrapper.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank( omsSupViolationDiscipline.getName()),
 						"NAME", omsSupViolationDiscipline.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupViolationDiscipline.getName() != null && omsSupViolationDiscipline.getName() != "",
+						.like(!StringUtils.isBlank( omsSupViolationDiscipline.getName()),
 								"PINYIN", omsSupViolationDiscipline.getName()))
 				.between(omsSupViolationDiscipline.getViolationTimeStartQuery() != null && omsSupViolationDiscipline.getViolationTimeEndQuery() != null,
 						"VIOLATION_DIS_TIME", omsSupViolationDiscipline.getViolationTimeStartQuery(), omsSupViolationDiscipline.getViolationTimeEndQuery())

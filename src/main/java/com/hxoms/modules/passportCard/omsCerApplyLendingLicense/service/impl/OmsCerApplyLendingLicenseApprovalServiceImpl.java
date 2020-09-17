@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -17,6 +18,7 @@ import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseApprovalService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,11 +53,11 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 */
 	public List<OmsCerApplyLendingLicense> getBatchByYear() {
 		List<OmsCerApplyLendingLicense> list = omsCerApplyLendingLicenseMapper.selectYearList();      //查询批次号的年份集合
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				String year = omsCerApplyLendingLicense.getYear();
 				List<OmsCerApplyLendingLicense> list1 = omsCerApplyLendingLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
-				if(list1 != null && list1.size() > 0){
+				if(!ListUtil.isEmpty(list1)){
 					omsCerApplyLendingLicense.setList(list1);
 				}
 			}
@@ -95,7 +97,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void updateApplyLendingLicenseApprovalResult(List<OmsCerApplyLendingLicense> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setModyfyTime(new Date());
 				omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -110,7 +112,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 						CfCertificate cfCertificate = new CfCertificate();
 						cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[7]));
 						QueryWrapper<CfCertificate> wrapper = new QueryWrapper<CfCertificate>();
-						wrapper.eq(omsCerApplyLendingLicense.getZjhm() != null && omsCerApplyLendingLicense.getZjhm() != "",
+						wrapper.eq(!StringUtils.isBlank(omsCerApplyLendingLicense.getZjhm()),
 								"ZJHM",omsCerApplyLendingLicense.getZjhm());
 						int count1 = cfCertificateMapper.update(cfCertificate,wrapper);
 						if(count1 < 1){

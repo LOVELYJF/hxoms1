@@ -11,6 +11,7 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -59,6 +60,12 @@ public class CfCertificateController {
     @PostMapping("/exportExceptionCerForOmsId")
     public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") @RequestBody String ids, @ApiIgnore HttpServletResponse response) {
         cfCertificateService.exportExceptionCerForOmsId(Arrays.asList(ids.split(",")),response);
+    public void exportExceptionCerForOmsId(@ApiIgnore String ids, @ApiIgnore HttpServletResponse response) {
+        List<String> idss = null;
+        if (!StringUtils.isBlank(ids)){
+            idss = Arrays.asList(ids.split(","));
+        }
+        cfCertificateService.exportExceptionCerForOmsId(idss,response);
     }
 
     /**

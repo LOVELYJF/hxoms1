@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -17,13 +18,16 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,12 +64,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupMajorLeader> resultList = omsSupMajorLeaderMapper.selectList(queryWrapper);
@@ -85,6 +89,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询主要领导是否已经存在
 		QueryWrapper<OmsSupMajorLeader> queryLeader = new QueryWrapper<OmsSupMajorLeader>() ;
@@ -132,6 +139,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getId()) || StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count  =  omsSupMajorLeaderMapper.deleteById(omsSupMajorLeader.getId());
 		if(count < 1){
 			throw new CustomMessageException("取消主要领导信息失败");
@@ -238,12 +248,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	public void getMajorLeaderInfoOut(List<String> idList, OmsSupMajorLeader omsSupMajorLeader, HttpServletResponse response) {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 
 		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);

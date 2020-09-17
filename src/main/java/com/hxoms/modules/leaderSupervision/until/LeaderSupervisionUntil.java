@@ -404,11 +404,13 @@ public class LeaderSupervisionUntil {
             if (f==1){
                 //创建第一行
                 Row row = sheet.createRow(0);
+                row.setHeight((short)250);
                 Cell cell1 = row.createCell(0);
                 cell1.setCellValue("国家工作人员登记备案表");
                 cell1.setCellStyle(titleStyle);
                 //创建第二行
                 Row row2 = sheet.createRow(1);
+                row.setHeight((short)250);
                 Cell cell2 = row2.createCell(0);
                 cell2.setCellValue("报备单位名称（盖章）：");
                 cell2.setCellStyle(cellStyle);
@@ -433,7 +435,6 @@ public class LeaderSupervisionUntil {
                     //自动设置列宽
                     sheet.setColumnWidth(i, 512 * 4);
                 }
-
                 //填充内容
 
                 //绘制内容
@@ -616,9 +617,7 @@ public class LeaderSupervisionUntil {
         //设置字体
         HSSFFont font = workbook.createFont();
         font.setFontName("仿宋_GB2312");
-
-        style.setFont(font);
-
+        font.setBold(true);//字体加粗
         return  style;
     }
 

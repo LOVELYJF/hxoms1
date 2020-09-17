@@ -86,9 +86,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      */
     @Override
     public void exportExceptionCerForOmsId(List<String> ids, HttpServletResponse response) {
-        if (ids == null || ids.size() < 1) {
+     /*   if (ids == null || ids.size() < 1) {
             throw new CustomMessageException("操作失败！");
-        }
+        }*/
         List<ExportExceptionCer> getList = cfCertificateMapper.exportExceptionCerForOmsId(ids);
         if (getList.size()>0){
             getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));

@@ -10,8 +10,8 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.patrolUnit.entity.OmsSupPatrolUnit;
 import com.hxoms.modules.keySupervision.patrolUnit.mapper.OmsSupPatrolUnitMapper;
 import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitService;
-import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +32,6 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 
 	@Autowired
 	private OmsSupPatrolUnitMapper omsSupPatrolUnitMapper;
-	@Autowired
-	private B01Mapper b01Mapper;
 	/**
 	 * <b>查询被巡视单位信息</b>
 	 * @param omsSupPatrolUnit
@@ -45,7 +43,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 		queryWrapper
 				.between(omsSupPatrolUnit.getPatrolStartTimeQuery() != null && omsSupPatrolUnit.getPatrolEndTimeQuery() != null,
 						"PATROL_START_TIME", omsSupPatrolUnit.getPatrolStartTimeQuery(), omsSupPatrolUnit.getPatrolEndTimeQuery())
-				.like(omsSupPatrolUnit.getUnit() != null && omsSupPatrolUnit.getUnit() != "",
+				.like(!StringUtils.isBlank(omsSupPatrolUnit.getUnit()),
 						"UNIT", omsSupPatrolUnit.getUnit())
 				.orderByDesc("PATROL_START_TIME");
 
@@ -85,6 +83,9 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updatePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
+		if(StringUtils.isBlank(omsSupPatrolUnit.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		//根据主键修改
 		omsSupPatrolUnit.setModifyTime(new Date());
 		omsSupPatrolUnit.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -102,6 +103,9 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removePatrolUnitInfo(OmsSupPatrolUnit omsSupPatrolUnit) {
+		if(StringUtils.isBlank(omsSupPatrolUnit.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupPatrolUnitMapper.deleteById(omsSupPatrolUnit.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除被巡视单位失败");
@@ -116,6 +120,9 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 	 * @return
 	 */
 	public boolean getPatrolUnit(String b0100, Date cgsj) {
+		if(StringUtils.isBlank(b0100) || cgsj == null){
+			throw new CustomMessageException("参数错误");
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("b0100", b0100);
 		map.put("cgsj", cgsj);
