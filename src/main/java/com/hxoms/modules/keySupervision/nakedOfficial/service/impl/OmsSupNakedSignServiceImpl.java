@@ -12,6 +12,7 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -29,6 +30,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -111,7 +113,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		//查询裸官是否已经存在
 		QueryWrapper<OmsSupNakedSign> queryNakedSign = new QueryWrapper<OmsSupNakedSign>();
 		queryNakedSign.eq("A0100", omsSupNakedSign.getA0100())
-					  .eq("IS_DELETE", "0");
+					  .eq("IS_DELETE", YesOrNoEnum.NO.getCode());
 		List<OmsSupNakedSign> nakedSignList = omsSupNakedSignMapper.selectList(queryNakedSign);
 		if(nakedSignList.size() < 1){
 			//查询政治面貌和人员拼音
@@ -119,9 +121,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			//根据人员主键应该只能查到一个人员信息，因此取第一个
 			omsSupNakedSign.setPoliticalAffi((String) list.get(0).get("politicalAffi"));
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
-			omsSupNakedSign.setXzxgw("0");
-			omsSupNakedSign.setFjgnf("0");
-			omsSupNakedSign.setIsDelete("0");
+			omsSupNakedSign.setXzxgw(YesOrNoEnum.NO.getCode());
+			omsSupNakedSign.setFjgnf(YesOrNoEnum.NO.getCode());
+			omsSupNakedSign.setIsDelete(YesOrNoEnum.NO.getCode());
 			omsSupNakedSign.setCreateTime(new Date());
 			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案库中查询人员的身份证出生日期
@@ -134,11 +136,11 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			}else {
 				//将裸官信息在备案表中进行同步更新
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-				omsRegProcpersonInfo.setNf("1");
+				omsRegProcpersonInfo.setNf(YesOrNoEnum.YES.getCode());
 
-				omsRegProcpersonInfo.setXrxgw("0");
+				omsRegProcpersonInfo.setXrxgw(YesOrNoEnum.NO.getCode());
 				//默认在非限入性岗位
-				omsRegProcpersonInfo.setFjgnf("0");
+				omsRegProcpersonInfo.setFjgnf(YesOrNoEnum.NO.getCode());
 				omsRegProcpersonInfo.setModifyTime(new Date());
 				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -179,7 +181,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 				int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-				if(omsSupNakedSign.getXzxgw().equals("0") && num > 0) {
+				if(omsSupNakedSign.getXzxgw().equals(YesOrNoEnum.NO.getCode()) && num > 0) {
 					//取消裸官的限制性岗位，同时撤销其家庭成员的登记备案，转到撤销登记备案表中
 					omsSupFamilyMemberService.removeToRegistration(omsSupNakedSign.getA0100());
 				}
@@ -198,7 +200,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		if(StringUtils.isBlank(omsSupNakedSign.getId()) || StringUtils.isBlank(omsSupNakedSign.getA0100())){
 			throw new CustomMessageException("参数错误");
 		}
-		omsSupNakedSign.setIsDelete("1");
+		omsSupNakedSign.setIsDelete(YesOrNoEnum.YES.getCode());
 		omsSupNakedSign.setDeleteTime(new Date());
 		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsSupNakedSign.setModifyTime(new Date());
@@ -208,9 +210,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		}else {
 			//在备案信息表中设置取消裸官信息
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setNf("0");
-			omsRegProcpersonInfo.setXrxgw("0");
-			omsRegProcpersonInfo.setFjgnf("0");
+			omsRegProcpersonInfo.setNf(YesOrNoEnum.NO.getCode());
+			omsRegProcpersonInfo.setXrxgw(YesOrNoEnum.NO.getCode());
+			omsRegProcpersonInfo.setFjgnf(YesOrNoEnum.NO.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
@@ -311,7 +313,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
-				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals("1") ? "是" : "否");
+				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals(YesOrNoEnum.YES.getCode()) ? "是" : "否");
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){
 					row.getCell(j).setCellStyle(style1);
