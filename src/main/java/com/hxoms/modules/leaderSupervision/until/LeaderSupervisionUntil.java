@@ -608,14 +608,8 @@ public class LeaderSupervisionUntil {
     }
     //设置单元格样式
     public static HSSFCellStyle getCellStyle(HSSFWorkbook workbook){
-
-
-
+        
         HSSFCellStyle style = workbook.createCellStyle();
-
-
-
-
 
         style.setAlignment(HorizontalAlignment.LEFT); //居左
 

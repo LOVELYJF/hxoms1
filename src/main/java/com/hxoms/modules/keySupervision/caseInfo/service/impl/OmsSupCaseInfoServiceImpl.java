@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -18,6 +19,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -69,14 +71,14 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		List<String> list = b01Mapper.selectOrgByList(map);
 		QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
 		queryWrapper
-				.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
+				.in(!ListUtil.isEmpty(list),"WORK_UNIT", list)
+				.eq(!StringUtils.isBlank(omsSupCaseInfo.getDisciplinaryAction()),
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
-				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupCaseInfo.getName()),
 						"NAME", omsSupCaseInfo.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+						.like(!StringUtils.isBlank(omsSupCaseInfo.getName()),
 								"PINYIN", omsSupCaseInfo.getName()))
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 								"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
@@ -246,14 +248,14 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		List<String> list1 = b01Mapper.selectOrgByList(map);
 		QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
 		queryWrapper
-				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
-				.eq(omsSupCaseInfo.getDisciplinaryAction() != null && omsSupCaseInfo.getDisciplinaryAction() != "",
+				.in(!ListUtil.isEmpty(list1),"WORK_UNIT", list1)
+				.eq(!StringUtils.isBlank(omsSupCaseInfo.getDisciplinaryAction()),
 						"DISCIPLINARY_ACTION", omsSupCaseInfo.getDisciplinaryAction())
-				.and(wrapper->wrapper.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupCaseInfo.getName()),
 						"NAME", omsSupCaseInfo.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupCaseInfo.getName() != null && omsSupCaseInfo.getName() != "",
+						.like(!StringUtils.isBlank(omsSupCaseInfo.getName()),
 								"PINYIN", omsSupCaseInfo.getName()))
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 						"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())

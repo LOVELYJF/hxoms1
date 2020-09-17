@@ -13,6 +13,7 @@ import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnit
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	 */
 	public Page<OmsSupSuspendUnit> getSuspendUnitInfo(Page<OmsSupSuspendUnit> page, OmsSupSuspendUnit omsSupSuspendUnit) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
-		queryWrapper.eq(omsSupSuspendUnit.getStatus() != null && omsSupSuspendUnit.getStatus() != "",
+		queryWrapper.eq(!StringUtils.isBlank(omsSupSuspendUnit.getStatus()),
 				"STATUS",omsSupSuspendUnit.getStatus())
 				.between(omsSupSuspendUnit.getSuspendStratTimeQuery() != null && omsSupSuspendUnit.getSuspendEndTimeQuery() != null,
 						"SUSPEND_TIME", omsSupSuspendUnit.getSuspendStratTimeQuery(), omsSupSuspendUnit.getSuspendEndTimeQuery())

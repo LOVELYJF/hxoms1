@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -17,6 +18,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -60,12 +62,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupMajorLeader> resultList = omsSupMajorLeaderMapper.selectList(queryWrapper);
@@ -238,12 +240,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	public void getMajorLeaderInfoOut(List<String> idList, OmsSupMajorLeader omsSupMajorLeader, HttpServletResponse response) {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 
 		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);

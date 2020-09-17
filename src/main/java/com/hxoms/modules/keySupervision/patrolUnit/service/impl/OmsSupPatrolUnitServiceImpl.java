@@ -12,6 +12,7 @@ import com.hxoms.modules.keySupervision.patrolUnit.mapper.OmsSupPatrolUnitMapper
 import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitService;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,7 @@ public class OmsSupPatrolUnitServiceImpl implements OmsSupPatrolUnitService {
 		queryWrapper
 				.between(omsSupPatrolUnit.getPatrolStartTimeQuery() != null && omsSupPatrolUnit.getPatrolEndTimeQuery() != null,
 						"PATROL_START_TIME", omsSupPatrolUnit.getPatrolStartTimeQuery(), omsSupPatrolUnit.getPatrolEndTimeQuery())
-				.like(omsSupPatrolUnit.getUnit() != null && omsSupPatrolUnit.getUnit() != "",
+				.like(!StringUtils.isBlank(omsSupPatrolUnit.getUnit()),
 						"UNIT", omsSupPatrolUnit.getUnit())
 				.orderByDesc("PATROL_START_TIME");
 

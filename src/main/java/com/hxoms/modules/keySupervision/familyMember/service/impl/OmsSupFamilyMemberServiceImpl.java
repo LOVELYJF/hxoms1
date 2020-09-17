@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -162,7 +163,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		//根据身份证号码切割得到出生日期
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(A36 a36 : list){
 				String birthdate = OmsRegInitUtil.getBirthByIdNumber(a36.getIdCard());
 				a36.setA3607(birthdate);
@@ -345,7 +346,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
 
-					if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
+					if(!ListUtil.isEmpty(omsRegRevokeapplyList)){
 						//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 						for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
 							if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&

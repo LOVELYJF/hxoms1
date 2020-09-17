@@ -103,12 +103,13 @@ public class OmsFileServiceImpl implements OmsFileService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
-//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
+        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
         	
 
 
 
 //        //测试用的单位主键
+//        userInfo.setOrgId("00000000000000000000000000");
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
 //        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 //        B01 b01 = new B01();
@@ -489,10 +490,11 @@ public class OmsFileServiceImpl implements OmsFileService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         
-//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
+        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
 
 
 //        //测试用的单位主键
+//          userInfo.setOrgId("00000000000000000000000000");
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
 //        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 //        B01 b01 = new B01();
