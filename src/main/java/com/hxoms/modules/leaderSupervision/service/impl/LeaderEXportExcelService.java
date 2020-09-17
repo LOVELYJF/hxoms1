@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
@@ -673,6 +674,8 @@ public class LeaderEXportExcelService {
                     mrpinfoService.updateRegProcpersoninfo(idStr);
                 }
             }
+        }else{
+            throw new CustomMessageException("请先启动登记备案再下载。");
         }
 
     }
