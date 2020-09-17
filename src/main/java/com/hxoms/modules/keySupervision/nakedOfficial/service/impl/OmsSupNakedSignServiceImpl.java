@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -21,6 +22,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -59,6 +61,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
 
+
 	/**
 	 * <b>查询裸官信息</b>
 	 * @param omsSupNakedSign
@@ -71,18 +74,18 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 
 		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 		queryWrapper
-				.in(idList != null && idList.size() > 0,"B0100", idList)
-				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+				.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getXzxgw()),
 						"XZXGW", omsSupNakedSign.getXzxgw())
-				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getFjgnf()),
 						"FJGNF",omsSupNakedSign.getFjgnf())
-				.eq(omsSupNakedSign.getIsDelete() != null && omsSupNakedSign.getIsDelete() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getIsDelete()),
 						"IS_DELETE", omsSupNakedSign.getIsDelete())
-				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 						"NAME", omsSupNakedSign.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 								"PINYIN", omsSupNakedSign.getName()));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -225,17 +228,18 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	public void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response) {
 		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 		queryWrapper
-				.in(idList != null && idList.size() > 0,"B0100", idList)
-				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+				.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getXzxgw()),
 						"XZXGW", omsSupNakedSign.getXzxgw())
-				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getFjgnf()),
 						"FJGNF",omsSupNakedSign.getFjgnf())
-				.eq("IS_DELETE", "0")
-				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getIsDelete()),
+						"IS_DELETE", omsSupNakedSign.getIsDelete())
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 						"NAME", omsSupNakedSign.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 								"PINYIN", omsSupNakedSign.getName()));
 
 		List<OmsSupNakedSign> list = omsSupNakedSignMapper.selectList(queryWrapper);
@@ -328,7 +332,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	public List<SysDictItem> getXzxgwInfo() {
 		List<SysDictItem> list = sysDictItemMapper.selectSysdictItemListByDictCode("XZXGW");
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			return list;
 		}
 		return new ArrayList<SysDictItem>();
