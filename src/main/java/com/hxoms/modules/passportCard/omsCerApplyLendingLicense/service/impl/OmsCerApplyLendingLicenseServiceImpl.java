@@ -12,10 +12,9 @@ import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerCan
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerCancellateLendingApplyMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -55,6 +54,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Date: 2020/8/11 8:41
 	 */
 	public List<Map<String, Object>> getCfCertificateByA0100(String a0100) {
+		if (StringUtils.isBlank(a0100)){
+			throw new CustomMessageException("参数错误");
+		}
 		List<Map<String, Object>> list = cfCertificateMapper.getCfCertificateByA0100(a0100);
 		return list;
 	}
@@ -86,7 +88,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 
 		//将集合中的多个证照信息合并
 		StringBuffer cerInfo = new StringBuffer();
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				cerInfo.append(Constants.CER_TYPE_NAME[Integer.parseInt(omsCerApplyLendingLicense.getZjlx())] + ":" + omsCerApplyLendingLicense.getZjhm() + "、");
 			}
@@ -109,7 +111,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		}
 		map.put("applyId", omsCerCancellateLendingApply.getId());
 
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setId(UUIDGenerator.getPrimaryKey());
 				omsCerApplyLendingLicense.setLendingLicenseId(omsCerCancellateLendingApply.getId());
@@ -282,7 +284,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		omsCerApplyLendingLicense.setSqjczt("1");       //状态：审批
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
-		if(idList != null && idList.size() > 0){
+		if(!ListUtil.isEmpty(idList)){
 			QueryWrapper<OmsCerApplyLendingLicense> queryWrapper = new QueryWrapper<OmsCerApplyLendingLicense>();
 			queryWrapper.in("ID", idList);
 			int count = omsCerApplyLendingLicenseMapper.update(omsCerApplyLendingLicense, queryWrapper);
@@ -303,6 +305,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Date: 2020/8/11 8:41
 	 */
 	public void updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
+		if(StringUtils.isBlank(omsCerApplyLendingLicense.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsCerApplyLendingLicense.setSqjczt("4");
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());

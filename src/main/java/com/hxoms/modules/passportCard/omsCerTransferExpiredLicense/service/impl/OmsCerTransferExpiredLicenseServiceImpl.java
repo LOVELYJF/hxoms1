@@ -25,9 +25,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl;
 
-import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -211,7 +209,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public List<CfCertificate> getTransferExpiredLicenseDeposit(List<CfCertificate> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(CfCertificate cfCertificate : list){
 				if(cfCertificate.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[1]))){          //判断证件的取出状态，只有取出证照机的可以转存
 					cfCertificate.setSurelyWay("1");            //设置为柜台存放
@@ -224,7 +222,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 									.eq("STATUS", "0")
 									.eq("IS_LOCK", "0");
 						List<OmsCerCounterNumber> list1 = omsCerConuterNumberMapper.selectList(queryWrapper);
-						if(list1 != null && list1.size() > 0){
+						if(!ListUtil.isEmpty(list1)){
 							//取第一个号码作为柜台号码
 							cfCertificate.setCounterNum(list1.get(0).getCounterNum());
 						}else {
@@ -250,7 +248,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 * @Date: 2020/8/18 14:16
 	 */
 	public void getTransferExpiredLicenseSave(List<CfCertificate> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(CfCertificate cfCertificate : list){
 				cfCertificate.setSaveStatus(String.valueOf(Constants.CER_SAVE_STATUS[0]));      //状态置为正常保管,证照状态还是过期
 				cfCertificate.setCabinetNum("");
@@ -277,6 +275,9 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public QrCode getTransferExpiredLicenseQrCode(List<CfCertificate> list) {
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择证照");
+		}
 		List<CreateQrCodeApply> createQrCodeApplyList = new ArrayList<CreateQrCodeApply>();
 		for(CfCertificate cfCertificate : list){
 			if((cfCertificate.getSaveStatus()).equals(String.valueOf(Constants.CER_SAVE_STATUS[0]))){
