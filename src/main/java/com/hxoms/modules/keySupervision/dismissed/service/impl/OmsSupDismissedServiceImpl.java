@@ -90,6 +90,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDismissed.getA0100());
 		omsSupDismissed.setPinyin((String)list.get(0).get("a0102"));
@@ -110,6 +113,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupDismissed.setModifyTime(new Date());
 		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
@@ -126,6 +132,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupDismissedMapper.deleteById(omsSupDismissed.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除免职撤职人员失败");

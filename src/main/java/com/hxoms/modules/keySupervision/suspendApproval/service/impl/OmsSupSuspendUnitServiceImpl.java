@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
@@ -67,7 +67,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	@Transactional(rollbackFor=Exception.class)
 	public void updateSuspendUnitInfo(List<String> idList) {
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
-		queryWrapper.in(idList != null && idList.size() > 0, "ID", idList);
+		queryWrapper.in(!ListUtil.isEmpty(idList), "ID", idList);
 		OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
 		omsSupSuspendUnit.setStatus("1");
 		omsSupSuspendUnit.setRecoverUser(UserInfoUtil.getUserInfo().getName());

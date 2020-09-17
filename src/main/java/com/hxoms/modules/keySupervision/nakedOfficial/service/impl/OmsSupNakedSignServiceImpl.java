@@ -1,6 +1,5 @@
 package com.hxoms.modules.keySupervision.nakedOfficial.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -105,6 +104,10 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addOmsNaked(OmsSupNakedSign omsSupNakedSign) {
+		if(StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
+
 		//查询裸官是否已经存在
 		QueryWrapper<OmsSupNakedSign> queryNakedSign = new QueryWrapper<OmsSupNakedSign>();
 		queryNakedSign.eq("A0100", omsSupNakedSign.getA0100())
@@ -156,6 +159,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateOmsNaked(OmsSupNakedSign omsSupNakedSign) {
+		if(StringUtils.isBlank(omsSupNakedSign.getId()) || StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupNakedSign.setModifyTime(new Date());
 		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
@@ -189,6 +195,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
+		if(StringUtils.isBlank(omsSupNakedSign.getId()) || StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupNakedSign.setIsDelete("1");
 		omsSupNakedSign.setDeleteTime(new Date());
 		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());

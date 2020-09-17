@@ -24,8 +24,10 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -87,6 +89,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询主要领导是否已经存在
 		QueryWrapper<OmsSupMajorLeader> queryLeader = new QueryWrapper<OmsSupMajorLeader>() ;
@@ -134,6 +139,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getId()) || StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count  =  omsSupMajorLeaderMapper.deleteById(omsSupMajorLeader.getId());
 		if(count < 1){
 			throw new CustomMessageException("取消主要领导信息失败");

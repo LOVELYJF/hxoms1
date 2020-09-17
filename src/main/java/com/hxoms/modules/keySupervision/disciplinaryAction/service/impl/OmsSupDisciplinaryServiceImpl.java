@@ -12,7 +12,6 @@ import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -94,6 +93,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
@@ -127,6 +129,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		omsSupDisciplinary.setModifyTime(new Date());
 		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -144,6 +149,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupDisciplinaryMapper.deleteById(omsSupDisciplinary.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除处分信息失败");
@@ -289,14 +297,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 * @Date: 2020/7/14 9:28
 	 */
 	public OmsSupDisciplinary getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary) {
-		if(!omsSupDisciplinary.getDisciplinaryType().equals("bcd9a45954d84fd0af3f98153521de44")){
+//		if(!omsSupDisciplinary.getDisciplinaryType().equals("bcd9a45954d84fd0af3f98153521de44")){
 			//计算影响期
 			SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
 			omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
 			Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
 			omsSupDisciplinary.setDisciplinaryEndTime(date);
 			return omsSupDisciplinary;
-		}
-		return new OmsSupDisciplinary();
+//		}
+//		return new OmsSupDisciplinary();
 	}
 }

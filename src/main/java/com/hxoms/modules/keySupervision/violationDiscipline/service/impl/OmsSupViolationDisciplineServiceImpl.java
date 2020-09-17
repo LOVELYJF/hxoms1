@@ -9,15 +9,12 @@ import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.violationDiscipline.entity.OmsSupViolationDiscipline;
 import com.hxoms.modules.keySupervision.violationDiscipline.mapper.OmsSupViolationDisciplineMapper;
 import com.hxoms.modules.keySupervision.violationDiscipline.service.OmsSupViolationDisciplineService;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
-import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -98,6 +95,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupViolationDiscipline.getA0100());
@@ -119,7 +119,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateViolationDisciplineInfo(OmsSupViolationDiscipline omsSupViolationDiscipline) {
-
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupViolationDiscipline.setModifyTime(new Date());
 		omsSupViolationDiscipline.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupViolationDisciplineMapper.updateById(omsSupViolationDiscipline);
@@ -136,6 +138,9 @@ public class OmsSupViolationDisciplineServiceImpl implements OmsSupViolationDisc
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeViolationDiscipline(OmsSupViolationDiscipline omsSupViolationDiscipline) {
+		if(StringUtils.isBlank(omsSupViolationDiscipline.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupViolationDisciplineMapper.deleteById(omsSupViolationDiscipline.getId());
 		if(count < 1){
 			throw new CustomMessageException("删除违反外事纪律人员失败");

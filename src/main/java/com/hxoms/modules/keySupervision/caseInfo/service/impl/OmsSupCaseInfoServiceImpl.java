@@ -14,7 +14,6 @@ import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.caseInfo.service.OmsSupCaseInfoService;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -102,6 +101,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public String addCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+		if(StringUtils.isBlank(omsSupCaseInfo.getCaseDocumentNo()) || StringUtils.isBlank(omsSupCaseInfo.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupCaseInfo.getA0100());
@@ -128,6 +130,11 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addToDisciplinary(OmsSupCaseInfo omsSupCaseInfo) {
+		if(StringUtils.isBlank(omsSupCaseInfo.getCaseDocumentNo()) ||
+				StringUtils.isBlank(omsSupCaseInfo.getA0100()) ||
+				StringUtils.isBlank(omsSupCaseInfo.getDisciplinaryAction())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//检查是否已经保存
 		QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
@@ -167,6 +174,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateSaveCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+		if(StringUtils.isBlank(omsSupCaseInfo.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupCaseInfo.setModifyTime(new Date());
 		omsSupCaseInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupCaseInfoMapper.updateById(omsSupCaseInfo);
@@ -182,6 +192,13 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateCaseInfoToDisciplinary(OmsSupCaseInfo omsSupCaseInfo) {
+		if(StringUtils.isBlank(omsSupCaseInfo.getDisciplinaryActionType()) ||
+				StringUtils.isBlank(omsSupCaseInfo.getId()) ||
+				StringUtils.isBlank(omsSupCaseInfo.getDisciplinaryAction()) ||
+				omsSupCaseInfo.getDisciplinaryTime() == null){
+			throw new CustomMessageException("参数错误");
+		}
+
 		//更新保存立案信息
 		updateSaveCaseInfo(omsSupCaseInfo);
 
@@ -226,6 +243,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeCaseInfo(OmsSupCaseInfo omsSupCaseInfo) {
+		if(StringUtils.isBlank(omsSupCaseInfo.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupCaseInfoMapper.deleteById(omsSupCaseInfo.getId());
 		if(count < 1){
 			throw new CustomMessageException("删除立案信息失败");
@@ -349,6 +369,9 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 * @param documentNum
 	 */
 	 public void checkCaseDocumentNo(String documentNum){
+		 if (StringUtils.isBlank(documentNum)) {
+		 	throw new CustomMessageException("参数错误");
+		 }
 		 //检查立案信息的文书号是否出现缺号
 		 String yearNum = null;
 		 String no = null;
@@ -386,30 +409,35 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 	 * @param omsSupCaseInfo
 	 */
 	 public void saveToDisciplinary(OmsSupCaseInfo omsSupCaseInfo){
+	 	if(StringUtils.isBlank(omsSupCaseInfo.getA0100())){
+	 		throw new CustomMessageException("参数错误");
+	    }
 		 //保存到处分信息
 		 List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupCaseInfo.getA0100());
-		 OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
-		 omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
-		 //将立案信息的主键设置成处分信息的主键
-		 omsSupDisciplinary.setId(omsSupCaseInfo.getId());
-		 omsSupDisciplinary.setA0100(omsSupCaseInfo.getA0100());
-		 omsSupDisciplinary.setWorkUnit(omsSupCaseInfo.getWorkUnit());
-		 omsSupDisciplinary.setName(omsSupCaseInfo.getName());
-		 omsSupDisciplinary.setDisciplinaryPost(omsSupCaseInfo.getCasePost());
-		 omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
-		 omsSupDisciplinary.setCreateTime(new Date());
-		 omsSupDisciplinary.setDisciplinaryTime(omsSupCaseInfo.getDisciplinaryTime());
-		 omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getId());
+		 if(!ListUtil.isEmpty(list)){
+			 OmsSupDisciplinary omsSupDisciplinary = new OmsSupDisciplinary();
+			 omsSupDisciplinary.setPinyin((String)list.get(0).get("a0102"));
+			 //将立案信息的主键设置成处分信息的主键
+			 omsSupDisciplinary.setId(omsSupCaseInfo.getId());
+			 omsSupDisciplinary.setA0100(omsSupCaseInfo.getA0100());
+			 omsSupDisciplinary.setWorkUnit(omsSupCaseInfo.getWorkUnit());
+			 omsSupDisciplinary.setName(omsSupCaseInfo.getName());
+			 omsSupDisciplinary.setDisciplinaryPost(omsSupCaseInfo.getCasePost());
+			 omsSupDisciplinary.setDisciplinaryType(omsSupCaseInfo.getDisciplinaryActionType());
+			 omsSupDisciplinary.setCreateTime(new Date());
+			 omsSupDisciplinary.setDisciplinaryTime(omsSupCaseInfo.getDisciplinaryTime());
+			 omsSupDisciplinary.setCreateUser(UserInfoUtil.getUserInfo().getId());
 
-		 //根据处分类型计算影响期及结束时间
-		 SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupCaseInfo.getDisciplinaryActionType());
-		 omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
-		 Date date = UtilDateTime.getEndDateByMonth(omsSupCaseInfo.getDisciplinaryTime(), sysDictItem.getItemNum());
-		 omsSupDisciplinary.setDisciplinaryEndTime(date);
+			 //根据处分类型计算影响期及结束时间
+			 SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupCaseInfo.getDisciplinaryActionType());
+			 omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
+			 Date date = UtilDateTime.getEndDateByMonth(omsSupCaseInfo.getDisciplinaryTime(), sysDictItem.getItemNum());
+			 omsSupDisciplinary.setDisciplinaryEndTime(date);
 
-		 int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
-		 if(count < 1){
-			 throw new CustomMessageException("保存到处分信息失败");
+			 int count = omsSupDisciplinaryMapper.insert(omsSupDisciplinary);
+			 if(count < 1){
+				 throw new CustomMessageException("保存到处分信息失败");
+			 }
 		 }
 	 }
 }
