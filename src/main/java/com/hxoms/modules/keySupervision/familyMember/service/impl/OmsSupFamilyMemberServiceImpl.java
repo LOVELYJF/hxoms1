@@ -184,7 +184,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addToRegistration(List<A36> list) {
-		if(ListUtil.isEmpty(list)){
+		if(list == null || list.size() < 1){
 			throw new CustomMessageException("未选中成员信息");
 		}
 		//保存家庭成员
