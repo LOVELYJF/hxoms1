@@ -81,7 +81,7 @@ public class LeaderOtherStatisticalQueryController {
     @PostMapping("/exportRfInfo")
     public void exportRfInfo(HttpServletResponse response,String idStr){
         try {
-            HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo1(idStr);
+            HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo(idStr);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
