@@ -8,13 +8,13 @@ package com.hxoms.modules.passportCard.initialise.entity.enums;
  */
 public enum ReceiveSourceEnum {
 
-	SOURCE0("0", "因私出国(境)"),
-	SOURCE1("1", "撤销登记备案"),
-	SOURCE2("2", "证照借出"),
-	SOURCE3("3", "证照过期"),
-	SOURCE4("4", "管理员取证"),
-	SOURCE5("5", "证照注销"),
-	SOURCE6("6", "盘亏");
+	SOURCE_0("0", "因私出国(境)"),
+	SOURCE_1("1", "撤销登记备案"),
+	SOURCE_2("2", "证照借出"),
+	SOURCE_3("3", "证照过期"),
+	SOURCE_4("4", "管理员取证"),
+	SOURCE_5("5", "证照注销"),
+	SOURCE_6("6", "盘亏");
 
 	private String code;
 	private String name;
