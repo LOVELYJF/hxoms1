@@ -1,4 +1,4 @@
-package com.hxoms.common.enums;
+package com.hxoms.modules.passportCard.initialise.entity.enums;
 /**
  * <b>功能描述: 证照领取数据来源枚举类</b>
  * @Param:
