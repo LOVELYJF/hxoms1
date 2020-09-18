@@ -1,20 +1,20 @@
-package com.hxoms.modules.keySupervision.nakedOfficial.entity.enums;
+package com.hxoms.modules.keySupervision.suspendApproval.entity.enums;
 /**
- * <b>功能描述: 是否类型枚举类</b>
+ * <b>功能描述: 审批状态枚举类</b>
  * @Param:
  * @Return:
  * @Author: luoshuai
- * @Date: 2020/9/17 17:09
+ * @Date: 2020/9/18 10:50
  */
-public enum YesOrNoEnum {
-	YES("1","是"),
-	NO("0","否");
+public enum ApprovalStatusEnum {
+	ALLOW_APPROVAL("1","允许审批"),
+	NOT_ALLOW_APPROVAL("0","暂停审批");
 
 	private String code;
 
 	private String name;
 
-	YesOrNoEnum(String code, String name) {
+	ApprovalStatusEnum(String code, String name) {
 		this.code = code;
 		this.name = name;
 	}
