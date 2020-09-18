@@ -53,8 +53,8 @@
     FROM oms_smr_oldinfo t
     LEFT JOIN b01 b on t.B0100 = b.B0100
     WHERE 1=1
-    <if test="a0100 != null and a0100 != ''">
-        and t.A0100 = #{a0100}
+    <if test="id != null and id != ''">
+        and t.PROC_PERSON_ID = #{id}
     </if>
   </select>
 
