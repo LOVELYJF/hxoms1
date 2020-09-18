@@ -46,8 +46,8 @@
         left join oms_reg_procpersoninfo a on p.a0100 = a.a0100
         where 1 = 1
         and t.BAZT = #{bazt}
-        <if test="orgId != null and orgId != ''">
-           and t.ZTDW in ${orgId}
+        <if test="orgName != null and orgName != ''">
+           and t.ZTDW like concat('%',#{orgName},'%')
         </if>
         <if test="status != null and status != ''">
            and t.SQZT in ${status}

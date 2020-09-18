@@ -1,6 +1,5 @@
 package com.hxoms.modules.publicity.controller;
 
-import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
@@ -29,17 +28,17 @@ public class OmsPubGroupController {
     /**
      * 获取团体预备案申请信息
      * @param bazt
-     * @param orgId
+     * @param orgName
      * @param status
      * @param startDate
      * @param endDate
      */
     @GetMapping("/getPubGroupList")
-    public Result getPubGroupList(Integer pageNum, Integer pageSize,String bazt,String orgId,String status,String startDate,String endDate) {
+    public Result getPubGroupList(Integer pageNum, Integer pageSize,String bazt,String orgName,String status,String startDate,String endDate) {
         Map<String,String> param = new HashMap<>();
         try{
             param.put("bazt",bazt);
-            param.put("orgId",orgId);
+            param.put("orgName",orgName);
             param.put("status",status);
             param.put("startDate",startDate);
             param.put("endDate",endDate);
