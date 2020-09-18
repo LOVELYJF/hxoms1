@@ -17,6 +17,7 @@ import com.hxoms.modules.keySupervision.familyMember.entity.A36;
 import com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
@@ -125,8 +126,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 */
 	public void insertFamilyMember(A36 a36) {
 		a36.setA3600(UUIDGenerator.getPrimaryKey());
-		a36.setIsDeleted("0");
-		a36.setIsNormal("1");
+		a36.setIsDeleted(YesOrNoEnum.NO.getCode());
+		a36.setIsNormal(YesOrNoEnum.YES.getCode());
 		int count = a36Mapper.insert(a36);
 		if(count < 1){
 			throw new CustomMessageException("添加家庭成员失败");
@@ -215,7 +216,8 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				OmsSupNakedSign omsSupNakedSign = omsSupNakedSignMapper.selectOne(queryWrapper);
 
 				//限制性岗位的裸官家属可登记备案
-				if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals("1") && omsSupNakedSign.getFjgnf().equals("1")){
+				if(omsSupNakedSign != null && omsSupNakedSign.getXzxgw().equals(YesOrNoEnum.YES.getCode()) &&
+						omsSupNakedSign.getFjgnf().equals(YesOrNoEnum.YES.getCode())){
 					//家庭成员登记备案判断是否重复（根据身份证号码判断）
 					if(omsRegProcpersoninfoList != null && omsRegProcpersoninfoList.size() > 0){
 						for(OmsRegProcpersoninfo omsRegProcpersonInfo : omsRegProcpersoninfoList){
