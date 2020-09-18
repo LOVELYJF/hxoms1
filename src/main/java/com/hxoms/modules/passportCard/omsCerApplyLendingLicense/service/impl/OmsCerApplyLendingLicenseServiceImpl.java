@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerCancellateLendingApply;
@@ -115,9 +117,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setId(UUIDGenerator.getPrimaryKey());
 				omsCerApplyLendingLicense.setLendingLicenseId(omsCerCancellateLendingApply.getId());
-				omsCerApplyLendingLicense.setIsCommit("0");
+				omsCerApplyLendingLicense.setIsCommit(YesOrNoEnum.NO.getCode());
 				omsCerApplyLendingLicense.setCreateTime(new Date());
-				omsCerApplyLendingLicense.setSqjczt("0");       //状态：申请
+				omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[0]));    //状态：申请
 				omsCerApplyLendingLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
 				omsCerApplyLendingLicense.setYear(UtilDateTime.nowYear());
 				omsCerApplyLendingLicense.setDocumentNum(UtilDateTime.formatCNDate(new Date()));
@@ -243,7 +245,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(4).setCellValue(Constants.INCUMBENCY_STATUS_NAME[Integer.parseInt((String) list.get(i).get("incumbencyStatus")) - 1]);
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String) list.get(i).get("zjlx"))));
@@ -280,8 +282,8 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 */
 	public void updateApplyLendingLicenseCommit(List<String> idList) {
 		OmsCerApplyLendingLicense omsCerApplyLendingLicense = new OmsCerApplyLendingLicense();
-		omsCerApplyLendingLicense.setIsCommit("1");
-		omsCerApplyLendingLicense.setSqjczt("1");       //状态：审批
+		omsCerApplyLendingLicense.setIsCommit(YesOrNoEnum.YES.getCode());
+		omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[1]));       //状态：审批
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
 		if(!ListUtil.isEmpty(idList)){
@@ -308,7 +310,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		if(StringUtils.isBlank(omsCerApplyLendingLicense.getId())){
 			throw new CustomMessageException("参数错误");
 		}
-		omsCerApplyLendingLicense.setSqjczt("4");
+		omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[4]));
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
 		int count = omsCerApplyLendingLicenseMapper.updateById(omsCerApplyLendingLicense);

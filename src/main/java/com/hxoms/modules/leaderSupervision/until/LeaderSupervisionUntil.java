@@ -119,7 +119,8 @@ public class LeaderSupervisionUntil {
 
     public final static String suffixPdfStyle="</body>\n" + "</html>";
 
-
+    // 缓存 因私状态
+    private static Map<String,String> mappri = new HashMap<String,String>();
 
 
 
@@ -365,6 +366,12 @@ public class LeaderSupervisionUntil {
                             }
 
                         }
+                        // 如果 该列是 申请状态进行转化
+                        if("applystatus".equals(s)){
+
+                            k = getK(k,"因私");
+                        }
+
                         cell2.setCellValue(k);
                         cell2.setCellStyle(cellStyle);
                         int currWidth = sheet.getColumnWidth(j);
@@ -386,6 +393,52 @@ public class LeaderSupervisionUntil {
         return  wb;
     }
 
+
+    public static String getK(String k,String bussinessType){
+
+
+
+        if("因私".equals(bussinessType)){
+
+            // 当两者 状态 不一致 的重新 把新的状态 写到 缓存中
+            if(mappri.size()!=(Constants.private_business.length+Constants.leader_business.length)){
+                mappri.clear();
+
+                for(int i=0;i<Constants.private_business.length;i++){
+
+                    //获取 状态  获取 状态 对应的值
+                    mappri.put(String.valueOf(Constants.private_business[i]),Constants.private_businessName[i]);
+
+                }
+
+                for(int j=0;j<Constants.leader_business.length;j++){
+
+                    mappri.put(String.valueOf(Constants.leader_business[j]),Constants.leader_businessName[j]);
+
+
+
+                }
+
+                return mappri.get(k);
+
+            }else{
+
+
+                return mappri.get(k);
+
+
+            }
+
+
+
+
+        }
+
+        return null;
+
+    }
+
+    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList,String sheetName1,String sheetName2) {
     public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList, String sheetName1, String sheetName2, OmsRegProcbatch batchinfo) {
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
