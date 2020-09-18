@@ -10,17 +10,17 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
-import com.hxoms.modules.passportCard.certificateManage.service.OmsCerManageService;
 import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterReturn.mapper.OmsCounterReturnMapper;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
-import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -44,22 +44,19 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
     private CfCertificateMapper cfCertificateMapper;
 
     @Autowired
-    private CfCertificateService cfCertificateService;
-
-    @Autowired
     private OmsPriApplyMapper omsPriApplyMapper;
 
     @Autowired
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 
     @Autowired
-    private OmsCerManageService omsCerManageService;
-
-    @Autowired
     private CfCertificateCollectionMapper cfCertificateCollectionMapper;
 
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
+
+    @Autowired
+    private OmsCerExitEntryRepertoryMapper omsCerExitEntryRepertoryMapper;
     /**
      * @Desc: 读取证照信息
      * @Author: wangyunquan
@@ -141,7 +138,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
     }
 
     /**
-     * @Desc: 1、归还处理：①修改证照状态 ② 将柜台号置为已使用 ③解除催缴
+     * @Desc: 1、归还处理：①修改证照状态 ② 将柜台号置为已使用 ③解除催缴 ④保存入库记录
      *        2、新增处理：①新增证照 ② 将柜台号置为已使用 ③解除催缴 ④修改人员的证件持有情况
      * @Author: wangyunquan
      * @Param: [cfCertificate]
@@ -166,8 +163,27 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             cfCertificate.setCardStatus("0");
             cfCertificate.setUpdater(userInfo.getId());
             cfCertificate.setUpdateTime(date);
+
+            //入库信息
+            OmsCerExitEntryRepertory omsCerExitEntryRepertory=new OmsCerExitEntryRepertory();
+            omsCerExitEntryRepertory.setGetId(UUIDGenerator.getPrimaryKey());
+            omsCerExitEntryRepertory.setCerId(storeCfCertificate.getId());
+            omsCerExitEntryRepertory.setName(storeCfCertificate.getName());
+            omsCerExitEntryRepertory.setZjlx(storeCfCertificate.getZjlx());
+            omsCerExitEntryRepertory.setZjhm(storeCfCertificate.getZjhm());
+            //出入库状态(0:出库,1:入库)
+            omsCerExitEntryRepertory.setStatus("1");
+            //存取方式(0:证照机,1:柜台)
+            omsCerExitEntryRepertory.setMode("1");
+            omsCerExitEntryRepertory.setCounterNum(returnCerInfo.getCounterNum());
+            omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
+            omsCerExitEntryRepertory.setOperateTime(date);
+
             if(cfCertificateMapper.updateById(cfCertificate)==0)
                 throw new CustomMessageException("证照更新失败！");
+            if(omsCerExitEntryRepertoryMapper.updateById(omsCerExitEntryRepertory)==0)
+                throw new CustomMessageException("入库保存失败！");
+
         }else{
             //新增处理
             CfCertificate cfCertificate=new CfCertificate();

@@ -307,9 +307,9 @@ public class Constants {
     public static String[] CER_SAVE_NAME = {"正常保管", "已取出", "未上缴"};
 
     //证照状态代码
-    public static int[] CER_STATUS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    public static int[] CER_STATUS = {0, 1, 2, 3, 4, 5, 6, 40, 41};
     //证照状态名称
-    public static String[] CER_NAME = {"正常", "过期", "注销", "验证失败", "已验证", "待验证", "借出", "待领取", "其他"};
+    public static String[] CER_NAME = {"正常", "过期", "注销", "验证失败", "已验证", "待验证", "借出", "待领取", "已领取"};
 
     //证照注销原因代码
     public static int[] CANCELL_REASON_STATUS = {1, 2, 3, 4};
