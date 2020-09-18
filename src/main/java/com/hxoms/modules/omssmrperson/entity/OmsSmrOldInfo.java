@@ -78,6 +78,9 @@ public class OmsSmrOldInfo {
     @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务职级")
     private String post;
 
+    @ColumnAnnotation(FieldName = "SFQR",   FieldDescription="是否确认(0：是，1：否")
+    private String sfqr;
+
     public String getId() {
         return id;
     }
@@ -220,5 +223,13 @@ public class OmsSmrOldInfo {
 
     public void setPost(String post) {
         this.post = post;
+    }
+
+    public String getSfqr() {
+        return sfqr;
+    }
+
+    public void setSfqr(String sfqr) {
+        this.sfqr = sfqr;
     }
 }
