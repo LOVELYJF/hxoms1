@@ -10,6 +10,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import io.swagger.models.auth.In;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -385,7 +386,7 @@ public class LeaderSupervisionUntil {
         return  wb;
     }
 
-    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList,String sheetName1,String sheetName2) {
+    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList, String sheetName1, String sheetName2, OmsRegProcbatch batchinfo) {
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
         HSSFSheet sheet0 = wb.createSheet(sheetName1);

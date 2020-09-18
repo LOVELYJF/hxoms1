@@ -126,7 +126,7 @@ public class OmsRegProcpersoninfo {
     @ApiModelProperty(value="人事主管单位")
     private String personManager;
 
-    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码")
+    @ColumnAnnotation(FieldName = "IDENTITY_CODE",   FieldDescription="身份情况代码  1.省管干部，2.科级以上公务人员  3.涉密人员  4.重要岗位人员  5.重点监管人员  9.其他人员")
     @ApiModelProperty(value="身份情况代码")
     private String identityCode;
 

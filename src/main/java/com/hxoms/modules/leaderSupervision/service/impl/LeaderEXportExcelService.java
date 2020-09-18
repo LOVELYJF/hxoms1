@@ -619,7 +619,7 @@ public class LeaderEXportExcelService {
         }
 
         //处理批次数据，下载后改变状态
-        dealDataRFByRfId(idStr);
+        OmsRegProcbatch batchinfo = dealDataRFByRfId(idStr);
         List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(ids);
         List listK = new ArrayList();
         List listV = new ArrayList();
@@ -632,19 +632,18 @@ public class LeaderEXportExcelService {
         listK.add("registeResidence");listV.add("户口所在地");
         listK.add("inboundFlag");listV.add("入库标识");
         listK.add("workUnit");listV.add("工作单位");
-        listK.add("post");listV.add("职务(级)或职称");
+        listK.add("postCode");listV.add("职务(级)或职称");
         listK.add("personManager");listV.add("人事主管单位");
-        listK.add("暂无数据");listV.add("报送单位组织机构代码");
-        listK.add("暂无数据");listV.add("报送单位名称");
-        listK.add("暂无数据");listV.add("报送单位类别");
-        listK.add("暂无数据");listV.add("报送单位联系人");
-        listK.add("暂无数据");listV.add("联系电话");
-        listK.add("暂无数据");listV.add("入库批号");
-
-        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表1（电子）");
+        listK.add("organizationCode");listV.add("报送单位组织机构代码");
+        listK.add("b0101");listV.add("报送单位名称");
+        listK.add(batchinfo.getSubmitUcategory());listV.add("报送单位类别");
+        listK.add(batchinfo.getSubmitUcontacts());listV.add("报送单位联系人");
+        listK.add(batchinfo.getSubmitPhone());listV.add("联系电话");
+        listK.add(batchinfo.getBatchNo());listV.add("入库批号");
+        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表2（电子）",batchinfo);
     }
 
-    private void dealDataRFByRfId(String idStr) {
+    private OmsRegProcbatch dealDataRFByRfId(String idStr) {
         List<String> ids = null;
         if (!StringUtils.isBlank(idStr)){
             ids = Arrays.asList(idStr.split(","));
@@ -667,7 +666,7 @@ public class LeaderEXportExcelService {
             }
             int con = orpbatchService.batchinsertInfo(orpbplist);
             if (con > 0) {
-                //修改批次表备案状态0未备案，1已备案，2已确认
+                //修改批次表状态 是否完成  0未完成，1已完成
                 batchinfo.setStatus("1");
                 int con1 = orpbatchService.updateOrpbatch(batchinfo);
                 if (con1 > 0) {
@@ -677,7 +676,7 @@ public class LeaderEXportExcelService {
         }else{
             throw new CustomMessageException("请先启动登记备案再下载。");
         }
-
+        return batchinfo;
     }
 
 

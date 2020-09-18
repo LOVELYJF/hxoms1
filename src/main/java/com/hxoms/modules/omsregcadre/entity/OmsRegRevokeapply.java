@@ -92,7 +92,7 @@ public class OmsRegRevokeapply {
     @ColumnAnnotation(FieldName = "APPLY_REASON",   FieldDescription="申请理由")
     private String applyReason;
 
-    @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="状态(填写0，已上报1（经办人上报干部监督处），已审批2（干部监督处已审批），已抽取3（登记备案工作已经抽取数据）、已备案4（登记备案结果已确认）、退回5（资料不全，干部监督处退回）、拒批9（干部监督处不允许撤销）)")
+    @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="1.申请 2.受理 3.撤销 4.已备案 5.处领导审批 6.部领导审批 7.拒批")
     private String status;
 
     @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="备案机构")
