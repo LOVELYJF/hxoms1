@@ -211,7 +211,7 @@ public class Constants {
     /**
      * 因私 业务 (签字盖章弃用)
      */
-    public static int[] private_business = {1, 2, 3, 4, 5, 29, 30, 31, 0};
+    public static int[] private_business = {1, 2, 3, 4, 5, 40, 41, 50, 0};
     /**
      * 因私 业务 状态名称
      */

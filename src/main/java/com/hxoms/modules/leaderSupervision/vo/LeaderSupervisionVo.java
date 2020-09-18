@@ -27,6 +27,8 @@ public class LeaderSupervisionVo {
 
     private String  leaderBtachId; /** 批次id 用于选择人员纳入批次中**/
 
+    private String[] leaderBatchids; /** 查询 条件 被选中的批次列表 **/
+
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date accpetDate; /**受理时间**/
@@ -170,5 +172,13 @@ public class LeaderSupervisionVo {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public String[] getLeaderBatchids() {
+        return leaderBatchids;
+    }
+
+    public void setLeaderBatchids(String[] leaderBatchids) {
+        this.leaderBatchids = leaderBatchids;
     }
 }
