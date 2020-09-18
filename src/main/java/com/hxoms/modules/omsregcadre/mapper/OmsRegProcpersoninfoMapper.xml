@@ -461,7 +461,7 @@
         AND T_7.DICT_CODE = sd.DICT_CODE) T_7 ON info.SECRET_LEVEL = T_7.item_code
         LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8,SYS_DICT sd WHERE sd.DICT_CODE = 'SJLY' -- 数据来源
         AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
-        AND info.INBOUND_FLAG != 'D'
+        WHERE info.INBOUND_FLAG != 'D'
         AND info.DATA_TYPE = '2'
         AND info.INCUMBENCY_STATUS not in (1,7)
         AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='7')
