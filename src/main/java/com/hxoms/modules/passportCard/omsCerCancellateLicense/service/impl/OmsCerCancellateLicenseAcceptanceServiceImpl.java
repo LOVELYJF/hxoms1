@@ -8,19 +8,18 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateRecords;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateRecordsMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseAcceptanceService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -95,7 +94,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void getCerCancellateLicenseForce(List<OmsCerCancellateLicense> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
 
 				omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));        //证照申请注销状态（处领导审批）
@@ -137,6 +136,10 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateCerCancellateLicenseAcceptance(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if(StringUtils.isBlank(omsCerCancellateLicense.getId())){
+			throw new CustomMessageException("参数错误");
+		}
+
 		omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));        //证照申请注销状态（处领导审批）
 		omsCerCancellateLicense.setZxfs(String.valueOf(Constants.CANCELL_MODE_STATUS[1]));          //注销方式（委托）
 		omsCerCancellateLicense.setModifyTime(new Date());
@@ -173,6 +176,11 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateCerCancellateLicenseAcceptanceNext(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if(StringUtils.isBlank(omsCerCancellateLicense.getZxfs()) ||
+				StringUtils.isBlank(omsCerCancellateLicense.getId()) ||
+				StringUtils.isBlank(omsCerCancellateLicense.getZjhm())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerCancellateLicense.setModifyTime(new Date());
 		//进行判断注销方式
@@ -336,6 +344,11 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public Map<String,Object> updateCerCancellateLicenseApprovalMinister(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if(StringUtils.isBlank(omsCerCancellateLicense.getId()) ||
+				StringUtils.isBlank(omsCerCancellateLicense.getOmsId()) ||
+				StringUtils.isBlank(omsCerCancellateLicense.getCancellateApplyId())){
+			throw new CustomMessageException("参数错误");
+		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(omsCerCancellateLicense.getBldyj().equals("1")){
 			//通过
@@ -390,6 +403,9 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void updateCerCancellateLicenseApprovalComplete(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if(StringUtils.isBlank(omsCerCancellateLicense.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		if(omsCerCancellateLicense.getGatshyj().equals("1")){
 			//公安厅通过
 			OmsCerCancellateLicense cancellateLicense = new OmsCerCancellateLicense();
@@ -437,7 +453,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					//根据证件号码查询证件信息(查ID)
 					String zjhm = omsCerCancellateLicense.getZjhm();
 					QueryWrapper<CfCertificate> queryWrapper1 = new QueryWrapper<CfCertificate>();
-					queryWrapper1.eq(zjhm != null && zjhm != "", "ZJHM", zjhm);
+					queryWrapper1.eq(!StringUtils.isBlank(zjhm), "ZJHM", zjhm);
 					CfCertificate cfCertificate1 = cfCertificateMapper.selectOne(queryWrapper1);
 					omsCerGetTask.setCerId(cfCertificate1.getId());
 					omsCerGetTask.setZjhm(omsCerCancellateLicense.getZjhm());
@@ -504,7 +520,6 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 
 					CfCertificate cfCertificate = new CfCertificate();
 					cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));       //注销
-					cfCertificate.setIsValid(1);        //证照设置成无效
 					QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 					queryWrapper.eq("ZJHM", omsCerCancellateLicense.getZjhm());
 					int count4 = cfCertificateMapper.update(cfCertificate, queryWrapper);
@@ -515,7 +530,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					//将证照的柜台保管号插入到证照号废弃表中，供重复使用。
 					//根据证照号码查询证照是否存在柜台编号
 					QueryWrapper<CfCertificate> wrapper = new QueryWrapper<CfCertificate>();
-					wrapper.eq(omsCerCancellateLicense.getZjhm() != null && omsCerCancellateLicense.getZjhm() != "",
+					wrapper.eq(!StringUtils.isBlank(omsCerCancellateLicense.getZjhm()),
 							"ZJHM", omsCerCancellateLicense.getZjhm());
 					CfCertificate cfCertificate1 = cfCertificateMapper.selectOne(queryWrapper);
 					if(cfCertificate1.getCounterNum() != null){

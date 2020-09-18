@@ -256,7 +256,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
 
             }
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"72\" style=\"width:72px\" span=\"5\"/>");
             stringBuffer.append("<col width=\"82\" style=\"width:82px\"/>" );
@@ -432,7 +432,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         }else if ("近三年出国（境）记录表".equals(fileName)){
 
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"115\" style=\"width:86.25pt;\"/>");
             stringBuffer.append("<col width=\"103\" style=\"width:77.25pt;\"/>");

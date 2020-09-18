@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -24,6 +25,7 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegRevokeApplyMapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,10 +161,13 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 * @return
 	 */
 	public List<A36> getFamilyMember(String a0100) {
+		if(StringUtils.isBlank(a0100)){
+			throw new CustomMessageException("参数错误");
+		}
 
 		List<A36> list = a36Mapper.selectFamilyMember(a0100);
 		//根据身份证号码切割得到出生日期
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(A36 a36 : list){
 				String birthdate = OmsRegInitUtil.getBirthByIdNumber(a36.getIdCard());
 				a36.setA3607(birthdate);
@@ -179,6 +184,9 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addToRegistration(List<A36> list) {
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选中成员信息");
+		}
 		//保存家庭成员
 		for(A36 a36 : list){
 			a36.setModifyTime(new Date());
@@ -198,7 +206,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 				.eq("POST", "802");
 		List<OmsRegProcpersoninfo> omsRegProcpersoninfoList = omsRegProcpersonInfoMapper.selectList(wrapper);
 
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(A36 a36 : list){
 				boolean result = false;
 				//根据人员主键查询裸官信息，用于判断裸官是否在限制性岗位
@@ -317,6 +325,9 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeToRegistration(String a0100) {
+		if(StringUtils.isBlank(a0100)){
+			throw new CustomMessageException("参数错误");
+		}
 		//查询备案表中的所有家庭成员
 		QueryWrapper<OmsRegProcpersoninfo> wrapper1 = new QueryWrapper<OmsRegProcpersoninfo>();
 		wrapper1.eq("POST", "801")
@@ -345,7 +356,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 					omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					omsRegProcpersonInfoMapper.updateById(omsRegProcpersonInfo);
 
-					if(omsRegRevokeapplyList != null && omsRegRevokeapplyList.size() > 0){
+					if(!ListUtil.isEmpty(omsRegRevokeapplyList)){
 						//在撤销登记备案表中添加，首先查询撤销备案表是否存在该家庭成员
 						for(OmsRegRevokeapply omsRegRevokeApply : omsRegRevokeapplyList){
 							if(omsRegRevokeApply.getIdnumberGb().equals(omsRegProcpersonInfo.getIdnumberGb()) &&

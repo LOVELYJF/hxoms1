@@ -36,7 +36,7 @@ public class CjRecord {
     @ApiModelProperty(value="催缴人")
     private String cjPerson;
 
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="催缴时间")
     private Date cjTime;

@@ -66,6 +66,12 @@ public class CfCertificateCollection {
     @ApiModelProperty(value="归还日期")
     private Date returnDate;
 
+    @ColumnAnnotation(FieldName = "REAL_RETURN_DATE",   FieldDescription="实际归还日期")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="实际归还日期")
+    private Date realReturnDate;
+
     @ColumnAnnotation(FieldName = "DATA_SOURCE",   FieldDescription="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)")
     @ApiModelProperty(value="数据来源(0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请)")
     private String dataSource;
@@ -196,6 +202,14 @@ public class CfCertificateCollection {
 
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public Date getRealReturnDate() {
+        return realReturnDate;
+    }
+
+    public void setRealReturnDate(Date realReturnDate) {
+        this.realReturnDate = realReturnDate;
     }
 
     public String getDataSource() {

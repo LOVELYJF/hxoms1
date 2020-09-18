@@ -13,10 +13,7 @@ import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportBatch;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerImportManage;
+import com.hxoms.modules.passportCard.initialise.entity.*;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
@@ -86,9 +83,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      */
     @Override
     public void exportExceptionCerForOmsId(List<String> ids, HttpServletResponse response) {
-        if (ids == null || ids.size() < 1) {
+     /*   if (ids == null || ids.size() < 1) {
             throw new CustomMessageException("操作失败！");
-        }
+        }*/
         List<ExportExceptionCer> getList = cfCertificateMapper.exportExceptionCerForOmsId(ids);
         if (getList.size()>0){
             getList.forEach(p -> p.setExitAndEntryDate(ExportExcelUtil.getDateStr(3)));
@@ -197,6 +194,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/8/4
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CfCertificateValidate validateCerInfo(ValidateCerInfo validateCerInfo) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
@@ -216,20 +214,31 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
             //验证通过，通过接口获取证照存储位置
             if("4".equals(certificateGa.getCardStatus())){
+                //还未对接证照机接口，先默认柜台存
+                boolean locationExist=false;
                 //通过接口查询证照机是否可以存，否则柜台存。
-                Integer counterNum=omsCerConuterNumberMapper.selectCounterNum(certificateGa.getSurelyUnit(),certificateGa.getZjlx(),certificateGa.getZjxs());
-                //保管方式
-
-
-                //保管位置
-
+                if(locationExist){
+                    //保管方式(0:证照机,1:柜台)
+                    certificateGa.setSurelyWay("0");
+                }else{
+                    //获取位置
+                    OmsCerCounterNumber omsCerCounterNumber=omsCerConuterNumberMapper.selectCounterNum(certificateGa.getSurelyUnit(),certificateGa.getZjlx(),certificateGa.getZjxs());
+                    //将位置置为已使用
+                    omsCerCounterNumber.setStatus("1");
+                    omsCerCounterNumber.setIsLock("1");
+                    if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
+                        throw new CustomMessageException("柜台号置为已使用失败！");
+                    //保管方式
+                    certificateGa.setSurelyWay("1");
+                    //保管位置
+                    certificateGa.setCounterNum(omsCerCounterNumber.getCounterNum());
+                }
             }
             certificateGa.setSaveStatus("1");
             certificateGa.setZjxs(cfCertificate.getZjxs());
             certificateGa.setUpdater(userInfo.getId());
             certificateGa.setUpdateTime(new Date());
-            int result=cfCertificateMapper.updateById(certificateGa);
-            if(result==0)
+            if(cfCertificateMapper.updateById(certificateGa)==0)
                 throw new CustomMessageException("证照验证保存失败！");
             certificateGa=cfCertificateMapper.selectById(certificateGa.getId());
         }
@@ -279,8 +288,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificate.setExceptionMessage("公安无对应证照数据");
         cfCertificate.setUpdater(userInfo.getId());
         cfCertificate.setUpdateTime(new Date());
-        int resule=cfCertificateMapper.insert(cfCertificate);
-        if(resule==0)
+        if(cfCertificateMapper.insert(cfCertificate)==0)
             throw new CustomMessageException("保存失败！");
     }
 
@@ -577,7 +585,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Param: [inputStream, fileName]
      * @Return: java.lang.String
      * @Date: 2020/7/24
-     * 处理业务：1、导入（证照管理导入、正常证照导入）2、去重 3、证照验证 (已取出，待验证) 4、修改证照持有情况 5、无证照解除催缴任务
+     * 处理业务：1、导入（证照管理导入、正常证照导入）2、去重 3、证照验证 (已取出，待验证。若验证通过获取存储位置) 4、修改证照持有情况 5、无证照解除催缴任务
      */
     public void readExcel(InputStream inputStream, String fileName) throws IOException {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
@@ -682,7 +690,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                     Integer allHold=0;
                     for (int i = firstRow+1; i <= lastRow; i++) {
                         //获取合并单元格值
-                        String regionValue=sheet.getRow(i).getCell(1).toString();
+                        String regionValue=null;
+                        if(isMergedRegion(sheet,i,1)){
+                            regionValue=getMergedRegionValue(sheet,i,1);
+                        }else{
+                            regionValue=sheet.getRow(i).getCell(1).toString();
+                        }
                         if(!StringUtils.isBlank(regionValue)){
                             Row row =sheet.getRow(i);
                             int column=2;
@@ -726,8 +739,6 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                         cfCertificate.setCardStatus("1");
                                         cfCertificate.setSaveStatus("1");
                                     }
-                                    //是否有效,0:有效,1:无效
-                                    cfCertificate.setIsValid(0);
                                     //去重
                                     if(cfCertificateExistList!=null&&cfCertificateExistList.size()>0){
                                         boolean flag=false;

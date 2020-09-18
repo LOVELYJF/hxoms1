@@ -12,6 +12,7 @@ import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
 import com.hxoms.modules.passportCard.omsCerInventory.mapper.OmsCerInventoryMapper;
 import com.hxoms.modules.passportCard.omsCerInventory.service.OmsCerInventoryService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -59,7 +60,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("cabinetNum", omsCerInventory.getCabinetNum());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
-		if(resultList.size() > 0){
+		if(!ListUtil.isEmpty(resultList)){
 			throw new CustomMessageException("本月该证照柜已经完成盘点，查询请点击统计盘点结果");
 		}
 
@@ -111,6 +112,9 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Object> GetCerInventoryResultForCabinet(OmsCerInventory omsCerInventory) {
+		if(StringUtils.isBlank(omsCerInventory.getCabinetNum())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//盘点后重新查询证照状态
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -119,7 +123,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		//查询证照主键
 		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
-		queryWrapper.in(idList != null && idList.size() > 0,"ID",idList);
+		queryWrapper.in(!ListUtil.isEmpty(idList),"ID",idList);
 		List<CfCertificate> list = cfCertificateMapper.selectList(queryWrapper);
 
 		//同步盘点结果到盘点表
@@ -169,7 +173,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Date: 2020/8/19 14:38
 	 */
 	public void updateCerInventoryResultForCabinet(List<OmsCerInventory> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerInventory omsCerInventory : list){
 				omsCerInventory.setModifyTime(new Date());
 				omsCerInventory.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -302,7 +306,10 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public List<Map<String, Object>> insertCerInventoryInfoForCounter(OmsCerInventory omsCerInventory) {
-
+		if(omsCerInventory.getCounterStartQuery() < 1 || omsCerInventory.getCounterStartQuery() == null ||
+				omsCerInventory.getCounterEndQuery() < 1 || omsCerInventory.getCounterEndQuery() == null){
+			throw new CustomMessageException("请输入完整的前后查询号码");
+		}
 		//查询是否有已经盘点的证照号码
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
@@ -362,7 +369,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Integer> updateCerInventoryResultForCounter(List<OmsCerInventory> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerInventory omsCerInventory : list){
 				omsCerInventory.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				omsCerInventory.setModifyTime(new Date());
@@ -719,6 +726,9 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Date: 2020/8/20 14:38
 	 */
 	public List<Map<String, Object>> getCerAccessRecord(CfCertificate cfCertificate) {
+		if(StringUtils.isBlank(cfCertificate.getZjhm())){
+			throw new CustomMessageException("参数错误");
+		}
 		//根据证件号码查询证件存取记录
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("zjhm", cfCertificate.getZjhm());

@@ -11,6 +11,7 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -57,8 +58,12 @@ public class CfCertificateController {
     @ApiOperation(value = "证照管理-导出证照查询表omsID（涉及到的模板可共用）")
     @ApiImplicitParam(value = "选中列表中的omsId，利用','隔开拼接", name = "ids", required = true, paramType = "query")
     @PostMapping("/exportExceptionCerForOmsId")
-    public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") String ids, @ApiIgnore HttpServletResponse response) {
-        cfCertificateService.exportExceptionCerForOmsId(Arrays.asList(ids.split(",")),response);
+    public void exportExceptionCerForOmsId(@ApiIgnore @NotBlank(message = "ids不能为空") @RequestBody String ids, @ApiIgnore HttpServletResponse response) {
+        List<String> idss = null;
+        if (!StringUtils.isBlank(ids)){
+            idss = Arrays.asList(ids.split(","));
+        }
+        cfCertificateService.exportExceptionCerForOmsId(idss,response);
     }
 
     /**

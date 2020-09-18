@@ -6,9 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
-import com.hxoms.modules.keySupervision.caseInfo.entity.OmsSupCaseInfo;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
-import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
@@ -17,11 +15,9 @@ import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCance
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateRecordsMapper;
 import com.hxoms.modules.passportCard.omsCerCancellateLicense.service.OmsCerCancellateLicenseApplyService;
-import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
-import com.hxoms.support.user.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,7 +88,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		map.put("tableCode", "oms_cer_cancellate");
 
 		if(list == null || list.size() < 1){
-			throw new CustomMessageException("未选择注销的证照信息");
+			throw new CustomMessageException("未选择要注销的证照信息");
 		}
 
 		//判断选择的是否是同一个人
@@ -106,7 +102,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 
 		//将集合中的多个证照注销信息合并
 		StringBuffer cerInfo = new StringBuffer();
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
 				cerInfo.append(Constants.CER_TYPE_NAME[omsCerCancellateLicense.getZjlx()] + ":" + omsCerCancellateLicense.getZjhm() + "、");
 			}
@@ -130,7 +126,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		map.put("applyId", omsCerCancellateApply.getId());
 
 		//将注销申请信息保存，修改状态
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
 				omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[1]));        //证照申请注销状态（生成材料）
 				omsCerCancellateLicense.setZxfs(String.valueOf(Constants.CANCELL_MODE_STATUS[0]));          //注销方式（自行注销）
@@ -174,11 +170,12 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 */
 	public Page<OmsCerCancellateLicense> getCancellateLicenseApply(Page<OmsCerCancellateLicense> page, OmsCerCancellateLicense omsCerCancellateLicense) {
 		QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
-		queryWrapper.eq(omsCerCancellateLicense.getName() != null && omsCerCancellateLicense.getName() != "",
+		queryWrapper
+				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getName()),
 				"NAME",omsCerCancellateLicense.getName())
-				.eq(omsCerCancellateLicense.getZjhm() != null && omsCerCancellateLicense.getZjhm() != "",
+				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getZjhm()),
 						"ZJHM",omsCerCancellateLicense.getZjhm())
-				.eq(omsCerCancellateLicense.getZhzxzt() != null && omsCerCancellateLicense.getZhzxzt() != "",
+				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getZhzxzt()),
 						"ZHZXZT", omsCerCancellateLicense.getZhzxzt())
 				.between(omsCerCancellateLicense.getApplyQueryStartTime() != null && omsCerCancellateLicense.getApplyQueryEndTime() != null,
 						"CREATE_TIME", omsCerCancellateLicense.getApplyQueryStartTime(), omsCerCancellateLicense.getApplyQueryEndTime())
@@ -201,7 +198,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/8/5 15:04
 	 */
 	public void deleteCancellateLicenseApply(String id) {
-		if(id != null && id != ""){
+		if(!StringUtils.isBlank(id)){
 			int count = omsCerCancellateLicenseMapper.deleteById(id);
 			if(count < 1){
 				throw new CustomMessageException("删除失败");
@@ -221,9 +218,9 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeCancellateLicenseApply(List<OmsCerCancellateLicense> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
-				if(omsCerCancellateLicense.getId() != null && omsCerCancellateLicense.getId() != ""){
+				if(!StringUtils.isBlank(omsCerCancellateLicense.getId())){
 					omsCerCancellateLicense.setModifyTime(new Date());
 					omsCerCancellateLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 					omsCerCancellateLicense.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[9]));
@@ -261,7 +258,8 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/8/5 15:09
 	 */
 	public void updateCancellateLicenseApplyStatus(OmsCerCancellateLicense omsCerCancellateLicense) {
-		if (omsCerCancellateLicense.getZhzxzt() != null && StringUtils.isBlank(omsCerCancellateLicense.getCancellateApplyId())){
+		if (StringUtils.isBlank(omsCerCancellateLicense.getZhzxzt()) ||
+				StringUtils.isBlank(omsCerCancellateLicense.getCancellateApplyId())){
 			throw new CustomMessageException("参数错误");
 		}
 
@@ -330,12 +328,14 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	 * @Date: 2020/9/3 9:15
 	 */
 	public List<OmsCerCancellateRecords> getCerCancellateLicenseRecord(OmsCerCancellateLicense omsCerCancellateLicense) {
+		if(StringUtils.isBlank(omsCerCancellateLicense.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		QueryWrapper<OmsCerCancellateRecords> queryWrapper = new QueryWrapper<OmsCerCancellateRecords>();
 		queryWrapper.eq("CANCELLATE_ID", omsCerCancellateLicense.getId());
 		List<OmsCerCancellateRecords> list = omsCerCancellateRecordsMapper.selectList(queryWrapper);
 		return list;
 	}
-
 
 
 }
