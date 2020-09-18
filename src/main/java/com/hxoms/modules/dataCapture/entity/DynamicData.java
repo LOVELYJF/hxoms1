@@ -377,7 +377,7 @@ public class DynamicData {
             +  orcal_paging_last;
 
     public static String commonSqlB01 = "" +
-            "        	B0100	," +
+            "        	B0111 as B0100	," +
             "        	B0101	," +
             "        	B0104	," +
             "        	B0107	," +

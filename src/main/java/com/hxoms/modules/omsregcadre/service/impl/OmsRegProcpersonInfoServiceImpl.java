@@ -3,16 +3,13 @@ package com.hxoms.modules.omsregcadre.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
-import com.hxoms.message.message.entity.Message;
-import com.hxoms.message.message.entity.paramentity.SendMessageParam;
-import com.hxoms.message.message.service.MessageService;
-import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
@@ -23,12 +20,11 @@ import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import com.hxoms.support.leaderInfo.entity.A01;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
-import com.hxoms.support.parameter.service.ParameterService;
+import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +35,6 @@ import java.util.*;
 @Service
 public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcpersoninfoMapper, OmsRegProcpersoninfo> implements OmsRegProcpersonInfoService {
 
-
-    @Autowired
-    private Environment environment;
     @Autowired
     private A01Mapper a01Mapper;
     @Autowired
@@ -63,11 +56,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
     @Autowired
     private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
-
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private ParameterService parameterService;
 
     /**
      * 初始化登记备案信息
@@ -94,6 +82,15 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //缓存职务对应关系
         HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = CachePostMapping();
 
+        //缓存民族
+        HashMap<String, SysDictItem> hashMapNation= OmsCommonUtil.CacheDictItem("GB3304") ;
+
+        //缓存政治面貌
+        HashMap<String,SysDictItem> hashMapPolitical= OmsCommonUtil.CacheDictItem("GB4762") ;
+
+        //缓存健康
+        HashMap<String,SysDictItem> hashMapHealthy= OmsCommonUtil.CacheDictItem("GB2261D") ;
+
         //登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
 
@@ -105,7 +102,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 OmsRegProcpersoninfo orpInfo = hashMapReg.get(a01.getA0100());
 
                 boolean isNew = (orpInfo == null ? true : false);
-                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
+                        hashMapNation,hashMapPolitical,hashMapHealthy);
 
 
                 //登记备案信息中存在此数据，则更新其对应信息
@@ -121,7 +119,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         } else if (a01list != null && hashMapReg.size() == 0) {
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = null;
-                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
+                        hashMapNation,hashMapPolitical,hashMapHealthy);
                 insertRegList.add(orpInfo);
             }
         }
@@ -153,7 +152,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private OmsRegProcpersoninfo initData(OmsRegProcpersoninfo orpInfo, A01 a01,
                                           HashMap<String, List<Map<String, Object>>> hashMapA02,
                                           HashMap<String, A30> hashMapA30,
-                                          HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) throws ParseException {
+                                          HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo,
+                                          HashMap<String, SysDictItem> hashMapNation,
+                                          HashMap<String,SysDictItem> hashMapPolitical,
+                                          HashMap<String,SysDictItem> hashMapHealthy) throws ParseException {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
@@ -200,12 +202,34 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setSex(a01.getA0104());
         //民族
         orpInfo.setNationCode(a01.getA0117());
-        orpInfo.setNationName(a01.getA0117A());
+        if(StringUilt.stringIsNullOrEmpty(a01.getA0117A())&&
+        StringUilt.stringIsNullOrEmpty(a01.getA0117())==false){
+            SysDictItem dictItem = hashMapNation.get(a01.getA0117());
+            if(dictItem!=null)
+                orpInfo.setNationName(dictItem.getItemName());
+        }
+        else
+            orpInfo.setNationName(a01.getA0117A());
+
         //政治面貌
         orpInfo.setPoliticalAfficode(a01.getA0141());
+        if(StringUilt.stringIsNullOrEmpty(a01.getA0141())==false){
+            SysDictItem dictItem = hashMapPolitical.get(a01.getA0141());
+            if(dictItem!=null)
+                orpInfo.setPoliticalAffiname(dictItem.getItemName());
+        }
+
         //健康状态
         orpInfo.setHealthCode(a01.getA0127());
-        orpInfo.setHealth(a01.getA0128());
+        if(StringUilt.stringIsNullOrEmpty(a01.getA0128())&&
+                StringUilt.stringIsNullOrEmpty(a01.getA0127())==false){
+            SysDictItem dictItem = hashMapHealthy.get(a01.getA0127());
+            if(dictItem!=null)
+                orpInfo.setHealth(dictItem.getItemName());
+        }
+        else
+            orpInfo.setHealth(a01.getA0128());
+
         //身份情况 1.省管干部
         orpInfo.setIdentityCode("1");
         orpInfo.setIdentity("省管干部");
@@ -706,8 +730,18 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
         //根据身份证号和姓名缓存
         HashMap<String, OmsRegProcpersoninfo> nameAndIDCard = new HashMap<>();
+
         //缓存登记备案人员到哈希表中
         HashMap<String, OmsRegProcpersoninfo> hashMapReg = CacheRegProcpersonInfo(nameAndIDCard);
+
+        //缓存民族
+        HashMap<String, SysDictItem> hashMapNation= OmsCommonUtil.CacheDictItem("GB3304") ;
+
+        //缓存政治面貌
+        HashMap<String,SysDictItem> hashMapPolitical= OmsCommonUtil.CacheDictItem("GB4762") ;
+
+        //缓存健康
+        HashMap<String,SysDictItem> hashMapHealthy= OmsCommonUtil.CacheDictItem("GB2261D") ;
 
         List<OmsRegProcpersoninfo> updates = new ArrayList<>();
         List<OmsRegProcpersoninfo> adds = new ArrayList<>();
@@ -733,7 +767,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 OmsRegProcpersoninfo regProcpersoninfo = null;
 
                 if (omsreginfo == null || (omsreginfo != null && "2".equals(omsreginfo.getDataType())))
-                    regProcpersoninfo = initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo);
+                    regProcpersoninfo = initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
+                            hashMapNation,hashMapPolitical,hashMapHealthy);
 
                 //根据身份证号和姓名找到了公安数据，合并
                 if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
@@ -837,7 +872,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //身份证号姓名不一致
         else {
             try {
-                SendMessage(a01.getA0101() + "(" + a01.getA0184() + ")的身份证号或姓名与登记备案不一致，请核查！", "ExtractCadreForRegisterIDCardIllegal");
+                OmsCommonUtil.SendMessage(a01.getA0101() + "(" + a01.getA0184() + ")的身份证号或姓名与登记备案不一致，请核查！", "ExtractCadreForRegisterIDCardIllegal");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1072,39 +1107,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         return yearcheckInfoMapper.selectCheckModelList(year);
     }
 
-    /**
-     * @param paramCode 接收人的系统参数编码，格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
-     * @description:发送消息通用方法
-     * @author:杨波
-     * @date:2020-09-15 * @param msg 要发送的消息
-     * @return:void
-     **/
-    @Override
-    public void SendMessage(String msg, String paramCode) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
-        SendMessageParam param = new SendMessageParam();
-        Message message = new Message();
-        message.setContent(msg);
-        param.setMessage(message);
-
-        String receiver = parameterService.selectPValueByCode(paramCode);
-
-        //格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
-        String[] receivers = receiver.split(",");
-
-        Map<String, List<MsgUser>> msgUserMap = new HashMap<>();
-        List<MsgUser> msgUsers = new ArrayList<>();
-        MsgUser msgUser = new MsgUser();
-        msgUser.setHandleIdentify(receivers[0]);//类型
-        msgUser.setReceiveUserId(receivers[1]);//机构或处室ID
-        msgUser.setReceiveUsername(receivers[2]);//机构或处室名称
-        msgUsers.add(msgUser);
-        msgUserMap.put(receivers[0], msgUsers);
-
-        param.setMsgUserMap(msgUserMap);
-
-        messageService.sendMessage(param);
-    }
-
     @Override
     public List<Map> selectRegInfoListById(String idStr) {
         List<Map> list = new ArrayList<Map>();
@@ -1116,6 +1118,5 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         }
         return list;
     }
-
 
 }
