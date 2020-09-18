@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
  */
 public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取涉密人员原涉密信息列表
-    PageInfo<OmsSmrOldInfo> getSmrOldInfoById(Integer pageNum, Integer pageSize,String id) throws ParseException;
+    PageInfo<OmsSmrOldInfoVO> getSmrOldInfoById(Integer pageNum, Integer pageSize, String id) throws ParseException;
     //添加涉密人员原涉密信息
     Object insert(OmsSmrOldInfo smrOldInfo);
     //修改涉密人员原涉密信息
