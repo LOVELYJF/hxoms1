@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO;
 import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import org.apache.ibatis.annotations.Param;
@@ -35,7 +36,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     int updateRegProcpersoninfo(@Param(value = "info")OmsRegProcpersoninfoIPagParam info);
 
-    List<OmsRegProcpersoninfo> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
+    List<OmsRegProcpersoninfoVO> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 
     OmsRegProcpersoninfo selectPersonInfoByIdCard(String idCard);
 

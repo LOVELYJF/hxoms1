@@ -172,7 +172,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Override
     public Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo) {
         //查询公安信息可撤销登记备案人员
-        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
+        List<OmsRegProcpersoninfoVO> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
         return reginfolist;
     }
 

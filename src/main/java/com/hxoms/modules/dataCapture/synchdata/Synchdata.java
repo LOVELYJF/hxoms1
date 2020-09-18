@@ -15,6 +15,7 @@ import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -493,7 +494,7 @@ public class Synchdata {
 
     private void CacheSmrOldInfo() throws ParseException {
         hashMapSmrOldPerson.clear();
-        List<OmsSmrOldInfo> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
+        List<OmsSmrOldInfoVO> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
         //原涉密信息
         for (Object o : smrOldInfo
         ) {

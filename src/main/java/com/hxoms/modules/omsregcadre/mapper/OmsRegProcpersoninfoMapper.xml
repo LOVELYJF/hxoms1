@@ -434,22 +434,21 @@
         </if>
     </update>
 
-    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO">
         select
         T_1.item_name as SEX ,
-        T_2.item_name as RF_B0000,
         T_3.item_name as INCUMBENCY_STATUS,
         T_4.item_name as RF_STATUS,
         T_5.item_name as CHECK_STATUS,
         T_6.item_name as POLITICAL_AFFI,
         T_7.item_name as SECRET_LEVEL,
         T_8.item_name as DATA_TYPE,
+        b01.B0101,
         info.*
         from oms_reg_procpersoninfo info
+        LEFT JOIN B01 b01 on info.RF_B0000 = b01.B0100
         LEFT JOIN  (SELECT T_1.item_code,T_1.item_name FROM SYS_DICT_ITEM T_1,SYS_DICT sd WHERE sd.DICT_CODE = 'GB2261'
         AND T_1.DICT_CODE = sd.DICT_CODE) T_1 ON info.SEX = T_1.item_code
-        LEFT JOIN  (SELECT T_2.item_code,T_2.item_name FROM SYS_DICT_ITEM T_2,SYS_DICT sd WHERE sd.DICT_CODE = 'Hasng013'
-        AND T_2.DICT_CODE = sd.DICT_CODE) T_2 ON info.RF_B0000 = T_2.item_code
         LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3,SYS_DICT sd WHERE sd.DICT_CODE = 'ZZZT'
         AND T_3.DICT_CODE = sd.DICT_CODE) T_3 ON info.INCUMBENCY_STATUS = T_3.item_code
         LEFT JOIN  (SELECT T_4.item_code,T_4.item_name FROM SYS_DICT_ITEM T_4,SYS_DICT sd WHERE sd.DICT_CODE = 'BAZT'
@@ -462,7 +461,7 @@
         AND T_7.DICT_CODE = sd.DICT_CODE) T_7 ON info.SECRET_LEVEL = T_7.item_code
         LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8,SYS_DICT sd WHERE sd.DICT_CODE = 'SJLY' -- 数据来源
         AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
-        AND info.INBOUND_FLAG != 'D'
+        WHERE info.INBOUND_FLAG != 'D'
         AND info.DATA_TYPE = '2'
         AND info.INCUMBENCY_STATUS not in (1,7)
         AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='7')
