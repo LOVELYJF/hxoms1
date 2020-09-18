@@ -197,6 +197,23 @@ public class OmsOperatorApprovalServiceImpl implements OmsOperatorApprovalServic
            approval.setApprovalopinion("拒绝");
            //新增经办人审批信息
            operatorApprovalMapper.insertSelective(approval);
+       }else if(userType.equals(Constants.USER_TYPES[0])){
+           //经办人审批表主键、
+           approval.setId(UUIDGenerator.getPrimaryKey());
+           // 经办人主键、
+           approval.setOperatorid(operatorId);
+           //步骤名称（1.监督处审核 2.处领导审批 3.上报）、
+           approval.setStepname("上报");
+           // 提交时间
+           approval.setSubmissiontime(new Date());
+           // 提交人
+           approval.setSubmitter(loginUser.getUserName());
+           //提交人id
+           approval.setSubmitterid(loginUser.getId());
+           approval.setApprovalresult("拒绝");
+           approval.setApprovalopinion("拒绝");
+           //新增经办人审批信息
+           operatorApprovalMapper.insertSelective(approval);
        }else {
            throw new CustomMessageException("无操作权限!");
        }

@@ -2,6 +2,9 @@ package com.hxoms.modules.leaderSupervision.service;
 
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @authore:wjf
  * @data 2020/9/3 16:25
@@ -10,4 +13,6 @@ import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 public interface VerifyCheckService {
 
    void verifyCheckApprove(LeaderSupervisionVo leaderSupervisionVo);
+
+
 }

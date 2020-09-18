@@ -445,7 +445,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					omsCerGetTask.setBusiId(omsCerCancellateLicense.getId());
 					omsCerGetTask.setName(omsCerCancellateLicense.getName());
 					omsCerGetTask.setZjlx(omsCerCancellateLicense.getZjlx());
-					omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE5.getCode());
+					omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_5.getCode());
 					omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getId());
 					omsCerGetTask.setCreateTime(new Date());
 					omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
