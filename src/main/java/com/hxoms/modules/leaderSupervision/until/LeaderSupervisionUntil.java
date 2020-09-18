@@ -439,7 +439,6 @@ public class LeaderSupervisionUntil {
     }
 
     public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList,String sheetName1,String sheetName2) {
-    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList, String sheetName1, String sheetName2, OmsRegProcbatch batchinfo) {
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
         HSSFSheet sheet0 = wb.createSheet(sheetName1);
