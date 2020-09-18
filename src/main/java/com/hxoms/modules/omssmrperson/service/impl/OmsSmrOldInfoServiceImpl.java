@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageUtil;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
@@ -21,11 +22,11 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
     OmsSmrOldInfoMapper smrOldInfoMapper;
 
     @Override
-    public PageInfo<OmsSmrOldInfo> getSmrOldInfoById(Integer pageNum, Integer pageSize,String id){
-        List<OmsSmrOldInfo> resultList = baseMapper.getSmrOldInfoList(id);
+    public PageInfo<OmsSmrOldInfoVO> getSmrOldInfoById(Integer pageNum, Integer pageSize,String id){
+        List<OmsSmrOldInfoVO> resultList = baseMapper.getSmrOldInfoList(id);
         PageUtil.pageHelp(pageNum, pageSize);
 
-        PageInfo<OmsSmrOldInfo> pageInfo = new PageInfo(resultList);
+        PageInfo<OmsSmrOldInfoVO> pageInfo = new PageInfo(resultList);
         return pageInfo;
     }
 

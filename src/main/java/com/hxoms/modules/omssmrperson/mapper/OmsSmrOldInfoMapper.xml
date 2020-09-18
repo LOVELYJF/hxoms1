@@ -31,26 +31,10 @@
     QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR,PROC_PERSON_ID,PERSON_STATE,POST,SFQR
   </sql>
 
-  <select id="getSmrOldInfoList" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getSmrOldInfoList" parameterType="java.lang.String" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     SELECT
-      t.ID,
-      t.A0100,
-      b.B0101 AS B0100,
-      t.SECRET_RELATED_POST,
-      t.SECRET_RELATED_LEVEL,
-      t.SECRET_REVIEW_DATE,
-      t.START_DATE,
-      t.FINISH_DATE,
-      t.QR_SECRET_RELATED_POST,
-      t.QR_SECRET_RELATED_LEVEL,
-      t.QR_START_DATE,
-      t.QR_FINISH_DATE,
-      t.QR_USER_ID,
-      t.QR_TIME,
-      t.IMPORT_YEAR,
-      t.PROC_PERSON_ID,
-      t.PERSON_STATE,
-      t.POST
+      t.*,
+      b.B0101
     FROM oms_smr_oldinfo t
     LEFT JOIN b01 b on t.B0100 = b.B0100
     WHERE 1=1
