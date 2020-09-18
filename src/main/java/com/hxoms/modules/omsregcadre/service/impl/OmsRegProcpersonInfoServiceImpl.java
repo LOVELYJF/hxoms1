@@ -13,7 +13,6 @@ import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
-import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
@@ -46,8 +45,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private A01Mapper a01Mapper;
     @Autowired
     private A30Mapper a30Mapper;
-    @Autowired
-    private A02Mapper a02Mapper;
     @Autowired
     private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
     @Autowired
