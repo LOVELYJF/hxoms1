@@ -1054,86 +1054,115 @@
 
 	<select id="selectPrivateApplyManager" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
 
-  	SELECT
-	 pra.id AS id, # 业务id
+		SELECT
+		pra.id AS id, # 业务id
 
-	 pra.leader_batch_id as batchId, # 批次id
+		pra.leader_batch_id as batchId, # 批次id
 
+		pra.APPLY_STATUS as applystatus, # 申请状态
 
-	 b.b0101 AS department, 	# "部门名称"
+		b.b0101 AS department, 	# "部门名称"
 
-	 concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 
-	 DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
+		DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
 
-	 DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
+		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-	 pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
 
-	 "无" AS cfrw,    #出访任务
+		"无" AS cfrw,    #出访任务
 
-	 '因私' AS businessType,  # 申请类型
+		'因私' AS businessType,  # 申请类型
 
-	 "无" AS cgspdw,  # 审批单位
+		"无" AS cgspdw,  # 审批单位
 		IF (
 		mrp.SEX NOT IN ('1', '2'),
 		'未知',
 		IF (mrp.SEX = 1, '男', '女')
 		) AS sex,  # 性别
 
-	 DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
+		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
-	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+		pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
-	 pra.POSTRANK AS job, #职务
+		pra.POSTRANK AS job, #职务
 
-	 pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
 
-	 pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
 
-	 DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
+		DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
 
-	 pra.IS_LUOGUAN AS sflg, # 是否裸官
+		pra.IS_LUOGUAN AS sflg, # 是否裸官
 
-	 mrp.IDENTITY AS identity, #身份类别
+		mrp.IDENTITY AS identity, #身份类别
 
-	 pra.IS_LEADERS as sfzyld , # 主要领导
+		pra.IS_LEADERS as sfzyld , # 主要领导
 
-	 pra.NEGATIVE_INFO fmxx # 负面信息
-	 FROM
-	 oms_pri_apply pra
-	 LEFT JOIN b01 b ON pra.b0100 = b.b0100
-	 LEFT JOIN a01 a ON pra.a0100 = a.a0100
-	 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
-	 left join ( select
-	 apply_id as applyId,
-	 min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
-	 min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无答复'  end) as '处领导意见',
-	 min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as '部领导意见'
-	 from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pra.id = opinionTemp.applyId
+		pra.NEGATIVE_INFO fmxx, # 负面信息
+		case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+		case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+		AS jwjl, # 纪委意见 结论
+		case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+		as verbaljwjl, # 口头纪委意见
+		case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+		as officaljwjl, # 书面纪委意见
+		-- 	case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+		opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+		opinionTemp.chulingdaoOpinion, # 处领导意见
+		opinionTemp.bulingdaoOpinion,  # 部领导意见
+		CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl  # 最终结论
+		FROM
+		oms_pri_apply pra
+		LEFT JOIN b01 b ON pra.b0100 = b.b0100
+		LEFT JOIN a01 a ON pra.a0100 = a.a0100
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
+		left join oms_reg_procpersoninfo rp1 on pra.CREATE_USER = rp1.ID
 
-     <where>
+		LEFT JOIN oms_jiwei_opinion jio on jio.id =pra.id
+		left join ( select
+		apply_id as applyId,
+		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无数据'  end) as cadresupervisionOpinion, # '干部监督处意见' ,
+		min( case when aba.STEP_CODE = 24 then aba.APPROVAL_RESULT else '暂无数据'  end) as chulingdaoOpinion, #  '处领导意见',
+		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无数据'  end)  as bulingdaoOpinion # '部领导意见'
+		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pra.id = opinionTemp.applyId
 
-		 <if test="applyBeginDate != null and applyEndDate != null ">
+		where 1=1
+		<if test="params.applyStartTime != null and params.applyStopTime != null">
+			and pra.APPLY_TIME &gt; #{params.applyStartTime} and pra.APPLY_TIME &lt; #{params.applyStopTime}
+		</if>
+		<if test="params.b0100 != null and params.b0100 != ''and params.b0100 !='1'">
+			and pra.b0100 like CONCAT(#{params.b0100},'%')
+		</if>
+		<if test="params.procpersonId != null and params.procpersonId !=''">
+			and pra.PROCPERSON_ID = #{params.procpersonId}
+		</if>
+		<if test="params.procpersonId != null and params.procpersonId !=''">
+			and pra.IS_COMPARISON = #{params.isComparison}
+		</if>
+		<if test="params.isAbroad != null and params.isAbroad != ''">
+			and pra.IS_ABROAD = #{params.isAbroad}
+		</if>
+		<if test="params.abroadStartTime != null and params.abroadEndTime != null">
+			and pra.ABROAD_TIME &gt; #{params.abroadStartTime} and pra.ABROAD_TIME &lt; #{params.abroadEndTime}
+		</if>
+		<if test="params.name != null and params.name != ''">
+			and CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) LIKE CONCAT('%',#{params.name},'%')
+			or rp.PY LIKE  CONCAT('%',#{params.name},'%')
+		</if>
+		<if test="params.createUser != null and params.createUser != ''">
+			and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{params.createUser},'%')
+			or rp1.PY LIKE CONCAT('%',#{params.createUser},'%')
+		</if>
+		<if test="params.applyStatus != null and params.applyStatus != ''">
+			and pa.APPLY_STATUS in
+			<foreach close=")" collection="params.applyStatus" index="index" item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		order by pra.APPLY_STATUS, pra.ABROAD_TIME
 
-			 and pra.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pra.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
-
-		 </if>
-
-		 <if test="goabroadBeginDate != null and goabroadEndDate != null ">
-
-			 and pra.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pra.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
-
-		 </if>
-
-		 <if test="operatorUser != null and operatorUser != '' ">
-
-           and pra.CREATE_USER like concat('%',#{operatorUser},'%')
-
-		 </if>
-
-
-	 </where>
 
 
 	</select>
@@ -1608,10 +1637,10 @@
 			"无" AS cgspdw,  # 审批单位
 
 			IF (
-			a.A0104 NOT IN ('1', '2'),
-			'未知',
-			IF (a.A0104 = 1, '男', '女')
-			) AS sex,  # 性别
+				mrp.SEX NOT IN ('1', '2'),
+				'未知',
+				IF (mrp.SEX = 1, '男', '女')
+					) AS sex,  # 性别
 
 			DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -1901,6 +1930,22 @@
 
 		where applyStatus = '24'
 
+
+        <if test="leaderBatchids != null and leaderBatchids.length>0">
+
+            and temp.batchId in
+
+            <foreach item="item" index="id" collection="leaderBatchids" open="("
+
+                     separator="," close=")">
+
+                #{item}
+
+            </foreach>
+
+        </if>
+
+
 		ORDER BY
 				 abroadTime
 
@@ -2056,6 +2101,21 @@
 
 						) temp
 		where applyStatus = '25'
+
+		<if test="leaderBatchids != null and leaderBatchids.length>0">
+
+			and temp.batchId in
+
+			<foreach item="item" index="id" collection="leaderBatchids" open="("
+
+					 separator="," close=")">
+
+				#{item}
+
+			</foreach>
+
+		</if>
+
 
 		ORDER BY
 				 abroadTime

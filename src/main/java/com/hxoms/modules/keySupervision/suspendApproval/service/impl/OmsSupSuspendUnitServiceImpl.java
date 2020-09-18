@@ -9,6 +9,7 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
+import com.hxoms.modules.keySupervision.suspendApproval.entity.enums.ApprovalStatusEnum;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.keySupervision.suspendApproval.service.OmsSupSuspendUnitService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -69,7 +70,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 		QueryWrapper<OmsSupSuspendUnit> queryWrapper = new QueryWrapper<OmsSupSuspendUnit>();
 		queryWrapper.in(!ListUtil.isEmpty(idList), "ID", idList);
 		OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
-		omsSupSuspendUnit.setStatus("1");
+		omsSupSuspendUnit.setStatus(ApprovalStatusEnum.ALLOW_APPROVAL.getCode());
 		omsSupSuspendUnit.setRecoverUser(UserInfoUtil.getUserInfo().getName());
 		omsSupSuspendUnit.setRecoverTime(new Date());
 		omsSupSuspendUnit.setModifyTime(new Date());
@@ -87,7 +88,7 @@ public class OmsSupSuspendUnitServiceImpl extends ServiceImpl<OmsSupSuspendUnitM
 	 */
 	public List<SysDictItem> getApprovalStatus() {
 		List<SysDictItem> list = sysDictItemMapper.selectSysdictItemListByDictCode("CGSPGL");
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			return list;
 		}
 		return new ArrayList<SysDictItem>();

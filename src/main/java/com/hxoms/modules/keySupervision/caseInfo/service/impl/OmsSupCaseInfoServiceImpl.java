@@ -14,6 +14,7 @@ import com.hxoms.modules.keySupervision.caseInfo.mapper.OmsSupCaseInfoMapper;
 import com.hxoms.modules.keySupervision.caseInfo.service.OmsSupCaseInfoService;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
@@ -148,7 +149,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 			saveToDisciplinary(omsSupCaseInfo);
 		}else {
 			//在立案信息表中已经保存,判断是否受处分及是否已经添加到处分表
-			if(omsSupCaseInfo.getDisciplinaryAction().equals("1")){
+			if(omsSupCaseInfo.getDisciplinaryAction().equals(YesOrNoEnum.YES.getCode())){
 				//根据人员主键和处分时间查询是否重复
 				QueryWrapper<OmsSupDisciplinary> queryWrapper1 = new QueryWrapper<OmsSupDisciplinary>();
 				queryWrapper1.eq("A0100", omsSupCaseInfo.getA0100())
@@ -202,7 +203,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		//更新保存立案信息
 		updateSaveCaseInfo(omsSupCaseInfo);
 
-		if(omsSupCaseInfo.getDisciplinaryAction().equals("1")){
+		if(omsSupCaseInfo.getDisciplinaryAction().equals(YesOrNoEnum.YES.getCode())){
 			//根据id查处分信息表中是否存在该人员信息
 			QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
 			queryWrapper.eq("ID", omsSupCaseInfo.getId());
@@ -339,7 +340,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				row.createCell(3).setCellValue(list.get(i).getCasePost());
 				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getCaseTime()));
 				row.createCell(5).setCellValue(list.get(i).getCaseDocumentNo());
-				row.createCell(6).setCellValue((list.get(i).getDisciplinaryAction()).equals("1") ? "是" : "否");
+				row.createCell(6).setCellValue((list.get(i).getDisciplinaryAction()).equals(YesOrNoEnum.YES.getCode()) ? "是" : "否");
 				row.createCell(7).setCellValue(list.get(i).getWhyCase());
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){

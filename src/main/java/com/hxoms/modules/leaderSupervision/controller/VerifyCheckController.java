@@ -171,7 +171,7 @@ public class VerifyCheckController {
     }
 
     /** 导出人员备案表 列表信息 ***/
-    @PostMapping("exportPutOnRecord")
+    @PostMapping("/exportPutOnRecord")
     public void exportPutOnRecord(@RequestBody LeaderSupervisionVo leaderSupervisionVo,HttpServletResponse response){
 
 
@@ -192,11 +192,11 @@ public class VerifyCheckController {
             throw new CustomMessageException("导出失败，原因："+e.getMessage());
         }
 
-
-
-
-
-
     }
+
+
+
+
+
 
 }

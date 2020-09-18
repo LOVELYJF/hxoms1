@@ -211,7 +211,7 @@ public class Constants {
     /**
      * 因私 业务 (签字盖章弃用)
      */
-    public static int[] private_business = {1, 2, 3, 4, 5, 29, 30, 31, 0};
+    public static int[] private_business = {1, 2, 3, 4, 5, 40, 41, 50, 0};
     /**
      * 因私 业务 状态名称
      */
@@ -335,6 +335,11 @@ public class Constants {
     //出入境状态 1出境 2 入境
     public static final int[] OGE_STATUS_CODE = {1, 2};
 
+
+    //涉密等级状态代码
+    public static String[] SECRET_LEVEL_STATUS = {"0", "1", "2", "3"};
+    //涉密等级状态名称
+    public static String[] SECRET_LEVEL_NAME = {"非涉密", "一般", "重要", "核心"};
 
     /**
      * 登记备案表在职状态

@@ -14,6 +14,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
@@ -619,7 +620,7 @@ public class LeaderEXportExcelService {
         }
 
         //处理批次数据，下载后改变状态
-        dealDataRFByRfId(idStr);
+        OmsRegProcbatch batchinfo = dealDataRFByRfId(idStr);
         List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(ids);
         List listK = new ArrayList();
         List listV = new ArrayList();
@@ -632,19 +633,18 @@ public class LeaderEXportExcelService {
         listK.add("registeResidence");listV.add("户口所在地");
         listK.add("inboundFlag");listV.add("入库标识");
         listK.add("workUnit");listV.add("工作单位");
-        listK.add("post");listV.add("职务(级)或职称");
+        listK.add("postCode");listV.add("职务(级)或职称");
         listK.add("personManager");listV.add("人事主管单位");
-        listK.add("暂无数据");listV.add("报送单位组织机构代码");
-        listK.add("暂无数据");listV.add("报送单位名称");
-        listK.add("暂无数据");listV.add("报送单位类别");
-        listK.add("暂无数据");listV.add("报送单位联系人");
-        listK.add("暂无数据");listV.add("联系电话");
-        listK.add("暂无数据");listV.add("入库批号");
-
-        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表1（电子）");
+        listK.add("organizationCode");listV.add("报送单位组织机构代码");
+        listK.add("b0101");listV.add("报送单位名称");
+        listK.add(batchinfo.getSubmitUcategory());listV.add("报送单位类别");
+        listK.add(batchinfo.getSubmitUcontacts());listV.add("报送单位联系人");
+        listK.add(batchinfo.getSubmitPhone());listV.add("联系电话");
+        listK.add(batchinfo.getBatchNo());listV.add("入库批号");
+        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表2（电子）",batchinfo);
     }
 
-    private void dealDataRFByRfId(String idStr) {
+    private OmsRegProcbatch dealDataRFByRfId(String idStr) {
         List<String> ids = null;
         if (!StringUtils.isBlank(idStr)){
             ids = Arrays.asList(idStr.split(","));
@@ -667,7 +667,7 @@ public class LeaderEXportExcelService {
             }
             int con = orpbatchService.batchinsertInfo(orpbplist);
             if (con > 0) {
-                //修改批次表备案状态0未备案，1已备案，2已确认
+                //修改批次表状态 是否完成  0未完成，1已完成
                 batchinfo.setStatus("1");
                 int con1 = orpbatchService.updateOrpbatch(batchinfo);
                 if (con1 > 0) {
@@ -677,6 +677,123 @@ public class LeaderEXportExcelService {
         }else{
             throw new CustomMessageException("请先启动登记备案再下载。");
         }
+        return batchinfo;
+    }
+
+    /** 因私出国境申请管理 **/
+    public HSSFWorkbook exportAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+
+        List<Map> dataList = leaderCommonQueryMapper.selectPrivateApplyManager(omsPriApplyIPageParam);
+
+//        SELECT
+//        pra.id AS id, # 业务id
+//
+//        pra.leader_batch_id as batchId, # 批次id
+//
+//
+//        b.b0101 AS department, 	# "部门名称"
+//
+//        concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+//
+//        DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
+//
+//        DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
+//
+//        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+//
+//        "无" AS cfrw,    #出访任务
+//
+//        '因私' AS businessType,  # 申请类型
+//
+//        "无" AS cgspdw,  # 审批单位
+//        IF (
+//                mrp.SEX NOT IN ('1', '2'),
+//                '未知',
+//                IF (mrp.SEX = 1, '男', '女')
+//        ) AS sex,  # 性别
+//
+//        DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
+//
+//        pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+//
+//        pra.POSTRANK AS job, #职务
+//
+//        pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+//
+//        pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+//
+//        DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
+//
+//        pra.IS_LUOGUAN AS sflg, # 是否裸官
+//
+//        mrp.IDENTITY AS identity, #身份类别
+//
+//        pra.IS_LEADERS as sfzyld , # 主要领导
+//
+//        pra.NEGATIVE_INFO fmxx, # 负面信息
+//        case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+//        case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+//        AS jwjl, # 纪委意见 结论
+//        case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+//        as verbaljwjl, # 口头纪委意见
+//        case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+//        as officaljwjl, # 书面纪委意见
+//                -- 	case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+//        opinionTemp.cadresupervisionOpinion , # 干部监督处意见
+//        opinionTemp.chulingdaoOpinion, # 处领导意见
+//        opinionTemp.bulingdaoOpinion,  # 部领导意见
+//        CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl  # 最终结论
+
+
+
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");listV.add("序号");
+        listK.add("department");listV.add("单位");
+        listK.add("userName");listV.add("姓名");
+        listK.add("sex");listV.add("性别");
+        listK.add("birthDate");listV.add("出生日期");
+        listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+        listK.add("job");listV.add("职务");
+//        listK.add("bah");listV.add("备案号");  // 少一列 审批号
+        listK.add("abroadTime");listV.add("出境日期");
+        listK.add("returnTime");listV.add("入境日期");
+        listK.add("sdgj");listV.add("目的地");
+        listK.add("cfsy");listV.add("事由");
+        listK.add("applystatus");listV.add("状态");
+
+        listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+        // listK.add("secretLevel");listV.add("涉密等级");
+        listK.add("declassificaEndTime");listV.add("脱密期结束时间");
+        listK.add("sflg");listV.add("裸官");
+        listK.add("identity");listV.add("身份类别");
+        listK.add("sfzyld");listV.add("主要领导");
+        listK.add("fmxx");listV.add("负面信息");
+
+        listK.add("jwjl");listV.add("纪委结论");
+        listK.add("clshsftg");listV.add("材料审核");
+        listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
+        listK.add("chulingdaoOpinion");listV.add("处领导意见");
+        listK.add("bulingdaoOpinion");listV.add("部领导意见");
+        listK.add("zzjl");listV.add("最终结论");
+
+
+//        listK.add("verbaljwjl");listV.add("口头意见");
+//        listK.add("officaljwjl");listV.add("书面意见");
+//        listK.add("businessType");listV.add("申请类型");
+
+        // listK.add("sex");listV.add("性别");
+        // listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+        // 少一列 备案号
+
+//        listK.add("daynums");listV.add("距离出境天数");
+
+
+//        listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
+
+
+        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因私出国境申请管理");
+
 
     }
 

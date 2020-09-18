@@ -356,7 +356,12 @@
           p.DATA_TYPE AS dataType,
           p.SURNAME AS surname,
           p.NAME AS name,
-          p.SEX AS sex,
+          CASE
+          WHEN p.SEX = '1' THEN
+          '男'
+          ELSE
+          '女'
+          END AS sex,
           p.BIRTH_DATE AS birthDate,
           p.BIRTH_DATE_GB AS birthDateGb,
           p.IDNUMBER_GA AS idnumberGa,
@@ -401,14 +406,18 @@
           p.RZ_DATE AS finishTime,
           b.ORGANIZATION_CODE AS organizationCode,
           b.CONTACTS AS contacts,
-          b.PHONE AS phone
+          b.PHONE AS phone,
+          b.B0101 AS b0101
       FROM oms_reg_procpersoninfo p left join b01 b on p.RF_B0000 = b.B0100
-      WHERE 1 = 1
+      WHERE 1=1
       <if test="ids!=null and ids.size > 0">
           and p.ID in
           <foreach collection="ids" item="id" open="(" close=")" separator=",">
               #{id}
           </foreach>
+      </if>
+      <if test="ids==null">
+          and p.DATA_TYPE =1 AND p.CHECK_STATUS=0
       </if>
   </select>
 
@@ -425,19 +434,44 @@
         </if>
     </update>
 
-    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="java.util.List">
-        select * from oms_reg_procpersoninfo where 1=1
-        and INBOUND_FLAG != 'D'
-        and DATA_TYPE = '2'
-        and INCUMBENCY_STATUS not in (1,7)
-        and ID not in (select rf_id from oms_reg_revokeapply where status!='7')
+    <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO">
+        select
+        T_1.item_name as SEX ,
+        T_3.item_name as INCUMBENCY_STATUS,
+        T_4.item_name as RF_STATUS,
+        T_5.item_name as CHECK_STATUS,
+        T_6.item_name as POLITICAL_AFFI,
+        T_7.item_name as SECRET_LEVEL,
+        T_8.item_name as DATA_TYPE,
+        b01.B0101,
+        info.*
+        from oms_reg_procpersoninfo info
+        LEFT JOIN B01 b01 on info.RF_B0000 = b01.B0100
+        LEFT JOIN  (SELECT T_1.item_code,T_1.item_name FROM SYS_DICT_ITEM T_1,SYS_DICT sd WHERE sd.DICT_CODE = 'GB2261'
+        AND T_1.DICT_CODE = sd.DICT_CODE) T_1 ON info.SEX = T_1.item_code
+        LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3,SYS_DICT sd WHERE sd.DICT_CODE = 'ZZZT'
+        AND T_3.DICT_CODE = sd.DICT_CODE) T_3 ON info.INCUMBENCY_STATUS = T_3.item_code
+        LEFT JOIN  (SELECT T_4.item_code,T_4.item_name FROM SYS_DICT_ITEM T_4,SYS_DICT sd WHERE sd.DICT_CODE = 'BAZT'
+        AND T_4.DICT_CODE = sd.DICT_CODE) T_4 ON info.RF_STATUS = T_4.item_code
+        LEFT JOIN  (SELECT T_5.item_code,T_5.item_name FROM SYS_DICT_ITEM T_5,SYS_DICT sd WHERE sd.DICT_CODE = 'YSZT'
+        AND T_5.DICT_CODE = sd.DICT_CODE) T_5 ON info.CHECK_STATUS = T_5.item_code
+        LEFT JOIN  (SELECT T_6.item_code,T_6.item_name FROM SYS_DICT_ITEM T_6,SYS_DICT sd WHERE sd.DICT_CODE = 'GB4762'  -- 政治面貌
+        AND T_6.DICT_CODE = sd.DICT_CODE) T_6 ON info.POLITICAL_AFFICODE = T_6.item_code
+        LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7,SYS_DICT sd WHERE sd.DICT_CODE = 'SMDJ'  -- 涉密等级
+        AND T_7.DICT_CODE = sd.DICT_CODE) T_7 ON info.SECRET_LEVEL = T_7.item_code
+        LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8,SYS_DICT sd WHERE sd.DICT_CODE = 'SJLY' -- 数据来源
+        AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
+        WHERE info.INBOUND_FLAG != 'D'
+        AND info.DATA_TYPE = '2'
+        AND info.INCUMBENCY_STATUS not in (1,7)
+        AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='7')
         <if test="idnumberGa !=null and idnumberGa !=''">
-            and IDNUMBER_GA = #{idnumberGa}
-        </if>
+            AND info.IDNUMBER_GA = #{idnumberGa}
         <if test="name!=null and name!=''">
-            AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
         </if>
-        order by SURNAME,NAME,WORK_UNIT asc
+            AND ((CONCAT(IFNULL(info.SURNAME,''),IFNULL(info.NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
+        </if>
+        order by info.SURNAME,info.NAME,info.WORK_UNIT asc
     </select>
 
     <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.PerManageEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -193,7 +194,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			if(!result) {
 				//根据领导主键查询领导信息
 				Map<String,Object> map = new HashMap<String,Object>();
-				map.put("a0163", YesOrNoEnum.YES.getCode());
+				map.put("a0163", PerManageEnum.PRESENT_EMPLOYMENT.getCode());       //人员管理状态
 				map.put("a0100", a0100);
 				map.put("a0201b", person.getA0201b());
 				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(map);

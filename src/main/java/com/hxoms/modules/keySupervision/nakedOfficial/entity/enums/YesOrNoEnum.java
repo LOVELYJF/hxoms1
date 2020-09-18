@@ -1,6 +1,6 @@
 package com.hxoms.modules.keySupervision.nakedOfficial.entity.enums;
 /**
- * <b>功能描述: 家属在限制性岗位</b>
+ * <b>功能描述: 是否类型枚举类</b>
  * @Param:
  * @Return:
  * @Author: luoshuai

@@ -3,6 +3,7 @@ package com.hxoms.modules.omssmrperson.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class OmsSmrOldInfoController {
     @GetMapping("/getSmrOldInfoById")
     public Result getSmrOldInfoById(Integer pageNum, Integer pageSize,String id) {
         try{
-            PageInfo<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(pageNum,pageSize,id);
+            PageInfo<OmsSmrOldInfoVO> oldInfoList = smrOldInfoService.getSmrOldInfoById(pageNum,pageSize,id);
             return Result.success(oldInfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -79,7 +80,6 @@ public class OmsSmrOldInfoController {
             return Result.error("系统错误");
         }
     }
-
 
 }
 
