@@ -35,11 +35,12 @@ public class OmsSensitiveMaintainController {
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
+	 * @param sensitiveLimitId
 	 * @return
 	 */
 	@GetMapping("/getCountryInfo")
-	public Result getCountryInfo(String nameZh){
-		List<Country> list = omsSensitiveMaintainService.getCountryInfo(nameZh);
+	public Result getCountryInfo(String nameZh,String sensitiveLimitId){
+		List<Country> list = omsSensitiveMaintainService.getCountryInfo(nameZh,sensitiveLimitId);
 		return Result.success(list);
 	}
 

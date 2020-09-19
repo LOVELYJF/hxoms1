@@ -18,6 +18,10 @@ public class OmsCerExitEntryRepertory {
     @ApiModelProperty(value="主键")
     private String id;
 
+    @ColumnAnnotation(FieldName = "CER_ID",   FieldDescription="证照管理表ID")
+    @ApiModelProperty(value="证照管理表ID")
+    private String cerId;
+
     @ColumnAnnotation(FieldName = "GET_ID",   FieldDescription="证照领取表ID")
     @ApiModelProperty(value="证照领取表ID")
     private String getId;
@@ -34,13 +38,25 @@ public class OmsCerExitEntryRepertory {
     @ApiModelProperty(value="证件号码")
     private String zjhm;
 
-    @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="状态(0:取出,1:归还)")
-    @ApiModelProperty(value="状态(0:取出,1:归还)")
+    @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="出入库状态(0:出库,1:入库)")
+    @ApiModelProperty(value="出入库状态(0:出库,1:入库)")
     private String status;
 
     @ColumnAnnotation(FieldName = "MODE",   FieldDescription="存取方式(0:证照机,1:柜台)")
     @ApiModelProperty(value="存取方式(0:证照机,1:柜台)")
     private String mode;
+
+    @ColumnAnnotation(FieldName = "CABINET_NUM",   FieldDescription="机柜编号")
+    @ApiModelProperty(value="机柜编号")
+    private String cabinetNum;
+
+    @ColumnAnnotation(FieldName = "PLACE",   FieldDescription="机柜位置")
+    @ApiModelProperty(value="机柜位置")
+    private String place;
+
+    @ColumnAnnotation(FieldName = "COUNTER_NUM",   FieldDescription="柜台编号")
+    @ApiModelProperty(value="柜台编号")
+    private Integer counterNum;
 
     @ColumnAnnotation(FieldName = "OPERATOR",   FieldDescription="操作人")
     @ApiModelProperty(value="操作人")
@@ -58,6 +74,14 @@ public class OmsCerExitEntryRepertory {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getCerId() {
+        return cerId;
+    }
+
+    public void setCerId(String cerId) {
+        this.cerId = cerId == null ? null : cerId.trim();
     }
 
     public String getGetId() {
@@ -106,6 +130,30 @@ public class OmsCerExitEntryRepertory {
 
     public void setMode(String mode) {
         this.mode = mode == null ? null : mode.trim();
+    }
+
+    public String getCabinetNum() {
+        return cabinetNum;
+    }
+
+    public void setCabinetNum(String cabinetNum) {
+        this.cabinetNum = cabinetNum == null ? null : cabinetNum.trim();
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place == null ? null : place.trim();
+    }
+
+    public Integer getCounterNum() {
+        return counterNum;
+    }
+
+    public void setCounterNum(Integer counterNum) {
+        this.counterNum = counterNum;
     }
 
     public String getOperator() {

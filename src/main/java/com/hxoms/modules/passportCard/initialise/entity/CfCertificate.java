@@ -18,16 +18,6 @@ public class CfCertificate {
     @ApiModelProperty(value="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "IMPORT_PERSON",   FieldDescription="导入人")
-    @ApiModelProperty(value="导入人")
-    private String importPerson;
-
-    @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
-    @DateTimeFormat(pattern = "yyyy.MM.dd")
-    @ApiModelProperty(value="导入时间")
-    private Date importTime;
-
     @ColumnAnnotation(FieldName = "OMS_ID",   FieldDescription="备案信息表ID")
     @ApiModelProperty(value="备案信息表ID")
     private String omsId;
@@ -130,10 +120,6 @@ public class CfCertificate {
     @ApiModelProperty(value="柜台编号")
     private Integer counterNum;
 
-    @ColumnAnnotation(FieldName = "IS_VALID",   FieldDescription="是否有效(0:有效,1:无效)")
-    @ApiModelProperty(value="是否有效(0:有效,1:无效)")
-    private Integer isValid;
-
     @ColumnAnnotation(FieldName = "EXCEPTION_MESSAGE",   FieldDescription="异常消息")
     @ApiModelProperty(value="异常消息")
     private String exceptionMessage;
@@ -152,6 +138,24 @@ public class CfCertificate {
     @ApiModelProperty(value="异常处理时间")
     private Date exceptionSolvedate;
 
+    @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
+    @ApiModelProperty(value="比对结果")
+    private String comparisonResult;
+
+    @ColumnAnnotation(FieldName = "REMARK",   FieldDescription="备注")
+    @ApiModelProperty(value="备注")
+    private String remark;
+
+    @ColumnAnnotation(FieldName = "IMPORT_PERSON",   FieldDescription="导入人")
+    @ApiModelProperty(value="导入人")
+    private String importPerson;
+
+    @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="导入时间")
+    private Date importTime;
+
     @ColumnAnnotation(FieldName = "UPDATER",   FieldDescription="修改人")
     @ApiModelProperty(value="修改人")
     private String updater;
@@ -162,32 +166,12 @@ public class CfCertificate {
     @ApiModelProperty(value="修改时间")
     private Date updateTime;
 
-    @ColumnAnnotation(FieldName = "COMPARISON_RESULT",   FieldDescription="比对结果")
-    @ApiModelProperty(value="比对结果")
-    private String comparisonResult;
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
-    }
-
-    public String getImportPerson() {
-        return importPerson;
-    }
-
-    public void setImportPerson(String importPerson) {
-        this.importPerson = importPerson == null ? null : importPerson.trim();
-    }
-
-    public Date getImportTime() {
-        return importTime;
-    }
-
-    public void setImportTime(Date importTime) {
-        this.importTime = importTime;
     }
 
     public String getOmsId() {
@@ -382,14 +366,6 @@ public class CfCertificate {
         this.counterNum = counterNum;
     }
 
-    public Integer getIsValid() {
-        return isValid;
-    }
-
-    public void setIsValid(Integer isValid) {
-        this.isValid = isValid;
-    }
-
     public String getExceptionMessage() {
         return exceptionMessage;
     }
@@ -422,6 +398,38 @@ public class CfCertificate {
         this.exceptionSolvedate = exceptionSolvedate;
     }
 
+    public String getComparisonResult() {
+        return comparisonResult;
+    }
+
+    public void setComparisonResult(String comparisonResult) {
+        this.comparisonResult = comparisonResult == null ? null : comparisonResult.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getImportPerson() {
+        return importPerson;
+    }
+
+    public void setImportPerson(String importPerson) {
+        this.importPerson = importPerson == null ? null : importPerson.trim();
+    }
+
+    public Date getImportTime() {
+        return importTime;
+    }
+
+    public void setImportTime(Date importTime) {
+        this.importTime = importTime;
+    }
+
     public String getUpdater() {
         return updater;
     }
@@ -436,13 +444,5 @@ public class CfCertificate {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getComparisonResult() {
-        return comparisonResult;
-    }
-
-    public void setComparisonResult(String comparisonResult) {
-        this.comparisonResult = comparisonResult;
     }
 }

@@ -23,7 +23,17 @@
 	</delete>
 
 	<select id="getCountryInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
-		select * from country
+		SELECT
+			*
+		FROM
+			country c
+		LEFT JOIN
+			( SELECT COUNTRY_ID
+			FROM oms_sensitive_maintain
+			WHERE SENSITIVE_LIMIT_ID = #{sensitiveLimitId}
+			and IS_DELETE='0'
+			) a
+		on c.id = a.COUNTRY_ID
 		<where>
 			<if test="nameZh != null">
 				NAME_ZH like concat('%',#{nameZh},'%')

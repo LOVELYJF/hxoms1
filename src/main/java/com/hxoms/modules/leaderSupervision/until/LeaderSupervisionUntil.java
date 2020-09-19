@@ -10,6 +10,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import io.swagger.models.auth.In;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -19,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -117,7 +119,8 @@ public class LeaderSupervisionUntil {
 
     public final static String suffixPdfStyle="</body>\n" + "</html>";
 
-
+    // 缓存 因私状态
+    private static Map<String,String> mappri = new HashMap<String,String>();
 
 
 
@@ -363,6 +366,12 @@ public class LeaderSupervisionUntil {
                             }
 
                         }
+                        // 如果 该列是 申请状态进行转化
+                        if("applystatus".equals(s)){
+
+                            k = getK(k,"因私");
+                        }
+
                         cell2.setCellValue(k);
                         cell2.setCellStyle(cellStyle);
                         int currWidth = sheet.getColumnWidth(j);
@@ -385,6 +394,220 @@ public class LeaderSupervisionUntil {
     }
 
 
+    public static String getK(String k,String bussinessType){
+
+
+
+        if("因私".equals(bussinessType)){
+
+            // 当两者 状态 不一致 的重新 把新的状态 写到 缓存中
+            if(mappri.size()!=(Constants.private_business.length+Constants.leader_business.length)){
+                mappri.clear();
+
+                for(int i=0;i<Constants.private_business.length;i++){
+
+                    //获取 状态  获取 状态 对应的值
+                    mappri.put(String.valueOf(Constants.private_business[i]),Constants.private_businessName[i]);
+
+                }
+
+                for(int j=0;j<Constants.leader_business.length;j++){
+
+                    mappri.put(String.valueOf(Constants.leader_business[j]),Constants.leader_businessName[j]);
+
+
+
+                }
+
+                return mappri.get(k);
+
+            }else{
+
+
+                return mappri.get(k);
+
+
+            }
+
+
+
+
+        }
+
+        return null;
+
+    }
+
+    public static HSSFWorkbook exportRfInfoByListMap(List listK, List listV, List<Map> dataList, String sheetName1, String sheetName2, OmsRegProcbatch batchinfo) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        // 设置 sheet 页
+        HSSFSheet sheet0 = wb.createSheet(sheetName1);
+        HSSFSheet sheet1 = wb.createSheet(sheetName2);
+
+        List<HSSFSheet> sheetList=new ArrayList<HSSFSheet>();
+        sheetList.add(sheet0);
+        sheetList.add(sheet1);
+        //设置标题样式
+        HSSFCellStyle titleStyle=  getTitleStyle(wb);
+        //设置单元格样式
+        HSSFCellStyle cellStyle= getCellStyle(wb);
+        int f=0;
+        for (HSSFSheet sheet:sheetList) {
+            f++;
+            if (f==1){
+                //创建第一行
+                Row row = sheet.createRow(0);
+                row.setHeight((short)250);
+                Cell cell1 = row.createCell(0);
+                cell1.setCellValue("国家工作人员登记备案表");
+                cell1.setCellStyle(titleStyle);
+                //创建第二行
+                Row row2 = sheet.createRow(1);
+                row.setHeight((short)250);
+                Cell cell2 = row2.createCell(0);
+                cell2.setCellValue("报备单位名称（盖章）：");
+                cell2.setCellStyle(cellStyle);
+
+
+                CellRangeAddress regionNum1 = new CellRangeAddress(0,0 , 0, listV.size()-1);
+                CellRangeAddress regionNum2 = new CellRangeAddress(1,1 , 0, listV.size()-1);
+                sheet.addMergedRegion(regionNum1);
+                sheet.addMergedRegion(regionNum2);
+                //创建第三行
+                Row rowNum3 = sheet.createRow(2);
+                Cell cell = null;
+
+                //创建标题
+                for (int i = 2; i < listV.size(); i++) {
+
+                    cell = rowNum3.createCell(i);
+                    cell.setCellValue(listV.get(i).toString());
+
+                    cell.setCellStyle(titleStyle);
+
+                    //自动设置列宽
+                    sheet.setColumnWidth(i, 512 * 4);
+                }
+                //填充内容
+
+                //绘制内容
+                String k;
+                String s;
+
+                //循环多少行
+                for(int i=0;i<dataList.size();i++){
+
+                    Row nextrow = sheet.createRow(i+3); //第i行
+                    Cell cell3  =nextrow.createCell(0);
+                    cell3.setCellValue(String.valueOf(i+1));
+
+
+
+                    Map temp = dataList.get(i);
+                    for (int j = 1; j < listK.size(); j++) {
+                        cell3  =nextrow.createCell(j);
+                        if (temp.get(listK.get(j)) != null) {
+
+                            k = temp.get(listK.get(j)).toString();
+
+                            s = (listK.get(j).toString()).toLowerCase();
+                            if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
+                                if (k.length() > 10) {
+                                    k = k.substring(0, 10);
+                                }
+
+                            }
+                            cell3.setCellValue(k);
+                            cell3.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j, k, sheet, currWidth);
+                        }else {
+                            String m = "";
+                            cell3.setCellValue(m);
+                            cell3.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j,m,sheet,currWidth);
+
+                        }
+                    }
+                }
+
+                CellRangeAddress regionNum3 = new CellRangeAddress(dataList.size()+3,dataList.size()+3 , 0, listV.size()-1);
+                CellRangeAddress regionNum4 = new CellRangeAddress(dataList.size()+3+1,dataList.size()+3+1 , 0, listV.size()-1);
+                sheet.addMergedRegion(regionNum3);
+                sheet.addMergedRegion(regionNum4);
+                Row nextrow1 = sheet.createRow(dataList.size()+3); //第i行
+                Cell celladdOther1 =  nextrow1.createCell(0);
+                celladdOther1.setCellValue("本次备案共  页 人（首页填写）             此为第  页                              报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
+                celladdOther1.setCellStyle(cellStyle);
+                Row nextrow2 = sheet.createRow(dataList.size()+3+1); //第i行
+                Cell celladdOther2 =  nextrow2.createCell(0);
+                celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                        联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nj");
+                celladdOther2.setCellStyle(cellStyle);
+            }
+            if (f==2){
+                //创建第一行
+                Row row = sheet.createRow(0);
+                Cell cell = null;
+
+                //创建标题
+                for (int i = 0; i < listV.size(); i++) {
+                    cell = row.createCell(i);
+                    cell.setCellValue(listV.get(i).toString());
+
+                    cell.setCellStyle(titleStyle);
+
+                    //自动设置列宽
+                    sheet.setColumnWidth(i, 512 * 4);
+                }
+
+                //填充内容
+
+                //绘制内容
+                String k;
+                String s;
+
+                //循环多少行
+                for(int i=0;i<dataList.size();i++){
+
+                    Row nextrow = sheet.createRow(i+1); //第i行
+                    Cell cell2  =nextrow.createCell(0);
+                    cell2.setCellValue(String.valueOf(i+1));
+
+
+
+                    Map temp = dataList.get(i);
+                    for (int j = 1; j < listK.size(); j++) {
+                        cell2  =nextrow.createCell(j);
+                        if (temp.get(listK.get(j)) != null) {
+
+                            k = temp.get(listK.get(j)).toString();
+
+                            s = (listK.get(j).toString()).toLowerCase();
+                            if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
+                                if (k.length() > 10) {
+                                    k = k.substring(0, 10);
+                                }
+
+                            }
+                            cell2.setCellValue(k);
+                            cell2.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j, k, sheet, currWidth);
+                        }else {
+                            String m = "";
+                            cell2.setCellValue(m);
+                            cell2.setCellStyle(cellStyle);
+                            int currWidth = sheet.getColumnWidth(j);
+                            autoSizeColumnOne(j,m,sheet,currWidth);
+
+                        }
+                    }
+                }
+            }
+        }
+        return  wb;
+    }
 
 
     // 设置列宽方法1
@@ -439,23 +662,15 @@ public class LeaderSupervisionUntil {
     }
     //设置单元格样式
     public static HSSFCellStyle getCellStyle(HSSFWorkbook workbook){
-
-
-
+        
         HSSFCellStyle style = workbook.createCellStyle();
-
-
-
-
 
         style.setAlignment(HorizontalAlignment.LEFT); //居左
 
         //设置字体
         HSSFFont font = workbook.createFont();
         font.setFontName("仿宋_GB2312");
-
-        style.setFont(font);
-
+        font.setBold(true);//字体加粗
         return  style;
     }
 

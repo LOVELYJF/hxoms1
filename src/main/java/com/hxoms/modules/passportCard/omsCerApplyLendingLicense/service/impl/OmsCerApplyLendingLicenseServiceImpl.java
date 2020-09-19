@@ -4,18 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerCancellateLendingApply;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerCancellateLendingApplyMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseService;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateApply;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -55,6 +56,9 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Date: 2020/8/11 8:41
 	 */
 	public List<Map<String, Object>> getCfCertificateByA0100(String a0100) {
+		if (StringUtils.isBlank(a0100)){
+			throw new CustomMessageException("参数错误");
+		}
 		List<Map<String, Object>> list = cfCertificateMapper.getCfCertificateByA0100(a0100);
 		return list;
 	}
@@ -86,7 +90,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 
 		//将集合中的多个证照信息合并
 		StringBuffer cerInfo = new StringBuffer();
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				cerInfo.append(Constants.CER_TYPE_NAME[Integer.parseInt(omsCerApplyLendingLicense.getZjlx())] + ":" + omsCerApplyLendingLicense.getZjhm() + "、");
 			}
@@ -109,13 +113,13 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 		}
 		map.put("applyId", omsCerCancellateLendingApply.getId());
 
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setId(UUIDGenerator.getPrimaryKey());
 				omsCerApplyLendingLicense.setLendingLicenseId(omsCerCancellateLendingApply.getId());
-				omsCerApplyLendingLicense.setIsCommit("0");
+				omsCerApplyLendingLicense.setIsCommit(YesOrNoEnum.NO.getCode());
 				omsCerApplyLendingLicense.setCreateTime(new Date());
-				omsCerApplyLendingLicense.setSqjczt("0");       //状态：申请
+				omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[0]));    //状态：申请
 				omsCerApplyLendingLicense.setCreateUser(UserInfoUtil.getUserInfo().getId());
 				omsCerApplyLendingLicense.setYear(UtilDateTime.nowYear());
 				omsCerApplyLendingLicense.setDocumentNum(UtilDateTime.formatCNDate(new Date()));
@@ -241,7 +245,7 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(4).setCellValue(Constants.INCUMBENCY_STATUS_NAME[Integer.parseInt((String) list.get(i).get("incumbencyStatus")) - 1]);
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String) list.get(i).get("zjlx"))));
@@ -278,11 +282,11 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 */
 	public void updateApplyLendingLicenseCommit(List<String> idList) {
 		OmsCerApplyLendingLicense omsCerApplyLendingLicense = new OmsCerApplyLendingLicense();
-		omsCerApplyLendingLicense.setIsCommit("1");
-		omsCerApplyLendingLicense.setSqjczt("1");       //状态：审批
+		omsCerApplyLendingLicense.setIsCommit(YesOrNoEnum.YES.getCode());
+		omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[1]));       //状态：审批
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
-		if(idList != null && idList.size() > 0){
+		if(!ListUtil.isEmpty(idList)){
 			QueryWrapper<OmsCerApplyLendingLicense> queryWrapper = new QueryWrapper<OmsCerApplyLendingLicense>();
 			queryWrapper.in("ID", idList);
 			int count = omsCerApplyLendingLicenseMapper.update(omsCerApplyLendingLicense, queryWrapper);
@@ -303,7 +307,10 @@ public class OmsCerApplyLendingLicenseServiceImpl implements OmsCerApplyLendingL
 	 * @Date: 2020/8/11 8:41
 	 */
 	public void updateApplyLendingLicenseRevoke(OmsCerApplyLendingLicense omsCerApplyLendingLicense) {
-		omsCerApplyLendingLicense.setSqjczt("4");
+		if(StringUtils.isBlank(omsCerApplyLendingLicense.getId())){
+			throw new CustomMessageException("参数错误");
+		}
+		omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[4]));
 		omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsCerApplyLendingLicense.setModyfyTime(new Date());
 		int count = omsCerApplyLendingLicenseMapper.updateById(omsCerApplyLendingLicense);

@@ -1,12 +1,10 @@
 package com.hxoms.modules.passportCard.admintorGet.controller;
 
 
-import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.*;
 import com.hxoms.modules.passportCard.admintorGet.service.OmsAdmintorGetService;
-import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
-import java.io.IOException;
 
 
 /**
@@ -70,7 +67,7 @@ public class OmsAdmintorGetController {
     */
     @ApiOperation(value = "保存管理员取证申请并打印二维码")
     @PostMapping("/insertAdmintorGetApply")
-    public Result<QrCode> insertAdmintorGetApply(@RequestBody @Validated RequestList<AdminGetCerApply> admintorGetApplyList){
+    public Result<GetCerInfoAndQrCode> insertAdmintorGetApply(@RequestBody @Validated RequestList<AdminGetCerApply> admintorGetApplyList){
         return Result.success(omsAdmintorGetService.insertAdmintorGetApply(admintorGetApplyList.getList()));
     }
 
@@ -84,11 +81,6 @@ public class OmsAdmintorGetController {
     @ApiOperation(value = "打印二维码")
     @PostMapping("/createPrintQrCode")
     public Result<GetCerInfoAndQrCode> createPrintQrCode(@RequestBody @Validated RequestList<PrintQrCodeParams> requestList){
-        try {
-            return Result.success(omsAdmintorGetService.createPrintQrCode(requestList.getList()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CustomMessageException("二维码生成失败，原因："+e.getMessage());
-        }
+        return Result.success(omsAdmintorGetService.createPrintQrCode(requestList.getList()));
     }
 }

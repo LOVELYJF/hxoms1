@@ -5,17 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.disciplinaryAction.entity.OmsSupDisciplinary;
 import com.hxoms.modules.keySupervision.disciplinaryAction.mapper.OmsSupDisciplinaryMapper;
 import com.hxoms.modules.keySupervision.disciplinaryAction.service.OmsSupDisciplinaryService;
-import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -62,14 +63,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 		QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
 		queryWrapper
-				.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.eq(omsSupDisciplinary.getDisciplinaryType() != null && omsSupDisciplinary.getDisciplinaryType() != "",
+				.in(!ListUtil.isEmpty(list),"WORK_UNIT", list)
+				.eq(!StringUtils.isBlank( omsSupDisciplinary.getDisciplinaryType()),
 						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
-				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+				.and(wrapper->wrapper.like(!StringUtils.isBlank( omsSupDisciplinary.getName()),
 						"NAME", omsSupDisciplinary.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+						.like(!StringUtils.isBlank( omsSupDisciplinary.getName()),
 								"PINYIN", omsSupDisciplinary.getName()))
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
 						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
@@ -92,6 +93,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDisciplinary.getA0100());
@@ -125,6 +129,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		omsSupDisciplinary.setModifyTime(new Date());
 		omsSupDisciplinary.setModifyUser(UserInfoUtil.getUserInfo().getId());
@@ -142,6 +149,9 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDisciplinaryInfo(OmsSupDisciplinary omsSupDisciplinary) {
+		if(StringUtils.isBlank(omsSupDisciplinary.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupDisciplinaryMapper.deleteById(omsSupDisciplinary.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除处分信息失败");
@@ -165,14 +175,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 
 		QueryWrapper<OmsSupDisciplinary> queryWrapper = new QueryWrapper<OmsSupDisciplinary>();
 		queryWrapper
-				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
-				.eq(omsSupDisciplinary.getDisciplinaryType() != null && omsSupDisciplinary.getDisciplinaryType() != "",
+				.in(!ListUtil.isEmpty(list1),"WORK_UNIT", list1)
+				.eq(!StringUtils.isBlank( omsSupDisciplinary.getDisciplinaryType()),
 						"DISCIPLINARY_TYPE", omsSupDisciplinary.getDisciplinaryType())
-				.and(wrapper->wrapper.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "" ,
+				.and(wrapper->wrapper.like(!StringUtils.isBlank( omsSupDisciplinary.getName()),
 						"NAME", omsSupDisciplinary.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupDisciplinary.getName() != null && omsSupDisciplinary.getName() != "",
+						.like(!StringUtils.isBlank( omsSupDisciplinary.getName()),
 								"PINYIN", omsSupDisciplinary.getName()))
 				.between(omsSupDisciplinary.getDisciplinaryStartQuery() != null && omsSupDisciplinary.getDisciplinaryEndQuery() != null,
 						"DISCIPLINARY_TIME", omsSupDisciplinary.getDisciplinaryStartQuery(), omsSupDisciplinary.getDisciplinaryEndQuery())
@@ -287,14 +297,14 @@ public class OmsSupDisciplinaryServiceImpl implements OmsSupDisciplinaryService 
 	 * @Date: 2020/7/14 9:28
 	 */
 	public OmsSupDisciplinary getInfluenceAndTime(OmsSupDisciplinary omsSupDisciplinary) {
-		if(!omsSupDisciplinary.getDisciplinaryType().equals("bcd9a45954d84fd0af3f98153521de44")){
+//		if(!omsSupDisciplinary.getDisciplinaryType().equals("bcd9a45954d84fd0af3f98153521de44")){
 			//计算影响期
 			SysDictItem sysDictItem = sysDictItemMapper.selectItemAllById(omsSupDisciplinary.getDisciplinaryType());
 			omsSupDisciplinary.setInfluenceTime(sysDictItem.getItemNum() + "个月");
 			Date date = UtilDateTime.getEndDateByMonth(omsSupDisciplinary.getDisciplinaryTime(), sysDictItem.getItemNum());
 			omsSupDisciplinary.setDisciplinaryEndTime(date);
 			return omsSupDisciplinary;
-		}
-		return new OmsSupDisciplinary();
+//		}
+//		return new OmsSupDisciplinary();
 	}
 }

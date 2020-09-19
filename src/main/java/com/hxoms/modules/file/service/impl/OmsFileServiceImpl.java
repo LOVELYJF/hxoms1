@@ -104,12 +104,13 @@ public class OmsFileServiceImpl implements OmsFileService {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
-//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
+        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
         	
 
 
 
 //        //测试用的单位主键
+//        userInfo.setOrgId("00000000000000000000000000");
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
 //        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 //        B01 b01 = new B01();
@@ -255,7 +256,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
 
             }
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"72\" style=\"width:72px\" span=\"5\"/>");
             stringBuffer.append("<col width=\"82\" style=\"width:82px\"/>" );
@@ -431,7 +432,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         }else if ("近三年出国（境）记录表".equals(fileName)){
 
-            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
             stringBuffer.append("<col width=\"115\" style=\"width:86.25pt;\"/>");
             stringBuffer.append("<col width=\"103\" style=\"width:77.25pt;\"/>");
@@ -490,10 +491,11 @@ public class OmsFileServiceImpl implements OmsFileService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         
-//        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
+        B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
 
 
 //        //测试用的单位主键
+//          userInfo.setOrgId("00000000000000000000000000");
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
 //        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 //        B01 b01 = new B01();

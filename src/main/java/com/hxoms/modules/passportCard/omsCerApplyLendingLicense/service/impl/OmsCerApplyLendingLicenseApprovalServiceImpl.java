@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.IsAllowEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -13,10 +15,13 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.GetStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.ReceiveSourceEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.mapper.OmsCerApplyLendingLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerApplyLendingLicense.service.OmsCerApplyLendingLicenseApprovalService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,11 +56,11 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 */
 	public List<OmsCerApplyLendingLicense> getBatchByYear() {
 		List<OmsCerApplyLendingLicense> list = omsCerApplyLendingLicenseMapper.selectYearList();      //查询批次号的年份集合
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				String year = omsCerApplyLendingLicense.getYear();
 				List<OmsCerApplyLendingLicense> list1 = omsCerApplyLendingLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
-				if(list1 != null && list1.size() > 0){
+				if(!ListUtil.isEmpty(list1)){
 					omsCerApplyLendingLicense.setList(list1);
 				}
 			}
@@ -95,22 +100,22 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public void updateApplyLendingLicenseApprovalResult(List<OmsCerApplyLendingLicense> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 				omsCerApplyLendingLicense.setModyfyTime(new Date());
 				omsCerApplyLendingLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
-				omsCerApplyLendingLicense.setSqjczt("2");       //已审批
+				omsCerApplyLendingLicense.setSqjczt(String.valueOf(Constants.CER_LENDING_TYPE[2]));       //已审批
 				omsCerApplyLendingLicense.setList(null);
 				int count = omsCerApplyLendingLicenseMapper.updateById(omsCerApplyLendingLicense);
 				if(count < 1){
 					throw new CustomMessageException("录入审批失败");
 				}else {
-					if(omsCerApplyLendingLicense.getBldyj().equals("1")){
+					if(omsCerApplyLendingLicense.getBldyj().equals(IsAllowEnum.ALLOW.getCode())){
 						//同意之后将证照信息表状态改为待取出
 						CfCertificate cfCertificate = new CfCertificate();
 						cfCertificate.setCardStatus(String.valueOf(Constants.CER_STATUS[7]));
 						QueryWrapper<CfCertificate> wrapper = new QueryWrapper<CfCertificate>();
-						wrapper.eq(omsCerApplyLendingLicense.getZjhm() != null && omsCerApplyLendingLicense.getZjhm() != "",
+						wrapper.eq(!StringUtils.isBlank(omsCerApplyLendingLicense.getZjhm()),
 								"ZJHM",omsCerApplyLendingLicense.getZjhm());
 						int count1 = cfCertificateMapper.update(cfCertificate,wrapper);
 						if(count1 < 1){
@@ -126,12 +131,12 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 								omsCerGetTask.setBusiId(omsCerApplyLendingLicense1.getId());
 								omsCerGetTask.setName(omsCerApplyLendingLicense1.getName());
 								omsCerGetTask.setZjlx(Integer.parseInt(omsCerApplyLendingLicense1.getZjlx()));
-								omsCerGetTask.setDataSource("2");
+								omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_2.getCode());
 								omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getId());
 								omsCerGetTask.setCreateTime(new Date());
 								omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
 								omsCerGetTask.setOmsId(omsCerApplyLendingLicense1.getOmsId());
-								omsCerGetTask.setGetStatus("0");                //未领取
+								omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_0.getCode());                //未领取
 								omsCerGetTask.setHappenDate(omsCerApplyLendingLicense1.getCreateTime());
 
 								//根据证件号码查询证件信息(查ID)

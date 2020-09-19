@@ -164,20 +164,6 @@ public class OmsSmrPersonInfoController {
     }
 
     /**
-     * 获取脱密期确认列表
-     */
-    @GetMapping("/getConfirmPeriodList")
-    public Result getConfirmPeriodList() {
-        try{
-            Map<String, Object> resultMap = smrPersonInfoService.getConfirmPeriodList();
-            return Result.success(resultMap);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("系统错误");
-        }
-    }
-
-    /**
      * 批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
      * @param smrPersonInfoList
      */

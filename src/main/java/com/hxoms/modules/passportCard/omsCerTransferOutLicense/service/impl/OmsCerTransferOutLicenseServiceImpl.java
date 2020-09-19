@@ -5,20 +5,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.entity.OmsCerCancellateLicense;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.mapper.OmsCerTransferOutLicenseMapper;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.service.OmsCerTransferOutLicenseService;
-import org.apache.lucene.analysis.query.QueryAutoStopWordAnalyzer;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.schema.property.ObjectMapperBeanPropertyNamingStrategy;
 
-import javax.management.Query;
-import java.io.ObjectStreamClass;
-import java.time.Year;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -88,11 +84,11 @@ public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLic
 	 */
 	public List<OmsCerTransferOutLicense> getBatchByYear() {
 		List<OmsCerTransferOutLicense> list = omsCerTransferOutLicenseMapper.selectYearList();      //查询批次号的年份集合
-		if(list != null && list.size() > 0){
+		if(ListUtil.isEmpty(list)){
 			for(OmsCerTransferOutLicense omsCerTransferOutLicense : list){
 				String year = omsCerTransferOutLicense.getYear();
 				List<OmsCerTransferOutLicense> list1 = omsCerTransferOutLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
-				if(list1 != null && list1.size() > 0){
+				if(ListUtil.isEmpty(list1)){
 					omsCerTransferOutLicense.setList(list1);
 				}
 			}
@@ -110,6 +106,9 @@ public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLic
 	 * @Date: 2020/8/10 15:07
 	 */
 	public void updateTransferOutRecord(List<String> list, OmsCerTransferOutLicense omsCerTransferOutLicense) {
+		if(list == null || list.size() < 1 || StringUtils.isBlank(omsCerTransferOutLicense.getBatchNum())){
+			throw new CustomMessageException("参数错误");
+		}
 		String year = null;
 		try {
 			year = omsCerTransferOutLicense.getBatchNum().substring(0, (omsCerTransferOutLicense.getBatchNum()).indexOf("年"));
@@ -122,8 +121,7 @@ public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLic
 		omsCerTransferOutLicense.setModifyTime(new Date());
 		omsCerTransferOutLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		QueryWrapper<OmsCerTransferOutLicense> queryWrapper = new QueryWrapper<OmsCerTransferOutLicense>();
-		queryWrapper.in(list != null && list.size() > 0,
-				"ID", list);
+		queryWrapper.in(!ListUtil.isEmpty(list), "ID", list);
 		int count = omsCerTransferOutLicenseMapper.update(omsCerTransferOutLicense, queryWrapper);
 		if(count < 1){
 			throw new CustomMessageException("保存记录失败");

@@ -2,12 +2,15 @@ package com.hxoms.modules.passportCard.counterGet.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.sysUser.entity.CfUser;
@@ -27,9 +30,14 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
     @Autowired
     private OmsCerGetTaskMapper omsCerGetTaskMapper;
 
+    @Autowired
     private OmsCounterGetService omsCounterGetService;
+
     @Autowired
     private CfCertificateService cfCertificateService;
+
+    @Autowired
+    private OmsExitEntryManageService omsExitEntryManageService;
     /**
      * @Desc: 验证身份证
      * @Author: wangyunquan
@@ -135,6 +143,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             throw new CustomMessageException("查询登陆用户失败!");
         List<OmsCerGetTask> omsCerGetTaskList=new ArrayList<>();
         List<CfCertificate> cfCertificateList=new ArrayList<>();
+        List<OmsCerExitEntryRepertory> omsCerExitEntryRepertoryArrayList=new ArrayList<>();
         Date date = new Date();
         for (GetConfirm getConfirm : getConfirmList) {
             OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
@@ -146,18 +155,38 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             omsCerGetTask.setUpdateTime(date);
             omsCerGetTaskList.add(omsCerGetTask);
 
+            //证照信息
             CfCertificate certificate=new CfCertificate();
-            certificate.setId(omsCerGetTask.getCerId());
+            certificate.setId(getConfirm.getCerId());
             //已取出
             certificate.setSaveStatus("1");
             certificate.setUpdater(userInfo.getId());
             certificate.setUpdateTime(date);
             cfCertificateList.add(certificate);
+
+            //出库信息
+            OmsCerExitEntryRepertory omsCerExitEntryRepertory=new OmsCerExitEntryRepertory();
+            omsCerExitEntryRepertory.setGetId(UUIDGenerator.getPrimaryKey());
+            omsCerExitEntryRepertory.setCerId(getConfirm.getCerId());
+            omsCerExitEntryRepertory.setGetId(getConfirm.getId());
+            omsCerExitEntryRepertory.setName(getConfirm.getName());
+            omsCerExitEntryRepertory.setZjlx(getConfirm.getZjlx());
+            omsCerExitEntryRepertory.setZjhm(getConfirm.getZjhm());
+            //出入库状态(0:出库,1:入库)
+            omsCerExitEntryRepertory.setStatus("0");
+            //存取方式(0:证照机,1:柜台)
+            omsCerExitEntryRepertory.setMode("1");
+            omsCerExitEntryRepertory.setCounterNum(getConfirm.getCounterNum());
+            omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
+            omsCerExitEntryRepertory.setOperateTime(date);
+            omsCerExitEntryRepertoryArrayList.add(omsCerExitEntryRepertory);
         }
         if(!omsCounterGetService.updateBatchById(omsCerGetTaskList))
             throw new CustomMessageException("证照领取更新失败!");
         if(!cfCertificateService.updateBatchById(cfCertificateList))
             throw new CustomMessageException("证照更新失败!");
+        if(!omsExitEntryManageService.saveBatch(omsCerExitEntryRepertoryArrayList))
+            throw new CustomMessageException("出库记录保存失败!");
     }
 
     /**

@@ -1,17 +1,18 @@
 package com.hxoms.modules.keySupervision.nakedOfficial.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.modules.keySupervision.familyMember.service.OmsSupFamilyMemberService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.keySupervision.nakedOfficial.mapper.OmsSupNakedSignMapper;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -21,6 +22,7 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -28,6 +30,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -59,6 +62,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
 
+
 	/**
 	 * <b>查询裸官信息</b>
 	 * @param omsSupNakedSign
@@ -71,18 +75,18 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 
 		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 		queryWrapper
-				.in(idList != null && idList.size() > 0,"B0100", idList)
-				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+				.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getXzxgw()),
 						"XZXGW", omsSupNakedSign.getXzxgw())
-				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getFjgnf()),
 						"FJGNF",omsSupNakedSign.getFjgnf())
-				.eq(omsSupNakedSign.getIsDelete() != null && omsSupNakedSign.getIsDelete() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getIsDelete()),
 						"IS_DELETE", omsSupNakedSign.getIsDelete())
-				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 						"NAME", omsSupNakedSign.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 								"PINYIN", omsSupNakedSign.getName()));
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
@@ -102,10 +106,14 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addOmsNaked(OmsSupNakedSign omsSupNakedSign) {
+		if(StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
+
 		//查询裸官是否已经存在
 		QueryWrapper<OmsSupNakedSign> queryNakedSign = new QueryWrapper<OmsSupNakedSign>();
 		queryNakedSign.eq("A0100", omsSupNakedSign.getA0100())
-					  .eq("IS_DELETE", "0");
+					  .eq("IS_DELETE", YesOrNoEnum.NO.getCode());
 		List<OmsSupNakedSign> nakedSignList = omsSupNakedSignMapper.selectList(queryNakedSign);
 		if(nakedSignList.size() < 1){
 			//查询政治面貌和人员拼音
@@ -113,9 +121,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			//根据人员主键应该只能查到一个人员信息，因此取第一个
 			omsSupNakedSign.setPoliticalAffi((String) list.get(0).get("politicalAffi"));
 			omsSupNakedSign.setPinyin((String)list.get(0).get("a0102"));
-			omsSupNakedSign.setXzxgw("0");
-			omsSupNakedSign.setFjgnf("0");
-			omsSupNakedSign.setIsDelete("0");
+			omsSupNakedSign.setXzxgw(YesOrNoEnum.NO.getCode());
+			omsSupNakedSign.setFjgnf(YesOrNoEnum.NO.getCode());
+			omsSupNakedSign.setIsDelete(YesOrNoEnum.NO.getCode());
 			omsSupNakedSign.setCreateTime(new Date());
 			omsSupNakedSign.setCreateUser(UserInfoUtil.getUserInfo().getId());
 			//在登记备案库中查询人员的身份证出生日期
@@ -128,11 +136,11 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 			}else {
 				//将裸官信息在备案表中进行同步更新
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-				omsRegProcpersonInfo.setNf("1");
+				omsRegProcpersonInfo.setNf(YesOrNoEnum.YES.getCode());
 
-				omsRegProcpersonInfo.setXrxgw("0");
+				omsRegProcpersonInfo.setXrxgw(YesOrNoEnum.NO.getCode());
 				//默认在非限入性岗位
-				omsRegProcpersonInfo.setFjgnf("0");
+				omsRegProcpersonInfo.setFjgnf(YesOrNoEnum.NO.getCode());
 				omsRegProcpersonInfo.setModifyTime(new Date());
 				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -153,6 +161,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateOmsNaked(OmsSupNakedSign omsSupNakedSign) {
+		if(StringUtils.isBlank(omsSupNakedSign.getId()) || StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupNakedSign.setModifyTime(new Date());
 		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count =  omsSupNakedSignMapper.updateById(omsSupNakedSign);
@@ -170,7 +181,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
 				queryWrapper.eq("A0100", omsSupNakedSign.getA0100());
 				int num = omsRegProcpersonInfoMapper.update(omsRegProcpersonInfo, queryWrapper);
-				if(omsSupNakedSign.getXzxgw().equals("0") && num > 0) {
+				if(omsSupNakedSign.getXzxgw().equals(YesOrNoEnum.NO.getCode()) && num > 0) {
 					//取消裸官的限制性岗位，同时撤销其家庭成员的登记备案，转到撤销登记备案表中
 					omsSupFamilyMemberService.removeToRegistration(omsSupNakedSign.getA0100());
 				}
@@ -186,7 +197,10 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeOmsNaked(OmsSupNakedSign omsSupNakedSign) {
-		omsSupNakedSign.setIsDelete("1");
+		if(StringUtils.isBlank(omsSupNakedSign.getId()) || StringUtils.isBlank(omsSupNakedSign.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
+		omsSupNakedSign.setIsDelete(YesOrNoEnum.YES.getCode());
 		omsSupNakedSign.setDeleteTime(new Date());
 		omsSupNakedSign.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		omsSupNakedSign.setModifyTime(new Date());
@@ -196,9 +210,9 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 		}else {
 			//在备案信息表中设置取消裸官信息
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setNf("0");
-			omsRegProcpersonInfo.setXrxgw("0");
-			omsRegProcpersonInfo.setFjgnf("0");
+			omsRegProcpersonInfo.setNf(YesOrNoEnum.NO.getCode());
+			omsRegProcpersonInfo.setXrxgw(YesOrNoEnum.NO.getCode());
+			omsRegProcpersonInfo.setFjgnf(YesOrNoEnum.NO.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 
@@ -225,17 +239,18 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	public void getNakedOfficialOut(List<String> idList,OmsSupNakedSign omsSupNakedSign,HttpServletResponse response) {
 		QueryWrapper<OmsSupNakedSign> queryWrapper = new QueryWrapper<OmsSupNakedSign>();
 		queryWrapper
-				.in(idList != null && idList.size() > 0,"B0100", idList)
-				.eq(omsSupNakedSign.getXzxgw() != null && omsSupNakedSign.getXzxgw() != "",
+				.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getXzxgw()),
 						"XZXGW", omsSupNakedSign.getXzxgw())
-				.eq(omsSupNakedSign.getFjgnf() != null && omsSupNakedSign.getFjgnf() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getFjgnf()),
 						"FJGNF",omsSupNakedSign.getFjgnf())
-				.eq("IS_DELETE", "0")
-				.and(wrapper->wrapper.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+				.eq(!StringUtils.isBlank(omsSupNakedSign.getIsDelete()),
+						"IS_DELETE", omsSupNakedSign.getIsDelete())
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 						"NAME", omsSupNakedSign.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupNakedSign.getName() != null && omsSupNakedSign.getName() != "",
+						.like(!StringUtils.isBlank(omsSupNakedSign.getName()),
 								"PINYIN", omsSupNakedSign.getName()));
 
 		List<OmsSupNakedSign> list = omsSupNakedSignMapper.selectList(queryWrapper);
@@ -298,7 +313,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 				row.createCell(4).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
 				row.createCell(5).setCellValue(list.get(i).getPoliticalAffi());
 				row.createCell(6).setCellValue(list.get(i).getPost());
-				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals("1") ? "是" : "否");
+				row.createCell(7).setCellValue(list.get(i).getXzxgw().equals(YesOrNoEnum.YES.getCode()) ? "是" : "否");
 				//设置单元格字体大小
 				for(int j = 0;j < 8;j++){
 					row.getCell(j).setCellStyle(style1);
@@ -328,7 +343,7 @@ public class OmsSupNakedSignServiceImpl extends ServiceImpl<OmsSupNakedSignMappe
 	 */
 	public List<SysDictItem> getXzxgwInfo() {
 		List<SysDictItem> list = sysDictItemMapper.selectSysdictItemListByDictCode("XZXGW");
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			return list;
 		}
 		return new ArrayList<SysDictItem>();

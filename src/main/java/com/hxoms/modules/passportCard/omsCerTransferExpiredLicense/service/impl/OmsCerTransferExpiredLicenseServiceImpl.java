@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -12,6 +13,7 @@ import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
+import com.hxoms.modules.passportCard.initialise.entity.enums.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
 import com.hxoms.modules.passportCard.omsCerTransferExpiredLicense.service.OmsCerTransferExpiredLicenseService;
@@ -25,9 +27,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl;
 
-import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -158,7 +158,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 				row = sheet.createRow(i + 3);
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list1.get(i).get("name"));
-				row.createCell(2).setCellValue(String.valueOf(list1.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(2).setCellValue(String.valueOf(list1.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(3).setCellValue((String) list1.get(i).get("workUnit"));
 				row.createCell(4).setCellValue((String)list1.get(i).get("post"));
 				row.createCell(5).setCellValue(CerTypeUtil.getCnTypeLicence((Integer)list1.get(i).get("zjlx")));
@@ -211,20 +211,20 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public List<CfCertificate> getTransferExpiredLicenseDeposit(List<CfCertificate> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(CfCertificate cfCertificate : list){
 				if(cfCertificate.getSaveStatus().equals(String.valueOf(Constants.CER_SAVE_STATUS[1]))){          //判断证件的取出状态，只有取出证照机的可以转存
-					cfCertificate.setSurelyWay("1");            //设置为柜台存放
+					cfCertificate.setSurelyWay(SurelyWayEnum.COUNTER.getCode());            //设置为柜台存放
 					if(cfCertificate.getCounterNum() != null){         //存在柜台号码，不用重新生成柜台号码
 						cfCertificate.setCounterNum(cfCertificate.getCounterNum());
 					}else {                                             //柜台号码不存在，生成柜台号码
 						//根据证件形式，和状态可用的，未锁定的查询柜台可用号码
 						QueryWrapper<OmsCerCounterNumber> queryWrapper = new QueryWrapper<OmsCerCounterNumber>();
 						queryWrapper.eq("ZJXS", cfCertificate.getZjxs())
-									.eq("STATUS", "0")
-									.eq("IS_LOCK", "0");
+									.eq("STATUS", UseStatusEnum.NOT_USE.getCode())
+									.eq("IS_LOCK", LockEnum.NOT_LOCK.getCode());
 						List<OmsCerCounterNumber> list1 = omsCerConuterNumberMapper.selectList(queryWrapper);
-						if(list1 != null && list1.size() > 0){
+						if(!ListUtil.isEmpty(list1)){
 							//取第一个号码作为柜台号码
 							cfCertificate.setCounterNum(list1.get(0).getCounterNum());
 						}else {
@@ -250,7 +250,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 * @Date: 2020/8/18 14:16
 	 */
 	public void getTransferExpiredLicenseSave(List<CfCertificate> list) {
-		if(list != null && list.size() > 0){
+		if(!ListUtil.isEmpty(list)){
 			for(CfCertificate cfCertificate : list){
 				cfCertificate.setSaveStatus(String.valueOf(Constants.CER_SAVE_STATUS[0]));      //状态置为正常保管,证照状态还是过期
 				cfCertificate.setCabinetNum("");
@@ -277,6 +277,9 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public QrCode getTransferExpiredLicenseQrCode(List<CfCertificate> list) {
+		if(list == null || list.size() < 1){
+			throw new CustomMessageException("未选择证照");
+		}
 		List<CreateQrCodeApply> createQrCodeApplyList = new ArrayList<CreateQrCodeApply>();
 		for(CfCertificate cfCertificate : list){
 			if((cfCertificate.getSaveStatus()).equals(String.valueOf(Constants.CER_SAVE_STATUS[0]))){
@@ -286,12 +289,12 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 				omsCerGetTask.setBusiId(cfCertificate.getId());
 				omsCerGetTask.setName(cfCertificate.getName());
 				omsCerGetTask.setZjlx(cfCertificate.getZjlx());
-				omsCerGetTask.setDataSource("3");
+				omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_3.getCode());          //过期证照
 				omsCerGetTask.setGetPeople(UserInfoUtil.getUserInfo().getId());
 				omsCerGetTask.setCreateTime(new Date());
 				omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
 				omsCerGetTask.setOmsId(cfCertificate.getOmsId());
-				omsCerGetTask.setGetStatus("0");                //未领取
+				omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_0.getCode());                //未领取
 				omsCerGetTask.setHappenDate(new Date());
 				omsCerGetTask.setCerId(cfCertificate.getId());
 				omsCerGetTask.setZjhm(cfCertificate.getZjhm());

@@ -15,6 +15,7 @@ import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,9 +203,9 @@ public class Synchdata {
         List<LinkedHashMap<String, Object>> result = selectMapper.select(instance);
         if (result.get(0).get("count").toString().equals("0") ) {
             //修改机构的上级机构ID，因为机构主键不一样，干综以b0111为主键，出国境以b0100为主键
-            sql = "update b01 inner join b01 as pb01 on b01.b0121=pb01.b0111 set b01.b0121=pb01.B0100";
-            instance = SqlVo.getInstance(sql);
-            selectMapper.update(instance);
+//            sql = "update b01 inner join b01 as pb01 on b01.b0121=pb01.b0111 set b01.b0121=pb01.B0100";
+//            instance = SqlVo.getInstance(sql);
+//            selectMapper.update(instance);
 
             //查找顶级机构作为管理员所在机构
             sql = "select b0100 from b01 where b0121 is null";
@@ -493,7 +494,7 @@ public class Synchdata {
 
     private void CacheSmrOldInfo() throws ParseException {
         hashMapSmrOldPerson.clear();
-        List<OmsSmrOldInfo> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
+        List<OmsSmrOldInfoVO> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
         //原涉密信息
         for (Object o : smrOldInfo
         ) {

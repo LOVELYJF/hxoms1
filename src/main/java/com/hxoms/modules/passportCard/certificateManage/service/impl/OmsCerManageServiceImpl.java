@@ -168,7 +168,6 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             cfCertificate.setSaveStatus("1");
             //待验证
             cfCertificate.setCardStatus("5");
-            cfCertificate.setIsValid(0);
             cfCertificate.setUpdater(userInfo.getId());
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
@@ -190,8 +189,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
                 if(cfCertificate.getZjlx().equals(cfCertificateCollection.getZjlx())&&cfCertificate.getZjhm().equals(cfCertificateCollection.getZjhm())){
                     //按证件解除催缴
                     //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                    cfCertificateCollection.setCjStatus("3");
-                    cfCertificateCollection.setRemoveCjDesc("新领证件录入");
+                    cfCertificateCollection.setCjStatus("1");
                     cfCertificateCollection.setUpdator(userInfo.getId());
                     cfCertificateCollection.setUpdatetime(date);
                     cfCertificateCollectionMapper.updateById(cfCertificateCollection);
@@ -202,8 +200,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             }
             //按人员解除催缴证件类型和证件号码为空的催缴任务
             if(!isExist&&cfCerCollection!=null){
-                cfCerCollection.setCjStatus("3");
-                cfCerCollection.setRemoveCjDesc("新领证件录入");
+                cfCerCollection.setCjStatus("1");
                 cfCerCollection.setUpdator(userInfo.getId());
                 cfCerCollection.setUpdatetime(date);
                 cfCertificateCollectionMapper.updateById(cfCerCollection);

@@ -12,6 +12,7 @@ import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
+import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
 public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyMapper, OmsRegRevokeapply> implements OmsRegRevokeApplyService {
 
     @Autowired
-    private A01EntityMapper a01Mapper;
+    private A01Mapper a01Mapper;
     @Autowired
     private A30Mapper a30Mapper;
     @Autowired
@@ -172,7 +172,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Override
     public Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo) {
         //查询公安信息可撤销登记备案人员
-        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
+        List<OmsRegProcpersoninfoVO> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
         return reginfolist;
     }
 

@@ -3,6 +3,7 @@ package com.hxoms.modules.omsregcadre.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.tree.Tree;
+import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
@@ -22,13 +23,13 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
 
     Object deleteRpinfo(String id);
 
-    int insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
+    String insertOmsRegGongAn(List<OmsRegProcpersoninfo> list);
 
-    int mergeDataGBandGA(String idStr);
+    Result mergeDataGBandGA(String idStr);
 
     PageInfo<OmsRegProcpersoninfo> getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    Object extractRegPersonInfo() throws ParseException;
+    Result extractRegPersonInfo() throws ParseException;
 
     PageInfo<OmsRegProcpersoninfo> getRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
@@ -71,4 +72,8 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     int deleteBaseInfoConfig(List<String> Ids);
 
     List<ExcelCheckModelORPinfo> selectCheckModelList(String year);
+
+    void SplitName(OmsRegProcpersoninfo orpInfo,String name);
+
+    List<Map> selectRegInfoListById(String idStr);
 }

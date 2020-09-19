@@ -34,7 +34,7 @@
     </select>
     <select id="selectUserGroupUsers" parameterType="java.lang.String" resultMap="UserGroupUsersResultMap">
         select
-        a.id,a.ug_id,a.user_id,b.name,c.ug_name
+        a.id,a.ug_id,a.user_id,b.user_name as name,c.ug_name
         from cf_usergroup_user a
         inner join cf_user b on a.user_id=b.user_id
         inner join cf_usergroup c on a.ug_id=c.id

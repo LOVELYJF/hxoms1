@@ -20,6 +20,7 @@
     <result column="PROC_PERSON_ID" jdbcType="VARCHAR" property="procPersonId" />
     <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
     <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="SFQR" jdbcType="VARCHAR" property="sfqr" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
@@ -27,34 +28,18 @@
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
     START_DATE, FINISH_DATE, QR_SECRET_RELATED_POST, QR_SECRET_RELATED_LEVEL, QR_START_DATE, 
-    QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR,PROC_PERSON_ID,PERSON_STATE,POST
+    QR_FINISH_DATE, QR_USER_ID, QR_TIME, IMPORT_YEAR,PROC_PERSON_ID,PERSON_STATE,POST,SFQR
   </sql>
 
-  <select id="getSmrOldInfoList" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getSmrOldInfoList" parameterType="java.lang.String" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     SELECT
-      t.ID,
-      t.A0100,
-      b.B0101 AS B0100,
-      t.SECRET_RELATED_POST,
-      t.SECRET_RELATED_LEVEL,
-      t.SECRET_REVIEW_DATE,
-      t.START_DATE,
-      t.FINISH_DATE,
-      t.QR_SECRET_RELATED_POST,
-      t.QR_SECRET_RELATED_LEVEL,
-      t.QR_START_DATE,
-      t.QR_FINISH_DATE,
-      t.QR_USER_ID,
-      t.QR_TIME,
-      t.IMPORT_YEAR,
-      t.PROC_PERSON_ID,
-      t.PERSON_STATE,
-      t.POST
+      t.*,
+      b.B0101
     FROM oms_smr_oldinfo t
     LEFT JOIN b01 b on t.B0100 = b.B0100
     WHERE 1=1
-    <if test="a0100 != null and a0100 != ''">
-        and t.A0100 = #{a0100}
+    <if test="id != null and id != ''">
+        and t.PROC_PERSON_ID = #{id}
     </if>
   </select>
 
@@ -73,5 +58,24 @@
       and t.QR_FINISH_DATE &gt;= now()
     </if>
     ORDER BY t.QR_FINISH_DATE desc , t.SECRET_RELATED_LEVEL desc
+  </select>
+
+  <!-- 获取脱密期确认列表 -->
+  <select id="getConfirmPeriodList" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo">
+    SELECT
+    t.*
+    FROM
+    oms_smr_oldinfo t
+    LEFT JOIN oms_reg_procpersoninfo r ON t.PROC_PERSON_ID = r.RF_B0000
+    WHERE 1 = 1
+    <if test="name !=null and name !=''">
+      AND concat(r.SURNAME,r.NAME) like #{name}
+    </if>
+    <if test="namePy !=null and namePy !=''">
+      AND r.PY like #{namePy}
+    </if>
+    and r.rf_B0000 = #{orgId}
+    and t.SECRET_RELATED_LEVEL = ''
+    and r.INCUMBENCY_STATUS = '1'
   </select>
 </mapper>

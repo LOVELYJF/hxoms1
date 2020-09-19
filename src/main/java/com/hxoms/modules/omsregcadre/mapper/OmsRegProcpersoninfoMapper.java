@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO;
 import com.hxoms.modules.omsregcadre.entity.StatisticsCountVo;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoninfo> {
 
-    List<String> selectRegProcpersonInfo(String dataType);
+    List<OmsRegProcpersoninfo> selectRegProcpersonInfo(String dataType);
 
     int batchAddorpInfo(@Param(value = "list")List<OmsRegProcpersoninfo> subList);
 
@@ -29,17 +30,19 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<OmsRegProcpersoninfo> selectMergeList(String sortType);
 
-    List<OmsRegProcpersoninfo> selectListById(String id);
+    List<OmsRegProcpersoninfo> selectListById(@Param(value = "ids")List<String> ids);
 
     List<OmsRegProcpersoninfo> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    int updateRegProcpersoninfo(OmsRegProcpersoninfo info);
+    int updateRegProcpersoninfo(@Param(value = "info")OmsRegProcpersoninfoIPagParam info);
 
-    List<OmsRegProcpersoninfo> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
+    List<OmsRegProcpersoninfoVO> searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 
     OmsRegProcpersoninfo selectPersonInfoByIdCard(String idCard);
 
     List<String> selectIdnumberByType(String dataType);
+
+    List<Map> selectRegInfoListById(@Param(value = "ids")List<String> ids);
 }
 
 

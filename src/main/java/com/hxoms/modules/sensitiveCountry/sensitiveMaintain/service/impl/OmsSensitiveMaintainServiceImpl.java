@@ -43,11 +43,13 @@ public class OmsSensitiveMaintainServiceImpl implements OmsSensitiveMaintainServ
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
+	 * @param sensitiveLimitId
 	 * @return
 	 */
-	public List<Country> getCountryInfo(String nameZh) {
+	public List<Country> getCountryInfo(String nameZh,String sensitiveLimitId) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("nameZh", nameZh);
+		map.put("sensitiveLimitId", sensitiveLimitId);
 		List<Country> list = countryMapper.getCountryInfo(map);
 		return list;
 	}

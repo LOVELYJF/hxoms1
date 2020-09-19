@@ -14,6 +14,14 @@ import java.util.List;
 
 public interface CfCertificateService extends IService<CfCertificate> {
 
+   /**
+    * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
+    * @Author: wuqingfan
+    * @Param: [ids]
+    * @Return: excel
+    * @Date: 2020/9/10
+    */
+   void exportExceptionCerForOmsId(List<String> ids, HttpServletResponse response);
 
    /**
     * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
@@ -110,11 +118,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 存疑处理，以证照信息为准
     * @Author: wangyunquan
-    * @Param: [qureyDealRequestInfo]
+    * @Param: [qureyDealRequestInfoEx]
     * @Return: void
     * @Date: 2020/8/10
     */
-    void updateCerForCerIsRight(QureyDealRequestInfo qureyDealRequestInfo);
+    void updateCerForCerIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx);
 
     /**
      * @Desc: 存疑处理，以公安信息为准

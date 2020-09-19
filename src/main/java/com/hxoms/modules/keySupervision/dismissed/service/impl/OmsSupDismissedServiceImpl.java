@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -13,6 +14,7 @@ import com.hxoms.modules.keySupervision.dismissed.mapper.OmsSupDismissedMapper;
 import com.hxoms.modules.keySupervision.dismissed.service.OmsSupDismissedService;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -59,12 +61,12 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 
 		QueryWrapper<OmsSupDismissed> queryWrapper = new QueryWrapper<OmsSupDismissed>();
 		queryWrapper
-				.in(list != null && list.size() > 0,"WORK_UNIT", list)
-				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+				.in(!ListUtil.isEmpty(list),"WORK_UNIT", list)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupDismissed.getName()),
 						"NAME", omsSupDismissed.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+						.like(!StringUtils.isBlank(omsSupDismissed.getName()),
 								"PINYIN", omsSupDismissed.getName()))
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())
@@ -88,6 +90,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		//查询人员拼音
 		List<Map<String, Object>> list = a01Mapper.selectPiliticalAffi(omsSupDismissed.getA0100());
 		omsSupDismissed.setPinyin((String)list.get(0).get("a0102"));
@@ -108,6 +113,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void updateDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getId())){
+			throw new CustomMessageException("参数错误");
+		}
 		omsSupDismissed.setModifyTime(new Date());
 		omsSupDismissed.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsSupDismissedMapper.updateById(omsSupDismissed);
@@ -124,6 +132,9 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
+		if(StringUtils.isBlank(omsSupDismissed.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count = omsSupDismissedMapper.deleteById(omsSupDismissed.getId());
 		if(count <= 0){
 			throw new CustomMessageException("删除免职撤职人员失败");
@@ -148,12 +159,12 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 
 		QueryWrapper<OmsSupDismissed> queryWrapper = new QueryWrapper<OmsSupDismissed>();
 		queryWrapper
-				.in(list1 != null && list1.size() > 0,"WORK_UNIT", list1)
-				.and(wrapper->wrapper.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+				.in(!ListUtil.isEmpty(list1),"WORK_UNIT", list1)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupDismissed.getName()),
 						"NAME", omsSupDismissed.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupDismissed.getName() != null && omsSupDismissed.getName() != "",
+						.like(!StringUtils.isBlank(omsSupDismissed.getName()),
 								"PINYIN", omsSupDismissed.getName()))
 				.between(omsSupDismissed.getDismissedTimeStartQuery() != null && omsSupDismissed.getDismissedTimeEndQuery() != null,
 						"DISMISSED_TIME", omsSupDismissed.getDismissedTimeStartQuery(), omsSupDismissed.getDismissedTimeEndQuery())

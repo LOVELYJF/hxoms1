@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.PerManageEnum;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.common.utils.UtilDateTime;
@@ -13,17 +15,21 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.PersonOrgOrder;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.PersonOrgOrderMapper;
 import com.hxoms.modules.keySupervision.majorLeader.service.OmsSupMajorLeaderService;
+import com.hxoms.modules.keySupervision.nakedOfficial.entity.enums.YesOrNoEnum;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.leaderInfo.mapper.A01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,12 +66,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupMajorLeader> resultList = omsSupMajorLeaderMapper.selectList(queryWrapper);
@@ -85,6 +91,9 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void addMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 
 		//查询主要领导是否已经存在
 		QueryWrapper<OmsSupMajorLeader> queryLeader = new QueryWrapper<OmsSupMajorLeader>() ;
@@ -108,7 +117,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			}else {
 				//在备案库中设置该对象为主要领导
 				OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-				omsRegProcpersonInfo.setMainLeader("1");
+				omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.YES.getCode());
 				omsRegProcpersonInfo.setModifyTime(new Date());
 				omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -132,13 +141,16 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeMajorLeader(OmsSupMajorLeader omsSupMajorLeader) {
+		if(StringUtils.isBlank(omsSupMajorLeader.getId()) || StringUtils.isBlank(omsSupMajorLeader.getA0100())){
+			throw new CustomMessageException("参数错误");
+		}
 		int count  =  omsSupMajorLeaderMapper.deleteById(omsSupMajorLeader.getId());
 		if(count < 1){
 			throw new CustomMessageException("取消主要领导信息失败");
 		}else {
 			//在备案库中取消主要领导标识
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setMainLeader("0");
+			omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.NO.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -182,6 +194,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 			if(!result) {
 				//根据领导主键查询领导信息
 				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("a0163", PerManageEnum.PRESENT_EMPLOYMENT.getCode());       //人员管理状态
 				map.put("a0100", a0100);
 				map.put("a0201b", person.getA0201b());
 				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(map);
@@ -214,7 +227,7 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 
 			//在备案库中设置该对象为主要领导
 			OmsRegProcpersoninfo omsRegProcpersonInfo = new OmsRegProcpersoninfo();
-			omsRegProcpersonInfo.setMainLeader("1");
+			omsRegProcpersonInfo.setMainLeader(YesOrNoEnum.YES.getCode());
 			omsRegProcpersonInfo.setModifyTime(new Date());
 			omsRegProcpersonInfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
 			QueryWrapper<OmsRegProcpersoninfo> wrapper = new QueryWrapper<OmsRegProcpersoninfo>();
@@ -237,12 +250,12 @@ public class OmsSupMajorLeaderServiceImpl implements OmsSupMajorLeaderService {
 	public void getMajorLeaderInfoOut(List<String> idList, OmsSupMajorLeader omsSupMajorLeader, HttpServletResponse response) {
 
 		QueryWrapper<OmsSupMajorLeader> queryWrapper = new QueryWrapper<OmsSupMajorLeader>();
-		queryWrapper.in(idList != null && idList.size() > 0,"B0100", idList)
-				.and(wrapper->wrapper.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+		queryWrapper.in(!ListUtil.isEmpty(idList),"B0100", idList)
+				.and(wrapper->wrapper.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 						"NAME", omsSupMajorLeader.getName())
 						.or()
 						.isNotNull("ID")
-						.like(omsSupMajorLeader.getName() != null && omsSupMajorLeader.getName() != "",
+						.like(!StringUtils.isBlank(omsSupMajorLeader.getName()),
 								"PINYIN", omsSupMajorLeader.getName()));
 
 		List<OmsSupMajorLeader> list = omsSupMajorLeaderMapper.selectList(queryWrapper);

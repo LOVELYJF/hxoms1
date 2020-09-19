@@ -1,10 +1,8 @@
 package com.hxoms.modules.passportCard.counterReturn.service;
 
 
-import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
-import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 
 public interface OmsCounterReturnService {
 
@@ -12,38 +10,38 @@ public interface OmsCounterReturnService {
     /**
      * @Desc: 读取证照信息
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [readCerInfo]
      * @Return: com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.ReturnCertificateInfo
      * @Date: 2020/8/20
      */
-    ReturnCertificateInfo readCerInfo(CfCertificate cfCertificate);
+    CerAndPersonInfo readCerInfo(ReadCerInfo readCerInfo);
 
     /**
      * @Desc: 查询因私出国申请信息
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
-     * @Return: com.hxoms.modules.privateabroad.entity.OmsPriApply
+     * @Param: [priApplyQueryParams]
+     * @Return: com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.PriApplyInfo
      * @Date: 2020/8/20
      */
-    OmsPriApply selectPriApplyInfo(CfCertificate cfCertificate);
+    PriApplyInfo selectPriApplyInfo(PriApplyQueryParams priApplyQueryParams);
 
     /**
      * @Desc: 填写因私有关情况报告
      * @Author: wangyunquan
-     * @Param: [omsPriApply]
+     * @Param: [priApplyInfo]
      * @Return: void
      * @Date: 2020/8/20
      */
-    void updatePriForFillReport(OmsPriApply omsPriApply);
+    void updatePriForFillReport(PriApplyInfo priApplyInfo);
 
     /**
      * @Desc: 归还证照
      * @Author: wangyunquan
-     * @Param: [cfCertificate]
+     * @Param: [returnCerInfo]
      * @Return: void
      * @Date: 2020/8/20
      */
-    void returnCertificate(CfCertificate cfCertificate);
+    void returnCertificate(ReturnCerInfo returnCerInfo);
     
     
     /**

@@ -3,12 +3,15 @@ package com.hxoms.modules.omssmrperson.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * 涉密人员原涉密信息管理
@@ -29,7 +32,7 @@ public class OmsSmrOldInfoController {
     @GetMapping("/getSmrOldInfoById")
     public Result getSmrOldInfoById(Integer pageNum, Integer pageSize,String id) {
         try{
-            PageInfo<OmsSmrOldInfo> oldInfoList = smrOldInfoService.getSmrOldInfoById(pageNum,pageSize,id);
+            PageInfo<OmsSmrOldInfoVO> oldInfoList = smrOldInfoService.getSmrOldInfoById(pageNum,pageSize,id);
             return Result.success(oldInfoList);
         }catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +67,19 @@ public class OmsSmrOldInfoController {
         return Result.success(smrOldInfoService.delete(id));
     }
 
-
+    /**
+     * 获取脱密期确认列表
+     */
+    @GetMapping("/getConfirmPeriodList")
+    public Result getConfirmPeriodList() {
+        try{
+            Map<String, Object> resultMap = smrOldInfoService.getConfirmPeriodList();
+            return Result.success(resultMap);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
 
 }
 
