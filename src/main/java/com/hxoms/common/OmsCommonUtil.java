@@ -121,24 +121,38 @@ public class OmsCommonUtil {
      * @return:void
      **/
     public static void SendMessage(String msg, String paramCode) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+
+        String receiver = parameterService.selectPValueByCode(paramCode);
+        //格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
+        String[] receivers = receiver.split(",");
+
+        SendMessage(msg,receivers[0],receivers[1],receivers[2]);
+    }
+    /**
+     * @description: 发送在线提醒消息
+     * @author:杨波
+     * @date:2020-09-19
+     *  * @param msg 要发送的消息
+     * @param type 类型（1个人 2处室 3机构 4讨论组）
+     * @param id ,机构或处室ID
+     * @param name 机构或处室名称
+     * @return:void
+     **/
+    public static void SendMessage(String msg,String type, String id,String name) throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+
         SendMessageParam param = new SendMessageParam();
         Message message = new Message();
         message.setContent(msg);
         param.setMessage(message);
 
-        String receiver = parameterService.selectPValueByCode(paramCode);
-
-        //格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称
-        String[] receivers = receiver.split(",");
-
         Map<String, List<MsgUser>> msgUserMap = new HashMap<>();
         List<MsgUser> msgUsers = new ArrayList<>();
         MsgUser msgUser = new MsgUser();
-        msgUser.setHandleIdentify(receivers[0]);//类型
-        msgUser.setReceiveUserId(receivers[1]);//机构或处室ID
-        msgUser.setReceiveUsername(receivers[2]);//机构或处室名称
+        msgUser.setHandleIdentify(type);//类型
+        msgUser.setReceiveUserId(id);//机构或处室ID
+        msgUser.setReceiveUsername(name);//机构或处室名称
         msgUsers.add(msgUser);
-        msgUserMap.put(receivers[0], msgUsers);
+        msgUserMap.put(type, msgUsers);
 
         param.setMsgUserMap(msgUserMap);
 

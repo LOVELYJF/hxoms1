@@ -7,9 +7,11 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegYearCheckIPagParam;
+import com.hxoms.support.leaderInfo.entity.A01;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,4 +78,10 @@ public interface OmsRegProcpersonInfoService extends IService<OmsRegProcpersonin
     void SplitName(OmsRegProcpersoninfo orpInfo,String name);
 
     List<Map> selectRegInfoListById(String idStr);
+
+    HashMap<String, OmsRegProcpersoninfo> CacheRegProcpersonInfo(HashMap<String, OmsRegProcpersoninfo> nameAndIDCard);
+
+    HashMap<String, List<Map<String, Object>>> CachePost(List<A01> a01list);
+
+    HashMap<String, Map> CachePost();
 }

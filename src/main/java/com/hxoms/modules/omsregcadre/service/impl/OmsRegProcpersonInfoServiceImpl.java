@@ -10,7 +10,6 @@ import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
-import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
@@ -39,8 +38,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private A01Mapper a01Mapper;
     @Autowired
     private A30Mapper a30Mapper;
-    @Autowired
-    private A02Mapper a02Mapper;
     @Autowired
     private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
     @Autowired
@@ -83,13 +80,13 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo = CachePostMapping();
 
         //缓存民族
-        HashMap<String, SysDictItem> hashMapNation= OmsCommonUtil.CacheDictItem("GB3304") ;
+        HashMap<String, SysDictItem> hashMapNation = OmsCommonUtil.CacheDictItem("GB3304");
 
         //缓存政治面貌
-        HashMap<String,SysDictItem> hashMapPolitical= OmsCommonUtil.CacheDictItem("GB4762") ;
+        HashMap<String, SysDictItem> hashMapPolitical = OmsCommonUtil.CacheDictItem("GB4762");
 
         //缓存健康
-        HashMap<String,SysDictItem> hashMapHealthy= OmsCommonUtil.CacheDictItem("GB2261D") ;
+        HashMap<String, SysDictItem> hashMapHealthy = OmsCommonUtil.CacheDictItem("GB2261D");
 
         //登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
@@ -103,7 +100,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
                 boolean isNew = (orpInfo == null ? true : false);
                 orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
-                        hashMapNation,hashMapPolitical,hashMapHealthy);
+                        hashMapNation, hashMapPolitical, hashMapHealthy);
 
 
                 //登记备案信息中存在此数据，则更新其对应信息
@@ -120,7 +117,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             for (A01 a01 : a01list) {
                 OmsRegProcpersoninfo orpInfo = null;
                 orpInfo = initData(orpInfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
-                        hashMapNation,hashMapPolitical,hashMapHealthy);
+                        hashMapNation, hashMapPolitical, hashMapHealthy);
                 insertRegList.add(orpInfo);
             }
         }
@@ -154,8 +151,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                                           HashMap<String, A30> hashMapA30,
                                           HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo,
                                           HashMap<String, SysDictItem> hashMapNation,
-                                          HashMap<String,SysDictItem> hashMapPolitical,
-                                          HashMap<String,SysDictItem> hashMapHealthy) throws ParseException {
+                                          HashMap<String, SysDictItem> hashMapPolitical,
+                                          HashMap<String, SysDictItem> hashMapHealthy) throws ParseException {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMM");
@@ -202,32 +199,30 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         orpInfo.setSex(a01.getA0104());
         //民族
         orpInfo.setNationCode(a01.getA0117());
-        if(StringUilt.stringIsNullOrEmpty(a01.getA0117A())&&
-        StringUilt.stringIsNullOrEmpty(a01.getA0117())==false){
+        if (StringUilt.stringIsNullOrEmpty(a01.getA0117A()) &&
+                StringUilt.stringIsNullOrEmpty(a01.getA0117()) == false) {
             SysDictItem dictItem = hashMapNation.get(a01.getA0117());
-            if(dictItem!=null)
+            if (dictItem != null)
                 orpInfo.setNationName(dictItem.getItemName());
-        }
-        else
+        } else
             orpInfo.setNationName(a01.getA0117A());
 
         //政治面貌
         orpInfo.setPoliticalAfficode(a01.getA0141());
-        if(StringUilt.stringIsNullOrEmpty(a01.getA0141())==false){
+        if (StringUilt.stringIsNullOrEmpty(a01.getA0141()) == false) {
             SysDictItem dictItem = hashMapPolitical.get(a01.getA0141());
-            if(dictItem!=null)
+            if (dictItem != null)
                 orpInfo.setPoliticalAffiname(dictItem.getItemName());
         }
 
         //健康状态
         orpInfo.setHealthCode(a01.getA0127());
-        if(StringUilt.stringIsNullOrEmpty(a01.getA0128())&&
-                StringUilt.stringIsNullOrEmpty(a01.getA0127())==false){
+        if (StringUilt.stringIsNullOrEmpty(a01.getA0128()) &&
+                StringUilt.stringIsNullOrEmpty(a01.getA0127()) == false) {
             SysDictItem dictItem = hashMapHealthy.get(a01.getA0127());
-            if(dictItem!=null)
+            if (dictItem != null)
                 orpInfo.setHealth(dictItem.getItemName());
-        }
-        else
+        } else
             orpInfo.setHealth(a01.getA0128());
 
         //身份情况 1.省管干部
@@ -285,7 +280,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @date:2020-09-15 * @param
      * @return:java.util.HashMap<java.lang.String,com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo>
      **/
-    private HashMap<String, OmsRegProcpersoninfo> CacheRegProcpersonInfo(HashMap<String, OmsRegProcpersoninfo> nameAndIDCard) {
+    @Override
+    public HashMap<String, OmsRegProcpersoninfo> CacheRegProcpersonInfo(HashMap<String, OmsRegProcpersoninfo> nameAndIDCard) {
 
         List<OmsRegProcpersoninfo> omsRegProcpersoninfos = baseMapper.selectRegProcpersonInfo(null);
         //缓存登记备案人员到哈希表中
@@ -293,12 +289,12 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         for (OmsRegProcpersoninfo omsReg : omsRegProcpersoninfos
         ) {
             if (StringUilt.stringIsNullOrEmpty(omsReg.getA0100()))
-                hashMapReg.put(omsReg.getIdnumberGa(), omsReg);//配偶子女没有A0100
+                hashMapReg.put(omsReg.getIdnumberGa(), omsReg);//配偶子女\公安数据没有A0100
             else
                 hashMapReg.put(omsReg.getA0100(), omsReg);//干部
 
             if (nameAndIDCard != null) {
-                nameAndIDCard.put(omsReg.getIdnumberGa() + omsReg.getSurname() + omsReg.getName(), omsReg);
+                nameAndIDCard.put(omsReg.getSurname() + omsReg.getName() + omsReg.getIdnumberGa(), omsReg);
             }
         }
         return hashMapReg;
@@ -310,7 +306,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @date:2020-09-15 * @param a01list 出国境a01中省管干部
      * @return:java.util.HashMap<java.lang.String,java.util.List<java.util.Map<java.lang.String,java.lang.Object>>>
      **/
-    private HashMap<String, List<Map<String, Object>>> CachePost(List<A01> a01list) {
+    @Override
+    public HashMap<String, List<Map<String, Object>>> CachePost(List<A01> a01list) {
         //取职务并缓存
         Map<String, Object> params = new HashMap<String, Object>();
         List<Map<String, Object>> A02s = a01Mapper.selectPersonInfo(params);
@@ -324,6 +321,27 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             List<Map<String, Object>> a02s = hashMapA02.get(a0100);
             if (a02s == null) continue;
             a02s.add(map);
+        }
+        return hashMapA02;
+    }
+    /**
+     * @description:以单位id和a0100为key
+     * @author:杨波
+     * @date:2020-09-19
+     *  * @param
+     * @return:java.util.HashMap<java.lang.String,java.util.Map>
+     **/
+    @Override
+    public HashMap<String, Map> CachePost() {
+
+        //取职务并缓存
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<Map<String, Object>> A02s = a01Mapper.selectPersonInfo(params);
+        HashMap<String, Map> hashMapA02 = new HashMap<>();
+        for (Map map : A02s
+        ) {
+            if (map.get("a0201b") != null && map.get("a0201b").toString().length() > 0)
+                hashMapA02.put(map.get("a0201b").toString() + map.get("a0100").toString(), map);
         }
         return hashMapA02;
     }
@@ -735,13 +753,13 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         HashMap<String, OmsRegProcpersoninfo> hashMapReg = CacheRegProcpersonInfo(nameAndIDCard);
 
         //缓存民族
-        HashMap<String, SysDictItem> hashMapNation= OmsCommonUtil.CacheDictItem("GB3304") ;
+        HashMap<String, SysDictItem> hashMapNation = OmsCommonUtil.CacheDictItem("GB3304");
 
         //缓存政治面貌
-        HashMap<String,SysDictItem> hashMapPolitical= OmsCommonUtil.CacheDictItem("GB4762") ;
+        HashMap<String, SysDictItem> hashMapPolitical = OmsCommonUtil.CacheDictItem("GB4762");
 
         //缓存健康
-        HashMap<String,SysDictItem> hashMapHealthy= OmsCommonUtil.CacheDictItem("GB2261D") ;
+        HashMap<String, SysDictItem> hashMapHealthy = OmsCommonUtil.CacheDictItem("GB2261D");
 
         List<OmsRegProcpersoninfo> updates = new ArrayList<>();
         List<OmsRegProcpersoninfo> adds = new ArrayList<>();
@@ -751,24 +769,24 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             String a0100 = a01.getA0100();
             //判断是否已登记备案过
             OmsRegProcpersoninfo omsreginfo = hashMapReg.get(a0100);
-            if("2".equals(omsreginfo.getDataType()))
-                omsreginfo=null;
+            if ("2".equals(omsreginfo.getDataType()))
+                omsreginfo = null;
 
             //已登记备案过
             if (omsreginfo != null) {
-                if(DealRegistered(omsreginfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo)) {
+                if (DealRegistered(omsreginfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo)) {
                     updates.add(omsreginfo);
                 }
             }
             //未找到登记备案信息
             else {
-                omsreginfo = nameAndIDCard.get(a01.getA0184() + a01.getA0101());
+                omsreginfo = nameAndIDCard.get(a01.getA0101()+a01.getA0184());
 
                 OmsRegProcpersoninfo regProcpersoninfo = null;
 
                 if (omsreginfo == null || (omsreginfo != null && "2".equals(omsreginfo.getDataType())))
                     regProcpersoninfo = initData(regProcpersoninfo, a01, hashMapA02, hashMapA30, hashMapBaseInfo,
-                            hashMapNation,hashMapPolitical,hashMapHealthy);
+                            hashMapNation, hashMapPolitical, hashMapHealthy);
 
                 //根据身份证号和姓名找到了公安数据，合并
                 if (omsreginfo != null && "2".equals(omsreginfo.getDataType())) {
@@ -814,8 +832,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
         if (applies != null && applies.size() > 0)
             revokeApplyService.updateBatchById(applies);
-        return Result.success("本次提取新增备案人员（"+adds.size()+
-                ")人，变更备案人员("+updates.size()+")人，撤消备案人员("+applies.size()+")人。");
+        return Result.success("本次提取新增备案人员（" + adds.size() +
+                ")人，变更备案人员(" + updates.size() + ")人，撤消备案人员(" + applies.size() + ")人。");
     }
 
     /**
@@ -829,11 +847,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @return:void
      **/
     private boolean DealRegistered(OmsRegProcpersoninfo omsreginfo, A01 a01,
-                                HashMap<String, List<Map<String, Object>>> hashMapA02,
-                                HashMap<String, A30> hashMapA30,
-                                HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) {
+                                   HashMap<String, List<Map<String, Object>>> hashMapA02,
+                                   HashMap<String, A30> hashMapA30,
+                                   HashMap<String, OmsBaseinfoConfig> hashMapBaseInfo) {
         //记录是否需要重新登记备案
-        boolean updated=false;
+        boolean updated = false;
         //身份证号姓名一致
         if ((omsreginfo.getSurname() + omsreginfo.getName()).equals(a01.getA0101()) &&
                 omsreginfo.getIdnumberGa().equals(a01.getA0184())) {
@@ -845,7 +863,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 if (!a01.getA0192a().equals(omsreginfo.getPost())) {
                     //变更登记备案
                     ChangeRegisterState(omsreginfo);
-                    updated=true;
+                    updated = true;
                 }
             }
             //在职状态发生变化
@@ -857,7 +875,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //如果干部是在职状态，登记备案人员已经撤销，需要以新增方式重新登记备案
                 if ("1".equals(a01.getA0163()) && omsreginfo.getInboundFlag().equals("D")) {
                     AddRegisterState(omsreginfo);
-                    updated=true;
+                    updated = true;
                 }
                 //如果干部是在职状态，更新职务信息，并以更新方式重新登记备案
                 //调出后，还没有撤消登记备案又调回来
@@ -865,7 +883,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     //更新职务信息
                     SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
                     ChangeRegisterState(omsreginfo);
-                    updated=true;
+                    updated = true;
                 }
             }
         }
