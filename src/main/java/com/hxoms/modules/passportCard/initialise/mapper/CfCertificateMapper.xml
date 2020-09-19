@@ -685,7 +685,8 @@
         a.QFRQ qfrq,
         a.CSDD csdd,
         a.EXCEPTION_MESSAGE exceptionMessage,
-        a.gj
+        a.gj,
+        a.card_status cardStatus
       FROM
           cf_certificate a
       INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
@@ -929,9 +930,8 @@
 	<select id="selectUserType" resultType="java.lang.String">
 		SELECT
 		IF (
-			user_type = '5',
-			'0',
-		IF (user_type = '10', '1', NULL)
+			user_type = '10',
+			'1','0'
 		) userType
 		FROM
 			cf_user

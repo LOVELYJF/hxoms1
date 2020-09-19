@@ -83,6 +83,10 @@ public class CfCertificateInfo {
     @ApiModelProperty(value = "国籍")
     private String gj;
 
+    //证照状态
+    @ApiModelProperty(value = "证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,40:待领取,41:已领取)")
+    private String cardStatus;
+
     public String getId() {
         return id;
     }
@@ -257,5 +261,13 @@ public class CfCertificateInfo {
 
     public void setGj(String gj) {
         this.gj = gj;
+    }
+
+    public String getCardStatus() {
+        return cardStatus;
+    }
+
+    public void setCardStatus(String cardStatus) {
+        this.cardStatus = cardStatus;
     }
 }

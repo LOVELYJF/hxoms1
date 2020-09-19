@@ -9,9 +9,13 @@ import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
+import com.hxoms.modules.keySupervision.suspendApproval.entity.enums.ApprovalStatusEnum;
 import com.hxoms.modules.keySupervision.suspendApproval.mapper.OmsSupSuspendUnitMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollectionRequest;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjDataSourceEnum;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjWayEnum;
 import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionRequestService;
@@ -70,13 +74,13 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
             cfCertificateCollection.setId(UUIDGenerator.getPrimaryKey());
             //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
-            if("0".equals(cfCertificateCollection.getDataSource())){
+            if(CjDataSourceEnum.DJBA.getCode().equals(cfCertificateCollection.getDataSource())){
                 Date date = new Date();
                 cfCertificateCollection.setHappenDate(date);
                 cfCertificateCollection.setReturnDate(PubUtils.calDate(date,10));
             }
             //0:解除,1;已上缴,2:未上缴
-            cfCertificateCollection.setCjStatus("2");
+            cfCertificateCollection.setCjStatus(CjStatusEnum.WSJ.getCode());
             cfCertificateCollection.setCreatetime(new Date());
             cfCertificateCollection.setCreator(userInfo.getId());
             cfCerList.add(cfCertificateCollection);
@@ -186,7 +190,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
                 stringBuffer.append(allCjResult);
                 stringBuffer.append("\r\n");
             }
-            String cjWay = "0".equals(cfCertificateCollectionRequestEx.getCjWay()) ? "电话催缴：" : "1".equals(cfCertificateCollectionRequestEx.getCjWay()) ? "短信催缴：" : cfCertificateCollectionRequestEx.getCjWay();
+            String cjWay = CjWayEnum.DHCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "电话催缴：" : CjWayEnum.DXCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "短信催缴：" : cfCertificateCollectionRequestEx.getCjWay();
             SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
             if(!StringUtils.isBlank(cfCertificateCollectionRequestEx.getCjResult()))
                 cfCertificateCollection.setCjResult(stringBuffer.append(simpleDateFormat.format(date)).append(cfCertificateCollectionRequestEx.getCjPerson()).append(cjWay).append(cfCertificateCollectionRequestEx.getCjResult()).toString());
@@ -248,7 +252,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
         for (RemoveCjApply removeCjApply : removeCjApplyList) {
             CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
-            if(!"2".equals(removeCjApply.getCjStatus()))
+            if(!CjStatusEnum.WSJ.getCode().equals(removeCjApply.getCjStatus()))
                 throw new CustomMessageException("只能解除未上缴的任务，请核实！");
             BeanUtils.copyProperties(removeCjApply,cfCertificateCollection);
             cfCertificateCollectionList.add(cfCertificateCollection);
@@ -319,7 +323,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
                 if(smsInfo.contains(cfCertificateCollectionRequest.getZjhm())){
                     cfCertificateCollectionRequest.setId(UUIDGenerator.getPrimaryKey());
                     //0:电话催缴,1:短信催缴
-                    cfCertificateCollectionRequest.setCjWay("0");
+                    cfCertificateCollectionRequest.setCjWay(CjWayEnum.DXCJ.getCode());
                     cfCertificateCollectionRequest.setCjMessage(smsInfo);
                     cfCertificateCollectionRequest.setUserId(userId);
                     cfCertificateCollectionRequest.setName(userName);
@@ -380,7 +384,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         OmsSupSuspendUnit omsSupSuspendUnit=new OmsSupSuspendUnit();
         BeanUtils.copyProperties(supSuspendUnitApply,omsSupSuspendUnit);
         omsSupSuspendUnit.setId(UUIDGenerator.getPrimaryKey());
-        omsSupSuspendUnit.setStatus("0");
+        omsSupSuspendUnit.setStatus(ApprovalStatusEnum.NOT_ALLOW_APPROVAL.getCode());
         omsSupSuspendUnit.setCreateUser(userInfo.getId());
         omsSupSuspendUnit.setCreateTime(new Date());
         int result = omsSupSuspendUnitMapper.insert(omsSupSuspendUnit);
