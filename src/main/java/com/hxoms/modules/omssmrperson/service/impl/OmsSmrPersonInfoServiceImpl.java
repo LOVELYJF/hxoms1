@@ -222,16 +222,16 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     public String getSecretLevel(String srLevel) {
-        String result = Constants.SECRET_LEVEL_STATUS[1];
+        String result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
         if (StringUtils.isNotBlank(srLevel)) {
-            if (Constants.SECRET_LEVEL_NAME[1].equals(srLevel)) {
-                result = Constants.SECRET_LEVEL_STATUS[1];
+            if (OmsCommonUtil.SECRET_LEVEL_STATUS_NAME[1].equals(srLevel)) {
+                result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
             }
-            if (Constants.SECRET_LEVEL_NAME[2].equals(srLevel)) {
-                result = Constants.SECRET_LEVEL_STATUS[2];
+            if (OmsCommonUtil.SECRET_LEVEL_STATUS_NAME[2].equals(srLevel)) {
+                result = OmsCommonUtil.SECRET_LEVEL_STATUS[2];
             }
-            if (Constants.SECRET_LEVEL_NAME[3].equals(srLevel)) {
-                result = Constants.SECRET_LEVEL_STATUS[3];
+            if (OmsCommonUtil.SECRET_LEVEL_STATUS_NAME[3].equals(srLevel)) {
+                result = OmsCommonUtil.SECRET_LEVEL_STATUS[3];
             }
         }
         return result;
