@@ -336,11 +336,6 @@ public class Constants {
     public static final int[] OGE_STATUS_CODE = {1, 2};
 
 
-    //涉密等级状态代码
-    public static String[] SECRET_LEVEL_STATUS = {"0", "1", "2", "3"};
-    //涉密等级状态名称
-    public static String[] SECRET_LEVEL_NAME = {"非涉密", "一般", "重要", "核心"};
-
     /**
      * 登记备案表在职状态
      */

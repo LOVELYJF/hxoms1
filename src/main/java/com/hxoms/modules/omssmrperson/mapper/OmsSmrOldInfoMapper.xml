@@ -75,7 +75,7 @@
       AND r.PY like #{namePy}
     </if>
     and r.rf_B0000 = #{orgId}
-    and t.SECRET_RELATED_LEVEL = ''
+    and t.SFQR = '0'
     and r.INCUMBENCY_STATUS = '1'
   </select>
 </mapper>
