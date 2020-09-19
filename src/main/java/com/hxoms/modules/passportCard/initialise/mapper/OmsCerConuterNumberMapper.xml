@@ -31,6 +31,6 @@
 	AND surely_unit = #{surelyUnit}
 	AND zjlx = #{zjlx}
 	AND zjxs = #{zjxs}
-	ORDER BY counter_num DESC LIMIT 1
+	ORDER BY counter_num ASC LIMIT 1
 </select>
 </mapper>

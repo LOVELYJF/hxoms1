@@ -78,7 +78,7 @@ public class OmsSmrOldInfo {
     @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务职级")
     private String post;
 
-    @ColumnAnnotation(FieldName = "SFQR",   FieldDescription="是否确认(0：是，1：否")
+    @ColumnAnnotation(FieldName = "SFQR",   FieldDescription="是否确认(0:否，1:是)")
     private String sfqr;
 
     public String getId() {

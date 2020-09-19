@@ -87,7 +87,7 @@ public class LeaderOtherStatisticalQueryController {
 
 
     /**
-     * 征求 纪委意见 导出
+     *登记备案导出
      *
      * **/
 
@@ -99,7 +99,7 @@ public class LeaderOtherStatisticalQueryController {
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("登记备案信息"+date+".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
