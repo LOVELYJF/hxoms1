@@ -276,7 +276,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     /**
      * @description:计算综合涉密信息
      * @author:杨波
-     * @date:2020-09-19 * @param calcLeaveSecretPersons
+     * @date:2020-09-19 * @param hashMapRegs 登记备案人员，如果为空，系统自己查询所有登记备案人员
+     * * @param calcLeaveSecretPersons 需要重新计算综合涉密信息的登记备案人员
      * @return:void
      **/
     public void CalcOverall(HashMap<String, OmsRegProcpersoninfo> hashMapRegs,
@@ -284,7 +285,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //以hash表缓存涉密信息，提高检索速度
         HashMap<String, List<OmsSmrOldInfoVO>> hashMapSmrOldInfos = CacheSmrPersonInfo(hashMapRegs, null);
 
-        List<OmsRegProcpersoninfo>  updates=new ArrayList<>();
+        List<OmsRegProcpersoninfo> updates = new ArrayList<>();
         Set<String> keys = calcLeaveSecretPersons.keySet();
         for (String key : keys
         ) {
@@ -293,8 +294,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             List<OmsSmrOldInfoVO> smrOldInfoVOS = hashMapSmrOldInfos.get(regProcpersoninfo.getA0100());
             if (smrOldInfoVOS == null || smrOldInfoVOS.size() == 0) continue;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date finishDate = sdf.parse("1990-01-01");
             int maxSecretLevel = 0;
             OmsSmrOldInfoVO maxSmr = null;
             for (OmsSmrOldInfoVO smrOldInfoVO : smrOldInfoVOS
@@ -303,29 +302,28 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 if (smrOldInfoVO.getFinishDate() != null &&
                         smrOldInfoVO.getFinishDate().before(new Date())) continue;
 
-                int secretLevel=Integer.parseInt(smrOldInfoVO.getSecretRelatedLevel());
-                int qrSecretLevel=secretLevel;
-                if( StringUilt.stringIsNullOrEmpty(smrOldInfoVO.getQrSecretRelatedLevel())==false)
-                    qrSecretLevel=Integer.parseInt(smrOldInfoVO.getQrSecretRelatedLevel());
+                //有确认过的涉密等级，以确认过的为准
+                int secretLevel = Integer.parseInt(smrOldInfoVO.getSecretRelatedLevel());
+                if (StringUilt.stringIsNullOrEmpty(smrOldInfoVO.getQrSecretRelatedLevel()) == false)
+                    secretLevel = Integer.parseInt(smrOldInfoVO.getQrSecretRelatedLevel());
 
-                if (secretLevel > maxSecretLevel||qrSecretLevel > maxSecretLevel) {
+                if (secretLevel > maxSecretLevel) {
 
                     maxSmr = smrOldInfoVO;
-                    maxSecretLevel = Math.max(secretLevel,qrSecretLevel);
+                    maxSecretLevel = secretLevel;
 
-                } else if (Math.max(secretLevel,qrSecretLevel) == maxSecretLevel &&
+                } else if (secretLevel == maxSecretLevel &&
                         "在编".equals(smrOldInfoVO.getPersonState())) {
                     maxSmr = smrOldInfoVO;
                 }
             }
-            if(maxSmr!=null)
-            {
+            if (maxSmr != null) {
                 regProcpersoninfo.setSecretLevel(String.valueOf(maxSecretLevel));
                 regProcpersoninfo.setSecretPost(maxSmr.getSecretRelatedPost());
                 updates.add(regProcpersoninfo);
             }
         }
-        if(updates.size()>0)
+        if (updates.size() > 0)
             regProcpersonInfoService.updateBatchById(updates);
     }
 
@@ -366,7 +364,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         for (String key : keys
         ) {
             OmsRegProcpersoninfo regProcpersoninfo = hashMapRegs.get(key);
-            if (StringUilt.stringIsNullOrEmpty(regProcpersoninfo.getA0100())) continue;//排除配偶子女
+            if (StringUilt.stringIsNullOrEmpty(regProcpersoninfo.getA0100())) continue;//排除配偶子女和公安数据
             hashMapSmrOldInfos.put(regProcpersoninfo.getA0100(), new ArrayList<>());
         }
         //根据A0100获取涉密信息集合后，将涉密信息加入该集合
