@@ -10,7 +10,6 @@ import com.hxoms.common.tree.Tree;
 import com.hxoms.common.tree.TreeUtil;
 import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
-import com.hxoms.modules.keySupervision.majorLeader.mapper.A02Mapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
@@ -39,8 +38,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     private A01Mapper a01Mapper;
     @Autowired
     private A30Mapper a30Mapper;
-    @Autowired
-    private A02Mapper a02Mapper;
     @Autowired
     private OmsRegProcbatchPersonMapper regProcbatchPersonMapper;
     @Autowired
