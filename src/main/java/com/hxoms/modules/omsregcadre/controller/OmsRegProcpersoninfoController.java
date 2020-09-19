@@ -1,6 +1,6 @@
 package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.util.PingYinUtil;
+import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -40,8 +40,7 @@ public class OmsRegProcpersoninfoController {
     private final static String xlsx = "xlsx";
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
-    @Autowired
-    private Environment environment;
+
     @Autowired
     private SysDictItemMapper sysDictItemMapper;
     @Autowired
@@ -264,12 +263,7 @@ public class OmsRegProcpersoninfoController {
     @PostMapping("/readOmsDataGA")
     private List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
         //缓存行政区划
-        List<SysDictItem> xzqhs = sysDictItemMapper.selectItemCodeByDictCode("ZB01");
-        HashMap<String,SysDictItem> hashMapXZQH=new HashMap<>();
-        for (SysDictItem xzqh:xzqhs
-             ) {
-            hashMapXZQH.put(xzqh.getItemName(),xzqh);
-        }
+        HashMap<String,SysDictItem> hashMapXZQH= OmsCommonUtil.CacheDictItem("ZB01",false) ;
 
         //缓存职务映射关系
         Map<String, Object> params = new HashMap<String, Object>();

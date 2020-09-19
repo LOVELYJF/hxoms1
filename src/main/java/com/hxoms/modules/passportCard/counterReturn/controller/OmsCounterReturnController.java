@@ -64,7 +64,7 @@ public class OmsCounterReturnController {
      */
     @ApiOperation(value = "填写因私有关情况报告")
     @PostMapping("/updatePriForFillReport")
-    public Result updatePriForFillReport(PriApplyInfo priApplyInfo){
+    public Result updatePriForFillReport(@Validated PriApplyInfo priApplyInfo){
         omsCounterReturnService.updatePriForFillReport(priApplyInfo);
         return  Result.success();
     }
@@ -78,7 +78,7 @@ public class OmsCounterReturnController {
      */
     @ApiOperation(value = "归还证照")
     @PostMapping("/returnCertificate")
-    public Result returnCertificate(ReturnCerInfo returnCerInfo){
+    public Result returnCertificate(@Validated ReturnCerInfo returnCerInfo){
         omsCounterReturnService.returnCertificate(returnCerInfo);
         return Result.success();
     }

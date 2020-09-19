@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.IsDomesticEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
@@ -115,7 +116,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		omsCerCancellateApply.setId(UUIDGenerator.getPrimaryKey());
 		omsCerCancellateApply.setOmsId(list.get(0).getOmsId());
 		omsCerCancellateApply.setApplyCerInfo(applyCerInfo);
-		omsCerCancellateApply.setAppendPlace(list.get(0).getAppendPlace().equals("1") ? "国内" : "国外");
+		omsCerCancellateApply.setAppendPlace(list.get(0).getAppendPlace().equals(IsDomesticEnum.DOMESTIC_ENUM.getCode()) ? "国内" : "国外");
 		omsCerCancellateApply.setZxyy(Constants.CANCELL_REASON_NAME[Integer.parseInt(list.get(0).getZxyy())]);
 		omsCerCancellateApply.setCreateTime(new Date());
 		omsCerCancellateApply.setCreateUser(UserInfoUtil.getUserInfo().getId());

@@ -8,9 +8,11 @@ import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
+import com.hxoms.modules.leaderSupervision.service.LeaderOtherStatisticalQueryService;
 import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
+import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -47,6 +49,8 @@ public class LeaderOtherStatisticalQueryController {
 
     @Autowired
     private LeaderEXportExcelService leaderEXportExcelService;
+    @Autowired
+    private LeaderOtherStatisticalQueryService leaderOtherStatisticalQueryService;
 
 
     // 代办业务管理模块 左边列表
@@ -60,7 +64,7 @@ public class LeaderOtherStatisticalQueryController {
 
     }
 
-    // 批次列表
+    // 批次列表 横向
     @GetMapping("/selectBatchlist")
     public Result  selectBatchlist(){
 
@@ -70,6 +74,15 @@ public class LeaderOtherStatisticalQueryController {
 
        return Result.success(lists);
 
+    }
+
+    //批次列表 纵向
+    @GetMapping("/selectBatchlistShapePortrait")
+    public Result selectBatchlistShapePortrait(){
+
+      Map map =  leaderOtherStatisticalQueryService.selectBatchlistShapePortrait();
+
+      return Result.success(map);
     }
 
 
@@ -98,6 +111,37 @@ public class LeaderOtherStatisticalQueryController {
     }
 
 
+    /** 查询因私出国境申请管理**/
+
+    @GetMapping("/selectAllOmsPriApplyManange")
+    public Result selectAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+
+      PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPriApplyManange(omsPriApplyIPageParam);
+
+
+        return Result.success(pageInfo);
+    }
+
+    /**因私出国境申请管理 导出 **/
+
+    @GetMapping("/exportAllOmsPriApplyManange")
+    public void exportAllOmsPriApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
+        try {
+            HSSFWorkbook wb = leaderEXportExcelService.exportAllOmsPriApplyManange(omsPriApplyIPageParam);
+            String date = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+    }
 
 
 

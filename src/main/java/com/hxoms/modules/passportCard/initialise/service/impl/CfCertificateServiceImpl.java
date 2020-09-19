@@ -12,8 +12,11 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjDataSourceEnum;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import com.hxoms.modules.passportCard.initialise.entity.*;
+import com.hxoms.modules.passportCard.initialise.entity.enums.*;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
@@ -209,32 +212,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if(certificateGa!=null){
             //证照验证
             validateCerInfo(certificateGa,cfCertificate);
-            //根据登陆用户设置保管单位
-            //0:干部监督处,1:省委统战部(台办)
-            certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
-            //验证通过，通过接口获取证照存储位置
-            if("4".equals(certificateGa.getCardStatus())){
-                //还未对接证照机接口，先默认柜台存
-                boolean locationExist=false;
-                //通过接口查询证照机是否可以存，否则柜台存。
-                if(locationExist){
-                    //保管方式(0:证照机,1:柜台)
-                    certificateGa.setSurelyWay("0");
-                }else{
-                    //获取位置
-                    OmsCerCounterNumber omsCerCounterNumber=omsCerConuterNumberMapper.selectCounterNum(certificateGa.getSurelyUnit(),certificateGa.getZjlx(),certificateGa.getZjxs());
-                    //将位置置为已使用
-                    omsCerCounterNumber.setStatus("1");
-                    omsCerCounterNumber.setIsLock("1");
-                    if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
-                        throw new CustomMessageException("柜台号置为已使用失败！");
-                    //保管方式
-                    certificateGa.setSurelyWay("1");
-                    //保管位置
-                    certificateGa.setCounterNum(omsCerCounterNumber.getCounterNum());
-                }
-            }
-            certificateGa.setSaveStatus("1");
+            //设置存储方式
+            setStoreMode(certificateGa,userInfo);
+            certificateGa.setSaveStatus(SaveStatusEnum.YQC.getCode());
             certificateGa.setZjxs(cfCertificate.getZjxs());
             certificateGa.setUpdater(userInfo.getId());
             certificateGa.setUpdateTime(new Date());
@@ -262,6 +242,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         return cfCertificateValidate;
     }
 
+
     /**
      * @Desc: 保存证照信息
      * @Author: wangyunquan
@@ -281,9 +262,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificate.setId(UUIDGenerator.getPrimaryKey());
         cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
         //已取出
-        cfCertificate.setSaveStatus("1");
+        cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
         //待验证
-        cfCertificate.setCardStatus("5");
+        cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
         //异常原因不能修改，耶稣说的。
         cfCertificate.setExceptionMessage("公安无对应证照数据");
         cfCertificate.setUpdater(userInfo.getId());
@@ -351,7 +332,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
             BeanUtils.copyProperties(certificateCollectionApply,cfCertificateCollection);
             //数据来源
-            cfCertificateCollection.setDataSource("0");
+            cfCertificateCollection.setDataSource(CjDataSourceEnum.DJBA.getCode());
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
         cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
@@ -468,8 +449,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             throw new CustomMessageException("查询登陆用户信息失败！");
         CfCertificate cfCertificate=new CfCertificate();
         cfCertificate.setId(id);
-        cfCertificate.setSaveStatus("1");
-        cfCertificate.setCardStatus("2");
+        cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
+        cfCertificate.setCardStatus(CardStatusEnum.ZX.getCode());
         cfCertificate.setUpdater(userInfo.getId());
         cfCertificate.setUpdateTime(new Date());
         int result = cfCertificateMapper.updateById(cfCertificate);
@@ -486,14 +467,17 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      */
     @Override
     public void updateCerForCerIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if(userInfo==null)
+            throw new CustomMessageException("获取登陆用户信息失败");
         CfCertificate cfCertificate=new CfCertificate();
         BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
-        cfCertificate.setSaveStatus("1");
-        cfCertificate.setCardStatus("4");
-        cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
+        cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
+        cfCertificate.setCardStatus(CardStatusEnum.YYZ.getCode());
+        cfCertificate.setUpdater(userInfo.getId());
         cfCertificate.setUpdateTime(new Date());
         //通过接口获取证照存储位置，优先选择证照机存储，否则柜台存储。
-
+        setStoreMode(cfCertificate,userInfo);
         int result = cfCertificateMapper.updateById(cfCertificate);
         if(result==0)
             throw new CustomMessageException("处理失败！");
@@ -511,8 +495,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     public void updateCerForGaInfoIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
         CfCertificate cfCertificate=new CfCertificate();
         BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
-        cfCertificate.setSaveStatus("2");
-        cfCertificate.setCardStatus("5");
+        cfCertificate.setSaveStatus(SaveStatusEnum.WSQ.getCode());
+        cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
         cfCertificate.setUpdateTime(new Date());
         int result = cfCertificateMapper.updateById(cfCertificate);
@@ -529,7 +513,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificateCollection.setZjlx(cfCertificateInfo.getZjlx());
         cfCertificateCollection.setZjhm(cfCertificateInfo.getZjhm());
         //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
-        cfCertificateCollection.setDataSource("0");
+        cfCertificateCollection.setDataSource(CjDataSourceEnum.DJBA.getCode());
         List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
         cfCertificateCollectionList.add(cfCertificateCollection);
         cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
@@ -572,10 +556,10 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         }
         if(StringUtils.isBlank(stringBuffer.toString())){
             //验证通过
-            certificateGa.setCardStatus("4");
+            certificateGa.setCardStatus(CardStatusEnum.YYZ.getCode());
         }else{
             //验证失败
-            certificateGa.setCardStatus("3");
+            certificateGa.setCardStatus(CardStatusEnum.YZSB.getCode());
             certificateGa.setExceptionMessage(stringBuffer.substring(0,stringBuffer.length()-2));
         }
     }
@@ -676,7 +660,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                         List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
                         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
                             //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                            cfCertificateCollection.setCjStatus("3");
+                            cfCertificateCollection.setCjStatus(CjStatusEnum.ZDJC.getCode());
                             cfCertificateCollection.setRemoveCjDesc("出入境管理局系统未查询到证件");
                             cfCertificateCollection.setUpdator(userInfo.getId());
                             cfCertificateCollection.setUpdatetime(importDate);
@@ -726,18 +710,18 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 BeanUtils.copyProperties(cfCertificate,omsCerImportManage);
                                 if(!mathPeople){
                                     //0:成功导入,1:重复导入,2:匹配失败
-                                    omsCerImportManage.setStatus("2");
+                                    omsCerImportManage.setStatus(CerImportManageEnum.PPSB.getCode());
                                     cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
                                 }else{
                                     //判断是否过期
                                     if(cfCertificate.getYxqz().after(dateParse.parse(dateParse.format(new Date())))){
                                         //证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)
-                                        cfCertificate.setCardStatus("5");
+                                        cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
                                         //保管状态(0:正常保管,1:已取出,2:未上缴)
-                                        cfCertificate.setSaveStatus("2");
+                                        cfCertificate.setSaveStatus(SaveStatusEnum.WSQ.getCode());
                                     }else{
-                                        cfCertificate.setCardStatus("1");
-                                        cfCertificate.setSaveStatus("1");
+                                        cfCertificate.setCardStatus(CardStatusEnum.GQ.getCode());
+                                        cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
                                     }
                                     //去重
                                     if(cfCertificateExistList!=null&&cfCertificateExistList.size()>0){
@@ -746,10 +730,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                             if(cfCertificateExist.getZjlx()==cfCertificate.getZjlx()
                                                     &&cfCertificateExist.getZjhm().equals(cfCertificate.getZjhm())){
                                                 //已取出待验证证照，此处要验证证照
-                                                if("1".equals(cfCertificateExist.getSaveStatus())&&"5".equals(cfCertificateExist.getCardStatus())){
+                                                if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
                                                     validateCerInfo(cfCertificateExist,cfCertificate);
                                                     cfCertificateExist.setUpdater(userInfo.getId());
                                                     cfCertificateExist.setUpdateTime(importDate);
+                                                    //设置存储方式
+                                                    setStoreMode(cfCertificateExist,userInfo);
                                                     cfCertificateExport.setCfCertificateUpdate(cfCertificateExist);
                                                 }
                                                 flag=true;
@@ -758,13 +744,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                         }
                                         if(flag){
                                             //0:成功导入,1:重复导入,2:匹配失败
-                                            omsCerImportManage.setStatus("1");
+                                            omsCerImportManage.setStatus(CerImportManageEnum.ZFDR.getCode());
                                             cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
                                             continue;
                                         }
                                     }
                                     //0:成功导入,1:重复导入,2:匹配失败
-                                    omsCerImportManage.setStatus("0");
+                                    omsCerImportManage.setStatus(CerImportManageEnum.CGDR.getCode());
                                     cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
                                     //证照持有情况
                                     BigDecimal bigDecimal1=new BigDecimal(allHold);
@@ -801,7 +787,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 BeanUtils.copyProperties(omsEntryexitRecord,omsCerExitEntryImportManage);
                                 if(mathPeople){
                                     //0:成功导入,1:重复导入,2:匹配失败
-                                    omsCerExitEntryImportManage.setStatus("2");
+                                    omsCerExitEntryImportManage.setStatus(CerExitEntryImportManageEnum.PPSB.getCode());
                                     cfCertificateExport.setOmsCerExitEntryImportManage(omsCerExitEntryImportManage);
                                 }else{
                                     //去重
@@ -817,12 +803,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                             }
                                         }
                                         if(flag){
-                                            omsCerExitEntryImportManage.setStatus("1");
+                                            omsCerExitEntryImportManage.setStatus(CerExitEntryImportManageEnum.ZFDR.getCode());
                                             cfCertificateExport.setOmsCerExitEntryImportManage(omsCerExitEntryImportManage);
                                             continue;
                                         }
                                     }
-                                    omsCerExitEntryImportManage.setStatus("0");
+                                    omsCerExitEntryImportManage.setStatus(CerExitEntryImportManageEnum.CGDR.getCode());
                                     cfCertificateExport.setOmsCerExitEntryImportManage(omsCerExitEntryImportManage);
                                     cfCertificateExport.setOmsEntryexitRecord(omsEntryexitRecord);
                                 }
@@ -896,6 +882,43 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if(cfCertificateCollectionList.size()>0){
             if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList,cfCertificateCollectionList.size()))
                 throw  new CustomMessageException("解除催缴任务失败！");
+        }
+    }
+
+    /**
+     * @Desc: 获取存储方式
+     * @Author: wangyunquan
+     * @Param: [certificateGa, userInfo]
+     * @Return: void
+     * @Date: 2020/9/18
+     */
+    private void setStoreMode(CfCertificate certificateGa,UserInfo userInfo) {
+        //验证通过，通过接口获取证照存储位置
+        if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())){
+            //根据登陆用户设置保管单位
+            //0:干部监督处,1:省委统战部(台办)
+            certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
+            //还未对接证照机接口，先默认柜台存
+            boolean locationExist=false;
+            //通过接口查询证照机是否可以存，否则柜台存。
+            if(locationExist){
+                //保管方式(0:证照机,1:柜台)
+                certificateGa.setSurelyWay(SurelyWayEnum.CABINET.getCode());
+            }else{
+                //获取位置
+                OmsCerCounterNumber omsCerCounterNumber=omsCerConuterNumberMapper.selectCounterNum(certificateGa.getSurelyUnit(),certificateGa.getZjlx(),certificateGa.getZjxs());
+                //将位置置为已使用
+                omsCerCounterNumber.setStatus(UseStatusEnum.ON_USE.getCode());
+                omsCerCounterNumber.setIsLock(LockEnum.LOCK.getCode());
+                omsCerCounterNumber.setUpdater(userInfo.getId());
+                omsCerCounterNumber.setUpdateTime(new Date());
+                if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
+                    throw new CustomMessageException("柜台号置为已使用失败！");
+                //保管方式
+                certificateGa.setSurelyWay(SurelyWayEnum.COUNTER.getCode());
+                //保管位置
+                certificateGa.setCounterNum(omsCerCounterNumber.getCounterNum());
+            }
         }
     }
     /**

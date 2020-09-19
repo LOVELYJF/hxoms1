@@ -21,9 +21,10 @@ public interface OmsSensitiveMaintainService {
 	/**
 	 * <b>查询国家信息</b>
 	 * @param nameZh
+	 * @param sensitiveLimitId
 	 * @return
 	 */
-	List<Country> getCountryInfo(String nameZh);
+	List<Country> getCountryInfo(String nameZh,String sensitiveLimitId);
 
 	/**
 	 * <b>功能描述: 查询限制性国家信息</b>
