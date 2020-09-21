@@ -130,10 +130,10 @@ public interface OmsCerInventoryService {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask]
+	 * @Param: [omsCerGetTask,mode]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
-	void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask);
+	void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask, String mode);
 }
