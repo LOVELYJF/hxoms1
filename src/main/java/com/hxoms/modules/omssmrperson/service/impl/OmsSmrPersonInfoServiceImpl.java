@@ -128,7 +128,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             smrRecordInfos.add(smrRecordInfo);
 
             //未登记备案人员
-            if (StringUilt.stringIsNullOrEmpty(imp.getA0100())) continue;
+            String a0100=imp.getA0100();
+            if (StringUilt.stringIsNullOrEmpty(a0100)) continue;
 
             //如果不是首次导入，并且不在职，不导入
             if (firstFlag == false && imp.getPersonState().equals("在编") == false) continue;
@@ -141,7 +142,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
             //检查当前单位是否存在该涉密人员信息
             OmsSmrOldInfoVO existsSmr = null;
-            List<OmsSmrOldInfoVO> smrOldInfoVO = hashMapSmrOldInfos.get(imp.getA0100());
+            List<OmsSmrOldInfoVO> smrOldInfoVO = hashMapSmrOldInfos.get(a0100);
             for (OmsSmrOldInfoVO smr : smrOldInfoVO
             ) {
                 if (smr.getB0100().equals(b0100)) {
@@ -150,11 +151,12 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 }
             }
 
+            //汉字涉密等级转换成编码
+            imp.setSecretRelatedLevel(getSecretLevel(imp.getSecretRelatedLevel()));
+
             //单位和涉密等级没有改变，不做任何操作
             if (existsSmr != null && existsSmr.getSecretRelatedLevel().equals(imp.getSecretRelatedLevel())) continue;
 
-            //汉字涉密等级转换成编码
-            imp.setSecretRelatedLevel(getSecretLevel(imp.getSecretRelatedLevel()));
 
             //不存在该涉密信息
             if (existsSmr == null) {
@@ -190,8 +192,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
                 sendMessages = "贵单位有干部产生了新的脱密期，请点此链接前往确认。";
             }
-            if (calcLeaveSecretPersons.containsKey(imp.getA0100()) == false) {
-                OmsRegProcpersoninfo regProcpersoninfo = hashMapRegs.get(imp.getA0100());
+            if (calcLeaveSecretPersons.containsKey(a0100) == false) {
+                OmsRegProcpersoninfo regProcpersoninfo = hashMapRegs.get(a0100);
                 calcLeaveSecretPersons.put(imp.getA0100(), regProcpersoninfo);
             }
         }
@@ -905,7 +907,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 if (cell == null) {
                     continue;
                 }
-                map.setSecretRelatedLevel(OmsCommonUtil.toSecretLevelStatus(cell.getStringCellValue()));
+                map.setSecretRelatedLevel(cell.getStringCellValue());
                 //人员类型
                 cell = hssfRow.getCell(11);
                 if (cell == null) {
