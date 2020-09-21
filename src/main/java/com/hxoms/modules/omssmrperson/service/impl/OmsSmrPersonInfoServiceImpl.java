@@ -86,7 +86,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         if (!StringUtils.isEmpty(omsSmrPersonInfo.getPersonState())) {
             param.put("personState", omsSmrPersonInfo.getPersonState());
         }
-        if (idList.size() > 0) {
+        if (idList != null && idList.size() > 0) {
             if (!"-1".equals(idList.get(0))) {
                 param.put("idList", idList);
             }
@@ -401,7 +401,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         }
 
         int OrgNum = 0;
-        for (int i = 0; i <= list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             OmsSmrOldInfoVO dataMap = list.get(i);
 
             OmsRegProcpersoninfo regProcpersoninfo = hashMapRegs.get(dataMap.getA0101() + dataMap.getIdCardNumber());
@@ -868,7 +868,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 }
                 map.setBirthDay(cell.getStringCellValue());
                 //民族
-                cell = hssfRow.getCell(3);
+                cell = hssfRow.getCell(4);
                 if (cell == null) {
                     continue;
                 }
@@ -999,7 +999,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             }
         }
         //格式化日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd ");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date newDate = null;
         try {
             if (!"".equals(srDateNew)) {

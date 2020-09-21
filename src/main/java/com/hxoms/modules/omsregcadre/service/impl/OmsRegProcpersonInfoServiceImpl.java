@@ -340,8 +340,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         HashMap<String, Map> hashMapA02 = new HashMap<>();
         for (Map map : A02s
         ) {
-            if (map.get("a0201b") != null && map.get("a0201b").toString().length() > 0)
-                hashMapA02.put(map.get("a0201b").toString() + map.get("a0100").toString(), map);
+//            if (map.get("a0201b") != null && map.get("a0201b").toString().length() > 0)
+                hashMapA02.put(map.get("b0100").toString() + map.get("a0100").toString(), map);
         }
         return hashMapA02;
     }
