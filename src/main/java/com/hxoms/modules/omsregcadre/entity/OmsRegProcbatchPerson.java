@@ -5,6 +5,8 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_reg_procbatch_person", TableDescription="省管干部登记备案批次人员")
@@ -13,7 +15,7 @@ public class OmsRegProcbatchPerson {
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     private String id;
 
-    @ColumnAnnotation(FieldName = "BATCH_ID",   FieldDescription="批次表主键")
+    @ColumnAnnotation(FieldName = "BATCH_ID",   FieldDescription="批次号")
     private String batchId;
 
     @ColumnAnnotation(FieldName = "SURNAME",   FieldDescription="姓")
@@ -83,6 +85,14 @@ public class OmsRegProcbatchPerson {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
+
+    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态0未备案，1已备案")
+    @ApiModelProperty(value="备案状态0未备案，1已备案")
+    private String rfStatus;
+
+    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态1已验收，0待验收")
+    @ApiModelProperty(value="验收状态1已验收，0待验收")
+    private String checkStatus;
 
     public String getId() {
         return id;
@@ -258,5 +268,21 @@ public class OmsRegProcbatchPerson {
 
     public void setDecryptEnddate(Date decryptEnddate) {
         this.decryptEnddate = decryptEnddate;
+    }
+
+    public String getRfStatus() {
+        return rfStatus;
+    }
+
+    public void setRfStatus(String rfStatus) {
+        this.rfStatus = rfStatus;
+    }
+
+    public String getCheckStatus() {
+        return checkStatus;
+    }
+
+    public void setCheckStatus(String checkStatus) {
+        this.checkStatus = checkStatus;
     }
 }

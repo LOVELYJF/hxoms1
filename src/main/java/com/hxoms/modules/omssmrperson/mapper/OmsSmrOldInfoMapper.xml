@@ -75,7 +75,11 @@
       AND r.PY like #{namePy}
     </if>
     and r.rf_B0000 = #{orgId}
-    and t.SECRET_RELATED_LEVEL = ''
+    and t.SFQR = '0'
     and r.INCUMBENCY_STATUS = '1'
+  </select>
+
+  <select id="getSmrCount" resultType="String">
+    select count(1) from oms_smr_oldinfo
   </select>
 </mapper>

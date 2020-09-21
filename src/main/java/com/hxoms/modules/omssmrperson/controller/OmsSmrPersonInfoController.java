@@ -2,6 +2,7 @@ package com.hxoms.modules.omssmrperson.controller;
 
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +54,8 @@ public class OmsSmrPersonInfoController {
      */
     @PostMapping("/insertSmrPersonInfo")
     public Result insertSmrPersonInfo(String importYear, String b0100,
-                                      @RequestBody List<OmsSmrPersonInfo> smrPersonInfoList) {
-        return Result.success(smrPersonInfoService.insertSmrPersonInfo(importYear,b0100,smrPersonInfoList));
+                                      @RequestBody List<OmsSmrOldInfoVO> smrPersonInfoList) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException, InvocationTargetException {
+        return smrPersonInfoService.insertSmrPersonInfo(importYear,b0100,smrPersonInfoList);
     }
 
    /**
@@ -79,8 +82,7 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/uploadSmrExcel")
     public Result uploadSmrExcel(@RequestBody MultipartFile file, String importYear, String b0100) {
         try{
-            Map<String, Object> resultMap = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
-            return Result.success(resultMap);
+            return smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导入失败");

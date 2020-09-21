@@ -1,5 +1,6 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.general.select.entity.SqlVo;
@@ -11,6 +12,7 @@ import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
@@ -47,6 +49,9 @@ public class LeaderEXportExcelService {
 
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
+
+    @Autowired
+    private OmsRegProcbatchPersonMapper procbatchPersonMapper;
 
     /** 因公出国境管理 导出 **/
     public HSSFWorkbook pubApplyMangerExport(){
@@ -645,33 +650,52 @@ public class LeaderEXportExcelService {
     }
 
     private OmsRegProcbatch dealDataRFByRfId(String idStr) {
+        int con =0;
         List<String> ids = null;
         if (!StringUtils.isBlank(idStr)){
             ids = Arrays.asList(idStr.split(","));
         }
-        List<OmsRegProcbatchPerson> orpbplist = new ArrayList<>();
-        //查询登记备案信息根据备案id
+        List<OmsRegProcbatchPerson> orpbplist1 = new ArrayList<>();
+        //查询登记备案信息根据备案i
         List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
         //查询批次相关信息
         OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
         if (batchinfo!=null){
             for (int i = 0; i < rflist.size(); i++) {
                 OmsRegProcpersoninfo info = rflist.get(i);
-                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
-                //为批次人员表复制相同字段的数据
-                BeanUtils.copyProperties(rflist, batchperson);
-                batchperson.setId(UUIDGenerator.getPrimaryKey());
-                batchperson.setRfId(info.getId());
-                batchperson.setBatchId(batchinfo.getBatchNo());
-                orpbplist.add(batchperson);
+                //查询批次人员表中是否已存在该人员，若已存在执行更新，不新增
+                int personcount = procbatchPersonMapper.selectPersonByRfId(info.getId(),batchinfo.getBatchNo());
+                if (personcount > 0){
+                    OmsRegProcbatchPerson batchperson2 = new OmsRegProcbatchPerson();
+                    UpdateWrapper<OmsRegProcbatchPerson> personInfoWrapper = new UpdateWrapper<OmsRegProcbatchPerson>();
+                    personInfoWrapper.eq("RF_ID",info.getId());
+                    //为批次人员表复制相同字段的数据
+                    BeanUtils.copyProperties(info, batchperson2);
+                    batchperson2.setId(UUIDGenerator.getPrimaryKey());
+                    batchperson2.setRfId(info.getId());
+                    batchperson2.setBatchId(batchinfo.getBatchNo());
+                    procbatchPersonMapper.update(batchperson2,personInfoWrapper);
+                }else{
+                    OmsRegProcbatchPerson batchperson1 = new OmsRegProcbatchPerson();
+                    //为批次人员表复制相同字段的数据
+                    BeanUtils.copyProperties(info, batchperson1);
+                    batchperson1.setId(UUIDGenerator.getPrimaryKey());
+                    batchperson1.setRfId(info.getId());
+                    batchperson1.setBatchId(batchinfo.getBatchNo());
+                    orpbplist1.add(batchperson1);
+                }
             }
-            int con = orpbatchService.batchinsertInfo(orpbplist);
+            if (orpbplist1!=null && orpbplist1.size()>0){
+                con = orpbatchService.batchinsertInfo(orpbplist1);
+            }
             if (con > 0) {
-                //修改批次表状态 是否完成  0未完成，1已完成
-                batchinfo.setStatus("1");
-                int con1 = orpbatchService.updateOrpbatch(batchinfo);
-                if (con1 > 0) {
-                    mrpinfoService.updateRegProcpersoninfo(idStr);
+                mrpinfoService.updateRegProcpersoninfo(idStr);
+                //查询是否有未验收的批次人员
+                int count = procbatchPersonMapper.selectCountByBatchId(batchinfo.getBatchNo());
+                if (count < 0){
+                    //修改批次表状态为1已完成
+                    batchinfo.setStatus("1");
+                    orpbatchService.updateOrpbatch(batchinfo);
                 }
             }
         }else{
