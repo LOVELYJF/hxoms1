@@ -4,16 +4,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
-import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
+import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrPersonInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
@@ -49,8 +48,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     private OmsSmrOldInfoService smrOldInfoService;
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
-    @Autowired
-    private OmsRegProcpersonInfoService regProcpersonInfoService;
 
     /** 获取涉密人员信息列表 */
     @Override
@@ -125,22 +122,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             flag = smrRecordInfoMapper.insertRecordList(srrList) > 0;
             if(flag){//插入省国家保密局备案涉密人员表
                 flag = initSmrOldInfoList(smrPersonInfoList);//插入原涉密信息表
-                if(flag){
-                    List<OmsRegProcpersoninfo> regProcpersoninfoList = new ArrayList<>();
-                    for (int i = 0; i < smrPersonInfoList.size(); i++) {
-                        OmsRegProcpersoninfo regProcpersoninfo = new OmsRegProcpersoninfo();
-                        OmsRegProcpersoninfo regProcpersoninfoOld = regProcpersonInfoMapper.selectById(smrPersonInfoList.get(i).getProcPersonId());
-                        if(null != regProcpersoninfoOld.getSecretLevel() &&
-                                Integer.parseInt(regProcpersoninfoOld.getSecretLevel()) > Integer.parseInt(smrPersonInfoList.get(i).getSecretRelatedLevel())){
-                            continue;
-                        }
-                        regProcpersoninfo.setId(smrPersonInfoList.get(i).getProcPersonId());
-                        regProcpersoninfo.setSecretLevel(smrPersonInfoList.get(i).getSecretRelatedLevel());
-                        regProcpersoninfo.setSecretPost(smrPersonInfoList.get(i).getSecretRelatedPost());
-                        regProcpersoninfoList.add(regProcpersoninfo);
-                    }
-                    flag = regProcpersonInfoService.updateBatchById(regProcpersoninfoList);
-                }
             }
         }
         return flag;
@@ -219,19 +200,9 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     smrPersonInfo.setPersonState(dataMap.get("personState").toString());
                     smrPersonInfo.setSecretRelatedPost(dataMap.get("secretRelatedPost").toString());
                     if(StringUtils.isNotBlank(srLevel)){
-                        if(!Constants.SECRET_LEVEL_NAME[1].equals(srLevel) && !Constants.SECRET_LEVEL_NAME[2].equals(srLevel)
-                                && !Constants.SECRET_LEVEL_NAME[3].equals(srLevel)){
+                        if(!"核心".equals(srLevel) && !"重要".equals(srLevel) && !"一般".equals(srLevel)){
                             msg = "姓名："+dataMap.get("name")+",性别:"+dataMap.get("sex")+",出生年月:"+dataMap.get("birthDay");
                             msg += ",身份证号码:"+idCardNum+",职务（级）:"+dataMap.get("post")+",其涉密等级格式不正确;";
-                        }
-                        if(Constants.SECRET_LEVEL_NAME[1].equals(srLevel)){
-                            srLevel = Constants.SECRET_LEVEL_STATUS[1];
-                        }
-                        if(Constants.SECRET_LEVEL_NAME[2].equals(srLevel)){
-                            srLevel = Constants.SECRET_LEVEL_STATUS[2];
-                        }
-                        if(Constants.SECRET_LEVEL_NAME[3].equals(srLevel)){
-                            srLevel = Constants.SECRET_LEVEL_STATUS[3];
                         }
                     }
                     smrPersonInfo.setSecretRelatedLevel(srLevel);
@@ -845,7 +816,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 smrOldInfo.setStartDate(smrPersonInfo.getStartDate());
                 smrOldInfo.setFinishDate(smrPersonInfo.getFinishDate());
                 smrOldInfo.setImportYear(smrPersonInfo.getImportYear());
-
                 smrOldInfo.setPersonState(smrPersonInfo.getPersonState());
                 smrOldInfo.setPost(smrPersonInfo.getPost());
 
