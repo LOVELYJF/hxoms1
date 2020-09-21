@@ -57,16 +57,7 @@ public class OmsPubGroupController {
     @PostMapping("/insertPubGroup")
     public Result insertPubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            Map<String,String> resultMap = pubGroupService.insertPubGroup(pubGroupAndApplyList);
-            String code = resultMap.get("code");
-            String msg = resultMap.get("msg");
-            if(Constants.IS_NOT.equals(code)){
-                return Result.error(msg);
-            }
-            if(Constants.IS_YES.equals(code)){
-                return Result.success(msg);
-            }
-            return Result.error("操作失败,请联系管理员");
+            return pubGroupService.insertPubGroup(pubGroupAndApplyList);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -167,11 +158,7 @@ public class OmsPubGroupController {
     @PostMapping("/insertPerson")
     public Result insertPerson(String personId,String id,String b0100) {
         try {
-            String msg = pubGroupService.insertPerson(personId,id,b0100);
-            if(msg.length() > 0){
-                return Result.error(msg);
-            }
-            return Result.success();
+            return pubGroupService.insertPerson(personId,id,b0100);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");
@@ -263,12 +250,7 @@ public class OmsPubGroupController {
     @PostMapping("/sendTask")
     public Result sendTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,String bazt) {
         try {
-            String msg = pubGroupService.sendTask(pubGroupAndApplyList,bazt);
-            if(StringUtils.isBlank(msg)){
-                return Result.success();
-            }else{
-                return Result.error(msg);
-            }
+            return pubGroupService.sendTask(pubGroupAndApplyList,bazt);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");
@@ -281,16 +263,7 @@ public class OmsPubGroupController {
      */
     @PostMapping("/goToUploadApproval")
     public Result goToUploadApproval(String id) {
-        try {
-            String msg = pubGroupService.goToUploadApproval(id);
-            if(msg.length() > 0){
-                return Result.error(msg);
-            }
-            return Result.success();
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("操作失败");
-        }
+        return pubGroupService.goToUploadApproval(id);
     }
 
 
