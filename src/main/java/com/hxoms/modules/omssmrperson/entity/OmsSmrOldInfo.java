@@ -1,11 +1,13 @@
 package com.hxoms.modules.omssmrperson.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_smr_oldinfo", TableDescription="涉密人员原涉密信息表")
@@ -29,16 +31,19 @@ public class OmsSmrOldInfo {
 
     @ColumnAnnotation(FieldName = "SECRET_REVIEW_DATE",   FieldDescription="保密复审时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date secretReviewDate;
 
     @ColumnAnnotation(FieldName = "START_DATE",   FieldDescription="脱密期管理开始日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date startDate;
 
     @ColumnAnnotation(FieldName = "FINISH_DATE",   FieldDescription="脱密期管理终止日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date finishDate;
 
@@ -50,11 +55,13 @@ public class OmsSmrOldInfo {
 
     @ColumnAnnotation(FieldName = "QR_START_DATE",   FieldDescription="确认后脱密开始日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date qrStartDate;
 
     @ColumnAnnotation(FieldName = "QR_FINISH_DATE",   FieldDescription="确认后脱密终止日期")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date qrFinishDate;
 
@@ -63,6 +70,7 @@ public class OmsSmrOldInfo {
 
     @ColumnAnnotation(FieldName = "QR_TIME",   FieldDescription="确认时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date qrTime;
 

@@ -1,5 +1,7 @@
 package com.hxoms.modules.omssmrperson.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
@@ -120,7 +122,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         String b0101 = "";
 
         for (int i = 0; i < smrPersonInfoList.size(); i++) {
-            OmsSmrOldInfoVO imp = smrPersonInfoList.get(i);
+            OmsSmrOldInfoVO imp =  smrPersonInfoList.get(i);
             b0101 = imp.getB0101();
 
             // 保存涉密信息导入历史记录
@@ -848,14 +850,18 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 if (hssfRow == null) {
                     continue;
                 }
-                // 将单元格中的内容存入集合
-                OmsSmrOldInfoVO map = new OmsSmrOldInfoVO();
-                String msg = "";
                 //姓名
                 HSSFCell cell = hssfRow.getCell(1);
                 if (cell == null) {
                     continue;
                 }
+                //丢掉空行
+                if(StringUilt.stringIsNullOrEmpty(cell.getStringCellValue())) continue;
+
+                // 将单元格中的内容存入集合
+                OmsSmrOldInfoVO map = new OmsSmrOldInfoVO();
+                String msg = "";
+
                 map.setA0101(cell.getStringCellValue());
                 //性别
                 cell = hssfRow.getCell(2);
@@ -868,7 +874,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 if (cell == null) {
                     continue;
                 }
-                map.setBirthDay(cell.getStringCellValue());
+                String birthday=cell.getStringCellValue();
+                if(StringUilt.stringIsNullOrEmpty(birthday)==false)
+                    birthday=birthday.replaceAll("-",".");
+                map.setBirthDay(birthday);
                 //民族
                 cell = hssfRow.getCell(4);
                 if (cell == null) {
