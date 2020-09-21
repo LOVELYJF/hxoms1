@@ -3,15 +3,12 @@ package com.hxoms.modules.publicity.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.publicity.entity.OmsPubApply;
-import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OmsPubGroupAndApplyList;
 import com.hxoms.modules.publicity.entity.OmsPubGroupPreApproval;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Map;
 
 /**
