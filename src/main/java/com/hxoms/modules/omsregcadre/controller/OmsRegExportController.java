@@ -46,81 +46,6 @@ public class OmsRegExportController {
     private OmsEntryexitRecordService entryexitRecordService;
 
     /**
-     * 下载 省管干部登记备案表
-     * @param idStr
-     * @throws IOException
-     */
-   /* @PostMapping("/exportRfInfo")
-    @Transactional(rollbackFor=Exception.class)
-    @ApiOperation(value = "导出省管干部登记备案表", notes = "export", produces = "application/octet-stream")
-    public void exportRfInfo(String idStr) throws IOException {
-        HttpServletResponse response = DomainObjectUtil.getResponse();
-        try {
-            List<ExcelModelORPinfo> list = new ArrayList<>();
-            List<OmsRegProcbatchPerson> orpbplist = new ArrayList<>();
-            //查询登记备案信息根据备案id
-            List<OmsRegProcpersoninfo> rflist = mrpinfoService.selectListById(idStr);
-            //查询批次相关信息
-            OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
-            for (int i = 0; i < rflist.size(); i++) {
-                OmsRegProcpersoninfo info = rflist.get(i);
-                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
-                //为批次人员表复制相同字段的数据
-                BeanUtils.copyProperties(rflist, batchperson);
-                batchperson.setId(UUIDGenerator.getPrimaryKey());
-                batchperson.setRfId(info.getId());
-                batchperson.setBatchId(batchinfo.getBatchNo());
-                orpbplist.add(batchperson);
-                //为excel录入数据
-                ExcelModelORPinfo excelMode = new ExcelModelORPinfo();
-                //登记备案信息录入
-                BeanUtils.copyProperties(info, excelMode);
-                excelMode.setNo(i);
-                //批次相关信息录入
-                BeanUtils.copyProperties(batchinfo, excelMode);
-                list.add(excelMode);
-            }
-            int con = orpbatchService.batchinsertInfo(orpbplist);
-            if (con > 0) {
-                //修改批次表备案状态0未备案，1已备案，2已确认
-                batchinfo.setStatus("1");
-                int con1 = orpbatchService.updateOrpbatch(batchinfo);
-                if (con1 > 0) {
-                    mrpinfoService.updateRegProcpersoninfo(idStr);
-                }
-            }
-            //导出
-            String fileName = UtilDateTime.nowDate() + "省管干部登记备案表";
-            // 设置输出的格式
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.addHeader("Content-Disposition", "attachment; filename="
-                    + URLEncoder.encode(fileName + ".xlsx", "utf-8"));
-            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
-
-
-
-            //exportSheet2();
-            // WriteSheet writeSheet1 = EasyExcel.writerSheet(0, "表1（纸）").head(CustInfo.class).build();
-            WriteSheet writeSheet2 = EasyExcel.writerSheet(1, "表2（电子版）").head(ExcelModelORPinfo.class).build();
-            //  excelWriter.write(data, writeSheet1);
-            excelWriter.write(list, writeSheet2);
-            excelWriter.finish();
-        } catch (Exception var10) {
-            response.reset();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf-8");
-            Map<String, String> map = new HashMap();
-            map.put("status", "failure");
-            map.put("message", "下载文件失败" + var10.getMessage());
-            response.getWriter().println(JSON.toJSONString(map));
-        }
-
-
-    }
-*/
-
-    /**
      * 导出备案大检查列表信息
      * @param year
      * @throws IOException
@@ -202,7 +127,7 @@ public class OmsRegExportController {
             //查询登记备案信息根据备案id
             List<OmsRegProcpersoninfo> rflist = mrpinfoService.selectListById(idStr);
             //导出
-            String fileName = UtilDateTime.nowDate() + "省管干部登记备案表";
+            String fileName = UtilDateTime.nowDate() + "登记备案信息浏览导出";
             // 设置输出的格式
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/vnd.ms-excel");

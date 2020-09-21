@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsregcadre.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -103,32 +104,41 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
     @Override
     public Object determineRegFinish() {
+        UserInfo user = UserInfoUtil.getUserInfo();
         QueryWrapper<OmsRegProcbatch> queryWrapper = new QueryWrapper<OmsRegProcbatch>();
         //状态：待备案
         queryWrapper.eq("status","0");
 
         //查询待备案批次
         OmsRegProcbatch regbatch = baseMapper.selectOne(queryWrapper);
-        String batchId = regbatch.getId();
+        if (regbatch!=null){
+            //根据批次id查询该批次对应的人员a0100
+            List<String> rfIds = regbatchPersonMapper.selectRfIds(regbatch.getId());
+            UpdateWrapper<OmsRegProcpersoninfo> personInfoWrapper = new UpdateWrapper<OmsRegProcpersoninfo>();
+            personInfoWrapper.in("ID",rfIds);
 
-        //根据批次id查询该批次对应的人员a0100
-        List<String> a0100s = regbatchPersonMapper.selectA0100s(batchId);
-        QueryWrapper<OmsRegProcpersoninfo> personInfoWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
-        personInfoWrapper.in("A0100",a0100s);
-
-        OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
-        //入库标识  新增U  修改I  撤消D
-        omsreginfo.setInboundFlag("I");
-        //备案状态  0未备案，1已备案，2已确认
-        omsreginfo.setRfStatus("0");
-        //验收状态  1已验收，0待验收
-        omsreginfo.setCheckStatus("0");
-        omsreginfo.setModifyTime(new Date());
-        omsreginfo.setModifyUser("测试");
-
-        //根据a0100s修改人员备案状态
-        int con = regpersonInfoMapper.update(omsreginfo,personInfoWrapper);
-        return con;
+            OmsRegProcpersoninfo omsreginfo = new OmsRegProcpersoninfo();
+            //入库标识  新增U  修改I  撤消D
+            omsreginfo.setInboundFlag("I");
+            //验收状态  1已验收，0待验收
+            omsreginfo.setCheckStatus("1");
+            omsreginfo.setModifyTime(new Date());
+            omsreginfo.setModifyUser(user.getId());
+            int con =0;
+            //根据备案ID修改人员备案状态
+            con = regpersonInfoMapper.update(omsreginfo,personInfoWrapper);
+            if (con > 0){
+                UpdateWrapper<OmsRegProcbatchPerson> batchpersonWrapper = new UpdateWrapper<OmsRegProcbatchPerson>();
+                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
+                //验收状态  1已验收，0待验收
+                batchperson.setCheckStatus("1");
+                batchpersonWrapper.in("RF_ID",rfIds);
+                con = regbatchPersonMapper.update(batchperson,batchpersonWrapper);
+            }
+            return con;
+        }else{
+            throw new CustomMessageException("当前不存在未备案批次，请新先登记备案");
+        }
     }
 
     @Override

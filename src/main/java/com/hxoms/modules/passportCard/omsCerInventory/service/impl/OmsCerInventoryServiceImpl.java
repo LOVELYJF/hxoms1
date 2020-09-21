@@ -1,13 +1,16 @@
 package com.hxoms.modules.passportCard.omsCerInventory.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.*;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
 import com.hxoms.modules.passportCard.omsCerInventory.mapper.OmsCerInventoryMapper;
@@ -66,7 +69,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
-		map.put("cardStatus", "0");
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map);       //查询正常状态且正常保管或已取出状态的证照信息
 
 		//将查询结果保存到盘点表中
@@ -93,7 +96,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			}else {
 				cfCertificate.setCabinetNum("");
 				cfCertificate.setPlace("");
-				cfCertificate.setSaveStatus("1");           //全部将状态置为已取出
+				cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());           //全部将状态置为已取出
 				int count1 = cfCertificateMapper.updateById(cfCertificate);
 				if(count1 < 1){
 					throw new CustomMessageException("清空该证件的机柜位置失败");
@@ -119,7 +122,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		//盘点后重新查询证照状态
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
-		map.put("cardStatus", "0");
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		//查询证照主键
 		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
@@ -197,7 +200,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	public void getCerInventoryResultForCabinetOut(OmsCerInventory omsCerInventory, HttpServletResponse response) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
-		map.put("cardStatus", "0");
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -261,7 +264,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)list.get(i).get("zjlx"))));
@@ -315,7 +318,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		result.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		result.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
-		result.put("cardStatus", "0");
+		result.put("cardStatus", CardStatusEnum.ZC.getCode());
 		List<Map<String,Object>>  inventoryList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(inventoryList.size() > 0){
 			return inventoryList;
@@ -325,8 +328,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
-		map.put("cardStatus", "0");
-		map.put("isCounter", "1");              //取柜台的证照
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
+		map.put("isCounter", SurelyWayEnum.COUNTER.getCode());              //取柜台的证照
 		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map); //查询号码范围内正常状态且正常保管或已取出状态的证照信息
 
 		//将查询结果保存到盘点表中
@@ -343,7 +346,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			omsCerInventory1.setCardStatus(cfCertificate.getCardStatus());
 			omsCerInventory1.setCounterNum(cfCertificate.getCounterNum());
 			omsCerInventory1.setBeforeInventorySaveStatus(cfCertificate.getSaveStatus());
-			omsCerInventory1.setAfterInventorySaveStatus("1");                                 //将所有保管后状态置为已取出
+			omsCerInventory1.setAfterInventorySaveStatus(SaveStatusEnum.YQC.getCode());                                //将所有保管后状态置为已取出
 			omsCerInventory1.setInventoryDate(UtilDateTime.formatCNMonth(new Date()));         //盘点年月
 			omsCerInventory1.setCreateTime(new Date());
 			omsCerInventory1.setCreateUser(UserInfoUtil.getUserInfo().getId());
@@ -401,15 +404,15 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Integer afterTotal = 0;
 
 		for(OmsCerInventory omsCerInventory : list){
-			if(omsCerInventory.getBeforeInventorySaveStatus().equals("0")){
+			if(omsCerInventory.getBeforeInventorySaveStatus().equals(SaveStatusEnum.ZCBG.getCode())){
 				beforeNormal++;
-			}else if(omsCerInventory.getBeforeInventorySaveStatus().equals("1")){
+			}else if(omsCerInventory.getBeforeInventorySaveStatus().equals(SaveStatusEnum.YQC.getCode())){
 				beforeTakeOut++;
 			}
 
-			if(omsCerInventory.getAfterInventorySaveStatus().equals("0")){
+			if(omsCerInventory.getAfterInventorySaveStatus().equals(SaveStatusEnum.ZCBG.getCode())){
 				afterNormal++;
-			}else if(omsCerInventory.getAfterInventorySaveStatus().equals("1")){
+			}else if(omsCerInventory.getAfterInventorySaveStatus().equals(SaveStatusEnum.YQC.getCode())){
 				afterTakeOut++;
 			}
 		}
@@ -439,7 +442,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
-		map.put("cardStatus", "0");
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -503,7 +506,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) list.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) list.get(i).get("name"));
-				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(3).setCellValue(String.valueOf(list.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) list.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) list.get(i).get("post"));
 				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)list.get(i).get("zjlx"))));
@@ -563,15 +566,15 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Integer afterTotal = 0;
 
 		for(Map<String,Object> map1 : resultList){
-			if(map1.get("beforeInventorySaveStatus").toString().equals("0")){
+			if(map1.get("beforeInventorySaveStatus").toString().equals(SaveStatusEnum.ZCBG.getCode())){
 				beforeNormal++;
-			}else if(map1.get("beforeInventorySaveStatus").toString().equals("1")){
+			}else if(map1.get("beforeInventorySaveStatus").toString().equals(SaveStatusEnum.YQC.getCode())){
 				beforeTakeOut++;
 			}
 
-			if(map1.get("afterInventorySaveStatus").toString().equals("0")){
+			if(map1.get("afterInventorySaveStatus").toString().equals(SaveStatusEnum.ZCBG.getCode())){
 				afterNormal++;
-			}else if(map1.get("afterInventorySaveStatus").toString().equals("1")){
+			}else if(map1.get("afterInventorySaveStatus").toString().equals(SaveStatusEnum.YQC.getCode())){
 				afterTakeOut++;
 			}
 		}
@@ -668,7 +671,7 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				row.createCell(0).setCellValue(i + 1);
 				row.createCell(1).setCellValue((String) resultList.get(i).get("workUnit"));
 				row.createCell(2).setCellValue((String) resultList.get(i).get("name"));
-				row.createCell(3).setCellValue(String.valueOf(resultList.get(i).get("sex")).equals("1") ? "男" : "女");
+				row.createCell(3).setCellValue(String.valueOf(resultList.get(i).get("sex")).equals(SexEnum.MALE.getCode()) ? "男" : "女");
 				row.createCell(4).setCellValue(UtilDateTime.formatCNDate((Date) resultList.get(i).get("csrq")));
 				row.createCell(5).setCellValue((String) resultList.get(i).get("post"));
 				row.createCell(6).setCellValue(CerTypeUtil.getCnTypeLicence(Integer.parseInt((String)resultList.get(i).get("zjlx"))));
@@ -739,21 +742,21 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask]
+	 * @Param: [omsCerGetTask,mode]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask) {
+	public void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask,String mode) {
 		omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
 		//查询证照表的ID
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 		queryWrapper.eq("ZJHM", omsCerGetTask.getZjhm());
 		CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
 		omsCerGetTask.setCerId(cfCertificate.getId());
-		omsCerGetTask.setGetStatus("1");    //任务表中状态置为已领取
-		omsCerGetTask.setDataSource("6");
+		omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());    //任务表中状态置为已领取
+		omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_6.getCode());
 		omsCerGetTask.setCreator(UserInfoUtil.getUserInfo().getId());
 		omsCerGetTask.setCreateTime(new Date());
 		int count = omsCerGetTaskMapper.insert(omsCerGetTask);
@@ -767,8 +770,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		omsCerExitEntryRepertory.setName(omsCerGetTask.getName());
 		omsCerExitEntryRepertory.setZjhm(omsCerGetTask.getZjhm());
 		omsCerExitEntryRepertory.setZjlx(omsCerGetTask.getZjlx());
-		omsCerExitEntryRepertory.setStatus("0");
-		omsCerExitEntryRepertory.setMode("0");
+		omsCerExitEntryRepertory.setStatus(InOutStatus.OUT_STATUS.getCode());
+		omsCerExitEntryRepertory.setMode(mode);
 
 		omsCerExitEntryRepertory.setOperator(UserInfoUtil.getUserInfo().getId());
 		omsCerExitEntryRepertory.setOperateTime(new Date());

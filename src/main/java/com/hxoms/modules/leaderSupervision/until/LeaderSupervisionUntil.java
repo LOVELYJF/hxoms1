@@ -450,7 +450,7 @@ public class LeaderSupervisionUntil {
         //设置标题样式
         HSSFCellStyle titleStyle=  getTitleStyle(wb);
         //设置单元格样式
-        HSSFCellStyle cellStyle= getCellStyle(wb);
+        //HSSFCellStyle cellStyle= getCellStyle(wb);
         int f=0;
         for (HSSFSheet sheet:sheetList) {
             f++;
@@ -460,13 +460,11 @@ public class LeaderSupervisionUntil {
                 row.setHeight((short)250);
                 Cell cell1 = row.createCell(0);
                 cell1.setCellValue("国家工作人员登记备案表");
-                cell1.setCellStyle(titleStyle);
                 //创建第二行
                 Row row2 = sheet.createRow(1);
                 row.setHeight((short)250);
                 Cell cell2 = row2.createCell(0);
                 cell2.setCellValue("报备单位名称（盖章）：");
-                cell2.setCellStyle(cellStyle);
 
 
                 CellRangeAddress regionNum1 = new CellRangeAddress(0,0 , 0, listV.size()-1);
@@ -478,12 +476,12 @@ public class LeaderSupervisionUntil {
                 Cell cell = null;
 
                 //创建标题
-                for (int i = 2; i < listV.size(); i++) {
+                for (int i = 0; i < listV.size(); i++) {
 
                     cell = rowNum3.createCell(i);
                     cell.setCellValue(listV.get(i).toString());
 
-                    cell.setCellStyle(titleStyle);
+                    //cell.setCellStyle(titleStyle);
 
                     //自动设置列宽
                     sheet.setColumnWidth(i, 512 * 4);
@@ -518,17 +516,27 @@ public class LeaderSupervisionUntil {
 
                             }
                             cell3.setCellValue(k);
-                            cell3.setCellStyle(cellStyle);
+                            //cell3.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j, k, sheet, currWidth);
                         }else {
                             String m = "";
+                            if (j==13){
+                                m=batchinfo.getSubmitUcategory();
+                            }else if (j==14){
+                                m=batchinfo.getSubmitUcontacts();
+                            }else if (j==15){
+                                m=batchinfo.getSubmitPhone();
+                            }else if (j==16){
+                                m=batchinfo.getBatchNo();
+                            }
                             cell3.setCellValue(m);
-                            cell3.setCellStyle(cellStyle);
+                            //cell3.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j,m,sheet,currWidth);
 
                         }
+
                     }
                 }
 
@@ -539,11 +547,11 @@ public class LeaderSupervisionUntil {
                 Row nextrow1 = sheet.createRow(dataList.size()+3); //第i行
                 Cell celladdOther1 =  nextrow1.createCell(0);
                 celladdOther1.setCellValue("本次备案共  页 人（首页填写）             此为第  页                              报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
-                celladdOther1.setCellStyle(cellStyle);
+                //celladdOther1.setCellStyle(cellStyle);
                 Row nextrow2 = sheet.createRow(dataList.size()+3+1); //第i行
                 Cell celladdOther2 =  nextrow2.createCell(0);
                 celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                        联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nj");
-                celladdOther2.setCellStyle(cellStyle);
+                //celladdOther2.setCellStyle(cellStyle);
             }
             if (f==2){
                 //创建第一行
@@ -555,7 +563,7 @@ public class LeaderSupervisionUntil {
                     cell = row.createCell(i);
                     cell.setCellValue(listV.get(i).toString());
 
-                    cell.setCellStyle(titleStyle);
+                    //cell.setCellStyle(titleStyle);
 
                     //自动设置列宽
                     sheet.setColumnWidth(i, 512 * 4);
@@ -591,13 +599,13 @@ public class LeaderSupervisionUntil {
 
                             }
                             cell2.setCellValue(k);
-                            cell2.setCellStyle(cellStyle);
+                           // cell2.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j, k, sheet, currWidth);
                         }else {
                             String m = "";
                             cell2.setCellValue(m);
-                            cell2.setCellStyle(cellStyle);
+                            //cell2.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j,m,sheet,currWidth);
 
@@ -660,6 +668,28 @@ public class LeaderSupervisionUntil {
 
         return  style;
     }
+
+
+    //设置标题表单样式
+    public static HSSFCellStyle getTitlesStyle(HSSFWorkbook workbook){
+
+
+
+        HSSFCellStyle style = workbook.createCellStyle();
+
+
+        style.setAlignment(HorizontalAlignment.CENTER); //居中
+
+        //设置字体
+        HSSFFont font = workbook.createFont();
+        font.setFontName("仿宋_GB2312");
+        font.setBold(true);//字体加粗
+
+        style.setFont(font);
+
+        return  style;
+    }
+
     //设置单元格样式
     public static HSSFCellStyle getCellStyle(HSSFWorkbook workbook){
         

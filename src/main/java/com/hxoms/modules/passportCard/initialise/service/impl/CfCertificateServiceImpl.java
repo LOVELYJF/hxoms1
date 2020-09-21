@@ -212,12 +212,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if(certificateGa!=null){
             //证照验证
             validateCerInfo(certificateGa,cfCertificate);
-            //设置存储方式
-            setStoreMode(certificateGa,userInfo);
             certificateGa.setSaveStatus(SaveStatusEnum.YQC.getCode());
             certificateGa.setZjxs(cfCertificate.getZjxs());
             certificateGa.setUpdater(userInfo.getId());
             certificateGa.setUpdateTime(new Date());
+            //设置存储方式
+            setStoreMode(certificateGa,userInfo);
             if(cfCertificateMapper.updateById(certificateGa)==0)
                 throw new CustomMessageException("证照验证保存失败！");
             certificateGa=cfCertificateMapper.selectById(certificateGa.getId());
@@ -476,6 +476,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         cfCertificate.setCardStatus(CardStatusEnum.YYZ.getCode());
         cfCertificate.setUpdater(userInfo.getId());
         cfCertificate.setUpdateTime(new Date());
+        cfCertificate.setZjxs(cfCertificateMapper.selectById(cfCertificate.getId()).getZjxs());
         //通过接口获取证照存储位置，优先选择证照机存储，否则柜台存储。
         setStoreMode(cfCertificate,userInfo);
         int result = cfCertificateMapper.updateById(cfCertificate);
@@ -550,7 +551,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                 throw new CustomMessageException("公安或证照的"+unit+"为空，验证失败，请核实！");
             if(!valueGa.equals(value)){
                 //格式不能修改，耶稣说的。
-                stringBuffer.append("公安"+unit+"：").append(valueGa).append("and").append("护照"+unit+"：").append(value);
+                stringBuffer.append("公安"+unit+"：").append(valueGa).append("and").append("证照"+unit+"：").append(value);
                 stringBuffer.append("or");
             }
         }

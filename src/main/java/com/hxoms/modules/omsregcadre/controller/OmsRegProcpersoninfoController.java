@@ -1,6 +1,5 @@
 package com.hxoms.modules.omsregcadre.controller;
 import com.github.pagehelper.PageInfo;
-import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -14,8 +13,6 @@ import com.hxoms.modules.omsregcadre.mapper.OmsBaseinfoConfigMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -40,7 +37,6 @@ public class OmsRegProcpersoninfoController {
     private final static String xlsx = "xlsx";
     @Autowired
     private OmsRegProcpersonInfoService mrpinfoService;
-
     @Autowired
     private SysDictItemMapper sysDictItemMapper;
     @Autowired
@@ -263,7 +259,12 @@ public class OmsRegProcpersoninfoController {
     @PostMapping("/readOmsDataGA")
     private List<OmsRegProcpersoninfo> readOmsDataGA(MultipartFile file) throws IOException, ParseException {
         //缓存行政区划
-        HashMap<String,SysDictItem> hashMapXZQH= OmsCommonUtil.CacheDictItem("ZB01",false) ;
+        List<SysDictItem> xzqhs = sysDictItemMapper.selectItemCodeByDictCode("ZB01");
+        HashMap<String,SysDictItem> hashMapXZQH=new HashMap<>();
+        for (SysDictItem xzqh:xzqhs
+             ) {
+            hashMapXZQH.put(xzqh.getItemName(),xzqh);
+        }
 
         //缓存职务映射关系
         Map<String, Object> params = new HashMap<String, Object>();
@@ -410,30 +411,6 @@ public class OmsRegProcpersoninfoController {
         }
         return workbook;
     }
-
-    private String getCellValue(Cell cell) {
-        String cellValue="";
-        if (cell.getCellTypeEnum() == CellType.NUMERIC) {
-            if (HSSFDateUtil.isCellDateFormatted(cell)) {
-                cellValue = DateFormatUtils.format(cell.getDateCellValue(), "yyyy-MM-dd");
-            } else {
-                NumberFormat nf = NumberFormat.getInstance();
-                cellValue = String.valueOf(nf.format(cell.getNumericCellValue())).replace(",", "");
-            }
-        } else if (cell.getCellTypeEnum() == CellType.STRING) {
-            cellValue = String.valueOf(cell.getStringCellValue());
-        } else if (cell.getCellTypeEnum() == CellType.BOOLEAN) {
-            cellValue = String.valueOf(cell.getBooleanCellValue());
-        } else if (cell.getCellTypeEnum() == CellType.ERROR) {
-            cellValue = "错误类型";
-        } else {
-            cellValue = "";
-        }
-        return cellValue;
-    }
-
-
-
 
 
     /**
