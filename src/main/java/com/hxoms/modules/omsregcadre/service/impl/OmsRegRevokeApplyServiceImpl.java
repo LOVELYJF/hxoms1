@@ -40,15 +40,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Override
     public Result searchRevokeRegPerson(){
         StringBuffer msg = new StringBuffer();
-        //且不在撤销登记备案申请表的人员（排除已登记备案状态）
-        List<String> rfIds = baseMapper.selectrfIdList();
-        OmsRegProcpersoninfoIPagParam param = new OmsRegProcpersoninfoIPagParam();
-        param.setDataType("1");
-        if (rfIds!=null && rfIds.size()>0){
-            param.setIds(rfIds);
-        }
-        //搜搜可撤销登记备案人员
-        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson(param);
+        //搜搜可撤销登记备案人员且不在撤销登记备案申请表的人员（排除已登记备案状态）
+        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson();
         if (reginfolist!=null && reginfolist.size()>0){
             for (int i=0;i<reginfolist.size();i++){
                 OmsRegProcpersoninfo info = reginfolist.get(i);

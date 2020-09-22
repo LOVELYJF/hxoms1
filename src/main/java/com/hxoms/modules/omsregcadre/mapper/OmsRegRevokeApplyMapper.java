@@ -8,8 +8,5 @@ import java.util.List;
 
 public interface OmsRegRevokeApplyMapper extends BaseMapper<OmsRegRevokeapply> {
 
-
-    List<String> selectrfIdList();
-
     List<OmsRegRevokeapply> selectRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam);
 }
