@@ -382,8 +382,13 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		 }catch (StringIndexOutOfBoundsException e){
 		 	throw new CustomMessageException("文书号格式错误，正确的格式例如：琼纪琼监立通[2020]1号");
 		 }
+		 Integer num = null;
+		 try {
+			 num = Integer.parseInt(no);
+		 }catch (Exception e){
+			 throw new CustomMessageException("文书号格式错误，正确的格式例如：琼纪琼监立通[2020]1号");
+		 }
 
-		 Integer num = Integer.parseInt(no);
 		 if(UtilDateTime.nowYear().equals(yearNum)){
 			 //根据当前年份查询数据库中的文书号数量
 			 QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
@@ -400,7 +405,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 				 }
 			 }
 		 }else {
-			 throw new CustomMessageException("立案年份不正确");
+			 throw new CustomMessageException("立案年份不正确,正确的格式例如：琼纪琼监立通[" + UtilDateTime.nowYear() + "]1号");
 		 }
 	 }
 

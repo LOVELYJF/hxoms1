@@ -71,4 +71,7 @@
     WHERE
         t.IS_MATCHING != '1'
   </select>
+  <delete id="deleteByB0100AndYear" parameterType="java.lang.String">
+    delete from oms_smr_recordinfo where b0100=#{b0100} and IMPORT_YEAR=#{importYear}
+  </delete>
 </mapper>

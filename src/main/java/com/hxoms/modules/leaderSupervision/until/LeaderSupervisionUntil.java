@@ -4,27 +4,24 @@ import com.github.pagehelper.util.StringUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
-import com.hxoms.general.select.entity.SqlVo;
-import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
-import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
-import io.swagger.models.auth.In;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.record.ExtendedFormatRecord;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.xhtmlrenderer.css.parser.property.PrimitivePropertyBuilders;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -448,23 +445,26 @@ public class LeaderSupervisionUntil {
         sheetList.add(sheet0);
         sheetList.add(sheet1);
         //设置标题样式
-        HSSFCellStyle titleStyle=  getTitleStyle(wb);
-        //设置单元格样式
-        //HSSFCellStyle cellStyle= getCellStyle(wb);
+        HSSFCellStyle titleStyleOne=  getTitlesStyleOne(wb);
+        HSSFCellStyle titleStyleTwo=  getTitlesStyleTwo(wb);
+        HSSFCellStyle titleStyleThree=  getTitlesStyleThree(wb);
+        HSSFCellStyle titleStyleFour=  getTitlesStyleFour(wb);
         int f=0;
         for (HSSFSheet sheet:sheetList) {
             f++;
             if (f==1){
                 //创建第一行
                 Row row = sheet.createRow(0);
-                row.setHeight((short)250);
                 Cell cell1 = row.createCell(0);
+                cell1.setCellStyle(titleStyleOne);
                 cell1.setCellValue("国家工作人员登记备案表");
+                row.setHeightInPoints(47);
                 //创建第二行
                 Row row2 = sheet.createRow(1);
-                row.setHeight((short)250);
                 Cell cell2 = row2.createCell(0);
+                cell2.setCellStyle(titleStyleTwo);
                 cell2.setCellValue("报备单位名称（盖章）：");
+                row2.setHeightInPoints(39);;
 
 
                 CellRangeAddress regionNum1 = new CellRangeAddress(0,0 , 0, listV.size()-1);
@@ -473,6 +473,7 @@ public class LeaderSupervisionUntil {
                 sheet.addMergedRegion(regionNum2);
                 //创建第三行
                 Row rowNum3 = sheet.createRow(2);
+                rowNum3.setHeightInPoints(40);
                 Cell cell = null;
 
                 //创建标题
@@ -480,11 +481,15 @@ public class LeaderSupervisionUntil {
 
                     cell = rowNum3.createCell(i);
                     cell.setCellValue(listV.get(i).toString());
-
-                    //cell.setCellStyle(titleStyle);
-
+                    cell.setCellStyle(titleStyleThree);
                     //自动设置列宽
-                    sheet.setColumnWidth(i, 512 * 4);
+                    if (i==5 || i==15 || i==16){
+                        sheet.setColumnWidth(i,256*2);
+                    }else{
+                        sheet.setColumnWidth(i, 512 * 3);
+                    }
+
+
                 }
                 //填充内容
 
@@ -496,14 +501,15 @@ public class LeaderSupervisionUntil {
                 for(int i=0;i<dataList.size();i++){
 
                     Row nextrow = sheet.createRow(i+3); //第i行
+                    nextrow.setHeightInPoints(25);;
                     Cell cell3  =nextrow.createCell(0);
                     cell3.setCellValue(String.valueOf(i+1));
-
-
+                    cell3.setCellStyle(titleStyleFour);
 
                     Map temp = dataList.get(i);
                     for (int j = 1; j < listK.size(); j++) {
-                        cell3  =nextrow.createCell(j);
+                        cell3=nextrow.createCell(j);
+                        cell3.setCellStyle(titleStyleFour);
                         if (temp.get(listK.get(j)) != null) {
 
                             k = temp.get(listK.get(j)).toString();
@@ -513,10 +519,8 @@ public class LeaderSupervisionUntil {
                                 if (k.length() > 10) {
                                     k = k.substring(0, 10);
                                 }
-
                             }
                             cell3.setCellValue(k);
-                            //cell3.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j, k, sheet, currWidth);
                         }else {
@@ -531,7 +535,7 @@ public class LeaderSupervisionUntil {
                                 m=batchinfo.getBatchNo();
                             }
                             cell3.setCellValue(m);
-                            //cell3.setCellStyle(cellStyle);
+                            cell3.setCellStyle(titleStyleFour);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j,m,sheet,currWidth);
 
@@ -540,33 +544,36 @@ public class LeaderSupervisionUntil {
                     }
                 }
 
+
                 CellRangeAddress regionNum3 = new CellRangeAddress(dataList.size()+3,dataList.size()+3 , 0, listV.size()-1);
                 CellRangeAddress regionNum4 = new CellRangeAddress(dataList.size()+3+1,dataList.size()+3+1 , 0, listV.size()-1);
+                HSSFCellStyle titleStyleFive=  getTitlesStyleFive(wb,regionNum3);
                 sheet.addMergedRegion(regionNum3);
                 sheet.addMergedRegion(regionNum4);
                 Row nextrow1 = sheet.createRow(dataList.size()+3); //第i行
+                nextrow1.setHeightInPoints(30);
                 Cell celladdOther1 =  nextrow1.createCell(0);
-                celladdOther1.setCellValue("本次备案共  页 人（首页填写）             此为第  页                              报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
-                //celladdOther1.setCellStyle(cellStyle);
+                celladdOther1.setCellValue("本次备案共  页 "+dataList.size()+" 人（首页填写）             此为第 1 页                           报送时间（出入境管理部门填写） ：年月日\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
+                celladdOther1.setCellStyle(titleStyleFive);
                 Row nextrow2 = sheet.createRow(dataList.size()+3+1); //第i行
+                nextrow2.setHeightInPoints(30);
                 Cell celladdOther2 =  nextrow2.createCell(0);
-                celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                        联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nj");
-                //celladdOther2.setCellStyle(cellStyle);
+                celladdOther2.setCellValue("备案单位负责人（首页填写）：                   联系人：                           联系电话：\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n");
+                celladdOther2.setCellStyle(titleStyleFive);
             }
             if (f==2){
                 //创建第一行
                 Row row = sheet.createRow(0);
+                row.setHeightInPoints(40);;
                 Cell cell = null;
 
                 //创建标题
                 for (int i = 0; i < listV.size(); i++) {
                     cell = row.createCell(i);
                     cell.setCellValue(listV.get(i).toString());
-
-                    //cell.setCellStyle(titleStyle);
-
+                    cell.setCellStyle(titleStyleThree);
                     //自动设置列宽
-                    sheet.setColumnWidth(i, 512 * 4);
+                    sheet.autoSizeColumn((short)i);
                 }
 
                 //填充内容
@@ -579,33 +586,28 @@ public class LeaderSupervisionUntil {
                 for(int i=0;i<dataList.size();i++){
 
                     Row nextrow = sheet.createRow(i+1); //第i行
+                    nextrow.setHeightInPoints(25);;
                     Cell cell2  =nextrow.createCell(0);
                     cell2.setCellValue(String.valueOf(i+1));
-
-
-
+                    cell2.setCellStyle(titleStyleFour);
                     Map temp = dataList.get(i);
                     for (int j = 1; j < listK.size(); j++) {
                         cell2  =nextrow.createCell(j);
+                        cell2.setCellStyle(titleStyleFour);
                         if (temp.get(listK.get(j)) != null) {
-
                             k = temp.get(listK.get(j)).toString();
-
                             s = (listK.get(j).toString()).toLowerCase();
                             if (s.indexOf("Time") != -1 || s.indexOf("Date") != -1 ) {
                                 if (k.length() > 10) {
                                     k = k.substring(0, 10);
                                 }
-
                             }
                             cell2.setCellValue(k);
-                           // cell2.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j, k, sheet, currWidth);
                         }else {
                             String m = "";
                             cell2.setCellValue(m);
-                            //cell2.setCellStyle(cellStyle);
                             int currWidth = sheet.getColumnWidth(j);
                             autoSizeColumnOne(j,m,sheet,currWidth);
 
@@ -634,17 +636,16 @@ public class LeaderSupervisionUntil {
 
 
         if(StringUtil.isEmpty(k)){
-            sheet.setColumnWidth(j,512*8);
+            sheet.setColumnWidth(j,512*4);
         }else{
             //再次设置列宽  只增 不减
             if(k.length()*512>currWidth){
 
-                sheet.setColumnWidth(j,k.length()*512); //调整第i列宽度
+                sheet.setColumnWidth(j,k.length()*256); //调整第i列宽度
             }
 
         }
-
-//           sheet.autoSizeColumn((short)j);
+         sheet.autoSizeColumn((short)j);
 
     }
 
@@ -670,25 +671,82 @@ public class LeaderSupervisionUntil {
     }
 
 
-    //设置标题表单样式
-    public static HSSFCellStyle getTitlesStyle(HSSFWorkbook workbook){
-
-
-
-        HSSFCellStyle style = workbook.createCellStyle();
-
-
-        style.setAlignment(HorizontalAlignment.CENTER); //居中
-
-        //设置字体
+    //设置备案表标题表单样式
+    public static HSSFCellStyle getTitlesStyleOne(HSSFWorkbook workbook){
         HSSFFont font = workbook.createFont();
-        font.setFontName("仿宋_GB2312");
+        HSSFCellStyle style = workbook.createCellStyle();
+        font.setFontHeightInPoints((short) 18);// 字号
         font.setBold(true);//字体加粗
-
+        font.setFontName("宋体");
         style.setFont(font);
-
+        style.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+        style.setVerticalAlignment(style.getVerticalAlignmentEnum().CENTER);//垂直居中
         return  style;
     }
+
+
+    //设置备案表表单样式
+    public static HSSFCellStyle getTitlesStyleTwo(HSSFWorkbook workbook){
+        HSSFFont font = workbook.createFont();
+        HSSFCellStyle style = workbook.createCellStyle();
+        font.setFontHeightInPoints((short) 11);// 字号
+        font.setFontName("宋体");
+        style.setFont(font);
+        style.setAlignment(HorizontalAlignment.LEFT);// 水平居中
+        style.setVerticalAlignment(style.getVerticalAlignmentEnum().CENTER);//垂直居中
+        return  style;
+    }
+
+    //设置备案表表头样式
+    public static HSSFCellStyle getTitlesStyleThree(HSSFWorkbook workbook){
+        HSSFFont font = workbook.createFont();
+        HSSFCellStyle style = workbook.createCellStyle();
+        font.setFontHeightInPoints((short) 11);// 字号
+        font.setFontName("宋体");
+        font.setBold(true);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setFont(font);
+        style.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+        style.setVerticalAlignment(style.getVerticalAlignmentEnum().CENTER);//垂直居中
+        return  style;
+    }
+
+
+    //设置备案表表头样式
+    public static HSSFCellStyle getTitlesStyleFour(HSSFWorkbook workbook){
+        HSSFFont font = workbook.createFont();
+        HSSFCellStyle style = workbook.createCellStyle();
+        font.setFontHeightInPoints((short) 10);// 字号
+        font.setFontName("宋体");
+        // 设置边框
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setFont(font);
+        style.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+        style.setVerticalAlignment(style.getVerticalAlignmentEnum().CENTER);//垂直居中
+        return  style;
+    }
+
+
+    //设置备案表表头样式
+    public static HSSFCellStyle getTitlesStyleFive(HSSFWorkbook workbook,CellRangeAddress range){
+        HSSFFont font = workbook.createFont();
+        HSSFCellStyle style = workbook.createCellStyle();
+        font.setFontHeightInPoints((short) 11);// 字号
+        font.setFontName("宋体");
+        // 设置边框
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setFont(font);
+        style.setAlignment(HorizontalAlignment.LEFT);// 水平居中
+        style.setVerticalAlignment(style.getVerticalAlignmentEnum().CENTER);//垂直居中
+        return  style;
+    }
+
 
     //设置单元格样式
     public static HSSFCellStyle getCellStyle(HSSFWorkbook workbook){

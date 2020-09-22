@@ -21,4 +21,13 @@ public interface OmsSmrRecordInfoService extends IService<OmsSmrRecordInfo>{
     List<OmsSmrRecordInfo> getMatchingPerson();
     //导出已匹配人员列表
     boolean exportMatchingPerson(HttpServletResponse response);
+    /**
+    * @description:通过机构ID和导入年份删除已经导入过的数据
+    * @author:杨波
+    * @date:2020-09-22
+    *  * @param b0100 机构ID
+     *  @param importYear 导入年份
+     * @return:
+    **/
+    void deleteByB0100AndYear(String b0100,String importYear);
 }

@@ -109,7 +109,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         }else{
             QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
             cfCertificate.eq("OMS_ID", procpersonId)
-                    .eq("IS_VALID", 0);
+                    .eq("CARD_STATUS", 0);
             List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
             omsPriApplyVO.setCfCertificates(cfCertificates);
         }
@@ -279,7 +279,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
         //证件信息
         QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
         cfCertificate.eq("OMS_ID", omsPriApplyVO.getProcpersonId())
-                .eq("IS_VALID", 0);
+                .eq("CARD_STATUS", 0);
         List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
         omsPriApplyVO.setCfCertificates(cfCertificates);
         //国家详情
@@ -494,7 +494,7 @@ public class OmsPriApplyServiceImpl implements OmsPriApplyService {
             queryWrapper.clear();
             queryWrapper.eq("OMS_ID", procpersonId)
                     .eq("ZJLX", item.getZjlx())
-                    .eq("IS_VALID", 0);
+                    .eq("CARD_STATUS", 0);
             CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
             if (cfCertificate != null){
                 //半年后是否失效

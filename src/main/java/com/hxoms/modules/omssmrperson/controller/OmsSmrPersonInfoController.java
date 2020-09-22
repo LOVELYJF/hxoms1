@@ -1,5 +1,9 @@
 package com.hxoms.modules.omssmrperson.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
@@ -50,11 +54,14 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导入涉密人员信息
-     * @param smrPersonInfoList
+     * @param importYear
+     * @param b0100
+     * @param smrPersonInfo
      */
     @PostMapping("/insertSmrPersonInfo")
     public Result insertSmrPersonInfo(String importYear, String b0100,
-                                      @RequestBody List<OmsSmrOldInfoVO> smrPersonInfoList) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException, InvocationTargetException {
+                                      String smrPersonInfo) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException, InvocationTargetException {
+        List<OmsSmrOldInfoVO> smrPersonInfoList= JSONObject.parseArray (smrPersonInfo,OmsSmrOldInfoVO.class);
         return smrPersonInfoService.insertSmrPersonInfo(importYear,b0100,smrPersonInfoList);
     }
 
