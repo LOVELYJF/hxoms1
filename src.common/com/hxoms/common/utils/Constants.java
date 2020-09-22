@@ -286,9 +286,9 @@ public class Constants {
     public static String[] CER_LENDING_NAME = {"申请", "审批", "已审批", "已拒绝", "撤销"};
 
     //在职状态代码
-    public static int[] INCUMBENCY_STATUS = {1, 2, 3, 4, 5, 6, 7, 8, 99};
+    public static int[] INCUMBENCY_STATUS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     //在职状态名称
-    public static String[] INCUMBENCY_STATUS_NAME = {"在职", "辞职", "退休", "去世", "开除", "调出", "省管变中管", "其他", "未匹配"};
+    public static String[] INCUMBENCY_STATUS_NAME = {"在职", "辞职", "退休", "去世", "开除", "调出", "省管变中管", "未匹配","其他"};
 
     //证照注销状态代码
     public static int[] CANCELL_STATUS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
