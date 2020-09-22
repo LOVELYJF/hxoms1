@@ -184,14 +184,14 @@ public class OmsCerInventoryController extends BaseController {
 
 	/**
 	 * <b>功能描述: 补领取记录</b>
-	 * @Param: [omsCerGetTask]
+	 * @Param: [omsCerGetTask,mode]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/24 14:38
 	 */
 	@PostMapping("/saveRepairCollectionRecord")
-	public Result saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask){
-		omsCerInventoryService.saveRepairCollectionRecord(omsCerGetTask);
+	public Result saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask,String mode){
+		omsCerInventoryService.saveRepairCollectionRecord(omsCerGetTask, mode);
 		return Result.success();
 	}
 }
