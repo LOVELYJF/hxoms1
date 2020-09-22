@@ -102,6 +102,10 @@ public class FileReplaceVO {
     private String reason;
     //随同姓名
     private String stName;
+    //邀请单位
+    private String yqdw;
+    //团组人数
+    private int tzNum;
 
     public String getName() {
         return name;
@@ -390,5 +394,21 @@ public class FileReplaceVO {
 
     public void setPost(String post) {
         this.post = post;
+    }
+
+    public String getYqdw() {
+        return yqdw;
+    }
+
+    public void setYqdw(String yqdw) {
+        this.yqdw = yqdw;
+    }
+
+    public int getTzNum() {
+        return tzNum;
+    }
+
+    public void setTzNum(int tzNum) {
+        this.tzNum = tzNum;
     }
 }
