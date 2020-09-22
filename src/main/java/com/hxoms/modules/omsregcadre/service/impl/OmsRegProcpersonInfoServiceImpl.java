@@ -503,7 +503,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public Object updateRpinfo(OmsRegProcpersoninfo orpInfo) {
         if (StringUtils.isBlank(orpInfo.getId()) || StringUtils.isBlank(orpInfo.getA0100())) {
-            throw new CustomMessageException("缺少必要参数");
+            throw new CustomMessageException("");
         } else {
             orpInfo.setInboundFlag("I");
             orpInfo.setModifyTime(new Date());

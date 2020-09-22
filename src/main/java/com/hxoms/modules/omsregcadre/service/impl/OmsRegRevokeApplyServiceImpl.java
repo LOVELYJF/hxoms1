@@ -38,8 +38,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     }
 
     @Override
-    public Object searchRevokeRegPerson(){
-        int con=0;
+    public Result searchRevokeRegPerson(){
+        StringBuffer msg = new StringBuffer();
         //且不在撤销登记备案申请表的人员（排除已登记备案状态）
         List<String> rfIds = baseMapper.selectrfIdList();
         OmsRegProcpersoninfoIPagParam param = new OmsRegProcpersoninfoIPagParam();
@@ -67,26 +67,30 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                 if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[1]) || info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[4])){
                     //将满足要求的人员放到撤销登记备案申请表
                     if(calExit.before(new Date()) && info.getDecryptEnddate().before(new Date())){
-                        con = copyApplyInfo(info,applyinfo);
+                        copyApplyInfo(info,applyinfo);
                     }
                 } else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[5])) {
                     //将满足要求的人员放到撤销登记备案申请表
                     if (txExit.before(new Date())) {
-                        con = copyApplyInfo(info,applyinfo);
+                        copyApplyInfo(info,applyinfo);
                     }
                 } else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[8])) {
                     //将满足要求的人员放到撤销登记备案申请表
                     if (info.getDecryptEnddate().before(new Date())) {
-                        con = copyApplyInfo(info, applyinfo);
+                        copyApplyInfo(info, applyinfo);
                     }
                 }else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[4]) || info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[7])){
-                    con = copyApplyInfo(info, applyinfo);
+                    copyApplyInfo(info, applyinfo);
+                }else{
+                    msg.append("暂无可提取的撤销的备案人员!");
+                    return Result.error(msg.toString());
                 }
             }
         }else{
-            throw new CustomMessageException("暂无可撤销的备案人员");
+            msg.append("暂无可提取的撤销的备案人员!");
+            return Result.error(msg.toString());
         }
-        return con;
+        return Result.success();
     }
 
 
