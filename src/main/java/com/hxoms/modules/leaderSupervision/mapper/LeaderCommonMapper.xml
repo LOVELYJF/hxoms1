@@ -1192,7 +1192,9 @@
 		) AS sex,  # 性别
 		DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 		pua.POLITICAL_AFF AS politicalAffi,  # 政治面貌
+        pua.HEALTH  as health, # 健康状况
 		pua.JOB AS job,   #职务
+		pua.BAH as bah, # 备案号
 		"暂无" AS applyTime,   # 申请日期
 		pua.SMDJ AS secretLevel,  # 涉密等级
 		"暂无" AS declassificaEndTime,  # 脱密结束日期
@@ -1204,7 +1206,8 @@
 		opinionTemp.cadresupervisionOpinion as  cadresupervisionOpinion, # 干部监督处意见
 		opinionTemp.cadresupervisionOpinion as  chulingdaoOpinion, # 处领导意见
 		opinionTemp.bulingdaoOpinion as  bulingdaoOpinion, # 部领导意见
-		pua.ZZJL  as zzjl       # 最终结论
+		CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过'  else  '暂无数据' end as zzjl  # 最终结论
+
 
 		FROM
 		oms_pub_apply pua
@@ -1222,26 +1225,42 @@
 
 		<where>
 
-			<if test="applyBeginDate != null and applyEndDate != null ">
+            <if test="omsPubApplyQueryParam.applyId != null and omsPubApplyQueryParam.applyId != ''">
+                and pua.ID = #{omsPubApplyQueryParam.applyId}
+            </if>
+            <if test="omsPubApplyQueryParam.status != null and omsPubApplyQueryParam.status.size>0">
+                and pua.SQZT in
+                <foreach collection="omsPubApplyQueryParam.status" item="status" separator="," open="(" close=")">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="omsPubApplyQueryParam.name != null and omsPubApplyQueryParam.name!= ''">
+                and concat(mrp.surname,oms_reg_procpersoninfo.name) like CONCAT('%',#{omsPubApplyQueryParam.name},'%')
+            </if>
+            <if test="omsPubApplyQueryParam.cgsj != null">
+                <![CDATA[ and pua.CGSJ >= to_date(#{omsPubApplyQueryParam.cgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+            <if test="omsPubApplyQueryParam.hgsj != null">
+                <![CDATA[ and pua.CGSJ <= to_date(#{omsPubApplyQueryParam.hgsj,jdbcType=DATE},'yyyy-MM-dd hh24:mi:ss')]]>
+            </if>
+            <if test="omsPubApplyQueryParam.ztdw != null and omsPubApplyQueryParam.ztdw!= ''">
+                and pua.ZTDW = #{omsPubApplyQueryParam.ztdw}
+            </if>
+            <if test="omsPubApplyQueryParam.pwh != null and omsPubApplyQueryParam.pwh != ''">
+                and pua.pwh like CONCAT('%',#{omsPubApplyQueryParam.pwh},'%')
+            </if>
+            <if test="omsPubApplyQueryParam.b0100 != null and omsPubApplyQueryParam.b0100 != ''">
+                and pua.b0100 = #{omsPubApplyQueryParam.b0100}
+            </if>
+            <if test="omsPubApplyQueryParam.procpersonId != null and omsPubApplyQueryParam.procpersonId != ''">
+                and pua.PROCPERSON_ID = #{omsPubApplyQueryParam.procpersonId}
+            </if>
+            <if test="omsPubApplyQueryParam.isComparison != null and omsPubApplyQueryParam.isComparison != ''">
+                and pua.IS_COMPARISON = #{omsPubApplyQueryParam.isComparison}
+            </if>
 
-				and pua.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pua.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
 
-			</if>
-
-			<if test="goabroadBeginDate != null and goabroadEndDate != null ">
-
-				and pua.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pua.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
-
-			</if>
-
-			<if test="operatorUser != null and operatorUser != '' ">
-
-				and pua.CREATE_USER like concat('%',#{operatorUser},'%')
-
-			</if>
-
-
-		</where>
+        </where>
 
 
 	</select>
@@ -1251,9 +1270,13 @@
 	<select id="selectPridelayApplyManager" parameterType="com.hxoms.modules.leaderSupervision.vo.OmsLeaderBatchVo" resultType="java.util.LinkedHashMap">
 
 		SELECT
-		pra.id AS id, # 业务id
+		prda.id AS id, # 业务id
 
-		pra.leader_batch_id as batchId, # 批次id
+		prda.leader_batch_id as batchId, # 批次id
+
+		prda.APPLY_STATUS as applyStatus,
+
+        pra.HEALTH as health, # 健康状况
 
 		b.b0101 AS department, 	# "部门名称"
 
@@ -1263,7 +1286,13 @@
 
 		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
+		DATE_FORMAT(prda.ESTIMATE_RETURNTIME,'%Y.%m.%d') AS delayReturnTime  , #延期入境时间
+
+		prda.DELAY_REASON as delayReason  , #延期入境原因
+
 		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+
+		pra.ABROAD_REASONS as abroadReasons, # 事由
 
 		"无" AS cfrw,    #出访任务
 
@@ -1283,6 +1312,8 @@
 
 		pra.POSTRANK AS job, #职务
 
+		pra.HEALTH as health, # 健康状况
+
 		pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
 
 		pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
@@ -1301,6 +1332,7 @@
 		LEFT JOIN oms_pri_apply pra  on prda.APPLY_ID = pra.id
 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
 		LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
+        left join oms_reg_procpersoninfo rp1 on prda.CREATE_USER = rp1.ID
 		left join ( select
 		apply_id as applyId,
 		min( case when aba.STEP_CODE = 23 then aba.APPROVAL_RESULT else '暂无答复'  end) as '干部监督处意见' ,
@@ -1308,28 +1340,26 @@
 		min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as '部领导意见'
 		from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on prda.id = opinionTemp.applyId
 
-		<where>
+		where 1=1
+		<if test="omsPriApplyIPageParam.applyStartTime != null and omsPriApplyIPageParam.applyStopTime != null">
+			and prda.APPLY_TIME &gt; #{omsPriApplyIPageParam.applyStartTime} and prda.APPLY_TIME &lt; #{omsPriApplyIPageParam.applyStopTime}
+		</if>
+		<if test="omsPriApplyIPageParam.name != null and omsPriApplyIPageParam.name != ''">
+			and CONCAT(IFNULL(mrp.SURNAME,''),IFNULL(mrp.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+			or mrp.PY LIKE  CONCAT('%',#{omsPriApplyIPageParam.name},'%')
+		</if>
+		<if test="omsPriApplyIPageParam.createUser != null and omsPriApplyIPageParam.createUser != ''">
+			and CONCAT(IFNULL(rp1.SURNAME,''),IFNULL(rp1.NAME,'')) LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+			or rp1.PY LIKE CONCAT('%',#{omsPriApplyIPageParam.createUser},'%')
+		</if>
+		<if test="omsPriApplyIPageParam.applyStatus != null and omsPriApplyIPageParam.applyStatus != ''">
+			and prda.APPLY_STATUS in
+			<foreach close=")" collection="omsPriApplyIPageParam.applyStatus" index="index" item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+		</if>
+		order by prda.APPLY_STATUS, prda.APPLY_TIME
 
-			<if test="applyBeginDate != null and applyEndDate != null ">
-
-				and pua.APPLY_TIME <![CDATA[>=]]> #{applyBeginDate} and pua.APPLY_TIME <![CDATA[<=]]> #{applyEndDate}
-
-			</if>
-
-			<if test="goabroadBeginDate != null and goabroadEndDate != null ">
-
-				and pua.ABROAD_TIME <![CDATA[>=]]> #{goabroadBeginDate} and pua.ABROAD_TIME <![CDATA[<=]]> #{goabroadEndDate}
-
-			</if>
-
-			<if test="operatorUser != null and operatorUser != '' ">
-
-				and pua.CREATE_USER like concat('%',#{operatorUser},'%')
-
-			</if>
-
-
-		</where>
 
 
 	</select>
