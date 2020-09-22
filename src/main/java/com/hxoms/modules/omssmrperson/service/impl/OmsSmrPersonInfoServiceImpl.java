@@ -123,9 +123,12 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
         for (int i = 0; i < smrPersonInfoList.size(); i++) {
             OmsSmrOldInfoVO imp =  smrPersonInfoList.get(i);
+            if(StringUilt.stringIsNullOrEmpty(imp.getB0101())==false)
             b0101 = imp.getB0101();
 
             // 保存涉密信息导入历史记录
+            imp.setB0100(b0100);
+            imp.setImportYear(importYear);
             OmsSmrRecordInfo smrRecordInfo = CreateSmrRecordInfo(null, imp);
             smrRecordInfos.add(smrRecordInfo);
 
@@ -199,8 +202,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 calcLeaveSecretPersons.put(imp.getA0100(), regProcpersoninfo);
             }
         }
-        if (smrRecordInfos.size() > 0)
+        if (smrRecordInfos.size() > 0) {
+            smrRecordInfoService.deleteByB0100AndYear(b0100,importYear);
             smrRecordInfoService.saveBatch(smrRecordInfos);
+        }
         if (adds.size() > 0)
             smrOldInfoService.saveBatch(adds);
         if (updates.size() > 0)
@@ -962,6 +967,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
                 if ("".equals(msg) == false)
                     map.setMsg(msg);
+
+                map.setSfqr("0");
                 list.add(map);
             }
         }

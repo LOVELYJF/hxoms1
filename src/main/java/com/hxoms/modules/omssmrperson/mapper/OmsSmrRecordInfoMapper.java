@@ -17,4 +17,5 @@ public interface OmsSmrRecordInfoMapper extends BaseMapper<OmsSmrRecordInfo> {
     int insertRecordList(List<OmsSmrRecordInfo> list);
     //获取已匹配备案涉密人员
     List<OmsSmrRecordInfo> getMatchingPerson();
+    void deleteByB0100AndYear(String b0100,String importYear);
 }
