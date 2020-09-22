@@ -3,6 +3,7 @@ package com.hxoms.modules.leaderSupervision.service;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,17 @@ public interface LeaderOtherStatisticalQueryService {
    Map selectBatchlistShapePortrait();
    /*** 因私出国境申请 管理**/
    PageInfo selectAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam);
+
+   /** 因公出国境申请 管理 **/
+   PageInfo selectAllOmsPubApplyManange(OmsPubApplyQueryParam omsPubApplyQueryParam);
+
+   /** 终止备案 **/
+
+   void terminationPutOnRecords(LeaderSupervisionVo leaderSupervisionVo);
+
+   /**因私出国境延期申请 **/
+
+   PageInfo selectAllOmsPriDelayApplyManage(OmsPriApplyIPageParam omsPriApplyIPageParam);
 
 
 }
