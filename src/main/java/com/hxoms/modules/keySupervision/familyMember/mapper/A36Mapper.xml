@@ -97,5 +97,19 @@
 			and a.a3604a in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
 	</select>
 
-
+	<update id="updateList">
+		<foreach collection="list" separator=";" index="index" item="item" open="" close="">
+			update a36 set
+			a3601=#{item.a3601},a3604a=#{item.a3604a},a3607=#{item.a3607},
+			a3611=#{item.a3611},a3627=#{item.a3627},is_deleted=#{item.isDeleted},
+			modify_user=#{item.modifyUser},modify_time=#{item.modifyTime},time_stamp=#{item.timeStamp},
+			node_id=#{item.nodeId},SORTID=#{item.sortid},operate_batch=#{item.operateBatch},
+			is_normal=#{item.isNormal},nationality=#{item.nationality},live_place=#{item.livePlace},
+			lmmigrate_number=#{item.lmmigrateNumber},lmmigrate_type=#{item.lmmigrateType},lmmigrate_time=#{item.lmmigrateTime},
+			chinese_passport_number=#{item.chinesePassportNumber},
+			id_card=#{item.idCard},hukou_location=#{item.hukouLocation},person_status=#{item.personStatus},
+			is_abroad=#{item.isAbroad}
+			 where a3600=#{item.a3600}
+		</foreach>
+	</update>
 </mapper>

@@ -134,6 +134,11 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper,A36> im
 		}
 	}
 
+	@Override
+	public void updateList(List<A36> a36) {
+		a36Mapper.updateList(a36);
+	}
+
 
 	/**
 	 * <b>家庭成员模块查询人员基本信息</b>
