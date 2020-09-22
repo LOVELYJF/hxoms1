@@ -23,6 +23,9 @@
     POLITICAL_AFFI, POST, RANK,CREATE_USER,CREATE_TIME,B0100
   </sql>
 
+	<select id="selectA0100List" resultType="java.lang.String">
+      select A0100 from oms_sup_major_leader
+    </select>
 
 
 </mapper>

@@ -12,15 +12,30 @@
   </sql>
 
 	<!-- 查询每个单位的前两名人员作为主要领导 -->
-	<select id="selectMajorLeaderAuto" resultMap="BaseResultMap">
+	<select id="selectMajorLeaderAuto" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
 		SELECT
-			<include refid="Base_Column_List"/>
-		FROM person_org_order poo1
-		WHERE
+			*
+		FROM
 		(
-			SELECT count(1) FROM person_org_order poo2 WHERE
-			poo1.a0201b=poo2.a0201b AND poo2.orderindex &lt;= poo1.orderindex
-		) &lt;= 2
-		ORDER BY poo1.a0201b
+			SELECT
+			@rowNum :=
+			CASE
+
+			WHEN @RF_B0000 = RF_B0000 THEN
+			@rowNum + 1 ELSE 1
+			END AS rowNum,
+			a.*,(
+			@RF_B0000 := RF_B0000
+			) RFB0000
+			FROM
+			oms_reg_procpersoninfo a
+			LEFT JOIN person_org_order b ON a.RF_B0000 = b.a0201b
+			AND a.a0100 = b.a01000
+			ORDER BY
+			a.RF_B0000,
+			b.orderindex
+		) a
+		WHERE
+		a.rownum  &lt;3;
 	</select>
 </mapper>
