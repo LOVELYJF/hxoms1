@@ -3,6 +3,7 @@ package com.hxoms.modules.leaderSupervision.mapper;
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -45,10 +46,10 @@ public interface LeaderCommonMapper {
    List<Map> selectPrivateApplyManager(@Param("params") OmsPriApplyIPageParam omsPriApplyIPageParam);
 
    /** 查询 因公出国境（申请）管理 ***/
-   List<Map> selectPulicApplyManager();
+   List<Map> selectPulicApplyManager(@Param("omsPubApplyQueryParam") OmsPubApplyQueryParam omsPubApplyQueryParam);
 
    /** 查询 因私延期出国境（申请）管理 ***/
-   List<Map> selectPridelayApplyManager();
+   List<Map> selectPridelayApplyManager(@Param("omsPriApplyIPageParam") OmsPriApplyIPageParam omsPriApplyIPageParam);
 
    /** 征求纪委意见 查询情况 **/
 

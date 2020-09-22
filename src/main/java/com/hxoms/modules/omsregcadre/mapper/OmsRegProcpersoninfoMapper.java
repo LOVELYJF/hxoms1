@@ -43,6 +43,8 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     List<String> selectIdnumberByType(String dataType);
 
     List<Map> selectRegInfoListById(@Param(value = "ids")List<String> ids);
+
+    List<OmsRegProcpersoninfo> selectAllowRevokePerson(@Param(value = "param")OmsRegProcpersoninfoIPagParam param);
 }
 
 

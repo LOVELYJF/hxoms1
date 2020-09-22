@@ -158,8 +158,8 @@ public class Constants {
     public static String[] TITLES = {"因公临时出国人员备案表", "因公临时赴港澳人员备案表", "因公临时赴台人员备案表"};
 
     /*******出国境 业务类型*****/
-    public static String[] oms_business = {"oms_pub_apply", "oms_pri_apply", "oms_pri_delay_apply", "oms_pub_apply"};
-    public static String[] oms_businessName = {"因公出国", "因私出国", "延期回国", "干教"};
+    public static String[] oms_business = {"oms_pub_apply", "oms_pri_apply", "oms_pri_delay_apply", "oms_pub_apply","oms_ftpj_apply"};
+    public static String[] oms_businessName = {"因公出国", "因私出国", "延期回国", "干教","台办赴台批件"};
 
     /**
      * 因公 业务
@@ -286,9 +286,9 @@ public class Constants {
     public static String[] CER_LENDING_NAME = {"申请", "审批", "已审批", "已拒绝", "撤销"};
 
     //在职状态代码
-    public static int[] INCUMBENCY_STATUS = {1, 2, 3, 4, 5, 6, 7, 8, 99};
+    public static int[] INCUMBENCY_STATUS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     //在职状态名称
-    public static String[] INCUMBENCY_STATUS_NAME = {"在职", "辞职", "退休", "去世", "开除", "调出", "省管变中管", "其他", "未匹配"};
+    public static String[] INCUMBENCY_STATUS_NAME = {"在职", "辞职", "退休", "去世", "开除", "调出", "省管变中管", "未匹配","其他"};
 
     //证照注销状态代码
     public static int[] CANCELL_STATUS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};

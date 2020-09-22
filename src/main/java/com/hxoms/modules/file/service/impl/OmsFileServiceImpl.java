@@ -196,6 +196,9 @@ public class OmsFileServiceImpl implements OmsFileService {
                     }else if ("近三年出国（境）记录表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
                         String frontContent = getFrontContent(applyId,"近三年出国（境）记录表");
                         omsFile.setFrontContent(frontContent);
+                    }else if ("名单".equals(omsFile.getFileShortname()) && omsFile.getTableCode().equals(Constants.oms_business[4])){
+                        String frontContent = getFrontContent(applyId,"名单");
+                        omsFile.setFrontContent(frontContent);
                     }
 
 
@@ -215,6 +218,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         omsPubApplyQueryParam.setApplyId(applyId);
         List<OmsPubApplyVO> pubAppListByCondition = omsPubApplyMapper.getPubAppListByCondition(omsPubApplyQueryParam);
         OmsPubApplyVO omsPubApplyVO = pubAppListByCondition.get(0);
+        //获取台办赴台批件名单
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubApplyListByPwh(omsPubApplyVO.getPwh());
         //获取近三年该干部因公出国境记录
         List<OmsPubApplyVO> pubApplyListBy3Year = omsPubApplyMapper.getPubApplyListBy3Year(omsPubApplyVO.getA0100());
         //获取近三年该干部因私出国境记录
@@ -473,6 +478,15 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td class=\"et6\" style=\"word-break: break-all;\">"+o.getAbroadReasons()+"</td>");
                 stringBuffer.append("</tr>");
             }
+        }else if ("名单".equals(fileName)){
+            //赴台批件名单
+            if (omsPubApplyVOS != null && omsPubApplyVOS.size() >0){
+                //todo
+                
+
+
+
+            }
         }
 
     return stringBuffer.toString();
@@ -667,6 +681,11 @@ public class OmsFileServiceImpl implements OmsFileService {
             //获取当前登录人
             UserInfo userInfo = UserInfoUtil.getUserInfo();
             fileReplaceVO.setNowUsername(userInfo.getUserName());
+        }
+        if (tableCode.equals(Constants.oms_business[4])){
+            //台办赴台批件
+            //设置邀请单位 todo
+            fileReplaceVO.setYqdw("");
         }
         // 替换关键词
         if (fileReplaceVO != null){

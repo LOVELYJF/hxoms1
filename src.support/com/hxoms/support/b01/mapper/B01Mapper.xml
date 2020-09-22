@@ -524,6 +524,7 @@
         b.b0100 as "id",
         b.b0101 as "label", b.b0121 as "pId"
         from b01 b
+        inner join cf_org_sub os
         on os.managed_org=b.b0100
         where b.is_deleted='0' and os.b0111=#{orgId}
         order by b.sortid

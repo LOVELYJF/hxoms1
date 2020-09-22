@@ -183,31 +183,33 @@
 
 	<!-- 查询人员信息 -->
 	<select id="selectPersonInfoForfamily" parameterType="java.util.Map" resultType="java.util.Map">
-		select
-			a.a0100 as 'a0100',
-			b.b0101 as 'b0101',
-			a.A0101 as 'a0101',
-			GETDICTITEM('02',a.a0104,'0') as 'a0104',
-			orp.BIRTH_DATE as 'birthDate',
-			a.a0111a,
-			a.a0141,
-			GETDICTITEM('16',a02.a0255,'0') as 'a0255',
-			a02.A0215A as 'post'
-		from a01 a
-		join a02 a02  on a.a0100 = a02.a0100
-		join b01 b  on a02.a0201b = b.b0100
-		join oms_reg_procpersoninfo orp on orp.a0100 = a.a0100
-		join person_org_order poo on poo.a01000 = a.a0100
+		SELECT
+			orp.a0100 AS 'a0100',
+			orp.WORK_UNIT AS 'b0101',
+			CONCAT(
+			IFNULL(orp.SURNAME, ''),
+			IFNULL(orp. NAME, '')
+			) AS 'a0101',
+			orp.SEX as sex,
+			orp.BIRTH_DATE AS 'birthDate',
+			a01.a0111a,
+			orp.POLITICAL_AFFINAME as a0141,
+			orp.INCUMBENCY_STATUS AS 'a0255',
+			orp.POST AS 'post'
+		FROM
+			oms_reg_procpersoninfo orp
+		join a01 a01 on orp.A0100=a01.a0100
+		LEFT JOIN person_org_order poo ON poo.a01000 = orp.a0100
 		<where>
 			<trim suffixOverrides="and">
-				<if test="1 == 1">a.a0163 = '1' and a02.a0255 = '1' and a.is_deleted = '0' and </if>
-				<if test="idList != null">b.B0100 in
+				<if test="1 == 1">orp.DATA_TYPE = '1' and </if>
+				<if test="idList != null">orp.RF_B0000 in
 					<foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
 						#{item}
 					</foreach>
 					and
 				</if>
-				<if test="name != null">a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%') and </if>
+				<if test="name != null and name != ''">(a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%')) and </if>
 			</trim>
 		</where>
 		order by poo.a0201b ,orderindex

@@ -64,6 +64,9 @@ public class OmsSensitiveLimitServiceImpl implements OmsSensitiveLimitService {
 						map.put("dictCode",null);
 						map.put("itemId", sensitiveItem);
 						List<OmsSensitiveLimit> childList = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
+						for(OmsSensitiveLimit omsSensitiveLimit1 : childList){
+							omsSensitiveLimit1.setParentItemCode(omsSensitiveLimit.getId());
+						}
 						list1.add(childList.get(0));
 					}
 					omsSensitiveLimit.setList(list1);

@@ -12,6 +12,7 @@ import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.leaderSupervision.vo.OmsJiweiOpinionVo;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import oracle.jdbc.proxy.annotation.Post;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,10 +201,10 @@ public class  LeaderSupervisionController {
      *  因公出国境管理 导出
      * **/
 
-    @PostMapping("/exportPubApplyMangerExcel")
-    public void exportExcel(LeaderSupervisionVo leaderSupervisionVo, HttpServletResponse response){
+    @GetMapping("/exportPubApplyMangerExcel")
+    public void exportPubApplyMangerExcel(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response){
         try {
-            HSSFWorkbook wb = leaderEXportExcelService.pubApplyMangerExport();
+            HSSFWorkbook wb = leaderEXportExcelService.pubApplyMangerExport(omsPubApplyQueryParam);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");

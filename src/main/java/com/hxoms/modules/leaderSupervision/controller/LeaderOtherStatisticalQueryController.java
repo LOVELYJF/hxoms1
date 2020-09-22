@@ -13,6 +13,7 @@ import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -119,7 +120,7 @@ public class LeaderOtherStatisticalQueryController {
       PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPriApplyManange(omsPriApplyIPageParam);
 
 
-        return Result.success(pageInfo);
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
     /**因私出国境申请管理 导出 **/
@@ -142,6 +143,61 @@ public class LeaderOtherStatisticalQueryController {
             throw new CustomMessageException("导出失败，原因："+e.getMessage());
         }
     }
+
+    /** 因公出国境申请管理 ***/
+    @GetMapping("/selectAllOmsPubApplyManange")
+    public Result selectAllOmsPubApplyManange(OmsPubApplyQueryParam omsPubApplyQueryParam){
+
+        PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPubApplyManange(omsPubApplyQueryParam);
+
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+    }
+
+    /** 因公出国境申请管理 终止备案功能 **/
+    @PostMapping("/terminationPutOnRecords")
+    public Result terminationPutOnRecords(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
+
+
+        leaderOtherStatisticalQueryService.terminationPutOnRecords(leaderSupervisionVo);
+
+        return Result.success();
+    }
+
+    /** 延期出国境(申请)管理 **/
+
+    @GetMapping("/selectOmsDelayApplyIPage")
+    public Result selectAllOmsPriDelayApplyManage(OmsPriApplyIPageParam omsPriApplyIPageParam){
+
+        PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPriDelayApplyManage(omsPriApplyIPageParam);
+
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+
+    }
+
+    /** 延期出国境(申请)管理 导出 **/
+
+    @GetMapping("/exportAllOmsPriDelayApplyManange")
+    public void exportAllOmsPriDelayApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
+
+        try {
+            HSSFWorkbook wb = leaderEXportExcelService.exportAllOmsPriDelayApplyManange(omsPriApplyIPageParam);
+            String date = new SimpleDateFormat("yyyy-MM-dd")
+                    .format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+
+    }
+
+
 
 
 

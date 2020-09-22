@@ -17,6 +17,7 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
+import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
@@ -54,9 +55,9 @@ public class LeaderEXportExcelService {
     private OmsRegProcbatchPersonMapper procbatchPersonMapper;
 
     /** 因公出国境管理 导出 **/
-    public HSSFWorkbook pubApplyMangerExport(){
+    public HSSFWorkbook pubApplyMangerExport(OmsPubApplyQueryParam omsPubApplyQueryParam){
 
-     List<Map> dataList =  leaderCommonQueryMapper.selectPulicApplyManager();
+     List<Map> dataList =  leaderCommonQueryMapper.selectPulicApplyManager(omsPubApplyQueryParam);
 
 
 ///	SELECT
@@ -102,9 +103,11 @@ public class LeaderEXportExcelService {
      listK.add("userName");listV.add("姓名");
      listK.add("sex");listV.add("性别");
      listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+     listK.add("health");listV.add("健康情况");  // 少一列 健康情况
      listK.add("job");listV.add("职务");               // 少一列 备案号
+     listK.add("bah");listV.add("备案号");
      listK.add("abroadTime");listV.add("出境日期");
-     listK.add("returnTime");listV.add("出境日期");
+     listK.add("returnTime");listV.add("回国时间");
      listK.add("sdgj");listV.add("目的地");
      listK.add("cfrw");listV.add("事由");  //  少一列 状态
      listK.add("secretLevel");listV.add("涉密等级");
@@ -798,7 +801,7 @@ public class LeaderEXportExcelService {
         listK.add("clshsftg");listV.add("材料审核");
         listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
         listK.add("chulingdaoOpinion");listV.add("处领导意见");
-        listK.add("bulingdaoOpinion");listV.add("部领导意见");
+         listK.add("bulingdaoOpinion");listV.add("部领导意见");
         listK.add("zzjl");listV.add("最终结论");
 
 
@@ -820,6 +823,119 @@ public class LeaderEXportExcelService {
 
 
     }
+
+
+     public HSSFWorkbook  exportAllOmsPriDelayApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+
+         List<Map> dataList = leaderCommonQueryMapper.selectPridelayApplyManager(omsPriApplyIPageParam);
+
+//         prda.id AS id, # 业务id
+//
+//         prda.leader_batch_id as batchId, # 批次id
+//
+//         prda.APPLY_STATUS as applyStatus,
+//           pra.HEALTH as health, # 健康状况
+//
+//                 b.b0101 AS department, 	# "部门名称"
+//
+//         concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+//
+//         DATE_FORMAT(pra.ABROAD_TIME,'%Y.%m.%d') AS abroadTime, #出国时间 == 出境日期
+//
+//         DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
+//
+//         DATE_FORMAT(prda.ESTIMATE_RETURNTIME,'%Y.%m.%d') AS delayReturnTime  , #延期入境时间
+//
+//         prda.DELAY_REASON as delayReason  , #延期入境原因
+//
+//         pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+//
+//         pra.ABROAD_REASONS as abroadReasons, # 事由
+//
+//         "无" AS cfrw,    #出访任务
+//
+//         '延期' AS businessType,  # 申请类型
+//
+//         "无" AS cgspdw,  # 审批单位
+//
+//         IF (
+//                 mrp.SEX NOT IN ('1', '2'),
+//                 '未知',
+//                 IF (mrp.SEX = 1, '男', '女')
+//         ) AS sex,  # 性别
+//
+//         DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
+//
+//         pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
+//
+//         pra.POSTRANK AS job, #职务
+//
+//         pra.HEALTH as health, # 健康状况
+//
+//         pra.APPLY_TIME AS applyTime, # 申请时间 == 申请日期
+//
+//         pra.CLASSIFICATION_LEVEL AS secretLevel, # 涉密等级
+//
+//         DATE_FORMAT(pra.DECLASSIFICA_ENDTIME,'%Y.%m.%d') AS declassificaEndTime, # 脱密期结束时间
+//
+//         pra.IS_LUOGUAN AS sflg, # 是否裸官
+//
+//         mrp.IDENTITY AS identity, #身份类别
+//
+//         pra.IS_LEADERS as sfzyld, # 主要领导
+//
+//         pra.NEGATIVE_INFO fmxx # 负面信息
+
+         List listK = new ArrayList();
+         List listV = new ArrayList();
+         listK.add("num");listV.add("序号");
+         listK.add("department");listV.add("单位");
+         listK.add("userName");listV.add("姓名");
+         listK.add("sex");listV.add("性别");
+         listK.add("birthDate");listV.add("出生日期");
+         listK.add("politicalAffi");listV.add("政治面貌");
+         listK.add("health");listV.add("健康状况");
+         listK.add("job");listV.add("职务");
+         listK.add("delayReturnTime");listV.add("延期出境时间");
+         listK.add("delayReason");listV.add("延期入境原因");
+         listK.add("abroadTime");listV.add("出境日期");
+         listK.add("returnTime");listV.add("入境日期");
+         listK.add("sdgj");listV.add("目的地");
+         listK.add("cfsy");listV.add("事由");
+         listK.add("applystatus");listV.add("状态");
+
+
+
+
+
+
+//        listK.add("bah");listV.add("备案号");  // 少一列 审批号
+
+
+
+//         listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+//         // listK.add("secretLevel");listV.add("涉密等级");
+//         listK.add("declassificaEndTime");listV.add("脱密期结束时间");
+//         listK.add("sflg");listV.add("裸官");
+//         listK.add("identity");listV.add("身份类别");
+//         listK.add("sfzyld");listV.add("主要领导");
+//         listK.add("fmxx");listV.add("负面信息");
+//
+//         listK.add("jwjl");listV.add("纪委结论");
+//         listK.add("clshsftg");listV.add("材料审核");
+//         listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
+//         listK.add("chulingdaoOpinion");listV.add("处领导意见");
+//         listK.add("bulingdaoOpinion");listV.add("部领导意见");
+//         listK.add("zzjl");listV.add("最终结论");
+
+         return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因私延期出国境申请管理");
+
+     }
+
+
+
+
+
 
 
 }
