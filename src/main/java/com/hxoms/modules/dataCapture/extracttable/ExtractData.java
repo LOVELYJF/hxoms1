@@ -233,4 +233,18 @@ public class ExtractData {
         return  masterlist;
 
     }
+    // ++++++++++++++++++++++++++++++++++ PersonOrgOrder
+    public List<Map<String,Object>>  getTargetPersonOrgOrder(DataSource dataSource,Object... values){
+        Connection connection = Datasourceinfo.getConnection(dataSource);
+        List<Map<String, Object>> targetlist = Datasourceinfo.executeQueryList(connection, DynamicData.orcalSqlPersonOrgOrder,values);
+
+        System.out.println(targetlist.size());
+        return  targetlist;
+    }
+
+    public int  getTargetPersonOrgOrderCount(DataSource dataSource,Object... values){
+        String   sql = "select count(1) as num  from person_org_order";
+
+        return getTargetCount(dataSource,sql,values);
+    }
 }

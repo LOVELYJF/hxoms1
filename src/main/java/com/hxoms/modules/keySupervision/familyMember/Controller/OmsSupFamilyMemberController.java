@@ -1,6 +1,7 @@
 package com.hxoms.modules.keySupervision.familyMember.Controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.country.entity.Country;
@@ -142,6 +143,19 @@ public class OmsSupFamilyMemberController {
 	@PostMapping("/insertFamilyMember")
 	public Result insertFamilyMember(A36 a36){
 		omsSupFamilyMemberService.insertFamilyMember(a36);
+		return Result.success();
+	}
+	/**
+	 * @description:修改家庭成员信息
+	 * @author:杨波
+	 * @date:2020-09-22
+	 *  * @param a36
+	 * @return:
+	 **/
+	@PostMapping("/updateList")
+	public Result updateList(String a36) {
+		List<A36> a36S= JSONArray.parseArray(a36,A36.class);
+		omsSupFamilyMemberService.updateList(a36S);
 		return Result.success();
 	}
 }

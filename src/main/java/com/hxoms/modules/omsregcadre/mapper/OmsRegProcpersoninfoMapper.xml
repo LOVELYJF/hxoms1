@@ -463,8 +463,8 @@
         AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
         WHERE info.INBOUND_FLAG != 'D'
         AND info.DATA_TYPE = '2'
-        AND info.INCUMBENCY_STATUS not in (1,7)
-        AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='7')
+        AND info.INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
+        AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='4')
         <if test="idnumberGa !=null and idnumberGa !=''">
             AND info.IDNUMBER_GA = #{idnumberGa}
         <if test="name!=null and name!=''">
@@ -484,17 +484,12 @@
             and DATA_TYPE = #{dataType}
         </if>
     </select>
-    <select id="selectAllowRevokePerson" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam">
+    <select id="selectAllowRevokePerson" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" >
         SELECT * from oms_reg_procpersoninfo
         WHERE DATA_TYPE = '1'
         AND INBOUND_FLAG NOT IN ('D')
-        AND INCUMBENCY_STATUS NOT IN ('1','7')
-        <if test="param.ids!=null and param.ids.size > 0">
-            and ID NOT IN
-            <foreach collection="param.ids" item="id" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        </if>
+        AND INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
+        AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
 
 </mapper>

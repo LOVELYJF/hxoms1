@@ -38,4 +38,13 @@ public interface A36Mapper extends BaseMapper<A36> {
 	 * @return
 	 */
 	List<String> selectIdCardList(String a0100);
+
+	/**
+	* @description:修改家庭成员信息
+	* @author:杨波
+	* @date:2020-09-22
+	*  * @param a36
+	* @return:
+	**/
+	void updateList(List<A36> a36);
 }
