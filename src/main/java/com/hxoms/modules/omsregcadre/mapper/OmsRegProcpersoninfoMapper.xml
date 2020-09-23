@@ -463,8 +463,8 @@
         AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
         WHERE info.INBOUND_FLAG != 'D'
         AND info.DATA_TYPE = '2'
-        AND info.INCUMBENCY_STATUS not in (1,7)
-        AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='7')
+        AND info.INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
+        AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='4')
         <if test="idnumberGa !=null and idnumberGa !=''">
             AND info.IDNUMBER_GA = #{idnumberGa}
         <if test="name!=null and name!=''">
