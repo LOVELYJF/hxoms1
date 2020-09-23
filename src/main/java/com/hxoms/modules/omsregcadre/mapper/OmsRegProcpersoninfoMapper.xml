@@ -488,7 +488,7 @@
         SELECT * from oms_reg_procpersoninfo
         WHERE DATA_TYPE = '1'
         AND INBOUND_FLAG NOT IN ('D')
-        AND INCUMBENCY_STATUS NOT IN ('1','7')
+        AND INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
         AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
 
