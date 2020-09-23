@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
-import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.*;
-import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
@@ -40,15 +38,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     @Override
     public Result searchRevokeRegPerson(){
         StringBuffer msg = new StringBuffer();
-        //且不在撤销登记备案申请表的人员（排除已登记备案状态）
-        List<String> rfIds = baseMapper.selectrfIdList();
-        OmsRegProcpersoninfoIPagParam param = new OmsRegProcpersoninfoIPagParam();
-        param.setDataType("1");
-        if (rfIds!=null && rfIds.size()>0){
-            param.setIds(rfIds);
-        }
-        //搜搜可撤销登记备案人员
-        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson(param);
+        //自动搜索辞职、开除、解聘、退休、去世、挂职到期等状态，且不在撤销登记备案申请表的人员（排除已登记备案状态）
+        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson();
         if (reginfolist!=null && reginfolist.size()>0){
             for (int i=0;i<reginfolist.size();i++){
                 OmsRegProcpersoninfo info = reginfolist.get(i);
@@ -63,24 +54,24 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
 
                 //撤销登记备案申请表
                 OmsRegRevokeapply applyinfo = new OmsRegRevokeapply();
-                //判断辞职、开除、解聘人员是否满3年（根据系统参数设置判断）
-                if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[1]) || info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[4])){
-                    //将满足要求的人员放到撤销登记备案申请表
+                //1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.未匹配，99.其他
+                //判断辞职、开除、解聘人员是否满3年（根据系统参数设置判断），且已过脱密结束日期 ,将满足要求的人员放到撤销登记备案申请表
+                if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Resignation)
+                        || info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Expel)
+                        || info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Dismissal)){
                     if(calExit.before(new Date()) && info.getDecryptEnddate().before(new Date())){
                         copyApplyInfo(info,applyinfo);
                     }
-                } else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[5])) {
-                    //将满足要求的人员放到撤销登记备案申请表
+                    //判断退休人员是否满系统参数设置的退休年限,将满足要求的人员放到撤销登记备案申请表
+                }else if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Retirement)) {
                     if (txExit.before(new Date())) {
                         copyApplyInfo(info,applyinfo);
                     }
-                } else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[8])) {
-                    //将满足要求的人员放到撤销登记备案申请表
+                    //判断挂职到期人员是否过脱密日期，将满足要求的人员放到撤销登记备案申请表
+                }else if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Secondment)){
                     if (info.getDecryptEnddate().before(new Date())) {
                         copyApplyInfo(info, applyinfo);
                     }
-                }else if (info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[4]) || info.getIncumbencyStatus().equals(Constants.INCUMBENCY_STATUS[7])){
-                    copyApplyInfo(info, applyinfo);
                 }else{
                     msg.append("暂无可提取的撤销的备案人员!");
                     return Result.error(msg.toString());

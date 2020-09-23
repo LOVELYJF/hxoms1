@@ -186,6 +186,13 @@ public class Synchdata {
         List<Map> masterMapA36 = splicCount(a36counts, "a3600");
         diffListMap(targetMapA36, masterMapA36, "a3600");
 
+        //机构人员排序
+        int PersonOrgOrdercounts = a01Service.getMasterPersonOrgOrderCount();
+        int PersonOrgOrdertargetCounts = extractData.getTargetPersonOrgOrderCount(dataSource);
+        List<Map> targetMapPersonOrgOrder = splicCountTarget(dataSource, PersonOrgOrdertargetCounts, "id");
+        List<Map> masterMapPersonOrgOrder = splicCount(PersonOrgOrdercounts, "id");
+        diffListMap(targetMapPersonOrgOrder, masterMapPersonOrgOrder, "id");
+
         InitialRights();
     }
 
@@ -405,6 +412,11 @@ public class Synchdata {
 
                     masterListMap.addAll(masterMapB01);
                     break;
+                case "id":
+                    List<Map> masterMapPersonOrgOrder = a01Service.getMasterPersonOrgOrder(offset, rows);
+
+                    masterListMap.addAll(masterMapPersonOrgOrder);
+                    break;
                 default:
             }
         }
@@ -485,6 +497,11 @@ public class Synchdata {
                     List<Map<String, Object>> targetMapB01 = extractData.getTargetB01(dataSource, maxpage, minpage);
 
                     targetListMap.addAll(targetMapB01);
+                    break;
+                case "id":
+                    List<Map<String, Object>> targetMapPersonOrgOrder = extractData.getTargetPersonOrgOrder(dataSource, maxpage, minpage);
+
+                    targetListMap.addAll(targetMapPersonOrgOrder);
                     break;
                 default:
             }

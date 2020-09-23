@@ -430,6 +430,15 @@ public class DynamicData {
             + "  FROM B01 "
             +  orcal_paging_last;
 
+    public static String commonSqlPersonOrgOrder = "" +
+            "        id, " +
+            "        a0100, " +
+            "        a0201b, " +
+            "        orderindex" ;
+    public static String orcalSqlPersonOrgOrder = orcal_paging_frist + commonSqlPersonOrgOrder
+            + "  FROM person_org_order "
+            +  orcal_paging_last;
+
     static{
         String[] a02String = {
                 "A0200",
@@ -477,20 +486,5 @@ public class DynamicData {
         };
 
         a02List = new ArrayList<>(Arrays.asList(a02String));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
