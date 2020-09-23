@@ -116,9 +116,6 @@ public class OmsFileServiceImpl implements OmsFileService {
 //        B01 b01 = new B01();
 //        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
 
-
-
-
 //        if (b01 == null){
 //            throw new CustomMessageException("数据异常");
 //        }
@@ -196,10 +193,11 @@ public class OmsFileServiceImpl implements OmsFileService {
                     }else if ("近三年出国（境）记录表".equals(omsFile.getFileShortname())&& omsFile.getTableCode().equals(Constants.oms_business[0])){
                         String frontContent = getFrontContent(applyId,"近三年出国（境）记录表");
                         omsFile.setFrontContent(frontContent);
-                    }else if ("名单".equals(omsFile.getFileShortname()) && omsFile.getTableCode().equals(Constants.oms_business[4])){
-                        String frontContent = getFrontContent(applyId,"名单");
-                        omsFile.setFrontContent(frontContent);
                     }
+//                    else if ("名单".equals(omsFile.getFileShortname()) && omsFile.getTableCode().equals(Constants.oms_business[4])){
+//                        String frontContent = getFrontContent(applyId,"名单");
+//                        omsFile.setFrontContent(frontContent);
+//                    }
 
 
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());
