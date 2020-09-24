@@ -117,11 +117,11 @@ public class OmsSupFamilyMemberController {
 	 * @return
 	 */
 	@PostMapping("/addToRegistration")
-	public Result addToRegistration(@RequestBody List<A36> list){
-		omsSupFamilyMemberService.addToRegistration(list);
-		return Result.success();
+	public Result addToRegistration(String list){
+        List<A36> a36S= JSONArray.parseArray(list,A36.class);
+		Result result=omsSupFamilyMemberService.addToRegistration(a36S);
+		return result;
 	}
-
 
 	/**
 	 * <b>当取消裸官在限制性岗位的时候撤销家庭成员登记备案</b>
@@ -133,7 +133,6 @@ public class OmsSupFamilyMemberController {
 		omsSupFamilyMemberService.removeToRegistration(a0100);
 		return Result.success();
 	}
-
 
 	/**
 	 * <b>添加家庭成员</b>

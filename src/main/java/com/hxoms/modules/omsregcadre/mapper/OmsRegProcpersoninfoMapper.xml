@@ -492,4 +492,7 @@
         AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
 
+    <select id="selectFamilyByA0100" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+        select a.* from oms_reg_procpersoninfo a where a.id in(select a3600 from a36 where a0100=#{a0100})
+    </select>
 </mapper>
