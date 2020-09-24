@@ -495,4 +495,38 @@
     <select id="selectFamilyByA0100" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         select a.* from oms_reg_procpersoninfo a where a.id in(select a3600 from a36 where a0100=#{a0100})
     </select>
+
+
+    <!--查询省管干部登记备案信息列表-->
+    <select id="queryProvinceCadresList" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam">
+        select a.* from oms_reg_procpersoninfo a
+          left join b01 b on a.RF_B0000=b.B0100
+          left join person_org_order c on b.B0100=c.a0201b
+          where 1=1
+        <if test="secretLevel !=null and secretLevel !=''">
+            and a.SECRET_LEVEL = #{secretLevel}
+        </if>
+        <if test="identityCode !=null and identityCode !=''">
+            and a.IDENTITY_CODE = #{identityCode}
+        </if>
+        <if test="dataType !=null and dataType !=''">
+            and a.DATA_TYPE = #{dataType}
+        </if>
+        <if test="incumbencyStatus !=null and incumbencyStatus !=''">
+            and a.INCUMBENCY_STATUS = #{incumbencyStatus}
+        </if>
+        <if test="inboundFlag !=null and inboundFlag !=''">
+            and a.INBOUND_FLAG = #{inboundFlag}
+        </if>
+        <if test="rfStatus !=null and rfStatus !=''">
+            and a.RF_STATUS = #{rfStatus}
+        </if>
+        <if test="rfB0000 !=null and rfB0000 !=''">
+            and a.RF_B0000 = #{rfB0000}
+        </if>
+        <if test="checkStatus !=null and checkStatus !=''">
+            and a.CHECK_STATUS = #{checkStatus}
+        </if>
+          order by b.sortid,c.orderindex
+    </select>
 </mapper>

@@ -53,6 +53,13 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     * @return:
     **/
     List<OmsRegProcpersoninfo> selectFamilyByA0100(String a0100);
+
+    /**
+     * @author:李姣姣
+     * @param personInfoIPagParam
+     * @return
+     */
+    List<OmsRegProcpersoninfo> queryProvinceCadresList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 }
 
 
