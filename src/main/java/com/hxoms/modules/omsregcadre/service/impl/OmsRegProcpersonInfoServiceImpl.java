@@ -248,24 +248,26 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             //退出方式
             String a3001 = a30.getA3001().substring(0, 1);
             //退出状态 1退休 2调出 3死亡 4辞职 8转出 9其它(开除)
-            //在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管  8其它 99 未匹配
+            //在职状态 1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.未匹配，99.其他
             if (!StringUtils.isEmpty(a3001)) {
-                if (a3001.equals("1")) {
+                if (a3001.equals("1")) {//退休
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Retirement.getIndex());
-                } else if (a3001.equals("2")) {
+                } else if (a3001.equals("2")) {//调出
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dispatch.getIndex());
-                } else if (a3001.equals("3")) {
+                } else if (a3001.equals("3")) {//死亡
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Death.getIndex());
-                } else if (a3001.equals("4")) {
+                } else if (a3001.equals("4")) {//4辞职
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Resignation.getIndex());
-                } else if (a3001.equals("9")) {
+                } else if (a3001.equals("92")) {
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Expel.getIndex());
-                } else {
+                } else if (a3001.equals("94")) {
+                    incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dismissal.getIndex());
+                }else {
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Other.getIndex());
                 }
             }
         } else if (a01.getA0163().equals("1") && a01.getA0165().equals("01")) {
-            incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.ProvinceToCentral.getIndex());//省管变中管
+            incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dispatch.getIndex());//省管变中管
         } else if (a01.getA0163().equals("1")) {
             incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Working.getIndex());//在职
         } else {

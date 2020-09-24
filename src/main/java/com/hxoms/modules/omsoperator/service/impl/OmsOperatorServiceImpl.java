@@ -210,7 +210,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         if (StringUtils.isBlank(operatorId)) {
             throw new CustomMessageException("请先选择经办人!");
         }
-
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         //查找原经办人
@@ -232,7 +231,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //需要当前操作人ID(未设置)
             msc = "经办人"+user.getUserName()+"的申请已被"+loginUser.getOrgName()+"单位撤消!";
         }
-
         return msc;
     }
 
@@ -281,7 +279,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     */
     @Override
     public PageInfo getAllOperator(Integer pageNum, Integer pageSize, String keyWord,List<String> state) {
-
         if (pageNum == null) {
             pageNum = 1;
         }
@@ -309,14 +306,12 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public PageInfo getOperatorList(Integer pageNum, Integer pageSize, List<String> orgId, String keyWord, List<String> state) {
-
         if (pageNum == null) {
             pageNum = 1;
         }
         if (pageSize == null) {
             pageSize = 10;
         }
-
         /**  设置传入页码，以及每页的大小  */
         PageHelper.startPage(pageNum, pageSize);
         List<CfUser> users = cfUserMapper.getOperatorApprovalList(keyWord,orgId,Constants.USER_TYPES[6],state);
@@ -347,7 +342,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      */
     @Override
     public void exportOperator(String keyWord, List<String> orgId, List<String> state, HttpServletResponse response) {
-
         //根据条件查询经办人名单
         List<CfUser> operatorList = cfUserMapper.getOperatorApprovalList(keyWord, orgId, Constants.USER_TYPES[6], state);
         if (operatorList == null || operatorList.size() < 1){
@@ -366,7 +360,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             HSSFRow row1=sheet.createRow(0);
             //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
             HSSFCell cell=row1.createCell(0);
-
             //设置标题字体大小
             font.setFontHeightInPoints((short) 16);
             //加粗
@@ -379,7 +372,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             cell.setCellStyle(style);
             //设置标题单元格内容
             cell.setCellValue("经办人名单");
-
             //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
             sheet.addMergedRegion(new CellRangeAddress(0,1,0,9));
             //在sheet里创建第二行
@@ -396,7 +388,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             row2.createCell(8).setCellValue("MAC地址");
             row2.createCell(9).setCellValue("状态");
             //在sheet里添加数据
-
             //创建文件样式对象
             HSSFCellStyle style1 = wb.createCellStyle();
             //获得字体对象
@@ -406,7 +397,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //居左
             style1.setAlignment(HorizontalAlignment.LEFT);
             style1.setFont(font1);
-
             HSSFRow row = null;
             for(int i = 0; i < operatorList.size(); i++){
                 row = sheet.createRow(i + 3);
@@ -420,20 +410,17 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 row.createCell(7).setCellValue(operatorList.get(i).getPoliticalAffi());
                 row.createCell(8).setCellValue(operatorList.get(i).getMac());
                 row.createCell(9).setCellValue(Constants.USER_STATUSName[(Integer.valueOf(operatorList.get(i).getUserState()))]);
-
                 //设置单元格字体大小
                 for(int j = 0;j < 9;j++){
                     row.getCell(j).setCellStyle(style1);
                 }
             }
-
             //输出Excel文件
             OutputStream output= null;
             try {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition", "utf-8");
-
                 wb.write(output);
                 output.flush();
                 output.close();
@@ -441,7 +428,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 e.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -503,7 +489,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS  = operatorHandoverMapper.selectByHandoverId(handoverId,String.valueOf(Constants.handover_business[4]));
         return omsOperatorHandoverSubformVOS;
-
     }
 
     /**
@@ -613,22 +598,16 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         CfUser user = cfUserMapper.selectByPrimaryKey(operatorId);
         /**证照领取*/
         List<OmsCerGetTaskVO> omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByStatusAndName(user.getUserId(), "0");
-
         /**注销证照*/
         List<OmsCerCancellateLicense> omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByStatusAndName(user.getUserId(),"11");
-
         /**撤销登记备案*/
         List<OmsRegRevokeapply> omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByStatusAndName(user.getUserId(), "2");
-
         /**因公出国境*/
         List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByStatusAndName(user.getUserId(), Constants.leader_business[9]);
-
         /**因私出国境*/
         List<OmsPriApplyVO> omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByStatusAndName(user.getUserId(), Constants.leader_business[9]);
-
         /** 延期回国*/
         List<OmsPriDelayVO> omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByStatusAndName(user.getUserId(),Constants.leader_business[9]);
-
         if ((omsCerGetTasks != null && omsCerGetTasks.size() > 0)  || (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size() > 0) ||
                 (omsRegRevokeapplies != null && omsRegRevokeapplies.size() > 0  ) || (omsPubApplyVOS != null && omsPubApplyVOS.size() > 0 ) ||
                 (omsPriApplyVOS != null && omsPriApplyVOS.size() > 0 ) || (omsPriDelayVOS != null && omsPriDelayVOS.size() > 0)){
@@ -650,7 +629,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 //交接状态
                 omsOperatorHandover.setHandoverstatus(String.valueOf(Constants.handover_business[3]));
                 omsOperatorHandoverMapper.insertSelective(omsOperatorHandover);
-
                 //查询该经办人未完成的业务(往交接主表插入数据、查出数据后插入交接子表)
                 /**证照领取*/
                 if (omsCerGetTasks != null && omsCerGetTasks.size()>0) {
@@ -680,8 +658,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         omsOperatorHandoverSubform.setHandoverid(handoverId);
                         //业务发生时间
                         omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
-                        //说明
-
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
                     }
                 }
@@ -722,7 +698,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
                     }
                 }
-
                 /**因公出国境*/
                 if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
                     for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
@@ -885,7 +860,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
                     }
                 }
-
             }else{
                 //通过主表id及业务id查询子表 是否有记录，有则更新，无则插入
                 //获取主表id
@@ -919,10 +893,7 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                             omsOperatorHandoverSubform.setHandoverid(handoverId);
                             //业务发生时间
                             omsOperatorHandoverSubform.setExitdate(omsCerGetTask.getGetTime());
-                            //说明
-
                             omsOperatorHandoverSubformMapper.insertSelective(omsOperatorHandoverSubform);
-
                         }else {
                             //业务主键
                             omsOperatorHandoverSubform.setBusinessid(omsCerGetTask.getId());
@@ -947,7 +918,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         }
                     }
                 }
-
                 /**注销证照*/
                 if (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size()>0) {
                     for (OmsCerCancellateLicense omsCerCancellateLicense : omsCerCancellateLicenses) {
@@ -1013,7 +983,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         }
                     }
                 }
-
                 /**因公出国境*/
                 if (omsPubApplyVOS != null && omsPubApplyVOS.size()>0){
                     for (OmsPubApplyVO omsPubApplyVo:omsPubApplyVOS) {
@@ -1089,10 +1058,8 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                             omsOperatorHandoverSubform.setSm(omsPubApplyVo.getCfrw());
                             omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                         }
-
                     }
                 }
-
                 /**因私出国境*/
                 if (omsPriApplyVOS != null && omsPriApplyVOS.size()>0) {
                     for (OmsPriApplyVO omsPriApplyVO : omsPriApplyVOS) {
@@ -1168,10 +1135,8 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                             omsOperatorHandoverSubform.setSm(omsPriApplyVO.getAbroadReasons());
                             omsOperatorHandoverSubformMapper.updateByPrimaryKeySelective(omsOperatorHandoverSubform);
                         }
-
                     }
                 }
-
                 /**延期回国*/
                 if (omsPriDelayVOS != null && omsPriDelayVOS.size()>0) {
                     for (OmsPriDelayVO omsPriDelayVO : omsPriDelayVOS) {
@@ -1241,7 +1206,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                         }
                     }
                 }
-
                 /**撤销登记备案*/
                 if (omsRegRevokeapplies != null && omsRegRevokeapplies.size()>0) {
                     for (OmsRegRevokeapply omsRegRevokeapply : omsRegRevokeapplies) {
@@ -1346,22 +1310,16 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //查询所有
             /**证照领取*/
             omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
-
             /**注销证照*/
             omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
-
             /**撤销登记备案*/
             omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
-
             /**因公出国境*/
             omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
-
             /**因私出国境*/
             omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
-
             /** 延期回国*/
             omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
-
         }else {
             //根据类型查找相关的数据
             for (String businessType:businessTypes) {
@@ -1499,8 +1457,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 omsOperatorJbywVO.setDuty(omsRegRevokeapply.getPost());
                 //业务发生时间
                 omsOperatorJbywVO.setStartTime(omsRegRevokeapply.getCreateDate());
-                //业务结束时间
-
                 //说明
                 omsOperatorJbywVO.setSm(omsRegRevokeapply.getApplyReason());
                 omsOperatorJbywVOS.add(omsOperatorJbywVO);
@@ -1522,15 +1478,11 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 omsOperatorJbywVO.setDuty(omsCerCancellateLicense.getPost());
                 //业务发生时间
                 omsOperatorJbywVO.setStartTime(omsCerCancellateLicense.getCreateTime());
-                //业务结束时间
-
                 //说明
                 omsOperatorJbywVO.setSm(omsCerCancellateLicense.getZxsm());
                 omsOperatorJbywVOS.add(omsOperatorJbywVO);
             }
         }
-
-
         PageInfo info = new PageInfo(omsOperatorJbywVOS);
         return info;
     }
@@ -1589,22 +1541,16 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //查询所有
             /**证照领取*/
             omsCerGetTasks = operatorHandoverMapper.selectOmsCerGetTaskByParam(omsOperatorJBYWQueryParam);
-
             /**注销证照*/
             omsCerCancellateLicenses = operatorHandoverMapper.selectCerCancellateLicenseByParam(omsOperatorJBYWQueryParam);
-
             /**撤销登记备案*/
             omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByParam(omsOperatorJBYWQueryParam);
-
             /**因公出国境*/
             omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByParam(omsOperatorJBYWQueryParam);
-
             /**因私出国境*/
             omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByParam(omsOperatorJBYWQueryParam);
-
             /** 延期回国*/
             omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByParam(omsOperatorJBYWQueryParam);
-
         }else {
             //根据类型查找相关的数据
             for (String businessType:businessTypes) {
@@ -1648,7 +1594,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 }else if ("2".equals(omsCerGetTask.getSex())){
                     omsOperatorJbywVO.setSex("女");
                 }
-
                 //工作单位
                 omsOperatorJbywVO.setCompany(omsCerGetTask.getB0101());
                 //职务（级）
@@ -1763,8 +1708,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 omsOperatorJbywVO.setDuty(omsRegRevokeapply.getPost());
                 //业务发生时间
                 omsOperatorJbywVO.setStartTime(omsRegRevokeapply.getCreateDate());
-                //业务结束时间
-
                 //说明
                 omsOperatorJbywVO.setSm(omsRegRevokeapply.getApplyReason());
                 omsOperatorJbywVOS.add(omsOperatorJbywVO);
@@ -1790,8 +1733,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 omsOperatorJbywVO.setDuty(omsCerCancellateLicense.getPost());
                 //业务发生时间
                 omsOperatorJbywVO.setStartTime(omsCerCancellateLicense.getCreateTime());
-                //业务结束时间
-
                 //说明
                 omsOperatorJbywVO.setSm(omsCerCancellateLicense.getZxsm());
                 omsOperatorJbywVOS.add(omsOperatorJbywVO);
@@ -1829,7 +1770,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             sheet.addMergedRegion(new CellRangeAddress(0,1,0,8));
             //在sheet里创建第二行
             HSSFRow row2=sheet.createRow(2);
-
             //创建单元格并设置单元格内容
             row2.createCell(0).setCellValue("序号");
             row2.createCell(1).setCellValue("业务类别");
@@ -1843,7 +1783,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //在sheet里添加数据
             //创建文件样式对象
             HSSFCellStyle style1 = wb.createCellStyle();
-
             //获得字体对象
             HSSFFont font1 = wb.createFont();
             //设置单元格字体大小
@@ -1885,7 +1824,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition", "utf-8");
-
                 wb.write(output);
                 output.flush();
                 output.close();
@@ -1910,7 +1848,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             throw new CustomMessageException("经办人ID为空!");
         }
         List<OmsOperatorHandoverSubformVO> omsOperatorHandoverSubformVOS = operatorHandoverMapper.getOperatorWBJYW(omsOperatorJBYWQueryParam);
-
         if (omsOperatorHandoverSubformVOS == null || omsOperatorHandoverSubformVOS.size() < 1){
             throw new CustomMessageException("操作失败");
         }else {
@@ -1939,7 +1876,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             cell.setCellStyle(style);
             //设置标题单元格内容
             cell.setCellValue("经办人交接记录");
-
             //副标题样式
             HSSFCellStyle style1 = wb.createCellStyle();
             HSSFFont font1 = wb.createFont();
@@ -1956,7 +1892,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             cell1.setCellValue("交接时间："+sdf.format(omsOperatorHandoverSubformVOS.get(0).getJjTime())+"       接手人："+omsOperatorHandoverSubformVOS.get(0).getHandoverName());
             cell1.setCellStyle(style1);
-
             //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
             sheet.addMergedRegion(new CellRangeAddress(0,1,0,9));
             sheet.addMergedRegion(new CellRangeAddress(2,2,0,9));
@@ -1974,7 +1909,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             row3.createCell(8).setCellValue("说明");
             row3.createCell(9).setCellValue("备注");
             //在sheet里添加数据
-
             //创建文件样式对象
             HSSFCellStyle style2 = wb.createCellStyle();
             //获得字体对象
@@ -1984,7 +1918,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             //居左
             style2.setAlignment(HorizontalAlignment.LEFT);
             style2.setFont(font2);
-
             HSSFRow row = null;
             for(int i = 0; i < omsOperatorHandoverSubformVOS.size(); i++){
                 row = sheet.createRow(i + 4);
@@ -1998,27 +1931,20 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 }else {
                     row.createCell(3).setCellValue("");
                 }
-
                 row.createCell(4).setCellValue(omsOperatorHandoverSubformVOS.get(i).getDuty());
                 String businesstype = omsOperatorHandoverSubformVOS.get(i).getBusinesstype();
                 if (businesstype.equals(Constants.handover_type[0])){
                     row.createCell(5).setCellValue("证照领取");
-
                 }else if (businesstype.equals(Constants.handover_type[1])){
                     row.createCell(5).setCellValue("因公出国");
-
                 }else if (businesstype.equals(Constants.handover_type[2])){
                     row.createCell(5).setCellValue("因私出国");
-
                 }else if (businesstype.equals(Constants.handover_type[3])){
                     row.createCell(5).setCellValue("延期回国");
-
                 }else if (businesstype.equals(Constants.handover_type[4])){
                     row.createCell(5).setCellValue("撤销登记备案");
-
                 }else if (businesstype.equals(Constants.handover_type[5])){
                     row.createCell(5).setCellValue("注销证照");
-
                 }
                 Date exitdate = omsOperatorHandoverSubformVOS.get(i).getExitdate();
                 if (exitdate != null){
@@ -2039,14 +1965,12 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                     row.getCell(j).setCellStyle(style2);
                 }
             }
-
             //输出Excel文件
             OutputStream output= null;
             try {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition", "utf-8");
-
                 wb.write(output);
                 output.flush();
                 output.close();
@@ -2054,7 +1978,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
                 e.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -2100,7 +2023,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         user.setModifyUser(loginUser.getId());
         user.setModifyTime(new Date());
         cfUserMapper.updateByPrimaryKeySelective(user);
-
     }
 
     /**
@@ -2142,7 +2064,6 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
      * @Date: 2020/5/7 14:32
      */
     private void verify(CfUser user) {
-
         //1、创建经办人时，要判断登录名是否重复，并且在在非撤消和拒绝状态
         CfUser selectUser = cfUserMapper.selectByUserCode(user.getUserCode());
         if(selectUser != null){

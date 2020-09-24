@@ -387,14 +387,14 @@
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
         inner join oms_b01_temp on oms_pub_apply.b0100=oms_b01_temp.b0100
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         where oms_b01_temp.batch_id=#{batchId} and oms_pub_apply.SQZT!='0'
         order by oms_pub_apply.SQZT,oms_pub_apply.cgsj
     </select>
     <select id="selectPersonInfoByApplyId" resultType="java.util.Map">
         select concat(b.SURNAME,b.name) as "NAME"
         ,b.SEX
-        ,b.BIRTH_DATE
+        ,b.BIRTH_DATE_GB
         ,a.POLITICAL_AFF
         ,b1.B0101
         ,a.JOB
@@ -417,14 +417,14 @@
         ,a.PWH
         ,a.ZJCGQK
         from oms_pub_apply a inner join oms_reg_procpersoninfo b
-        on a.a0100=b.a0100
+        on a.PROCPERSON_ID=b.ID
         inner join b01 b1 on a.b0100=b1.b0100
         where a.id=#{applyId}
     </select>
     <select id="selectById" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE_GB,b.B0101
         ,o.* from oms_pub_apply o inner join oms_reg_procpersoninfo r
-        on o.a0100=r.a0100
+        on o.PROCPERSON_ID=r.ID
         inner join b01 b on o.b0100=b.b0100
         where o.id=#{id}
     </select>
@@ -442,7 +442,7 @@
         ,op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
         ,oms_reg_procpersoninfo.NF AS NF
         from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         LEFT JOIN oms_smr_personinfo op ON oms_reg_procpersoninfo.id = op.PROC_PERSON_ID
         where oms_pub_apply.SFXD = '1'
             <if test="omsPubApplyQueryParam.applyId != null and omsPubApplyQueryParam.applyId != ''">
@@ -488,8 +488,9 @@
         ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
+        ,oms_reg_procpersoninfo.REGISTE_RESIDENCE as REGISTE_RESIDENCE
         from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         <where>
             <if test="pwh != null and pwh !=''">
                 and oms_pub_apply.PWH = #{pwh}
@@ -508,7 +509,7 @@
         ,oms_reg_procpersoninfo.INCUMBENCY_STATUS as status
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         <where>
             <if test="yspId != null and yspId != ''">
                 and oms_pub_apply.YSP_ID = #{yspId}
@@ -556,7 +557,7 @@
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         <where>
             <if test="pwh != null and pwh !=''">
                 <![CDATA[ and oms_pub_apply.CGSJ >= now()]]>
@@ -713,7 +714,7 @@
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
         ,oms_reg_procpersoninfo.WORK_UNIT as b0101
         from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.a0100=oms_reg_procpersoninfo.a0100
+        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
 				WHERE
 				oms_pub_apply.CGSJ >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
 				and

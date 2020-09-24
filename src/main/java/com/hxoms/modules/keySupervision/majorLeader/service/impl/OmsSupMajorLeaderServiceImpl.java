@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.ListUtil;
 import com.hxoms.common.utils.UUIDGenerator;
@@ -186,12 +187,6 @@ public class OmsSupMajorLeaderServiceImpl extends ServiceImpl<OmsSupMajorLeaderM
 			//获得领导主键
 			String a0100 = omsRegProcpersoninfo.getA0100();
 			if(majorLeaderList.contains(a0100) == false) {
-//				//根据领导主键查询领导信息
-//				Map<String,Object> map = new HashMap<String,Object>();
-//				map.put("a0163", PerManageEnum.PRESENT_EMPLOYMENT.getCode());       //人员管理状态
-//				map.put("a0100", a0100);
-//				map.put("a0201b", person.getA0201b());
-//				List<Map<String,Object>> mapList = a01Mapper.selectPersonInfo(map);
 				OmsSupMajorLeader omsSupMajorLeader = new OmsSupMajorLeader();
 				omsSupMajorLeader.setId(UUIDGenerator.getPrimaryKey());
 				omsSupMajorLeader.setA0100(omsRegProcpersoninfo.getA0100());
@@ -200,8 +195,8 @@ public class OmsSupMajorLeaderServiceImpl extends ServiceImpl<OmsSupMajorLeaderM
 				omsSupMajorLeader.setName(omsRegProcpersoninfo.getSurname()+omsRegProcpersoninfo.getName());
 				omsSupMajorLeader.setPinyin(omsRegProcpersoninfo.getPy());
 
-				omsSupMajorLeader.setSex(omsRegProcpersoninfo.getSex().equals('1') ? "男" : "女");
-//				omsSupMajorLeader.setPoliticalAffi((String) person.get("politicalAffi"));
+				omsSupMajorLeader.setSex(omsRegProcpersoninfo.getSex().equals(SexEnum.MALE.getCode()) ? "男" : "女");
+				omsSupMajorLeader.setPoliticalAffi(omsRegProcpersoninfo.getPoliticalAffiname());
 
 				//在登记备案库中查询人员的身份证出生日期
 				omsSupMajorLeader.setBirthDate(omsRegProcpersoninfo.getBirthDate());
@@ -212,12 +207,6 @@ public class OmsSupMajorLeaderServiceImpl extends ServiceImpl<OmsSupMajorLeaderM
 				//进行保存领导信息
 				list.add(omsSupMajorLeader);
 
-
-//				//在备案库中设置该对象为主要领导
-//				omsRegProcpersoninfo.setMainLeader(YesOrNoEnum.YES.getCode());
-//				omsRegProcpersoninfo.setModifyTime(new Date());
-//				omsRegProcpersoninfo.setModifyUser(UserInfoUtil.getUserInfo().getId());
-//				omsRegProcpersonInfoMapper.updateById(omsRegProcpersoninfo);
 			}else {
 				continue;
 			}

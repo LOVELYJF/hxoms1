@@ -1,6 +1,7 @@
 package com.hxoms.modules.leaderSupervision.mapper;
 
 import com.hxoms.modules.leaderSupervision.vo.AuditOpinionVo;
+import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
@@ -51,13 +52,13 @@ public interface LeaderCommonMapper {
    /** 查询 因私延期出国境（申请）管理 ***/
    List<Map> selectPridelayApplyManager(@Param("omsPriApplyIPageParam") OmsPriApplyIPageParam omsPriApplyIPageParam);
 
-   /** 征求纪委意见 查询情况 **/
+   /** 征求纪委意见(统计查询) 查询情况 **/
 
    List<Map>  selectjieweiOpinionCase();
 
    /** 征求纪委意见 明细查询 **/
 
-   List<Map>  selectjieweiOpinionDetail();
+   List<Map>  selectjieweiOpinionDetail(@Param("jiweiStatisticsVo") JiweiStatisticsVo jiweiStatisticsVo);
 
 
    /** 做出审核意见 查询业务流程（因公） 页面 **/

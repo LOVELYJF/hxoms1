@@ -105,20 +105,12 @@ public class OmsFileServiceImpl implements OmsFileService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //查询机构信息
         B01 b01 = b01Mapper.selectOrgByB0100(userInfo.getOrgId());
-        	
-
-
-
 //        //测试用的单位主键
 //        userInfo.setOrgId("00000000000000000000000000");
 //        UserInfo userInfo = UserInfoUtil.getUserInfo();
 //        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
 //        B01 b01 = new B01();
 //        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
-
-
-
-
 //        if (b01 == null){
 //            throw new CustomMessageException("数据异常");
 //        }
@@ -200,8 +192,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                         String frontContent = getFrontContent(applyId,"名单");
                         omsFile.setFrontContent(frontContent);
                     }
-
-
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());
                     omsCreateFile.setBankContent(omsFile.getBankContent());
                     omsCreateFileService.insertOrUpdate(omsCreateFile);
@@ -212,7 +202,6 @@ public class OmsFileServiceImpl implements OmsFileService {
     }
 
     private String getFrontContent(String applyId, String fileName) {
-
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日");
         OmsPubApplyQueryParam omsPubApplyQueryParam = new OmsPubApplyQueryParam();
         omsPubApplyQueryParam.setApplyId(applyId);
@@ -248,7 +237,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             }
             OtherPubApply otherPubApply = omsPubApplyService.getOtherPubApply(omsPubApplyVO.getB0100(), omsPubApplyVO.getA0100(), omsPubApplyVO.getCgsj());
             List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = otherPubApply.getOmsSmrOldInfoVOS();
-
             for (OmsSmrOldInfoVO o:omsSmrOldInfoVOS) {
                 if ("0".equals(o.getSecretRelatedLevel())){
                     o.setSecretRelatedLevel("非涉密人员");
@@ -259,7 +247,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }else if ("3".equals(o.getSecretRelatedLevel())){
                     o.setSecretRelatedLevel("核心涉密人员");
                 }
-
             }
             stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
             stringBuffer.append("<colgroup>");
@@ -282,7 +269,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
             stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getName()+"<br/></td>");
             stringBuffer.append("<td width=\"72\" style=\"\">性别</td>");
-
             stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+omsPubApplyVO.getSex()+"</td>");
             stringBuffer.append("<td width=\"82\" style=\"\">出生年月</td>");
             if (omsPubApplyVO.getBirthDate() != null){
@@ -290,7 +276,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             }else {
                 stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"><br/></td>");
             }
-
             stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
             stringBuffer.append("<td colspan=\"2\" width=\"155\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getPoliticalAff()+"</td>");
             stringBuffer.append("</tr>");
@@ -325,7 +310,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(1).getSecretRelatedLevel()+"</td>");
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
                 stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsSmrOldInfoVOS.get(1).getQrFinishDate())+"</td>");
-
             }else {
                 stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
@@ -335,7 +319,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
                 stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
-
             }
             stringBuffer.append("</tr>");
             stringBuffer.append("<tr style=\"height:198px\">");
@@ -383,7 +366,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td width=\"142\" style=\"\">无&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; □<br/>外国国籍&nbsp;&nbsp;&nbsp;&nbsp; □<br/>永久居留资格 □<br/>长期居留许可 □</td>");
                 stringBuffer.append("</tr>");
             }
-
             stringBuffer.append("<tr style=\"height:198px\">");
             stringBuffer.append("<td colspan=\"2\" width=\"144\" style=\"\">组团单位(省内单位勾选，省外单位为手工录入)</td>");
             stringBuffer.append("<td colspan=\"4\" width=\"298\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+omsPubApplyVO.getZtdw()+"</td>");
@@ -434,7 +416,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             stringBuffer.append("</tr><tr style=\"height:74px\">");
             stringBuffer.append("<td width=\"72\" style=\"\">人员派出单位意见</td>");
             stringBuffer.append("<td colspan=\"9\" width=\"786\" style=\"\">负责人签字：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 单位盖章<br/>年月日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 年月日</td></tr><tr style=\"height:31px\"><td width=\"72\" style=\"\">说明</td><td colspan=\"9\" width=\"786\" style=\"\">本表由因公临时出国人员所在单位填写，按照干部管理权限，报组织人事部门备案，并抄报外事审批部门。</td></tr></tbody></table><p><br/></p>");
-
         }else if ("近三年出国（境）记录表".equals(fileName)){
 
             stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\" border =\"1\" >");
@@ -479,14 +460,48 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("</tr>");
             }
         }else if ("名单".equals(fileName)){
+            stringBuffer.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+            stringBuffer.append("<tbody>");
+            stringBuffer.append("<tr class=\"firstRow\">");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">序号</td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">姓名</td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">性别</td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">出生日期</td>");
+            stringBuffer.append("<td width=\"112\" valign=\"top\" style=\"word-break: break-all;\">工作单位及职务</td>");
+            stringBuffer.append("<td width=\"64\" valign=\"top\" style=\"word-break: break-all;\">赴台身份<br/></td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">户口所在地<br/></td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">证照保管单位</td>");
+            stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">备注<br/></td>");
+            stringBuffer.append("</tr>");
             //赴台批件名单
             if (omsPubApplyVOS != null && omsPubApplyVOS.size() >0){
-                //todo
-                
-
-
-
+                int i =0;
+                for (OmsPubApplyVO pubApplyVO:omsPubApplyVOS) {
+                    i++;
+                    stringBuffer.append("<tr>");
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+i+"<br/></td>");
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getName()+"</td>");
+                    if ("1".equals(pubApplyVO.getSex())){
+                        pubApplyVO.setSex("男");
+                    }else if ("2".equals(pubApplyVO.getSex())){
+                        pubApplyVO.setSex("女");
+                    }
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getSex()+"</td>");
+                    if (pubApplyVO.getBirthDate() != null){
+                        stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+sdf1.format(pubApplyVO.getBirthDate())+"</td>");
+                    }else {
+                        stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\"></td>");
+                    }
+                    stringBuffer.append("<td width=\"112\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getB0101()+"</td>");
+                    stringBuffer.append("<td width=\"64\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getZtnrzw()+"</td>");
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getREGISTE_RESIDENCE()+"</td>");
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+""+"</td>");
+                    stringBuffer.append("<td width=\"88\" valign=\"top\" style=\"word-break: break-all;\">"+pubApplyVO.getBz()+"</td>");
+                    stringBuffer.append("</tr>");
+                }
             }
+            stringBuffer.append("</tbody>");
+            stringBuffer.append("</table><p><br/></p><p><br/></p>");
         }
 
     return stringBuffer.toString();

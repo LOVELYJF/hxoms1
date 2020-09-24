@@ -181,16 +181,18 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper, A36> i
             throw new CustomMessageException("参数错误");
         }
 
-        List<A36> list = a36Mapper.selectFamilyMember(a0100);
-        //根据身份证号码切割得到出生日期
-        if (!ListUtil.isEmpty(list)) {
-            for (A36 a36 : list) {
-                String birthdate = OmsRegInitUtil.getBirthByIdNumber(a36.getIdCard());
-                a36.setA3607(birthdate);
-            }
-        }
-        return list;
-    }
+		List<A36> list = a36Mapper.selectFamilyMember(a0100);
+		//根据身份证号码切割得到出生日期
+		if(!ListUtil.isEmpty(list)){
+			for(A36 a36 : list){
+				if(!StringUtils.isBlank(a36.getIdCard())){
+					String birthdate = OmsRegInitUtil.getBirthByIdNumber(a36.getIdCard());
+					a36.setA3607(birthdate);
+				}
+			}
+		}
+		return list;
+	}
 
 
     /**

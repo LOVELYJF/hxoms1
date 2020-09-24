@@ -1,6 +1,7 @@
 package com.hxoms.modules.leaderSupervision.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
@@ -31,6 +32,11 @@ public interface LeaderOtherStatisticalQueryService {
    /**因私出国境延期申请 **/
 
    PageInfo selectAllOmsPriDelayApplyManage(OmsPriApplyIPageParam omsPriApplyIPageParam);
+
+
+   /**征求纪委意见 回复 情况 明细查询 **/
+
+   PageInfo selectjieweiOpinionDetail(JiweiStatisticsVo JiweiStatisticsVo);
 
 
 }
