@@ -230,7 +230,7 @@ public class CfCertificateCollectionController {
      */
     @ApiOperation(value="保存富文本文件（模板）")
     @PostMapping("/saveTextOmsFile")
-    public Result saveTextOmsFile(OmsFile omsFile){
+    public Result saveTextOmsFile(@RequestBody @Validated OmsFile omsFile){
         cfCertificateCollectionService.saveTextOmsFile(omsFile);
         return Result.success();
     }
@@ -244,7 +244,7 @@ public class CfCertificateCollectionController {
     */
     @ApiOperation(value="保存或者更新打印文件")
     @PostMapping("/insertOrUpdate")
-    public Result insertOrUpdate(OmsCreateFile omsCreateFile){
+    public Result insertOrUpdate(@RequestBody @Validated OmsCreateFile omsCreateFile){
         cfCertificateCollectionService.insertOrUpdate(omsCreateFile);
         return Result.success();
     }

@@ -21,6 +21,7 @@ public class OmsFile {
     private String fileId;
 
     @ApiModelProperty(value = "可编辑文件（正面，第一页）",required = true)
+    @NotBlank(message = "内容不能为空")
     private String frontContent;
 
     @ApiModelProperty(value = "可编辑文件（反面，第二页）")

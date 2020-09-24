@@ -340,7 +340,7 @@
   </update>
   <select id="selectUserByQua" resultType="com.hxoms.modules.sysUser.entity.CfUser">
       SELECT
-          id,
+          user_id,
           FINGERPRINT_1 fingerprint1,
           FINGERPRINT_2 fingerprint2
       FROM
