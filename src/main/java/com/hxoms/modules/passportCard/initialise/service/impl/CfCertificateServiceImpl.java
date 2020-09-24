@@ -211,7 +211,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         //数据库存在证照，则验证证照
         if(certificateGa!=null){
             //证照验证
-            validateCerInfo(certificateGa,cfCertificate);
+            validateCerInfo(certificateGa,cfCertificate,true);
             certificateGa.setSaveStatus(SaveStatusEnum.YQC.getCode());
             certificateGa.setZjxs(cfCertificate.getZjxs());
             certificateGa.setUpdater(userInfo.getId());
@@ -523,45 +523,45 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 证件信息对比
      * @Author: wangyunquan
-     * @Param: [certificateGa, cfCertificate]
-     * @Param: [公安数据, 证照数据]
+     * @Param: [certificateGa, cfCertificate,flag(true:代表数据库数据为公安，flase代表数据库数据为证照)]
+     * @Param: [数据库数据, 对比数据]
      * @Return: void
      * @Date: 2020/8/6
      */
-    public void validateCerInfo(CfCertificate certificateGa,CfCertificate cfCertificate){
+    public void validateCerInfo(CfCertificate certificateExist, CfCertificate cfCertificate,boolean flag){
         //验证姓名、性别、国籍、出生日期、签发单位、签发日期、出生地、证件有效期至
         StringBuffer stringBuffer=new StringBuffer();
         String[] valiUint={"姓名","性别","国籍","出生日期","签发单位","签发日期","出生地","证件有效期至"};
-        List<String> certificateGaList=new LinkedList<>();
+        List<String> certificateExistList=new LinkedList<>();
         List<String> certificateList=new LinkedList<>();
         SimpleDateFormat sF=new SimpleDateFormat("yyyy.MM.dd");
-        certificateGaList.add(certificateGa.getName());certificateList.add(cfCertificate.getName());
-        certificateGaList.add(certificateGa.getSex());certificateList.add(cfCertificate.getSex());
-        certificateGaList.add(certificateGa.getGj());certificateList.add(cfCertificate.getGj());
-        certificateGaList.add(sF.format(certificateGa.getCsrq()));certificateList.add(sF.format(cfCertificate.getCsrq()));
-        certificateGaList.add(certificateGa.getQfjg());certificateList.add(cfCertificate.getQfjg());
-        certificateGaList.add(sF.format(certificateGa.getQfrq()));certificateList.add(sF.format(cfCertificate.getQfrq()));
-        certificateGaList.add(certificateGa.getCsdd());certificateList.add(cfCertificate.getCsdd());
-        certificateGaList.add(sF.format(certificateGa.getYxqz()));certificateList.add(sF.format(cfCertificate.getYxqz()));
+        certificateExistList.add(certificateExist.getName());certificateList.add(cfCertificate.getName());
+        certificateExistList.add(certificateExist.getSex());certificateList.add(cfCertificate.getSex());
+        certificateExistList.add(certificateExist.getGj());certificateList.add(cfCertificate.getGj());
+        certificateExistList.add(sF.format(certificateExist.getCsrq()));certificateList.add(sF.format(cfCertificate.getCsrq()));
+        certificateExistList.add(certificateExist.getQfjg());certificateList.add(cfCertificate.getQfjg());
+        certificateExistList.add(sF.format(certificateExist.getQfrq()));certificateList.add(sF.format(cfCertificate.getQfrq()));
+        certificateExistList.add(certificateExist.getCsdd());certificateList.add(cfCertificate.getCsdd());
+        certificateExistList.add(sF.format(certificateExist.getYxqz()));certificateList.add(sF.format(cfCertificate.getYxqz()));
         for (int i = 0; i < valiUint.length; i++) {
             String unit = valiUint[i];
-            String valueGa = certificateGaList.get(i);
+            String valueExist = certificateExistList.get(i);
             String value = certificateList.get(i);
-            if(StringUtils.isBlank(valueGa)||StringUtils.isBlank(value))
+            if(StringUtils.isBlank(valueExist)||StringUtils.isBlank(value))
                 throw new CustomMessageException("公安或证照的"+unit+"为空，验证失败，请核实！");
-            if(!valueGa.equals(value)){
+            if(!valueExist.equals(value)){
                 //格式不能修改，耶稣说的。
-                stringBuffer.append("公安"+unit+"：").append(valueGa).append("and").append("证照"+unit+"：").append(value);
+                stringBuffer.append("公安"+unit+"：").append(flag?valueExist:value).append("and").append("证照"+unit+"：").append(flag?value:valueExist);
                 stringBuffer.append("or");
             }
         }
         if(StringUtils.isBlank(stringBuffer.toString())){
             //验证通过
-            certificateGa.setCardStatus(CardStatusEnum.YYZ.getCode());
+            certificateExist.setCardStatus(CardStatusEnum.YYZ.getCode());
         }else{
             //验证失败
-            certificateGa.setCardStatus(CardStatusEnum.YZSB.getCode());
-            certificateGa.setExceptionMessage(stringBuffer.substring(0,stringBuffer.length()-2));
+            certificateExist.setCardStatus(CardStatusEnum.YZSB.getCode());
+            certificateExist.setExceptionMessage(stringBuffer.substring(0,stringBuffer.length()-2));
         }
     }
     /**
@@ -732,7 +732,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                                     &&cfCertificateExist.getZjhm().equals(cfCertificate.getZjhm())){
                                                 //已取出待验证证照，此处要验证证照
                                                 if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
-                                                    validateCerInfo(cfCertificateExist,cfCertificate);
+                                                    validateCerInfo(cfCertificateExist,cfCertificate,false);
                                                     cfCertificateExist.setUpdater(userInfo.getId());
                                                     cfCertificateExist.setUpdateTime(importDate);
                                                     //设置存储方式
