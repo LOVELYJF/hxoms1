@@ -62,8 +62,4 @@
     </if>
   </select>
 
-  <select id="selectrfIdList" resultType="java.lang.String">
-      select rf_id from oms_reg_revokeapply where status!='4'
-  </select>
-
 </mapper>

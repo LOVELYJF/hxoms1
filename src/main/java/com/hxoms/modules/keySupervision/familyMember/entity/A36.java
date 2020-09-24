@@ -1,5 +1,6 @@
 package com.hxoms.modules.keySupervision.familyMember.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -47,6 +48,7 @@ public class A36 {
 
     @ColumnAnnotation(FieldName = "modify_time",   FieldDescription="")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date modifyTime;
 
@@ -76,6 +78,7 @@ public class A36 {
 
     @ColumnAnnotation(FieldName = "lmmigrate_time",   FieldDescription="移居时间")
     @JsonFormat(pattern = "yyyy.MM.dd")
+    @JSONField(format = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date lmmigrateTime;
 

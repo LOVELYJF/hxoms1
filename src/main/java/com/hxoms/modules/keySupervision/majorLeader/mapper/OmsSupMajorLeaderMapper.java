@@ -4,6 +4,8 @@ package com.hxoms.modules.keySupervision.majorLeader.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 
+import java.util.List;
+
 
 /**
  * <b>主要领导数据持久层接口/b>
@@ -13,4 +15,5 @@ import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 public interface OmsSupMajorLeaderMapper extends BaseMapper<OmsSupMajorLeader> {
 
 
+	List<String> selectA0100List();
 }

@@ -35,12 +35,16 @@
         b.counter_num counterNum,
         a.data_source dataSource,
         (select item_name from sys_dict_item where dict_code='ZJLQSJLY' and item_code=a.data_source) dataSourceName,
+        a.happen_Date happenDate,
         a.create_time createTime,
-        a.get_time getTime
+        a.get_time getTime,
+        d.user_name workUnitLinkman,
+        d.user_mobile linkmanPhone
     FROM
         oms_cer_get_task a
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
+    INNER JOIN cf_user d ON a.rf_b0000=d.org_id
   </sql>
   <select id="selectGetCer" resultType="com.hxoms.modules.passportCard.getTaskQuery.entity.parameterEntity.CerGetTaskInfo">
     <include refid="calGetCerSql"/>
@@ -78,7 +82,7 @@
                 #{item}
             </foreach>
         </if>
-
     </where>
+    group by a.id
   </select>
 </mapper>

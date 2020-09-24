@@ -1748,7 +1748,7 @@
         </foreach>
     </insert>
 
-    <!-- 表 b01 退出信息集 -->
+    <!-- 表 b01  -->
     <sql id="b01sql">
        B0100	,
         B0101	,
@@ -1873,6 +1873,42 @@
             #{item.bx001,jdbcType=INTEGER}, #{item.b0268,jdbcType=VARCHAR}, #{item.b0269,jdbcType=VARCHAR},
             #{item.POSICOUNTZJ,jdbcType=VARCHAR}, #{item.ORGPARTTYPE,jdbcType=VARCHAR}
             , #{item.ORGSTANDARDNAME,jdbcType=VARCHAR}, #{item.SUPERVISOR,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <!-- 表 PersonOrgOrder  -->
+    <sql id="PersonOrgOrdersql">
+       id	,
+        a01000	,
+        a0201b	,
+        orderindex
+    </sql>
+    <select id="getMasterPersonOrgOrder" resultType="com.hxoms.common.LowerKeyMapTest">
+        select
+        <include refid="PersonOrgOrdersql"/>
+        FROM person_org_order
+        <include refid="mysql_paging"/>
+    </select>
+
+    <select id="getMasterPersonOrgOrderCount" resultType="Integer">
+        select  count(1)  from person_org_order
+    </select>
+
+    <update id="updateMasterPersonOrgOrder">
+        <foreach collection="list" item="item" index="index" separator=";">
+            UPDATE person_org_order SET a01000=#{item.a01000},a0201b=#{item.a0201b},orderindex=#{item.orderindex}
+            WHERE id=#{item.id}
+        </foreach>
+    </update>
+
+    <insert id="insertMasterPersonOrgOrder">
+        insert into person_org_order (id	,
+        a01000	,
+        a0201b	,
+        orderindex)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR}, #{item.a01000,jdbcType=VARCHAR}, #{item.a0201b,jdbcType=VARCHAR}, #{item.orderindex,jdbcType=INTEGER})
         </foreach>
     </insert>
 </mapper>

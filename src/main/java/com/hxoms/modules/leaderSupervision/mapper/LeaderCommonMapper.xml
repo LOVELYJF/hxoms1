@@ -1372,30 +1372,9 @@
 			   temp.`因公`,
 			   sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
 			   '同意' as '同意',
-			   sum(case when jio.feedback_verdict = 1 then 1 else 0 end ) as num1,
+			   sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end ) as num1,
 			   '不同意' as '不同意',
-			   sum(case when jio.feedback_verdict = 2 then 1 else 0 end ) as num2,
-			   '不回复' as '不回复',
-			   sum(case when jio.feedback_verdict = 3 then 1 else 0 end ) as num3
-
-
-		FROM
-			 (
-			 select '因公' as '因公',ifnull(a.jiwei_opinion_id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
-
-			 UNION ALL
-
-			 select '因私' as '因私',ifnull(a.jiwei_opinion_id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
-			 ) temp left join oms_jiwei_opinion jio on temp.applyId =jio.id  group by temp.`因公`
-		union all
-		select
-
-			   '合计' as '合计',
-			   sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
-			   '同意' as '同意',
-			   sum(case when jio.feedback_verdict = 1 then 1 else 0 end ) as num1,
-			   '不同意' as '不同意',
-			   sum(case when jio.feedback_verdict = 2 then 1 else 0 end ) as num2,
+			   sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
 			   '不回复' as '不回复',
 			   sum(case when jio.feedback_verdict = 3 then 1 else 0 end ) as num3
 
@@ -1407,7 +1386,29 @@
 			 UNION ALL
 
 			 select '因私' as '因私',ifnull(a.id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
-			 ) temp left join oms_jiwei_opinion jio on temp.applyId =jio.id
+			 ) temp inner JOIN oms_jiwei_opinion jio on temp.applyId =jio.id  where   concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) !='nono'  group by temp.`因公`
+		union all
+		select
+
+			   '合计' as '合计',
+			   sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
+			   '同意' as '同意',
+			   sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end ) as num1,
+			   '不同意' as '不同意',
+			   sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
+			   '不回复' as '不回复',
+			   sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3
+
+		FROM
+			 (
+			 select '因公' as '因公',ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+
+			 UNION ALL
+
+			 select '因私' as '因私',ifnull(a.id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
+			 ) temp inner join oms_jiwei_opinion jio on temp.applyId =jio.id  where concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) !='nono'
+
+
 
 	</select>
 
@@ -1420,29 +1421,28 @@
 						SELECT
 							   pua.id AS id,   # 业务id
 							   pua.leader_batch_id as batchId, # 批次id
-
 							   b.b0101 AS department,  # "部门名称"
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+		                       ifnull(jio.official_feedback_verdict,jio.feedback_verdict) as jiWeiType,
+							   concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) as whetherjiewei, #该流程 是否征求纪委意见
+                               pua.SCZQJWYJSJ as sczqjwyjsj,# 征求纪委意见时间
 							   "因公" AS businessType,  # 申请类型
 
 							   IF (
-		mrp.SEX NOT IN ('1', '2'),
-		'未知',
-		IF (mrp.SEX = 1, '男', '女')
-		) AS sex,# 性别
+								   mrp.SEX NOT IN ('1', '2'),
+								   '未知',
+								   IF (mrp.SEX = 1, '男', '女')
+									   ) AS sex,# 性别
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,   # 从登记备案库中 去的 人员出生日期
 								-- 			 mrp.POLITICAL_AFFI AS politicalAffi,  # 政治面貌
 							   pua.JOB AS job,   #职务
-							   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
-
-
-
+							   (case ifnull(jio.official_feedback_verdict,jio.feedback_verdict) when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
 						FROM
 							 oms_pub_apply pua
 								 LEFT JOIN b01 b ON pua.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pua.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
-								 left join oms_jiwei_opinion jio on pua.jiwei_opinion_id=jio.id
+								 inner join oms_jiwei_opinion jio on pua.id=jio.id
 						UNION
 						SELECT
 							   pra.id AS id, # 业务id
@@ -1453,25 +1453,27 @@
 							   b.b0101 AS department, 	# "部门名称"
 
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
+		ifnull(jio.official_feedback_verdict,jio.feedback_verdict) as jiWeiType,
 
-
+		concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) as whetherjiewei, #该流程 是否征求纪委意见
+		pra.SCZQJWYJSJ as sczqjwyjsj,# 征求纪委意见时间
 
 							   '因私' AS businessType,  # 申请类型
 
 								-- 	 "无" AS cgspdw,  # 审批单位
 
 							   IF (
-		mrp.SEX NOT IN ('1', '2'),
-		'未知',
-		IF (mrp.SEX = 1, '男', '女')
-		) AS sex,# 性别
+								   mrp.SEX NOT IN ('1', '2'),
+								   '未知',
+								   IF (mrp.SEX = 1, '男', '女')
+									   ) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
 								-- 	 pra.POLITICAL_OUTLOOK AS politicalAffi, # 政治面貌
 
 							   pra.POSTRANK AS job, #职务
-							   (case jio.feedback_verdict when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
+							   (case ifnull(jio.official_feedback_verdict,jio.feedback_verdict) when 1 then '同意' when 2 then '不同意' when 3 then '不回复' else '' end) as opinion # 意见
 
 
 						FROM
@@ -1479,10 +1481,30 @@
 								 LEFT JOIN b01 b ON pra.b0100 = b.b0100
 								 LEFT JOIN a01 a ON pra.a0100 = a.a0100
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id
-								 left join oms_jiwei_opinion jio  on pra.jiwei_opinion_id =jio.id
+								 inner join oms_jiwei_opinion jio  on pra.id =jio.id
 
 
 						) temp
+
+		where whetherjiewei !='nono'
+
+		<if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
+			and prda.APPLY_TIME &gt; #{jiweiStatisticsVo.beginDate} and prda.APPLY_TIME &lt; #{jiweiStatisticsVo.endDate}
+		</if>
+
+		<if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
+
+			and temp.jiWeiType=#{iweiStatisticsVo.jiWeiType}
+
+		</if>
+
+
+		<if test="jiweiStatisticsVo.bussinessType != null and jiweiStatisticsVo.bussinessType != '' ">
+
+			and temp.businessType = #{jiweiStatisticsVo.bussinessType}
+
+		</if>
+
 
 	</select>
 
@@ -1822,10 +1844,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-		mrp.SEX NOT IN ('1', '2'),
-		'未知',
-		IF (mrp.SEX = 1, '男', '女')
-		) AS sex,# 性别
+	                         	mrp.SEX NOT IN ('1', '2'),
+		                        '未知',
+		                        IF (mrp.SEX = 1, '男', '女')
+		                       ) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 

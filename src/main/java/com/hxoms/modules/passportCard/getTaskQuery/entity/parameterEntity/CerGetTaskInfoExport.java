@@ -13,13 +13,13 @@ public class CerGetTaskInfoExport {
     private String zjlxName;//证照类型
     private String zjhm;//证件号码
     private Date yxqz;//有效期至
-    private String cardStatus;//证照状态
+    private String cardStatusName;//证照状态
     private String spb;//审批表
-    private String surelyWay;//保管方式
+    private String surelyWayName;//保管方式
     private String cabinetNum;//机柜
     private String place;//位置
     private Integer counterNum;//柜台编号
-    private String dataSource;//来源
+    private String dataSourceName;//来源
     private Date happenDate;//业务日期
     private Date createTime;//任务产生日期
     private Date getTime;//领取时间
@@ -99,12 +99,12 @@ public class CerGetTaskInfoExport {
         this.yxqz = yxqz;
     }
 
-    public String getCardStatus() {
-        return cardStatus;
+    public String getCardStatusName() {
+        return cardStatusName;
     }
 
-    public void setCardStatus(String cardStatus) {
-        this.cardStatus = cardStatus;
+    public void setCardStatusName(String cardStatusName) {
+        this.cardStatusName = cardStatusName;
     }
 
     public String getSpb() {
@@ -115,12 +115,12 @@ public class CerGetTaskInfoExport {
         this.spb = spb;
     }
 
-    public String getSurelyWay() {
-        return surelyWay;
+    public String getSurelyWayName() {
+        return surelyWayName;
     }
 
-    public void setSurelyWay(String surelyWay) {
-        this.surelyWay = surelyWay;
+    public void setSurelyWayName(String surelyWayName) {
+        this.surelyWayName = surelyWayName;
     }
 
     public String getCabinetNum() {
@@ -147,12 +147,12 @@ public class CerGetTaskInfoExport {
         this.counterNum = counterNum;
     }
 
-    public String getDataSource() {
-        return dataSource;
+    public String getDataSourceName() {
+        return dataSourceName;
     }
 
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
     }
 
     public Date getHappenDate() {

@@ -1,5 +1,7 @@
 package com.hxoms.common;
 
+import com.hxoms.common.utils.StringUilt;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -44,6 +46,7 @@ public class OmsRegInitUtil {
          */
         public static String getBirthByIdNumber(String idNumber){
             String birthDay="";
+            if(StringUilt.stringIsNullOrEmpty(idNumber)) return birthDay;
             if(idNumber.length()== 15){
                 birthDay = "19"+idNumber.substring(6,8) + idNumber.substring(8,10)+ idNumber.substring(10,12);
             }else if(idNumber.length()== 18){

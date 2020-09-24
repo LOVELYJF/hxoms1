@@ -22,6 +22,8 @@ import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriDelayApply;
 import com.hxoms.modules.privateabroad.mapper.OmsPriApplyMapper;
 import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
+import com.hxoms.modules.publicity.entity.OmsPubApply;
+import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,8 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 	private OmsPriDelayApplyMapper omsPriDelayApplyMapper;
 	@Autowired
 	private OmsSettingService omsSettingService;
+	@Autowired
+	private OmsPubApplyMapper omsPubApplyMapper;
 
 	@Override
 	public List<Map<String, String>> checkCondition(String applyId, String type) {
@@ -128,7 +132,13 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 			procpersonId = omsPriDelayApply.getProcpersonId();
 			a0100 = omsPriDelayApply.getA0100();
 		} else if (Constants.oms_business[0].equals(type)) {
-			// 因公 TODO
+			// 因公
+			OmsPubApply omsPubApply = omsPubApplyMapper.selectById(applyId);
+			if (omsPubApply == null) {
+				throw new CustomMessageException("申请不存在");
+			}
+			procpersonId = omsPubApply.getProcpersonId();
+			a0100 = omsPubApply.getA0100();
 		}
 		conditionReplaceVO.setProcpersonId(procpersonId);
 		conditionReplaceVO.setApplyId(applyId);
@@ -154,7 +164,8 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 			paramsMap.put("checkType", checkType);
 		}
 		paramsMap.put("conditionType", type);
-		paramsMap.put("careType", Constants.OMS_CONDITION_CARETYPE[0]); // 约束
+		// 约束
+		paramsMap.put("careType", Constants.OMS_CONDITION_CARETYPE[0]);
 		List<OmsCondition> omsConditions = omsConditionMapper.selectConditionList(paramsMap);
 		if (omsConditions != null && omsConditions.size() > 0) {
 			// 查询关键词
@@ -186,7 +197,8 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 		// 提醒条件
 		UserInfo userInfo = UserInfoUtil.getUserInfo();
 		Map<String, Object> paramsMap = new HashMap<>();
-		paramsMap.put("careType", Constants.OMS_CONDITION_CARETYPE[1]); // 提醒
+		// 提醒
+		paramsMap.put("careType", Constants.OMS_CONDITION_CARETYPE[1]);
 		paramsMap.put("conditionType", type);
 		List<OmsCondition> omsConditions = omsConditionMapper.selectConditionList(paramsMap);
 		if (omsConditions != null && omsConditions.size() > 0) {
@@ -206,9 +218,11 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 					message.setSendUserId("00000000-0000-0000-0000-000000000000");
 					message.setSendUsername("系统管理员");
 					message.setSendTime(new Date());
-					message.setTypeId("AA630152-D57A-40A6-8DCD-EDE7D80871E1"); // 出国境
+					// 出国境
+					message.setTypeId("AA630152-D57A-40A6-8DCD-EDE7D80871E1");
 					message.setFeather("0");
-					message.setHandleIdentify(Constants.PERSONAL); // 个人
+					// 个人
+					message.setHandleIdentify(Constants.PERSONAL);
 					message.setMsgStatus(Constants.NOT_HANDLE_MESSAGE);
 					message.setCreateTime(new Date());
 					message.setDataSource("出国境管理系统");

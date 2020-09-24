@@ -38,8 +38,8 @@ public class OmsRegProcpersoninfo {
     @ApiModelProperty(value="验收状态1已验收，0待验收")
     private String checkStatus;
 
-    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
-    @ApiModelProperty(value="在职状态1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它")
+    @ColumnAnnotation(FieldName = "INCUMBENCY_STATUS",   FieldDescription="在职状态1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.未匹配，99.其他")
+    @ApiModelProperty(value="在职状态1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.未匹配，99.其他")
     private String incumbencyStatus;
 
     @ColumnAnnotation(FieldName = "DATA_TYPE",   FieldDescription="数据类型  1.干部    2 公安")
