@@ -48,7 +48,7 @@ public class OmsRegYearcheckinfo {
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
@@ -92,12 +92,12 @@ public class OmsRegYearcheckinfo {
     private String secretLevel;
 
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE",   FieldDescription="脱密期管理开始日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptStartdate;
 
     @ColumnAnnotation(FieldName = "DECRYPT_ENDDATE",   FieldDescription="脱密期管理终止日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 
@@ -126,7 +126,7 @@ public class OmsRegYearcheckinfo {
     private String replyopinion;
 
     @ColumnAnnotation(FieldName = "ABROADTIME",   FieldDescription="锁定出国时间到")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date abroadtime;
 

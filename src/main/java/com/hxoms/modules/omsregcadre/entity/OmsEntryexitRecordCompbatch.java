@@ -17,12 +17,12 @@ public class OmsEntryexitRecordCompbatch {
     private String batchNo;
 
     @ColumnAnnotation(FieldName = "START_DATE",   FieldDescription="批次开始时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date startDate;
 
     @ColumnAnnotation(FieldName = "FINISH_DATE",   FieldDescription="实际完成时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date finishDate;
 
