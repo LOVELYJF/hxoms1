@@ -23,7 +23,7 @@ public class OmsRegRevokeapply {
     private String createUser;
 
     @ColumnAnnotation(FieldName = "CREATE_DATE",   FieldDescription="创建时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date createDate;
 
@@ -37,12 +37,12 @@ public class OmsRegRevokeapply {
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDateGb;
 
@@ -80,12 +80,12 @@ public class OmsRegRevokeapply {
     private String secretStatus;
 
     @ColumnAnnotation(FieldName = "SECRET_START_DATE",   FieldDescription="脱密日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date secretStartDate;
 
     @ColumnAnnotation(FieldName = "SECRET_END_DATE",   FieldDescription="脱密期限")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date secretEndDate;
 

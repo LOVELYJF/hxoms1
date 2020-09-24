@@ -28,7 +28,7 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     @ExcelProperty(value = "性别", index = 8)
     private String sex;
     @ExcelProperty(value = "出生日期", index = 9)
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
     @ExcelProperty(value = "政治面貌", index = 10)
@@ -44,11 +44,11 @@ public class ExcelCheckModelORPinfo extends BaseRowModel {
     @ExcelProperty(value = "涉密等级", index = 15)
     private String secretLevel;
     @ExcelProperty(value = "脱密期开始时间", index = 16)
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptStartdate;
     @ExcelProperty(value = "脱密期结束时间", index = 17)
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
     @ExcelProperty(value = "主要领导", index = 18)
