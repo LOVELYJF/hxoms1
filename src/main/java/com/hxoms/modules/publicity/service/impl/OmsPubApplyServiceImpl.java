@@ -77,7 +77,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //调整期干部：查询省管干部
             personInfoVOS = omsPubApplyMapper.selectPersonListForTZQGB(b0100,keyword);
         }
-
         return personInfoVOS;
     }
 
@@ -141,7 +140,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             }
             omsPubApply.setZjcgqk(sb.toString());
         }
-
         return omsPubApply;
     }
 
@@ -151,7 +149,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(omsPubApply.getA0100())) {
             throw new CustomMessageException("请先选择申请的干部");
         }
-
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         //返回信息
@@ -289,7 +286,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }else {
             throw new CustomMessageException("该通知书文号下没有相关数据!");
         }
-
     }
 
     /***
@@ -306,7 +302,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
             throw new CustomMessageException("参数为空!");
         }
-
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
         if (omsPubApply != null){
             omsPubApplyMapper.repealPubApplyById(id,cxyy,Constants.private_business[7]);
@@ -344,7 +339,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyChange.setModifyUser(loginUser.getId());
             omsPubApplyChange.setModifyTime(new Date());
             omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
-
             // 更新备案申请表
             //现出国时间、
             omsPubApply.setCgsj(omsPubApplyChange.getXcgsj());
@@ -362,8 +356,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApply.setSfbg("1");
             omsPubApplyMapper.updateById(omsPubApply);
         }
-
-        //omsPubApplyMapper.updateByPwh(omsPubApply);
     }
 
     /**
@@ -402,7 +394,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String result = "";
         //预审批主键
         String id = omsPubGroupPreApproval.getId();
-
         if (StringUtils.isBlank(id)){
             //新增预审批信息
             id = UUIDGenerator.getPrimaryKey();
@@ -416,7 +407,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApproval.setSource("0");
             omsPubGroupPreApproval.setSqzt(Constants.GJ_business[0]);
             omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
-
         }else {
             //更新
             //查找原有预审批内容
@@ -457,8 +447,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //修改时间
             omsPubApplyChange.setModifyTime(new Date());
             omsPubApplyChangeMapper.insertSelective(omsPubApplyChange);
-            //删除预审批人员
-            //omsPubApplyMapper.deletePubApplyByYSPId(id);
         }
         //将预审批人员添加到备案申请
         List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();
@@ -549,7 +537,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(ztdw)){
             ztdw = "省干部教育处";
         }
-
         /** 出国时间*/
         Date cgsj = omsPubApplyQueryParam.getCgsj();
         /** 回国时间*/
@@ -710,7 +697,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             HSSFRow row1=sheet.createRow(0);
             //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
             HSSFCell cell=row1.createCell(0);
-
             //设置标题字体大小
             font.setFontHeightInPoints((short) 16);
             //加粗
@@ -723,7 +709,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             cell.setCellStyle(style);
             //设置标题单元格内容
             cell.setCellValue("因公出国境备案申请名单");
-
             //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
             sheet.addMergedRegion(new CellRangeAddress(0,1,0,19));
             //在sheet里创建第二行
@@ -750,7 +735,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             row2.createCell(18).setCellValue("审批状态");
             row2.createCell(19).setCellValue("最终结论");
             //在sheet里添加数据
-
             //创建文件样式对象
             HSSFCellStyle style1 = wb.createCellStyle();
             //获得字体对象
@@ -760,7 +744,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //居左
             style1.setAlignment(HorizontalAlignment.LEFT);
             style1.setFont(font1);
-
             HSSFRow row = null;
             for(int i = 0; i < list.size(); i++){
                 row = sheet.createRow(i + 3);
@@ -779,7 +762,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 }else {
                     row.createCell(7).setCellValue(sex);
                 }
-
                 row.createCell(8).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
                 row.createCell(9).setCellValue(list.get(i).getPoliticalAff());
                 row.createCell(10).setCellValue(list.get(i).getJob());
@@ -816,9 +798,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 }else {
                     row.createCell(18).setCellValue(Constants.leader_businessName[i1]);
                 }
-
                 row.createCell(19).setCellValue(list.get(i).getZzjl());
-
                 //设置单元格字体大小
                 for(int j = 0;j < 19;j++){
                     row.getCell(j).setCellStyle(style1);
@@ -830,7 +810,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition", "utf-8");
-
                 wb.write(output);
                 output.flush();
                 output.close();
@@ -950,7 +929,6 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             PWHTreeVO2.setPwhs(pwhs);
             pwhvos1.add(PWHTreeVO2);
         }
-
         return pwhvos1;
     }
 

@@ -31,7 +31,8 @@ public class OmsPubApplyVO extends OmsPubApply {
     private Date SECRET_REVIEW_DATE;
     //健康情况
     private String HEALTH;
-
+    //户口所在地
+    private String REGISTE_RESIDENCE;
 
     public String getB0101() {
         return b0101;
@@ -119,5 +120,13 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setHEALTH(String HEALTH) {
         this.HEALTH = HEALTH;
+    }
+
+    public String getREGISTE_RESIDENCE() {
+        return REGISTE_RESIDENCE;
+    }
+
+    public void setREGISTE_RESIDENCE(String REGISTE_RESIDENCE) {
+        this.REGISTE_RESIDENCE = REGISTE_RESIDENCE;
     }
 }

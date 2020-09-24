@@ -58,7 +58,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         //添加时将状态更改为调整期
         mobilizingCadre.setStatus(String.valueOf(Constants.mobilizing_business[0]));
         mobilizingcadreMapper.insertSelective(mobilizingCadre);
-
     }
 
     /**
@@ -75,7 +74,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
             throw new CustomMessageException("参数为空!");
         }
         mobilizingcadreMapper.deleteByPrimaryKey(id);
-
     }
 
     /**
@@ -88,7 +86,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
      */
     @Override
     public OmsMobilizingcadre getMobilizingCadreByID(String id) {
-
         if (id == null){
             throw new CustomMessageException("参数为空!");
         }
@@ -135,7 +132,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
         //进入方法将状态更改为 调整完成
         String s = String.valueOf(Constants.mobilizing_business[1]);
         mobilizingcadreMapper.updateStatusByA0100(a0100,s);
-
     }
 
     /**
@@ -165,7 +161,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
             HSSFRow row1=sheet.createRow(0);
             //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
             HSSFCell cell=row1.createCell(0);
-
             //设置标题字体大小
             font.setFontHeightInPoints((short) 16);
             //加粗
@@ -195,7 +190,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
             row2.createCell(8).setCellValue("调整结束时间");
             row2.createCell(9).setCellValue("状态");
             //在sheet里添加数据
-
             //创建文件样式对象
             HSSFCellStyle style1 = wb.createCellStyle();
             //获得字体对象
@@ -205,7 +199,6 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
             //居左
             style1.setAlignment(HorizontalAlignment.LEFT);
             style1.setFont(font1);
-
             HSSFRow row = null;
             for(int i = 0; i < list.size(); i++){
                 row = sheet.createRow(i + 3);
@@ -232,22 +225,18 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
                 }else {
                     row.createCell(8).setCellValue("");
                 }
-
                 row.createCell(9).setCellValue(Constants.mobilizing_businessName[Integer.parseInt((String) list.get(i).get("status"))]);
-
                 //设置单元格字体大小
                 for(int j = 0;j < 9;j++){
                     row.getCell(j).setCellStyle(style1);
                 }
             }
-
             //输出Excel文件
             OutputStream output= null;
             try {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition", "utf-8");
-
                 wb.write(output);
                 output.flush();
                 output.close();
@@ -255,8 +244,5 @@ public class MobilizingcadreServiceImpl implements MobilizingcadreService {
                 e.printStackTrace();
             }
         }
-
-
     }
-
 }
