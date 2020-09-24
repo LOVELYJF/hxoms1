@@ -656,22 +656,25 @@ public class UtilDateTime {
 		//转换日期格式为我们需要的格式
 		String srDateNew = "";
 		if (date.contains("-")) {
-			srDateNew = date.replaceAll("-", "/");
+			srDateNew = date.replaceAll("-", "");
 		}
-		if (date.contains(".")) {
-			srDateNew = date.replaceAll(".", "/");
+		else if (date.contains(".")) {
+			srDateNew = date.replaceAll(".", "");
 		}
-		if (date.contains("年")) {
-			srDateNew = date.replaceAll("年", "/");
+        else if (date.contains("/")) {
+            srDateNew = date.replaceAll("/", "");
+        }
+        else if (date.contains("年")) {
+			srDateNew = date.replaceAll("年", "");
 			if (date.contains("月")) {
-				srDateNew = date.replaceAll("月", "/");
+				srDateNew = date.replaceAll("月", "");
 				if (date.contains("日")) {
 					srDateNew = date.replaceAll("日", "");
 				}
 			}
 		}
 		//格式化日期
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date newDate = null;
 		try {
 			if (!"".equals(srDateNew)) {
