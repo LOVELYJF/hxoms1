@@ -158,7 +158,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             imp.setSecretRelatedLevel(getSecretLevel(imp.getSecretRelatedLevel()));
 
             //单位和涉密等级没有改变，不做任何操作
-            if (existsSmr != null && existsSmr.getSecretRelatedLevel().equals(imp.getSecretRelatedLevel())) continue;
+            if (existsSmr != null &&
+                    StringUilt.equalsWithNull(existsSmr.getSecretRelatedLevel(),imp.getSecretRelatedLevel())) continue;
 
 
             //不存在该涉密信息
@@ -166,13 +167,16 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 imp.setId(UUIDGenerator.getPrimaryKey());
                 adds.add(imp);
             }
-            //涉密等级提高了,更新涉密等级
-            else if (Integer.parseInt(existsSmr.getSecretRelatedLevel()) < Integer.parseInt(imp.getSecretRelatedLevel())) {
+            //涉密等级提高了,更新涉密等级,登记备案库的涉密为null也认为是提高了
+            else if (existsSmr.getSecretRelatedLevel()==null||
+                    (existsSmr.getSecretRelatedLevel()!=null&&imp.getSecretRelatedLevel()!=null&&
+                    Integer.parseInt(existsSmr.getSecretRelatedLevel()) < Integer.parseInt(imp.getSecretRelatedLevel()))) {
                 existsSmr.setSecretRelatedLevel(imp.getSecretRelatedLevel());
                 updates.add(existsSmr);
             }
             //涉密等级降低了,启动脱密期
-            else if (Integer.parseInt(existsSmr.getSecretRelatedLevel()) > Integer.parseInt(imp.getSecretRelatedLevel())) {
+            else if (existsSmr.getSecretRelatedLevel()!=null&&imp.getSecretRelatedLevel()!=null&&
+                    Integer.parseInt(existsSmr.getSecretRelatedLevel()) > Integer.parseInt(imp.getSecretRelatedLevel())) {
                 //涉密等级发生变化，插入新的涉密信息
                 OmsSmrOldInfoVO newSmr = new OmsSmrOldInfoVO();
                 BeanUtils.copyProperties(existsSmr, newSmr);
@@ -221,6 +225,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     public Date CalcLeaveSecretDeadline(Date startDate, String secretLevel) {
+        if(StringUilt.stringIsNullOrEmpty(secretLevel)) return startDate;
         int deadline = Integer.parseInt(secretLevel);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
@@ -229,7 +234,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     public String getSecretLevel(String srLevel) {
-        String result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
+        String result = OmsCommonUtil.SECRET_LEVEL_STATUS[0];
         if (StringUtils.isNotBlank(srLevel)) {
             if (OmsCommonUtil.SECRET_LEVEL_STATUS_NAME[1].equals(srLevel)) {
                 result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
