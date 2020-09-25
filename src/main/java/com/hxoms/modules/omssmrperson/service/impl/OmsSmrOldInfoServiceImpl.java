@@ -3,6 +3,7 @@ package com.hxoms.modules.omssmrperson.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageUtil;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
@@ -49,7 +50,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
     @Override
     public Map<String, Object> getConfirmPeriodList() {
         Map<String, Object> resultMap = new LinkedHashMap<>();
-        List<OmsSmrOldInfo> list = smrOldInfoMapper.getConfirmPeriodList();
+        List<OmsSmrOldInfoVO> list = smrOldInfoMapper.getConfirmPeriodList(UserInfoUtil.getUserInfo().getOrgId(),"","");
         resultMap.put("result", list);
         return resultMap;
     }

@@ -274,7 +274,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper, A36> i
                 nOmsRegProcpersonInfo.setIncumbencyStatus("1");
                 nOmsRegProcpersonInfo.setIdentity("其他人员");
                 nOmsRegProcpersonInfo.setIdentityCode("9");
-                nOmsRegProcpersonInfo.setSecretLevel("非涉密");
+                nOmsRegProcpersonInfo.setSecretLevel("0");//非涉密
                 nOmsRegProcpersonInfo.setCreateTime(new Date());
                 nOmsRegProcpersonInfo.setCreateUser(UserInfoUtil.getUserInfo().getId());
 

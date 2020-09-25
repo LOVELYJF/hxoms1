@@ -3,6 +3,7 @@ package com.hxoms.modules.dataCapture.synchdata;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UtilDateTime;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.dataCapture.dataconfig.service.CutTargetDataSourceService;
@@ -510,7 +511,12 @@ public class Synchdata {
     }
 
     private void CacheSmrOldInfo() throws ParseException {
-        hashMapSmrOldPerson.clear();
+        //计算综合涉密信息时，需要重新缓存数据，以反映变化了的涉密信息，所以先清空以前的
+        for (String key:hashMapSmrOldPerson.keySet()
+             ) {
+            List<Object> oldInfos = hashMapSmrOldPerson.get(key);
+            oldInfos.clear();
+        }
         List<OmsSmrOldInfoVO> smrOldInfo = omsSmrOldInfoService.getSmrOldInfoById(1, 100000, "").getList();
         //原涉密信息
         for (Object o : smrOldInfo
@@ -617,7 +623,7 @@ public class Synchdata {
                 for (int i = 0; i < mposts.size(); i++) {
                     boolean find = false;
                     for (int j = 0; j < tposts.size(); j++) {
-                        if (tposts.get(j).get("id").equals(mposts.get(i).get("id"))) {
+                        if (tposts.get(j).get("a0200").equals(mposts.get(i).get("a0200"))) {
                             find = true;
                             break;
                         }
@@ -743,7 +749,7 @@ public class Synchdata {
                     }
                 }
 
-                //处理裸官
+                //处理退出人员的裸官标识
                 for (OmsSupNakedSign nakedSign1 : nakedSigns) {
                     if (!a0100.equals(nakedSign1.getA0100())) continue;
                     nakedSign1.setIsDelete("1");
@@ -755,7 +761,7 @@ public class Synchdata {
             omsSmrOldInfoService.updateBatchById(smrOldInfos);
         }
 
-        //处理调整期干部
+        //处理调整期干部,有新任职务就认为是调整结束
         PageInfo info = mobilizingcadreService.getAllMobilizingCadre(1, 100000, null, "", "0");
         List<Map> mobilizingCadres = info.getList();
         for (Map map : mobilizingCadres
@@ -778,10 +784,12 @@ public class Synchdata {
 
     private void CalcDeclassification(Map post, OmsSmrOldInfo smrOldInfo) throws ParseException {
         String startDate = "";
+        //决定或批准免职的日期
         if (post.get("a0265") == null || post.get("a0265").toString().length() <= 0) {
             startDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
         } else {
-            startDate = post.get("a0265").toString();
+            startDate = post.get("a0265").toString() ;
+            if(startDate.length()<7) startDate+="01";
         }
 
         Date declassificationStartDate = new SimpleDateFormat("yyyyMMdd").parse(startDate);
@@ -793,7 +801,7 @@ public class Synchdata {
     private Date CalcDeclassificationFinishDate(Date declassificationStartDate, OmsSmrOldInfo smrOldInfo) {
         Calendar c = Calendar.getInstance();
         c.setTime(declassificationStartDate);
-        c.add(Calendar.YEAR, Integer.parseInt(smrOldInfo.getSecretRelatedLevel()));
+        c.add(Calendar.YEAR, smrOldInfo.getSecretRelatedLevel()==null?0:Integer.parseInt(smrOldInfo.getSecretRelatedLevel()));
         Date declassificationEndDate = c.getTime();
 
         return declassificationEndDate;
