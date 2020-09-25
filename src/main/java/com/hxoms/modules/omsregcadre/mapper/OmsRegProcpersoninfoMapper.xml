@@ -491,6 +491,52 @@
         AND INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
         AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
+    <select id="getSmrPersonInfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
+        SELECT
+            t.ID,
+            t.A0100,
+            t.WORK_UNIT,
+            concat( t.SURNAME, t.NAME ) AS NAME,
+            t.POST,
+            t.SEX,
+            t.POLITICAL_AFFINAME,
+            t.INCUMBENCY_STATUS,
+            t.SECRET_POST,
+            t.SECRET_LEVEL,
+            t.DECRYPT_STARTDATE,
+            t.DECRYPT_ENDDATE
+        FROM
+            oms_reg_procpersoninfo t
+        WHERE
+            t.DATA_TYPE = '1'
+            /* AND t.IDENTITY_CODE = '3'*/
+            AND t.SECRET_LEVEL != '0'
+            AND t.INBOUND_FLAG != 'D'
+        <if test="name !=null and name !=''">
+            AND concat(t.SURNAME,t.NAME) like #{name}
+        </if>
+        <if test="namePy !=null and namePy !=''">
+            AND t.PY like #{namePy}
+        </if>
+        <if test="b0100 !=null and b0100 !=''">
+            AND t.RF_B0000 = #{b0100}
+        </if>
+        <if test="secretLevel !=null and secretLevel !=''">
+            AND t.SECRET_LEVEL = #{secretLevel}
+        </if>
+        <if test="secretPost !=null and secretPost !=''">
+            AND t.SECRET_POST = #{secretPost}
+        </if>
+        <if test="personState !=null and personState !=''">
+            AND t.INCUMBENCY_STATUS = #{personState}
+        </if>
+        <if test="idList != null and idList.size >0">
+            AND t.RF_B0000 IN
+            <foreach collection="idList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 
     <select id="selectFamilyByA0100" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
         select a.* from oms_reg_procpersoninfo a where a.id in(select a3600 from a36 where a0100=#{a0100})
