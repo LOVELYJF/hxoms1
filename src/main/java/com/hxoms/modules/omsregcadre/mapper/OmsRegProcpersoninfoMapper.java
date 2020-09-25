@@ -48,8 +48,17 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<OmsRegProcpersoninfo> getSmrPersonInfo(Map<String, Object> param);
 
+    /*
+    * @param a0100 省管干部id
+    * @return:
+            **/
     List<OmsRegProcpersoninfo> selectFamilyByA0100(String a0100);
 
+    /**
+     * @author:李姣姣
+     * @param personInfoIPagParam
+     * @return
+     */
     List<OmsRegProcpersoninfo> queryProvinceCadresList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 }
 
