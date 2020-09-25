@@ -1,7 +1,9 @@
 package com.hxoms.modules.omssmrperson.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +21,7 @@ import java.util.Map;
  */
 public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //获取涉密人员信息列表
-    Map<String, Object> getSmrPersonInfo(Integer pageNum, Integer pageSize, List<String> idList, OmsSmrPersonInfo smrPersonInfo) throws ParseException;
+    PageInfo<OmsRegProcpersoninfo> getSmrPersonInfo(Integer pageNum, Integer pageSize, List<String> idList, OmsSmrPersonInfo smrPersonInfo) throws ParseException;
     //导入涉密人员信息
     Result insertSmrPersonInfo(String importYear, String b0100,List<OmsSmrOldInfoVO> smrPersonInfoList) throws ParseException, InvocationTargetException, IllegalAccessException, InstantiationException, ClassNotFoundException;
     //修改涉密人员信息
@@ -29,15 +31,15 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //上传涉密人员统计表
     Result uploadSmrExcel(MultipartFile file, String importYear, String b0100);
     //导出涉密人员信息列表
-    boolean exportSmrPersonInfo( List<String> idList, OmsSmrPersonInfo smrPersonInfo, HttpServletResponse response);
+    Result exportSmrPersonInfo( List<String> idList, OmsSmrPersonInfo smrPersonInfo);
     //获取漏报涉密人员机构
     List<String> getFailReportOrg();
     //导出漏报涉密人员机构
-    boolean exportFailReportOrg(HttpServletResponse response);
+    boolean exportFailReportOrg();
     //获取差异数据列表
     List<OmsSmrPersonInfo> getDifferentData();
     //导出差异数据列表
-    boolean exportDifferentData(HttpServletResponse response);
+    boolean exportDifferentData();
     //批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
     boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList);
     //获取涉密人员信息维护列表
