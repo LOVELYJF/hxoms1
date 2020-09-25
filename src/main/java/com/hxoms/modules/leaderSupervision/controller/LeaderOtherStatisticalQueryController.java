@@ -202,7 +202,7 @@ public class LeaderOtherStatisticalQueryController {
     @GetMapping("/jiweiOpionStatisticsQuery")
     public Result jiweiOpionStatisticsQuery(JiweiStatisticsVo JiweiStatisticsVo){
 
-      List<Map> lists =    leaderCommonMapper.selectjieweiOpinionCase();
+      List<Map> lists =    leaderCommonMapper.selectjieweiOpinionCase(JiweiStatisticsVo);
 
         return Result.success(lists);
     }

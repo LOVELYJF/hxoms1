@@ -52,7 +52,7 @@ public class OmsOperatorController {
      * @Author: 李逍遥
      * @Date: 2020/7/14 16:09
      */
-    @GetMapping("/getOperatorList")
+    @PostMapping("/getOperatorList")
     public Result getOperatorList(Integer pageNum, Integer pageSize, String keyWord,
                                   @RequestParam(value ="orgId",required = false) List<String> orgId,
                                   @RequestParam(value ="state",required = false) List<String> state){

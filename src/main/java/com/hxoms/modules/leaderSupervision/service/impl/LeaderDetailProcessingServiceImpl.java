@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 /**
  * @authore:wjf
  * @data 2020/7/29 10:30  对 干部监督 业务 一些的 细节处理
- *   没设好 应该 写个 AOP 统一处理这些问题
+ *
  * @Description:
  ***/
 @Service("leaderDetailProcessingService")
@@ -166,6 +166,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
      }
 
      // 修改 流程 状态 置为 征求纪委意见
+        leaderCommonService.selectBussinessStatus(applyId,tableCode,null);
         getUpdateStatusSql(applyId,tableCode,Constants.leader_businessName[1],"materialReviewNextStep");
       // 修改批次状态
         List<String> bussinessIds = new ArrayList<>();

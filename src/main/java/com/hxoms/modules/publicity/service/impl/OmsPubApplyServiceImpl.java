@@ -169,7 +169,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyMapper.insert(omsPubApply);
         }
         //判断校验类型
-        result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
+        //result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
         if (StringUtils.isBlank(result)) {
             result = omsPubApply.getId();
         }
@@ -505,7 +505,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 omsPubApply.setCreateTime(new Date());
                 omsPubApplyMapper.insert(omsPubApply);
                 //判断校验类型
-                result = checkPersonApply(omsPubApply.getA0100(), omsPubApply.getId(), "1");
+                //result = checkPersonApply(omsPubApply.getA0100(), omsPubApply.getId(), "1");
                 if (StringUtils.isBlank(result)) {
                     result = "保存成功";
                 }

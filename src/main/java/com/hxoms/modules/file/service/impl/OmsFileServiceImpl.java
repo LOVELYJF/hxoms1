@@ -320,21 +320,23 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
                 stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
             }
-            stringBuffer.append("</tr>");
-            stringBuffer.append("<tr style=\"height:198px\">");
-            stringBuffer.append("<td rowspan=\"2\" width=\"72\" style=\"\">家庭主要成员情况</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">称谓</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">年龄</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
-            stringBuffer.append("<td width=\"82\" style=\"\">工作单位</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">工作单位及职务(自动提取任免表)</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">居住地(手动填写)</td>");
-            stringBuffer.append("<td width=\"72\" style=\"\">是否在国（境）外（来自于干部监督处个人有关事项报告中的信息）</td>");
-            stringBuffer.append("<td width=\"64\" style=\"\">是否取得外国国籍、境外长期或永久居留权（来自于干部监督处个人有关事项报告中的信息）</td>");
-            stringBuffer.append("</tr>");
+
             List<A36> a36List = otherPubApply.getA36List();
             if (a36List != null && a36List.size() >0){
+                stringBuffer.append("</tr>");
+                stringBuffer.append("<tr style=\"height:198px\">");
+                stringBuffer.append("<td rowspan=\"" +(a36List.size()+1)+
+                        "\" width=\"72\" style=\"\">家庭主要成员情况</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">称谓</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">年龄</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">工作单位</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">工作单位及职务(自动提取任免表)</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">居住地(手动填写)</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">是否在国（境）外（来自于干部监督处个人有关事项报告中的信息）</td>");
+                stringBuffer.append("<td width=\"64\" style=\"\">是否取得外国国籍、境外长期或永久居留权（来自于干部监督处个人有关事项报告中的信息）</td>");
+                stringBuffer.append("</tr>");
                 for (A36 a:a36List) {
                     if ("1".equals(a.getIsAbroad())){
                         a.setIsAbroad("是");
@@ -344,7 +346,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     stringBuffer.append("<tr style=\"height:72px\">");
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3604a()+"</td>");
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3601()+"</td>");
-                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+sdf1.format(a.getA3607())+"</td>");
+                    stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3607()+"</td>");
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3627()+"</td>");
                     stringBuffer.append("<td width=\"82\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
@@ -354,6 +356,19 @@ public class OmsFileServiceImpl implements OmsFileService {
                     stringBuffer.append("</tr>");
                 }
             }else {
+                stringBuffer.append("</tr>");
+                stringBuffer.append("<tr style=\"height:198px\">");
+                stringBuffer.append("<td rowspan=\"1\" width=\"72\" style=\"\">家庭主要成员情况</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">称谓</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">姓名</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">年龄</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">政治面貌</td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">工作单位</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">工作单位及职务(自动提取任免表)</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">居住地(手动填写)</td>");
+                stringBuffer.append("<td width=\"72\" style=\"\">是否在国（境）外（来自于干部监督处个人有关事项报告中的信息）</td>");
+                stringBuffer.append("<td width=\"64\" style=\"\">是否取得外国国籍、境外长期或永久居留权（来自于干部监督处个人有关事项报告中的信息）</td>");
+                stringBuffer.append("</tr>");
                 stringBuffer.append("<tr style=\"height:72px\">");
                 stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");
                 stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\"></td>");

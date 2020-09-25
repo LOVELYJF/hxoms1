@@ -32,7 +32,7 @@ public class SysUserController {
  * @Author: 李逍遥
  * @Date: 2020/4/28 15:45
  */
-    @GetMapping("/getSysUserList")
+    @PostMapping("/getSysUserList")
     public Result getSysUserList(Integer pageNum, Integer pageSize, String keyWord, @RequestParam(value ="orgId",required = false) List<String> orgId) {
         PageInfo pageInfo = sysUserService.getSysUserList(pageNum, pageSize, keyWord, orgId);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());

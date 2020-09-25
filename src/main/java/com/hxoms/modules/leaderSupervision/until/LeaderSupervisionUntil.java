@@ -297,7 +297,53 @@ public class LeaderSupervisionUntil {
 //
 //    }
 
+   /**根据 纪委意见 修改流程状态 **/
 
+   public static String updateBussinessStatusByJiweiFlow(String busessId,String bussinesType,String leaderStatusName,String bussinessName){
+
+       String updateSql = "update "+bussinesType;
+
+       String setSql = " set  " ;
+
+       String whereCondition = " where id = '" + busessId+"'";
+
+
+       for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
+
+           if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
+
+               if(!"干教".equals(bussinessName)){
+
+                   String status =  applyStatus.getApplySatus();
+                   // 干部监督处的状态
+                   setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
+
+                   break;
+               }else if("干教".equals(bussinessName)){
+
+                   String status =  applyStatus.getApplySatus();
+                   // 如果 是 干 教 流程 到纪委征求意见，状态置为 已办结
+                   setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];
+
+                   break;
+
+
+               }
+
+
+
+
+           }
+
+       }
+
+       return  updateSql+setSql+whereCondition;
+
+
+
+
+
+   }
 
 
     //导出 数据 类型 为 list<Map>
