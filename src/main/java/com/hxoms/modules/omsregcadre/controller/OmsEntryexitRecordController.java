@@ -32,7 +32,7 @@ public class OmsEntryexitRecordController {
      * @throws Exception
      */
     @ApiOperation(value="因私出入境记录维护", notes="因私出入境记录维护")
-    @GetMapping("/getEntryexitRecordinfo")
+    @PostMapping("/getEntryexitRecordinfo")
     public Result getEntryexitRecordinfo(OmsEntryexitRecordIPagParam entryexitRecordIPagParam) throws Exception{
         PageInfo<OmsEntryexitRecord> entryexitRecordIPag = entryexitRecordService.getEntryexitRecordinfo(entryexitRecordIPagParam);
      return Result.success(entryexitRecordIPag);
