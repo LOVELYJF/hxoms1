@@ -52,7 +52,7 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
     }
 
     @Override
-    public int insert(com.hxoms.person.markedcadre.entity.McMarkedcadre record) {
+    public int insert(McMarkedcadre record) {
         ReflectHelpper.setModifyFields(record);
         record.setId(UUIDGenerator.getPrimaryKey());
         record.setUserid(UserInfoUtil.getUserInfo().getId());
@@ -60,18 +60,18 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
     }
 
     @Override
-    public int insertSelective(com.hxoms.person.markedcadre.entity.McMarkedcadre record) {
+    public int insertSelective(McMarkedcadre record) {
         ReflectHelpper.setModifyFields(record);
         return mapper.insertSelective(record);
     }
 
     @Override
-    public List<com.hxoms.person.markedcadre.entity.McMarkedcadre> selectByExample(McMarkedcadreExample example) {
+    public List<McMarkedcadre> selectByExample(McMarkedcadreExample example) {
         return mapper.selectByExample(example);
     }
 
     @Override
-    public com.hxoms.person.markedcadre.entity.McMarkedcadre selectByPrimaryKey(String id) {
+    public McMarkedcadre selectByPrimaryKey(String id) {
         return mapper.selectByPrimaryKey(id);
     }
     @Override
@@ -81,14 +81,14 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
         return treeList;
     }
     @Override
-    public int updateByPrimaryKeySelective(com.hxoms.person.markedcadre.entity.McMarkedcadre record)
+    public int updateByPrimaryKeySelective(McMarkedcadre record)
     {
         ReflectHelpper.setModifyFields(record);
         return mapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
-    public int updateByPrimaryKey(com.hxoms.person.markedcadre.entity.McMarkedcadre record) {
+    public int updateByPrimaryKey(McMarkedcadre record) {
         ReflectHelpper.setModifyFields(record);
         return mapper.updateByPrimaryKey(record);
     }
@@ -100,7 +100,7 @@ public class McMarkedCadreServiceImpl implements McMarkedCadreService {
      * @return:
      **/
     @Override
-    public int getMaxSequence(com.hxoms.person.markedcadre.entity.McMarkedcadre id)
+    public int getMaxSequence(McMarkedcadre id)
     {
         return mapper.getMaxSequence(id);
     }
