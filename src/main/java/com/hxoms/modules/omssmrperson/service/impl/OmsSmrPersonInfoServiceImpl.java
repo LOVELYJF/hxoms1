@@ -6,6 +6,7 @@ import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.Excel.EntityExcel;
 import com.hxoms.common.util.Excel.ExportExcel;
+import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
@@ -28,12 +29,15 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,12 +61,12 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
-    private HttpServletResponse response;
+    //private HttpServletResponse response;
     /**
      * 获取涉密人员信息列表
      */
     @Override
-    public PageInfo<OmsRegProcpersoninfo> getSmrPersonInfo(Integer pageNum, Integer pageSize, List<String> idList, OmsSmrPersonInfo omsSmrPersonInfo){
+    public PageInfo<OmsRegProcpersoninfo> getSmrPersonInfo(Integer pageNum, Integer pageSize, String idList, OmsSmrPersonInfo omsSmrPersonInfo){
         pageNum = pageNum == null ? 1 : pageNum;
         pageSize = pageSize == null ? 10 : pageSize;
         Map<String, Object> param = new HashMap<>();
@@ -86,10 +90,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         if (!StringUtils.isEmpty(omsSmrPersonInfo.getPersonState()))
             param.put("incumbencyStatus", omsSmrPersonInfo.getPersonState());
 
-        if (idList != null && idList.size() > 0) {
-            if (!"-1".equals(idList.get(0))) {
-                param.put("idList", idList);
-            }
+        if (!StringUtils.isBlank(idList)) {
+            String[] idLists = idList.split(",");
         }
         List<OmsRegProcpersoninfo> resultList = regProcpersoninfoMapper.getSmrPersonInfo(param);
         PageUtil.pageHelp(pageNum, pageSize);
@@ -449,60 +451,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出涉密人员信息
      */
     @Override
-    public Result exportSmrPersonInfo(List<String> idList, OmsSmrPersonInfo smrPersonInfo) {
-       List<OmsRegProcpersoninfo> exportList = getSmrPersonInfo(1,10000,idList,smrPersonInfo).getList();
-        //导出
-        try {
-            String filePath = "D://test11.xlsx";
-            File fileExcel = new File(filePath);
-            if (!fileExcel.exists()) {
-                fileExcel.createNewFile();
-            }
-            EntityExcel entityExcel = new EntityExcel();
-            entityExcel.setTitle("涉密人员信息表");
-            entityExcel.setFileName("新的文件");
-            String[] rowName = {"序号", "单位", "姓名", "性别", "职务职级", "政治面貌", "在职状态", "涉密岗位", "涉密等级", "脱密期开始时间", "脱密期结束时间"};
-            String[] key = {"xh","dw","name", "sex","post","zzmm","zzzt","smpost","smlevel","tmqkssj","tmqjssj"};
-            entityExcel.setRowName(rowName);
-            entityExcel.setKey(key);
-            List<Map<String, Object>> maps = new ArrayList<>();
-            for (int i = 0; i < exportList.size(); i++) {
-                OmsRegProcpersoninfo export = exportList.get(i);
-                Map<String, Object> map = new HashMap<>();
-                map.put("xh", i);
-                map.put("dw", export.getWorkUnit());
-                map.put("name", export.getName());
-                map.put("sex", export.getSex());
-                map.put("post", export.getPost());
-                map.put("zzmm", export.getPoliticalAffiname());
-                map.put("zzzt", export.getIncumbencyStatus());
-                map.put("smpost", export.getSecretPost());
-                map.put("smlevel", export.getSecretLevel());
-                map.put("tmqkssj", export.getDecryptStartdate());
-                map.put("tmqjssj", export.getDecryptEnddate());
-                maps.add(map);
-            }
-            File file = new File(filePath);
-            XSSFWorkbook wb = ExportExcel.exportExcel(maps, entityExcel);
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            wb.write(fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Result.success();
-    }
-    /*@Override
-    public Result exportSmrPersonInfo(List<String> idList, OmsSmrPersonInfo smrPersonInfo) {
-       List<OmsRegProcpersoninfo> list = getSmrPersonInfo(1,10000,idList,smrPersonInfo).getList();
+    public void exportSmrPersonInfo(String idList, OmsSmrPersonInfo smrPersonInfo,HttpServletResponse response){
+        List<OmsRegProcpersoninfo> list = getSmrPersonInfo(1,10000,idList,smrPersonInfo).getList();
 
-        //导出
-        if (list.size() < 1) {
-            return Result.error("导出失败，未获取到涉密人员信息！");
-        }
+        /*---------------------------------------------导出------------------------------------------------------------*/
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -578,23 +530,21 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 row.getCell(j).setCellStyle(style1);
             }
         }
-        //输出Excel文件
-        OutputStream output = null;
-        try {
-            HttpServletResponse resp = this.response;
-            output = resp.getOutputStream();
-            resp.reset();
-            resp.setCharacterEncoding("UTF-8");
-            resp.setHeader("Content-disposition", "attachment; " +
-                    "filename=" + new String("涉密人员信息表.xls".getBytes("gb2312"), "ISO8859-1"));
-            resp.setContentType("application/msexcel");
-            wb.write(output);
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try{
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
         }
-        return Result.success();
-    }*/
+        catch (IOException e){
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+    }
 
     /**
      * 获取漏报涉密人员机构
@@ -668,7 +618,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //输出Excel文件
         OutputStream output = null;
         try {
-            HttpServletResponse response = this.response;
+            HttpServletResponse response = null;
             output = response.getOutputStream();
             response.reset();
             response.setCharacterEncoding("UTF-8");
@@ -770,7 +720,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //输出Excel文件
         OutputStream output = null;
         try {
-            HttpServletResponse response = this.response;
+            HttpServletResponse response = null;
             output = response.getOutputStream();
             response.reset();
             response.setCharacterEncoding("UTF-8");
