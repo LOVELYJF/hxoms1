@@ -34,12 +34,12 @@ public class OmsRegProcbatchPerson {
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证（公安））")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDateGb;
 
@@ -77,12 +77,12 @@ public class OmsRegProcbatchPerson {
     private String secretLevel;
 
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE",   FieldDescription="脱密期管理开始日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptStartdate;
 
     @ColumnAnnotation(FieldName = "DECRYPT_ENDDATE",   FieldDescription="脱密期管理终止日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 

@@ -934,7 +934,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = formatDate(cell.getStringCellValue());
+                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setSecretReviewDate(date);
                     else
@@ -946,7 +946,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = formatDate(cell.getStringCellValue());
+                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setStartDate(date);
                     else
@@ -958,7 +958,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = formatDate(cell.getStringCellValue());
+                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setFinishDate(date);
                     else
@@ -992,44 +992,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return true;
     }
 
-    /**
-     * 格式化日期为'/'
-     *
-     * @param date
-     * @return Date
-     */
-    public static Date formatDate(String date) {
-        //转换日期格式为我们需要的格式
-        String srDateNew = "";
-        if (date.contains("-")) {
-            srDateNew = date.replaceAll("-", "/");
-        }
-        if (date.contains(".")) {
-            srDateNew = date.replaceAll(".", "/");
-        }
-        if (date.contains("年")) {
-            srDateNew = date.replaceAll("年", "/");
-            if (date.contains("月")) {
-                srDateNew = date.replaceAll("月", "/");
-                if (date.contains("日")) {
-                    srDateNew = date.replaceAll("日", "");
-                }
-            }
-        }
-        //格式化日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Date newDate = null;
-        try {
-            if (!"".equals(srDateNew)) {
-                newDate = simpleDateFormat.parse(srDateNew);
-            } else {
-                newDate = simpleDateFormat.parse(date);
-            }
-        } catch (ParseException px) {
-            px.printStackTrace();
-        }
-        return newDate;
-    }
 
     /**
      * 判断是否匹配导入数据
