@@ -194,6 +194,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     }
                     omsCreateFile.setFrontContent(omsFile.getFrontContent());
                     omsCreateFile.setBankContent(omsFile.getBankContent());
+                    omsFileMapper.updateById(omsFile);
                     omsCreateFileService.insertOrUpdate(omsCreateFile);
                 }
             }
