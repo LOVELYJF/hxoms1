@@ -125,7 +125,7 @@ public class LeaderOtherStatisticalQueryController {
 
     /**因私出国境申请管理 导出 **/
 
-    @GetMapping("/exportAllOmsPriApplyManange")
+    @PostMapping("/exportAllOmsPriApplyManange")
     public void exportAllOmsPriApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
         try {
             HSSFWorkbook wb = leaderEXportExcelService.exportAllOmsPriApplyManange(omsPriApplyIPageParam);
@@ -176,7 +176,7 @@ public class LeaderOtherStatisticalQueryController {
 
     /** 延期出国境(申请)管理 导出 **/
 
-    @GetMapping("/exportAllOmsPriDelayApplyManange")
+    @PostMapping("/exportAllOmsPriDelayApplyManange")
     public void exportAllOmsPriDelayApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
 
         try {
