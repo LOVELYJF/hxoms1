@@ -18,14 +18,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -139,7 +137,7 @@ public class OmsRegProcpersoninfoController {
      * @param personInfoIPagParam
      * @return
      */
-    @GetMapping("/getProvinceCadreRegInfo")
+    @PostMapping("/getProvinceCadreRegInfo")
     public Result getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) {
         try{
             PageInfo<OmsRegProcpersoninfo> mrpinfoList = mrpinfoService.getProvinceCadreRegInfo(personInfoIPagParam);
@@ -165,7 +163,7 @@ public class OmsRegProcpersoninfoController {
      * @param procpersonInfoIPagParam
      * @return
      */
-    @GetMapping("/getRegPersonInfoList")
+    @PostMapping("/getRegPersonInfoList")
     public Result getRegPersonInfoList(OmsRegProcpersoninfoIPagParam procpersonInfoIPagParam) {
         try{
             PageInfo<OmsRegProcpersoninfo> mrpinfoList = mrpinfoService.getRegPersonInfoList(procpersonInfoIPagParam);
@@ -216,7 +214,7 @@ public class OmsRegProcpersoninfoController {
      * @param
      * @return
      */
-    @GetMapping("/selectYearList")
+    @PostMapping("/selectYearList")
     public Result selectYearList(){
         return Result.success(mrpinfoService.queryYearList());
     }

@@ -54,7 +54,7 @@ public interface LeaderCommonMapper {
 
    /** 征求纪委意见(统计查询) 查询情况 **/
 
-   List<Map>  selectjieweiOpinionCase();
+   List<Map>  selectjieweiOpinionCase(@Param("jiweiStatisticsVo") JiweiStatisticsVo jiweiStatisticsVo);
 
    /** 征求纪委意见 明细查询 **/
 

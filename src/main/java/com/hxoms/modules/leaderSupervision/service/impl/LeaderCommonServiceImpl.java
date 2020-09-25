@@ -1562,10 +1562,10 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
             if(currentStatus < Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)]){
 
-                String updateApplyStatusSql =   getUpdateStatusSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
+//                String updateApplyStatusSql =   getUpdateStatusSql(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName);
 
                 // 因为 添加 干教 流程 此方法需要重写
-//                String updateApplyStatusSql
+                String updateApplyStatusSql = LeaderSupervisionUntil.getUpdateStatusByJieWei(bussinessTypeAndIdVos.get(i).getBussinessId(),bussinessType,leaderStatusName,bussinessTypeAndIdVos.get(i).getBussinessName());
 
                 if(updateApplyStatusSql.length()>0){
 
