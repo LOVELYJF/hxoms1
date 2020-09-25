@@ -646,12 +646,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             dataGB.setRegisteResidence(dataGA.getRegisteResidence());
 
             //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
-            if ((dataGB.getWorkUnit() == null && dataGA.getWorkUnit() != null) ||
-                    (dataGB.getWorkUnit() != null && dataGA.getWorkUnit() == null) ||
-                    (dataGB.getWorkUnit() != null && dataGA.getWorkUnit() != null && dataGB.getWorkUnit().equals(dataGA.getWorkUnit()) == false) ||
-                    (dataGB.getPost() == null && dataGA.getPost() != null) ||
-                    (dataGB.getPost() != null && dataGA.getPost() == null) ||
-                    (dataGB.getPost() != null && dataGA.getPost() != null && dataGB.getPost().equals(dataGA.getPost()) == false)) {
+            if (StringUilt.equalsWithNull(dataGB.getWorkUnit(),dataGA.getWorkUnit())==false ||
+                    StringUilt.equalsWithNull(dataGB.getPost(),dataGA.getPost())==false) {
                 //入库标识  新增U  修改I  撤消D
                 dataGB.setInboundFlag("I");
                 //备案状态  0未备案，1已备案，2已确认
