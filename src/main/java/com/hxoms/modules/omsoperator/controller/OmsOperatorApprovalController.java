@@ -33,7 +33,7 @@ public class OmsOperatorApprovalController {
      * @Author: 李逍遥
      * @Date: 2020/5/13 9:34
      */
-    @GetMapping("/getApprovalList")
+    @PostMapping("/getApprovalList")
     public Result getApprovalList (Integer pageNum, Integer pageSize, String keyWord,@RequestParam(value ="orgId",required = false) List<String> orgId){
         PageInfo pageInfo = operatorApprovalService.getApprovalList(pageNum,pageSize,keyWord,orgId);
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
