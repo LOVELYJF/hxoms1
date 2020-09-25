@@ -41,11 +41,11 @@ public class OmsSmrPersonInfoController {
      * @param smrPersonInfo
      */
     @GetMapping("/getSmrPersonInfo")
-    public Result getSmrPersonInfo(Integer pageNum, Integer pageSize, @RequestParam(value = "idList",required = false) List<String> idList,
-                                   OmsSmrPersonInfo smrPersonInfo) {
+    public Result getSmrPersonInfo(Integer pageNum, Integer pageSize,
+                                   OmsSmrPersonInfo smrPersonInfo,
+                                   @RequestParam(value = "idList",required = false) List<String> idList) {
         try{
-            Map<String, Object> resultMap = smrPersonInfoService.getSmrPersonInfo(pageNum, pageSize,idList,smrPersonInfo);
-            return Result.success(resultMap);
+            return Result.success(smrPersonInfoService.getSmrPersonInfo(pageNum, pageSize,idList,smrPersonInfo));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -104,8 +104,7 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/exportSmrPersonInfo")
     public Result exportSmrPersonInfo(@RequestParam(value = "idList",required = false) List<String> idList, OmsSmrPersonInfo smrPersonInfo){
         try{
-            boolean result = smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo, this.response);;
-            return Result.success(result);
+            return Result.success(smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo));
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导出失败");
@@ -134,7 +133,7 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/exportFailReportOrg")
     public Result exportFailReportOrg(){
         try{
-            boolean result = smrPersonInfoService.exportFailReportOrg(response);;
+            boolean result = smrPersonInfoService.exportFailReportOrg();
             return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
@@ -164,7 +163,7 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/exportDifferentData")
     public Result exportDifferentData(){
         try{
-            boolean result = smrPersonInfoService.exportDifferentData(response);;
+            boolean result = smrPersonInfoService.exportDifferentData();
             return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();

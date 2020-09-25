@@ -1,11 +1,11 @@
 package com.hxoms.modules.omssmrperson.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.Excel.EntityExcel;
+import com.hxoms.common.util.Excel.ExportExcel;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
@@ -17,7 +17,6 @@ import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrPersonInfoMapper;
-import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
@@ -27,14 +26,13 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,14 +54,17 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     private OmsSmrOldInfoMapper smrOldInfoMapper;
     @Autowired
     private OmsRegProcpersonInfoService regProcpersonInfoService;
+    @Autowired
+    private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
+    private HttpServletResponse response;
     /**
      * 获取涉密人员信息列表
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> getSmrPersonInfo(Integer pageNum, Integer pageSize, List<String> idList, OmsSmrPersonInfo omsSmrPersonInfo) throws ParseException {
-        Map<String, Object> resultMap = new LinkedHashMap<>();
+    public PageInfo<OmsRegProcpersoninfo> getSmrPersonInfo(Integer pageNum, Integer pageSize, List<String> idList, OmsSmrPersonInfo omsSmrPersonInfo){
+        pageNum = pageNum == null ? 1 : pageNum;
+        pageSize = pageSize == null ? 10 : pageSize;
         Map<String, Object> param = new HashMap<>();
         if (!StringUtils.isEmpty(omsSmrPersonInfo.getName())) {
             if (isPinyin(omsSmrPersonInfo.getName())) {
@@ -73,30 +74,27 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             }
         }
 
-        if (!StringUtils.isEmpty(omsSmrPersonInfo.getB0100())) {
+        if (!StringUtils.isEmpty(omsSmrPersonInfo.getB0100()))
             param.put("b0100", omsSmrPersonInfo.getB0100());
-        }
 
-        if (!StringUtils.isEmpty(omsSmrPersonInfo.getSecretRelatedLevel())) {
-            param.put("level", omsSmrPersonInfo.getSecretRelatedLevel());
-        }
+        if (!StringUtils.isEmpty(omsSmrPersonInfo.getSecretRelatedLevel()))
+            param.put("secretLevel", omsSmrPersonInfo.getSecretRelatedLevel());
 
-        if (!StringUtils.isEmpty(omsSmrPersonInfo.getSecretRelatedPost())) {
-            param.put("post", omsSmrPersonInfo.getSecretRelatedPost());
-        }
+        if (!StringUtils.isEmpty(omsSmrPersonInfo.getSecretRelatedPost()))
+            param.put("secretPost", omsSmrPersonInfo.getSecretRelatedPost());
 
-        if (!StringUtils.isEmpty(omsSmrPersonInfo.getPersonState())) {
-            param.put("personState", omsSmrPersonInfo.getPersonState());
-        }
+        if (!StringUtils.isEmpty(omsSmrPersonInfo.getPersonState()))
+            param.put("incumbencyStatus", omsSmrPersonInfo.getPersonState());
+
         if (idList != null && idList.size() > 0) {
             if (!"-1".equals(idList.get(0))) {
                 param.put("idList", idList);
             }
         }
-        List<OmsSmrPersonInfo> list = smrPersonInfoMapper.selectSmrPersonInfo(param);
-        PageInfo pageInfo = new PageInfo(list);
-        resultMap.put("pageInfo", pageInfo);
-        return resultMap;
+        List<OmsRegProcpersoninfo> resultList = regProcpersoninfoMapper.getSmrPersonInfo(param);
+        PageUtil.pageHelp(pageNum, pageSize);
+        PageInfo<OmsRegProcpersoninfo> pageInfo = new PageInfo(resultList);
+        return pageInfo;
     }
 
     /**
@@ -160,7 +158,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             imp.setSecretRelatedLevel(getSecretLevel(imp.getSecretRelatedLevel()));
 
             //单位和涉密等级没有改变，不做任何操作
-            if (existsSmr != null && existsSmr.getSecretRelatedLevel().equals(imp.getSecretRelatedLevel())) continue;
+            if (existsSmr != null &&
+                    StringUilt.equalsWithNull(existsSmr.getSecretRelatedLevel(),imp.getSecretRelatedLevel())) continue;
 
 
             //不存在该涉密信息
@@ -168,13 +167,16 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 imp.setId(UUIDGenerator.getPrimaryKey());
                 adds.add(imp);
             }
-            //涉密等级提高了,更新涉密等级
-            else if (Integer.parseInt(existsSmr.getSecretRelatedLevel()) < Integer.parseInt(imp.getSecretRelatedLevel())) {
+            //涉密等级提高了,更新涉密等级,登记备案库的涉密为null也认为是提高了
+            else if (existsSmr.getSecretRelatedLevel()==null||
+                    (existsSmr.getSecretRelatedLevel()!=null&&imp.getSecretRelatedLevel()!=null&&
+                    Integer.parseInt(existsSmr.getSecretRelatedLevel()) < Integer.parseInt(imp.getSecretRelatedLevel()))) {
                 existsSmr.setSecretRelatedLevel(imp.getSecretRelatedLevel());
                 updates.add(existsSmr);
             }
             //涉密等级降低了,启动脱密期
-            else if (Integer.parseInt(existsSmr.getSecretRelatedLevel()) > Integer.parseInt(imp.getSecretRelatedLevel())) {
+            else if (existsSmr.getSecretRelatedLevel()!=null&&imp.getSecretRelatedLevel()!=null&&
+                    Integer.parseInt(existsSmr.getSecretRelatedLevel()) > Integer.parseInt(imp.getSecretRelatedLevel())) {
                 //涉密等级发生变化，插入新的涉密信息
                 OmsSmrOldInfoVO newSmr = new OmsSmrOldInfoVO();
                 BeanUtils.copyProperties(existsSmr, newSmr);
@@ -223,6 +225,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     public Date CalcLeaveSecretDeadline(Date startDate, String secretLevel) {
+        if(StringUilt.stringIsNullOrEmpty(secretLevel)) return startDate;
         int deadline = Integer.parseInt(secretLevel);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
@@ -231,7 +234,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     }
 
     public String getSecretLevel(String srLevel) {
-        String result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
+        String result = OmsCommonUtil.SECRET_LEVEL_STATUS[0];
         if (StringUtils.isNotBlank(srLevel)) {
             if (OmsCommonUtil.SECRET_LEVEL_STATUS_NAME[1].equals(srLevel)) {
                 result = OmsCommonUtil.SECRET_LEVEL_STATUS[1];
@@ -451,42 +454,59 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出涉密人员信息
      */
     @Override
-    public boolean exportSmrPersonInfo(List<String> idList, OmsSmrPersonInfo smrPersonInfo, HttpServletResponse response) {
-        //根据条件查询数据
-        Map<String, Object> param = new HashMap<>();
-        if (!StringUtils.isEmpty(smrPersonInfo.getName())) {
-            if (isPinyin(smrPersonInfo.getName())) {
-                param.put("namePy", "%" + smrPersonInfo.getName() + "%");
-            } else {
-                param.put("name", "%" + smrPersonInfo.getName() + "%");
+    public Result exportSmrPersonInfo(List<String> idList, OmsSmrPersonInfo smrPersonInfo) {
+       List<OmsRegProcpersoninfo> exportList = getSmrPersonInfo(1,10000,idList,smrPersonInfo).getList();
+        //导出
+        try {
+            String filePath = "D://test11.xlsx";
+            File fileExcel = new File(filePath);
+            if (!fileExcel.exists()) {
+                fileExcel.createNewFile();
             }
-        }
-
-        if (!StringUtils.isEmpty(smrPersonInfo.getB0100())) {
-            param.put("b0100", smrPersonInfo.getB0100());
-        }
-
-        if (!StringUtils.isEmpty(smrPersonInfo.getSecretRelatedLevel())) {
-            param.put("level", smrPersonInfo.getSecretRelatedLevel());
-        }
-
-        if (!StringUtils.isEmpty(smrPersonInfo.getSecretRelatedPost())) {
-            param.put("post", smrPersonInfo.getSecretRelatedPost());
-        }
-
-        if (!StringUtils.isEmpty(smrPersonInfo.getPersonState())) {
-            param.put("personState", smrPersonInfo.getPersonState());
-        }
-        if (idList.size() > 0) {
-            if (!"-1".equals(idList.get(0))) {
-                param.put("idList", idList);
+            EntityExcel entityExcel = new EntityExcel();
+            entityExcel.setTitle("涉密人员信息表");
+            entityExcel.setFileName("新的文件");
+            String[] rowName = {"序号", "单位", "姓名", "性别", "职务职级", "政治面貌", "在职状态", "涉密岗位", "涉密等级", "脱密期开始时间", "脱密期结束时间"};
+            String[] key = {"xh","dw","name", "sex","post","zzmm","zzzt","smpost","smlevel","tmqkssj","tmqjssj"};
+            entityExcel.setRowName(rowName);
+            entityExcel.setKey(key);
+            List<Map<String, Object>> maps = new ArrayList<>();
+            for (int i = 0; i < exportList.size(); i++) {
+                OmsRegProcpersoninfo export = exportList.get(i);
+                Map<String, Object> map = new HashMap<>();
+                map.put("xh", i);
+                map.put("dw", export.getWorkUnit());
+                map.put("name", export.getName());
+                map.put("sex", export.getSex());
+                map.put("post", export.getPost());
+                map.put("zzmm", export.getPoliticalAffiname());
+                map.put("zzzt", export.getIncumbencyStatus());
+                map.put("smpost", export.getSecretPost());
+                map.put("smlevel", export.getSecretLevel());
+                map.put("tmqkssj", export.getDecryptStartdate());
+                map.put("tmqjssj", export.getDecryptEnddate());
+                maps.add(map);
             }
+            File file = new File(filePath);
+            XSSFWorkbook wb = ExportExcel.exportExcel(maps, entityExcel);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            wb.write(fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        List<OmsSmrPersonInfo> list = smrPersonInfoMapper.selectSmrPersonInfo(param);
+        return Result.success();
+    }
+    /*@Override
+    public Result exportSmrPersonInfo(List<String> idList, OmsSmrPersonInfo smrPersonInfo) {
+       List<OmsRegProcpersoninfo> list = getSmrPersonInfo(1,10000,idList,smrPersonInfo).getList();
 
         //导出
         if (list.size() < 1) {
-            throw new CustomMessageException("操作失败");
+            return Result.error("导出失败，未获取到涉密人员信息！");
         }
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -523,14 +543,10 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         row2.createCell(4).setCellValue("职务职级");
         row2.createCell(5).setCellValue("政治面貌");
         row2.createCell(6).setCellValue("在职状态");
-        row2.createCell(7).setCellValue("最高等级定级单位");
-        row2.createCell(8).setCellValue("最高涉密等级");
-        row2.createCell(9).setCellValue("最长脱密结束日期");
-        row2.createCell(10).setCellValue("涉密岗位");
-        row2.createCell(11).setCellValue("涉密等级");
-        row2.createCell(12).setCellValue("保密复审时间");
-        row2.createCell(13).setCellValue("脱密期管理开始日期");
-        row2.createCell(14).setCellValue("脱密期管理终止日期");
+        row2.createCell(7).setCellValue("涉密岗位");
+        row2.createCell(8).setCellValue("涉密等级");
+        row2.createCell(9).setCellValue("脱密期管理开始日期");
+        row2.createCell(10).setCellValue("脱密期管理终止日期");
         //在sheet里添加数据
 
         //创建文件样式对象
@@ -544,46 +560,46 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
-            OmsSmrPersonInfo smrPersonInfoNew = new OmsSmrPersonInfo();
+            OmsRegProcpersoninfo regProcpersoninfo = new OmsRegProcpersoninfo();
             row = sheet.createRow(i + 2);
             row.createCell(0).setCellValue(i + 1);
-            row.createCell(1).setCellValue(smrPersonInfoNew.getB0101());
-            row.createCell(2).setCellValue(smrPersonInfoNew.getName());
-            row.createCell(3).setCellValue(smrPersonInfoNew.getSex());
-            row.createCell(4).setCellValue(smrPersonInfoNew.getPost());
-            row.createCell(5).setCellValue(smrPersonInfoNew.getA0141());
-            row.createCell(6).setCellValue(smrPersonInfoNew.getPersonState());
-            row.createCell(7).setCellValue(smrPersonInfoNew.getMaxSecretRelatedOrg());
-            row.createCell(8).setCellValue(smrPersonInfoNew.getMaxSecretRelatedLevel());
-            row.createCell(9).setCellValue(smrPersonInfoNew.getMaxFinishDate());
-            row.createCell(10).setCellValue(smrPersonInfoNew.getSecretRelatedPost());
-            row.createCell(11).setCellValue(smrPersonInfoNew.getSecretRelatedLevel());
-            row.createCell(12).setCellValue(smrPersonInfoNew.getSecretReviewDate());
-            row.createCell(13).setCellValue(smrPersonInfoNew.getStartDate());
-            row.createCell(14).setCellValue(smrPersonInfoNew.getFinishDate());
+            row.createCell(1).setCellValue(regProcpersoninfo.getWorkUnit());
+            row.createCell(2).setCellValue(regProcpersoninfo.getName());
+            String sex = "";
+            if(!StringUtils.isBlank(regProcpersoninfo.getSex())){
+                if(regProcpersoninfo.getSex().equals("1"))  sex = "男";
+                else sex = "女";
+            }
+            row.createCell(3).setCellValue(sex);
+            row.createCell(4).setCellValue(regProcpersoninfo.getPost());
+            row.createCell(5).setCellValue(regProcpersoninfo.getPoliticalAffiname());
+            row.createCell(6).setCellValue(regProcpersoninfo.getIncumbencyStatus());
+            row.createCell(7).setCellValue(regProcpersoninfo.getSecretPost());
+            row.createCell(8).setCellValue(regProcpersoninfo.getSecretLevel());
+            row.createCell(9).setCellValue(regProcpersoninfo.getDecryptStartdate());
+            row.createCell(10).setCellValue(regProcpersoninfo.getDecryptEnddate());
             //设置单元格字体大小
             for (int j = 0; j < 8; j++) {
                 row.getCell(j).setCellStyle(style1);
             }
         }
-
         //输出Excel文件
         OutputStream output = null;
         try {
-            output = response.getOutputStream();
-            response.reset();
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-disposition", "attachment; " +
+            HttpServletResponse resp = this.response;
+            output = resp.getOutputStream();
+            resp.reset();
+            resp.setCharacterEncoding("UTF-8");
+            resp.setHeader("Content-disposition", "attachment; " +
                     "filename=" + new String("涉密人员信息表.xls".getBytes("gb2312"), "ISO8859-1"));
-            response.setContentType("application/msexcel");
+            resp.setContentType("application/msexcel");
             wb.write(output);
             output.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
-    }
+        return Result.success();
+    }*/
 
     /**
      * 获取漏报涉密人员机构
@@ -597,7 +613,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出漏报涉密人员机构
      */
     @Override
-    public boolean exportFailReportOrg(HttpServletResponse response) {
+    public boolean exportFailReportOrg() {
         List<String> list = getFailReportOrg();
         if (list.size() < 1 || list == null) {
             throw new CustomMessageException("没有可以导出的数据");
@@ -657,6 +673,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //输出Excel文件
         OutputStream output = null;
         try {
+            HttpServletResponse response = this.response;
             output = response.getOutputStream();
             response.reset();
             response.setCharacterEncoding("UTF-8");
@@ -684,7 +701,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出差异数据列表
      */
     @Override
-    public boolean exportDifferentData(HttpServletResponse response) {
+    public boolean exportDifferentData() {
         List<OmsSmrPersonInfo> list = getDifferentData();
         if (list.size() < 1 || list == null) {
             throw new CustomMessageException("操作失败");
@@ -758,6 +775,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //输出Excel文件
         OutputStream output = null;
         try {
+            HttpServletResponse response = this.response;
             output = response.getOutputStream();
             response.reset();
             response.setCharacterEncoding("UTF-8");
@@ -934,7 +952,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
+                    Date date = formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setSecretReviewDate(date);
                     else
@@ -946,7 +964,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
+                    Date date = formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setStartDate(date);
                     else
@@ -958,7 +976,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     continue;
                 }
                 if (StringUilt.stringIsNullOrEmpty(cell.getStringCellValue()) == false) {
-                    Date date = UtilDateTime.formatDate(cell.getStringCellValue());
+                    Date date = formatDate(cell.getStringCellValue());
                     if (date != null)
                         map.setFinishDate(date);
                     else
@@ -992,6 +1010,44 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return true;
     }
 
+    /**
+     * 格式化日期为'/'
+     *
+     * @param date
+     * @return Date
+     */
+    public static Date formatDate(String date) {
+        //转换日期格式为我们需要的格式
+        String srDateNew = "";
+        if (date.contains("-")) {
+            srDateNew = date.replaceAll("-", "/");
+        }
+        if (date.contains(".")) {
+            srDateNew = date.replaceAll(".", "/");
+        }
+        if (date.contains("年")) {
+            srDateNew = date.replaceAll("年", "/");
+            if (date.contains("月")) {
+                srDateNew = date.replaceAll("月", "/");
+                if (date.contains("日")) {
+                    srDateNew = date.replaceAll("日", "");
+                }
+            }
+        }
+        //格式化日期
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date newDate = null;
+        try {
+            if (!"".equals(srDateNew)) {
+                newDate = simpleDateFormat.parse(srDateNew);
+            } else {
+                newDate = simpleDateFormat.parse(date);
+            }
+        } catch (ParseException px) {
+            px.printStackTrace();
+        }
+        return newDate;
+    }
 
     /**
      * 判断是否匹配导入数据

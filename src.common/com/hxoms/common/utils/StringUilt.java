@@ -29,4 +29,10 @@ public class StringUilt {
             return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
         }
     }
+    public static boolean equalsWithNull(String s1,String s2){
+        if(stringIsNullOrEmpty(s1)&&stringIsNullOrEmpty(s2)) return true;
+
+        if(!stringIsNullOrEmpty(s1)) return s1.equals(s2);
+        return s2.equals(s1);
+    }
 }

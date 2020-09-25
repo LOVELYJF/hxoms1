@@ -25,7 +25,7 @@ public class OmsRegRevokeApplyController {
      * @param revokeApplyIPagParam
      * @return
      */
-    @GetMapping("/queryRevokeApplyList")
+    @PostMapping("/queryRevokeApplyList")
     public Result queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
         try {
             PageInfo<OmsRegRevokeapply> revokeApplyList = revokeApplyService.queryRevokeApplyList(revokeApplyIPagParam);

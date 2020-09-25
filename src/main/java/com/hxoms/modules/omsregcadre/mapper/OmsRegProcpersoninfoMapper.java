@@ -45,13 +45,13 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
     List<Map> selectRegInfoListById(@Param(value = "ids")List<String> ids);
 
     List<OmsRegProcpersoninfo> selectAllowRevokePerson();
-    /**
-    * @description:通过a0100查找登记备案的家庭成员
-    * @author:杨波
-    * @date:2020-09-24
-    *  * @param a0100 省管干部id
+
+    List<OmsRegProcpersoninfo> getSmrPersonInfo(Map<String, Object> param);
+
+    /*
+    * @param a0100 省管干部id
     * @return:
-    **/
+            **/
     List<OmsRegProcpersoninfo> selectFamilyByA0100(String a0100);
 
     /**

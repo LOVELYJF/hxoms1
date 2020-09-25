@@ -576,26 +576,26 @@ public class Synchdata {
                     for (int j = 0; j < mposts.size(); j++) {
                         Map mMap = mposts.get(j);
                         //沒有發生變化
-                        if (tMap.get("a0200") == mMap.get("a0200") &&//職務表主鍵
-                                tMap.get("a0201a") == mMap.get("a0201a") &&//任職機構名稱
-                                tMap.get("a0215a") == mMap.get("a0215a") &&//職務名稱
-                                tMap.get("a0255") == mMap.get("a0255")) //任职状态
+                        if (tMap.get("a0200").equals(mMap.get("a0200")) &&//職務表主鍵
+                                tMap.get("a0201a").equals(mMap.get("a0201a")) &&//任職機構名稱
+                                tMap.get("a0215a").equals(mMap.get("a0215a")) &&//職務名稱
+                                tMap.get("a0255").equals(mMap.get("a0255"))) //任职状态
                         {
                             exists = true;
                             break;
                         }
 
                         //職務發生變化
-                        if (tMap.get("a0200") == mMap.get("a0200") &&//職務表主鍵
-                                (tMap.get("a0201a") != mMap.get("a0201a") ||//任職機構名稱
-                                        tMap.get("a0215a") != mMap.get("a0215a") ||//職務名稱
-                                        tMap.get("a0255") != mMap.get("a0255")))  //任职状态
+                        if (tMap.get("a0200").equals(mMap.get("a0200")) &&//職務表主鍵
+                                (!tMap.get("a0201a").equals(mMap.get("a0201a")) ||//任職機構名稱
+                                        !tMap.get("a0215a").equals(mMap.get("a0215a")) ||//職務名稱
+                                        !tMap.get("a0255").equals(mMap.get("a0255"))))  //任职状态
                         {
                             exists = true;
                             //在职的才处理职务变化，不在职的，全部职务都要处理脱密期，
                             // 避免没有设置职务的免职时间而采用当前时间作为脱密期开始时间，
                             //退出人员的脱密期开始时间取退出信息集的时间
-                            if (cadreA01.get("a0163").toString() == "1")
+                            if ("1".equals(cadreA01.get("a0163").toString()))
                                 changePost = tMap;
                             break;
                         }
@@ -617,7 +617,7 @@ public class Synchdata {
                 for (int i = 0; i < mposts.size(); i++) {
                     boolean find = false;
                     for (int j = 0; j < tposts.size(); j++) {
-                        if (tposts.get(j).get("id") == mposts.get(i).get("id")) {
+                        if (tposts.get(j).get("id").equals(mposts.get(i).get("id"))) {
                             find = true;
                             break;
                         }
@@ -660,8 +660,8 @@ public class Synchdata {
             ) {
                 OmsSmrOldInfo oldInfo = (OmsSmrOldInfo) o;
                 //不是当前单位或者脱密开始时间已经设置，跳过
-                if (oldInfo.getA0100() != a0100 ||
-                        oldInfo.getB0100() != b0100 ||
+                if (!a0100.equals(oldInfo.getA0100()) ||
+                        !b0100.equals(oldInfo.getB0100()) ||
                         oldInfo.getStartDate() != null) continue;
 
                 CalcDeclassification(updatePost, oldInfo);
@@ -683,7 +683,7 @@ public class Synchdata {
             smrOld.setImportYear(new SimpleDateFormat("yyyy").format(new Date()));
 
             //为不在职的设置脱密期，有可能添加以免职务
-            if (insertPost.get("a0255") == "0") {
+            if ("0".equals(insertPost.get("a0255"))) {
                 CalcDeclassification(insertPost, smrOld);
             }
             newOldInfos.add(smrOld);
@@ -713,8 +713,8 @@ public class Synchdata {
 
             Map masterCadre = hashMapMasterA01.get(a0100);
             //如果不在职了，要处理脱密期，先不判断退出类型，都给生成脱密期
-            if (masterCadre != null && masterCadre.get("a0163").toString() != map.get("a0163").toString() &&
-                    map.get("a0163").toString() != "1") {
+            if (masterCadre != null && !masterCadre.get("a0163").toString().equals(map.get("a0163").toString())  &&
+                    !"1".equals(map.get("a0163").toString())) {
                 //只处理脱密期没有计算过的，防止以前职务变化设置过脱密期的被修改
                 //以退出信息集的日期为脱密开始日期，没有退出信息的，以当前时间为脱密开始时间
 
@@ -745,7 +745,7 @@ public class Synchdata {
 
                 //处理裸官
                 for (OmsSupNakedSign nakedSign1 : nakedSigns) {
-                    if (nakedSign1.getA0100() != a0100) continue;
+                    if (!a0100.equals(nakedSign1.getA0100())) continue;
                     nakedSign1.setIsDelete("1");
                     omsSupNakedSignService.updateOmsNaked(nakedSign1);
                 }
