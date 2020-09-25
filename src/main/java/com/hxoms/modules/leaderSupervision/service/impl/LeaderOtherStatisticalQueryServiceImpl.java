@@ -14,6 +14,7 @@ import com.hxoms.modules.leaderSupervision.mapper.OmsLeaderBatchMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderOtherStatisticalQueryService;
 import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.leaderSupervision.vo.BussinessTypeAndIdVo;
+import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -69,9 +70,10 @@ public class LeaderOtherStatisticalQueryServiceImpl implements LeaderOtherStatis
       List<Map<String, Object>> lists = omsLeaderBatchMapper.selectMaps(leaderBatch_wrapper);
 
 //      int a = Constants.leader_business[Constants.leader_business.length-1];
-
-      map.put("待处理列表", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) < Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
-      map.put("已处理列表", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) == Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
+      // 待处理 列表
+      map.put("pendingList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) < Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
+      // 已处理列表
+      map.put("pendedList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) == Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
 
 
       return map;
@@ -198,6 +200,14 @@ public class LeaderOtherStatisticalQueryServiceImpl implements LeaderOtherStatis
    }
 
 
+   @Override
+   public PageInfo selectjieweiOpinionDetail(JiweiStatisticsVo jiweiStatisticsVo) {
 
+      PageUtil.pageHelp(jiweiStatisticsVo.getPageNum(), jiweiStatisticsVo.getPageSize());
 
+      List<Map> ures  = leaderCommonMapper.selectjieweiOpinionDetail(jiweiStatisticsVo);
+      //返回数据
+      PageInfo pageInfo = new PageInfo(ures);
+      return pageInfo;
+   }
 }

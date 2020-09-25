@@ -3,7 +3,6 @@ package com.hxoms.modules.omsspecialcasehandling.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -11,14 +10,12 @@ import com.hxoms.modules.omsspecialcasehandling.entity.OmsSpecialcasehandling;
 import com.hxoms.modules.omsspecialcasehandling.mapper.OmsSpecialcasehandlingMapper;
 import com.hxoms.modules.omsspecialcasehandling.service.OmsSpecialCaseHandlingService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandlingService {
@@ -74,7 +71,8 @@ public class OmsSpecialCaseHandlingServiceImpl implements OmsSpecialCaseHandling
         if (pageSize == null) {
             pageSize = 10;
         }
-        PageHelper.startPage(pageNum, pageSize);   //设置传入页码，以及每页的大小
+        //设置传入页码，以及每页的大小
+        PageHelper.startPage(pageNum, pageSize);
         List<LinkedHashMap<String, Object>> list = specialcasehandlingMapper.getAllSpecialCase(keyWord);
         PageInfo info1 = new PageInfo(list);
         return info1;

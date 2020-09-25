@@ -1,6 +1,5 @@
 package com.hxoms.modules.sysUser.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 /**
@@ -38,7 +36,6 @@ public class SysUserServiceImpl implements SysUserService {
       */
     @Override
     public PageInfo getSysUserList(Integer pageNum, Integer pageSize, String keyWord, List<String> orgId) {
-
         if (pageNum == null) {
             pageNum = 1;
         }
@@ -82,7 +79,6 @@ public class SysUserServiceImpl implements SysUserService {
             user.setModifyUser(loginUser.getId());
             user.setModifyTime(new Date());
             cfUserMapper.updateByPrimaryKeySelective(user);
-
         } else {
             /**
              * 新增用户（给定初始密码）
@@ -92,7 +88,6 @@ public class SysUserServiceImpl implements SysUserService {
             if (user.getUserState().equals(Constants.USER_TYPES[6])){
                 throw new CustomMessageException("经办人请到经办人注册页面进行注册!");
             }
-
             CfUser selectUser = cfUserMapper.selectByUserCode(user.getUserCode());
             if(selectUser != null){
                 //判断状态
@@ -106,9 +101,7 @@ public class SysUserServiceImpl implements SysUserService {
             user.setCreator(loginUser.getId());
             user.setCreatetime(new Date());
             cfUserMapper.insertSelective(user);
-
         }
-
     }
 
     /**
@@ -128,7 +121,6 @@ public class SysUserServiceImpl implements SysUserService {
         if (user == null) {
             throw new CustomMessageException("用户不存在!");
         }
-
         return user;
     }
 
@@ -146,7 +138,6 @@ public class SysUserServiceImpl implements SysUserService {
             throw new CustomMessageException("参数为空!");
         }
         cfUserMapper.deleteByPrimaryKey(userId);
-
     }
 
     /**
@@ -160,7 +151,6 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updatePassword(String userId, String newPassword) {
-
         if (StringUilt.stringIsNullOrEmpty(userId)) {
             throw new CustomMessageException("用户ID为空!");
         }

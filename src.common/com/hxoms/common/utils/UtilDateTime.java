@@ -1,5 +1,6 @@
 package com.hxoms.common.utils;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Calendar;
 import java.text.ParsePosition;
@@ -645,6 +646,46 @@ public class UtilDateTime {
 		c.add(Calendar.MONTH,month);//在日历的月份上增加6个月
 		return c.getTime();
 	}
-
+	/**
+	 * 格式化日期为'/'
+	 *
+	 * @param date
+	 * @return Date
+	 */
+	public static Date formatDate(String date) {
+		//转换日期格式为我们需要的格式
+		String srDateNew = "";
+		if (date.contains("-")) {
+			srDateNew = date.replaceAll("-", "");
+		}
+		else if (date.contains(".")) {
+			srDateNew = date.replaceAll(".", "");
+		}
+        else if (date.contains("/")) {
+            srDateNew = date.replaceAll("/", "");
+        }
+        else if (date.contains("年")) {
+			srDateNew = date.replaceAll("年", "");
+			if (date.contains("月")) {
+				srDateNew = date.replaceAll("月", "");
+				if (date.contains("日")) {
+					srDateNew = date.replaceAll("日", "");
+				}
+			}
+		}
+		//格式化日期
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		Date newDate = null;
+		try {
+			if (!"".equals(srDateNew)) {
+				newDate = simpleDateFormat.parse(srDateNew);
+			} else {
+				newDate = simpleDateFormat.parse(date);
+			}
+		} catch (ParseException px) {
+			px.printStackTrace();
+		}
+		return newDate;
+	}
 
 }

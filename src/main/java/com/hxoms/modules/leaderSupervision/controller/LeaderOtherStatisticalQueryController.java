@@ -11,6 +11,7 @@ import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService
 import com.hxoms.modules.leaderSupervision.service.LeaderOtherStatisticalQueryService;
 import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
+import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
@@ -195,6 +196,26 @@ public class LeaderOtherStatisticalQueryController {
             throw new CustomMessageException("导出失败，原因："+e.getMessage());
         }
 
+    }
+
+    /** 征求纪委意见 统计查询**/
+    @GetMapping("/jiweiOpionStatisticsQuery")
+    public Result jiweiOpionStatisticsQuery(JiweiStatisticsVo JiweiStatisticsVo){
+
+      List<Map> lists =    leaderCommonMapper.selectjieweiOpinionCase();
+
+        return Result.success(lists);
+    }
+
+
+    /**征求纪委意见 明细查询 **/
+    @GetMapping("/jiweiOpionDetailStatisticsQuery")
+    public Result jiweiOpionDetailStatisticsQuery(JiweiStatisticsVo jiweiStatisticsVo){
+
+//         Thread t = new Thread();
+      PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectjieweiOpinionDetail(jiweiStatisticsVo);
+
+        return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
 

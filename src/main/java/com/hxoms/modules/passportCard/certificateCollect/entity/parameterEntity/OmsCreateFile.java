@@ -19,6 +19,7 @@ public class OmsCreateFile {
     private String applyId;
 
     @ApiModelProperty(value = "可编辑文件（正面，第一页）",required = true)
+    @NotBlank(message = "内容不能为空")
     private String frontContent;
 
 

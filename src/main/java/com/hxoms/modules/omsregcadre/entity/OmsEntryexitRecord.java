@@ -28,7 +28,7 @@ public class OmsEntryexitRecord {
     private String b0000;
 
     @ColumnAnnotation(FieldName = "IMPORT_TIME",   FieldDescription="导入时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="导入时间")
     private Date importTime;
@@ -67,7 +67,7 @@ public class OmsEntryexitRecord {
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生年月")
     @ApiModelProperty(value="出生年月")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
@@ -93,7 +93,7 @@ public class OmsEntryexitRecord {
 
     @ColumnAnnotation(FieldName = "OGE_DATE",   FieldDescription="出入境日期")
     @ApiModelProperty(value="出入境日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date ogeDate;
 
@@ -103,7 +103,7 @@ public class OmsEntryexitRecord {
 
     @ColumnAnnotation(FieldName = "VALID_UNTIL",   FieldDescription="证件有效期至")
     @ApiModelProperty(value="证件有效期至")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date validUntil;
 
@@ -117,7 +117,7 @@ public class OmsEntryexitRecord {
 
     @ColumnAnnotation(FieldName = "COMPARISON_DATE",   FieldDescription="比对日期")
     @ApiModelProperty(value="比对日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date comparisonDate;
 

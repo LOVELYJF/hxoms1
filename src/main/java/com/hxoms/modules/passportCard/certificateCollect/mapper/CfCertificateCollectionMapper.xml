@@ -364,7 +364,7 @@
       c.person_Manager personManager,
       a.cj_Status cj_Status,
       (select item_name from sys_dict_item where dict_code='ZJCJZT' and item_code=a.cj_Status) cjStatusName,
-      d.user_name HANDLER,
+      d.user_name handler,
       d.user_mobile handlerPhone,
       a.zjlx,
       (select item_name from sys_dict_item where dict_code='ZJLX' and item_code=a.zjlx) zjlxName,
@@ -377,7 +377,7 @@
     FROM
         cf_certificate_collection a
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
-    LEFT JOIN cf_user d ON a.work_Unit = d.org_id
+    LEFT JOIN cf_user d ON a.rf_b0000 = d.org_id
     <where>
       <if test="name!=null">
         AND a.name=#{name}
@@ -399,7 +399,7 @@
       </if>
     </where>
     GROUP BY
-        id
+        id ORDER BY return_date
   </select>
   <select id="selectOrganUnit" resultType="com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.OrganUnit">
     SELECT

@@ -244,7 +244,7 @@
         b.place,
         b.counter_num counterNum,
         a.data_source dataSource,
-        (select item_name from sys_dict_item where dict_code='zjlqsjly' and item_code=b.zjlx) dataSourceName,
+        (select item_name from sys_dict_item where dict_code='zjlqsjly' and item_code=a.data_source) dataSourceName,
         a.happen_Date happenDate,
         a.create_time createTime
     FROM

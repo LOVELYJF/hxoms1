@@ -59,13 +59,13 @@ public class OmsRegProcpersoninfo {
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="出生日期（身份证）")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="出生日期（干部）")
     private Date birthDateGb;
@@ -139,13 +139,13 @@ public class OmsRegProcpersoninfo {
     private String secretLevel;
 
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE",   FieldDescription="脱密期管理开始日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="脱密期管理开始日期")
     private Date decryptStartdate;
 
     @ColumnAnnotation(FieldName = "DECRYPT_ENDDATE",   FieldDescription="脱密期管理终止日期")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="脱密期管理终止日期")
     private Date decryptEnddate;
@@ -183,7 +183,7 @@ public class OmsRegProcpersoninfo {
     private String replyopinion;
 
     @ColumnAnnotation(FieldName = "ABROADTIME",   FieldDescription="锁定出国时间到")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="锁定出国时间到")
     private Date abroadtime;
@@ -193,7 +193,7 @@ public class OmsRegProcpersoninfo {
     private String reason;
 
     @ColumnAnnotation(FieldName = "CREATE_TIME",   FieldDescription="备案时间（创建时间）")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="备案时间（创建时间）")
     private Date createTime;
@@ -203,7 +203,7 @@ public class OmsRegProcpersoninfo {
     private String createUser;
 
     @ColumnAnnotation(FieldName = "MODIFY_TIME",   FieldDescription="修改时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="修改时间")
     private Date modifyTime;
@@ -225,20 +225,20 @@ public class OmsRegProcpersoninfo {
     private String secretPost;
 
     @ColumnAnnotation(FieldName = "EXIT_DATE",   FieldDescription="辞职、退休等日期 ")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="辞职、退休等日期 ")
     private Date exitDate;
 
     @ColumnAnnotation(FieldName = "FINISH_TIME",   FieldDescription="备案完成时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="备案完成时间")
     private Date finishTime;
 
 
     @ColumnAnnotation(FieldName = "RZ_DATE",   FieldDescription="任职时间")
-    @JsonFormat(pattern = "yyyy.MM.dd")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="任职时间")
     private Date rzDate;

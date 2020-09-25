@@ -505,7 +505,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
     @Transactional(rollbackFor = Exception.class)
     public Object updateRpinfo(OmsRegProcpersoninfo orpInfo) {
         if (StringUtils.isBlank(orpInfo.getId()) || StringUtils.isBlank(orpInfo.getA0100())) {
-            throw new CustomMessageException("");
+            throw new CustomMessageException("缺少必要参数");
         } else {
             orpInfo.setInboundFlag("I");
             orpInfo.setModifyTime(new Date());
@@ -682,48 +682,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      */
     @Override
     public PageInfo<OmsRegProcpersoninfo> getProvinceCadreRegInfo(OmsRegProcpersoninfoIPagParam personInfoIPagParam) {
-        QueryWrapper<OmsRegProcpersoninfo> queryWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
         PageInfo<OmsRegProcpersoninfo> pageInfo = null;
         //分页
         PageUtil.pageHelp(personInfoIPagParam.getPageNum(), personInfoIPagParam.getPageSize());
-
-        if (!StringUtils.isBlank(personInfoIPagParam.getSecretLevel())) {
-            //查询条件涉密等级
-            queryWrapper.eq("SECRET_LEVEL", personInfoIPagParam.getSecretLevel());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getIdentityCode())) {
-            //身份情况
-            queryWrapper.eq("IDENTITY_CODE", personInfoIPagParam.getIdentityCode());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getIncumbencyStatus())) {
-            //在职状态
-            queryWrapper.eq("INCUMBENCY_STATUS", personInfoIPagParam.getIncumbencyStatus());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getInboundFlag())) {
-            //入库状态
-            queryWrapper.eq("INBOUND_FLAG", personInfoIPagParam.getInboundFlag());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getRfStatus())) {
-            //备案状态
-            queryWrapper.eq("RF_STATUS", personInfoIPagParam.getRfStatus());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getRfB0000())) {
-            //机构代码
-            queryWrapper.like("RF_B0000", personInfoIPagParam.getRfB0000());
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getCheckStatus())) {
-            //验收状态为待验收
-            queryWrapper.eq("CHECK_STATUS", "0");
-        }
-        if (!StringUtils.isBlank(personInfoIPagParam.getDataType())) {
-            //数据类型为干部
-            queryWrapper.eq("DATA_TYPE", personInfoIPagParam.getDataType());
-        }
-
-        //排序  姓 名 工作单位
-        queryWrapper.orderByAsc("SURNAME", "NAME", "WORK_UNIT");
-        pageInfo = new PageInfo(baseMapper.selectList(queryWrapper));
-        ;
+        List<OmsRegProcpersoninfo> provinceCadresList = baseMapper.queryProvinceCadresList(personInfoIPagParam);
+        pageInfo = new PageInfo(provinceCadresList);
         return pageInfo;
     }
 
