@@ -673,7 +673,7 @@
             a0272 = #{item.a0272},
             a0281 = #{item.a0281}
 
-            where A0200 = #{item.A0200}
+            where A0200 = #{item.a0200}
         </foreach>
     </update>
 
