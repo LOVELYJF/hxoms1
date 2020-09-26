@@ -429,6 +429,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                 dataMap.setMsg("未在当前机构任职，" + dataMap.getMsg());
                 continue;
             }
+            OrgNum++;
             dataMap.setImportYear(importYear);
             dataMap.setB0100(b0100);
             dataMap.setB0101(omsRegProcpersoninfo.get("b0101").toString());
@@ -445,7 +446,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     dataMap.getFinishDate().before(new Date())) {
                 dataMap.setMsg("已经过了脱密期不导入，" + dataMap.getMsg());
             }
-            OrgNum++;
+
         }
         if (OrgNum < 1) {
             return Result.error("所导入涉密人员均不在选择的单位，请确认所选单位是否正确！");
@@ -938,6 +939,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                     map.setMsg(msg);
 
                 map.setSfqr("0");
+                map.setB0101("");//解决null排序随机性错误问题
                 list.add(map);
             }
         }

@@ -1,5 +1,6 @@
 package com.hxoms.modules.omssmrperson.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,7 +82,22 @@ public class OmsSmrOldInfoController {
             return Result.error("系统错误");
         }
     }
+    /**
+     * 批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
+     * @param SmrOldInfo
+     */
+    @PostMapping("/updateSmrOldInfos")
+    public Result updateSmrOldInfos(String SmrOldInfo) {
+        try {
+            List<OmsSmrOldInfoVO> smrOldInfos = JSONArray.parseArray(SmrOldInfo,OmsSmrOldInfoVO.class);
 
+            Result result = smrOldInfoService.updateSmrOldInfo(smrOldInfos);
+            return result;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
 }
 
 
