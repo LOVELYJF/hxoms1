@@ -15,6 +15,7 @@ import com.hxoms.modules.dataCapture.masterdata.service.DataCaptureService;
 import com.hxoms.modules.keySupervision.nakedOfficial.entity.OmsSupNakedSign;
 import com.hxoms.modules.keySupervision.nakedOfficial.service.OmsSupNakedSignService;
 import com.hxoms.modules.omsmobilizingcadres.service.MobilizingcadreService;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
@@ -58,6 +59,9 @@ public class Synchdata {
 
     @Autowired
     private SelectMapper selectMapper;  // 通用 自定义sql
+
+    @Autowired
+    private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
 
     // 需要插入的集合
     private List<Map> insertList;
@@ -194,7 +198,13 @@ public class Synchdata {
         List<Map> masterMapPersonOrgOrder = splicCount(PersonOrgOrdercounts, "id");
         diffListMap(targetMapPersonOrgOrder, masterMapPersonOrgOrder, "id");
 
+        //第一次同步时初始化权限
         InitialRights();
+
+        //非第一次同步，完成后自动提取登记备案人员
+        if (masterMapA01.size() > 0) {
+            omsRegProcpersonInfoService.extractRegPersonInfo();
+        }
     }
 
     /**
@@ -269,6 +279,10 @@ public class Synchdata {
                 selectMapper.insert(instance);
             }
         }
+
+        sql="update cf_user a inner join oms_reg_procpersoninfo b on a.A0100=b.A0100 set a.org_id=b.RF_B0000";
+        instance = SqlVo.getInstance(sql);
+        selectMapper.update(instance);
     }
 
     //TODO
@@ -686,6 +700,7 @@ public class Synchdata {
             smrOld.setId(UUIDGenerator.getPrimaryKey());
             smrOld.setA0100(insertPost.get("a0100").toString());
             smrOld.setB0100(insertPost.get("a0201b").toString());
+            smrOld.setPost(insertPost.get("a0215a").toString());
             smrOld.setImportYear(new SimpleDateFormat("yyyy").format(new Date()));
 
             //为不在职的设置脱密期，有可能添加以免职务

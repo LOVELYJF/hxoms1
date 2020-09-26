@@ -57,18 +57,31 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
     }
 
     @Override
+    public Map<String, Object> getSmrMaintainList() {
+        Map<String, Object> resultMap = new LinkedHashMap<>();
+        List<OmsSmrOldInfoVO> list = smrOldInfoMapper.getSmrMaintainList(UserInfoUtil.getUserInfo().getOrgId(), "", "");
+        resultMap.put("result", list);
+        return resultMap;
+    }
+
+    @Override
     public Result updateSmrOldInfo(List<OmsSmrOldInfoVO> smrOldInfos) {
         Calendar calc = Calendar.getInstance();
         List<OmsSmrOldInfo> updates = new ArrayList<>();
         String staffs = "";
         for (OmsSmrOldInfoVO smrOldInfo : smrOldInfos
         ) {
-            calc.setTime(smrOldInfo.getQrStartDate());
-            calc.add(Calendar.DATE, 40);
-            if (calc.getTime().before(smrOldInfo.getStartDate())) {
-                staffs += smrOldInfo.getA0101() + ",";
-            } else {
-                smrOldInfo.setSfqr("1");
+            if(smrOldInfo.getStartDate()!=null&&smrOldInfo.getQrStartDate()!=null){
+                calc.setTime(smrOldInfo.getQrStartDate());
+                calc.add(Calendar.DATE, 40);
+                if (calc.getTime().before(smrOldInfo.getStartDate())) {
+                    staffs += smrOldInfo.getA0101() + ",";
+                } else {
+                    smrOldInfo.setSfqr("1");
+                    updates.add(smrOldInfo);
+                }
+            }
+            else{
                 updates.add(smrOldInfo);
             }
         }

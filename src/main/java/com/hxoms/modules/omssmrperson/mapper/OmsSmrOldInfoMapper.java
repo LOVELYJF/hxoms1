@@ -30,7 +30,8 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
     List<OmsSmrOldInfoVO> getSmrOldInfoVOList(Map<String, String> paramMap);
 
     List<OmsSmrOldInfoVO> getConfirmPeriodList(String orgId,String name,String namePy);
-
+    //获取涉密人员信息维护列表
+    List<OmsSmrOldInfoVO> getSmrMaintainList(String orgId,String name,String namePy);
     /**
     * @description:获取涉密信息记录条数
     * @author:杨波

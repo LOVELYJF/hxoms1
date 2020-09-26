@@ -157,7 +157,7 @@
     SELECT
         t.*
     FROM
-        oms_smr_personinfo t
+      oms_smr_oldinfo t
         LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
     WHERE 1 = 1
         <if test="name !=null and name !=''">
@@ -166,7 +166,7 @@
         <if test="namePy !=null and namePy !=''">
             AND r.PY like #{namePy}
         </if>
-        and r.WORK_UNIT = #{orgId}
+        and r.RF_B0000 = #{orgId}
         and t.SECRET_RELATED_LEVEL is not null
         and r.INCUMBENCY_STATUS = '1'
   </select>
