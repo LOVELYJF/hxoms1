@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
-import com.hxoms.common.util.Excel.EntityExcel;
-import com.hxoms.common.util.Excel.ExportExcel;
-import com.hxoms.common.util.ExportExcelUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
@@ -27,12 +24,10 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -61,7 +56,6 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
     @Autowired
     private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
-    //private HttpServletResponse response;
     /**
      * 获取涉密人员信息列表
      */

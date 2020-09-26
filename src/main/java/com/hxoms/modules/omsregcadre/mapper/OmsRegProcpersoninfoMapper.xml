@@ -507,6 +507,8 @@
             t.DECRYPT_ENDDATE
         FROM
             oms_reg_procpersoninfo t
+            inner join b01 b on t.RF_B0000=b.b0100
+            left join person_org_order p on t.RF_B0000=p.a0201b
         WHERE
             t.DATA_TYPE = '1'
             AND t.SECRET_LEVEL != '0'
@@ -535,6 +537,7 @@
                 #{item}
             </foreach>
         </if>
+        order by b.sortid,p.orderindex
     </select>
 
     <select id="selectFamilyByA0100" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">

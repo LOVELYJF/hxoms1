@@ -600,7 +600,7 @@
                 or  a.a0102 like CONCAT('%',#{keyword},'%'))
             </if>
             <if test="a0165 != null and a0165.size>0">
-                and a.a0165 not in
+                and a.a0165 in
                 <foreach collection="a0165" item="a0165" separator="," open="(" close=")">
                     #{a0165}
                 </foreach>
