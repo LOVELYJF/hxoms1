@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 /**
@@ -42,13 +43,16 @@ public class SysUserServiceImpl implements SysUserService {
         if (pageSize == null) {
             pageSize = 10;
         }
-        if (orgId == null){
+        String userId="";
+        String userType="";
+        if (orgId == null||orgId.size()==0){
             //获取登录用户信息
             UserInfo loginUser = UserInfoUtil.getUserInfo();
-            orgId.add(loginUser.getOrgId());
+            userId=loginUser.getId();
+            userType=loginUser.getUserType();
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<CfUser> users = cfUserMapper.getSysUserList(keyWord, orgId);
+        List<CfUser> users = cfUserMapper.getSysUserList(keyWord, orgId,userId,userType);
         PageInfo info = new PageInfo(users);
         return info;
     }
@@ -88,12 +92,18 @@ public class SysUserServiceImpl implements SysUserService {
             if (user.getUserState().equals(Constants.USER_TYPES[6])){
                 throw new CustomMessageException("经办人请到经办人注册页面进行注册!");
             }
-            CfUser selectUser = cfUserMapper.selectByUserCode(user.getUserCode());
-            if(selectUser != null){
-                //判断状态
-                String userState = selectUser.getUserState();
-                if (!userState.equals(Constants.USER_STATUS[2]) & !userState.equals(Constants.USER_STATUS[5])){
-                    throw new CustomMessageException("登录名重复，请重新输入!");
+            List<CfUser> selectUsers = cfUserMapper.getSysUserList(user.getUserCode(),null,"","");
+            if(selectUsers != null&&selectUsers.size()>0){
+
+                for (CfUser selectUser:selectUsers
+                     ) {
+                    //判断状态
+                    String userState = selectUser.getUserState();
+                    if (!selectUser.getUserId().equals(user.getUserId()) &&
+                            !userState.equals(Constants.USER_STATUS[2]) &&
+                            !userState.equals(Constants.USER_STATUS[5])){
+                        throw new CustomMessageException("登录名重复，请重新输入!");
+                    }
                 }
             }
             user.setUserId(UUIDGenerator.getPrimaryKey());

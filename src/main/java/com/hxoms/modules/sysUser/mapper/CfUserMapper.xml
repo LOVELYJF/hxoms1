@@ -98,6 +98,24 @@
         #{orgId}
       </foreach>
     </if>
+    <if test='userId != null and userId != ""'>
+      <if test='userType !=null and userType !=""'>
+        <choose>
+          <when test='userType =="4"'>
+            and org_id in(select a.managed_org from cf_org_sub a
+            inner join cf_user b on a.b0111=b.org_id where b.user_id=#{userId})
+          </when>
+          <when test='userType =="0" or userType =="1"'>
+
+          </when>
+          <otherwise>
+            and org_id in(select b.org_id from cf_user_roles a
+            inner join cf_roleb01 b on a.role_id=b.role_id
+            where a.user_id=#{userId})
+          </otherwise>
+        </choose>
+      </if>
+    </if>
   </select>
   <select id="selectByUserCode" resultType="com.hxoms.modules.sysUser.entity.CfUser">
     select

@@ -35,7 +35,7 @@ public class OmsPubApplyController {
      *            3-因公、因私、特殊人员查询人员，4-调整期干部查询人员）
      * @date 2020/4/21 17:16
      */
-    @GetMapping("/selectPersonListByOrg")
+    @PostMapping("/selectPersonListByOrg")
     public Result selectPersonListByOrg(@RequestParam(value ="b0100",required = false) List<String> b0100, String keyword,String type) {
         List<PersonInfoVO> list = omsPubApplyService.selectPersonListByOrg(b0100, keyword,type);
         return Result.success(list);

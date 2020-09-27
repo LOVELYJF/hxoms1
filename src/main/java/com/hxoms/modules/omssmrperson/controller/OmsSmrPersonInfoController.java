@@ -1,22 +1,17 @@
 package com.hxoms.modules.omssmrperson.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.ParserConfig;
 import com.hxoms.common.utils.Result;
-import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,18 +27,16 @@ public class OmsSmrPersonInfoController {
     @Autowired
     private OmsSmrPersonInfoService smrPersonInfoService;
 
-    private HttpServletResponse response;
-
     /**
      * 获取涉密人员基本信息列表
      * @param pageNum
      * @param pageSize
      * @param smrPersonInfo
      */
-    @GetMapping("/getSmrPersonInfo")
+    @PostMapping("/getSmrPersonInfo")
     public Result getSmrPersonInfo(Integer pageNum, Integer pageSize,
                                    OmsSmrPersonInfo smrPersonInfo,
-                                   @RequestParam(value = "idList",required = false) List<String> idList) {
+                                   @RequestParam(value = "idList",required = false) String idList) {
         try{
             return Result.success(smrPersonInfoService.getSmrPersonInfo(pageNum, pageSize,idList,smrPersonInfo));
         }catch (Exception e) {
@@ -102,13 +95,10 @@ public class OmsSmrPersonInfoController {
      * @param smrPersonInfo
      */
     @PostMapping("/exportSmrPersonInfo")
-    public Result exportSmrPersonInfo(@RequestParam(value = "idList",required = false) List<String> idList, OmsSmrPersonInfo smrPersonInfo){
-        try{
-            return Result.success(smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo));
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("导出失败");
-        }
+    public void exportSmrPersonInfo(@RequestParam(value = "idList",required = false) String idList,
+                                                       OmsSmrPersonInfo smrPersonInfo,
+                                                       @ApiIgnore HttpServletResponse response){
+            smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo,response);
     }
 
     /**
@@ -116,9 +106,9 @@ public class OmsSmrPersonInfoController {
      * @return
      */
     @GetMapping("/getFailReportOrg")
-    public Result getFailReportOrg(){
+    public Result getFailReportOrg(String Year){
         try{
-            List<String> list= smrPersonInfoService.getFailReportOrg();;
+            List<String> list= smrPersonInfoService.getFailReportOrg(Year);;
             return Result.success(list);
         }catch (Exception e) {
             e.printStackTrace();
@@ -128,16 +118,14 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出漏报涉密人员机构
-     * @return
+     * @param Year
      */
     @PostMapping("/exportFailReportOrg")
-    public Result exportFailReportOrg(){
+    public void exportFailReportOrg(String Year){
         try{
-            boolean result = smrPersonInfoService.exportFailReportOrg();
-            return Result.success(result);
+            smrPersonInfoService.exportFailReportOrg(Year);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导出失败");
         }
     }
 

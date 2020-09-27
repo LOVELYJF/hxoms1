@@ -21,9 +21,12 @@
     <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
     <result column="POST" jdbcType="VARCHAR" property="post" />
     <result column="SFQR" jdbcType="VARCHAR" property="sfqr" />
+    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
+    <result column="a0101" jdbcType="VARCHAR" property="a0101" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
+    <result column="a0101" jdbcType="VARCHAR" property="a0101" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
@@ -61,12 +64,12 @@
   </select>
 
   <!-- 获取脱密期确认列表 -->
-  <select id="getConfirmPeriodList" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo">
+  <select id="getConfirmPeriodList" resultMap="ResultMapVO">
     SELECT
-    t.*
+    t.*,r.WORK_UNIT as b0101,CONCAT(r.SURNAME,r.`NAME`) as a0101
     FROM
     oms_smr_oldinfo t
-    LEFT JOIN oms_reg_procpersoninfo r ON t.PROC_PERSON_ID = r.RF_B0000
+    LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
     WHERE 1 = 1
     <if test="name !=null and name !=''">
       AND concat(r.SURNAME,r.NAME) like #{name}
@@ -75,10 +78,27 @@
       AND r.PY like #{namePy}
     </if>
     and r.rf_B0000 = #{orgId}
-    and t.SFQR = '0'
+    and IFNULL(t.SFQR,'0') = '0'
+    and ISNULL(START_DATE)=FALSE
+  </select>
+  <!-- 获取涉密人员信息维护列表 -->
+  <select id="getSmrMaintainList"  resultMap="ResultMapVO">
+    SELECT
+    t.*,r.WORK_UNIT as b0101,CONCAT(r.SURNAME,r.`NAME`) as a0101
+    FROM
+    oms_smr_oldinfo t
+    LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
+    WHERE 1 = 1
+    <if test="name !=null and name !=''">
+      AND concat(r.SURNAME,r.NAME) like #{name}
+    </if>
+    <if test="namePy !=null and namePy !=''">
+      AND r.PY like #{namePy}
+    </if>
+    and r.RF_B0000 = #{orgId}
+    and t.SECRET_RELATED_LEVEL is null
     and r.INCUMBENCY_STATUS = '1'
   </select>
-
   <select id="getSmrCount" resultType="String">
     select count(1) from oms_smr_oldinfo
   </select>
