@@ -6,7 +6,6 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +33,9 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //导出涉密人员信息列表
     void exportSmrPersonInfo(String idList, OmsSmrPersonInfo smrPersonInfo, HttpServletResponse response);
     //获取漏报涉密人员机构
-    List<String> getFailReportOrg(String Year);
+    Result getFailReportOrg(String importYear);
     //导出漏报涉密人员机构
-    boolean exportFailReportOrg(String Year);
+    void exportFailReportOrg(String importYear);
     //获取差异数据列表
     List<OmsSmrPersonInfo> getDifferentData();
     //导出差异数据列表

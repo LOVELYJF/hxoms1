@@ -62,6 +62,21 @@
     </if>
     ORDER BY t.QR_FINISH_DATE desc , t.SECRET_RELATED_LEVEL desc
   </select>
+  <!--涉密信息列表-->
+  <select id="getSmrOldInfoVOList1" parameterType="java.util.Map" resultMap="ResultMapVO">
+    SELECT
+    t.*,
+    b.b0101 as b0101
+    FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+    WHERE 1=1
+    <if test="a0100 != null and a0100 != ''">
+      and  t.A0100 = #{a0100}
+      and t.QR_FINISH_DATE is not null
+      and t.QR_FINISH_DATE &gt;= now()
+    </if>
+
+    ORDER BY t.QR_FINISH_DATE desc , t.SECRET_RELATED_LEVEL desc
+  </select>
 
   <!-- 获取脱密期确认列表 -->
   <select id="getConfirmPeriodList" resultMap="ResultMapVO">

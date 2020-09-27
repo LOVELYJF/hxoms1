@@ -3,19 +3,16 @@ package com.hxoms.modules.omssmrperson.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
-import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * 省国家保密局备案涉密人员管理
@@ -28,8 +25,6 @@ public class OmsSmrRecordInfoController {
 
     @Autowired
     private OmsSmrRecordInfoService smrRecordInfoService;
-
-    private HttpServletResponse response;
     /**
      * 获取省国家保密局备案涉密人员信息列表
      * @param smrRecordInfo
@@ -51,10 +46,10 @@ public class OmsSmrRecordInfoController {
      * @return
      */
     @GetMapping("/getMatchingPerson")
-    public Result getMatchingPerson(){
+    public Result getMatchingPerson(String importYear,String b0100){
         try{
-            List<OmsSmrRecordInfo> list= smrRecordInfoService.getMatchingPerson();;
-            return Result.success(list);
+            Result result = smrRecordInfoService.getMatchingPerson(importYear,b0100);
+            return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -66,13 +61,12 @@ public class OmsSmrRecordInfoController {
      * @return
      */
     @PostMapping("/exportMatchingPerson")
-    public Result exportMatchingPerson(){
+    public void exportMatchingPerson(String importYear,String b0100,
+                                       @ApiIgnore HttpServletResponse response){
         try{
-            boolean result = smrRecordInfoService.exportMatchingPerson(response);;
-            return Result.success(result);
+            smrRecordInfoService.exportMatchingPerson(importYear,b0100,response);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导出失败");
         }
     }
 

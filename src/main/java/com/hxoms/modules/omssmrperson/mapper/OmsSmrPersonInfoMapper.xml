@@ -127,12 +127,23 @@
   <!-- 获取漏报涉密人员单位 -->
   <select id="getFailReportOrg" resultType="java.lang.String">
     SELECT
-        t.b0101
+        *
+    FROM
+        (
+    SELECT
+        t.b0100,t.b0111,t.b0101
     FROM
         b01 t
+        INNER JOIN oms_reg_procpersoninfo r ON r.RF_B0000 = t.b0100
     WHERE
         t.is_deleted = "0"
-        AND t.b0100 NOT IN ( SELECT t.B0100 FROM oms_smr_personinfo t WHERE t.IMPORT_YEAR = #{Year} GROUP BY t.B0100 )
+        ) t
+    WHERE
+        1 = 1
+        AND t.b0100 NOT IN ( SELECT t.B0100 FROM oms_smr_oldinfo t WHERE t.IMPORT_YEAR = #{Year} GROUP BY t.B0100
+        )
+    ORDER BY
+        t.b0111
   </select>
 
   <!-- 获取差异数据列表 -->
