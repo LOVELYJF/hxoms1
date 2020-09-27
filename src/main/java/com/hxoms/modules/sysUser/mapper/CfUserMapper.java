@@ -22,7 +22,10 @@ public interface CfUserMapper {
      * @Author: 李逍遥
      * @Date: 2020/4/30 10:02
      */
-    List<CfUser> getSysUserList(@Param("userName") String keyWord, @Param("orgId") List<String> orgId);
+    List<CfUser> getSysUserList(@Param("userName") String keyWord,
+                                @Param("orgId") List<String> orgId,
+                                @Param("userId") String userId,
+                                @Param("userType") String userType);
 
     /**
      * 功能描述: <br>

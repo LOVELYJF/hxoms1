@@ -1,27 +1,17 @@
 package com.hxoms.modules.omssmrperson.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrPersonInfoService;
-import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLEncoder;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -113,13 +103,13 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 获取漏报涉密人员机构
-     * @return
+     * @param importYear
      */
     @GetMapping("/getFailReportOrg")
-    public Result getFailReportOrg(){
+    public Result getFailReportOrg(String importYear){
         try{
-            List<String> list= smrPersonInfoService.getFailReportOrg();;
-            return Result.success(list);
+            Result result = smrPersonInfoService.getFailReportOrg(importYear);;
+            return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -128,16 +118,14 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出漏报涉密人员机构
-     * @return
+     * @param importYear
      */
     @PostMapping("/exportFailReportOrg")
-    public Result exportFailReportOrg(){
+    public void exportFailReportOrg(String importYear){
         try{
-            boolean result = smrPersonInfoService.exportFailReportOrg();
-            return Result.success(result);
+            smrPersonInfoService.exportFailReportOrg(importYear);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导出失败");
         }
     }
 

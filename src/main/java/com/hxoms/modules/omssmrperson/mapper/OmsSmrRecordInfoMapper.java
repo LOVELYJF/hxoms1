@@ -15,7 +15,6 @@ import java.util.List;
 public interface OmsSmrRecordInfoMapper extends BaseMapper<OmsSmrRecordInfo> {
     //批量添加备案涉密人员
     int insertRecordList(List<OmsSmrRecordInfo> list);
-    //获取已匹配备案涉密人员
-    List<OmsSmrRecordInfo> getMatchingPerson();
+
     void deleteByB0100AndYear(String b0100,String importYear);
 }

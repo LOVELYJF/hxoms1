@@ -3,7 +3,6 @@ package com.hxoms.support.b01.controller;
 import com.hxoms.common.tree.Tree;
 import com.hxoms.common.utils.Result;
 import com.hxoms.support.b01.entity.B01;
-import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.service.OrgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

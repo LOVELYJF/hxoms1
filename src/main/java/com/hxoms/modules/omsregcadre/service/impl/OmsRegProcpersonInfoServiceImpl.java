@@ -822,6 +822,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     ("2".equals(a01.getA0163()) && !omsreginfo.getIncumbencyStatus().equals("1"))) {
                 //職務发生变化
                 if (!a01.getA0192a().equals(omsreginfo.getPost())) {
+                    //变更职务
+                    SetPost(a01,omsreginfo,hashMapA02,hashMapBaseInfo);
                     //变更登记备案
                     ChangeRegisterState(omsreginfo);
                     updated = true;
@@ -833,6 +835,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 String incumbencyStatus = this.queryStatusByA0100(a01, hashMapA30);
                 omsreginfo.setIncumbencyStatus(incumbencyStatus);
 
+                //在职状态发生变化，更新职务信息
+                SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
+
                 //如果干部是在职状态，登记备案人员已经撤销，需要以新增方式重新登记备案
                 if ("1".equals(a01.getA0163()) && omsreginfo.getInboundFlag().equals("D")) {
                     AddRegisterState(omsreginfo);
@@ -842,7 +847,6 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //调出后，还没有撤消登记备案又调回来
                 else if ("1".equals(a01.getA0163())) {
                     //更新职务信息
-                    SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
                     ChangeRegisterState(omsreginfo);
                     updated = true;
                 }

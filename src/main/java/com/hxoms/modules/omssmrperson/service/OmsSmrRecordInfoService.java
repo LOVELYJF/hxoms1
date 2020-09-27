@@ -3,6 +3,8 @@ package com.hxoms.modules.omssmrperson.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,9 +20,9 @@ public interface OmsSmrRecordInfoService extends IService<OmsSmrRecordInfo>{
     //获取省国家保密局备案涉密人员列表
     IPage<OmsSmrRecordInfo> getSmrRecordInfoList(Page page, OmsSmrRecordInfo smrRecordInfo) throws ParseException;
     //获取已匹配人员列表
-    List<OmsSmrRecordInfo> getMatchingPerson();
+    Result getMatchingPerson(String importYear, String b0100);
     //导出已匹配人员列表
-    boolean exportMatchingPerson(HttpServletResponse response);
+    void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response);
     /**
     * @description:通过机构ID和导入年份删除已经导入过的数据
     * @author:杨波

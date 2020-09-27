@@ -34,6 +34,9 @@ public class JiweiStatisticsVo {
 
 
 
+
+
+
     public Date getBeginDate() {
         return beginDate;
     }
@@ -49,6 +52,7 @@ public class JiweiStatisticsVo {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
 
     public String getJiWeiType() {
         return jiWeiType;

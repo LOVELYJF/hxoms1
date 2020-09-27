@@ -96,7 +96,24 @@
     and IFNULL(t.SFQR,'0') = '0'
     and ISNULL(START_DATE)=FALSE
   </select>
-
+  <!-- 获取涉密人员信息维护列表 -->
+  <select id="getSmrMaintainList"  resultMap="ResultMapVO">
+    SELECT
+    t.*,r.WORK_UNIT as b0101,CONCAT(r.SURNAME,r.`NAME`) as a0101
+    FROM
+    oms_smr_oldinfo t
+    LEFT JOIN oms_reg_procpersoninfo r ON t.A0100 = r.A0100
+    WHERE 1 = 1
+    <if test="name !=null and name !=''">
+      AND concat(r.SURNAME,r.NAME) like #{name}
+    </if>
+    <if test="namePy !=null and namePy !=''">
+      AND r.PY like #{namePy}
+    </if>
+    and r.RF_B0000 = #{orgId}
+    and t.SECRET_RELATED_LEVEL is null
+    and r.INCUMBENCY_STATUS = '1'
+  </select>
   <select id="getSmrCount" resultType="String">
     select count(1) from oms_smr_oldinfo
   </select>

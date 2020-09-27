@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 
 import java.text.ParseException;
 import java.util.List;
@@ -28,6 +29,8 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     Object delete(String id);
     //获取脱密期确认列表
     Map<String, Object> getConfirmPeriodList();
+    //获取涉密人员信息维护列表
+    Map<String, Object> getSmrMaintainList();
     //更新涉密信息
     Result updateSmrOldInfo(List<OmsSmrOldInfoVO> smrOldInfos);
 }
