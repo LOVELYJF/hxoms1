@@ -63,7 +63,7 @@
     </foreach>
   </insert>
 
-  <select id="getMatchingPerson" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO">
+  <select id="getMatchingPerson" parameterType="java.lang.String" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO">
       SELECT
           b.b0101,
           concat( t.SURNAME, t.NAME ) AS NAME,

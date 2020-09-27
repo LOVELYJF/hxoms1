@@ -64,7 +64,12 @@ public class OmsSmrPersonInfoController {
      */
     @PostMapping("/updateSmrPersonInfo")
     public Result updateSmrPersonInfo(@RequestBody OmsSmrPersonInfo smrPersonInfo) {
-        return Result.success(smrPersonInfoService.updateSmrPersonInfo(smrPersonInfo));
+        try{
+            return Result.success(smrPersonInfoService.updateSmrPersonInfo(smrPersonInfo));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("操作失败");
+        }
     }
 
     /**
@@ -73,7 +78,12 @@ public class OmsSmrPersonInfoController {
      */
     @PostMapping("/deleteSmrPersonInfo")
     public Result deleteSmrPersonInfo(String id) {
-        return Result.success(smrPersonInfoService.deleteSmrPersonInfo(id));
+        try{
+            return Result.success(smrPersonInfoService.deleteSmrPersonInfo(id));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("操作失败");
+        }
     }
 
     /** 上传涉密人员数据
@@ -82,7 +92,8 @@ public class OmsSmrPersonInfoController {
     @PostMapping("/uploadSmrExcel")
     public Result uploadSmrExcel(@RequestBody MultipartFile file, String importYear, String b0100) {
         try{
-            return smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
+            Result result = smrPersonInfoService.uploadSmrExcel(file,importYear,b0100);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("导入失败");
@@ -108,7 +119,8 @@ public class OmsSmrPersonInfoController {
     @GetMapping("/getFailReportOrg")
     public Result getFailReportOrg(String importYear){
         try{
-            return smrPersonInfoService.getFailReportOrg(importYear);
+            Result result = smrPersonInfoService.getFailReportOrg(importYear);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误！");
@@ -135,7 +147,7 @@ public class OmsSmrPersonInfoController {
     @GetMapping("/getDifferentData")
     public Result getDifferentData(){
         try{
-            List<OmsSmrPersonInfo> list= smrPersonInfoService.getDifferentData();;
+            List<OmsSmrPersonInfo> list= smrPersonInfoService.getDifferentData();
             return Result.success(list);
         }catch (Exception e) {
             e.printStackTrace();

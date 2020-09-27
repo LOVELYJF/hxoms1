@@ -18,8 +18,8 @@
     ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, B0100,POST,B0101
   </sql>
 
-  <!-- 获取已匹配人员列表 -->
-  <select id="getCompareIdCard" resultMap="ResultMapVO">
+  <!-- 获取身份证纠正表列表 -->
+  <select id="getCompareIdCard" parameterType="java.lang.String" resultMap="ResultMapVO">
     SELECT
         t.*, b.b0101
     FROM
