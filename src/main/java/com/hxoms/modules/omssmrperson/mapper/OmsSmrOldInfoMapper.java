@@ -37,4 +37,6 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
     * @return:
     **/
     String getSmrCount();
+    //获取差异数据列表
+    List<OmsSmrOldInfoVO> getDifferentData(String importYear, String b0100);
 }

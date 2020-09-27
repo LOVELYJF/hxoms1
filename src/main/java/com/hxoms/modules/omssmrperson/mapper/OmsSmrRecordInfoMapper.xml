@@ -64,33 +64,30 @@
   </insert>
 
   <select id="getMatchingPerson" parameterType="java.lang.String" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO">
-      SELECT
-          b.b0101,
-          concat( t.SURNAME, t.NAME ) AS NAME,
-          SEX,
-          t.BIRTH_DATE,
-          t.NATION_NAME as NATION,
-          t.POLITICAL_AFFINAME as a0141,
-          t.IDNUMBER_GB as idCardNumber,
-          t.SECRET_POST as secretRelatedPost,
-          t.post,
-          t.SECRET_LEVEL as secretRelatedLevel,
-          t.INCUMBENCY_STATUS as personState,
-          t.DECRYPT_STARTDATE as startDate,
-          t.DECRYPT_ENDDATE as finishDate
-      FROM
-          oms_reg_procpersoninfo t
-      inner join b01 b on t.RF_B0000=b.b0100
-      left join person_org_order p on t.RF_B0000=p.a0201b
-      WHERE
-          1 = 1
-          AND t.DATA_TYPE = '1'
-          AND (t.SECRET_LEVEL != '0' AND t.SECRET_LEVEL != '' )
-          AND t.INBOUND_FLAG != 'D'
-          AND t.RF_B0000 = #{b0100}
-          AND t.IDNUMBER_GB
-           NOT IN ( SELECT m.ID_CARD_NUMBER FROM oms_smr_recordinfo m WHERE m.IMPORT_YEAR = #{importYear} AND m.b0100 = #{b0100} )
-       order by b.sortid,p.orderindex
+    SELECT
+        b.b0101,
+        concat( t.SURNAME, t.NAME ) AS name,
+        SEX,
+        t.BIRTH_DATE,
+        t.NATION_NAME AS nation,
+        t.POLITICAL_AFFINAME AS a0141,
+        t.IDNUMBER_GB AS idCardNumber,
+        t.SECRET_POST AS secretRelatedPost,
+        t.post,
+        t.SECRET_LEVEL AS secretRelatedLevel,
+        t.INCUMBENCY_STATUS AS personState,
+        t.DECRYPT_STARTDATE AS startDate,
+        t.DECRYPT_ENDDATE AS finishDate
+    FROM
+        oms_reg_procpersoninfo t
+        INNER JOIN b01 b ON t.RF_B0000 = b.b0100
+        LEFT JOIN oms_smr_oldinfo a ON t.id = a.PROC_PERSON_ID AND a.IMPORT_YEAR = #{importYear} and a.b0100 = #{b0100}
+    WHERE t.DATA_TYPE = '1'
+        AND ( t.SECRET_LEVEL != '0' or t.SECRET_LEVEL is not null )
+        AND t.INBOUND_FLAG != 'D'
+        AND t.RF_B0000 = #{b0100}
+    ORDER BY
+        b.sortid
   </select>
 
   <delete id="deleteByB0100AndYear" parameterType="java.lang.String">

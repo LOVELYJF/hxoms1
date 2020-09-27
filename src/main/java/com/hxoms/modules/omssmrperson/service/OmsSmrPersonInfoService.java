@@ -36,10 +36,6 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     Result getFailReportOrg(String importYear);
     //导出漏报涉密人员机构
     void exportFailReportOrg(String importYear);
-    //获取差异数据列表
-    List<OmsSmrPersonInfo> getDifferentData();
-    //导出差异数据列表
-    boolean exportDifferentData();
     //批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
     boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList);
     //获取涉密人员信息维护列表
