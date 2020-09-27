@@ -103,13 +103,13 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 获取漏报涉密人员机构
-     * @return
+     * @param importYear
      */
     @GetMapping("/getFailReportOrg")
-    public Result getFailReportOrg(String Year){
+    public Result getFailReportOrg(String importYear){
         try{
-            List<String> list= smrPersonInfoService.getFailReportOrg(Year);;
-            return Result.success(list);
+            Result result = smrPersonInfoService.getFailReportOrg(importYear);;
+            return Result.success(result);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -118,12 +118,12 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出漏报涉密人员机构
-     * @param Year
+     * @param importYear
      */
     @PostMapping("/exportFailReportOrg")
-    public void exportFailReportOrg(String Year){
+    public void exportFailReportOrg(String importYear){
         try{
-            smrPersonInfoService.exportFailReportOrg(Year);
+            smrPersonInfoService.exportFailReportOrg(importYear);
         }catch (Exception e) {
             e.printStackTrace();
         }

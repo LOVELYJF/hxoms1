@@ -3,10 +3,13 @@ package com.hxoms.modules.omssmrperson.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -26,23 +28,26 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
 
     @Autowired
     private OmsSmrRecordInfoMapper smrRecordInfoMapper;
+    @Autowired
+    private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
     @Override
-    public IPage<OmsSmrRecordInfo> getSmrRecordInfoList(Page page, OmsSmrRecordInfo smrRecordInfo) throws ParseException {
+    public IPage<OmsSmrRecordInfo> getSmrRecordInfoList(Page page, OmsSmrRecordInfo smrRecordInfo){
         return null;
     }
 
     @Override
-    public List<OmsSmrRecordInfo> getMatchingPerson() {
-        return smrRecordInfoMapper.getMatchingPerson();
+    public Result getMatchingPerson(String importYear, String b0100) {
+        if(StringUtils.isBlank(importYear) || StringUtils.isBlank(b0100)){
+            Result.error("汇总年份或汇总单位为空！");
+        }
+        List<OmsRegProcpersoninfo> results = regProcpersoninfoMapper.getMatchingPerson(importYear,b0100);
+        return Result.success(results);
     }
 
     @Override
-    public boolean exportMatchingPerson(HttpServletResponse response) {
-        List<OmsSmrRecordInfo> list = getMatchingPerson();
-        if(list.size() < 1 || list == null){
-            throw new CustomMessageException("没有可以导出的数据");
-        }
+    public void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response) {
+        List<OmsRegProcpersoninfo> list = regProcpersoninfoMapper.getMatchingPerson(importYear,b0100);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -99,7 +104,7 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
 
         HSSFRow row = null;
         for(int i = 0; i < list.size(); i++){
-            row = sheet.createRow(i + 2);
+            /*row = sheet.createRow(i + 2);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(list.get(i).getB0100());
             row.createCell(2).setCellValue(list.get(i).getName());
@@ -114,7 +119,7 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
             row.createCell(11).setCellValue(list.get(i).getPersonState());
             row.createCell(12).setCellValue(list.get(i).getSecretReviewDate());
             row.createCell(13).setCellValue(list.get(i).getStartDate());
-            row.createCell(14).setCellValue(list.get(i).getFinishDate());
+            row.createCell(14).setCellValue(list.get(i).getFinishDate());*/
             //设置单元格字体大小
             for(int j = 0;j < 8;j++){
                 row.getCell(j).setCellStyle(style1);
@@ -132,10 +137,8 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
             response.setContentType("application/msexcel");
             wb.write(output);
             output.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
     /**

@@ -551,19 +551,22 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 获取漏报涉密人员机构
      */
     @Override
-    public List<String> getFailReportOrg(String Year) {
-        return smrPersonInfoMapper.getFailReportOrg(Year);
+    public Result getFailReportOrg(String importYear) {
+        if(StringUtils.isBlank(importYear)){
+            return Result.error("请填写汇总年份后查询！");
+        }
+        Map<String,List<String>> results = new HashMap<>();
+        List<String> list = smrPersonInfoMapper.getFailReportOrg(importYear);
+        results.put("failOrg",list);
+        return Result.success(results);
     }
 
     /**
      * 导出漏报涉密人员机构
      */
     @Override
-    public boolean exportFailReportOrg(String Year) {
-        List<String> list = getFailReportOrg(Year);
-        if (list.size() < 1 || list == null) {
-            throw new CustomMessageException("没有可以导出的数据");
-        }
+    public void exportFailReportOrg(String importYear) {
+        List<String> list = smrPersonInfoMapper.getFailReportOrg(importYear);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -628,10 +631,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             response.setContentType("application/msexcel");
             wb.write(output);
             output.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
