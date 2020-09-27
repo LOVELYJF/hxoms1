@@ -334,6 +334,7 @@
             rp.WORK_UNIT as workUnit,
             rp.POST as post,
             apply.ID as id,
+            apply.PROCPERSON_ID as omsId,
             apply.ABROAD_REASONS as abroadReasons,
             apply.ABROAD_TIME as abroadTime,
             apply.RETURN_TIME as returnTime,
