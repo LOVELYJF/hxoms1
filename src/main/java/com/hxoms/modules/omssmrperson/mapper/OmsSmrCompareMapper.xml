@@ -15,7 +15,7 @@
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, B0100,POST,B0101
+    ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, B0100,POST
   </sql>
 
   <!-- 获取身份证纠正表列表 -->
