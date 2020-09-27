@@ -47,7 +47,7 @@ public class AdminGetCerApply {
 
     @NotBlank(message = "取证人不能为空")
     @ApiModelProperty(value="取证人",required = true)
-    private String operate;
+    private String operator;
 
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy.MM.dd HH:mm:ss")
@@ -111,12 +111,12 @@ public class AdminGetCerApply {
         this.getCause = getCause;
     }
 
-    public String getOperate() {
-        return operate;
+    public String getOperator() {
+        return operator;
     }
 
-    public void setOperate(String operate) {
-        this.operate = operate;
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public Date getOperateTime() {
