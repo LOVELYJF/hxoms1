@@ -165,9 +165,16 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
      }
 
-     // 修改 流程 状态 置为 征求纪委意见
-        leaderCommonService.selectBussinessStatus(applyId,tableCode,null);
-        getUpdateStatusSql(applyId,tableCode,Constants.leader_businessName[1],"materialReviewNextStep");
+        // 查询当前流程状态
+        int currentStatus =   leaderCommonService.selectBussinessStatus(applyId,tableCode,null);
+
+         if(currentStatus < Constants.leader_business[1]){
+
+             // 修改 流程 状态 置为 征求纪委意见
+             getUpdateStatusSql(applyId,tableCode,Constants.leader_businessName[1],"materialReviewNextStep");
+
+         }
+
       // 修改批次状态
         List<String> bussinessIds = new ArrayList<>();
         bussinessIds.add(applyId);
@@ -405,10 +412,6 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     }
-
-
-
-
 
 
 

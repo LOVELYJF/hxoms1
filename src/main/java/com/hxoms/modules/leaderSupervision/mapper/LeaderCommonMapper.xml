@@ -1371,15 +1371,15 @@
 			   ifnull(a.num,b.num) as num,
 			   ifnull(a.agree,b.agree) as agree,
 			   ifnull(a.num1,b.num1) as num1,
-			   ifnull(a.disagree,b.disagree) as agree,
+			   ifnull(a.disagree,b.disagree) as disagree,
 			   ifnull(a.num2,b.num2) as num2,
-			   ifnull(a.noRespond,b.noRespond) as agree,
+			   ifnull(a.noRespond,b.noRespond) as noRespond,
 			   ifnull(a.num3,b.num3) as num3
 		FROM
 			 (
 			 select
 
-					temp.`因公` as type,
+					temp.type as type,
 					sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end) as num,
 					'同意' as agree,
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end ) as num1,
@@ -1391,22 +1391,46 @@
 
 			 FROM
 				  (
-				  select '因公' as '因公',ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+		          left join oms_jiwei_opinion jio on a.id =jio.id  where 1=1
 
-		    <if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
+
+
+		   <if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
 			and  a.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and  a.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
 		    </if>
 
+		      <if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
+
+		    	and ifnull(jio.official_feedback_verdict,jio.feedback_verdict) in  (${jiweiStatisticsVo.jiWeiType})
+
+		    </if>
 
 	      	UNION ALL
 
 				  select '因私' as '因私',ifnull(a.id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
+		left join oms_jiwei_opinion jio on a.id =jio.id where 1=1
+
 		<if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
 			and  a.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and  a.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
 		</if>
 
+		<if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
 
-		) temp inner JOIN oms_jiwei_opinion jio on temp.applyId =jio.id  where   concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) !='nono'  group by temp.`因公`
+			and ifnull(jio.official_feedback_verdict,jio.feedback_verdict) in  (${jiweiStatisticsVo.jiWeiType})
+
+		</if>
+
+
+		) temp inner JOIN oms_jiwei_opinion jio on temp.applyId =jio.id  where   concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) !='nono'
+
+		<if test="jiweiStatisticsVo.bussinessType != null and jiweiStatisticsVo.bussinessType != '' ">
+
+			and temp.type = #{jiweiStatisticsVo.bussinessType}
+
+		</if>
+
+		group by temp.type
 			 union all
 			 select
 
@@ -1421,26 +1445,46 @@
 
 			 FROM
 				  (
-				  select '因公' as '因公',ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
+
+		          left join oms_jiwei_opinion jio on a.id =jio.id
 
 	    	    <if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
 		     	and  a.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and  a.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
+		        </if>
+
+		        <if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
+
+			      and ifnull(jio.official_feedback_verdict,jio.feedback_verdict) in  (${jiweiStatisticsVo.jiWeiType})
+
 		        </if>
 
 
 				  UNION ALL
 
 				  select '因私' as '因私',ifnull(a.id,b.applyId) as applyId from  oms_pri_apply a  RIGHT JOIN  (select '因私' as '因私', 'priId' as applyId) b  on b.applyId ='priId'
+		         left join oms_jiwei_opinion jio on a.id =jio.id  where 1=1
 		       <if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
 			   and  a.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and  a.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
 		       </if>
 
+		        <if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
+
+			    and ifnull(jio.official_feedback_verdict,jio.feedback_verdict) in  (${jiweiStatisticsVo.jiWeiType})
+
+		        </if>
+
 				  ) temp inner join oms_jiwei_opinion jio on temp.applyId =jio.id  where concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) !='nono'
 
 
+		<if test="jiweiStatisticsVo.bussinessType != null and jiweiStatisticsVo.bussinessType != '' ">
+
+			and temp.type = #{jiweiStatisticsVo.bussinessType}
+
+		</if>
 
 
-			 ) a RIGHT JOIN (
+		) a RIGHT JOIN (
 
 							select   "因公" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
 							UNION ALL
@@ -1495,10 +1539,10 @@
 							   b.b0101 AS department, 	# "部门名称"
 
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
-		ifnull(jio.official_feedback_verdict,jio.feedback_verdict) as jiWeiType,
+		                      ifnull(jio.official_feedback_verdict,jio.feedback_verdict) as jiWeiType,
 
-		concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) as whetherjiewei, #该流程 是否征求纪委意见
-		pra.SCZQJWYJSJ as sczqjwyjsj,# 征求纪委意见时间
+		                      concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) as whetherjiewei, #该流程 是否征求纪委意见
+		                       pra.SCZQJWYJSJ as sczqjwyjsj,# 征求纪委意见时间
 
 							   '因私' AS businessType,  # 申请类型
 
@@ -1536,7 +1580,7 @@
 
 		<if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
 
-			and temp.jiWeiType=#{iweiStatisticsVo.jiWeiType}
+			and temp.jiWeiType in (${jiweiStatisticsVo.jiWeiType})
 
 		</if>
 
