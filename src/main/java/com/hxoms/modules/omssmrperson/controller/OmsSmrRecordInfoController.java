@@ -49,7 +49,7 @@ public class OmsSmrRecordInfoController {
     public Result getMatchingPerson(String importYear,String b0100){
         try{
             Result result = smrRecordInfoService.getMatchingPerson(importYear,b0100);
-            return Result.success(result);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
