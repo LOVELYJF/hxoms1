@@ -6,12 +6,16 @@ import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.GetStatusEnum;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.BeanUtils;
@@ -149,7 +153,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
             BeanUtils.copyProperties(getConfirm,omsCerGetTask);
             //已领取
-            omsCerGetTask.setGetStatus("1");
+            omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());
             omsCerGetTask.setGetTime(date);
             omsCerGetTask.setUpdator(userInfo.getId());
             omsCerGetTask.setUpdateTime(date);
@@ -159,7 +163,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             CfCertificate certificate=new CfCertificate();
             certificate.setId(getConfirm.getCerId());
             //已取出
-            certificate.setSaveStatus("1");
+            certificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
             certificate.setUpdater(userInfo.getId());
             certificate.setUpdateTime(date);
             cfCertificateList.add(certificate);
@@ -173,9 +177,9 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             omsCerExitEntryRepertory.setZjlx(getConfirm.getZjlx());
             omsCerExitEntryRepertory.setZjhm(getConfirm.getZjhm());
             //出入库状态(0:出库,1:入库)
-            omsCerExitEntryRepertory.setStatus("0");
+            omsCerExitEntryRepertory.setStatus(InOutStatus.OUT_STATUS.getCode());
             //存取方式(0:证照机,1:柜台)
-            omsCerExitEntryRepertory.setMode("1");
+            omsCerExitEntryRepertory.setMode(SurelyWayEnum.COUNTER.getCode());
             omsCerExitEntryRepertory.setCounterNum(getConfirm.getCounterNum());
             omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
             omsCerExitEntryRepertory.setOperateTime(date);

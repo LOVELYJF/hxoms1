@@ -624,7 +624,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                     int lastRow = ca.getLastRow();
                     //无证件标记
                     boolean noZj=false;
-                    if((lastRow-firstRow+1)==2)
+                    if((lastRow-firstRow+1)<=2)
                         noZj=true;
                     Row firstRowData = sheet.getRow(firstRow);
                     //登记备案人员集合
@@ -884,6 +884,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList,cfCertificateCollectionList.size()))
                 throw  new CustomMessageException("解除催缴任务失败！");
         }
+        cfCertificateExport.clear();
     }
 
     /**
