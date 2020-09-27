@@ -1578,6 +1578,7 @@
 			and temp.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and temp.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
 		</if>
 
+
 		<if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
 
 			and temp.jiWeiType in (${jiweiStatisticsVo.jiWeiType})
