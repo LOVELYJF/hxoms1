@@ -310,6 +310,15 @@ public class OmsFileServiceImpl implements OmsFileService {
                 stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(1).getSecretRelatedLevel()+"</td>");
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
                 stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsSmrOldInfoVOS.get(1).getQrFinishDate())+"</td>");
+            }else if(omsSmrOldInfoVOS != null && omsSmrOldInfoVOS.size() == 1) {
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\">"+omsSmrOldInfoVOS.get(0).getSecretRelatedLevel()+"</td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"335\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\">"+sdf1.format(omsSmrOldInfoVOS.get(0).getQrFinishDate())+"</td>");
+                stringBuffer.append("</tr><tr style=\"height:90px\">");
+                stringBuffer.append("<td width=\"72\" style=\"\">在某二单位原为核心、重要、一般</td>");
+                stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
+                stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
+                stringBuffer.append("<td colspan=\"4\" width=\"358\" style=\"border-right: 1px solid rgb(0, 0, 0); word-break: break-all;\"></td>");
             }else {
                 stringBuffer.append("<td colspan=\"3\" width=\"216\" style=\"word-break: break-all;\"></td>");
                 stringBuffer.append("<td width=\"82\" style=\"\">脱密期(至年月)</td>");
