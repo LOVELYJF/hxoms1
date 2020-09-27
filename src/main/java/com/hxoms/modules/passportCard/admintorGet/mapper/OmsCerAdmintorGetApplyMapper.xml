@@ -299,7 +299,7 @@
     SELECT
     a.id omsId,
     CONCAT(a.surname, a.name) name,
-    a.sex,
+    if(a.sex='1','男',if(a.sex='2','女',a.sex)) sex,
     a.BIRTH_DATE birthDate,
     a.INCUMBENCY_STATUS incumbencyStatus,
     (
@@ -330,7 +330,7 @@
     SELECT
         b.id getId,
         c.WORK_UNIT workUnit,
-        c.name,
+        concat(c.surname,c.name) name,
         if(c.sex='1','男',if(c.sex='2','女',c.sex)) sex,
         c.post,
         a.ZJLX,

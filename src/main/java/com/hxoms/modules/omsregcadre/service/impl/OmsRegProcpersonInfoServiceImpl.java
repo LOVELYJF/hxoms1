@@ -296,7 +296,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 hashMapReg.put(omsReg.getA0100(), omsReg);//干部
 
             if (nameAndIDCard != null) {
-                nameAndIDCard.put(omsReg.getSurname() + omsReg.getName() + omsReg.getIdnumberGa(), omsReg);
+                nameAndIDCard.put(omsReg.getSurname() + omsReg.getName() +
+                        (omsReg.getIdnumberGa()==null?omsReg.getIdnumberGb():omsReg.getIdnumberGa()), omsReg);
             }
         }
         return hashMapReg;
@@ -548,7 +549,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     (StringUilt.stringIsNullOrEmpty(oldgaData.getIdnumberGb()) ? oldgaData.getIdnumberGa() : oldgaData.getIdnumberGb()), oldgaData);
         }
         for (OmsRegProcpersoninfo newgaData : list) {
-            OmsRegProcpersoninfo oldgaData = hashMapOld.get(newgaData.getSurname() + newgaData.getName() + newgaData.getIdnumberGa());
+            OmsRegProcpersoninfo oldgaData = hashMapOld.get(newgaData.getSurname() + newgaData.getName() +
+                    (StringUilt.stringIsNullOrEmpty(newgaData.getIdnumberGb()) ? newgaData.getIdnumberGa() : newgaData.getIdnumberGb()));
 
             //数据比对更新
             if (oldgaData != null) {
@@ -728,9 +730,9 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //循环处理干部
         for (A01 a01 : a01list) {
             String a0100 = a01.getA0100();
-            //判断是否已登记备案过
+            //判断是否已登记备案过，只查找到公安数据，视为未备案
             OmsRegProcpersoninfo omsreginfo = hashMapReg.get(a0100);
-            if ("2".equals(omsreginfo.getDataType()))
+            if (omsreginfo!=null && "2".equals(omsreginfo.getDataType()))
                 omsreginfo = null;
 
             //已登记备案过
