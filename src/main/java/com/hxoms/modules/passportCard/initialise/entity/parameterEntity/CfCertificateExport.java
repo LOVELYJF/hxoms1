@@ -86,4 +86,14 @@ public class CfCertificateExport {
     public void setCfCertificateCollection(CfCertificateCollection cfCertificateCollection) {
         this.cfCertificateCollectionList.add(cfCertificateCollection);
     }
+
+    public void clear() {
+        cfCertificateList.clear();
+        omsEntryexitRecordList.clear();
+        omsCerImportManagesList.clear();
+        omsCerExitEntryImportManageList.clear();
+        cfCertificateUpdateList.clear();
+        omsRegProcpersoninfoList.clear();
+        cfCertificateCollectionList.clear();
+    }
 }
