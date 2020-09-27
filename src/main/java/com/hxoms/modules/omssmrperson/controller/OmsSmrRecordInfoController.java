@@ -42,7 +42,7 @@ public class OmsSmrRecordInfoController {
 
 
     /**
-     * 获取已匹配人员列表
+     * 获取遗漏的省管干部列表
      * @return
      */
     @GetMapping("/getMatchingPerson")
@@ -57,7 +57,7 @@ public class OmsSmrRecordInfoController {
     }
 
     /**
-     * 导出已匹配人员列表
+     * 导出遗漏的省管干部列表
      * @return
      */
     @PostMapping("/exportMatchingPerson")
