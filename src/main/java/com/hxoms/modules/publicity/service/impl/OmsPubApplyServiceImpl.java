@@ -167,6 +167,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //数据来源（0：填写，1：上传）
             omsPubApply.setSource("0");
             omsPubApplyMapper.insert(omsPubApply);
+        }else {
+            //更新
+            omsPubApply.setModifyUser(loginUser.getId());
+            omsPubApply.setModifyTime(new Date());
+            omsPubApplyMapper.updateById(omsPubApply);
         }
         //判断校验类型
         //result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
