@@ -25,8 +25,8 @@ public class OmsSmrCompare {
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生年月")
     private String birthDate;
 
-    @ColumnAnnotation(FieldName = "WORK_UNIT",   FieldDescription="工作单位")
-    private String workUnit;
+    @ColumnAnnotation(FieldName = "B0100",   FieldDescription="工作单位")
+    private String b0100;
 
     @ColumnAnnotation(FieldName = "POST",   FieldDescription="职务职级")
     private String post;
@@ -79,12 +79,12 @@ public class OmsSmrCompare {
         this.birthDate = birthDate == null ? null : birthDate.trim();
     }
 
-    public String getWorkUnit() {
-        return workUnit;
+    public String getB0100() {
+        return b0100;
     }
 
-    public void setWorkUnit(String workUnit) {
-        this.workUnit = workUnit == null ? null : workUnit.trim();
+    public void setB0100(String b0100) {
+        this.b0100 = b0100 == null ? null : b0100.trim();
     }
 
     public String getPost() {

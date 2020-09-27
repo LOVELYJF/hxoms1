@@ -75,10 +75,10 @@ public class OmsSmrCompareController {
      * @return
      */
     @GetMapping("/getCompareIdCard")
-    public Result getCompareIdCard(){
+    public Result getCompareIdCard(String b0100){
         try{
-            List<OmsSmrCompare> list= smrCompareService.getCompareIdCard();;
-            return Result.success(list);
+            Result result = smrCompareService.getCompareIdCard(b0100);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
