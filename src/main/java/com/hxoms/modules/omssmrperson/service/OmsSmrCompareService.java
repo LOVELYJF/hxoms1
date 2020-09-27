@@ -3,6 +3,7 @@ package com.hxoms.modules.omssmrperson.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrCompare;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public interface OmsSmrCompareService extends IService<OmsSmrCompare>{
     //删除涉密人员身份证对照信息
     Object delete(String id);
     //获取身份证纠正列表
-    List<OmsSmrCompare> getCompareIdCard();
+    Result getCompareIdCard(String b0100);
     //导出身份证纠正列表
     boolean exportCompareIdCard(HttpServletResponse response);
 }

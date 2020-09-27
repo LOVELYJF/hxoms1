@@ -20,13 +20,15 @@
     <result column="IMPORT_DATE" jdbcType="DATE" property="importDate" />
     <result column="IMPORT_YEAR" jdbcType="VARCHAR" property="importYear" />
     <result column="IS_MATCHING" jdbcType="VARCHAR" property="isMatching" />
-
     <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO">
+    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, B0100, NAME, SEX, BIRTH_DATE, ID_CARD_NUMBER, NATION, A0141, POST, SECRET_RELATED_POST, 
     SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, START_DATE, FINISH_DATE, IMPORT_USER_ID, 
-    IMPORT_DATE, IMPORT_YEAR, IS_MATCHING
+    IMPORT_DATE, IMPORT_YEAR, IS_MATCHING,b0101
   </sql>
 
   <!-- 批量添加涉密人员备案信息 -->
@@ -60,17 +62,37 @@
       )
     </foreach>
   </insert>
-  <!-- 获取已匹配人员列表 -->
-  <select id="getMatchingPerson" resultMap="BaseResultMap">
-    SELECT
-        t.*,
-        p.PERSON_STATE
-    FROM
-        oms_smr_recordinfo t
-        LEFT JOIN oms_smr_personinfo p ON t.ID_CARD_NUMBER = p.ID_CARD_NUMBER
-    WHERE
-        t.IS_MATCHING != '1'
+
+  <select id="getMatchingPerson" parameterType="java.lang.String" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO">
+      SELECT
+          b.b0101,
+          concat( t.SURNAME, t.NAME ) AS NAME,
+          SEX,
+          t.BIRTH_DATE,
+          t.NATION_NAME as NATION,
+          t.POLITICAL_AFFINAME as a0141,
+          t.IDNUMBER_GB as idCardNumber,
+          t.SECRET_POST as secretRelatedPost,
+          t.post,
+          t.SECRET_LEVEL as secretRelatedLevel,
+          t.INCUMBENCY_STATUS as personState,
+          t.DECRYPT_STARTDATE as startDate,
+          t.DECRYPT_ENDDATE as finishDate
+      FROM
+          oms_reg_procpersoninfo t
+      inner join b01 b on t.RF_B0000=b.b0100
+      left join person_org_order p on t.RF_B0000=p.a0201b
+      WHERE
+          1 = 1
+          AND t.DATA_TYPE = '1'
+          AND (t.SECRET_LEVEL != '0' AND t.SECRET_LEVEL != '' )
+          AND t.INBOUND_FLAG != 'D'
+          AND t.RF_B0000 = #{b0100}
+          AND t.IDNUMBER_GB
+           NOT IN ( SELECT m.ID_CARD_NUMBER FROM oms_smr_recordinfo m WHERE m.IMPORT_YEAR = #{importYear} AND m.b0100 = #{b0100} )
+       order by b.sortid,p.orderindex
   </select>
+
   <delete id="deleteByB0100AndYear" parameterType="java.lang.String">
     delete from oms_smr_recordinfo where b0100=#{b0100} and IMPORT_YEAR=#{importYear}
   </delete>

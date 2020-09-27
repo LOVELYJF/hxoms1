@@ -61,8 +61,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
      */
     List<OmsRegProcpersoninfo> queryProvinceCadresList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-    //获取已匹配备案涉密人员
-    List<OmsRegProcpersoninfo> getMatchingPerson(String importYear,String b0100);
+
 }
 
 

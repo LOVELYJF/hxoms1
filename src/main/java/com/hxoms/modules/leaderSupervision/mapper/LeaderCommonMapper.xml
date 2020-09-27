@@ -1374,7 +1374,9 @@
 			   ifnull(a.disagree,b.disagree) as disagree,
 			   ifnull(a.num2,b.num2) as num2,
 			   ifnull(a.noRespond,b.noRespond) as noRespond,
-			   ifnull(a.num3,b.num3) as num3
+			   ifnull(a.num3,b.num3) as num3,
+		       ifnull(a.proportion,b.proportion) as proportion,
+		       ifnull(a.num4,b.num4) as num4
 		FROM
 			 (
 			 select
@@ -1386,10 +1388,12 @@
 					'不同意' as disagree,
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
 					'不回复' as noRespond,
-					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3
+					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3,
+		            '比例' as proportion,
+		            concat(Round(if(sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end)=0,0,sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end )/sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end))*100,2),'%')as  num4
 
 
-			 FROM
+		FROM
 				  (
 				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
 		          left join oms_jiwei_opinion jio on a.id =jio.id  where 1=1
@@ -1441,9 +1445,11 @@
 					'不同意' as '不同意',
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
 					'不回复' as '不回复',
-					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3
+					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3,
+		            '比例' as '比例',
+		            concat(Round(if(sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end)=0,0,sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end )/sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end))*100,2),'%') as  num4
 
-			 FROM
+		FROM
 				  (
 				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
 
@@ -1486,15 +1492,14 @@
 
 		) a RIGHT JOIN (
 
-							select   "因公" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
-							UNION ALL
-							select   "因私" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
-							UNION ALL
-							select   "合计" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
+		select   "因公" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00%' as num4
+		UNION ALL
+		select   "因私" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00%' as num4
+		UNION ALL
+		select   "合计" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00%' as num4
 
 
-							)b  on  a.type =b.type
-
+		)b  on  a.type =b.type
 
 	</select>
 
@@ -1511,7 +1516,7 @@
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 		                       ifnull(jio.official_feedback_verdict,jio.feedback_verdict) as jiWeiType,
 							   concat(IFNULL(jio.feedback_verdict,'no'),IFNULL(jio.official_feedback_verdict,'no')) as whetherjiewei, #该流程 是否征求纪委意见
-                               pua.SCZQJWYJSJ as sczqjwyjsj,# 征求纪委意见时间
+		                       DATE_FORMAT(pua.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj,# 征求纪委意见时间
 							   "因公" AS businessType,  # 申请类型
 
 							   IF (
@@ -1575,8 +1580,9 @@
 		where whetherjiewei !='nono'
 
 		<if test="jiweiStatisticsVo.beginDate != null and jiweiStatisticsVo.endDate != null">
-			and temp.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and prda.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
+			and temp.sczqjwyjsj &gt; #{jiweiStatisticsVo.beginDate} and temp.sczqjwyjsj &lt; #{jiweiStatisticsVo.endDate}
 		</if>
+
 
 		<if test="jiweiStatisticsVo.jiWeiType != null and jiweiStatisticsVo.jiWeiType != '' ">
 

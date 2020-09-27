@@ -42,14 +42,14 @@ public class OmsSmrRecordInfoController {
 
 
     /**
-     * 获取已匹配人员列表
+     * 获取遗漏的省管干部列表
      * @return
      */
     @GetMapping("/getMatchingPerson")
     public Result getMatchingPerson(String importYear,String b0100){
         try{
             Result result = smrRecordInfoService.getMatchingPerson(importYear,b0100);
-            return Result.success(result);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -57,7 +57,7 @@ public class OmsSmrRecordInfoController {
     }
 
     /**
-     * 导出已匹配人员列表
+     * 导出遗漏的省管干部列表
      * @return
      */
     @PostMapping("/exportMatchingPerson")

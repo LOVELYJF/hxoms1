@@ -22,7 +22,7 @@ public interface OmsSmrPersonInfoMapper  extends BaseMapper<OmsSmrPersonInfo> {
     //判断导入的涉密人员信息能否匹配
     OmsRegProcpersoninfo getMatchingDate(String workUnit, String idCardNumber);
     //获取漏报涉密人员单位
-    List<String> getFailReportOrg(String importYear);
+    List<OmsSmrPersonInfo> getFailReportOrg(String importYear);
     //获取差异数据列表
     List<OmsSmrPersonInfo> getDifferentData();
     //获取涉密人员信息维护列表

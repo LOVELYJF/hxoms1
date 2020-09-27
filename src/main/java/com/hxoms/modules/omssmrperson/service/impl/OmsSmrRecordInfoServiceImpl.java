@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrRecordInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +27,6 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
 
     @Autowired
     private OmsSmrRecordInfoMapper smrRecordInfoMapper;
-    @Autowired
-    private OmsRegProcpersoninfoMapper regProcpersoninfoMapper;
 
     @Override
     public IPage<OmsSmrRecordInfo> getSmrRecordInfoList(Page page, OmsSmrRecordInfo smrRecordInfo){
@@ -41,13 +38,13 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
         if(StringUtils.isBlank(importYear) || StringUtils.isBlank(b0100)){
             Result.error("汇总年份或汇总单位为空！");
         }
-        List<OmsRegProcpersoninfo> results = regProcpersoninfoMapper.getMatchingPerson(importYear,b0100);
+        List<OmsSmrRecordInfoVO> results = smrRecordInfoMapper.getMatchingPerson(importYear,b0100);
         return Result.success(results);
     }
 
     @Override
     public void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response) {
-        List<OmsRegProcpersoninfo> list = regProcpersoninfoMapper.getMatchingPerson(importYear,b0100);
+        List<OmsSmrRecordInfoVO> list = smrRecordInfoMapper.getMatchingPerson(importYear,b0100);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象

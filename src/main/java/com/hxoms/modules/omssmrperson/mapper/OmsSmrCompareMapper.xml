@@ -8,22 +8,27 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="SEX" jdbcType="VARCHAR" property="sex" />
     <result column="BIRTH_DATE" jdbcType="VARCHAR" property="birthDate" />
-    <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
+    <result column="B0100" jdbcType="VARCHAR" property="b0100" />
     <result column="POST" jdbcType="VARCHAR" property="post" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrCompareVO">
+    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
+  </resultMap>
   <sql id="Base_Column_List">
-    ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, WORK_UNIT, 
-    POST
+    ID, ID_CARD_NUMBER_ERROR, ID_CARD_NUMBER_RIGHT, NAME, SEX, BIRTH_DATE, B0100,POST
   </sql>
 
-  <!-- 获取已匹配人员列表 -->
-  <select id="getCompareIdCard" resultMap="BaseResultMap">
+  <!-- 获取身份证纠正表列表 -->
+  <select id="getCompareIdCard" parameterType="java.lang.String" resultMap="ResultMapVO">
     SELECT
-        <include refid="Base_Column_List" />
+        t.*, b.b0101
     FROM
         oms_smr_compare t
+        LEFT JOIN b01 b ON t.b0100 = b.b0100
+    WHERE 1 = 1
+        AND t.b0100 = #{b0100}
     ORDER BY
-        t.WORK_UNIT
+        b.b0111, t.NAME
   </select>
 
   <!-- 获取已匹配人员列表 -->
@@ -33,7 +38,7 @@
     FROM
         oms_smr_compare t
     WHERE 1=1
-    AND t.WORK_UNIT = (select b.b0101 from b01 b where b.b0100 = #{workUnit})
+    AND t.B0100 = (select b.b0101 from b01 b where b.b0100 = #{b0100})
     AND t.ID_CARD_NUMBER_RIGHT = #{idCardNumber}
   </select>
 </mapper>

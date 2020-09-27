@@ -90,9 +90,11 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
                 cfCerList.clear();
             }
         }
-        if(cfCerList.size()>0)
+        if(cfCerList.size()>0){
             if(!saveBatch(cfCerList,cfCerList.size()))
                 new CustomMessageException("生成催缴任务失败！");
+            cfCerList.clear();
+        }
     }
 
 
