@@ -1,12 +1,8 @@
 package com.hxoms.modules.omssmrperson.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,6 +24,7 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
      * @return
      */
     List<OmsSmrOldInfoVO> getSmrOldInfoVOList(Map<String, String> paramMap);
+    List<OmsSmrOldInfoVO> getSmrOldInfoVOList1(Map<String, String> paramMap);
 
     List<OmsSmrOldInfoVO> getConfirmPeriodList(String orgId,String name,String namePy);
 
