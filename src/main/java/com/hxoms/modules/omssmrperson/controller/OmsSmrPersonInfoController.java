@@ -118,16 +118,14 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出漏报涉密人员机构
-     * @return
+     * @param Year
      */
     @PostMapping("/exportFailReportOrg")
-    public Result exportFailReportOrg(){
+    public void exportFailReportOrg(String Year){
         try{
-            boolean result = smrPersonInfoService.exportFailReportOrg();
-            return Result.success(result);
+            smrPersonInfoService.exportFailReportOrg(Year);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导出失败");
         }
     }
 

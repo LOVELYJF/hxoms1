@@ -559,8 +559,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出漏报涉密人员机构
      */
     @Override
-    public boolean exportFailReportOrg() {
-        List<String> list = getFailReportOrg();
+    public boolean exportFailReportOrg(String Year) {
+        List<String> list = getFailReportOrg(Year);
         if (list.size() < 1 || list == null) {
             throw new CustomMessageException("没有可以导出的数据");
         }
