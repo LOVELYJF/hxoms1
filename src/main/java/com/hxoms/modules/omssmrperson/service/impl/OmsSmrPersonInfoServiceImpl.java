@@ -551,8 +551,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 获取漏报涉密人员机构
      */
     @Override
-    public List<String> getFailReportOrg() {
-        return smrPersonInfoMapper.getFailReportOrg();
+    public List<String> getFailReportOrg(String Year) {
+        return smrPersonInfoMapper.getFailReportOrg(Year);
     }
 
     /**

@@ -132,7 +132,7 @@
         b01 t
     WHERE
         t.is_deleted = "0"
-        AND t.b0100 NOT IN ( SELECT t.B0100 FROM oms_smr_personinfo t GROUP BY t.B0100 )
+        AND t.b0100 NOT IN ( SELECT t.B0100 FROM oms_smr_personinfo t WHERE t.IMPORT_YEAR = #{Year} GROUP BY t.B0100 )
   </select>
 
   <!-- 获取差异数据列表 -->

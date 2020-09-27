@@ -106,9 +106,9 @@ public class OmsSmrPersonInfoController {
      * @return
      */
     @GetMapping("/getFailReportOrg")
-    public Result getFailReportOrg(){
+    public Result getFailReportOrg(String Year){
         try{
-            List<String> list= smrPersonInfoService.getFailReportOrg();;
+            List<String> list= smrPersonInfoService.getFailReportOrg(Year);;
             return Result.success(list);
         }catch (Exception e) {
             e.printStackTrace();
