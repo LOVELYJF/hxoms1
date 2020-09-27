@@ -555,9 +555,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         if(StringUtils.isBlank(importYear)){
             return Result.error("请填写汇总年份后查询！");
         }
-        Map<String,List<String>> results = new HashMap<>();
-        List<String> list = smrPersonInfoMapper.getFailReportOrg(importYear);
-        results.put("failOrg",list);
+        List<OmsSmrPersonInfo> results = smrPersonInfoMapper.getFailReportOrg(importYear);
         return Result.success(results);
     }
 
@@ -566,7 +564,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      */
     @Override
     public void exportFailReportOrg(String importYear) {
-        List<String> list = smrPersonInfoMapper.getFailReportOrg(importYear);
+        List<OmsSmrPersonInfo> list = smrPersonInfoMapper.getFailReportOrg(importYear);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -611,8 +609,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
             row = sheet.createRow(i + 2);
-            row.createCell(0).setCellValue(i + 1);
-            row.createCell(1).setCellValue(list.get(i));
+            /*row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(list.get(i));*/
             //设置单元格字体大小
             for (int j = 0; j < 8; j++) {
                 row.getCell(j).setCellStyle(style1);

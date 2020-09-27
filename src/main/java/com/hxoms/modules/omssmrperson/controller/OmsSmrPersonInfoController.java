@@ -108,11 +108,10 @@ public class OmsSmrPersonInfoController {
     @GetMapping("/getFailReportOrg")
     public Result getFailReportOrg(String importYear){
         try{
-            Result result = smrPersonInfoService.getFailReportOrg(importYear);;
-            return Result.success(result);
+            return smrPersonInfoService.getFailReportOrg(importYear);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("系统错误");
+            return Result.error("系统错误！");
         }
     }
 
