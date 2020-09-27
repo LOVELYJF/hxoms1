@@ -221,7 +221,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     txvo1.setOmsId(vo.getOmsId());
                     txvo1.setAbroadTime(vo.getAbroadTime());
                     txvo1.setReturnTime(vo.getReturnTime());
-                    txvo1.setPriapplyId(vo.getPriapplyId());
+                    txvo1.setPriapplyId(vo.getId());
                     txvo1.setComparisonResult(vo.getComparisonResult());
                     txvo1.setIdType(vo.getIdType());
                     txvo1.setIdNumber(vo.getIdNumber());
@@ -235,7 +235,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     txvo2.setOmsId(vo.getOmsId());
                     txvo2.setAbroadTime(vo.getAbroadTime());
                     txvo2.setReturnTime(vo.getReturnTime());
-                    txvo2.setPriapplyId(vo.getPriapplyId());
+                    txvo2.setPriapplyId(vo.getId());
                     txvo2.setComparisonResult(vo.getComparisonResult());
                     txvo2.setIdType(vo.getIdType());
                     txvo2.setIdNumber(vo.getIdNumber());
