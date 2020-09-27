@@ -11,6 +11,7 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import oracle.jdbc.proxy.annotation.Post;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class CfCertificateController {
      * @Date: 2020/9/9
      */
     @ApiOperation(value = "查询所有证照根据机构")
-        @GetMapping("/queryCertificateByOmsId")
+    @PostMapping("/queryCertificateByOmsId")
     public Result<PageBean<ImportInterface>> queryCertificateByOmsId(PageBean pageBean,String b0100) throws Exception {
         return Result.success(cfCertificateService.queryCertificateByOmsId(pageBean,b0100));
     }
