@@ -387,14 +387,13 @@
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
     WHERE o.QR_CODE_ID=#{qrCodeId}
-    <if test="overFlag='Y'.toString()">
+    <if test="overFlag=='Y'.toString()">
     union
     <include refid="calGetCerSql" />
     cf_user o
     INNER JOIN oms_cer_get_task a ON o.org_id=a.RF_B0000
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     INNER JOIN oms_reg_procpersoninfo c ON a.oms_id = c.id
-    AND a.get_status='0'
     AND a.data_source ='3'
     </if>
   </select>

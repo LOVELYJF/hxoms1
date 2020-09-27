@@ -10,8 +10,11 @@ import com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.*;
 import com.hxoms.modules.passportCard.admintorGet.mapper.OmsCerAdmintorGetApplyMapper;
 import com.hxoms.modules.passportCard.admintorGet.service.OmsAdmintorGetService;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.GetStatusEnum;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.ReceiveSourceEnum;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CreateQrCodeApply;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
@@ -90,9 +93,6 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
 
     @Transactional(rollbackFor = Exception.class)
     public List<String> saveData(List<AdminGetCerApply> adminGetCerApplyList) {
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        if(userInfo==null)
-            throw new CustomMessageException("查询登陆用户信息失败！");
         List<OmsCerGetTask> omsCerGetTaskList=new ArrayList<>();
         List<OmsCerAdmintorGetApply> omsCerAdmintorGetApplyList=new ArrayList<>();
         List<CfCertificate> cfCertificateList=new ArrayList<>();
@@ -103,7 +103,6 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
             BeanUtils.copyProperties(adminGetCerApply,omsCerAdmintorGetApply);
             omsCerAdmintorGetApply.setId(UUIDGenerator.getPrimaryKey());
             ids.add(omsCerAdmintorGetApply.getId());
-            omsCerAdmintorGetApply.setOperator(userInfo.getId());
             omsCerAdmintorGetApplyList.add(omsCerAdmintorGetApply);
             //新增领取任务
             OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
@@ -115,17 +114,17 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
             omsCerGetTask.setRfB0000(omsCerAdmintorGetApply.getRfB0000());
             omsCerGetTask.setZjlx(omsCerAdmintorGetApply.getZjlx());
             omsCerGetTask.setZjhm(omsCerAdmintorGetApply.getZjhm());
-            omsCerGetTask.setGetStatus("0");
-            omsCerGetTask.setDataSource("4");
-            omsCerGetTask.setCreator(userInfo.getId());
+            omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_0.getCode());
+            omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_4.getCode());
+            omsCerGetTask.setCreator(omsCerAdmintorGetApply.getOperator());
             omsCerGetTask.setCreateTime(date);
             omsCerGetTaskList.add(omsCerGetTask);
             //修改证照表状态
             CfCertificate certificate=new CfCertificate();
             certificate.setId(omsCerAdmintorGetApply.getCerId());
             //待领取
-            certificate.setCardStatus("7");
-            certificate.setUpdater(userInfo.getId());
+            certificate.setCardStatus(CardStatusEnum.DLQ.getCode());
+            certificate.setUpdater(omsCerAdmintorGetApply.getOperator());
             certificate.setUpdateTime(date);
             cfCertificateList.add(certificate);
         }

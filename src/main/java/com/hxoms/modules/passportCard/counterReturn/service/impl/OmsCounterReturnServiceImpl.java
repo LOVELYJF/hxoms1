@@ -9,15 +9,18 @@ import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
 import com.hxoms.modules.passportCard.counterReturn.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterReturn.mapper.OmsCounterReturnMapper;
 import com.hxoms.modules.passportCard.counterReturn.service.OmsCounterReturnService;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.OmsCerCounterNumber;
+import com.hxoms.modules.passportCard.initialise.entity.enums.*;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.OmsCerConuterNumberMapper;
@@ -74,7 +77,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         //0:干部监督处,1:省委统战部(台办)
         readCerInfo.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
         //保管方式(0:证照机,1:柜台)
-        readCerInfo.setSurelyWay("1");
+        readCerInfo.setSurelyWay(SurelyWayEnum.COUNTER.getCode());
         if(storeCfCertificate!=null){
             readCerInfo.setCardStatus(storeCfCertificate.getCardStatus());
             readCerInfo.setCardStatusName(Constants.CER_NAME[Integer.parseInt(storeCfCertificate.getCardStatus())]);
@@ -87,7 +90,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
                     //获取位置
                     OmsCerCounterNumber omsCerCounterNumber=omsCerConuterNumberMapper.selectCounterNum(readCerInfo.getSurelyUnit(),readCerInfo.getZjlx(),readCerInfo.getZjxs());
                     //将位置置为已锁定
-                    omsCerCounterNumber.setIsLock("1");
+                    omsCerCounterNumber.setIsLock(LockEnum.LOCK.getCode());
                     if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
                         throw new CustomMessageException("锁定柜台号失败！");
                     readCerInfo.setCounterNumId(omsCerCounterNumber.getId());
@@ -97,7 +100,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             //第一次获取柜台号
             OmsCerCounterNumber omsCerCounterNumber=omsCerConuterNumberMapper.selectCounterNum(readCerInfo.getSurelyUnit(),readCerInfo.getZjlx(),readCerInfo.getZjxs());
             //将位置置为已锁定
-            omsCerCounterNumber.setIsLock("1");
+            omsCerCounterNumber.setIsLock(LockEnum.LOCK.getCode());
             if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
                 throw new CustomMessageException("锁定柜台号失败！");
             readCerInfo.setCounterNumId(omsCerCounterNumber.getId());
@@ -158,9 +161,9 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             CfCertificate cfCertificate=new CfCertificate();
             cfCertificate.setId(storeCfCertificate.getId());
             //正常保管
-            cfCertificate.setSaveStatus("0");
+            cfCertificate.setSaveStatus(SaveStatusEnum.ZCBG.getCode());
             //正常
-            cfCertificate.setCardStatus("0");
+            cfCertificate.setCardStatus(CardStatusEnum.ZC.getCode());
             cfCertificate.setUpdater(userInfo.getId());
             cfCertificate.setUpdateTime(date);
 
@@ -172,9 +175,9 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             omsCerExitEntryRepertory.setZjlx(storeCfCertificate.getZjlx());
             omsCerExitEntryRepertory.setZjhm(storeCfCertificate.getZjhm());
             //出入库状态(0:出库,1:入库)
-            omsCerExitEntryRepertory.setStatus("1");
+            omsCerExitEntryRepertory.setStatus(InOutStatus.IN_STATUS.getCode());
             //存取方式(0:证照机,1:柜台)
-            omsCerExitEntryRepertory.setMode("1");
+            omsCerExitEntryRepertory.setMode(SurelyWayEnum.COUNTER.getCode());
             omsCerExitEntryRepertory.setCounterNum(returnCerInfo.getCounterNum());
             omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
             omsCerExitEntryRepertory.setOperateTime(date);
@@ -191,9 +194,9 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             cfCertificate.setId(UUIDGenerator.getPrimaryKey());
             cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
             //已取出
-            cfCertificate.setSaveStatus("1");
+            cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
             //待验证
-            cfCertificate.setCardStatus("5");
+            cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
             cfCertificate.setUpdater(userInfo.getId());
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
@@ -211,8 +214,8 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         //将柜台号码置为已使用
         OmsCerCounterNumber omsCerCounterNumber=new OmsCerCounterNumber();
         omsCerCounterNumber.setId(returnCerInfo.getCounterNumId());
-        //将位置置为已锁定
-        omsCerCounterNumber.setStatus("1");
+        //将位置置为已使用
+        omsCerCounterNumber.setStatus(UseStatusEnum.ON_USE.getCode());
         if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
             throw new CustomMessageException("柜台号使用失败！");
         //证照已上缴，取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
@@ -223,7 +226,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             if(returnCerInfo.getZjlx().equals(cfCertificateCollection.getZjlx())&&returnCerInfo.getZjhm().equals(cfCertificateCollection.getZjhm())){
                 //按证件解除催缴
                 //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                cfCertificateCollection.setCjStatus("1");
+                cfCertificateCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
                 cfCertificateCollection.setUpdator(userInfo.getId());
                 cfCertificateCollection.setUpdatetime(date);
                 cfCertificateCollectionMapper.updateById(cfCertificateCollection);
@@ -234,7 +237,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         }
         //按人员解除催缴证件类型和证件号码为空的催缴任务
         if(!isExist&&cfCerCollection!=null){
-            cfCerCollection.setCjStatus("1");
+            cfCerCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
             cfCerCollection.setUpdator(userInfo.getId());
             cfCerCollection.setUpdatetime(date);
             cfCertificateCollectionMapper.updateById(cfCerCollection);

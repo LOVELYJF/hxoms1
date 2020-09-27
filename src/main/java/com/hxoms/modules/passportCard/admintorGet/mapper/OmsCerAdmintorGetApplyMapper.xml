@@ -324,7 +324,7 @@
     WHERE
     a.id = #{omsId}
     AND b.save_status = '0'
-    AND b.card_status != '7'
+    AND b.card_status != '40'
   </select>
   <select id="selectPrintCerInfo" resultType="com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.CanGetCerInfo">
     SELECT
