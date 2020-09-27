@@ -1470,7 +1470,7 @@
 			a.A0184,
 			max(a.RXZ_DATE) as  RXZ_DATE
 		from  a01 a group by a.A0184) b on
-		a.A0184=b.A0184 and a.RXZ_DATE=b.RXZ_DATE
+		a.A0184=b.A0184 and IFNULL(a.RXZ_DATE,'')=IFNULL(b.RXZ_DATE,'')
       where a.is_deleted = '0' and a.a0165 in('01','02')  and
       a.a0100 in (select a02.a0100
       from a02 inner join b01 on a02.a0201b=b01.b0100
