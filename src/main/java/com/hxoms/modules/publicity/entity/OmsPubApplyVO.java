@@ -29,8 +29,7 @@ public class OmsPubApplyVO extends OmsPubApply {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date SECRET_REVIEW_DATE;
-    //健康情况
-    private String HEALTH;
+
     //户口所在地
     private String REGISTE_RESIDENCE;
 
@@ -112,14 +111,6 @@ public class OmsPubApplyVO extends OmsPubApply {
 
     public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
         this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
-    }
-
-    public String getHEALTH() {
-        return HEALTH;
-    }
-
-    public void setHEALTH(String HEALTH) {
-        this.HEALTH = HEALTH;
     }
 
     public String getREGISTE_RESIDENCE() {

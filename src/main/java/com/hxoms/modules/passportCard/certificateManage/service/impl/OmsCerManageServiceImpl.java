@@ -9,11 +9,14 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.certificateManage.mapper.OmsCerManageMapper;
 import com.hxoms.modules.passportCard.certificateManage.service.OmsCerManageService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -165,9 +168,9 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             cfCertificate.setId(UUIDGenerator.getPrimaryKey());
             cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
             //已取出
-            cfCertificate.setSaveStatus("1");
+            cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
             //待验证
-            cfCertificate.setCardStatus("5");
+            cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
             cfCertificate.setUpdater(userInfo.getId());
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
@@ -189,7 +192,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
                 if(cfCertificate.getZjlx().equals(cfCertificateCollection.getZjlx())&&cfCertificate.getZjhm().equals(cfCertificateCollection.getZjhm())){
                     //按证件解除催缴
                     //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                    cfCertificateCollection.setCjStatus("1");
+                    cfCertificateCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
                     cfCertificateCollection.setUpdator(userInfo.getId());
                     cfCertificateCollection.setUpdatetime(date);
                     cfCertificateCollectionMapper.updateById(cfCertificateCollection);
@@ -200,7 +203,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             }
             //按人员解除催缴证件类型和证件号码为空的催缴任务
             if(!isExist&&cfCerCollection!=null){
-                cfCerCollection.setCjStatus("1");
+                cfCerCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
                 cfCerCollection.setUpdator(userInfo.getId());
                 cfCerCollection.setUpdatetime(date);
                 cfCertificateCollectionMapper.updateById(cfCerCollection);

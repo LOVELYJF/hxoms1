@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrCompare;
+import com.hxoms.modules.omssmrperson.entity.OmsSmrCompareVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrCompareService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -48,13 +51,18 @@ public class OmsSmrCompareServiceImpl extends ServiceImpl<OmsSmrCompareMapper, O
     }
 
     @Override
-    public List<OmsSmrCompare> getCompareIdCard() {
-        return smrCompareMapper.getCompareIdCard();
+    public Result getCompareIdCard(String b0100) {
+        if(StringUtils.isBlank(b0100)){
+            return Result.error("请先选择单位后查询！");
+        }
+        List<OmsSmrCompareVO> results = smrCompareMapper.getCompareIdCard(b0100);
+        return Result.success(results);
     }
 
     @Override
     public boolean exportCompareIdCard(HttpServletResponse response) {
-        List<OmsSmrCompare> list = getCompareIdCard();
+        //List<OmsSmrCompare> list = getCompareIdCard();
+        List<OmsSmrCompare> list = null;
         if(list.size() < 1 || list == null){
             throw new CustomMessageException("没有可以导出的数据");
         }
@@ -109,7 +117,7 @@ public class OmsSmrCompareServiceImpl extends ServiceImpl<OmsSmrCompareMapper, O
         for(int i = 0; i < list.size(); i++){
             row = sheet.createRow(i + 2);
             row.createCell(0).setCellValue(i + 1);
-            row.createCell(1).setCellValue(list.get(i).getWorkUnit());
+            row.createCell(1).setCellValue(list.get(i).getB0100());
             row.createCell(2).setCellValue(list.get(i).getName());
             row.createCell(3).setCellValue(list.get(i).getSex());
             row.createCell(4).setCellValue(list.get(i).getBirthDate());

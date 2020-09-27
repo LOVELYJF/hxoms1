@@ -233,15 +233,28 @@
           if(a.status='0','取出',if(a.status='1','归还',a.status)) statusName,
           a.MODE mode,
           if(a.mode='0','证照机',if(a.mode='1','柜台',a.mode)) modeName,
-          b.user_name operator,
+          CASE a.STATUS
+          WHEN '0' THEN
+          (
+          SELECT
+          get_people
+          FROM
+          oms_cer_get_task
+          WHERE
+          id = a.get_id
+          )
+          WHEN '1' THEN
+          a.operator
+          ELSE
+          NULL
+          END  operator,
           a.OPERATE_TIME operateTime
       FROM
           oms_cer_exit_entry_repertory a
-      INNER JOIN cf_user b ON a.operator=b.user_id
-      WHERE zjlx=#{zjlx}
-      AND zjhm=#{zjhm}
+      WHERE a.zjlx=#{zjlx}
+      AND a.zjhm=#{zjhm}
       <if test="status!=null">
-        AND status=#{status}
+        AND a.status=#{status}
       </if>
 
     <!--WQF ADD 勾选查询使用-->
