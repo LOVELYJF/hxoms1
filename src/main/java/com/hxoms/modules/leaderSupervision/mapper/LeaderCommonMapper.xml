@@ -1387,9 +1387,11 @@
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
 					'不回复' as noRespond,
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3
+		            '比例' as proportion,
+		            concat(Round(if(sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end)=0,0,sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end )/sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end))*100,2),'%')as  num4
 
 
-			 FROM
+		FROM
 				  (
 				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
 		          left join oms_jiwei_opinion jio on a.id =jio.id  where 1=1
@@ -1442,8 +1444,10 @@
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 2 then 1 else 0 end ) as num2,
 					'不回复' as '不回复',
 					sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 3 then 1 else 0 end ) as num3
+		            '比例' as '比例',
+		            concat(Round(if(sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end)=0,0,sum(case when ifnull(jio.official_feedback_verdict,jio.feedback_verdict) = 1 then 1 else 0 end )/sum(case when temp.applyId not in('pubId','priId') then 1 else 0  end))*100,2),'%') as  num4
 
-			 FROM
+		FROM
 				  (
 				  select '因公' as type,ifnull(a.id ,b.applyId) as applyId from  oms_pub_apply  a RIGHT JOIN  (select '因公' as '因公', 'pubId' as applyId) b on b.applyId='pubId'
 
@@ -1486,15 +1490,14 @@
 
 		) a RIGHT JOIN (
 
-							select   "因公" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
-							UNION ALL
-							select   "因私" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
-							UNION ALL
-							select   "合计" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3
+		select   "因公" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00%' as num4
+		UNION ALL
+		select   "因私" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00$' as num4
+		UNION ALL
+		select   "合计" as type,'0' as num,'同意' as agree, '0' as num1,'不同意' as disagree,'0' AS num2, '不回复' as noRespond ,'0' AS num3,'比例' as proportion,'0.00%' as num4
 
 
-							)b  on  a.type =b.type
-
+		)b  on  a.type =b.type
 
 	</select>
 
