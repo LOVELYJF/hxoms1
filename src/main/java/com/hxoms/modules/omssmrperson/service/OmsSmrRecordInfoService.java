@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.util.List;
 
 /**
  * 省国家保密局备案涉密人员管理

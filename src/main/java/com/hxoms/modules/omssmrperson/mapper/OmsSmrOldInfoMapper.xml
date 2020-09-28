@@ -140,7 +140,11 @@
           t.BIRTH_DATE,
           t.POST,
           t.IDNUMBER_GB ID_CARD_NUMBER,
-          '无涉密信息' msg
+          '无涉密信息' msg,
+          a.SECRET_RELATED_LEVEL,
+          a.SECRET_RELATED_POST,
+          a.START_DATE,
+          a.FINISH_DATE
       FROM
           oms_reg_procpersoninfo t
           INNER JOIN b01 b ON t.RF_B0000 = b.b0100
@@ -164,7 +168,11 @@
           t.BIRTH_DATE,
           t.post,
           t.ID_CARD_NUMBER,
-          '未匹配到干部' msg
+          '未匹配到干部' msg,
+          t.SECRET_RELATED_LEVEL,
+          t.SECRET_RELATED_POST,
+          t.START_DATE,
+          t.FINISH_DATE
       FROM
           oms_smr_recordinfo t
           INNER JOIN b01 b ON t.b0100 = b.b0100

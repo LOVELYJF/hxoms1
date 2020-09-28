@@ -31,26 +31,6 @@ public class OmsSmrCompareServiceImpl extends ServiceImpl<OmsSmrCompareMapper, O
     private OmsSmrCompareMapper smrCompareMapper;
 
     @Override
-    public IPage<OmsSmrCompare> getSmrCompareList(Page page, OmsSmrCompare smrCompare) throws ParseException {
-        return null;
-    }
-
-    @Override
-    public Object insert(OmsSmrCompare smrCompare) {
-        return null;
-    }
-
-    @Override
-    public Object update(OmsSmrCompare smrCompare) {
-        return null;
-    }
-
-    @Override
-    public Object delete(String id) {
-        return null;
-    }
-
-    @Override
     public Result getCompareIdCard(String b0100) {
         if(StringUtils.isBlank(b0100)){
             return Result.error("请先选择单位后查询！");

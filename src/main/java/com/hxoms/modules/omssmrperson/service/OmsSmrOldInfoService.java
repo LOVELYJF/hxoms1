@@ -18,12 +18,6 @@ import java.util.Map;
 public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取涉密人员原涉密信息列表
     PageInfo<OmsSmrOldInfoVO> getSmrOldInfoById(Integer pageNum, Integer pageSize, String id) throws ParseException;
-    //添加涉密人员原涉密信息
-    Object insert(OmsSmrOldInfo smrOldInfo);
-    //修改涉密人员原涉密信息
-    Object update(OmsSmrOldInfo smrOldInfo);
-    //删除涉密人员原涉密信息
-    Object delete(String id);
     //获取脱密期确认列表
     Map<String, Object> getConfirmPeriodList();
     //获取涉密人员信息维护列表
@@ -34,4 +28,6 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     Result getDifferentData(String importYear, String b0100);
     //导出差异数据列表
     void exportDifferentData();
+    //差异数据纠正确认
+    Result updateDifferentData(List<OmsSmrOldInfoVO> smrOldInfos);
 }

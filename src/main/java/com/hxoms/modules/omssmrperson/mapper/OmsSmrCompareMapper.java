@@ -1,7 +1,6 @@
 package com.hxoms.modules.omssmrperson.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.beust.jcommander.Parameter;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrCompare;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrCompareVO;
 import org.apache.ibatis.annotations.Param;
