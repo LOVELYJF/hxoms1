@@ -816,8 +816,10 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //记录是否需要重新登记备案
         boolean updated = false;
         //身份证号姓名一致
+        String gbIdCard=(a01.getA0184()==null?"":a01.getA0184());
+        String cgjIdCard=omsreginfo.getIdnumberGa()==null?omsreginfo.getIdnumberGb():omsreginfo.getIdnumberGa();
         if ((omsreginfo.getSurname() + omsreginfo.getName()).equals(a01.getA0101()) &&
-                omsreginfo.getIdnumberGa().equals(a01.getA0184())) {
+                gbIdCard.equals(cgjIdCard)) {
 
             //在职状态沒有发生变化
             if (a01.getA0163().equals(omsreginfo.getIncumbencyStatus()) ||
