@@ -36,7 +36,7 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
     @Override
     public Result getMatchingPerson(String importYear, String b0100) {
         if(StringUtils.isBlank(importYear) || StringUtils.isBlank(b0100)){
-            Result.error("汇总年份或汇总单位为空！");
+            return Result.error("汇总年份或汇总单位为空！");
         }
         List<OmsSmrRecordInfoVO> results = smrRecordInfoMapper.getMatchingPerson(importYear,b0100);
         return Result.success(results);

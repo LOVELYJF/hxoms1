@@ -11,6 +11,7 @@ public class OmsSmrOldInfoVO extends OmsSmrOldInfo{
     //机构名称
     private String b0101;
     private String a0101;
+    private String name;
     private String sex;
     private String birthDay;
     private String nation;
@@ -33,6 +34,14 @@ public class OmsSmrOldInfoVO extends OmsSmrOldInfo{
 
     public void setA0101(String a0101) {
         this.a0101 = a0101;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSex() {
