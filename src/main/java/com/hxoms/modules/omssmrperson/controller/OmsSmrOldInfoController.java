@@ -119,7 +119,7 @@ public class OmsSmrOldInfoController {
     public Result getDifferentData(String importYear, String b0100){
         try{
             Result result = smrOldInfoService.getDifferentData(importYear,b0100);
-            return Result.success(result);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
