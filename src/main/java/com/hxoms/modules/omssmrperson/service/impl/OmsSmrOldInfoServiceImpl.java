@@ -108,7 +108,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
     @Override
     public Result getDifferentData(String importYear, String b0100) {
         if(StringUtils.isBlank(importYear) || StringUtils.isBlank(b0100)){
-            Result.error("汇总年份或单位为空！");
+            return Result.error("汇总年份或单位为空！");
         }
         List<OmsSmrOldInfoVO> result = smrOldInfoMapper.getDifferentData(importYear,b0100);
         return Result.success(result);
