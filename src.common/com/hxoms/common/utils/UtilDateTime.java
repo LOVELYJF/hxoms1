@@ -680,6 +680,8 @@ public class UtilDateTime {
 			if (!"".equals(srDateNew)) {
 				newDate = simpleDateFormat.parse(srDateNew);
 			} else {
+				if(date.length()<7)
+					date=date+"01";
 				newDate = simpleDateFormat.parse(date);
 			}
 		} catch (ParseException px) {

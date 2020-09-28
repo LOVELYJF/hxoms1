@@ -95,14 +95,28 @@ public class OmsRegRevokeapply {
     @ColumnAnnotation(FieldName = "STATUS",   FieldDescription="1.申请 2.受理 3.撤销 4.已备案 5.处领导审批 6.部领导审批 7.拒批")
     private String status;
 
-    @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="备案机构")
+    @ColumnAnnotation(FieldName = "ORG_RECORD",   FieldDescription="备案机构")
+    private String orgRecord;
+
+    @ColumnAnnotation(FieldName = "RF_B0000",   FieldDescription="人员所在单位")
     private String rfB0000;
+
+    @ColumnAnnotation(FieldName = "RECORD_DATE",   FieldDescription="备案日期")
+    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date recordDate;
 
     @ColumnAnnotation(FieldName = "EXIT_TYPE",   FieldDescription="退出方式")
     private String exitType;
 
     @ColumnAnnotation(FieldName = "EXIT_DATE",   FieldDescription="退出时间")
     private String exitDate;
+
+    @ColumnAnnotation(FieldName = "CURRENT_ORG",   FieldDescription="现工作单位")
+    private String currentOrg;
+
+    @ColumnAnnotation(FieldName = "CURRENT_Post",   FieldDescription="现职务")
+    private String currentPost;
 
     public String getId() {
         return id;
@@ -304,14 +318,6 @@ public class OmsRegRevokeapply {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getRfB0000() {
-        return rfB0000;
-    }
-
-    public void setRfB0000(String rfB0000) {
-        this.rfB0000 = rfB0000 == null ? null : rfB0000.trim();
-    }
-
     public String getExitType() {
         return exitType;
     }
@@ -326,5 +332,42 @@ public class OmsRegRevokeapply {
 
     public void setExitDate(String exitDate) {
         this.exitDate = exitDate == null ? null : exitDate.trim();
+    }
+    public String getRfB0000() {
+        return rfB0000;
+    }
+
+    public void setRfB0000(String rfB0000) {
+        this.rfB0000 = rfB0000;
+    }
+    public String getOrgRecord() {
+        return orgRecord;
+    }
+
+    public void setOrgRecord(String orgRecord) {
+        this.orgRecord = orgRecord;
+    }
+
+    public Date getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(Date recordDate) {
+        this.recordDate = recordDate;
+    }
+    public String getCurrentOrg() {
+        return currentOrg;
+    }
+
+    public void setCurrentOrg(String currentOrg) {
+        this.currentOrg = currentOrg;
+    }
+
+    public String getCurrentPost() {
+        return currentPost;
+    }
+
+    public void setCurrentPost(String currentPost) {
+        this.currentPost = currentPost;
     }
 }

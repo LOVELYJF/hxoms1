@@ -2,6 +2,7 @@ package com.hxoms.modules.omsregcadre.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.*;
@@ -11,9 +12,12 @@ import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +47,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         if (reginfolist!=null && reginfolist.size()>0){
             for (int i=0;i<reginfolist.size();i++){
                 OmsRegProcpersoninfo info = reginfolist.get(i);
+                if(info.getExitDate()==null) continue;
                 //辞职日期
                 Calendar calExit = Calendar.getInstance();
                 calExit.setTime(info.getExitDate());
@@ -54,27 +59,27 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
 
                 //撤销登记备案申请表
                 OmsRegRevokeapply applyinfo = new OmsRegRevokeapply();
-                //1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.未匹配，99.其他
+                //1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.其他，99.未匹配
                 //判断辞职、开除、解聘人员是否满3年（根据系统参数设置判断），且已过脱密结束日期 ,将满足要求的人员放到撤销登记备案申请表
-                if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Resignation)
-                        || info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Expel)
-                        || info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Dismissal)){
+                int incumbencyStatus=Integer.parseInt(info.getIncumbencyStatus());
+                if (incumbencyStatus==Constants.emIncumbencyStatus.Resignation.getIndex()
+                        || incumbencyStatus==Constants.emIncumbencyStatus.Expel.getIndex()
+                        || incumbencyStatus==Constants.emIncumbencyStatus.Dismissal.getIndex()){
                     if(calExit.before(new Date()) && info.getDecryptEnddate().before(new Date())){
                         copyApplyInfo(info,applyinfo);
                     }
                     //判断退休人员是否满系统参数设置的退休年限,将满足要求的人员放到撤销登记备案申请表
-                }else if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Retirement)) {
+                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Retirement.getIndex()) {
                     if (txExit.before(new Date())) {
                         copyApplyInfo(info,applyinfo);
                     }
                     //判断挂职到期人员是否过脱密日期，将满足要求的人员放到撤销登记备案申请表
-                }else if (info.getIncumbencyStatus().equals(Constants.emIncumbencyStatus.Secondment)){
+                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Secondment.getIndex()){
                     if (info.getDecryptEnddate().before(new Date())) {
                         copyApplyInfo(info, applyinfo);
                     }
-                }else{
-                    msg.append("暂无可提取的撤销的备案人员!");
-                    return Result.error(msg.toString());
+                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Dispatch.getIndex()){
+                    copyApplyInfo(info, applyinfo);
                 }
             }
         }else{
@@ -109,11 +114,13 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         int con=0;
         //复制登记备案相同字段的数据到撤销登记申请表
         BeanUtils.copyProperties(info, applyinfo);
-        applyinfo.setStatus("1");
+        applyinfo.setStatus(String.valueOf(Constants.emRevokeRegister.申请.getIndex()));
         applyinfo.setId(UUIDGenerator.getPrimaryKey());
         applyinfo.setRfId(info.getId());
         applyinfo.setCreateDate(new Date());
         applyinfo.setCreateUser(userInfo.getId());
+        applyinfo.setExitDate(new SimpleDateFormat("yyyy.MM.dd").format(info.getExitDate()));
+        applyinfo.setExitType(info.getIncumbencyStatus());
         return con = baseMapper.insert(applyinfo);
     }
 
@@ -154,7 +161,21 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     public Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo) {
         //查询公安信息可撤销登记备案人员
         List<OmsRegProcpersoninfoVO> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
-        return reginfolist;
+        List<OmsRegRevokeapply> regRevokeapplies=new ArrayList<>();
+        for (OmsRegProcpersoninfoVO regProcpersoninfoVO:reginfolist
+             ) {
+            OmsRegRevokeapplyV0 omsRegRevokeapply = new OmsRegRevokeapplyV0();
+            BeanUtils.copyProperties(regProcpersoninfoVO,omsRegRevokeapply);
+            omsRegRevokeapply.setStatus(String.valueOf(Constants.emRevokeRegister.申请.getIndex()));
+            omsRegRevokeapply.setStatusName(Constants.emRevokeRegister.申请.getName());
+            omsRegRevokeapply.setRfId(regProcpersoninfoVO.getId());
+            omsRegRevokeapply.setExitType(regProcpersoninfoVO.getIncumbencyStatus());
+            omsRegRevokeapply.setExitTypeName(regProcpersoninfoVO.getIncumbencyStatusName());
+            omsRegRevokeapply.setCurrentOrg(regProcpersoninfoVO.getWorkUnit());
+            omsRegRevokeapply.setCurrentPost(regProcpersoninfoVO.getPost());
+            regRevokeapplies.add(omsRegRevokeapply);
+        }
+        return regRevokeapplies;
     }
 
     @Override
@@ -167,13 +188,39 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
 
 
     @Override
-    public Object updateApplyStatusByCLD(String status,String applyIds) {
+    public Result updateApplyStatusByCLD(String status,String applyIds) {
         String[] num = applyIds.split(",");
-        OmsRegRevokeapply apply = new OmsRegRevokeapply();
-        apply.setStatus(status);
+
         QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
         queryWrapper.in("ID",num);
-        return baseMapper.update(apply,queryWrapper);
+        List<OmsRegRevokeapply> list = baseMapper.selectList(queryWrapper);
+
+        List<OmsRegRevokeapply> updates=new ArrayList<>();
+        int pStatus=Integer.parseInt(status);
+        for (OmsRegRevokeapply regRevokeapply:list
+             ) {
+
+            int iStatus = Integer.parseInt(regRevokeapply.getStatus());
+            if(iStatus!=pStatus) continue;
+
+            if(iStatus==Constants.emRevokeRegister.申请.getIndex()||
+                    iStatus==Constants.emRevokeRegister.受理.getIndex()||
+                    iStatus==Constants.emRevokeRegister.处领导审核.getIndex()||
+                    iStatus==Constants.emRevokeRegister.部领导审批.getIndex()){
+
+                iStatus++;
+
+                regRevokeapply.setStatus(String.valueOf(iStatus));
+                updates.add(regRevokeapply);
+            }
+        }
+
+        if(updates.size()>0)
+        {
+            this.updateBatchById(updates);
+            return  Result.success("成功处理了（"+updates.size()+"）条申请！");
+        }
+        return Result.error("没有要处理的申请！");
     }
 
     @Override

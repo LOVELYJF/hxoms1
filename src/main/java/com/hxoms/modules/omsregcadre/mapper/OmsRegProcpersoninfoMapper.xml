@@ -436,39 +436,29 @@
 
     <select id="searchRevokeRegPersonList" parameterType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO">
         select
-        T_1.item_name as SEX ,
-        T_3.item_name as INCUMBENCY_STATUS,
-        T_4.item_name as RF_STATUS,
-        T_5.item_name as CHECK_STATUS,
-        T_6.item_name as POLITICAL_AFFI,
-        T_7.item_name as SECRET_LEVEL,
-        T_8.item_name as DATA_TYPE,
-        b01.B0101,
+        T_1.item_name as sexName ,
+        T_3.item_name as incumbencyStatusName,
+        T_7.item_name as secretLevelName,
+        T_8.item_name as dataTypeName,
+        b01.B0101 as b0101,
         info.*
         from oms_reg_procpersoninfo info
         LEFT JOIN B01 b01 on info.RF_B0000 = b01.B0100
-        LEFT JOIN  (SELECT T_1.item_code,T_1.item_name FROM SYS_DICT_ITEM T_1,SYS_DICT sd WHERE sd.DICT_CODE = 'GB2261'
-        AND T_1.DICT_CODE = sd.DICT_CODE) T_1 ON info.SEX = T_1.item_code
-        LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3,SYS_DICT sd WHERE sd.DICT_CODE = 'ZZZT'
-        AND T_3.DICT_CODE = sd.DICT_CODE) T_3 ON info.INCUMBENCY_STATUS = T_3.item_code
-        LEFT JOIN  (SELECT T_4.item_code,T_4.item_name FROM SYS_DICT_ITEM T_4,SYS_DICT sd WHERE sd.DICT_CODE = 'BAZT'
-        AND T_4.DICT_CODE = sd.DICT_CODE) T_4 ON info.RF_STATUS = T_4.item_code
-        LEFT JOIN  (SELECT T_5.item_code,T_5.item_name FROM SYS_DICT_ITEM T_5,SYS_DICT sd WHERE sd.DICT_CODE = 'YSZT'
-        AND T_5.DICT_CODE = sd.DICT_CODE) T_5 ON info.CHECK_STATUS = T_5.item_code
-        LEFT JOIN  (SELECT T_6.item_code,T_6.item_name FROM SYS_DICT_ITEM T_6,SYS_DICT sd WHERE sd.DICT_CODE = 'GB4762'  -- 政治面貌
-        AND T_6.DICT_CODE = sd.DICT_CODE) T_6 ON info.POLITICAL_AFFICODE = T_6.item_code
-        LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7,SYS_DICT sd WHERE sd.DICT_CODE = 'SMDJ'  -- 涉密等级
-        AND T_7.DICT_CODE = sd.DICT_CODE) T_7 ON info.SECRET_LEVEL = T_7.item_code
-        LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8,SYS_DICT sd WHERE sd.DICT_CODE = 'SJLY' -- 数据来源
-        AND T_8.DICT_CODE = sd.DICT_CODE) T_8 ON info.DATA_TYPE = T_8.item_code
+        LEFT JOIN  (SELECT T_1.item_code,T_1.item_name FROM SYS_DICT_ITEM T_1 WHERE T_1.DICT_CODE = 'GB2261'
+        ) T_1 ON info.SEX = T_1.item_code
+        LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3 WHERE T_3.DICT_CODE = 'ZZZT'
+        ) T_3 ON info.INCUMBENCY_STATUS = T_3.item_code
+        LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7 WHERE T_7.DICT_CODE = 'SMDJ'  -- 涉密等级
+        ) T_7 ON info.SECRET_LEVEL = T_7.item_code
+        LEFT JOIN  (SELECT T_8.item_code,T_8.item_name FROM SYS_DICT_ITEM T_8 WHERE T_8.DICT_CODE = 'SJLY' -- 数据来源
+       ) T_8 ON info.DATA_TYPE = T_8.item_code
         WHERE info.INBOUND_FLAG != 'D'
         AND info.DATA_TYPE = '2'
-        AND info.INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
         AND info.ID not in (select rf_id from oms_reg_revokeapply where status!='4')
         <if test="idnumberGa !=null and idnumberGa !=''">
             AND info.IDNUMBER_GA = #{idnumberGa}
-        <if test="name!=null and name!=''">
         </if>
+        <if test="name!=null and name!=''">
             AND ((CONCAT(IFNULL(info.SURNAME,''),IFNULL(info.NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
         </if>
         order by info.SURNAME,info.NAME,info.WORK_UNIT asc
@@ -488,7 +478,7 @@
         SELECT * from oms_reg_procpersoninfo
         WHERE DATA_TYPE = '1'
         AND INBOUND_FLAG NOT IN ('D')
-        AND INCUMBENCY_STATUS IN ('2','3','4','6','7','9')
+        AND INCUMBENCY_STATUS IN ('2','3','4','6','8','9')
         AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
     <select id="getSmrPersonInfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">

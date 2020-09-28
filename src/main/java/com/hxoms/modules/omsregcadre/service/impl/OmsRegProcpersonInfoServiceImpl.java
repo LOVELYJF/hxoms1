@@ -168,7 +168,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         SetPost(a01, orpInfo, hashMapA02, hashMapBaseInfo);
 
         //处理在职状态，退出人员要细分退出方式
-        String incumbencyStatus = this.queryStatusByA0100(a01, hashMapA30);
+        String incumbencyStatus = this.queryStatusByA0100(orpInfo, a01, hashMapA30);
         orpInfo.setIncumbencyStatus(incumbencyStatus);
 
         orpInfo.setA0100(a01.getA0100());
@@ -241,7 +241,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
      * @param
      * @return
      */
-    private String queryStatusByA0100(A01 a01, HashMap<String, A30> hashMapA30) {
+    private String queryStatusByA0100(OmsRegProcpersoninfo orpInfo, A01 a01, HashMap<String, A30> hashMapA30) {
         String incumbencyStatus = "";
         A30 a30 = hashMapA30.get(a01.getA0100());
         if (a01.getA0163().equals("2") && a30 != null && !StringUtils.isEmpty(a30.getA3001())) {
@@ -262,9 +262,13 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Expel.getIndex());
                 } else if (a3001.equals("94")) {
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dismissal.getIndex());
-                }else {
+                } else {
                     incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Other.getIndex());
                 }
+            }
+            if (!StringUilt.stringIsNullOrEmpty(a30.getA3004())) {
+                Date date = UtilDateTime.formatDate(a30.getA3004());
+                orpInfo.setExitDate(date);
             }
         } else if (a01.getA0163().equals("1") && a01.getA0165().equals("01")) {
             incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Dispatch.getIndex());//省管变中管
@@ -273,6 +277,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         } else {
             incumbencyStatus = String.valueOf(Constants.emIncumbencyStatus.Unmatched.getIndex());
         }
+        orpInfo.setIncumbencyStatus(incumbencyStatus);
         return incumbencyStatus;
     }
 
@@ -297,7 +302,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
 
             if (nameAndIDCard != null) {
                 nameAndIDCard.put(omsReg.getSurname() + omsReg.getName() +
-                        (omsReg.getIdnumberGa()==null?omsReg.getIdnumberGb():omsReg.getIdnumberGa()), omsReg);
+                        (omsReg.getIdnumberGa() == null ? omsReg.getIdnumberGb() : omsReg.getIdnumberGa()), omsReg);
             }
         }
         return hashMapReg;
@@ -327,11 +332,11 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         }
         return hashMapA02;
     }
+
     /**
      * @description:以单位id和a0100为key
      * @author:杨波
-     * @date:2020-09-19
-     *  * @param
+     * @date:2020-09-19 * @param
      * @return:java.util.HashMap<java.lang.String,java.util.Map>
      **/
     @Override
@@ -344,7 +349,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         for (Map map : A02s
         ) {
 //            if (map.get("a0201b") != null && map.get("a0201b").toString().length() > 0)
-                hashMapA02.put(map.get("b0100").toString() + map.get("a0100").toString(), map);
+            hashMapA02.put(map.get("b0100").toString() + map.get("a0100").toString(), map);
         }
         return hashMapA02;
     }
@@ -648,8 +653,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             dataGB.setRegisteResidence(dataGA.getRegisteResidence());
 
             //公安工作单位和干部工作单位及职务不一致时要将入库标识置为变更、登记备案状态置为待备案、验收状态置为未验收
-            if (StringUilt.equalsWithNull(dataGB.getWorkUnit(),dataGA.getWorkUnit())==false ||
-                    StringUilt.equalsWithNull(dataGB.getPost(),dataGA.getPost())==false) {
+            if (StringUilt.equalsWithNull(dataGB.getWorkUnit(), dataGA.getWorkUnit()) == false ||
+                    StringUilt.equalsWithNull(dataGB.getPost(), dataGA.getPost()) == false) {
                 //入库标识  新增U  修改I  撤消D
                 dataGB.setInboundFlag("I");
                 //备案状态  0未备案，1已备案，2已确认
@@ -732,7 +737,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             String a0100 = a01.getA0100();
             //判断是否已登记备案过，只查找到公安数据，视为未备案
             OmsRegProcpersoninfo omsreginfo = hashMapReg.get(a0100);
-            if (omsreginfo!=null && "2".equals(omsreginfo.getDataType()))
+            if (omsreginfo != null && "2".equals(omsreginfo.getDataType()))
                 omsreginfo = null;
 
             //已登记备案过
@@ -743,7 +748,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             }
             //未找到登记备案信息
             else {
-                omsreginfo = nameAndIDCard.get(a01.getA0101()+a01.getA0184());
+                omsreginfo = nameAndIDCard.get(a01.getA0101() + a01.getA0184());
 
                 OmsRegProcpersoninfo regProcpersoninfo = null;
 
@@ -816,8 +821,8 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
         //记录是否需要重新登记备案
         boolean updated = false;
         //身份证号姓名一致
-        String gbIdCard=(a01.getA0184()==null?"":a01.getA0184());
-        String cgjIdCard=omsreginfo.getIdnumberGa()==null?omsreginfo.getIdnumberGb():omsreginfo.getIdnumberGa();
+        String gbIdCard = (a01.getA0184() == null ? "" : a01.getA0184());
+        String cgjIdCard = omsreginfo.getIdnumberGa() == null ? omsreginfo.getIdnumberGb() : omsreginfo.getIdnumberGa();
         if ((omsreginfo.getSurname() + omsreginfo.getName()).equals(a01.getA0101()) &&
                 gbIdCard.equals(cgjIdCard)) {
 
@@ -827,7 +832,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
                 //職務发生变化
                 if (!a01.getA0192a().equals(omsreginfo.getPost())) {
                     //变更职务
-                    SetPost(a01,omsreginfo,hashMapA02,hashMapBaseInfo);
+                    SetPost(a01, omsreginfo, hashMapA02, hashMapBaseInfo);
                     //变更登记备案
                     ChangeRegisterState(omsreginfo);
                     updated = true;
@@ -836,7 +841,7 @@ public class OmsRegProcpersonInfoServiceImpl extends ServiceImpl<OmsRegProcperso
             //在职状态发生变化
             else {
                 //处理在职状态，退出人员要细分退出方式
-                String incumbencyStatus = this.queryStatusByA0100(a01, hashMapA30);
+                String incumbencyStatus = this.queryStatusByA0100(omsreginfo, a01, hashMapA30);
                 omsreginfo.setIncumbencyStatus(incumbencyStatus);
 
                 //在职状态发生变化，更新职务信息

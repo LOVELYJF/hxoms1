@@ -44,7 +44,7 @@ public class OmsRegRevokeApplyController {
      */
     @PostMapping("/searchRevokeRegPerson")
     public Result searchRevokeRegPerson() throws ParseException {
-        return Result.success(revokeApplyService.searchRevokeRegPerson());
+        return revokeApplyService.searchRevokeRegPerson();
     }
 
 
@@ -103,7 +103,7 @@ public class OmsRegRevokeApplyController {
      */
     @PostMapping("/updateApplyStatusByCLD")
     public Result updateApplyStatusByCLD(String status, String applyIds) {
-        return Result.success(revokeApplyService.updateApplyStatusByCLD(status,applyIds));
+        return revokeApplyService.updateApplyStatusByCLD(status,applyIds);
     }
 
 

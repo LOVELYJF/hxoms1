@@ -17,6 +17,44 @@ import java.util.Date;
 public class OmsRegProcpersoninfoVO extends OmsRegProcpersoninfo{
     //机构名称
     private String b0101;
+    private String sexName;
+
+    public String getSexName() {
+        return sexName;
+    }
+
+    public void setSexName(String sexName) {
+        this.sexName = sexName;
+    }
+
+    public String getIncumbencyStatusName() {
+        return incumbencyStatusName;
+    }
+
+    public void setIncumbencyStatusName(String incumbencyStatusName) {
+        this.incumbencyStatusName = incumbencyStatusName;
+    }
+
+    public String getSecretLevelName() {
+        return secretLevelName;
+    }
+
+    public void setSecretLevelName(String secretLevelName) {
+        this.secretLevelName = secretLevelName;
+    }
+
+    public String getDataTypeName() {
+        return dataTypeName;
+    }
+
+    public void setDataTypeName(String dataTypeName) {
+        this.dataTypeName = dataTypeName;
+    }
+
+    private String incumbencyStatusName;
+    private String secretLevelName;
+    private String dataTypeName;
+
 
     public String getB0101() {
         return b0101;

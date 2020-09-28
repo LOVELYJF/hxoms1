@@ -385,4 +385,33 @@ public class Constants {
             this.index = index;
         }
     }
+    public enum emRevokeRegister{
+        申请("申请",1),
+        受理("受理",2),
+        处领导审核("处领导审核",3),
+        部领导审批("部领导审批",4),
+        撤销("撤销",5),
+        拒批("拒批",6),
+        待备案("待备案",7),
+                已备案("已备案",8);
+
+        private emRevokeRegister(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+        private String name;
+        private int index;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getIndex() {
+            return index;
+        }
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
 }

@@ -33,8 +33,12 @@
     <result column="APPLY_REASON" jdbcType="VARCHAR" property="applyReason" />
     <result column="STATUS" jdbcType="CHAR" property="status" />
     <result column="RF_B0000" jdbcType="VARCHAR" property="rfB0000" />
+    <result column="ORG_RECORD" jdbcType="VARCHAR" property="orgRecord" />
+    <result column="RECORD_DATE" jdbcType="DATE" property="recordDate" />
     <result column="EXIT_TYPE" jdbcType="CHAR" property="exitType" />
     <result column="EXIT_DATE" jdbcType="VARCHAR" property="exitDate" />
+    <result column="CURRENT_ORG" jdbcType="VARCHAR" property="currentOrg" />
+    <result column="CURRENT_Post" jdbcType="VARCHAR" property="currentPost" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -45,20 +49,38 @@
     ID, RF_ID, A0100, CREATE_USER, CREATE_DATE, SURNAME, NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB, 
     IDNUMBER_GB, IDNUMBER_GA, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST_CODE, 
     POST, PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_STATUS, SECRET_START_DATE, 
-    SECRET_END_DATE, APPLY_REASON, STATUS, RF_B0000, EXIT_TYPE, EXIT_DATE
+    SECRET_END_DATE, APPLY_REASON, STATUS, RF_B0000, EXIT_TYPE, EXIT_DATE,ORG_RECORD,RECORD_DATE,
+    CURRENT_ORG,CURRENT_Post
   </sql>
 
-  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply">
-    SELECT * from oms_reg_revokeapply
+  <select id="selectRevokeApplyList" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapplyV0">
+    select
+    T_1.item_name as sexName ,
+    T_2.item_name as statusName ,
+    T_3.item_name as exitTypeName,
+    T_7.item_name as secretLevelName,
+    b.POLITICAL_AFFINAME AS politicalAffiname,
+    B.health,
+    a.*
+    from oms_reg_revokeapply a
+    INNER JOIN oms_reg_procpersoninfo b on a.RF_ID=b.ID
+    LEFT JOIN  (SELECT T_1.item_code,T_1.item_name FROM SYS_DICT_ITEM T_1 WHERE T_1.DICT_CODE = 'GB2261'
+    ) T_1 ON a.SEX = T_1.item_code
+    LEFT JOIN  (SELECT T_2.item_code,T_2.item_name FROM SYS_DICT_ITEM T_2 WHERE T_2.DICT_CODE = 'CXDJBA'
+    ) T_2 ON a.`STATUS` = T_2.item_code
+    LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3 WHERE T_3.DICT_CODE = 'ZZZT'
+    ) T_3 ON a.EXIT_TYPE = T_3.item_code
+    LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7 WHERE T_7.DICT_CODE = 'SMDJ'
+    ) T_7 ON a.SECRET_STATUS = T_7.item_code
     WHERE 1=1
     <if test="name!=null and name!=''">
-      AND CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%'
+      AND CONCAT(IFNULL(a.SURNAME,''),IFNULL(a.NAME,'')) LIKE '%${name}%'
     </if>
     <if test="status!=null and status!=''">
-      AND STATUS = #{status}
+      AND a.STATUS = #{status}
     </if>
     <if test="rfB0000!=null and rfB0000!=''">
-      AND RF_B0000 = #{rfB0000}
+      AND a.RF_B0000 = #{rfB0000}
     </if>
   </select>
 
