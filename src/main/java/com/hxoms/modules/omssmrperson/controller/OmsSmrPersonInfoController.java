@@ -141,36 +141,6 @@ public class OmsSmrPersonInfoController {
     }
 
     /**
-     * 获取差异数据列表
-     * @return
-     */
-    @GetMapping("/getDifferentData")
-    public Result getDifferentData(){
-        try{
-            List<OmsSmrPersonInfo> list= smrPersonInfoService.getDifferentData();
-            return Result.success(list);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("系统错误");
-        }
-    }
-
-    /**
-     * 导出差异数据列表
-     * @return
-     */
-    @PostMapping("/exportDifferentData")
-    public Result exportDifferentData(){
-        try{
-            boolean result = smrPersonInfoService.exportDifferentData();
-            return Result.success(result);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("导出失败");
-        }
-    }
-
-    /**
      * 批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
      * @param smrPersonInfoList
      */

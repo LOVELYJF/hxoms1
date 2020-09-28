@@ -15,6 +15,7 @@ import com.hxoms.modules.passportCard.counterGet.entity.enums.ReceiveSourceEnum;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.CreateQrCodeApply;
 import com.hxoms.modules.passportCard.printGetQrCode.entity.parameterEntity.QrCode;
@@ -46,6 +47,9 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
 
     @Autowired
     private CfCertificateService cfCertificateService;
+
+    @Autowired
+    private CfCertificateMapper cfCertificateMapper;
 
     @Autowired
     private OmsPrintGetQrCodeService omsPrintGetQrCodeService;
@@ -97,10 +101,15 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
         List<OmsCerAdmintorGetApply> omsCerAdmintorGetApplyList=new ArrayList<>();
         List<CfCertificate> cfCertificateList=new ArrayList<>();
         List<String> ids=new ArrayList<>();
+        Date date=new Date();
         for (AdminGetCerApply adminGetCerApply : adminGetCerApplyList) {
-            Date date=new Date();
+
             OmsCerAdmintorGetApply omsCerAdmintorGetApply=new OmsCerAdmintorGetApply();
             BeanUtils.copyProperties(adminGetCerApply,omsCerAdmintorGetApply);
+            //校验数据是否已提交，防止重复生成数据
+            CfCertificate certificateExist = cfCertificateMapper.selectById(omsCerAdmintorGetApply.getCerId());
+            if(CardStatusEnum.DLQ.getCode().equals(certificateExist.getCardStatus()))
+                throw  new CustomMessageException("证件号码为："+certificateExist.getZjhm()+"已提交，不能重复操作！");
             omsCerAdmintorGetApply.setId(UUIDGenerator.getPrimaryKey());
             ids.add(omsCerAdmintorGetApply.getId());
             omsCerAdmintorGetApplyList.add(omsCerAdmintorGetApply);
@@ -151,8 +160,8 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
     public GetCerInfoAndQrCode createPrintQrCode(List<PrintQrCodeParams> printQrCodeParamsList){
         List<String> ids=new ArrayList<>();
         for (PrintQrCodeParams printQrCodeParams : printQrCodeParamsList) {
-            if(!"7".equals(printQrCodeParams.getCardStatus()))
-                throw new CustomMessageException(printQrCodeParams.getZjlxName()+"("+ printQrCodeParams.getZjhm()+")"+"不是未领取状态，不能打印二维码，请重新选择！");
+            if(!CardStatusEnum.DLQ.getCode().equals(printQrCodeParams.getCardStatus()))
+                throw new CustomMessageException(printQrCodeParams.getZjlxName()+"("+ printQrCodeParams.getZjhm()+")"+"不是待领取状态，不能打印二维码，请重新选择！");
             ids.add(printQrCodeParams.getId());
         }
         return getCerInfoAndCreateQrCode(ids);

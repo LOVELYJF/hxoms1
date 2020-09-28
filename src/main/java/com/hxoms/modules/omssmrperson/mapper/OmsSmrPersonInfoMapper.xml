@@ -147,12 +147,7 @@
         t.b0111
   </select>
 
-  <!-- 获取差异数据列表 -->
-  <select id="getDifferentData" resultMap="BaseResultMap">
-
-  </select>
-
-  <!-- 获取差异数据列表 -->
+  <!-- 获取已匹配数据列表 -->
   <select id="getMatchingDate" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
     SELECT
         t.*

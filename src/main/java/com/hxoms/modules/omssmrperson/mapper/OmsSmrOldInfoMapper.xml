@@ -21,12 +21,12 @@
     <result column="PERSON_STATE" jdbcType="VARCHAR" property="personState" />
     <result column="POST" jdbcType="VARCHAR" property="post" />
     <result column="SFQR" jdbcType="VARCHAR" property="sfqr" />
-    <result column="b0101" jdbcType="VARCHAR" property="b0101" />
-    <result column="a0101" jdbcType="VARCHAR" property="a0101" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
     <result column="a0101" jdbcType="VARCHAR" property="a0101" />
+    <result column="msg" jdbcType="VARCHAR" property="msg" />
+    <result column="dataSource" jdbcType="VARCHAR" property="dataSource" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
@@ -96,6 +96,7 @@
     and IFNULL(t.SFQR,'0') = '0'
     and ISNULL(START_DATE)=FALSE
   </select>
+
   <!-- 获取涉密人员信息维护列表 -->
   <select id="getSmrMaintainList"  resultMap="ResultMapVO">
     SELECT
@@ -114,7 +115,49 @@
     and t.SECRET_RELATED_LEVEL is null
     and r.INCUMBENCY_STATUS = '1'
   </select>
+
   <select id="getSmrCount" resultType="String">
     select count(1) from oms_smr_oldinfo
+  </select>
+
+  <!-- 获取差异数据列表 -->
+  <select id="getDifferentData" resultType="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
+    SELECT
+        *
+    FROM
+        (
+      SELECT
+          '系统' data_source,
+          t.id,
+          t.RF_B0000 b0100,
+          concat( t.SURNAME, t.`NAME` ) NAME,
+          t.IDNUMBER_GB ID_CARD_NUMBER
+      FROM
+          oms_reg_procpersoninfo t
+          INNER JOIN b01 b ON t.RF_B0000 = b.b0100
+          LEFT JOIN oms_smr_oldinfo a ON t.id = a.PROC_PERSON_ID
+          AND a.IMPORT_YEAR = #{importYear} and a.b0100 = #{b0100}
+      WHERE
+          t.DATA_TYPE = '1'
+          AND ( t.SECRET_LEVEL != '0' OR t.SECRET_LEVEL IS NOT NULL )
+          AND t.INBOUND_FLAG != 'D'
+          AND t.RF_B0000 = #{b0100}
+
+    UNION ALL
+
+      SELECT
+          '保密局' data_source,
+          t.id,
+          t.B0100,
+          t.NAME,
+          t.ID_CARD_NUMBER
+      FROM
+          oms_smr_recordinfo t
+      WHERE
+          t.IS_MATCHING = '0'
+          AND t.IMPORT_YEAR = #{importYear}
+          AND t.B0100 = #{b0100}
+        ) a
+    ORDER BY a.NAME
   </select>
 </mapper>

@@ -16,7 +16,8 @@ public class OmsSmrOldInfoVO extends OmsSmrOldInfo{
     private String nation;
     private String a0141;
     private String idCardNumber;
-    private String msg;
+    private String msg;//备注
+    private String dataSource;//数据来源
 
     public String getB0101() {
         return b0101;
@@ -80,5 +81,13 @@ public class OmsSmrOldInfoVO extends OmsSmrOldInfo{
     }
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 }

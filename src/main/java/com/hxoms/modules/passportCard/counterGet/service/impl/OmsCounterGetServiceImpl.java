@@ -152,6 +152,10 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
         for (GetConfirm getConfirm : getConfirmList) {
             OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
             BeanUtils.copyProperties(getConfirm,omsCerGetTask);
+            //校验证件是否已领取，防止重复操作生成数据
+            OmsCerGetTask omsCerGetTaskExist = omsCerGetTaskMapper.selectById(omsCerGetTask.getCerId());
+            if(GetStatusEnum.STATUS_ENUM_1.getCode().equals(omsCerGetTaskExist.getGetStatus()))
+                throw new CustomMessageException("证件号码为："+omsCerGetTaskExist.getZjhm()+"的证件已领取，不能重复操作!");
             //已领取
             omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());
             omsCerGetTask.setGetTime(date);

@@ -1,13 +1,10 @@
 package com.hxoms.modules.omssmrperson.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 
 import java.text.ParseException;
 import java.util.List;
@@ -33,4 +30,8 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     Map<String, Object> getSmrMaintainList();
     //更新涉密信息
     Result updateSmrOldInfo(List<OmsSmrOldInfoVO> smrOldInfos);
+    //获取差异数据列表
+    Result getDifferentData(String importYear, String b0100);
+    //导出差异数据列表
+    void exportDifferentData();
 }

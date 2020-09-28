@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -107,6 +106,36 @@ public class OmsSmrOldInfoController {
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
+        }
+    }
+
+
+    /**
+     * 获取差异数据列表
+     * @param importYear（导入年份）
+     * @param b0100（单位id）
+     */
+    @GetMapping("/getDifferentData")
+    public Result getDifferentData(String importYear, String b0100){
+        try{
+            Result result = smrOldInfoService.getDifferentData(importYear,b0100);
+            return Result.success(result);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
+
+    /**
+     * 导出差异数据列表
+     * @return
+     */
+    @PostMapping("/exportDifferentData")
+    public void exportDifferentData(){
+        try{
+            smrOldInfoService.exportDifferentData();
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
