@@ -7,7 +7,9 @@ import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -100,12 +102,13 @@ public class OmsSmrOldInfoController {
 
     /**
      * 导出差异数据列表
-     * @return
+     * @param importYear（导入年份）
+     * @param b0100（单位id）
      */
     @PostMapping("/exportDifferentData")
-    public void exportDifferentData(){
+    public void exportDifferentData(String importYear, String b0100,@ApiIgnore HttpServletResponse response){
         try{
-            smrOldInfoService.exportDifferentData();
+            smrOldInfoService.exportDifferentData(importYear, b0100, response);
         }catch (Exception e) {
             e.printStackTrace();
         }

@@ -96,7 +96,7 @@ public class OmsSmrPersonInfoController {
             return result;
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导入失败");
+            return Result.error("系统错误！");
         }
     }
 
@@ -109,7 +109,11 @@ public class OmsSmrPersonInfoController {
     public void exportSmrPersonInfo(@RequestParam(value = "idList",required = false) String idList,
                                                        OmsSmrPersonInfo smrPersonInfo,
                                                        @ApiIgnore HttpServletResponse response){
+        try {
             smrPersonInfoService.exportSmrPersonInfo(idList, smrPersonInfo,response);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -132,9 +136,9 @@ public class OmsSmrPersonInfoController {
      * @param importYear
      */
     @PostMapping("/exportFailReportOrg")
-    public void exportFailReportOrg(String importYear){
+    public void exportFailReportOrg(String importYear,@ApiIgnore HttpServletResponse response){
         try{
-            smrPersonInfoService.exportFailReportOrg(importYear);
+           smrPersonInfoService.exportFailReportOrg(importYear,response);
         }catch (Exception e) {
             e.printStackTrace();
         }

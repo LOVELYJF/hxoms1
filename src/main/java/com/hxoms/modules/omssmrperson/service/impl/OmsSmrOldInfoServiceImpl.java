@@ -17,11 +17,16 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -110,7 +115,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
      * 导出差异数据列表
      */
     @Override
-    public void exportDifferentData() {
+    public void exportDifferentData(String importYear, String b0100, HttpServletResponse response) {
         List<OmsSmrPersonInfo> list = null;
         if (list.size() < 1 || list == null) {
             throw new CustomMessageException("操作失败");
@@ -182,19 +187,19 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
         }
 
         //输出Excel文件
-        OutputStream output = null;
-        try {
-            HttpServletResponse response = null;
-            output = response.getOutputStream();
-            response.reset();
+        try{
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-disposition", "attachment; " +
-                    "filename=" + new String("差异数据.xls".getBytes("gb2312"), "ISO8859-1"));
-            response.setContentType("application/msexcel");
-            wb.write(output);
-            output.close();
-        } catch (IOException e) {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("差异数据"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        }
+        catch (IOException e){
             e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
         }
     }
 

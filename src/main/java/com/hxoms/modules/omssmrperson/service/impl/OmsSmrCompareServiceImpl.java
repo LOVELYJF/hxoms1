@@ -1,7 +1,5 @@
 package com.hxoms.modules.omssmrperson.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
@@ -15,12 +13,16 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,9 +42,8 @@ public class OmsSmrCompareServiceImpl extends ServiceImpl<OmsSmrCompareMapper, O
     }
 
     @Override
-    public boolean exportCompareIdCard(HttpServletResponse response) {
-        //List<OmsSmrCompare> list = getCompareIdCard();
-        List<OmsSmrCompare> list = null;
+    public void exportCompareIdCard(String b0100, HttpServletResponse response) {
+        List<OmsSmrCompareVO> list = smrCompareMapper.getCompareIdCard(b0100);
         if(list.size() < 1 || list == null){
             throw new CustomMessageException("没有可以导出的数据");
         }
@@ -111,20 +112,20 @@ public class OmsSmrCompareServiceImpl extends ServiceImpl<OmsSmrCompareMapper, O
         }
 
         //输出Excel文件
-        OutputStream output= null;
-        try {
-            output = response.getOutputStream();
-            response.reset();
+        try{
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-disposition", "attachment; " +
-                    "filename=" + new String( "身份证纠正表.xls".getBytes("gb2312"), "ISO8859-1" ));
-            response.setContentType("application/msexcel");
-            wb.write(output);
-            output.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("身份证纠正表"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
         }
+        catch (IOException e){
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+
     }
 }

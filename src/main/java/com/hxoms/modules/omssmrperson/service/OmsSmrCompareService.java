@@ -15,5 +15,5 @@ public interface OmsSmrCompareService extends IService<OmsSmrCompare>{
     //获取身份证纠正列表
     Result getCompareIdCard(String b0100);
     //导出身份证纠正列表
-    boolean exportCompareIdCard(HttpServletResponse response);
+    void exportCompareIdCard(String b0100, HttpServletResponse response);
 }

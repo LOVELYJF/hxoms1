@@ -7,6 +7,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +36,7 @@ public interface OmsSmrPersonInfoService extends IService<OmsSmrPersonInfo>{
     //获取漏报涉密人员机构
     Result getFailReportOrg(String importYear);
     //导出漏报涉密人员机构
-    void exportFailReportOrg(String importYear);
+    void exportFailReportOrg(String importYear, HttpServletResponse response);
     //批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
     boolean updateSmrPersonList(List<OmsSmrPersonInfo> smrPersonInfoList);
     //获取涉密人员信息维护列表

@@ -17,9 +17,9 @@ import java.text.ParseException;
 public interface OmsSmrRecordInfoService extends IService<OmsSmrRecordInfo>{
     //获取省国家保密局备案涉密人员列表
     IPage<OmsSmrRecordInfo> getSmrRecordInfoList(Page page, OmsSmrRecordInfo smrRecordInfo) throws ParseException;
-    //获取已匹配人员列表
+    //获取遗漏的省管干部列表
     Result getMatchingPerson(String importYear, String b0100);
-    //导出已匹配人员列表
+    //导出遗漏的省管干部列表
     void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response);
     /**
     * @description:通过机构ID和导入年份删除已经导入过的数据

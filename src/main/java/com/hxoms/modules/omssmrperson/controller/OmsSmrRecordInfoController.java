@@ -61,8 +61,7 @@ public class OmsSmrRecordInfoController {
      * @return
      */
     @PostMapping("/exportMatchingPerson")
-    public void exportMatchingPerson(String importYear,String b0100,
-                                       @ApiIgnore HttpServletResponse response){
+    public void exportMatchingPerson(String importYear, String b0100, @ApiIgnore HttpServletResponse response){
         try{
             smrRecordInfoService.exportMatchingPerson(importYear,b0100,response);
         }catch (Exception e) {

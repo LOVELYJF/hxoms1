@@ -43,13 +43,11 @@ public class OmsSmrCompareController {
      * @return
      */
     @PostMapping("/exportCompareIdCard")
-    public Result exportCompareIdCard(@ApiIgnore HttpServletResponse response){
+    public void exportCompareIdCard(String b0100, @ApiIgnore HttpServletResponse response){
         try{
-            boolean result = smrCompareService.exportCompareIdCard(response);
-            return Result.success(result);
+            smrCompareService.exportCompareIdCard(b0100, response);
         }catch (Exception e) {
             e.printStackTrace();
-            return Result.error("导出失败");
         }
     }
 

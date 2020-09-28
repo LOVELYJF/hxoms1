@@ -6,6 +6,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取差异数据列表
     Result getDifferentData(String importYear, String b0100);
     //导出差异数据列表
-    void exportDifferentData();
+    void exportDifferentData(String importYear, String b0100, HttpServletResponse response);
     //差异数据纠正确认
     Result updateDifferentData(List<OmsSmrOldInfoVO> smrOldInfos);
 }
