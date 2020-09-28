@@ -170,7 +170,7 @@
                 CFSY = #{cfsy,jdbcType=VARCHAR},
             </if>
             <if test="cxyy != null">
-                CFSY = #{cxyy,jdbcType=VARCHAR},
+                CXYY = #{cxyy,jdbcType=VARCHAR},
             </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}
