@@ -338,6 +338,7 @@ public class Constants {
 
     /**
      * 登记备案表在职状态
+     * "在职", "辞职", "开除", "解聘", "免职撤职", "退休", "去世", "调出","挂职到期","其他","未匹配"
      */
     public enum emIncumbencyStatus {
         Working("在职", 1),
@@ -348,8 +349,8 @@ public class Constants {
         Retirement("退休",6),
         Death("去世",7),
         Dispatch("调出",8),
-        Secondment("挂职到期",5),
-        Other("其他",8),
+        Secondment("挂职到期",9),
+        Other("其他",10),
         Unmatched("未匹配",99);
         // 成员变量
         private String name;
