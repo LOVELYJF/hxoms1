@@ -3,12 +3,13 @@ package com.hxoms.modules.omssmrperson.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -40,33 +41,6 @@ public class OmsSmrOldInfoController {
     }
 
     /**
-     * 添加涉密人员原涉密信息
-     * @param smrOldInfo
-     */
-    @PostMapping("/insertSmrOldInfo")
-    public Result insertSmrOldInfo(OmsSmrOldInfo smrOldInfo) {
-        return Result.success(smrOldInfoService.insert(smrOldInfo));
-    }
-
-   /**
-     * 修改涉密人员原涉密信息
-     * @param smrOldInfo
-     */
-    @PostMapping("/updateSmrOldInfo")
-    public Result updateSmrOldInfo(OmsSmrOldInfo smrOldInfo) {
-        return Result.success(smrOldInfoService.update(smrOldInfo));
-    }
-
-    /**
-     * 删除涉密人员原涉密信息
-     * @param id
-     */
-    @PostMapping("/deleteSmrOldInfo")
-    public Result deleteSmrOldInfo(String id) {
-        return Result.success(smrOldInfoService.delete(id));
-    }
-
-    /**
      * 获取脱密期确认列表
      */
     @GetMapping("/getConfirmPeriodList")
@@ -92,15 +66,15 @@ public class OmsSmrOldInfoController {
             return Result.error("系统错误");
         }
     }
+
     /**
      * 批量修改涉密人员信息（确认脱密期、涉密人员信息维护）
      * @param SmrOldInfo
      */
     @PostMapping("/updateSmrOldInfos")
     public Result updateSmrOldInfos(String SmrOldInfo) {
-        try {
+        try{
             List<OmsSmrOldInfoVO> smrOldInfos = JSONArray.parseArray(SmrOldInfo,OmsSmrOldInfoVO.class);
-
             Result result = smrOldInfoService.updateSmrOldInfo(smrOldInfos);
             return result;
         }catch (Exception e) {
@@ -119,7 +93,7 @@ public class OmsSmrOldInfoController {
     public Result getDifferentData(String importYear, String b0100){
         try{
             Result result = smrOldInfoService.getDifferentData(importYear,b0100);
-            return Result.success(result);
+            return result;
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -128,14 +102,31 @@ public class OmsSmrOldInfoController {
 
     /**
      * 导出差异数据列表
-     * @return
+     * @param importYear（导入年份）
+     * @param b0100（单位id）
      */
     @PostMapping("/exportDifferentData")
-    public void exportDifferentData(){
+    public void exportDifferentData(String importYear, String b0100,@ApiIgnore HttpServletResponse response){
         try{
-            smrOldInfoService.exportDifferentData();
+            smrOldInfoService.exportDifferentData(importYear, b0100, response);
         }catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 差异数据纠正确认（差异数据纠正--同一人）
+     * @param SmrOldInfo
+     */
+    @PostMapping("/confirmDifferentData")
+    public Result confirmDifferentData(String SmrOldInfo) {
+        try{
+            List<OmsSmrOldInfoVO> smrOldInfos = JSONArray.parseArray(SmrOldInfo,OmsSmrOldInfoVO.class);
+            Result result = smrOldInfoService.updateDifferentData(smrOldInfos);
+            return result;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
         }
     }
 }

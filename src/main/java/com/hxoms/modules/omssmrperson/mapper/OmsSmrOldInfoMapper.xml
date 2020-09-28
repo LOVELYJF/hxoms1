@@ -25,8 +25,12 @@
   <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO">
     <result column="b0101" jdbcType="VARCHAR" property="b0101" />
     <result column="a0101" jdbcType="VARCHAR" property="a0101" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="BIRTH_DATE" jdbcType="VARCHAR" property="birthDay" />
+    <result column="ID_CARD_NUMBER" jdbcType="VARCHAR" property="idCardNumber" />
     <result column="msg" jdbcType="VARCHAR" property="msg" />
-    <result column="dataSource" jdbcType="VARCHAR" property="dataSource" />
+    <result column="data_Source" jdbcType="VARCHAR" property="dataSource" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
@@ -127,11 +131,20 @@
     FROM
         (
       SELECT
-          '系统' data_source,
           t.id,
           t.RF_B0000 b0100,
+          '系统' data_source,
+          b.b0101,
           concat( t.SURNAME, t.`NAME` ) NAME,
-          t.IDNUMBER_GB ID_CARD_NUMBER
+          case t.SEX when 1 then '男' when 2 then '女' end sex,
+          t.BIRTH_DATE,
+          t.POST,
+          t.IDNUMBER_GB ID_CARD_NUMBER,
+          '无涉密信息' msg,
+          a.SECRET_RELATED_LEVEL,
+          a.SECRET_RELATED_POST,
+          a.START_DATE,
+          a.FINISH_DATE
       FROM
           oms_reg_procpersoninfo t
           INNER JOIN b01 b ON t.RF_B0000 = b.b0100
@@ -139,20 +152,30 @@
           AND a.IMPORT_YEAR = #{importYear} and a.b0100 = #{b0100}
       WHERE
           t.DATA_TYPE = '1'
-          AND ( t.SECRET_LEVEL != '0' OR t.SECRET_LEVEL IS NOT NULL )
+          AND t.SECRET_LEVEL IS NULL
           AND t.INBOUND_FLAG != 'D'
           AND t.RF_B0000 = #{b0100}
 
     UNION ALL
 
       SELECT
-          '保密局' data_source,
           t.id,
           t.B0100,
+          '保密局' data_source,
+          b.b0101,
           t.NAME,
-          t.ID_CARD_NUMBER
+          t.SEX,
+          t.BIRTH_DATE,
+          t.post,
+          t.ID_CARD_NUMBER,
+          '未匹配到干部' msg,
+          t.SECRET_RELATED_LEVEL,
+          t.SECRET_RELATED_POST,
+          t.START_DATE,
+          t.FINISH_DATE
       FROM
           oms_smr_recordinfo t
+          INNER JOIN b01 b ON t.b0100 = b.b0100
       WHERE
           t.IS_MATCHING = '0'
           AND t.IMPORT_YEAR = #{importYear}

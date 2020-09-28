@@ -70,8 +70,7 @@ public class OmsPubGroupController {
     public Result updateTimeTask(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList,
                                  String bgyy) {
         try {
-            pubGroupService.updateTimeTask(pubGroupAndApplyList,bgyy);
-            return Result.success();
+            return  pubGroupService.updateTimeTask(pubGroupAndApplyList,bgyy);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -85,8 +84,7 @@ public class OmsPubGroupController {
     @PostMapping("/updatePubGroup")
     public Result updatePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            pubGroupService.updatePubGroup(pubGroupAndApplyList);
-            return Result.success();
+            return pubGroupService.updatePubGroup(pubGroupAndApplyList);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -100,8 +98,7 @@ public class OmsPubGroupController {
     @PostMapping("/deletePubGroup")
     public Result deletePubGroup(String id) {
         try {
-            pubGroupService.deletePubGroup(id);
-            return Result.success();
+            return pubGroupService.deletePubGroup(id);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("系统错误");
@@ -126,7 +123,7 @@ public class OmsPubGroupController {
             if(!"json".equals(extensionName)){
                 return Result.error("请上传json格式文件");
             }else{
-                return Result.success(pubGroupService.uploadPubGroupJson(file,orgName,orgId,bazt));
+                return pubGroupService.uploadPubGroupJson(file,orgName,orgId,bazt);
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -141,7 +138,7 @@ public class OmsPubGroupController {
     @PostMapping("/checkoutPerson")
     public Result checkoutPerson(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
         try {
-            return Result.success(pubGroupService.checkoutPerson(pubGroupAndApplyList));
+            return pubGroupService.checkoutPerson(pubGroupAndApplyList);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("操作失败");
@@ -170,9 +167,9 @@ public class OmsPubGroupController {
     @PostMapping("/backoutPerson")
     public Result backoutPerson(String id,String cxyy) {
         try {
-            pubGroupService.backoutPerson(id,cxyy);
-            return Result.success();
+            return pubGroupService.backoutPerson(id,cxyy);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error("系统错误！");
         }
     }
@@ -184,9 +181,9 @@ public class OmsPubGroupController {
     @PostMapping("/backoutGroup")
     public Result backoutGroup(String id,String cxyy) {
         try {
-            pubGroupService.backoutGroup(id,cxyy);
-            return Result.success();
+            return pubGroupService.backoutGroup(id,cxyy);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error("系统错误！");
         }
     }
@@ -198,9 +195,9 @@ public class OmsPubGroupController {
     @PostMapping("/regainGroup")
     public Result regainGroup(String id) {
         try {
-            pubGroupService.regainGroup(id);
-            return Result.success();
+            return pubGroupService.regainGroup(id);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error("系统错误！");
         }
     }
@@ -211,7 +208,12 @@ public class OmsPubGroupController {
      */
     @GetMapping("/getPubGroupDetailById")
     public Result getPubGroupDetailById(String id) {
-        return Result.success(pubGroupService.getPubGroupDetailById(id));
+        try {
+            return pubGroupService.getPubGroupDetailById(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
     /**
@@ -220,7 +222,12 @@ public class OmsPubGroupController {
      */
     @GetMapping("/getAuditOpinion")
     public Result getAuditOpinion(String id) {
-        return Result.success(pubGroupService.getAuditOpinion(id));
+        try {
+            return pubGroupService.getAuditOpinion(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
     /**
@@ -229,7 +236,12 @@ public class OmsPubGroupController {
      */
     @GetMapping("/getPersonDetailById")
     public Result getPersonDetailById(String id) {
-        return Result.success(pubGroupService.getPersonDetailById(id));
+        try {
+            return pubGroupService.getPersonDetailById(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
     /**
@@ -238,7 +250,12 @@ public class OmsPubGroupController {
      */
     @GetMapping("/getBackoutDetailById")
     public Result getBackoutDetailById(String id) {
-        return Result.success(pubGroupService.getBackoutDetailById(id));
+        try{
+            return pubGroupService.getBackoutDetailById(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
     /**
@@ -261,7 +278,12 @@ public class OmsPubGroupController {
      */
     @PostMapping("/goToUploadApproval")
     public Result goToUploadApproval(String id) {
-        return pubGroupService.goToUploadApproval(id);
+        try{
+            return pubGroupService.goToUploadApproval(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
 
@@ -282,7 +304,7 @@ public class OmsPubGroupController {
             if(!"pdf".equals(extensionName)){
                 return Result.error("请上传pdf格式文件!");
             }else{
-                return Result.success(pubGroupService.uploadApproval(file,id));
+                return pubGroupService.uploadApproval(file,id);
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -297,7 +319,7 @@ public class OmsPubGroupController {
     @PostMapping("/updateApproval")
     public Result updateApproval(String pwh, String id) {
         try{
-            return Result.success(pubGroupService.updateApproval(pwh,id));
+            return pubGroupService.updateApproval(pwh,id);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error("上传失败");
@@ -310,7 +332,12 @@ public class OmsPubGroupController {
      */
     @GetMapping("/getNumByStatus")
     public Result getNumByStatus(String bazt) {
-        return Result.success(pubGroupService.getNumByStatus(bazt));
+        try{
+            return pubGroupService.getNumByStatus(bazt);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("系统错误！");
+        }
     }
 
 }

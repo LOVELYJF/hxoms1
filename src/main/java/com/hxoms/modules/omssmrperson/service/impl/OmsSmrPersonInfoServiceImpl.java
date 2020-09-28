@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -480,7 +482,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         cell.setCellValue("涉密人员信息表");
 
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
-        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 14));
+        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 10));
         //在sheet里创建第二行
         HSSFRow row2 = sheet.createRow(1);
         //创建单元格并设置单元格内容
@@ -508,7 +510,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
 
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
-            OmsRegProcpersoninfo regProcpersoninfo = new OmsRegProcpersoninfo();
+            OmsRegProcpersoninfo regProcpersoninfo = list.get(i);
             row = sheet.createRow(i + 2);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(regProcpersoninfo.getWorkUnit());
@@ -535,7 +537,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("涉密人员信息"+date+".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
@@ -563,7 +565,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      * 导出漏报涉密人员机构
      */
     @Override
-    public void exportFailReportOrg(String importYear) {
+    public void exportFailReportOrg(String importYear, HttpServletResponse response) {
         List<OmsSmrPersonInfo> list = smrPersonInfoMapper.getFailReportOrg(importYear);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -609,8 +611,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
             row = sheet.createRow(i + 2);
-            /*row.createCell(0).setCellValue(i + 1);
-            row.createCell(1).setCellValue(list.get(i));*/
+            row.createCell(0).setCellValue(i + 1);
+            row.createCell(1).setCellValue(list.get(i).getB0101());
             //设置单元格字体大小
             for (int j = 0; j < 8; j++) {
                 row.getCell(j).setCellStyle(style1);
@@ -618,19 +620,19 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         }
 
         //输出Excel文件
-        OutputStream output = null;
-        try {
-            HttpServletResponse response = null;
-            output = response.getOutputStream();
-            response.reset();
+        try{
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-disposition", "attachment; " +
-                    "filename=" + new String("漏报涉密人员机构.xls".getBytes("gb2312"), "ISO8859-1"));
-            response.setContentType("application/msexcel");
-            wb.write(output);
-            output.close();
-        } catch (IOException e) {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("漏报涉密人员机构"+date+".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        }
+        catch (IOException e){
             e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
         }
     }
 

@@ -3,6 +3,7 @@ package com.hxoms.modules.omssmrperson.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,5 +39,5 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
     **/
     String getSmrCount();
     //获取差异数据列表
-    List<OmsSmrOldInfoVO> getDifferentData(String importYear, String b0100);
+    List<OmsSmrOldInfoVO> getDifferentData(@Param("importYear") String importYear,@Param("b0100") String b0100);
 }

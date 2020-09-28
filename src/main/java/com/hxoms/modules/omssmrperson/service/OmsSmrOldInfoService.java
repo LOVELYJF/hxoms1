@@ -6,6 +6,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,6 @@ import java.util.Map;
 public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取涉密人员原涉密信息列表
     PageInfo<OmsSmrOldInfoVO> getSmrOldInfoById(Integer pageNum, Integer pageSize, String id) throws ParseException;
-    //添加涉密人员原涉密信息
-    Object insert(OmsSmrOldInfo smrOldInfo);
-    //修改涉密人员原涉密信息
-    Object update(OmsSmrOldInfo smrOldInfo);
-    //删除涉密人员原涉密信息
-    Object delete(String id);
     //获取脱密期确认列表
     Map<String, Object> getConfirmPeriodList();
     //获取涉密人员信息维护列表
@@ -33,5 +28,7 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取差异数据列表
     Result getDifferentData(String importYear, String b0100);
     //导出差异数据列表
-    void exportDifferentData();
+    void exportDifferentData(String importYear, String b0100, HttpServletResponse response);
+    //差异数据纠正确认
+    Result updateDifferentData(List<OmsSmrOldInfoVO> smrOldInfos);
 }
