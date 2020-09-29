@@ -344,7 +344,6 @@
          p.BIRTH_DATE_GB as BIRTH_DATE_GB ,
          CONCAT(TIMESTAMPDIFF(YEAR,p.BIRTH_DATE_GB,DATE_FORMAT(NOW(), '%Y.%m.%d')),'') as AGE ,
          p.POLITICAL_AFFINAME as POLITICAL_AFFINAME ,
-         p.HEALTH as HEALTH ,
          p.A0100 as A0100 ,
          p.SECRET_LEVEL as SECRET_LEVEL ,
          p.NF as NF ,
