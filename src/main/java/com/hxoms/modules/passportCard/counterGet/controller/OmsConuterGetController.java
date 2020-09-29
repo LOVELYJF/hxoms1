@@ -1,7 +1,6 @@
 package com.hxoms.modules.passportCard.counterGet.controller;
 
 
-import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
@@ -56,8 +55,7 @@ public class OmsConuterGetController {
     @ApiOperation(value = "验证左手指纹")
     @PostMapping("/verifyLeftFingerMark")
     public Result<FingerMark> verifyLeftFingerMark(@RequestBody @Validated IdentityParam identityParam){
-        omsCounterGetService.verifyLeftFingerMark(identityParam);
-        return Result.success();
+        return Result.success(omsCounterGetService.verifyLeftFingerMark(identityParam));
     }
     /**
      * @Desc: 验证右手指纹
@@ -69,8 +67,7 @@ public class OmsConuterGetController {
     @ApiOperation(value = "验证右手指纹")
     @PostMapping("/verifyRightFingerMark")
     public Result<FingerMark> verifyRightFingerMark(@RequestBody @Validated IdentityParam identityParam){
-        omsCounterGetService.verifyRightFingerMark(identityParam);
-        return Result.success();
+        return Result.success(omsCounterGetService.verifyRightFingerMark(identityParam));
     }
 
     /**
@@ -83,8 +80,7 @@ public class OmsConuterGetController {
     @ApiOperation(value = "验证指纹")
     @PostMapping("/verifyFingerMark")
     public Result<FingerMark> verifyFingerMark(@RequestBody @Validated IdentityParam identityParam){
-        omsCounterGetService.verifyFingerMark(identityParam);
-        return Result.success();
+        return Result.success(omsCounterGetService.verifyFingerMark(identityParam));
     }
 
     /**
