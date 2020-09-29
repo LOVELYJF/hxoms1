@@ -136,7 +136,7 @@
           '系统' data_source,
           b.b0101,
           concat( t.SURNAME, t.`NAME` ) NAME,
-          case t.SEX when 1 then '男' when 2 then '女' end sex,
+          t.SEX,
           t.BIRTH_DATE,
           t.POST,
           t.IDNUMBER_GB ID_CARD_NUMBER,

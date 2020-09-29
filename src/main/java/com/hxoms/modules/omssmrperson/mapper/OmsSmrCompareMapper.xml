@@ -25,7 +25,7 @@
     FROM
         oms_smr_compare t
         LEFT JOIN b01 b ON t.b0100 = b.b0100
-    WHERE 1 = 1
+    WHERE   1 = 1
         AND t.b0100 = #{b0100}
     ORDER BY
         b.b0111, t.NAME
@@ -34,11 +34,12 @@
   <!-- 获取已匹配人员列表 -->
   <select id="getMatchingDate" resultMap="BaseResultMap">
     SELECT
-        <include refid="Base_Column_List" />
+        t.*
     FROM
         oms_smr_compare t
-    WHERE 1=1
-    AND t.B0100 = (select b.b0101 from b01 b where b.b0100 = #{b0100})
-    AND t.ID_CARD_NUMBER_RIGHT = #{idCardNumber}
+        LEFT JOIN b01 b ON t.b0100 = b.b0100
+    WHERE   1 = 1
+        AND t.B0100 = #{b0100}
+        AND t.ID_CARD_NUMBER_ERROR = #{idCardNumber}
   </select>
 </mapper>

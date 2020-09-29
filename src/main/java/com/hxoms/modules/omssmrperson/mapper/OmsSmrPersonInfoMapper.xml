@@ -42,7 +42,7 @@
         t.B0100,
         (select b.b0101 from b01 b where t.b0100 = b.B0100) b0101,
         concat(r.SURNAME,r.NAME) as NAME,
-        case r.SEX when '1' then '男' when '2' then '女' end sex,
+        r.SEX,
         t.ID_CARD_NUMBER,
         t.A0141,
         t.POST,

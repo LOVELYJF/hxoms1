@@ -8,10 +8,7 @@ import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfo;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrPersonInfo;
-import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
+import com.hxoms.modules.omssmrperson.entity.*;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrCompareMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrPersonInfoMapper;
@@ -28,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -278,8 +274,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         smrRecordInfo.setImportUserId(UserInfoUtil.getUserId());
         smrRecordInfo.setImportDate(new Date());
         smrRecordInfo.setImportYear(smrOldInfoVO.getImportYear());
-        String isMatching = (StringUilt.stringIsNullOrEmpty(smrOldInfoVO.getA0100()) ? "0" : "1");
-        smrRecordInfo.setIsMatching(isMatching);
+//      String isMatching = (StringUilt.stringIsNullOrEmpty(smrOldInfoVO.getA0100()) ? "0" : "1");
+        smrRecordInfo.setIsMatching(isMatching(smrOldInfoVO.getA0100(),smrOldInfoVO.getB0100(),smrOldInfoVO.getIdCardNumber()));
 
         return smrRecordInfo;
     }
@@ -484,7 +480,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 10));
         //在sheet里创建第二行
-        HSSFRow row2 = sheet.createRow(1);
+        HSSFRow row2 = sheet.createRow(2);
         //创建单元格并设置单元格内容
         row2.createCell(0).setCellValue("序号");
         row2.createCell(1).setCellValue("单位");
@@ -511,7 +507,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
             OmsRegProcpersoninfo regProcpersoninfo = list.get(i);
-            row = sheet.createRow(i + 2);
+            row = sheet.createRow(i + 3);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(regProcpersoninfo.getWorkUnit());
             row.createCell(2).setCellValue(regProcpersoninfo.getName());
@@ -566,6 +562,9 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
      */
     @Override
     public void exportFailReportOrg(String importYear, HttpServletResponse response) {
+        if(StringUtils.isBlank(importYear)){
+            throw new CustomMessageException("参数为空！");
+        }
         List<OmsSmrPersonInfo> list = smrPersonInfoMapper.getFailReportOrg(importYear);
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -895,4 +894,18 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
         return newDate;
     }
 
+    /**
+     * 格式化日期为'/'
+     *
+     * @param
+     * @return String
+     */
+    private String isMatching(String a0100, String b0100, String idCardNumber){
+        if(StringUilt.stringIsNullOrEmpty(a0100)){
+            OmsSmrCompare smrCompare = smrCompareMapper.getMatchingDate(b0100,idCardNumber);
+            if(smrCompare == null)
+                return "0";
+        }
+        return "1";
+    }
 }
