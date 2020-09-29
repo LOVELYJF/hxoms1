@@ -23,6 +23,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -116,7 +117,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
      */
     @Override
     public void exportDifferentData(String importYear, String b0100, HttpServletResponse response) {
-        List<OmsSmrPersonInfo> list = null;
+        List<OmsSmrOldInfoVO> list =  smrOldInfoMapper.getDifferentData(importYear,b0100);
         if (list.size() < 1 || list == null) {
             throw new CustomMessageException("操作失败");
         }
@@ -179,7 +180,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
             row.createCell(5).setCellValue(list.get(i).getBirthDay());
             row.createCell(6).setCellValue(list.get(i).getPost());
             row.createCell(7).setCellValue(list.get(i).getIdCardNumber());
-            row.createCell(8).setCellValue(list.get(i).getRemark());
+            row.createCell(8).setCellValue(list.get(i).getMsg());
             //设置单元格字体大小
             for (int j = 0; j < 8; j++) {
                 row.getCell(j).setCellStyle(style1);
@@ -281,4 +282,79 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
 
         return flag;
     }
+
+    public void exportSmrExcel(String[] headers, List<String> exports, String title, HttpServletResponse response){
+        int numHl = headers.length;
+        int numEs = exports.size();
+
+        //创建HSSFWorkbook对象(excel的文档对象)
+        HSSFWorkbook wb = new HSSFWorkbook();
+        //创建文件样式对象
+        HSSFCellStyle style = wb.createCellStyle();
+        //获得字体对象
+        HSSFFont font = wb.createFont();
+        //建立新的sheet对象（excel的表单）
+        HSSFSheet sheet = wb.createSheet(title);
+        //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
+        HSSFRow row1 = sheet.createRow(0);
+        //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
+        HSSFCell cell = row1.createCell(0);
+
+        //设置标题字体大小
+        font.setFontHeightInPoints((short) 16);
+        font.setBold(true); //加粗
+        style.setAlignment(HorizontalAlignment.CENTER);// 左右居中   
+        style.setVerticalAlignment(VerticalAlignment.CENTER);// 上下居中   
+        style.setFont(font);
+        cell.setCellStyle(style);
+        //设置标题单元格内容
+        cell.setCellValue(title);
+
+        //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
+        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, numHl-1));
+        //在sheet里创建第二行
+        HSSFRow row2 = sheet.createRow(2);
+        //创建单元格并设置单元格内容
+        for (int i = 0; i < numHl; i++) {
+            row2.createCell(i).setCellValue(headers[i]);
+        }
+        //在sheet里添加数据
+
+        //创建文件样式对象
+        HSSFCellStyle style1 = wb.createCellStyle();
+        //获得字体对象
+        HSSFFont font1 = wb.createFont();
+        //设置单元格字体大小
+        font1.setFontHeightInPoints((short) 13);
+        style1.setAlignment(HorizontalAlignment.LEFT);// 居左  
+        style1.setFont(font1);
+
+        HSSFRow row = null;
+        for (int i = 0; i < numEs; i++) {
+            row = sheet.createRow(i + 3);
+            row.createCell(i).setCellValue(exports.get(i));
+            //设置单元格字体大小
+            for (int j = 0; j < 8; j++) {
+                row.getCell(j).setCellStyle(style1);
+            }
+        }
+
+        //输出Excel文件
+        try{
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    String.format("attachment; filename=\"%s\"", URLEncoder.encode(title + date + ".xls", "utf-8")));
+            ServletOutputStream out = response.getOutputStream();
+            wb.write(out);
+            out.flush();
+            out.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+        }
+    }
+
 }

@@ -108,7 +108,7 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
             BeanUtils.copyProperties(adminGetCerApply,omsCerAdmintorGetApply);
             //校验数据是否已提交，防止重复生成数据
             CfCertificate certificateExist = cfCertificateMapper.selectById(omsCerAdmintorGetApply.getCerId());
-            if(CardStatusEnum.DLQ.getCode().equals(certificateExist.getCardStatus()))
+            if(certificateExist!=null&&CardStatusEnum.DLQ.getCode().equals(certificateExist.getCardStatus()))
                 throw  new CustomMessageException("证件号码为："+certificateExist.getZjhm()+"已提交，不能重复操作！");
             omsCerAdmintorGetApply.setId(UUIDGenerator.getPrimaryKey());
             ids.add(omsCerAdmintorGetApply.getId());

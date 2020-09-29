@@ -29,8 +29,7 @@ public class ReturnCerInfo {
     @ApiModelProperty(value="身份证号码",required = true)
     private String a0184;
 
-    @NotBlank(message = "柜台号码表id不能为空")
-    @ApiModelProperty(value="柜台号码表id",required = true)
+    @ApiModelProperty(value="柜台号码表id")
     private String counterNumId;
 
     @NotBlank(message = "姓名不能为空")

@@ -224,7 +224,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      * @Date: 2020/7/28 10:30
      */
     @Override
-    public OmsPubApply selectPubApplyById(String id) {
+    public OmsPubApplyVO selectPubApplyById(String id) {
         return omsPubApplyMapper.selectById(id);
     }
 

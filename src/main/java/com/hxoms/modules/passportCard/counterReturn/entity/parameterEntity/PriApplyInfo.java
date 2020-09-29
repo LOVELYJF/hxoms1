@@ -16,7 +16,8 @@ import java.util.Date;
  */
 @ApiModel(value = "因私申请信息")
 public class PriApplyInfo {
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
+    @NotBlank(message = "id不能为空")
     private String id;
     @ApiModelProperty(value = "姓名")
     private String name;

@@ -13,7 +13,7 @@ import java.util.Map;
 @Repository
 public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
 
-    OmsPubApply selectById(@Param("id") String id);
+    OmsPubApplyVO selectById(@Param("id") String id);
 
     List<PersonInfoVO> selectPersonListByOrg(@Param("b0100") List<String> b0100, @Param("keyword") String keyword);
 
