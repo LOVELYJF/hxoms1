@@ -225,7 +225,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     txvo1.setComparisonResult(vo.getComparisonResult());
                     txvo1.setIdType(vo.getIdType());
                     txvo1.setIdNumber(vo.getIdNumber());
-                    txvo1.setGoCountry(vo.getGoCountry());
+                    txvo1.setDestination(vo.getGoCountry());
                     txvo1.setLeibie("申报");
                     newPriApplyList.add(txvo1);
                 }
@@ -239,7 +239,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
                     txvo2.setComparisonResult(vo.getComparisonResult());
                     txvo2.setIdType(vo.getIdType());
                     txvo2.setIdNumber(vo.getIdNumber());
-                    txvo2.setGoCountry(vo.getDestination());
+                    txvo2.setDestination(vo.getDestination());
                     txvo2.setLeibie("填写");
                     newPriApplyList.add(txvo2);
                 }

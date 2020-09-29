@@ -327,6 +327,7 @@
           inner join sys_dict_item d on a.SENSITIVE_LIMIT_ID=d.ITEM_ID and d.DICT_CODE='MGGJ';
     </select>
     <select id="selectPriList" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO" parameterType="java.lang.String">
+
         SELECT
             rp.SURNAME as surname,
             rp.NAME as name,
@@ -338,14 +339,21 @@
             apply.ABROAD_REASONS as abroadReasons,
             apply.ABROAD_TIME as abroadTime,
             apply.RETURN_TIME as returnTime,
-            apply.GO_COUNTRY as goCountry,
+            ct1.NAME_ZH as goCountry,
+            ct2.NAME_ZH as destination,
             apply.REAL_ABROAD_TIME as realAbroadTime,
             apply.REAL_RETURN_TIME as realReturnTime,
-            apply.REAL_GO_COUNTRY as destination,
-            apply.COMPARISON_RESULT as comparisonResult
+            apply.COMPARISON_RESULT as comparisonResult,
+        CASE
+            WHEN apply.PAPER in (1,3,7) THEN apply.PASSPORT_NUM
+            WHEN apply.PAPER in (2,3,6,7)THEN apply.HONGKONGANDMACAO_PASSPORT_NUM
+            ELSE apply.TAIWAN_PASSPORT
+            END AS idNumber
         FROM oms_pri_apply apply
-        LEFT JOIN oms_reg_procpersoninfo rp on apply.PROCPERSON_ID = rp.ID
-        WHERE PROCPERSON_ID = #{procpersonId}
+             LEFT JOIN oms_reg_procpersoninfo rp on apply.PROCPERSON_ID = rp.ID
+             LEFT JOIN country ct1 on apply.GO_COUNTRY = ct1.ID
+             LEFT JOIN country ct2 on apply.REAL_GO_COUNTRY = ct2.ID
+             WHERE apply.PROCPERSON_ID = #{procpersonId}
     </select>
     <select id="selectPriListBy3Year" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
         select pa.*,
