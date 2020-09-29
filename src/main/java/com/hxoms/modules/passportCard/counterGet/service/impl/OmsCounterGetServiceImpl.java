@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +53,15 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
      */
     @Override
     public void verifyIdentity(IdentityParam identityParam) {
+        //判断证件是否过期
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if(identityParam.getYxqz().compareTo(simpleDateFormat.parse(simpleDateFormat.format(new Date())))==-1)
+                throw  new CustomMessageException("证件已过期，请核实！");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw  new CustomMessageException(e.getMessage());
+        }
         List<CfUser> userList=omsCerGetTaskMapper.selectUserByQua(identityParam);
         if(userList.size()==0)
             throw new CustomMessageException("系统无此人，请核实！");
@@ -154,7 +165,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             BeanUtils.copyProperties(getConfirm,omsCerGetTask);
             //校验证件是否已领取，防止重复操作生成数据
             OmsCerGetTask omsCerGetTaskExist = omsCerGetTaskMapper.selectById(omsCerGetTask.getCerId());
-            if(GetStatusEnum.STATUS_ENUM_1.getCode().equals(omsCerGetTaskExist.getGetStatus()))
+            if(omsCerGetTaskExist!=null&&GetStatusEnum.STATUS_ENUM_1.getCode().equals(omsCerGetTaskExist.getGetStatus()))
                 throw new CustomMessageException("证件号码为："+omsCerGetTaskExist.getZjhm()+"的证件已领取，不能重复操作!");
             //已领取
             omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());

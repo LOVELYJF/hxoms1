@@ -41,4 +41,14 @@ public enum CardStatusEnum {
         this.name = name;
     }
 
+    // 普通方法
+    public static String getName(String code) {
+        for (CardStatusEnum c : CardStatusEnum.values()) {
+            if (c.getCode().equals(code)) {
+                return c.name;
+            }
+        }
+        return null;
+    }
+
 }

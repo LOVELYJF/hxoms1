@@ -2,7 +2,6 @@ package com.hxoms.modules.passportCard.counterReturn.service.impl;
 
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.PingYinUtil;
-import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
@@ -80,7 +79,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         readCerInfo.setSurelyWay(SurelyWayEnum.COUNTER.getCode());
         if(storeCfCertificate!=null){
             readCerInfo.setCardStatus(storeCfCertificate.getCardStatus());
-            readCerInfo.setCardStatusName(Constants.CER_NAME[Integer.parseInt(storeCfCertificate.getCardStatus())]);
+            readCerInfo.setCardStatusName(CardStatusEnum.getName(storeCfCertificate.getCardStatus()));
             if(storeCfCertificate.getCounterNum()!=null){
                 //判断保管单位是否一致，一致则使用原有柜台号，否则重新生成柜台号。
                 if(readCerInfo.getSurelyUnit().equals(storeCfCertificate.getSurelyUnit())){
@@ -152,7 +151,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
     @Transactional(rollbackFor = Exception.class)
     public void returnCertificate(ReturnCerInfo returnCerInfo) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        if(userInfo!=null)
+        if(userInfo==null)
             throw new CustomMessageException("查询登陆用户");
         Date date=new Date();
         CfCertificate storeCfCertificate=omsCounterReturnMapper.selectCerByQua(returnCerInfo.getZjlx(),returnCerInfo.getZjhm());
@@ -169,7 +168,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
 
             //入库信息
             OmsCerExitEntryRepertory omsCerExitEntryRepertory=new OmsCerExitEntryRepertory();
-            omsCerExitEntryRepertory.setGetId(UUIDGenerator.getPrimaryKey());
+            omsCerExitEntryRepertory.setId(UUIDGenerator.getPrimaryKey());
             omsCerExitEntryRepertory.setCerId(storeCfCertificate.getId());
             omsCerExitEntryRepertory.setName(storeCfCertificate.getName());
             omsCerExitEntryRepertory.setZjlx(storeCfCertificate.getZjlx());
@@ -179,12 +178,12 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             //存取方式(0:证照机,1:柜台)
             omsCerExitEntryRepertory.setMode(SurelyWayEnum.COUNTER.getCode());
             omsCerExitEntryRepertory.setCounterNum(returnCerInfo.getCounterNum());
-            omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
+            omsCerExitEntryRepertory.setOperator(userInfo.getId());
             omsCerExitEntryRepertory.setOperateTime(date);
 
             if(cfCertificateMapper.updateById(cfCertificate)==0)
                 throw new CustomMessageException("证照更新失败！");
-            if(omsCerExitEntryRepertoryMapper.updateById(omsCerExitEntryRepertory)==0)
+            if(omsCerExitEntryRepertoryMapper.insert(omsCerExitEntryRepertory)==0)
                 throw new CustomMessageException("入库保存失败！");
 
         }else{
@@ -212,12 +211,14 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
                 throw new CustomMessageException("人员的证件持有情况更新失败！");
         }
         //将柜台号码置为已使用
-        OmsCerCounterNumber omsCerCounterNumber=new OmsCerCounterNumber();
-        omsCerCounterNumber.setId(returnCerInfo.getCounterNumId());
-        //将位置置为已使用
-        omsCerCounterNumber.setStatus(UseStatusEnum.ON_USE.getCode());
-        if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
-            throw new CustomMessageException("柜台号使用失败！");
+        if(!StringUtils.isBlank(returnCerInfo.getCounterNumId())){
+            OmsCerCounterNumber omsCerCounterNumber=new OmsCerCounterNumber();
+            omsCerCounterNumber.setId(returnCerInfo.getCounterNumId());
+            //将位置置为已使用
+            omsCerCounterNumber.setStatus(UseStatusEnum.ON_USE.getCode());
+            if(omsCerConuterNumberMapper.updateById(omsCerCounterNumber)==0)
+                throw new CustomMessageException("柜台号使用失败！");
+        }
         //证照已上缴，取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
         List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(returnCerInfo.getOmsId());
         boolean isExist=false;

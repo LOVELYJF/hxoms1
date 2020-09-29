@@ -36,8 +36,8 @@ public class IdentityParam {
     //签发机关
     @ApiModelProperty(value="签发机关")
     private String qrjg;
-    //有效期
-    @ApiModelProperty(value="有效期")
+    //有效期至
+    @ApiModelProperty(value="有效期至")
     private Date yxqz;
 
     public String getName() {

@@ -349,6 +349,9 @@
           user_state='1'
       AND user_name = #{name}
       AND IDNUMBER = #{idNo}
+      <if test="yxqz!=null and yxqz!=''">
+        AND CARD_EXPIRY_DATE = #{yxqz}
+      </if>
   </select>
 
   <sql id="calGetCerSql">
@@ -368,7 +371,7 @@
         b.yxqz,
         b.card_status cardStatus,
         (select item_name from sys_dict_item where dict_code='ZJZT' and item_code=b.card_status)  cardStatusName,
-        a.spb_get_ele_sign spb,
+        if(a.spb_get_ele_sign is null,'待领取','已领取') spb,
         if(b.surely_way='0','证照机',if(b.surely_way='1','柜台',b.surely_way)) surelyWay,
         b.cabinet_num cabinetNum,
         b.place,
