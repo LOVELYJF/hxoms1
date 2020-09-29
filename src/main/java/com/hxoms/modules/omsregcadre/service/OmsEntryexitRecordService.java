@@ -79,5 +79,5 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     List<OmsEntryexitRecordModel> newexitRecordsList(List<String> ids);
 
-    Map<String, Object> selectCompareInfo(String omsId,String priapplyId, List<String> recordIds);
+    Map<String, Object> selectCompareInfo(String omsId,String priapplyId, String recordIds);
 }

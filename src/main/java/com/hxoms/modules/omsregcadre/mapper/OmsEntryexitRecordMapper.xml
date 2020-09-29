@@ -351,7 +351,7 @@
       <if test="ogeStatus!=null and ogeStatus!=''">
           AND OGE_STATUS = #{ogeStatus}
       </if>
-      <if test="ids!=null and ids!=''">
+      <if test="ids!=null">
           and ID in
           <foreach collection="ids" item="id" open="(" close=")" separator=",">
               #{id}
@@ -406,7 +406,9 @@
 
   <select id="selectNoMatchList" parameterType="java.lang.String" resultMap="BaseResultMap">
       select * from oms_entryexit_record where 1=1
-      and OMS_ID=#{omsId} and (COMPARISON_RESULT is null OR PRIAPPLY_ID is null)
+      and OMS_ID=#{omsId}
+      and COMPARISON_RESULT is null
+      and PRIAPPLY_ID is null
   </select>
   <select id="queryCompresultByYear" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO" parameterType="java.lang.String">
       select
