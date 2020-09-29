@@ -68,6 +68,8 @@ public class OmsRegRevokeApplyController {
      */
     @PostMapping("/deleteRevokeRegPerson")
     public Result deleteRevokeRegPerson(String id){
+        if(id==null)
+            return Result.error("参数不能为空！");
         return Result.success(revokeApplyService.deleteRevokeRegPerson(id));
     }
 
