@@ -49,7 +49,7 @@ public interface OmsPubApplyService {
      * @Author: 李逍遥
      * @Date: 2020/7/28 10:29
      */
-    OmsPubApply selectPubApplyById(String id);
+    OmsPubApplyVO selectPubApplyById(String id);
 
     /**
      * 功能描述: <br>

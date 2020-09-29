@@ -140,7 +140,7 @@ public class OmsPubApplyController {
     */
     @GetMapping("/selectPubApplyById")
     public Result selectPubApplyById(String id) {
-        OmsPubApply omsPubApply = omsPubApplyService.selectPubApplyById(id);
+        OmsPubApplyVO omsPubApply = omsPubApplyService.selectPubApplyById(id);
         return Result.success(omsPubApply);
     }
     /**
