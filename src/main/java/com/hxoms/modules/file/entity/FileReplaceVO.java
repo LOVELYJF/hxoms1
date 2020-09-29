@@ -18,6 +18,8 @@ public class FileReplaceVO {
     //政治面貌
     private String politicalAffi;
     //出生日期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
     //健康状况
     private String health;
@@ -72,8 +74,7 @@ public class FileReplaceVO {
     // 批文号
     private String pwh;
 
-    //所赴国家(地区)
-    private String sdgj;
+
     //出国任务审批单位
     private String cgspdw;
 
@@ -84,10 +85,6 @@ public class FileReplaceVO {
     private String ztnrzw;
     // 备案单位(备案主体)
     private String bazt;
-    // 职务
-    private String post;
-
-
 
     //审批表备注
     private String remarks;
@@ -106,7 +103,29 @@ public class FileReplaceVO {
     private String yqdw;
     //团组人数
     private int tzNum;
+    //是否为涉密人员
+    private String sfsm;
 
+    //核心涉密人员年审
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date SECRET_REVIEW_DATE;
+    //单位一涉密等级
+    private String dwsmdj1;
+    //单位一脱密期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date dwtmq1;
+    //单位二涉密等级
+    private String dwsmdj2;
+    //单位二脱密期
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date dwtmq2;
+    //最近一次出访记录
+    private String zjcfjl;
+    //家庭主要成员情况
+    private String jtcy;
     public String getName() {
         return name;
     }
@@ -347,13 +366,6 @@ public class FileReplaceVO {
         this.stName = stName;
     }
 
-    public String getSdgj() {
-        return sdgj;
-    }
-
-    public void setSdgj(String sdgj) {
-        this.sdgj = sdgj;
-    }
 
     public String getCgspdw() {
         return cgspdw;
@@ -388,13 +400,6 @@ public class FileReplaceVO {
         this.bazt = bazt;
     }
 
-    public String getPost() {
-        return post;
-    }
-
-    public void setPost(String post) {
-        this.post = post;
-    }
 
     public String getYqdw() {
         return yqdw;
@@ -410,5 +415,70 @@ public class FileReplaceVO {
 
     public void setTzNum(int tzNum) {
         this.tzNum = tzNum;
+    }
+
+    public String getSfsm() {
+        return sfsm;
+    }
+
+    public void setSfsm(String sfsm) {
+        this.sfsm = sfsm;
+    }
+
+
+    public Date getSECRET_REVIEW_DATE() {
+        return SECRET_REVIEW_DATE;
+    }
+
+    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
+        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
+    }
+
+    public String getDwsmdj1() {
+        return dwsmdj1;
+    }
+
+    public void setDwsmdj1(String dwsmdj1) {
+        this.dwsmdj1 = dwsmdj1;
+    }
+
+    public Date getDwtmq1() {
+        return dwtmq1;
+    }
+
+    public void setDwtmq1(Date dwtmq1) {
+        this.dwtmq1 = dwtmq1;
+    }
+
+    public String getDwsmdj2() {
+        return dwsmdj2;
+    }
+
+    public void setDwsmdj2(String dwsmdj2) {
+        this.dwsmdj2 = dwsmdj2;
+    }
+
+    public Date getDwtmq2() {
+        return dwtmq2;
+    }
+
+    public void setDwtmq2(Date dwtmq2) {
+        this.dwtmq2 = dwtmq2;
+    }
+
+    public String getZjcfjl() {
+        return zjcfjl;
+    }
+
+    public void setZjcfjl(String zjcfjl) {
+        this.zjcfjl = zjcfjl;
+    }
+
+    public String getJtcy() {
+        return jtcy;
+    }
+
+    public void setJtcy(String jtcy) {
+        this.jtcy = jtcy;
     }
 }
