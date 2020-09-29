@@ -100,6 +100,8 @@
 		<result column="a1701" jdbcType="LONGVARCHAR" property="a1701" />
 		<result column="rxz_dates" jdbcType="LONGVARCHAR" property="rxzDates" />
 		<result column="a17z1" jdbcType="LONGVARCHAR" property="a17z1" />
+		<result column="a0191a" jdbcType="VARCHAR" property="a0191a" />
+		<result column="e10040" jdbcType="VARCHAR" property="e10040" />
 	</resultMap>
 	<sql id="Base_Column_List">
     a0100, a0101, a0102, a0104, a0117_a, a0117, a0104_a, a0111b, a0111a, a0107, a0114a,
@@ -113,7 +115,7 @@
     zj_type
   </sql>
 	<sql id="Blob_Column_List">
-    a0192, a14z101, a15z101, time_stamp, a1701, rxz_dates, a17z1
+    a0192, a14z101, a15z101, time_stamp, a1701, rxz_dates, a17z1,a0191a,e10040
   </sql>
 
 	<!--查询所有信息-->
@@ -357,7 +359,7 @@
       a0196b, a0192d, a0229, 
       change_state, zj_type, a0192, 
       a14z101, a15z101, time_stamp, 
-      a1701, rxz_dates, a17z1
+      a1701, rxz_dates, a17z1,a0191a,e10040
       )
     values (#{a0100,jdbcType=VARCHAR}, #{a0101,jdbcType=VARCHAR}, #{a0102,jdbcType=VARCHAR},
       #{a0104,jdbcType=VARCHAR}, #{a0117A,jdbcType=VARCHAR}, #{a0117,jdbcType=VARCHAR}, 
@@ -390,7 +392,7 @@
       #{a0196b,jdbcType=VARCHAR}, #{a0192d,jdbcType=VARCHAR}, #{a0229,jdbcType=VARCHAR}, 
       #{changeState,jdbcType=VARCHAR}, #{zjType,jdbcType=VARCHAR}, #{a0192,jdbcType=LONGVARCHAR}, 
       #{a14z101,jdbcType=LONGVARCHAR}, #{a15z101,jdbcType=LONGVARCHAR}, #{timeStamp,jdbcType=LONGVARBINARY}, 
-      #{a1701,jdbcType=LONGVARCHAR}, #{rxzDates,jdbcType=LONGVARCHAR}, #{a17z1,jdbcType=LONGVARCHAR}
+      #{a1701,jdbcType=LONGVARCHAR}, #{rxzDates,jdbcType=LONGVARCHAR}, #{a17z1,jdbcType=LONGVARCHAR},#{a0191a,jdbcType=VARCHAR},#{e10040,jdbcType=VARCHAR}
       )
   </insert>
 	<insert id="insertSelective" parameterType="com.hxoms.support.leaderInfo.entity.A01WithBLOBs">
@@ -684,6 +686,12 @@
 			<if test="a17z1 != null">
 				a17z1,
 			</if>
+			<if test="a0191a != null">
+				a0191a,
+			</if>
+			<if test="e10040 != null">
+				e10040,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="a0100 != null">
@@ -973,6 +981,12 @@
 			</if>
 			<if test="a17z1 != null">
 				#{a17z1,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="a0191a != null">
+				#{a0191a,jdbcType=VARCHAR},
+			</if>
+			<if test="e10040 != null">
+				#{e10040,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -1264,6 +1278,12 @@
 			<if test="a17z1 != null">
 				a17z1 = #{a17z1,jdbcType=LONGVARCHAR},
 			</if>
+			<if test="a0191a != null">
+				a0191a = #{a0191a,jdbcType=VARCHAR},
+			</if>
+			<if test="e10040 != null">
+				e10040 = #{e10040,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where a0100 = #{a0100,jdbcType=VARCHAR}
 	</update>
@@ -1363,7 +1383,9 @@
       time_stamp = #{timeStamp,jdbcType=LONGVARBINARY},
       a1701 = #{a1701,jdbcType=LONGVARCHAR},
       rxz_dates = #{rxzDates,jdbcType=LONGVARCHAR},
-      a17z1 = #{a17z1,jdbcType=LONGVARCHAR}
+      a17z1 = #{a17z1,jdbcType=LONGVARCHAR},
+      a0191a = #{a0191a,jdbcType=VARCHAR},
+      e10040 = #{e10040,jdbcType=VARCHAR}
     where a0100 = #{a0100,jdbcType=VARCHAR}
   </update>
 	<update id="updateByPrimaryKey" parameterType="com.hxoms.support.leaderInfo.entity.A01">
@@ -1455,7 +1477,9 @@
       a0192d = #{a0192d,jdbcType=VARCHAR},
       a0229 = #{a0229,jdbcType=VARCHAR},
       change_state = #{changeState,jdbcType=VARCHAR},
-      zj_type = #{zjType,jdbcType=VARCHAR}
+      zj_type = #{zjType,jdbcType=VARCHAR},
+      a0191a = #{a0191a,jdbcType=VARCHAR},
+      e10040 = #{e10040,jdbcType=VARCHAR}
     where a0100 = #{a0100,jdbcType=VARCHAR}
   </update>
 	<!--按身份证号分组取最近任现职时间，是防止同一个人在干综系统中有两条数据，只取最近一条。
@@ -1475,5 +1499,13 @@
       a.a0100 in (select a02.a0100
       from a02 inner join b01 on a02.a0201b=b01.b0100
        where b01.b0111 like '001.001%')
+    </select>
+	<select id="checkEmpByOrgAndNameBirthday" parameterType="java.lang.String" resultMap="BaseResultMap">
+    	select  b00.B0111,ba01.a0100,a01.a0101
+    	from B01 b00
+    	left join A02 ba01 on b00.B0111 = ba01.A0201B
+    	left join A01 a01 on a01.A0100 = ba01.A0100
+    	where b00.B0100 = #{orgCode} and a01.a0101 like '%${a0101}%'
+    	and b00.IS_DELETED=0
     </select>
 </mapper>

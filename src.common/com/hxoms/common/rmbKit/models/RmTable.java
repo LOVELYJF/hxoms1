@@ -6,6 +6,9 @@ import java.util.List;
  *  任免表数据对象
  */
 public class RmTable {
+	/****
+	 * 任免表数据对象
+	 */
 	public String xingMing;
 	public String xingBie;
 	public String nianLing;
@@ -20,15 +23,15 @@ public class RmTable {
 	public String jianKangZhuangKuang;
 	public String zhuanYeJiShuZhiWu;
 	public String shuXiZhuanYeYouHeZhuanChang;
-	public String quanRiZhiJiaoYuXueLi;
-	public String quanRiZhiJiaoYuXueWei;
-	public String qrzhiJiaoYuXueLiBiYeYuanXiao;
-	public String qrzhiJiaoYuXueWeiBiYeYuanXiao;
+	public String quanRiZhiJiaoYuXueLi;//全日制学历
+	public String quanRiZhiJiaoYuXueWei;//全日制学位
+	public String qrzhiJiaoYuXueLiBiYeYuanXiao;//学历毕业院校
+	public String qrzhiJiaoYuXueWeiBiYeYuanXiao;//学位毕业院校
 	public String qrzhiJiaoYuBiYeYuanXiao;//全日制最高学历学位毕业院校系及专业
-	public String zaiZhiJiaoYuXueLi;
-	public String zaiZhiJiaoYuXueWei;
-	public String zaiZhiJiaoYuXueLiBiYeYuanXiao;
-	public String zaiZhiJiaoYuXueWeiBiYeYuanXiao;
+	public String zaiZhiJiaoYuXueLi;//在职学历
+	public String zaiZhiJiaoYuXueWei;//在职学位
+	public String zaiZhiJiaoYuXueLiBiYeYuanXiao;//在职毕业院校
+	public String zaiZhiJiaoYuXueWeiBiYeYuanXiao;//在职毕业院校
 	public String zaiZhiJiaoYuBiYeYuanXiao;//在职最高学历学位毕业院校系及专业
 	public String xianRenZhiWu;
 	public String niRenZhiWu;
@@ -48,15 +51,17 @@ public class RmTable {
 	public String version;
 	public String shenFenZheng;
 	public String a1701_a;
-
-	public String getA1701_a() {
-		return a1701_a;
+	public String jiSuanNianLingShiJian;
+	public String a1701Json;
+	public String familyJson;
+	public String JSNLSJ;
+	public String a0134;
+	public String getA0134() {
+		return a0134;
 	}
-
-	public void setA1701_a(String a1701_a) {
-		this.a1701_a = a1701_a;
+	public void setA0134(String a0134) {
+		this.a0134 = a0134;
 	}
-
 	public String getXingMing() {
 		return xingMing;
 	}
@@ -75,29 +80,17 @@ public class RmTable {
 	public void setNianLing(String nianLing) {
 		this.nianLing = nianLing;
 	}
-	public String getQrzhiJiaoYuBiYeYuanXiao() {
-		return qrzhiJiaoYuBiYeYuanXiao;
+	public String getChuShengNianYue() {
+		return chuShengNianYue;
 	}
-	public void setQrzhiJiaoYuBiYeYuanXiao(String qrzhiJiaoYuBiYeYuanXiao) {
-		this.qrzhiJiaoYuBiYeYuanXiao = qrzhiJiaoYuBiYeYuanXiao;
-	}
-	public String getZaiZhiJiaoYuBiYeYuanXiao() {
-		return zaiZhiJiaoYuBiYeYuanXiao;
-	}
-	public void setZaiZhiJiaoYuBiYeYuanXiao(String zaiZhiJiaoYuBiYeYuanXiao) {
-		this.zaiZhiJiaoYuBiYeYuanXiao = zaiZhiJiaoYuBiYeYuanXiao;
+	public void setChuShengNianYue(String chuShengNianYue) {
+		this.chuShengNianYue = chuShengNianYue;
 	}
 	public String getBithAndAge() {
 		return bithAndAge;
 	}
 	public void setBithAndAge(String bithAndAge) {
 		this.bithAndAge = bithAndAge;
-	}
-	public String getChuShengNianYue() {
-		return chuShengNianYue;
-	}
-	public void setChuShengNianYue(String chuShengNianYue) {
-		this.chuShengNianYue = chuShengNianYue;
 	}
 	public String getMinZu() {
 		return minZu;
@@ -177,6 +170,12 @@ public class RmTable {
 	public void setQrzhiJiaoYuXueWeiBiYeYuanXiao(String qrzhiJiaoYuXueWeiBiYeYuanXiao) {
 		this.qrzhiJiaoYuXueWeiBiYeYuanXiao = qrzhiJiaoYuXueWeiBiYeYuanXiao;
 	}
+	public String getQrzhiJiaoYuBiYeYuanXiao() {
+		return qrzhiJiaoYuBiYeYuanXiao;
+	}
+	public void setQrzhiJiaoYuBiYeYuanXiao(String qrzhiJiaoYuBiYeYuanXiao) {
+		this.qrzhiJiaoYuBiYeYuanXiao = qrzhiJiaoYuBiYeYuanXiao;
+	}
 	public String getZaiZhiJiaoYuXueLi() {
 		return zaiZhiJiaoYuXueLi;
 	}
@@ -200,6 +199,12 @@ public class RmTable {
 	}
 	public void setZaiZhiJiaoYuXueWeiBiYeYuanXiao(String zaiZhiJiaoYuXueWeiBiYeYuanXiao) {
 		this.zaiZhiJiaoYuXueWeiBiYeYuanXiao = zaiZhiJiaoYuXueWeiBiYeYuanXiao;
+	}
+	public String getZaiZhiJiaoYuBiYeYuanXiao() {
+		return zaiZhiJiaoYuBiYeYuanXiao;
+	}
+	public void setZaiZhiJiaoYuBiYeYuanXiao(String zaiZhiJiaoYuBiYeYuanXiao) {
+		this.zaiZhiJiaoYuBiYeYuanXiao = zaiZhiJiaoYuBiYeYuanXiao;
 	}
 	public String getXianRenZhiWu() {
 		return xianRenZhiWu;
@@ -231,7 +236,6 @@ public class RmTable {
 	public void setJianLiList(List<String> jianLiList) {
 		this.jianLiList = jianLiList;
 	}
-	
 	public List<A17> getA17List() {
 		return a17List;
 	}
@@ -286,7 +290,6 @@ public class RmTable {
 	public void setZhaoPian(String zhaoPian) {
 		this.zhaoPian = zhaoPian;
 	}
-	
 	public String getZhaoPianPath() {
 		return zhaoPianPath;
 	}
@@ -305,5 +308,36 @@ public class RmTable {
 	public void setShenFenZheng(String shenFenZheng) {
 		this.shenFenZheng = shenFenZheng;
 	}
-	
+	public String getA1701_a() {
+		return a1701_a;
+	}
+	public void setA1701_a(String a1701_a) {
+		this.a1701_a = a1701_a;
+	}
+	public String getA1701Json() {
+		return a1701Json;
+	}
+	public void setA1701Json(String a1701Json) {
+		this.a1701Json = a1701Json;
+	}
+	public String getFamilyJson() {
+		return familyJson;
+	}
+	public void setFamilyJson(String familyJson) {
+		this.familyJson = familyJson;
+	}
+	public String getJSNLSJ() {
+		return JSNLSJ;
+	}
+	public void setJSNLSJ(String jSNLSJ) {
+		JSNLSJ = jSNLSJ;
+	}
+	public String getJiSuanNianLingShiJian() {
+		return jiSuanNianLingShiJian;
+	}
+	public void setJiSuanNianLingShiJian(String jiSuanNianLingShiJian) {
+		this.jiSuanNianLingShiJian = jiSuanNianLingShiJian;
+	}
+
+
 }

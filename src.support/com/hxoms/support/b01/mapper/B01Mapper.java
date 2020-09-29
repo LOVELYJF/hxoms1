@@ -2,7 +2,7 @@ package com.hxoms.support.b01.mapper;
 
 import com.hxoms.common.tree.Tree;
 import com.hxoms.support.b01.entity.B01;
-import org.springframework.scheduling.support.SimpleTriggerContext;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -123,4 +123,6 @@ public interface B01Mapper {
      * @return
      */
     B01 selectOrgByB0100(String b0100);
+
+    List<Map<String, Object>> getName(@Param("orgCode") String orgCode);
 }

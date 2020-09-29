@@ -3,11 +3,15 @@ package com.hxoms.modules.omsoperator.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.rmbKit.models.Family;
+import com.hxoms.common.rmbKit.models.RmTable;
+import com.hxoms.common.util.RmbXMLUtils;
+import com.hxoms.common.util.StringUtils;
 import com.hxoms.common.utils.*;
+import com.hxoms.modules.keySupervision.familyMember.entity.A36;
+import com.hxoms.modules.keySupervision.familyMember.mapper.A36Mapper;
 import com.hxoms.modules.omsoperator.entity.*;
-import com.hxoms.modules.omsoperator.mapper.OmsOperatorApprovalMapper;
-import com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverMapper;
-import com.hxoms.modules.omsoperator.mapper.OmsOperatorHandoverSubformMapper;
+import com.hxoms.modules.omsoperator.mapper.*;
 import com.hxoms.modules.omsoperator.service.OmsOperatorService;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.OmsCerGetTaskVO;
@@ -18,7 +22,9 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import com.hxoms.modules.sysUser.mapper.CfUserMapper;
-import org.apache.commons.lang3.StringUtils;
+import com.hxoms.support.b01.mapper.B01Mapper;
+import com.hxoms.support.leaderInfo.entity.A01WithBLOBs;
+import com.hxoms.support.leaderInfo.mapper.A01Mapper;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -27,14 +33,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 功能描述: <br>
@@ -59,6 +66,22 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
     private OmsOperatorHandoverMapper omsOperatorHandoverMapper;
     @Autowired
     private OmsOperatorHandoverSubformMapper omsOperatorHandoverSubformMapper;
+    @Autowired
+    private A01Mapper a01Mapper;
+    @Autowired
+    private A36Mapper a36Mapper;
+    @Autowired
+    private SysAttachmentMapper sysAttachmentMapper;
+    @Autowired
+    private A02Mapper a02Mapper;
+    @Autowired
+    private A17Mapper a17Mapper;
+    @Autowired
+    private B01Mapper b01Mapper;
+    @Autowired
+    private A06Mapper a06Mapper;
+    @Autowired
+    private A0809Mapper a0809Mapper;
     /**
      * 功能描述: <br>
      * 〈保存经办人信息〉
@@ -1977,6 +2000,471 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈导入任免表〉
+     * @Param: [multipartFile, request]
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/9/26 10:13
+     */
+
+    @Transactional(rollbackFor = CustomMessageException.class)
+    @Override
+    public Map<String, Object> rmTableImport(File multipartFile, HttpServletRequest request) throws Exception {
+        //获取当前登录人
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        Map<String, Object> rmbMap = new HashMap<String, Object>();
+        rmbMap = RmbXMLUtils.xmlToRmTable( multipartFile);
+        RmTable rmb = (RmTable) rmbMap.get("rmb");
+        String code = (String) rmbMap.get("code");
+        String msg = (String) rmbMap.get("msg");
+        if (!"0".equals(code)) {
+            returnMap.put("code", code);
+            returnMap.put("msg", msg);
+        } else{
+
+            //查询结构下有无该人员
+            String orgCode =loginUser.getOrgId();
+            String userId = loginUser.getId();
+            List<Map<String, Object>> a01List = a01Mapper.checkEmpByOrgAndNameBirthday(rmb.getXingMing(),orgCode);
+            if (a01List != null && a01List.size() > 0) {
+                returnMap.put("code", 0);
+                returnMap.put("msg", "该机构下已经存在"+rmb.getXingMing()+"用户");
+            } else {
+                Map<String, Object> tableList = transformRmTable(rmb);
+                String returnMsg = (String) tableList.get("msg");
+                if (returnMsg != null && !"".equals(returnMsg)) {
+                    returnMap.put("code", 2);
+                    returnMap.put("msg", returnMsg);
+                } else {
+                    /**基本信息**/
+                    A01WithBLOBs a01 = (A01WithBLOBs) tableList.get("A01");
+                    //处理照片
+                    if (rmb.getZhaoPian() != null){
+                        String zhaoPianPath = request.getSession().getServletContext().getRealPath(Constants.PHOTOS_PATH) + File.separator + a01.getA0100() + ".jpg";
+                        //base64编码转为照片
+                        String zhaopianBase64 = rmb.getZhaoPian();
+                        Base64Util.generateImage(zhaopianBase64, zhaoPianPath);
+                    }
+                    a01.setIsDeleted("0");
+                    a01Mapper.insertSelective(a01);
+
+                    /**职务信息**/
+                    String orgName1 = "";
+                    List<Map<String, Object>> mapList = b01Mapper.getName(orgCode);
+                    if (mapList != null && mapList.size() > 0) {
+                        Map<String, Object> orgMap = mapList.get(0);
+                        orgName1 = (String) orgMap.get("B0101");
+                    }
+                    A02 a02 = new A02();
+                    a02.setA0100(a01.getA0100());
+                    a02.setA0200(UUIDGenerator.getPrimaryKey());
+                    a02.setA0201a(orgName1);//任职单位名称
+                    a02.setA0201b(orgCode);//任职单位代码
+                    a02Mapper.insertSelective(a02);
+
+                    /**照片信息**/
+                    if(!StringUtils.isEmpty(rmb.getZhaoPian().trim())) {
+                        SysAttachment sysattach = new SysAttachment();
+                        sysattach.setId(a01.getA0191a());
+                        sysattach.setTitle(a01.getA0100() + ".jpg");
+                        sysattach.setFiletype("image/jpeg");
+                        sysattach.setImagefile("data:image/jpeg;base64,"+rmb.getZhaoPian());
+                        sysattach.setuLastmodifieddate(new Date());
+                        sysAttachmentMapper.insertSelective(sysattach);
+                    }
+
+                    /**专业技术职务**/
+                    List<A06> a06List = (List<A06>) tableList.get("a06List");
+                    if (a06List != null && a06List.size() > 0) {
+                        for (A06 a06 : a06List) {
+                            a06.setModifyUser(userId);
+                            a06Mapper.insertSelective(a06);
+                        }
+                    }
+                    /**学历学位**/
+                    List<A0809> a0809List = (List<A0809>) tableList.get("a0809List");
+                    if (a0809List != null && a0809List.size() > 0) {
+                        for (A0809 a0809 : a0809List) {
+                            a0809.setModifyUser(loginUser.getId());
+                            a0809.setModifyTime(new Date());
+                            a0809Mapper.insertSelective(a0809);
+                        }
+                    }
+
+                    /**简历**/
+                    List<A17> a17List = (List<A17>) tableList.get("a17List");
+                    if (a17List != null && a17List.size() > 0) {
+                        for (A17 a17 : a17List) {
+                            a17.setModifyUser(loginUser.getId());
+                            a17.setModifyTime(new Date());
+                            a17Mapper.insertSelective(a17);
+                        }
+                    }
+
+                    /**家庭成员**/
+                    List<A36> a36List = (List<A36>) tableList.get("a36List");
+                    if (a36List != null && a36List.size() > 0) {
+                        for (A36 a36 : a36List) {
+                            if(!StringUtils.isEmpty(a36.getA3627())) {
+                                //根据政治面貌名称查询code
+                                String a3627 = getCadreCodeItem("GB4762", a36.getA3627().replace("<br/>",""));
+                                // 处理家庭成员 政治面貌存在<br/>问题
+                                a36.setA3627(a3627);
+                                a36.setModifyUser(loginUser.getId());
+                                a36.setModifyTime(new Date());
+                                a36Mapper.insert(a36);
+                            }
+                        }
+                    }
+                    String msgStr = rmb.getXingMing() + "导入成功";
+                    returnMap.put("code", 1);
+                    returnMap.put("msg", msgStr);
+                }
+            }
+        }
+            return returnMap;
+    }
+
+    private Map<String, Object> transformRmTable(RmTable rmb) throws ParseException {
+            SimpleDateFormat sf = new SimpleDateFormat("yyyyMM");
+            String msg = "";
+            Map<String, Object> returnMap = new HashMap<String, Object>();
+            /**基本信息**/
+            String a0100 = UUIDGenerator.getPrimaryKey();
+            String xingbieCode = getCadreCodeItem("GB2261",rmb.getXingBie());
+                A01WithBLOBs a01 = new A01WithBLOBs();
+                a01.setA0100(a0100);//人员id
+                a01.setA0101(rmb.getXingMing());//姓名
+                a01.setA0104(xingbieCode);//性别编码
+                a01.setA0107(rmb.getChuShengNianYue());//出生日期
+            String minZu = rmb.getMinZu();
+                if (minZu != null && !"".equals(minZu)) {
+                    String minZuCode = getCadreCodeItem("GB3304", minZu);
+                    a01.setA0117(minZuCode);//民族
+                }
+                a01.setA0192(rmb.getXianRenZhiWu());//现任职务简称
+                a01.setA0111a(rmb.getJiGuan());//籍贯（名称）
+                a01.setA0114a(rmb.getChuShengDi());//出生地（名称）
+                a01.setA0184(rmb.getShenFenZheng());//身份证
+                a01.setE10040(rmb.getXianRenZhiWu());
+            //专业技术职务多个顿号分割；根据名称找字典
+                a01.setA0196(rmb.getZhuanYeJiShuZhiWu());//专业技术职务
+                a01.setA0187a(rmb.getShuXiZhuanYeYouHeZhuanChang());//熟悉专业有何专长
+                a01.setA14z101(rmb.getJiangChengQingKuang().replace("\n", "").replace("\t", "").trim());//奖惩情
+            //入党时间解析 198009；民建；民盟 解析为4个字段
+
+            String rdsjLrmx = rmb.getRuDangShiJianLrmx() != null ? rmb.getRuDangShiJianLrmx().replace("\n", "").replace("\r", "").replace("\t", "").trim() : "";
+                if (!"".equals(rdsjLrmx)) {
+                Map<String, Object> rdshjMap = getRuDangShJian(rmb.getRuDangShiJianLrmx());
+                String firstDp = (String) rdshjMap.get("firstParty");
+                String rdshij = (String) rdshjMap.get("partyDate");
+                if (firstDp != null && !"".equals(firstDp)) {
+                    String firstDpCode = getCadreCodeItem("GB4762", firstDp);
+                    a01.setA0141(firstDpCode);//政治面貌
+                }
+                if (rdshij != null && !"".equals(rdshij)) {
+                    a01.setA0144(sf.parse(rdshij));//参加组织日期
+                }
+            }
+            String cjgzsj = rmb.getCanJiaGongZuoShiJian() != null ? rmb.getCanJiaGongZuoShiJian().replace("\n", "").replace("\r", "").replace("\t", "").trim() : "";
+                if (!"".equals(cjgzsj)) {
+                a01.setA0134(sf.parse(cjgzsj));//参加工作时间
+            }
+            //健康状况
+            String jiankangzhuangkuangCode = getCadreCodeItem("GB2261C", rmb.getJianKangZhuangKuang());
+                a01.setA0127(jiankangzhuangkuangCode);
+                a01.setA0128(rmb.getJianKangZhuangKuang());
+                a01.setA0191a(UUIDGenerator.getPrimaryKey());
+            //多个逗号分隔到A06(专业技术职务)表
+            /*    *//**专业技术职务**//*
+                List<A06> a06List = new ArrayList<A06>();
+                String zyjszwStr = rmb.getZhuanYeJiShuZhiWu() != null ? rmb.getZhuanYeJiShuZhiWu().replace("\n", "").replace("\r", "").replace("\t", "").trim() : "";
+                if (!"".equals(zyjszwStr)) {
+                    String[] zyjszhwArray = zyjszwStr.split("、");
+                    if (zyjszhwArray.length > 0) {
+                        for (String zhyjshzhiw : zyjszhwArray) {
+                            A06 a06 = new A06();
+                            a06.setA0100(a0100);
+                            a06.setA0600(UUIDGenerator.getUUID());
+                            dictItem = getCadreCodeItem("ZB11", "", zhyjshzhiw);
+                            String zhyjshzhiwCode = dictItem != null ? dictItem.getCode() : "";
+                            a06.setA0601(zhyjshzhiwCode);//专业技术职务代码；
+                            a06List.add(a06);
+                        }
+                    }
+                }*/
+
+
+            List<A0809> a0809List = new ArrayList<A0809>();
+            String qrzxueliCode = "";
+            String qrzxueweiCode = "";
+            String qrzXlByyx = rmb.getQrzhiJiaoYuXueLiBiYeYuanXiao() == null ? "" : rmb.getQrzhiJiaoYuXueLiBiYeYuanXiao().trim();
+            String qrzXwByyx = rmb.getQrzhiJiaoYuXueWeiBiYeYuanXiao() == null ? "" : rmb.getQrzhiJiaoYuXueWeiBiYeYuanXiao().trim();
+                if (!"".equals(qrzXlByyx) && !"".equals(qrzXwByyx) && !qrzXlByyx.equals(qrzXwByyx)) {
+                //学历
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                    qrzxueliCode = getCadreCodeItem("ZB64", rmb.getQuanRiZhiJiaoYuXueLi());
+                a0809.setA0801b(qrzxueliCode);//学历代码
+                a0809.setA0801a(rmb.getQuanRiZhiJiaoYuXueLi());//学历名称
+                a0809.setA0814(qrzXlByyx);
+                a0809.setA0837("1");//教育类别:1全日制
+                a0809List.add(a0809);
+                //学位
+                A0809 a08092 = new A0809();
+                a08092.setA0100(a0100);
+                a08092.setA080900(UUIDGenerator.getPrimaryKey());
+                //本科及以上有学位
+                if(StringUtils.isNotBlank(rmb.getQuanRiZhiJiaoYuXueWei())){
+                    qrzxueweiCode = getCadreCodeItem("GB6864", rmb.getQuanRiZhiJiaoYuXueWei());
+                    a08092.setA0901b(qrzxueweiCode);//学位代码
+                    a08092.setA0901a(rmb.getQuanRiZhiJiaoYuXueWei());//学位名称
+                }
+                a08092.setA0814(qrzXwByyx);
+                a08092.setA0837("1");//教育类别:1全日制
+                a0809List.add(a08092);
+            } else if (!"".equals(qrzXlByyx) && !"".equals(qrzXwByyx) && qrzXlByyx.equals(qrzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                qrzxueliCode = getCadreCodeItem("ZB64", rmb.getQuanRiZhiJiaoYuXueLi());
+                a0809.setA0801b(qrzxueliCode);//学历代码
+                a0809.setA0801a(rmb.getQuanRiZhiJiaoYuXueLi());//学历名称
+                //本科及以上有学位
+                if(StringUtils.isNotBlank(rmb.getQuanRiZhiJiaoYuXueWei())){
+                    qrzxueweiCode = getCadreCodeItem("GB6864", rmb.getQuanRiZhiJiaoYuXueWei());
+                    a0809.setA0901b(qrzxueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getQuanRiZhiJiaoYuXueWei());//学位名称
+                }
+                a0809.setA0814(qrzXwByyx);
+                a0809.setA0837("1");//教育类别:1全日制
+                a0809List.add(a0809);
+            } else if (!"".equals(qrzXlByyx) && "".equals(qrzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                qrzxueliCode = getCadreCodeItem("ZB64", rmb.getQuanRiZhiJiaoYuXueLi());
+                a0809.setA0801b(qrzxueliCode);//学历代码
+                a0809.setA0801a(rmb.getQuanRiZhiJiaoYuXueLi());//学历名称
+                //本科及以上有学位
+                if(StringUtils.isNotBlank(rmb.getQuanRiZhiJiaoYuXueWei())){
+                    qrzxueweiCode = getCadreCodeItem("GB6864", rmb.getQuanRiZhiJiaoYuXueWei());
+                    a0809.setA0901b(qrzxueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getQuanRiZhiJiaoYuXueWei());//学位名称
+                }
+                a0809.setA0814(qrzXlByyx);
+                a0809.setA0837("1");//教育类别:1全日制
+                a0809List.add(a0809);
+            } else if ("".equals(qrzXlByyx) && !"".equals(qrzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                qrzxueliCode = getCadreCodeItem("ZB64", rmb.getQuanRiZhiJiaoYuXueLi());
+                a0809.setA0801b(qrzxueliCode);//学历代码
+                a0809.setA0801a(rmb.getQuanRiZhiJiaoYuXueLi());//学历名称
+                //本科及以上有学位
+                if(StringUtils.isNotBlank(rmb.getQuanRiZhiJiaoYuXueWei())){
+                    qrzxueweiCode = getCadreCodeItem("GB6864", rmb.getQuanRiZhiJiaoYuXueWei());
+                    a0809.setA0901b(qrzxueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getQuanRiZhiJiaoYuXueWei());//学位名称
+
+                }
+                a0809.setA0814(qrzXwByyx);
+                a0809.setA0837("1");//教育类别:1全日制
+                a0809List.add(a0809);
+            }
+
+            /**在职学历学位**/
+            String zzXlByyx = rmb.getZaiZhiJiaoYuXueLiBiYeYuanXiao() == null ? "" : rmb.getZaiZhiJiaoYuXueLiBiYeYuanXiao().replace("\n", "").replace("\t", "").trim();
+            String zzXwByyx = rmb.getZaiZhiJiaoYuXueWeiBiYeYuanXiao() == null ? "" : rmb.getZaiZhiJiaoYuXueWeiBiYeYuanXiao().replace("\n", "").replace("\t", "").trim();
+            String zaizhixueliCode = "";
+            String zaizhixueweiCode = "";
+                if (!"".equals(zzXlByyx) && !"".equals(zzXwByyx) && !zzXlByyx.equals(zzXwByyx)) {
+                //学历
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                zaizhixueliCode = getCadreCodeItem("ZB64", rmb.getZaiZhiJiaoYuXueLi());
+                a0809.setA0801b(zaizhixueliCode);//学历代码
+                a0809.setA0801a(rmb.getZaiZhiJiaoYuXueLi());//学历名称
+                a0809.setA0814(zzXlByyx);
+                a0809.setA0837("2");//教育类别:2在职
+                a0809List.add(a0809);
+                //学位
+                A0809 a08092 = new A0809();
+                a08092.setA0100(a0100);
+                a08092.setA080900(UUIDGenerator.getPrimaryKey());
+                if(StringUtils.isNotBlank(rmb.getZaiZhiJiaoYuXueWei())){
+                    zaizhixueweiCode = getCadreCodeItem("GB6864",rmb.getZaiZhiJiaoYuXueWei());
+                    a08092.setA0901b(zaizhixueweiCode);//学位代码
+                    a08092.setA0901a(rmb.getZaiZhiJiaoYuXueWei());//学位名称
+                }
+                a08092.setA0814(zzXwByyx);
+                a08092.setA0837("2");//教育类别:2在职
+                a0809List.add(a08092);
+            } else if (!"".equals(zzXlByyx) && !"".equals(zzXwByyx) && zzXlByyx.equals(zzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                zaizhixueliCode = getCadreCodeItem("ZB64", rmb.getZaiZhiJiaoYuXueLi());
+                a0809.setA0801b(zaizhixueliCode);//学历代码
+                a0809.setA0801a(rmb.getZaiZhiJiaoYuXueLi());//学历名称
+                if(StringUtils.isNotBlank(rmb.getZaiZhiJiaoYuXueWei())){
+                    zaizhixueweiCode = getCadreCodeItem("GB6864", rmb.getZaiZhiJiaoYuXueWei());
+                    a0809.setA0901b(zaizhixueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getZaiZhiJiaoYuXueWei());//学位名称
+                }
+                a0809.setA0814(zzXwByyx);
+                a0809.setA0837("2");//教育类别:2在职
+                a0809List.add(a0809);
+            } else if (!"".equals(zzXlByyx) && "".equals(zzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                zaizhixueliCode = getCadreCodeItem("ZB64", rmb.getZaiZhiJiaoYuXueLi());
+                a0809.setA0801b(zaizhixueliCode);//学历代码
+                a0809.setA0801a(rmb.getZaiZhiJiaoYuXueLi());//学历名称
+                if(StringUtils.isNotBlank(rmb.getZaiZhiJiaoYuXueWei())){
+                    zaizhixueweiCode = getCadreCodeItem("GB6864", rmb.getQuanRiZhiJiaoYuXueWei());
+                    a0809.setA0901b(zaizhixueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getQuanRiZhiJiaoYuXueWei());//学位名称
+                }
+                a0809.setA0814(zzXlByyx);
+                a0809.setA0837("2");//教育类别:2在职
+                a0809List.add(a0809);
+            } else if ("".equals(zzXlByyx) && !"".equals(zzXwByyx)) {
+                A0809 a0809 = new A0809();
+                a0809.setA0100(a0100);
+                a0809.setA080900(UUIDGenerator.getPrimaryKey());
+                zaizhixueliCode = getCadreCodeItem("ZB64", rmb.getZaiZhiJiaoYuXueLi());
+                a0809.setA0801b(zaizhixueliCode);//学历代码
+                a0809.setA0801a(rmb.getZaiZhiJiaoYuXueLi());//学历名称
+                if(StringUtils.isNotBlank(rmb.getZaiZhiJiaoYuXueWei())){
+                    zaizhixueweiCode = getCadreCodeItem("GB6864", rmb.getZaiZhiJiaoYuXueWei());
+                    a0809.setA0901b(zaizhixueweiCode);//学位代码
+                    a0809.setA0901a(rmb.getZaiZhiJiaoYuXueWei());//学位名称
+                }
+                a0809.setA0814(zzXwByyx);
+                a0809.setA0837("2");//教育类别:2在职
+                a0809List.add(a0809);
+            }
+
+
+            /**简历**/
+            Map<String, Object> map = new HashMap<String, Object>();
+                try {
+                map = RmbXMLUtils.StringToJianLiList(rmb.getJianLi());
+            } catch (Exception e) {
+                msg = "简历解析失败";
+                e.printStackTrace();
+            }
+
+            Object a1701_a = map.get("A1701_A");
+            //更新人员的
+                if (a1701_a != null && !"".equals(a1701_a)) {
+                a01.setA1701A(a1701_a.toString());
+            }
+            List<A17> a17List = (List<A17>) map.get("a17List");
+
+                if (a17List != null && a17List.size() > 0) {
+                for (A17 a17 : a17List) {
+                    a17.setA0100(a0100);
+                    a17.setA1700(UUIDGenerator.getPrimaryKey());
+                }
+            }
+            /**家庭成员**/
+            List<A36> a36List = new ArrayList<A36>();
+            List<Family> jtcyList = rmb.getJiaTingChengYuanList();
+                if (jtcyList != null && jtcyList.size() > 0) {
+                for (int i = 0; i < jtcyList.size(); i++) {
+                    Family family = jtcyList.get(i);
+                    A36 a36 = new A36();
+                    a36.setA0100(a0100);
+                    a36.setA3600(UUIDGenerator.getPrimaryKey());
+                    a36.setA3601(family.getXingMing());//姓名
+                    a36.setA3604a(family.getChengWei());//人员与该人关系代码
+                    a36.setA3607(family.getChuShengRiQi());//出生日期
+                    a36.setA3627(family.getZhengZhiMianMao());//政治面貌代码
+                    a36.setA3611(family.getGongZuoDanWeiJiZhiWu());
+                    a36List.add(a36);
+                }
+            }
+                returnMap.put("A01", a01);
+                returnMap.put("a0809List", a0809List);
+                returnMap.put("a17List", a17List);
+                returnMap.put("a36List", a36List);
+                returnMap.put("msg", msg);
+                return returnMap;
+    }
+
+    private Map<String, Object> getRuDangShJian(String ruDangShiJianLrmx) {
+
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        String rdsjStr = ruDangShiJianLrmx.replaceAll("；", ";");
+        String[] strArray = rdsjStr.split(";");
+
+        if (strArray != null && strArray.length > 0) {
+            //如果第一个为日期类型则为中共党员
+            String firstPart = strArray[0];
+            if (StringUtils.isDateNumber(firstPart)) {
+                //最多取3个党派
+                if (strArray.length > 2) {
+                    returnMap.put("firstParty", "中共党员");
+                    returnMap.put("partyDate", strArray[0].trim());
+                    returnMap.put("secondParty", strArray[1].trim());
+                    returnMap.put("thirdParty", strArray[2].trim());
+                } else if (strArray.length > 1) {
+                    returnMap.put("firstParty", "中共党员");
+                    returnMap.put("partyDate", strArray[0].trim());
+                    returnMap.put("secondParty", strArray[1].trim());
+                    returnMap.put("thirdParty", "");
+                } else if (strArray.length > 0) {
+                    returnMap.put("firstParty", "中共党员");
+                    returnMap.put("partyDate", strArray[0].trim());
+                    returnMap.put("secondParty", "");
+                    returnMap.put("thirdParty", "");
+                }
+            } else {
+                //最多取3个党派
+                if (strArray.length > 2) {
+                    returnMap.put("firstParty", strArray[0].trim());
+                    returnMap.put("secondParty", strArray[1].trim());
+                    returnMap.put("thirdParty", strArray[2].trim());
+                } else if (strArray.length > 1) {
+                    returnMap.put("firstParty", strArray[0].trim());
+                    returnMap.put("secondParty", strArray[1].trim());
+                    returnMap.put("thirdParty", "");
+                } else if (strArray.length > 0) {
+                    returnMap.put("firstParty", strArray[0].trim());
+                    returnMap.put("secondParty", "");
+                    returnMap.put("thirdParty", "");
+                }
+            }
+        }
+        return returnMap;
+    }
+
+    private String getCadreCodeItem(String code_type, String code_name) {
+        String[] array = code_name.split("，");
+        List<String> resultList = new ArrayList<>(array.length);
+        for (String s : array) {
+            resultList.add(s);
+        }
+        List<String> dictItemList = operatorApprovalMapper.findCodeOrNameByCadreCode(code_type,resultList);
+
+        if (dictItemList != null && dictItemList.size() > 0) {
+            String collect = dictItemList.stream().map(String::valueOf).collect(Collectors.joining(","));
+            return collect;
+        } else {
+            return null;
         }
     }
 

@@ -40,22 +40,17 @@
           and org_id = #{orgId}
         </if>
         union all
-        select "2.上报" as label, "0" as statusCode, count(0) as num from cf_user where user_state = "0"
+        select "2.监督处审核" as label, "3" as statusCode, count(0) as num from cf_user where user_state = "3"
         <if test="orgId != null and orgId != ''">
           and org_id = #{orgId}
         </if>
         union all
-        select "3.监督处审核" as label, "3" as statusCode, count(0) as num from cf_user where user_state = "3"
+        select "3.处领导审核" as label, "4" as statusCode, count(0) as num from cf_user where user_state = "4"
         <if test="orgId != null and orgId != ''">
           and org_id = #{orgId}
         </if>
         union all
-        select "4.处领导审核" as label, "4" as statusCode, count(0) as num from cf_user where user_state = "4"
-        <if test="orgId != null and orgId != ''">
-          and org_id = #{orgId}
-        </if>
-        union all
-        select "5.身份认证" as label, "8" as statusCode, count(0) as num from cf_user where user_state = "8"
+        select "4.身份认证" as label, "8" as statusCode, count(0) as num from cf_user where user_state = "8"
         <if test="orgId != null and orgId != ''">
           and org_id = #{orgId}
         </if>
@@ -112,6 +107,18 @@
         </if>
       </where>
 
+    </select>
+    <select id="findCodeOrNameByCadreCode" resultType="java.lang.String">
+      SELECT CODE_VALUE
+      FROM code_value
+      WHERE
+      CODE_TYPE = #{code_type}
+       <if test="code_name != null and code_name.size >0 ">
+         and CODE_NAME in
+         <foreach collection="code_name" item="code_name" separator="," open="(" close=")">
+           #{code_name}
+         </foreach>
+       </if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from oms_operator_approval

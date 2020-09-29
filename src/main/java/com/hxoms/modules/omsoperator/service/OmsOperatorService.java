@@ -8,8 +8,12 @@ import com.hxoms.modules.omsoperator.entity.OmsOperatorJBYWQueryParam;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.List;
+import java.util.Map;
+
 /**
  * 功能描述: <br>
  * 〈经办人管理〉
@@ -269,4 +273,14 @@ public interface OmsOperatorService {
      * @Date: 2020/9/12 9:52
      */
     void exportOperatorByJJJL(OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam, HttpServletResponse response);
+
+    /**
+     * 功能描述: <br>
+     * 〈导入任免表〉
+     * @Param: [multipartFile, request]
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/9/26 10:11
+     */
+    Map<String, Object> rmTableImport(File multipartFile, HttpServletRequest request) throws Exception;
 }
