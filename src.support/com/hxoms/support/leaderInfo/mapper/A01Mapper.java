@@ -123,4 +123,6 @@ public interface A01Mapper extends BaseMapper<A01> {
 	* @return:
 	**/
 	List<A01> extractCadreForRegister();
+
+    List<Map<String, Object>> checkEmpByOrgAndNameBirthday(@Param("a0101") String xingMing, @Param("orgCode") String orgCode);
 }

@@ -17,6 +17,7 @@ public class UUIDGenerator {
         UUID uuid = GuidUtility.createGuidForStrByDatetime(new Date());
         return uuid.toString().toUpperCase();
     }
+
 	//加密
 	public static String encryptPwd(String pwd){
 		String jmpwd="";

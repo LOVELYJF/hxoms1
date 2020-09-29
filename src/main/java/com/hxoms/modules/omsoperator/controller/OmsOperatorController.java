@@ -11,9 +11,14 @@ import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能描述: <br>
@@ -363,6 +368,31 @@ public class OmsOperatorController {
     public void  exportOperatorByJJJL(@RequestBody OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam,HttpServletResponse response){
         operatorService.exportOperatorByJJJL(omsOperatorJBYWQueryParam,response);
     }
-    //导入任免表
-    //todo
+
+    /**
+     * 功能描述: <br>
+     * 〈导入任免表〉
+     * @Param: [multipartFile]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/9/26 9:47
+     */
+    @PostMapping("/rmTableImport")
+    public Result rmTableImport(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        File file = null;
+        try {
+            String originalFilename = multipartFile.getOriginalFilename();
+            String[] filename = originalFilename.split("\\.");
+            file=File.createTempFile(filename[0], filename[1]);
+            multipartFile.transferTo(file);
+            file.deleteOnExit();
+            resultMap = operatorService.rmTableImport(file, request);
+        }catch (Exception e) {
+            resultMap.put("code", 0);
+            resultMap.put("msg", "导入失败");
+            e.printStackTrace();
+        }
+        return Result.success(resultMap);
+    }
 }

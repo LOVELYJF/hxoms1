@@ -568,4 +568,7 @@
     <select id="selectOrgByB0100"  resultMap="BaseResultMap">
         select * FROM b01 b where b.B0100=#{b0100}
     </select>
+    <select id="getName" resultType="java.util.Map" flushCache="false">
+	select B0101 from B01 where B0100=#{orgCode}
+ </select>
 </mapper>

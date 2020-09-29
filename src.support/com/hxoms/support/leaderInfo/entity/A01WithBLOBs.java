@@ -15,6 +15,10 @@ public class A01WithBLOBs extends A01 {
 
     private String a17z1;
 
+    private String a0191a;
+
+    private String e10040;
+
     public String getA0192() {
         return a0192;
     }
@@ -69,5 +73,21 @@ public class A01WithBLOBs extends A01 {
 
     public void setA17z1(String a17z1) {
         this.a17z1 = a17z1;
+    }
+
+    public String getA0191a() {
+        return a0191a;
+    }
+
+    public void setA0191a(String a0191a) {
+        this.a0191a = a0191a;
+    }
+
+    public String getE10040() {
+        return e10040;
+    }
+
+    public void setE10040(String e10040) {
+        this.e10040 = e10040;
     }
 }

@@ -51,4 +51,14 @@ public interface OmsOperatorApprovalMapper {
      * @Date: 2020/7/23 14:56
      */
     List<LinkedHashMap<String, Object>> getAllOperatorHandoverByOrgId(@Param("orgId") String orgId);
+
+    /**
+     * 功能描述: <br>
+     * 〈查询字典代码〉
+     * @Param: [code_type, code_name]
+     * @Return: java.util.List<java.lang.String>
+     * @Author: 李逍遥
+     * @Date: 2020/9/26 14:55
+     */
+    List<String> findCodeOrNameByCadreCode(@Param("code_type") String code_type, @Param("code_name") List<String> code_name);
 }
