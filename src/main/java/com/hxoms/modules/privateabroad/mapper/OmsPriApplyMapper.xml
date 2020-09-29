@@ -361,6 +361,12 @@
         where
             pa.ABROAD_TIME >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
             AND pa.A0100 = #{a0100}
+            and
+				pa.ABROAD_TIME &lt; NOW()
+				and
+				pa.ABROAD_TIME >= 29
+				and
+				pa.ABROAD_TIME != 50
     </select>
 
 

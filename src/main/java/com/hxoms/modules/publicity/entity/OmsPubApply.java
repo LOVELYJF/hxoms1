@@ -277,9 +277,18 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "BZ",   FieldDescription="备注")
     @ApiModelProperty(value="备注")
     private String bz;
+
     @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：上传）")
     @ApiModelProperty(value="数据来源（0：填写，1：上传）")
     private String source;
+
+    @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书（0-否，1-是）")
+    @ApiModelProperty(value="是否需要委托书（0-否，1-是）")
+    private Integer isEntrust;
+
+    @ColumnAnnotation(FieldName = "IS_HXPZWJ",   FieldDescription="是否需要上级领导批准文件（0-否，1-是）")
+    @ApiModelProperty(value="是否需要上级领导批准文件（0-否，1-是）")
+    private Integer isHxpzwj;
 
     public String getId() {
         return id;
@@ -775,5 +784,21 @@ public class OmsPubApply {
 
     public void setSource(String source) {
         this.source = source == null ? null : source.trim();
+    }
+
+    public Integer getIsEntrust() {
+        return isEntrust;
+    }
+
+    public void setIsEntrust(Integer isEntrust) {
+        this.isEntrust = isEntrust;
+    }
+
+    public Integer getIsHxpzwj() {
+        return isHxpzwj;
+    }
+
+    public void setIsHxpzwj(Integer isHxpzwj) {
+        this.isHxpzwj = isHxpzwj;
     }
 }
