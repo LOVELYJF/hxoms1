@@ -479,6 +479,7 @@
         WHERE DATA_TYPE = '1'
         AND INBOUND_FLAG NOT IN ('D')
         AND INCUMBENCY_STATUS IN ('2','3','4','6','8','9')
+        AND RF_B0000=#{orgId}
         AND ID NOT IN (select rf_id from oms_reg_revokeapply where status!='4')
     </select>
     <select id="getSmrPersonInfo" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">

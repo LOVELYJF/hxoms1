@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.utils.*;
+import com.hxoms.general.select.entity.SqlVo;
+import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
@@ -14,13 +16,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.jws.soap.SOAPBinding;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyMapper, OmsRegRevokeapply> implements OmsRegRevokeApplyService {
@@ -29,6 +30,8 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     private OmsRegProcpersoninfoMapper regProcpersonInfoMapper;
     @Autowired
     private OmsRegRevokeapprovalMapper regRevokeApprovalMapper;
+    @Autowired
+    private SelectMapper selectMapper;
 
     @Override
     public PageInfo<OmsRegRevokeapply> queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
@@ -40,49 +43,50 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     }
 
     @Override
-    public Result searchRevokeRegPerson(){
+    @Transactional(rollbackFor = Exception.class)
+    public Result searchRevokeRegPerson() {
         StringBuffer msg = new StringBuffer();
         //自动搜索辞职、开除、解聘、退休、去世、挂职到期等状态，且不在撤销登记备案申请表的人员（排除已登记备案状态）
-        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson();
-        if (reginfolist!=null && reginfolist.size()>0){
-            for (int i=0;i<reginfolist.size();i++){
+        List<OmsRegProcpersoninfo> reginfolist = regProcpersonInfoMapper.selectAllowRevokePerson(UserInfoUtil.getUserInfo().getOrgId());
+        if (reginfolist != null && reginfolist.size() > 0) {
+            for (int i = 0; i < reginfolist.size(); i++) {
                 OmsRegProcpersoninfo info = reginfolist.get(i);
-                if(info.getExitDate()==null) continue;
+                if (info.getExitDate() == null) continue;
                 //辞职日期
                 Calendar calExit = Calendar.getInstance();
                 calExit.setTime(info.getExitDate());
-                calExit.add(Calendar.YEAR,OmsRegInitUtil.czyear);
+                calExit.add(Calendar.YEAR, OmsRegInitUtil.czyear);
                 //退休日期
                 Calendar txExit = Calendar.getInstance();
                 txExit.setTime(info.getExitDate());
-                txExit.add(Calendar.YEAR,OmsRegInitUtil.txyear);
+                txExit.add(Calendar.YEAR, OmsRegInitUtil.txyear);
 
                 //撤销登记备案申请表
                 OmsRegRevokeapply applyinfo = new OmsRegRevokeapply();
                 //1.在职、2.辞职、3.开除、4.解聘，5.免职撤职，6.退休，7.去世，8.调出，9.挂职到期，10.其他，99.未匹配
                 //判断辞职、开除、解聘人员是否满3年（根据系统参数设置判断），且已过脱密结束日期 ,将满足要求的人员放到撤销登记备案申请表
-                int incumbencyStatus=Integer.parseInt(info.getIncumbencyStatus());
-                if (incumbencyStatus==Constants.emIncumbencyStatus.Resignation.getIndex()
-                        || incumbencyStatus==Constants.emIncumbencyStatus.Expel.getIndex()
-                        || incumbencyStatus==Constants.emIncumbencyStatus.Dismissal.getIndex()){
-                    if(calExit.before(new Date()) && info.getDecryptEnddate().before(new Date())){
-                        copyApplyInfo(info,applyinfo);
+                int incumbencyStatus = Integer.parseInt(info.getIncumbencyStatus());
+                if (incumbencyStatus == Constants.emIncumbencyStatus.Resignation.getIndex()
+                        || incumbencyStatus == Constants.emIncumbencyStatus.Expel.getIndex()
+                        || incumbencyStatus == Constants.emIncumbencyStatus.Dismissal.getIndex()) {
+                    if (calExit.before(new Date()) && info.getDecryptEnddate().before(new Date())) {
+                        copyApplyInfo(info, applyinfo);
                     }
                     //判断退休人员是否满系统参数设置的退休年限,将满足要求的人员放到撤销登记备案申请表
-                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Retirement.getIndex()) {
+                } else if (incumbencyStatus == Constants.emIncumbencyStatus.Retirement.getIndex()) {
                     if (txExit.before(new Date())) {
-                        copyApplyInfo(info,applyinfo);
+                        copyApplyInfo(info, applyinfo);
                     }
                     //判断挂职到期人员是否过脱密日期，将满足要求的人员放到撤销登记备案申请表
-                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Secondment.getIndex()){
+                } else if (incumbencyStatus == Constants.emIncumbencyStatus.Secondment.getIndex()) {
                     if (info.getDecryptEnddate().before(new Date())) {
                         copyApplyInfo(info, applyinfo);
                     }
-                }else if (incumbencyStatus==Constants.emIncumbencyStatus.Dispatch.getIndex()){
+                } else if (incumbencyStatus == Constants.emIncumbencyStatus.Dispatch.getIndex()) {
                     copyApplyInfo(info, applyinfo);
                 }
             }
-        }else{
+        } else {
             msg.append("暂无可提取的撤销的备案人员!");
             return Result.error(msg.toString());
         }
@@ -92,26 +96,48 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
 
     /**
      * 添加撤销备案人员
+     *
      * @param revokeApply
      * @return
      * @throws ParseException
      */
     @Override
-    public int insertRevokeRegPerson(OmsRegRevokeapply revokeApply){
-        int con=0;
+    public int insertRevokeRegPerson(OmsRegRevokeapply revokeApply) {
+        int con = 0;
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         revokeApply.setId(UUIDGenerator.getPrimaryKey());
         revokeApply.setCreateDate(new Date());
         revokeApply.setCreateUser(userInfo.getId());
-        return con = baseMapper.insert(revokeApply);
+        if (revokeApply.getRfB0000() == null)
+            revokeApply.setRfB0000(UserInfoUtil.getUserInfo().getOrgId());
+        con = baseMapper.insert(revokeApply);
+        if (con > 0) {
+            InsertApprovalRecord(revokeApply.getId(),
+                    "填写撤销备案申请", "", "");
+        }
+        return con;
     }
 
+    protected void InsertApprovalRecord(String appID, String stepName, String result, String opinion) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsRegRevokeapproval regRevokeApproval = new OmsRegRevokeapproval();
+        regRevokeApproval.setApplyId(appID);
+        regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
+        regRevokeApproval.setApprovalTime(new Date());
+        regRevokeApproval.setApprovalUser(userInfo.getId());
+        regRevokeApproval.setSubmitTime(new Date());
+        regRevokeApproval.setSubmitUser(userInfo.getId());
+        regRevokeApproval.setStepName(stepName);
+        regRevokeApproval.setApprovalOpinion(opinion);
+        regRevokeApproval.setApprovalConclusion(result);
+        regRevokeApprovalMapper.insert(regRevokeApproval);
+    }
 
     private int copyApplyInfo(OmsRegProcpersoninfo info, OmsRegRevokeapply applyinfo) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        int con=0;
+        int con = 0;
         //复制登记备案相同字段的数据到撤销登记申请表
         BeanUtils.copyProperties(info, applyinfo);
         applyinfo.setStatus(String.valueOf(Constants.emRevokeRegister.申请.getIndex()));
@@ -121,51 +147,68 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         applyinfo.setCreateUser(userInfo.getId());
         applyinfo.setExitDate(new SimpleDateFormat("yyyy.MM.dd").format(info.getExitDate()));
         applyinfo.setExitType(info.getIncumbencyStatus());
+        InsertApprovalRecord(applyinfo.getId(),
+                "填写撤销备案申请", "", "");
         return con = baseMapper.insert(applyinfo);
+    }
+
+    protected List<OmsRegRevokeapply> QueryByIds(String applyIds) {
+        String[] num = applyIds.split(",");
+
+        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
+        queryWrapper.in("ID", num);
+        List<OmsRegRevokeapply> list = baseMapper.selectList(queryWrapper);
+
+        return list;
     }
 
     /**
      * 批量审批撤销申请
+     *
      * @param regRevokeApproval
      * @param applyIds
      * @return
      */
     @Override
-    public Object approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
-        //登录用户信息
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        String[] num = applyIds.split(",");
-        int con=0;
-        for (int i = 0; i < num.length; i++) {
-            OmsRegRevokeapply revokeApply = new OmsRegRevokeapply();
+    @Transactional(rollbackFor = Exception.class)
+    public Result approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds) {
+        List<OmsRegRevokeapply> list = QueryByIds(applyIds);
+        int count = 0;
+        for (OmsRegRevokeapply regRevokeapply : list) {
+
+            //不处理处领导、部领导审批之外的数据
+            if (!"3".equals(regRevokeapply.getStatus()) &&
+                    !"4".equals(regRevokeapply.getStatus())) continue;
+
+            count++;
+            String stepName = getStepName(regRevokeapply.getStatus());
+
             QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
-            queryWrapper.eq("ID",num[i]);
-            revokeApply.setStatus("3");
-            con = baseMapper.update(revokeApply,queryWrapper);
-            if (con > 0){
-                regRevokeApproval.setApplyId(num[i]);
-                regRevokeApproval.setId(UUIDGenerator.getPrimaryKey());
-                regRevokeApproval.setApprovalTime(new Date());
-                regRevokeApproval.setApprovalUser(userInfo.getId());
-                regRevokeApproval.setSubmitTime(new Date());
-                regRevokeApproval.setSubmitUser(userInfo.getId());
-                con =  regRevokeApprovalMapper.insert(regRevokeApproval);
+            queryWrapper.eq("ID", regRevokeapply.getId());
+            if ("3".equals(regRevokeapply.getStatus()))
+                regRevokeapply.setStatus("4");
+            else if ("4".equals(regRevokeapply.getStatus()))
+                regRevokeapply.setStatus("7");
+            int con = baseMapper.update(regRevokeapply, queryWrapper);
+            if (con > 0) {
+                InsertApprovalRecord(regRevokeapply.getId(), stepName,
+                        regRevokeApproval.getApprovalConclusion(),
+                        regRevokeApproval.getApprovalOpinion());
             }
         }
-        return con;
+        return Result.success().setMsg("共收到(" + list.size() + ")条审批，成功保存(" + count + ")条！");
     }
-
 
 
     @Override
     public Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo) {
         //查询公安信息可撤销登记备案人员
         List<OmsRegProcpersoninfoVO> reginfolist = regProcpersonInfoMapper.searchRevokeRegPersonList(regProcpersonInfo);
-        List<OmsRegRevokeapply> regRevokeapplies=new ArrayList<>();
-        for (OmsRegProcpersoninfoVO regProcpersoninfoVO:reginfolist
-             ) {
+        List<OmsRegRevokeapply> regRevokeapplies = new ArrayList<>();
+        for (OmsRegProcpersoninfoVO regProcpersoninfoVO : reginfolist
+        ) {
             OmsRegRevokeapplyV0 omsRegRevokeapply = new OmsRegRevokeapplyV0();
-            BeanUtils.copyProperties(regProcpersoninfoVO,omsRegRevokeapply);
+            BeanUtils.copyProperties(regProcpersoninfoVO, omsRegRevokeapply);
             omsRegRevokeapply.setStatus(String.valueOf(Constants.emRevokeRegister.申请.getIndex()));
             omsRegRevokeapply.setStatusName(Constants.emRevokeRegister.申请.getName());
             omsRegRevokeapply.setRfId(regProcpersoninfoVO.getId());
@@ -178,53 +221,93 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         return regRevokeapplies;
     }
 
+    private String getStepName(String status) {
+        int pStatus = Integer.parseInt(status);
+        String stepName = "";
+        switch (pStatus) {
+            case 1:
+                stepName = "提交干部监督处";
+                break;
+            case 2:
+                stepName = "干部监督处受理";
+                break;
+            case 3:
+                stepName = "处领导审批";
+                break;
+            case 4:
+                stepName = "部领导审批";
+                break;
+            case 5:
+                stepName = "撤销";
+                break;
+            case 6:
+                stepName = "拒批";
+                break;
+            case 7:
+                stepName = "待备案";
+                break;
+            case 8:
+                stepName = "已备案";
+                break;
+        }
+        return stepName;
+    }
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Object updateApplyStatus(OmsRegRevokeapply revokeApply) {
         QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
-        queryWrapper.eq("ID",revokeApply.getId());
+        queryWrapper.eq("ID", revokeApply.getId());
         revokeApply.setStatus(revokeApply.getStatus());
-        return baseMapper.update(revokeApply,queryWrapper);
+        String stepName = getStepName(revokeApply.getStatus());
+
+        InsertApprovalRecord(revokeApply.getId(), stepName, "", "");
+        return baseMapper.update(revokeApply, queryWrapper);
     }
 
 
     @Override
-    public Result updateApplyStatusByCLD(String status,String applyIds) {
-        String[] num = applyIds.split(",");
+    @Transactional(rollbackFor = Exception.class)
+    public Result updateApplyStatusByCLD(String status, String applyIds) {
+        List<OmsRegRevokeapply> list = QueryByIds(applyIds);
 
-        QueryWrapper<OmsRegRevokeapply> queryWrapper = new QueryWrapper<OmsRegRevokeapply>();
-        queryWrapper.in("ID",num);
-        List<OmsRegRevokeapply> list = baseMapper.selectList(queryWrapper);
-
-        List<OmsRegRevokeapply> updates=new ArrayList<>();
-        int pStatus=Integer.parseInt(status);
-        for (OmsRegRevokeapply regRevokeapply:list
-             ) {
+        List<OmsRegRevokeapply> updates = new ArrayList<>();
+        int pStatus = Integer.parseInt(status);
+        for (OmsRegRevokeapply regRevokeapply : list
+        ) {
 
             int iStatus = Integer.parseInt(regRevokeapply.getStatus());
-            if(iStatus!=pStatus) continue;
+            if (iStatus != pStatus) continue;
 
-            if(iStatus==Constants.emRevokeRegister.申请.getIndex()||
-                    iStatus==Constants.emRevokeRegister.受理.getIndex()||
-                    iStatus==Constants.emRevokeRegister.处领导审核.getIndex()||
-                    iStatus==Constants.emRevokeRegister.部领导审批.getIndex()){
+            if (iStatus == Constants.emRevokeRegister.申请.getIndex() ||
+                    iStatus == Constants.emRevokeRegister.受理.getIndex() ||
+                    iStatus == Constants.emRevokeRegister.处领导审核.getIndex() ||
+                    iStatus == Constants.emRevokeRegister.部领导审批.getIndex()) {
 
                 iStatus++;
 
                 regRevokeapply.setStatus(String.valueOf(iStatus));
                 updates.add(regRevokeapply);
+
+                String stepName = getStepName(status);
+
+                InsertApprovalRecord(regRevokeapply.getId(), stepName, "", "");
             }
         }
 
-        if(updates.size()>0)
-        {
+        if (updates.size() > 0) {
             this.updateBatchById(updates);
-            return  Result.success("成功处理了（"+updates.size()+"）条申请！");
+            return Result.success("成功处理了（" + updates.size() + "）条申请！");
         }
         return Result.error("没有要处理的申请！");
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Object deleteRevokeRegPerson(String id) {
+        String sql = "delete from oms_reg_revokeapproval where APPLY_ID='" + id + "'";
+        SqlVo instance = SqlVo.getInstance(sql);
+        selectMapper.delete(instance);
         return baseMapper.deleteById(id);
     }
 

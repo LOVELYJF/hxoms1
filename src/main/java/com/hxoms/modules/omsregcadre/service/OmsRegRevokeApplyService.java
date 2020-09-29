@@ -19,7 +19,7 @@ public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
 
     int insertRevokeRegPerson(OmsRegRevokeapply revokeApply);
 
-    Object approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds);
+    Result approvalRevokeRegPerson(OmsRegRevokeapproval regRevokeApproval, String applyIds);
 
     Object searchRevokeRegPersonList(OmsRegProcpersoninfo regProcpersonInfo);
 

@@ -82,6 +82,12 @@
     <if test="rfB0000!=null and rfB0000!=''">
       AND a.RF_B0000 = #{rfB0000}
     </if>
+    <if test="statuses!=null and statuses.length>0">
+      AND a.STATUS in
+      <foreach collection="statuses" open="(" close=")" item="id" index="index" separator=",">
+        #{id}
+      </foreach>
+    </if>
   </select>
 
 </mapper>
