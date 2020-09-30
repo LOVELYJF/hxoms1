@@ -14,4 +14,6 @@ public interface OmsRegProcbatchPersonMapper extends BaseMapper<OmsRegProcbatchP
     int selectCountByBatchId(String batchNo);
 
     int selectPersonByRfId(@Param(value = "id")String id, @Param(value = "batchNo")String batchNo);
+
+    List<OmsRegProcbatchPerson> getToBeConfirmed(@Param(value ="batchId") String batchId);
 }

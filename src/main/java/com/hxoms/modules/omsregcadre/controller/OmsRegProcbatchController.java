@@ -1,6 +1,7 @@
 package com.hxoms.modules.omsregcadre.controller;
 
 import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
@@ -45,8 +46,9 @@ public class OmsRegProcbatchController {
      * @date 2020/4/27 14:01
      */
     @PostMapping("/determineRegFinish")
-    public Result determineRegFinish(){
-        return Result.success(orpbatchService.determineRegFinish());
+    public Result determineRegFinish(String data)
+    {
+        return orpbatchService.determineRegFinish(data);
     }
 
 
@@ -64,6 +66,17 @@ public class OmsRegProcbatchController {
             return Result.error("系统错误");
         }
     }
+    /**
+     * @description: 获取待确认登记备案记录
+     * @author:杨波
+     * @date:2020-09-30
+     *  * @param batchId 批次主键，为空时返回未完成的批次人员
+     * @return:com.hxoms.common.utils.Result
+     **/
+    @GetMapping("/getToBeConfirmed")
+    public Result getToBeConfirmed(String batchId){
 
+        return orpbatchService.getToBeConfirmed(batchId);
+    }
 
 }

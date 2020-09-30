@@ -86,13 +86,17 @@ public class OmsRegProcbatchPerson {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 
-    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态0未备案，1已备案")
-    @ApiModelProperty(value="备案状态0未备案，1已备案")
-    private String rfStatus;
+    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识")
+    @ApiModelProperty(value="入库标识")
+    private String inboundFlag;
 
-    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态1已验收，0待验收")
-    @ApiModelProperty(value="验收状态1已验收，0待验收")
-    private String checkStatus;
+    @ColumnAnnotation(FieldName = "SUCCESS",   FieldDescription="是否备案成功")
+    @ApiModelProperty(value="是否备案成功")
+    private String success;
+
+    @ColumnAnnotation(FieldName = "ERROR_MSG",   FieldDescription="登记备案失败信息")
+    @ApiModelProperty(value="登记备案失败信息")
+    private String errorMsg;
 
     public String getId() {
         return id;
@@ -270,19 +274,29 @@ public class OmsRegProcbatchPerson {
         this.decryptEnddate = decryptEnddate;
     }
 
-    public String getRfStatus() {
-        return rfStatus;
+
+    public String getInboundFlag() {
+        return inboundFlag;
     }
 
-    public void setRfStatus(String rfStatus) {
-        this.rfStatus = rfStatus;
+    public void setInboundFlag(String inboundFlag) {
+        this.inboundFlag = inboundFlag;
     }
 
-    public String getCheckStatus() {
-        return checkStatus;
+    public String getSuccess() {
+        return success;
     }
 
-    public void setCheckStatus(String checkStatus) {
-        this.checkStatus = checkStatus;
+    public void setSuccess(String success) {
+        this.success = success;
     }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
 }
