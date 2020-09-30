@@ -537,7 +537,6 @@ public class OmsFileServiceImpl implements OmsFileService {
             }else if ("3".equals(secret_level)){
                 omsPubApplyVO.setSmdj("核心涉密人员");
             }
-        fileReplaceVO.setSecretLevel(omsPubApplyVO.getSmdj());
             OtherPubApply otherPubApply = omsPubApplyService.getOtherPubApply(omsPubApplyVO.getB0100(), omsPubApplyVO.getA0100(), omsPubApplyVO.getCgsj());
             List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = otherPubApply.getOmsSmrOldInfoVOS();
             for (OmsSmrOldInfoVO o:omsSmrOldInfoVOS) {
