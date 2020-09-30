@@ -1,9 +1,12 @@
 package com.hxoms.modules.omsregcadre.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.modules.omsregcadre.entity.OmsPmChangeNonpm;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsPmChangeNonpmIPageParam;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,5 +81,12 @@ public class OmsRegProcbatchController {
 
         return orpbatchService.getToBeConfirmed(batchId);
     }
+
+    @GetMapping("/selectWbaByOrpbatch")
+    public Result selectWbaByOrpbatch(){
+        OmsRegProcbatch regProcbatch = orpbatchService.selectWbaByOrpbatch();
+        return Result.success(regProcbatch);
+    }
+
 
 }

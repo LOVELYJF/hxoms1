@@ -457,6 +457,7 @@
                 record.ID_NUMBER as idNumber
         FROM oms_entryexit_record record
         where record.OMS_ID=#{omsId} and length(record.PRIAPPLY_ID) > 0
+        order by record.OGE_DATE asc
     </select>
 
 </mapper>
