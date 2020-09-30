@@ -6,10 +6,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrRecordInfo;
 import com.hxoms.modules.omssmrperson.service.OmsSmrRecordInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,9 +58,9 @@ public class OmsSmrRecordInfoController {
      * @return
      */
     @PostMapping("/exportMatchingPerson")
-    public void exportMatchingPerson(String importYear, String b0100, @ApiIgnore HttpServletResponse response){
+    public void exportMatchingPerson(@RequestBody String jsonParam, @ApiIgnore HttpServletResponse response){
         try{
-            smrRecordInfoService.exportMatchingPerson(importYear,b0100,response);
+            smrRecordInfoService.exportMatchingPerson(jsonParam ,response);
         }catch (Exception e) {
             e.printStackTrace();
         }

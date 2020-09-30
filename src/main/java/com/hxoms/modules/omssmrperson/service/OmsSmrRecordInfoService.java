@@ -20,7 +20,7 @@ public interface OmsSmrRecordInfoService extends IService<OmsSmrRecordInfo>{
     //获取遗漏的省管干部列表
     Result getMatchingPerson(String importYear, String b0100);
     //导出遗漏的省管干部列表
-    void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response);
+    void exportMatchingPerson(String jsonParam,HttpServletResponse response);
     /**
     * @description:通过机构ID和导入年份删除已经导入过的数据
     * @author:杨波

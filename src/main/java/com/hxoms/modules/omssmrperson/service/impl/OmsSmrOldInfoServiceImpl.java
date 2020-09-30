@@ -1,5 +1,6 @@
 package com.hxoms.modules.omssmrperson.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -116,11 +117,9 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
      * 导出差异数据列表
      */
     @Override
-    public void exportDifferentData(String importYear, String b0100, HttpServletResponse response) {
-        List<OmsSmrOldInfoVO> list =  smrOldInfoMapper.getDifferentData(importYear,b0100);
-        if (list.size() < 1 || list == null) {
-            throw new CustomMessageException("操作失败");
-        }
+    public void exportDifferentData(String jsonParam, HttpServletResponse response) {
+        OmsSmrOldInfoVO bean = JSONObject.parseObject(jsonParam, OmsSmrOldInfoVO.class);
+        List<OmsSmrOldInfoVO> list =  smrOldInfoMapper.getDifferentData(bean.getImportYear(),bean.getB0100());
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -147,7 +146,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 8));
         //在sheet里创建第二行
-        HSSFRow row2 = sheet.createRow(1);
+        HSSFRow row2 = sheet.createRow(2);
         //创建单元格并设置单元格内容
         row2.createCell(0).setCellValue("序号");
         row2.createCell(1).setCellValue("数据来源");
@@ -171,7 +170,7 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
 
         HSSFRow row = null;
         for (int i = 0; i < list.size(); i++) {
-            row = sheet.createRow(i + 2);
+            row = sheet.createRow(i + 3);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(list.get(i).getDataSource());
             row.createCell(2).setCellValue(list.get(i).getB0101());

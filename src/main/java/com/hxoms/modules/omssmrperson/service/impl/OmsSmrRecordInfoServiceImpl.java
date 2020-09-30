@@ -1,5 +1,6 @@
 package com.hxoms.modules.omssmrperson.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -49,8 +50,9 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
     }
 
     @Override
-    public void exportMatchingPerson(String importYear,String b0100,HttpServletResponse response) {
-        List<OmsSmrRecordInfoVO> list = smrRecordInfoMapper.getMatchingPerson(importYear,b0100);
+    public void exportMatchingPerson(String jsonParam,HttpServletResponse response) {
+        OmsSmrRecordInfoVO bean = JSONObject.parseObject(jsonParam,OmsSmrRecordInfoVO.class);
+        List<OmsSmrRecordInfoVO> list = smrRecordInfoMapper.getMatchingPerson(bean.getImportYear(),bean.getB0100());
         //创建HSSFWorkbook对象(excel的文档对象)
         HSSFWorkbook wb = new HSSFWorkbook();
         //创建文件样式对象
@@ -58,7 +60,7 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
         //获得字体对象
         HSSFFont font = wb.createFont();
         //建立新的sheet对象（excel的表单）
-        HSSFSheet sheet=wb.createSheet("已匹配人员");
+        HSSFSheet sheet=wb.createSheet("遗漏的省管干部");
         //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
         HSSFRow row1=sheet.createRow(0);
         //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
@@ -72,12 +74,13 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
         style.setFont(font);
         cell.setCellStyle(style);
         //设置标题单元格内容
-        cell.setCellValue("已匹配人员");
+        cell.setCellValue("遗漏的省管干部");
 
         //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
         sheet.addMergedRegion(new CellRangeAddress(0,1,0,14));
         //在sheet里创建第二行
-        HSSFRow row2=sheet.createRow(1);
+        HSSFRow row2=sheet.createRow(2);
+        row2.setRowStyle(style);
         //创建单元格并设置单元格内容
         row2.createCell(0).setCellValue("序号");
         row2.createCell(1).setCellValue("单位");
@@ -107,7 +110,7 @@ public class OmsSmrRecordInfoServiceImpl extends ServiceImpl<OmsSmrRecordInfoMap
 
         HSSFRow row = null;
         for(int i = 0; i < list.size(); i++){
-            row = sheet.createRow(i + 2);
+            row = sheet.createRow(i + 3);
             row.createCell(0).setCellValue(i + 1);
             row.createCell(1).setCellValue(list.get(i).getB0100());
             row.createCell(2).setCellValue(list.get(i).getName());
