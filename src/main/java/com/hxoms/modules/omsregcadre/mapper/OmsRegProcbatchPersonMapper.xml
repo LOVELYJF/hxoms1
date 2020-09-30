@@ -29,8 +29,6 @@
     <result column="SECRET_LEVEL" jdbcType="CHAR" property="secretLevel" />
     <result column="DECRYPT_STARTDATE" jdbcType="DATE" property="decryptStartdate" />
     <result column="DECRYPT_ENDDATE" jdbcType="DATE" property="decryptEnddate" />
-    <result column="RF_STATUS" jdbcType="CHAR" property="rfStatus" />
-    <result column="CHECK_STATUS" jdbcType="CHAR" property="checkStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -40,9 +38,8 @@
     -->
     ID, BATCH_ID, SURNAME, RF_ID, A0100, NAME, SEX, BIRTH_DATE, BIRTH_DATE_GB, IDNUMBER_GB, 
     IDNUMBER_GA, REGISTE_RESIDENCE_CODE, REGISTE_RESIDENCE, WORK_UNIT, POST, POST_CODE, 
-    PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE,RF_STATUS,CHECK_STATUS
+    PERSON_MANAGER, IDENTITY_CODE, IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE, DECRYPT_ENDDATE,INBOUND_FLAG
   </sql>
-
   <select id="selectRfIds" parameterType="java.lang.String" resultType="java.lang.String">
       select RF_ID from oms_reg_procbatch_person where BATCH_ID = #{batchId}
   </select>
@@ -63,7 +60,7 @@
           REGISTE_RESIDENCE, WORK_UNIT, POST,
           POST_CODE, PERSON_MANAGER, IDENTITY_CODE,
           IDENTITY, SECRET_LEVEL, DECRYPT_STARTDATE,
-          DECRYPT_ENDDATE,RF_STATUS,CHECK_STATUS
+          DECRYPT_ENDDATE,INBOUND_FLAG
         )
     values
     <foreach collection="list" index="index" item="item" separator=",">
@@ -74,7 +71,7 @@
       #{item.registeResidence,jdbcType=VARCHAR}, #{item.workUnit,jdbcType=VARCHAR}, #{item.post,jdbcType=VARCHAR},
       #{item.postCode,jdbcType=VARCHAR}, #{item.personManager,jdbcType=VARCHAR}, #{item.identityCode,jdbcType=VARCHAR},
       #{item.identity,jdbcType=VARCHAR}, #{item.secretLevel,jdbcType=CHAR}, #{item.decryptStartdate,jdbcType=DATE},
-      #{item.decryptEnddate,jdbcType=DATE},#{item.rfStatus,jdbcType=CHAR},#{item.checkStatus,jdbcType=CHAR}
+      #{item.decryptEnddate,jdbcType=DATE},#{item.inboundFlag,jdbcType=CHAR}
       )
     </foreach>
   </insert>

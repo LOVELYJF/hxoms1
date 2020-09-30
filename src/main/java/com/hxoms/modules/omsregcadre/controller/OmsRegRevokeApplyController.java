@@ -120,7 +120,7 @@ public class OmsRegRevokeApplyController {
         if (!StringUtils.isEmpty(applyIds)
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalOpinion())
                 && !StringUtils.isBlank(regRevokeApproval.getApprovalConclusion())) {
-            return Result.success(revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds));
+            return revokeApplyService.approvalRevokeRegPerson(regRevokeApproval,applyIds);
         } else {
             return Result.error("必传参数为空");
         }

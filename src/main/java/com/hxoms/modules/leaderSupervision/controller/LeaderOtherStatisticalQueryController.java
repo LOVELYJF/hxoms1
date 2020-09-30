@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -94,7 +95,7 @@ public class LeaderOtherStatisticalQueryController {
      * **/
 
     @PostMapping("/exportRfInfo")
-    public void exportRfInfo(HttpServletResponse response,@RequestBody String idStr){
+    public void exportRfInfo(HttpServletResponse response,@RequestBody String idStr) throws IOException {
         try {
             HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo(idStr);
             String date = new SimpleDateFormat("yyyy-MM-dd")
@@ -106,9 +107,17 @@ public class LeaderOtherStatisticalQueryController {
             wb.write(out);
             out.flush();
             out.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+            response.setStatus(500);
+            ServletOutputStream out = response.getOutputStream();
+            OutputStreamWriter ow=new OutputStreamWriter(out,"UTF-8");
+            String msg="导出失败，原因："+e.getMessage();
+            ow.write(msg);
+            ow.flush();
+            ow.close();
+            out.flush();
+            out.close();
         }
     }
 

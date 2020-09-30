@@ -106,7 +106,7 @@ public class OmsSmrOldInfoController {
      * @param b0100（单位id）
      */
     @PostMapping("/exportDifferentData")
-    public void exportDifferentData(String importYear, String b0100,@ApiIgnore HttpServletResponse response){
+    public void exportDifferentData(@RequestBody String importYear,@RequestBody String b0100,@ApiIgnore HttpServletResponse response){
         try{
             smrOldInfoService.exportDifferentData(importYear, b0100, response);
         }catch (Exception e) {

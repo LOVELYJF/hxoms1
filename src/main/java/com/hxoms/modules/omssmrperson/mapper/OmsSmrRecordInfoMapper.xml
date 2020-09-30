@@ -67,7 +67,7 @@
     SELECT
         b.b0101,
         concat( t.SURNAME, t.NAME ) AS name,
-        SEX,
+        t.SEX,
         t.BIRTH_DATE,
         t.NATION_NAME AS nation,
         t.POLITICAL_AFFINAME AS a0141,
