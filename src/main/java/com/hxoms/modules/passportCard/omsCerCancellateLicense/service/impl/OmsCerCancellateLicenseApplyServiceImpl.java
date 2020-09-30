@@ -172,14 +172,14 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 	public Page<OmsCerCancellateLicense> getCancellateLicenseApply(Page<OmsCerCancellateLicense> page, OmsCerCancellateLicense omsCerCancellateLicense) {
 		QueryWrapper<OmsCerCancellateLicense> queryWrapper = new QueryWrapper<OmsCerCancellateLicense>();
 		queryWrapper
-				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getName()),
-				"NAME",omsCerCancellateLicense.getName())
-				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getZjhm()),
-						"ZJHM",omsCerCancellateLicense.getZjhm())
 				.eq(!StringUtils.isBlank(omsCerCancellateLicense.getZhzxzt()),
 						"ZHZXZT", omsCerCancellateLicense.getZhzxzt())
 				.between(omsCerCancellateLicense.getApplyQueryStartTime() != null && omsCerCancellateLicense.getApplyQueryEndTime() != null,
 						"CREATE_TIME", omsCerCancellateLicense.getApplyQueryStartTime(), omsCerCancellateLicense.getApplyQueryEndTime())
+				.like(!StringUtils.isBlank(omsCerCancellateLicense.getName()),
+						"NAME",omsCerCancellateLicense.getName())
+				.like(!StringUtils.isBlank(omsCerCancellateLicense.getZjhm()),
+						"ZJHM",omsCerCancellateLicense.getZjhm())
 				.orderByDesc("CREATE_TIME");
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsCerCancellateLicense> list = omsCerCancellateLicenseMapper.selectList(queryWrapper);
