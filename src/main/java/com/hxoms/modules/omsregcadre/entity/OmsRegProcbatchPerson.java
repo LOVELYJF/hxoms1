@@ -86,13 +86,9 @@ public class OmsRegProcbatchPerson {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 
-    @ColumnAnnotation(FieldName = "RF_STATUS",   FieldDescription="备案状态0未备案，1已备案")
-    @ApiModelProperty(value="备案状态0未备案，1已备案")
-    private String rfStatus;
-
-    @ColumnAnnotation(FieldName = "CHECK_STATUS",   FieldDescription="验收状态1已验收，0待验收")
-    @ApiModelProperty(value="验收状态1已验收，0待验收")
-    private String checkStatus;
+    @ColumnAnnotation(FieldName = "INBOUND_FLAG",   FieldDescription="入库标识新增U  修改I  撤消D")
+    @ApiModelProperty(value="入库标识新增U  修改I  撤消D")
+    private String inboundFlag;
 
     public String getId() {
         return id;
@@ -270,19 +266,11 @@ public class OmsRegProcbatchPerson {
         this.decryptEnddate = decryptEnddate;
     }
 
-    public String getRfStatus() {
-        return rfStatus;
+    public String getInboundFlag() {
+        return inboundFlag;
     }
 
-    public void setRfStatus(String rfStatus) {
-        this.rfStatus = rfStatus;
-    }
-
-    public String getCheckStatus() {
-        return checkStatus;
-    }
-
-    public void setCheckStatus(String checkStatus) {
-        this.checkStatus = checkStatus;
+    public void setInboundFlag(String inboundFlag) {
+        this.inboundFlag = inboundFlag;
     }
 }

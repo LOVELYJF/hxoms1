@@ -127,14 +127,6 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
             int con =0;
             //根据备案ID修改人员备案状态
             con = regpersonInfoMapper.update(omsreginfo,personInfoWrapper);
-            if (con > 0){
-                UpdateWrapper<OmsRegProcbatchPerson> batchpersonWrapper = new UpdateWrapper<OmsRegProcbatchPerson>();
-                OmsRegProcbatchPerson batchperson = new OmsRegProcbatchPerson();
-                //验收状态  1已验收，0待验收
-                batchperson.setCheckStatus("1");
-                batchpersonWrapper.in("RF_ID",rfIds);
-                con = regbatchPersonMapper.update(batchperson,batchpersonWrapper);
-            }
             return con;
         }else{
             throw new CustomMessageException("当前不存在未备案批次，请新先登记备案");

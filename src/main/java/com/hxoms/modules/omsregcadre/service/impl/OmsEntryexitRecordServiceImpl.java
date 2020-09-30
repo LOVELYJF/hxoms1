@@ -417,8 +417,7 @@ public class OmsEntryexitRecordServiceImpl extends ServiceImpl<OmsEntryexitRecor
             }
         }
 
-        for(int i=0;i<=omsEntryexitRecords.size()-1;)
-        {
+        for(int i=0;i<=omsEntryexitRecords.size()-1;){
             OmsEntryexitRecord recOut=omsEntryexitRecords.get(i);
             OmsEntryexitRecord recIn = null;
             if(i<omsEntryexitRecords.size()-1)
