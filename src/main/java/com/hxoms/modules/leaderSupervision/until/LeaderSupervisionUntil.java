@@ -620,15 +620,17 @@ public class LeaderSupervisionUntil {
         width1.add(8d);//报送单位联系人
         width1.add(8d);//联系电话
         width1.add(8.75d);//入库批号
+
         HSSFFont font = wb.createFont();
         font.setBold(false);
         font.setFontName("宋体");
         font.setFontHeightInPoints((short) 10);
-        for(int i=0;i<width1.size();i++){
-            CellStyle cs = sheet.getColumnStyle(i);
-            ((HSSFCellStyle) cs).setFont(font);
-            sheet.setDefaultColumnStyle(i,cs);
+        int css = wb.getNumCellStyles();
+        for(int i=0;i<css;i++){
+            HSSFCellStyle cs = wb.getCellStyleAt(i);
+            cs.setFont(font);
         }
+
         //从客户样式表通过程序读取的值
 //        width1.add(1184d);//序号
 //        width1.add(1056d);//中文姓
