@@ -32,7 +32,7 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
 
     List<OmsRegProcpersoninfo> selectListById(@Param(value = "ids")List<String> ids);
 
-    List<OmsRegProcpersoninfo> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
+    List<OmsRegProcpersoninfoVO> selectRegPersonInfoList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
     int updateRegProcpersoninfo(@Param(value = "info")OmsRegProcpersoninfoIPagParam info);
 

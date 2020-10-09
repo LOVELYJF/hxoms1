@@ -20,10 +20,10 @@ public interface OmsRegProcbatchService  extends IService<OmsRegProcbatch> {
 
     Object insertProcbatch(OmsRegProcbatch regProcbatch);
 
-    int batchinsertInfo(List<OmsRegProcbatchPerson> orpbplist);
-
     int updateOrpbatch(OmsRegProcbatch batchinfo);
 
     Result getToBeConfirmed(String batchId);
+
+    void FinishBatch(String batchId);
 }
 

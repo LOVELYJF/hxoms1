@@ -1,6 +1,7 @@
 package com.hxoms.common;
 
 
+import com.hxoms.common.utils.BeanUtilSelf;
 import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
@@ -8,6 +9,7 @@ import com.hxoms.message.msguser.entity.MsgUser;
 import com.hxoms.support.parameter.service.ParameterService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -112,6 +114,26 @@ public class OmsCommonUtil {
     }
     public static HashMap<String, SysDictItem> CacheDictItem(String dictCode){
         return CacheDictItem(dictCode,true);
+    }
+    /**
+     * @description:利用指定属性的值缓存list到hashMap
+     * @author:杨波
+     * @date:2020-10-01
+     *  * @param objects 要缓存的数据
+     * @param keyFieldName 作为key值的属性
+     * @return:java.util.HashMap<java.lang.String,org.apache.poi.ss.formula.functions.T>
+     **/
+    public static HashMap<String,Object> CacheHasMap(List<Object> objects,String keyFieldName){
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        for (Object t:objects
+             ) {
+            String key= BeanUtilSelf.getFieldStringValueByFieldName(keyFieldName,t,"");
+            if(hashMap.containsKey(key)) continue;
+
+            hashMap.put(key,t);
+        }
+        return hashMap;
     }
     /**
      * @param paramCode 接收人的系统参数编码，格式：类型（1个人 2处室 3机构 4讨论组）,机构或处室ID，机构或处室名称

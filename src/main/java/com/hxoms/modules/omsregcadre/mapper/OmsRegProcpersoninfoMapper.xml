@@ -96,8 +96,26 @@
     </if>
   </select>
 
-  <select id="selectRegPersonInfoList" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
-      select * from oms_reg_procpersoninfo where 1=1
+  <select id="selectRegPersonInfoList" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO">
+      select info.*, CASE
+      WHEN info.SEX = '1' THEN
+      '男'
+      ELSE
+      '女'
+      END AS sexName,CASE
+      WHEN info.data_type = '1' THEN
+      '干部'
+      ELSE
+      '公安'
+      END AS dataTypeName,
+      T_3.item_name as incumbencyStatusName,
+      T_7.item_name as secretLevelName
+      from oms_reg_procpersoninfo info
+      LEFT JOIN  (SELECT T_3.item_code,T_3.item_name FROM SYS_DICT_ITEM T_3 WHERE T_3.DICT_CODE = 'ZZZT'
+      ) T_3 ON info.INCUMBENCY_STATUS = T_3.item_code
+      LEFT JOIN  (SELECT T_7.item_code,T_7.item_name FROM SYS_DICT_ITEM T_7 WHERE T_7.DICT_CODE = 'SMDJ'
+      ) T_7 ON info.SECRET_LEVEL = T_7.item_code
+      where 1=1
       <if test="secretLevel !=null and secretLevel !=''">
         and SECRET_LEVEL = #{secretLevel}
       </if>
@@ -124,6 +142,12 @@
       </if>
       <if test="name!=null and name!=''">
         AND ((CONCAT(IFNULL(SURNAME,''),IFNULL(NAME,'')) LIKE '%${name}%') or (SURNAME LIKE '%${name}%'))
+      </if>
+      <if test="ids!=null and ids.size>0">
+          and ID in
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
       </if>
     order by SURNAME,NAME,WORK_UNIT asc
   </select>
