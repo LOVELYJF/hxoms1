@@ -97,6 +97,8 @@ public class LeaderOtherStatisticalQueryController {
     @PostMapping("/exportRfInfo")
     public void exportRfInfo(HttpServletResponse response,@RequestBody String idStr) throws IOException {
         try {
+            if("null".equals(idStr))
+                idStr=null;
             HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo(idStr);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());

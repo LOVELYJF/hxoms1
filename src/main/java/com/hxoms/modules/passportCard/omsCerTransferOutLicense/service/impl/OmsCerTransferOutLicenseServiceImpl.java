@@ -2,6 +2,7 @@ package com.hxoms.modules.passportCard.omsCerTransferOutLicense.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @Date: 2020/8/10 16:24
  */
 @Service
-public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLicenseService {
+public class OmsCerTransferOutLicenseServiceImpl extends ServiceImpl<OmsCerTransferOutLicenseMapper, OmsCerTransferOutLicense> implements OmsCerTransferOutLicenseService {
 
 
 	@Autowired
@@ -84,11 +85,11 @@ public class OmsCerTransferOutLicenseServiceImpl implements OmsCerTransferOutLic
 	 */
 	public List<OmsCerTransferOutLicense> getBatchByYear() {
 		List<OmsCerTransferOutLicense> list = omsCerTransferOutLicenseMapper.selectYearList();      //查询批次号的年份集合
-		if(ListUtil.isEmpty(list)){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerTransferOutLicense omsCerTransferOutLicense : list){
 				String year = omsCerTransferOutLicense.getYear();
 				List<OmsCerTransferOutLicense> list1 = omsCerTransferOutLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
-				if(ListUtil.isEmpty(list1)){
+				if(!ListUtil.isEmpty(list1)){
 					omsCerTransferOutLicense.setList(list1);
 				}
 			}

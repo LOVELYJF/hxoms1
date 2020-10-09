@@ -35,5 +35,13 @@
       select * from oms_reg_procbatch where STATUS = '0'
   </select>
 
+  <select id="getLastBatch" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch">
+    select * from oms_reg_procbatch ORDER BY SUBMIT_TIME desc LIMIT 1
+  </select>
+  <update id="FinishBatch">
+    update oms_reg_procbatch set STATUS="1"
+where id=#{batchId} and 0=(select count(1) from oms_reg_procbatch_person
+where BATCH_ID=#{batchId} and SUCCESS='0' )
+  </update>
 
 </mapper>

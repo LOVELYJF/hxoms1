@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.omsCerTransferOutLicense.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
  * @Author: luoshuai
  * @Date: 2020/8/10 16:24
  */
-public interface OmsCerTransferOutLicenseService {
+public interface OmsCerTransferOutLicenseService  extends IService<OmsCerTransferOutLicense> {
 
 	/**
 	 * <b>功能描述: 查询转出证照申请信息</b>

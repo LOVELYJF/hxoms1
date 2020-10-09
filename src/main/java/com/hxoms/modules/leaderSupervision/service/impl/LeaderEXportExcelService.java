@@ -1,8 +1,11 @@
 package com.hxoms.modules.leaderSupervision.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
@@ -12,12 +15,17 @@ import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatch;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfoVO;
+import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegProcpersoninfoIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcbatchPersonMapper;
 import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchPersonService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.service.OrgService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,8 +48,8 @@ public class LeaderEXportExcelService {
     @Autowired
     private LeaderCommonMapper leaderCommonQueryMapper;
 
-     @Autowired
-     private SelectMapper selectMapper;  // 通用 自定义sql
+    @Autowired
+    private SelectMapper selectMapper;  // 通用 自定义sql
 
     @Autowired
     private OmsRegProcpersoninfoMapper mrpinfoMapper;
@@ -53,11 +62,17 @@ public class LeaderEXportExcelService {
 
     @Autowired
     private OmsRegProcbatchPersonMapper procbatchPersonMapper;
+    @Autowired
+    private OmsRegProcbatchPersonService procbatchPersonService;
 
-    /** 因公出国境管理 导出 **/
-    public HSSFWorkbook pubApplyMangerExport(OmsPubApplyQueryParam omsPubApplyQueryParam){
+    @Autowired
+    private OrgService orgService;
+    /**
+     * 因公出国境管理 导出
+     **/
+    public HSSFWorkbook pubApplyMangerExport(OmsPubApplyQueryParam omsPubApplyQueryParam) {
 
-     List<Map> dataList =  leaderCommonQueryMapper.selectPulicApplyManager(omsPubApplyQueryParam);
+        List<Map> dataList = leaderCommonQueryMapper.selectPulicApplyManager(omsPubApplyQueryParam);
 
 
 ///	SELECT
@@ -96,48 +111,71 @@ public class LeaderEXportExcelService {
 //
 //     case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
 //     AS clshsftg # 材料审核是否通过
-     List listK = new ArrayList();
-     List listV = new ArrayList();
-     listK.add("num");listV.add("序号");
-     listK.add("department");listV.add("单位");
-     listK.add("userName");listV.add("姓名");
-     listK.add("sex");listV.add("性别");
-     listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
-     listK.add("health");listV.add("健康情况");  // 少一列 健康情况
-     listK.add("job");listV.add("职务");               // 少一列 备案号
-     listK.add("bah");listV.add("备案号");
-     listK.add("abroadTime");listV.add("出境日期");
-     listK.add("returnTime");listV.add("回国时间");
-     listK.add("sdgj");listV.add("目的地");
-     listK.add("cfrw");listV.add("事由");  //  少一列 状态
-     listK.add("secretLevel");listV.add("涉密等级");
-     listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-     listK.add("sflg");listV.add("是否裸官");
-     listK.add("identity");listV.add("身份类别");
-     listK.add("sfzyld");listV.add("主要领导");
-     listK.add("fmxx");listV.add("负面信息");
-     listK.add("clshsftg");listV.add("材料审核");
-     listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
-     listK.add("chulingdaoOpinion");listV.add("处领导意见");
-     listK.add("bulingdaoOpinion");listV.add("部领导意见");
-     listK.add("zzjl");listV.add("最终结论");
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("sex");
+        listV.add("性别");
+        listK.add("politicalAffi");
+        listV.add("政治面貌");  // 少一列 健康情况
+        listK.add("health");
+        listV.add("健康情况");  // 少一列 健康情况
+        listK.add("job");
+        listV.add("职务");               // 少一列 备案号
+        listK.add("bah");
+        listV.add("备案号");
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("returnTime");
+        listV.add("回国时间");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfrw");
+        listV.add("事由");  //  少一列 状态
+        listK.add("secretLevel");
+        listV.add("涉密等级");
+        listK.add("declassificaEndTime");
+        listV.add("脱密期结束时间");
+        listK.add("sflg");
+        listV.add("是否裸官");
+        listK.add("identity");
+        listV.add("身份类别");
+        listK.add("sfzyld");
+        listV.add("主要领导");
+        listK.add("fmxx");
+        listV.add("负面信息");
+        listK.add("clshsftg");
+        listV.add("材料审核");
+        listK.add("cadresupervisionOpinion");
+        listV.add("干部监督处意见");
+        listK.add("chulingdaoOpinion");
+        listV.add("处领导意见");
+        listK.add("bulingdaoOpinion");
+        listV.add("部领导意见");
+        listK.add("zzjl");
+        listV.add("最终结论");
 
-     return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因公出国境申请管理");
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "因公出国境申请管理");
 
 
     }
 
 
+    /**
+     * 因公出国境管理 导出
+     **/
+    public HSSFWorkbook jiweiApplyExport(LeaderSupervisionVo leaderSupervisionVo) {
 
- /** 因公出国境管理 导出 **/
- public HSSFWorkbook  jiweiApplyExport(LeaderSupervisionVo leaderSupervisionVo){
 
+        List<Map> dataList = leaderCommonQueryMapper.selectJiweiApply(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray()
 
-
-  List<Map> dataList =  leaderCommonQueryMapper.selectJiweiApply(
-          leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
-
-  );
+        );
 
 
 //  pua.id AS id,   # 业务id
@@ -178,67 +216,82 @@ public class LeaderEXportExcelService {
 //  AS clshsftg # 材料审核是否通过
 
 
-
-  List listK = new ArrayList();
-  List listV = new ArrayList();
-  listK.add("num");listV.add("序号");
-  listK.add("department");listV.add("工作单位");
-  listK.add("userName");listV.add("姓名");
-  listK.add("job");listV.add("职务");
-  listK.add("businessType");listV.add("申请类型");
- // listK.add("sex");listV.add("性别");
- // listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
-            // 少一列 备案号
-  listK.add("abroadTime");listV.add("出境日期");
-  listK.add("daynums");listV.add("距离出境天数");
-  listK.add("returnTime");listV.add("入境日期");
-  listK.add("sdgj");listV.add("目的地");
-  listK.add("cfrw");listV.add("事由");  //  少一列 状态
- // listK.add("secretLevel");listV.add("涉密等级");
- // listK.add("declassificaEndTime");listV.add("脱密期结束时间");
- // listK.add("sflg");listV.add("是否裸官");
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("工作单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("job");
+        listV.add("职务");
+        listK.add("businessType");
+        listV.add("申请类型");
+        // listK.add("sex");listV.add("性别");
+        // listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
+        // 少一列 备案号
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("daynums");
+        listV.add("距离出境天数");
+        listK.add("returnTime");
+        listV.add("入境日期");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfrw");
+        listV.add("事由");  //  少一列 状态
+        // listK.add("secretLevel");listV.add("涉密等级");
+        // listK.add("declassificaEndTime");listV.add("脱密期结束时间");
+        // listK.add("sflg");listV.add("是否裸官");
 //  listK.add("identity");listV.add("身份类别");
 //  listK.add("sfzyld");listV.add("主要领导");
-  listK.add("fmxx");listV.add("负面信息");
-  listK.add("sfbg");listV.add("是否变更");
-  listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
-  listK.add("sczqjwyjsj");listV.add("上次征求时间");
-  listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
-  listK.add("jwjl");listV.add("纪委结论");
-  listK.add("clshsftg");listV.add("材料审核结果");
+        listK.add("fmxx");
+        listV.add("负面信息");
+        listK.add("sfbg");
+        listV.add("是否变更");
+        listK.add("sfbczqjwyj");
+        listV.add("需要征求纪委意见");
+        listK.add("sczqjwyjsj");
+        listV.add("上次征求时间");
+        listK.add("sfzqjiwyj");
+        listV.add("是否已征求纪委意见");
+        listK.add("jwjl");
+        listV.add("纪委结论");
+        listK.add("clshsftg");
+        listV.add("材料审核结果");
 
 
-
-  return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因公出国境申请管理");
-
-
- }
-
-     @Transactional(rollbackFor = Exception.class)
-    public void  test(){
-     // 事务的隔离性 同一个 事务才不存在隔离， 对另一个事务有隔离
-     String sql = "update student  set name ='333' ";
-     String sql1 = "select * from student  ";
-
-      SqlVo instance = SqlVo.getInstance(sql);
-      selectMapper.update(instance);
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "因公出国境申请管理");
 
 
-      SqlVo instance1 = SqlVo.getInstance(sql1);
-      List<LinkedHashMap<String, Object>> linkedHashMaps =  selectMapper.select(instance1);
+    }
 
-      System.out.println(linkedHashMaps);
+    @Transactional(rollbackFor = Exception.class)
+    public void test() {
+        // 事务的隔离性 同一个 事务才不存在隔离， 对另一个事务有隔离
+        String sql = "update student  set name ='333' ";
+        String sql1 = "select * from student  ";
+
+        SqlVo instance = SqlVo.getInstance(sql);
+        selectMapper.update(instance);
+
+
+        SqlVo instance1 = SqlVo.getInstance(sql1);
+        List<LinkedHashMap<String, Object>> linkedHashMaps = selectMapper.select(instance1);
+
+        System.out.println(linkedHashMaps);
 
     }
 
     /**
-     *  纪委意见填写导出
-     * **/
+     * 纪委意见填写导出
+     **/
 
-    public HSSFWorkbook  jiweiWriteApplyExport(LeaderSupervisionVo leaderSupervisionVo){
+    public HSSFWorkbook jiweiWriteApplyExport(LeaderSupervisionVo leaderSupervisionVo) {
 
-        List<Map> dataList =  leaderCommonQueryMapper.selectJiweiWriteApply(
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+        List<Map> dataList = leaderCommonQueryMapper.selectJiweiWriteApply(
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray()
 
         );
 
@@ -281,50 +334,73 @@ public class LeaderEXportExcelService {
 
         List listK = new ArrayList();
         List listV = new ArrayList();
-        listK.add("num");listV.add("序号");
-        listK.add("department");listV.add("工作单位");
-        listK.add("userName");listV.add("姓名");
-        listK.add("job");listV.add("职务");
-        listK.add("jwjl");listV.add("纪委结论");
-        listK.add("verbaljwjl");listV.add("口头意见");
-        listK.add("officaljwjl");listV.add("书面意见");
-        listK.add("businessType");listV.add("申请类型");
-        listK.add("cgspdw");listV.add("审批单位");
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("工作单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("job");
+        listV.add("职务");
+        listK.add("jwjl");
+        listV.add("纪委结论");
+        listK.add("verbaljwjl");
+        listV.add("口头意见");
+        listK.add("officaljwjl");
+        listV.add("书面意见");
+        listK.add("businessType");
+        listV.add("申请类型");
+        listK.add("cgspdw");
+        listV.add("审批单位");
         // listK.add("sex");listV.add("性别");
         // listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
         // 少一列 备案号
-        listK.add("abroadTime");listV.add("出境日期");
-        listK.add("daynums");listV.add("距离出境天数");
-        listK.add("returnTime");listV.add("入境日期");
-        listK.add("sdgj");listV.add("目的地");
-        listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
-        listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("daynums");
+        listV.add("距离出境天数");
+        listK.add("returnTime");
+        listV.add("入境日期");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfrw");
+        listV.add("任务/事由");  //  少一列 状态
+        listK.add("secretLevel");
+        listV.add("涉密等级");  //  少一列 状态
         // listK.add("secretLevel");listV.add("涉密等级");
-         listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-         listK.add("sflg");listV.add("是否裸官");
-       listK.add("identity");listV.add("身份类别");
-       listK.add("sfzyld");listV.add("主要领导");
-        listK.add("fmxx");listV.add("负面信息");
-        listK.add("sfbg");listV.add("是否变更");
-        listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
+        listK.add("declassificaEndTime");
+        listV.add("脱密期结束时间");
+        listK.add("sflg");
+        listV.add("是否裸官");
+        listK.add("identity");
+        listV.add("身份类别");
+        listK.add("sfzyld");
+        listV.add("主要领导");
+        listK.add("fmxx");
+        listV.add("负面信息");
+        listK.add("sfbg");
+        listV.add("是否变更");
+        listK.add("sfbczqjwyj");
+        listV.add("需要征求纪委意见");
 //        listK.add("sczqjwyjsj");listV.add("上次征求时间");
 //        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
 
-        listK.add("clshsftg");listV.add("材料审核结果");
+        listK.add("clshsftg");
+        listV.add("材料审核结果");
 
-        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"记录意见导出");
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "记录意见导出");
 
     }
 
-    public HSSFWorkbook makeCheckOpinionExport(AuditOpinionVo auditOpinionVo){
+    public HSSFWorkbook makeCheckOpinionExport(AuditOpinionVo auditOpinionVo) {
 
-        List<Map>   dataList=null;
-        if(auditOpinionVo.getBussinessType().equals("1")){
+        List<Map> dataList = null;
+        if (auditOpinionVo.getBussinessType().equals("1")) {
             dataList = leaderCommonQueryMapper.selectAuditOpinionOmsPua(auditOpinionVo);
-        }else if(auditOpinionVo.getBussinessType().equals("2")){
+        } else if (auditOpinionVo.getBussinessType().equals("2")) {
 
             dataList = leaderCommonQueryMapper.selectAuditOpinionOmsPri(auditOpinionVo);
-        }else if(auditOpinionVo.getBussinessType().equals("3")){
+        } else if (auditOpinionVo.getBussinessType().equals("3")) {
 
             dataList = leaderCommonQueryMapper.selectAuditOpinionOmsPriDelay(auditOpinionVo);
         }
@@ -332,7 +408,7 @@ public class LeaderEXportExcelService {
         List listK = new ArrayList();
         List listV = new ArrayList();
 
-        if(auditOpinionVo.getBussinessType().equals("1")){
+        if (auditOpinionVo.getBussinessType().equals("1")) {
 //            pua.id AS id,   # 业务id
 //            pua.leader_batch_id as batchId, # 批次id
 //            pua.SQZT   as applyStatus,    # 业务 流程状态
@@ -370,143 +446,212 @@ public class LeaderEXportExcelService {
 //                pua.FMXX AS fmxx, # 负面信息
 //                pua.SFBG as sfbg # 是否变更
 
-            listK.add("num");listV.add("序号");
-            listK.add("department");listV.add("工作单位");
-            listK.add("userName");listV.add("姓名");
-            listK.add("abroadTime");listV.add("出境日期");
-            listK.add("returnTime");listV.add("入境日期");
-            listK.add("sdgj");listV.add("目的地");
-            listK.add("cfrw");listV.add("出访任务");  //  少一列 状态
-            listK.add("cgspdw");listV.add("审批单位");
-            listK.add("clshsftg");listV.add("材料审核结果");
+            listK.add("num");
+            listV.add("序号");
+            listK.add("department");
+            listV.add("工作单位");
+            listK.add("userName");
+            listV.add("姓名");
+            listK.add("abroadTime");
+            listV.add("出境日期");
+            listK.add("returnTime");
+            listV.add("入境日期");
+            listK.add("sdgj");
+            listV.add("目的地");
+            listK.add("cfrw");
+            listV.add("出访任务");  //  少一列 状态
+            listK.add("cgspdw");
+            listV.add("审批单位");
+            listK.add("clshsftg");
+            listV.add("材料审核结果");
 
-            listK.add("jwjl");listV.add("纪委结论");
-            listK.add("verbaljwjl");listV.add("口头意见");
-            listK.add("officaljwjl");listV.add("书面意见");
+            listK.add("jwjl");
+            listV.add("纪委结论");
+            listK.add("verbaljwjl");
+            listV.add("口头意见");
+            listK.add("officaljwjl");
+            listV.add("书面意见");
 //            listK.add("businessType");listV.add("申请类型");
 
-             listK.add("sex");listV.add("性别");
-             listK.add("birthDate");listV.add("出生日期");
-             listK.add("politicalAffi");listV.add("政治面貌");
-            listK.add("job");listV.add("职务");
+            listK.add("sex");
+            listV.add("性别");
+            listK.add("birthDate");
+            listV.add("出生日期");
+            listK.add("politicalAffi");
+            listV.add("政治面貌");
+            listK.add("job");
+            listV.add("职务");
 
 
 //            listK.add("daynums");listV.add("距离出境天数");
 
 
-            listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
-            listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+            listK.add("cfrw");
+            listV.add("任务/事由");  //  少一列 状态
+            listK.add("secretLevel");
+            listV.add("涉密等级");  //  少一列 状态
             // listK.add("secretLevel");listV.add("涉密等级");
-            listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-            listK.add("sflg");listV.add("是否裸官");
-            listK.add("identity");listV.add("身份类别");
-            listK.add("sfzyld");listV.add("主要领导");
-            listK.add("fmxx");listV.add("负面信息");
-            listK.add("sfbg");listV.add("是否变更");
+            listK.add("declassificaEndTime");
+            listV.add("脱密期结束时间");
+            listK.add("sflg");
+            listV.add("是否裸官");
+            listK.add("identity");
+            listV.add("身份类别");
+            listK.add("sfzyld");
+            listV.add("主要领导");
+            listK.add("fmxx");
+            listV.add("负面信息");
+            listK.add("sfbg");
+            listV.add("是否变更");
 //            listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
 //        listK.add("sczqjwyjsj");listV.add("上次征求时间");
 //        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
 
 
-        }else if(auditOpinionVo.getBussinessType().equals("2")){
+        } else if (auditOpinionVo.getBussinessType().equals("2")) {
 
-            listK.add("num");listV.add("序号");
-            listK.add("department");listV.add("工作单位");
-            listK.add("userName");listV.add("姓名");
-            listK.add("sex");listV.add("性别");
-            listK.add("birthDate");listV.add("出生日期");
-            listK.add("politicalAffi");listV.add("政治面貌");
-            listK.add("health");listV.add("健康状况");
-            listK.add("job");listV.add("职务");
-            listK.add("abroadTime");listV.add("出境日期");
-            listK.add("returnTime");listV.add("入境日期");
-            listK.add("sdgj");listV.add("目的地");
-            listK.add("cfrw");listV.add("出访任务");  //  少一列 状态
-            listK.add("cgspdw");listV.add("审批单位");
-            listK.add("clshsftg");listV.add("材料审核结果");
+            listK.add("num");
+            listV.add("序号");
+            listK.add("department");
+            listV.add("工作单位");
+            listK.add("userName");
+            listV.add("姓名");
+            listK.add("sex");
+            listV.add("性别");
+            listK.add("birthDate");
+            listV.add("出生日期");
+            listK.add("politicalAffi");
+            listV.add("政治面貌");
+            listK.add("health");
+            listV.add("健康状况");
+            listK.add("job");
+            listV.add("职务");
+            listK.add("abroadTime");
+            listV.add("出境日期");
+            listK.add("returnTime");
+            listV.add("入境日期");
+            listK.add("sdgj");
+            listV.add("目的地");
+            listK.add("cfrw");
+            listV.add("出访任务");  //  少一列 状态
+            listK.add("cgspdw");
+            listV.add("审批单位");
+            listK.add("clshsftg");
+            listV.add("材料审核结果");
 
-            listK.add("jwjl");listV.add("纪委结论");
-            listK.add("verbaljwjl");listV.add("口头意见");
-            listK.add("officaljwjl");listV.add("书面意见");
+            listK.add("jwjl");
+            listV.add("纪委结论");
+            listK.add("verbaljwjl");
+            listV.add("口头意见");
+            listK.add("officaljwjl");
+            listV.add("书面意见");
 //            listK.add("businessType");listV.add("申请类型");
-
-
 
 
 //            listK.add("daynums");listV.add("距离出境天数");
 
 
-            listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
-            listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+            listK.add("cfrw");
+            listV.add("任务/事由");  //  少一列 状态
+            listK.add("secretLevel");
+            listV.add("涉密等级");  //  少一列 状态
             // listK.add("secretLevel");listV.add("涉密等级");
-            listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-            listK.add("sflg");listV.add("是否裸官");
-            listK.add("identity");listV.add("身份类别");
-            listK.add("sfzyld");listV.add("主要领导");
-            listK.add("fmxx");listV.add("负面信息");
+            listK.add("declassificaEndTime");
+            listV.add("脱密期结束时间");
+            listK.add("sflg");
+            listV.add("是否裸官");
+            listK.add("identity");
+            listV.add("身份类别");
+            listK.add("sfzyld");
+            listV.add("主要领导");
+            listK.add("fmxx");
+            listV.add("负面信息");
 //            listK.add("sfbg");listV.add("是否变更");
 //            listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
 //        listK.add("sczqjwyjsj");listV.add("上次征求时间");
 //        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
 
-         }
-        else if(auditOpinionVo.getBussinessType().equals("3")){
+        } else if (auditOpinionVo.getBussinessType().equals("3")) {
 
-            listK.add("num");listV.add("序号");
-            listK.add("department");listV.add("工作单位");
-            listK.add("userName");listV.add("姓名");
-            listK.add("sex");listV.add("性别");
-            listK.add("birthDate");listV.add("出生日期");
-            listK.add("politicalAffi");listV.add("政治面貌");
-            listK.add("health");listV.add("健康状况");
-            listK.add("job");listV.add("职务");
-            listK.add("abroadTime");listV.add("出境日期");
-            listK.add("returnTime");listV.add("入境日期");
-            listK.add("sdgj");listV.add("目的地");
-            listK.add("cfrw");listV.add("出访任务");  //  少一列 状态
-            listK.add("cgspdw");listV.add("审批单位");
-            listK.add("clshsftg");listV.add("材料审核结果");
+            listK.add("num");
+            listV.add("序号");
+            listK.add("department");
+            listV.add("工作单位");
+            listK.add("userName");
+            listV.add("姓名");
+            listK.add("sex");
+            listV.add("性别");
+            listK.add("birthDate");
+            listV.add("出生日期");
+            listK.add("politicalAffi");
+            listV.add("政治面貌");
+            listK.add("health");
+            listV.add("健康状况");
+            listK.add("job");
+            listV.add("职务");
+            listK.add("abroadTime");
+            listV.add("出境日期");
+            listK.add("returnTime");
+            listV.add("入境日期");
+            listK.add("sdgj");
+            listV.add("目的地");
+            listK.add("cfrw");
+            listV.add("出访任务");  //  少一列 状态
+            listK.add("cgspdw");
+            listV.add("审批单位");
+            listK.add("clshsftg");
+            listV.add("材料审核结果");
 
-            listK.add("jwjl");listV.add("纪委结论");
-            listK.add("verbaljwjl");listV.add("口头意见");
-            listK.add("officaljwjl");listV.add("书面意见");
+            listK.add("jwjl");
+            listV.add("纪委结论");
+            listK.add("verbaljwjl");
+            listV.add("口头意见");
+            listK.add("officaljwjl");
+            listV.add("书面意见");
 //            listK.add("businessType");listV.add("申请类型");
-
-
 
 
 //            listK.add("daynums");listV.add("距离出境天数");
 
 
-            listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
-            listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+            listK.add("cfrw");
+            listV.add("任务/事由");  //  少一列 状态
+            listK.add("secretLevel");
+            listV.add("涉密等级");  //  少一列 状态
             // listK.add("secretLevel");listV.add("涉密等级");
-            listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-            listK.add("sflg");listV.add("是否裸官");
-            listK.add("identity");listV.add("身份类别");
-            listK.add("sfzyld");listV.add("主要领导");
-            listK.add("fmxx");listV.add("负面信息");
+            listK.add("declassificaEndTime");
+            listV.add("脱密期结束时间");
+            listK.add("sflg");
+            listV.add("是否裸官");
+            listK.add("identity");
+            listV.add("身份类别");
+            listK.add("sfzyld");
+            listV.add("主要领导");
+            listK.add("fmxx");
+            listV.add("负面信息");
 //            listK.add("sfbg");listV.add("是否变更");
 //            listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
 //        listK.add("sczqjwyjsj");listV.add("上次征求时间");
 //        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
 
+        }
+
+
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "记录意见导出");
+
+
     }
 
+    /**
+     * 人员备案表 导出
+     **/
 
-    return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"记录意见导出");
-
-
-    }
-
-    /**人员备案表 导出 **/
-
-    public HSSFWorkbook putonRecordExport(LeaderSupervisionVo leaderSupervisionVo){
+    public HSSFWorkbook putonRecordExport(LeaderSupervisionVo leaderSupervisionVo) {
 
 
-        List<Map> dataList =  leaderCommonQueryMapper.createPutOnRecordList(
+        List<Map> dataList = leaderCommonQueryMapper.createPutOnRecordList(
                 null,
-                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()).toArray()
+                leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray()
 
         );
 
@@ -562,26 +707,45 @@ public class LeaderEXportExcelService {
 
         List listK = new ArrayList();
         List listV = new ArrayList();
-        listK.add("num");listV.add("序号");
-        listK.add("department");listV.add("工作单位");
-        listK.add("userName");listV.add("姓名");
-        listK.add("sex");listV.add("性别");
-        listK.add("birthDate");listV.add("出生日期");
-        listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
-        listK.add("job");listV.add("职务");
-        listK.add("bah");listV.add("备案号");  // 少一列 健康情况
-        listK.add("abroadTime");listV.add("出境日期");
-        listK.add("returnTime");listV.add("入境日期");
-        listK.add("sdgj");listV.add("目的地");
-        listK.add("cfsy");listV.add("事由");
-        listK.add("cgspdw");listV.add("审批单位");
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("工作单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("sex");
+        listV.add("性别");
+        listK.add("birthDate");
+        listV.add("出生日期");
+        listK.add("politicalAffi");
+        listV.add("政治面貌");  // 少一列 健康情况
+        listK.add("job");
+        listV.add("职务");
+        listK.add("bah");
+        listV.add("备案号");  // 少一列 健康情况
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("returnTime");
+        listV.add("入境日期");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfsy");
+        listV.add("事由");
+        listK.add("cgspdw");
+        listV.add("审批单位");
 
-        listK.add("jwjl");listV.add("纪委结论");
-        listK.add("clshsftg");listV.add("材料审核");
-        listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
-        listK.add("chulingdaoOpinion");listV.add("处领导意见");
-        listK.add("bulingdaoOpinion");listV.add("部领导意见");
-        listK.add("zzjl");listV.add("最终结论");
+        listK.add("jwjl");
+        listV.add("纪委结论");
+        listK.add("clshsftg");
+        listV.add("材料审核");
+        listK.add("cadresupervisionOpinion");
+        listV.add("干部监督处意见");
+        listK.add("chulingdaoOpinion");
+        listV.add("处领导意见");
+        listK.add("bulingdaoOpinion");
+        listV.add("部领导意见");
+        listK.add("zzjl");
+        listV.add("最终结论");
 
 
 //        listK.add("verbaljwjl");listV.add("口头意见");
@@ -596,21 +760,26 @@ public class LeaderEXportExcelService {
 
 
 //        listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
-        listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+        listK.add("secretLevel");
+        listV.add("涉密等级");  //  少一列 状态
         // listK.add("secretLevel");listV.add("涉密等级");
-        listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-        listK.add("sflg");listV.add("裸官");
-        listK.add("identity");listV.add("身份类别");
-        listK.add("sfzyld");listV.add("主要领导");
-        listK.add("fmxx");listV.add("负面信息");
+        listK.add("declassificaEndTime");
+        listV.add("脱密期结束时间");
+        listK.add("sflg");
+        listV.add("裸官");
+        listK.add("identity");
+        listV.add("身份类别");
+        listK.add("sfzyld");
+        listV.add("主要领导");
+        listK.add("fmxx");
+        listV.add("负面信息");
 //        listK.add("sfbg");listV.add("是否变更");
 //        listK.add("sfbczqjwyj");listV.add("需要征求纪委意见");
 //        listK.add("sczqjwyjsj");listV.add("上次征求时间");
 //        listK.add("sfzqjiwyj");listV.add("是否已征求纪委意见");
 
 
-
-        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"记录意见导出");
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "记录意见导出");
 
 
     }
@@ -618,97 +787,142 @@ public class LeaderEXportExcelService {
 
     /**
      * 省管登记备案导出
+     *
      * @param idStr
      * @return
      */
-    public HSSFWorkbook exportRfInfo(String idStr) {
+    @Transactional(rollbackFor = Exception.class)
+    public HSSFWorkbook exportRfInfo(String idStr) throws IOException {
         List<String> ids = null;
-        if (!StringUtils.isBlank(idStr)){
+        List<OmsRegProcpersoninfoVO> regProcpersoninfos = null;
+
+        OmsRegProcpersoninfoIPagParam procpersoninfoIPagParam=new OmsRegProcpersoninfoIPagParam();
+        procpersoninfoIPagParam.setPageNum(1);
+        procpersoninfoIPagParam.setPageSize(10000);
+        if (!StringUtils.isBlank(idStr)) {
             ids = Arrays.asList(idStr.split(","));
+
+            procpersoninfoIPagParam.setIds(ids);
+            regProcpersoninfos = mrpinfoMapper.selectRegPersonInfoList(procpersoninfoIPagParam);
+        }
+        else {
+            procpersoninfoIPagParam.setCheckStatus("0");
+            regProcpersoninfos = mrpinfoMapper.selectRegPersonInfoList(procpersoninfoIPagParam);
         }
 
+        B01 b01 = orgService.selectOrgByB0111(UserInfoUtil.getUserInfo().getOrgId());
         //处理批次数据，下载后改变状态
-        OmsRegProcbatch batchinfo = dealDataRFByRfId(idStr);
-        List<Map> dataList  = mrpinfoMapper.selectRegInfoListById(ids);
+        OmsRegProcbatch batchinfo = dealDataRFByRfId(regProcpersoninfos,ids);
         List listK = new ArrayList();
+        List listE = new ArrayList();
         List listV = new ArrayList();
-        listK.add("num");listV.add("序号");
-        listK.add("surname");listV.add("中文姓");
-        listK.add("name");listV.add("中文名");
-        listK.add("sex");listV.add("性别");
-        listK.add("birthDateGb");listV.add("出生日期");
-        listK.add("idnumberGb");listV.add("身份证号");
-        listK.add("registeResidence");listV.add("户口所在地");
-        listK.add("inboundFlag");listV.add("入库标识");
-        listK.add("workUnit");listV.add("工作单位");
-        listK.add("postCode");listV.add("职务(级)或职称");
-        listK.add("personManager");listV.add("人事主管单位");
-        listK.add("organizationCode");listV.add("报送单位组织机构代码");
-        listK.add("b0101");listV.add("报送单位名称");
-        listK.add(batchinfo.getSubmitUcategory());listV.add("报送单位类别");
-        listK.add(batchinfo.getSubmitUcontacts());listV.add("报送单位联系人");
-        listK.add(batchinfo.getSubmitPhone());listV.add("联系电话");
-        listK.add(batchinfo.getBatchNo());listV.add("入库批号");
-        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listV,dataList,"表1（纸）","表2（电子）",batchinfo);
+        listK.add("num");
+        listE.add("num");
+        listV.add("序号");
+        listK.add("surname");
+        listE.add("surname");
+        listV.add("中文姓");
+        listK.add("name");
+        listE.add("name");
+        listV.add("中文名");
+        listK.add("sexName");
+        listE.add("sex");
+        listV.add("性别");
+        listK.add("birthDate");
+        listE.add("birthDate");
+        listV.add("出生日期");
+        listK.add("idnumberGa");
+        listE.add("idnumberGa");
+        listV.add("身份证号");
+        listK.add("registeResidence");
+        listE.add("registeResidenceCode");
+        listV.add("户口所在地");
+        listK.add("inboundFlag");
+        listE.add("inboundFlag");
+        listV.add("入库标识");
+        listK.add("workUnit");
+        listE.add("workUnit");
+        listV.add("工作单位");
+        listK.add("postCode");
+        listE.add("postCode");
+        listV.add("职务(级)或职称");
+        listK.add("personManager");
+        listE.add("personManager");
+        listV.add("人事主管单位");
+        listK.add("organizationCode");
+        listE.add("organizationCode");
+        listV.add("报送单位组织机构代码");
+        listK.add("b0101");
+        listE.add("b0101");
+        listV.add("报送单位名称");
+        listK.add(batchinfo.getSubmitUcategory());
+        listE.add(batchinfo.getSubmitUcategory());
+        listV.add("报送单位类别");
+        listK.add(batchinfo.getSubmitUcontacts());
+        listE.add(batchinfo.getSubmitUcontacts());
+        listV.add("报送单位联系人");
+        listK.add(batchinfo.getSubmitPhone());
+        listE.add(batchinfo.getSubmitPhone());
+        listV.add("联系电话");
+        listK.add(batchinfo.getBatchNo());
+        listE.add(batchinfo.getBatchNo());
+        listV.add("入库批号");
+        return LeaderSupervisionUntil.exportRfInfoByListMap(listK,listE, listV, regProcpersoninfos,
+                "表1（纸）", "表2（电子版）", batchinfo,b01);
     }
 
-    private OmsRegProcbatch dealDataRFByRfId(String idStr) {
-        int con =0;
-        List<String> ids = null;
-        if (!StringUtils.isBlank(idStr)){
-            ids = Arrays.asList(idStr.split(","));
+    private OmsRegProcbatch dealDataRFByRfId(List<OmsRegProcpersoninfoVO> rflist,List<String> ids) {
+
+        if(ids==null){
+            ids = new ArrayList<>();
+            for (OmsRegProcpersoninfo personInfo:rflist
+                 ) {
+                ids.add(personInfo.getId());
+            }
         }
-        List<OmsRegProcbatchPerson> orpbplist1 = new ArrayList<>();
-        //查询登记备案信息根据备案i
-        List<OmsRegProcpersoninfo> rflist = mrpinfoMapper.selectListById(ids);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.in("rf_id", ids);
+        List<Object> regProcbatchPersons = procbatchPersonService.list(queryWrapper);
+        HashMap<String, Object> hashMapRegProcbathPerson = OmsCommonUtil.CacheHasMap(regProcbatchPersons, "rfId");
+
         //查询批次相关信息
         OmsRegProcbatch batchinfo = orpbatchService.selectWbaByOrpbatch();
-        if (batchinfo!=null){
-            for (int i = 0; i < rflist.size(); i++) {
-                OmsRegProcpersoninfo info = rflist.get(i);
-                //查询批次人员表中是否已存在该人员，若已存在执行更新，不新增
-                int personcount = procbatchPersonMapper.selectPersonByRfId(info.getId(),batchinfo.getBatchNo());
-                if (personcount > 0){
-                    OmsRegProcbatchPerson batchperson2 = new OmsRegProcbatchPerson();
-                    UpdateWrapper<OmsRegProcbatchPerson> personInfoWrapper = new UpdateWrapper<OmsRegProcbatchPerson>();
-                    personInfoWrapper.eq("RF_ID",info.getId());
-                    //为批次人员表复制相同字段的数据
-                    BeanUtils.copyProperties(info, batchperson2);
-                    batchperson2.setId(UUIDGenerator.getPrimaryKey());
-                    batchperson2.setRfId(info.getId());
-                    batchperson2.setBatchId(batchinfo.getBatchNo());
-                    procbatchPersonMapper.update(batchperson2,personInfoWrapper);
-                }else{
-                    OmsRegProcbatchPerson batchperson1 = new OmsRegProcbatchPerson();
-                    //为批次人员表复制相同字段的数据
-                    BeanUtils.copyProperties(info, batchperson1);
-                    batchperson1.setId(UUIDGenerator.getPrimaryKey());
-                    batchperson1.setRfId(info.getId());
-                    batchperson1.setBatchId(batchinfo.getBatchNo());
-                    orpbplist1.add(batchperson1);
-                }
+        if (batchinfo == null) throw new CustomMessageException("请先启动登记备案再下载。");
+
+        List<OmsRegProcbatchPerson> adds = new ArrayList<>();
+        List<String> dels = new ArrayList<>();
+        for (OmsRegProcpersoninfo info : rflist) {
+            //查询批次人员表中是否已存在该人员，若已存在执行更新，不新增
+            OmsRegProcbatchPerson batchPerson = (OmsRegProcbatchPerson) hashMapRegProcbathPerson.get(info.getId());
+            if (batchPerson != null) {
+                dels.add(batchPerson.getId());
             }
-            if (orpbplist1!=null && orpbplist1.size()>0){
-                con = orpbatchService.batchinsertInfo(orpbplist1);
-            }
-            if (con > 0) {
-                mrpinfoService.updateRegProcpersoninfo(idStr);
-                //查询是否有未验收的批次人员
-                int count = procbatchPersonMapper.selectCountByBatchId(batchinfo.getBatchNo());
-                if (count < 0){
-                    //修改批次表状态为1已完成
-                    batchinfo.setStatus("1");
-                    orpbatchService.updateOrpbatch(batchinfo);
-                }
-            }
-        }else{
-            throw new CustomMessageException("请先启动登记备案再下载。");
+            OmsRegProcbatchPerson batchperson1 = new OmsRegProcbatchPerson();
+            //为批次人员表复制相同字段的数据
+            BeanUtils.copyProperties(info, batchperson1);
+            batchperson1.setId(UUIDGenerator.getPrimaryKey());
+            batchperson1.setRfId(info.getId());
+            batchperson1.setBatchId(batchinfo.getId());
+            batchperson1.setSuccess("0");
+            adds.add(batchperson1);
+
+            info.setRfStatus("1");
         }
+        if (dels.size() > 0)
+            procbatchPersonService.removeByIds(dels);
+        if (adds.size() > 0) {
+            procbatchPersonService.saveBatch(adds);
+        }
+        List<OmsRegProcpersoninfo> list=(List)rflist;
+        mrpinfoService.updateBatchById(list);
+
         return batchinfo;
     }
 
-    /** 因私出国境申请管理 **/
-    public HSSFWorkbook exportAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+    /**
+     * 因私出国境申请管理
+     **/
+    public HSSFWorkbook exportAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam) {
 
         List<Map> dataList = leaderCommonQueryMapper.selectPrivateApplyManager(omsPriApplyIPageParam);
 
@@ -772,37 +986,60 @@ public class LeaderEXportExcelService {
 //        CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl  # 最终结论
 
 
-
         List listK = new ArrayList();
         List listV = new ArrayList();
-        listK.add("num");listV.add("序号");
-        listK.add("department");listV.add("单位");
-        listK.add("userName");listV.add("姓名");
-        listK.add("sex");listV.add("性别");
-        listK.add("birthDate");listV.add("出生日期");
-        listK.add("politicalAffi");listV.add("政治面貌");  // 少一列 健康情况
-        listK.add("job");listV.add("职务");
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("sex");
+        listV.add("性别");
+        listK.add("birthDate");
+        listV.add("出生日期");
+        listK.add("politicalAffi");
+        listV.add("政治面貌");  // 少一列 健康情况
+        listK.add("job");
+        listV.add("职务");
 //        listK.add("bah");listV.add("备案号");  // 少一列 审批号
-        listK.add("abroadTime");listV.add("出境日期");
-        listK.add("returnTime");listV.add("入境日期");
-        listK.add("sdgj");listV.add("目的地");
-        listK.add("cfsy");listV.add("事由");
-        listK.add("applystatus");listV.add("状态");
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("returnTime");
+        listV.add("入境日期");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfsy");
+        listV.add("事由");
+        listK.add("applystatus");
+        listV.add("状态");
 
-        listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
+        listK.add("secretLevel");
+        listV.add("涉密等级");  //  少一列 状态
         // listK.add("secretLevel");listV.add("涉密等级");
-        listK.add("declassificaEndTime");listV.add("脱密期结束时间");
-        listK.add("sflg");listV.add("裸官");
-        listK.add("identity");listV.add("身份类别");
-        listK.add("sfzyld");listV.add("主要领导");
-        listK.add("fmxx");listV.add("负面信息");
+        listK.add("declassificaEndTime");
+        listV.add("脱密期结束时间");
+        listK.add("sflg");
+        listV.add("裸官");
+        listK.add("identity");
+        listV.add("身份类别");
+        listK.add("sfzyld");
+        listV.add("主要领导");
+        listK.add("fmxx");
+        listV.add("负面信息");
 
-        listK.add("jwjl");listV.add("纪委结论");
-        listK.add("clshsftg");listV.add("材料审核");
-        listK.add("cadresupervisionOpinion");listV.add("干部监督处意见");
-        listK.add("chulingdaoOpinion");listV.add("处领导意见");
-         listK.add("bulingdaoOpinion");listV.add("部领导意见");
-        listK.add("zzjl");listV.add("最终结论");
+        listK.add("jwjl");
+        listV.add("纪委结论");
+        listK.add("clshsftg");
+        listV.add("材料审核");
+        listK.add("cadresupervisionOpinion");
+        listV.add("干部监督处意见");
+        listK.add("chulingdaoOpinion");
+        listV.add("处领导意见");
+        listK.add("bulingdaoOpinion");
+        listV.add("部领导意见");
+        listK.add("zzjl");
+        listV.add("最终结论");
 
 
 //        listK.add("verbaljwjl");listV.add("口头意见");
@@ -819,15 +1056,15 @@ public class LeaderEXportExcelService {
 //        listK.add("cfrw");listV.add("任务/事由");  //  少一列 状态
 
 
-        return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因私出国境申请管理");
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "因私出国境申请管理");
 
 
     }
 
 
-     public HSSFWorkbook  exportAllOmsPriDelayApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+    public HSSFWorkbook exportAllOmsPriDelayApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam) {
 
-         List<Map> dataList = leaderCommonQueryMapper.selectPridelayApplyManager(omsPriApplyIPageParam);
+        List<Map> dataList = leaderCommonQueryMapper.selectPridelayApplyManager(omsPriApplyIPageParam);
 
 //         prda.id AS id, # 业务id
 //
@@ -886,31 +1123,41 @@ public class LeaderEXportExcelService {
 //
 //         pra.NEGATIVE_INFO fmxx # 负面信息
 
-         List listK = new ArrayList();
-         List listV = new ArrayList();
-         listK.add("num");listV.add("序号");
-         listK.add("department");listV.add("单位");
-         listK.add("userName");listV.add("姓名");
-         listK.add("sex");listV.add("性别");
-         listK.add("birthDate");listV.add("出生日期");
-         listK.add("politicalAffi");listV.add("政治面貌");
-         listK.add("health");listV.add("健康状况");
-         listK.add("job");listV.add("职务");
-         listK.add("delayReturnTime");listV.add("延期出境时间");
-         listK.add("delayReason");listV.add("延期入境原因");
-         listK.add("abroadTime");listV.add("出境日期");
-         listK.add("returnTime");listV.add("入境日期");
-         listK.add("sdgj");listV.add("目的地");
-         listK.add("cfsy");listV.add("事由");
-         listK.add("applystatus");listV.add("状态");
-
-
-
-
+        List listK = new ArrayList();
+        List listV = new ArrayList();
+        listK.add("num");
+        listV.add("序号");
+        listK.add("department");
+        listV.add("单位");
+        listK.add("userName");
+        listV.add("姓名");
+        listK.add("sex");
+        listV.add("性别");
+        listK.add("birthDate");
+        listV.add("出生日期");
+        listK.add("politicalAffi");
+        listV.add("政治面貌");
+        listK.add("health");
+        listV.add("健康状况");
+        listK.add("job");
+        listV.add("职务");
+        listK.add("delayReturnTime");
+        listV.add("延期出境时间");
+        listK.add("delayReason");
+        listV.add("延期入境原因");
+        listK.add("abroadTime");
+        listV.add("出境日期");
+        listK.add("returnTime");
+        listV.add("入境日期");
+        listK.add("sdgj");
+        listV.add("目的地");
+        listK.add("cfsy");
+        listV.add("事由");
+        listK.add("applystatus");
+        listV.add("状态");
 
 
 //        listK.add("bah");listV.add("备案号");  // 少一列 审批号
-
 
 
 //         listK.add("secretLevel");listV.add("涉密等级");  //  少一列 状态
@@ -928,14 +1175,9 @@ public class LeaderEXportExcelService {
 //         listK.add("bulingdaoOpinion");listV.add("部领导意见");
 //         listK.add("zzjl");listV.add("最终结论");
 
-         return LeaderSupervisionUntil.exportExcelByListMap(listK,listV,dataList,"因私延期出国境申请管理");
+        return LeaderSupervisionUntil.exportExcelByListMap(listK, listV, dataList, "因私延期出国境申请管理");
 
-     }
-
-
-
-
-
+    }
 
 
 }
