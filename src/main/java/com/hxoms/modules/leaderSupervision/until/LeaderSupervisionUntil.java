@@ -470,19 +470,13 @@ public class LeaderSupervisionUntil {
                                                      String sheetName1, String sheetName2, OmsRegProcbatch batchinfo,
                                                      B01 b01) throws IOException {
 
-
-//        HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream("E:\\work\\公司\\干部综合\\干综一体化\\原始需求\\出国境\\ZYF文件\\因私出国登记备案\\国家工作人员登记备案（报送单位填报）模板.xls"));
-//        // 设置 sheet 页
-//        HSSFSheet sheet0 = wb.getSheet(sheetName1); //wb.createSheet(sheetName1);
-//        HSSFSheet sheet1 = wb.getSheet(sheetName2);
-
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
         HSSFSheet sheet0 = wb.createSheet(sheetName1); //wb.createSheet(sheetName1);
         HSSFSheet sheet1 = wb.createSheet(sheetName2);
 
         //计算第一工作表首页可打印的行数，因为不知道如何获取页高，暂时写死
-        int firtRows = 13;
+        int firtRows = 14;
         //计算第一工作表首页外其它页面能打印的行数
         int sechondRows = 22;
         //计算第一工作表页数
