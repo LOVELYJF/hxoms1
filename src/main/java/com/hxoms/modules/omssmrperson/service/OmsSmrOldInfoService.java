@@ -28,7 +28,7 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     //获取差异数据列表
     Result getDifferentData(String importYear, String b0100);
     //导出差异数据列表
-    void exportDifferentData(String importYear, String b0100, HttpServletResponse response);
+    void exportDifferentData(String jsonParam, HttpServletResponse response);
     //差异数据纠正确认
     Result updateDifferentData(List<OmsSmrOldInfoVO> smrOldInfos);
 }

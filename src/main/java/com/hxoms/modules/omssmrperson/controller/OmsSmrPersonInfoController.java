@@ -133,12 +133,12 @@ public class OmsSmrPersonInfoController {
 
     /**
      * 导出漏报涉密人员机构
-     * @param importYear
+     * @param
      */
     @PostMapping("/exportFailReportOrg")
-    public void exportFailReportOrg(String importYear,@ApiIgnore HttpServletResponse response){
+    public void exportFailReportOrg(@RequestBody String jsonParam,@ApiIgnore HttpServletResponse response){
         try{
-           smrPersonInfoService.exportFailReportOrg(importYear,response);
+            smrPersonInfoService.exportFailReportOrg(jsonParam,response);
         }catch (Exception e) {
             e.printStackTrace();
         }

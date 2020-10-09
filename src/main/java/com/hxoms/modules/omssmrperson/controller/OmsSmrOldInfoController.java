@@ -102,13 +102,12 @@ public class OmsSmrOldInfoController {
 
     /**
      * 导出差异数据列表
-     * @param importYear（导入年份）
-     * @param b0100（单位id）
+     * @param jsonParam( importYear（导入年份）,b0100（单位id）)
      */
     @PostMapping("/exportDifferentData")
-    public void exportDifferentData(@RequestBody String importYear,@RequestBody String b0100,@ApiIgnore HttpServletResponse response){
+    public void exportDifferentData(@RequestBody String jsonParam,@ApiIgnore HttpServletResponse response){
         try{
-            smrOldInfoService.exportDifferentData(importYear, b0100, response);
+            smrOldInfoService.exportDifferentData(jsonParam, response);
         }catch (Exception e) {
             e.printStackTrace();
         }

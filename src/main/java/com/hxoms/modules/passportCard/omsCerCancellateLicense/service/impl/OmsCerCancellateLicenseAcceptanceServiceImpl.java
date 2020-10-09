@@ -467,9 +467,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					omsCerGetTask.setCerId(cfCertificate1.getId());
 					omsCerGetTask.setZjhm(omsCerCancellateLicense.getZjhm());
 
-					//根据备案主键在登记备案表中查询证照领取任务表中需要的信息
-					OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoMapper.selectById(omsCerCancellateLicense.getOmsId());
-					omsCerGetTask.setRfB0000(omsRegProcpersoninfo.getRfB0000());
+					omsCerGetTask.setRfB0000(omsCerCancellateLicense.getB0100());
 
 					int count2 = omsCerGetTaskMapper.insert(omsCerGetTask);
 					if(count2 < 1){
@@ -501,7 +499,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					//保管状态为已取出的，将状态置为注销
 					OmsCerCancellateLicense omsCerCancellateLicense1 = new OmsCerCancellateLicense();
 					omsCerCancellateLicense1.setId(omsCerCancellateLicense.getId());
-					//证照状态改成过期
+					//证照状态改成注销
 					omsCerCancellateLicense1.setCardStatus(String.valueOf(Constants.CER_STATUS[2]));
 					//公安厅通过，且状态已取出，将证照注销状态改成已办结
 					omsCerCancellateLicense1.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));
@@ -545,7 +543,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					if(cfCertificate1.getCounterNum() != null){
 						//将证照号码插入到证照号码废弃表中
 						QueryWrapper<OmsCerCounterNumber> wrapper1 = new QueryWrapper<OmsCerCounterNumber>();
-						wrapper1.eq("COUNTER_NUM", cfCertificate.getCounterNum());
+						wrapper1.eq("COUNTER_NUM", cfCertificate1.getCounterNum());
 						OmsCerCounterNumber omsCerCounterNumber = new OmsCerCounterNumber();
 						omsCerCounterNumber.setStatus(UseStatusEnum.NOT_USE.getCode());
 						omsCerCounterNumber.setIsLock(LockEnum.NOT_LOCK.getCode());

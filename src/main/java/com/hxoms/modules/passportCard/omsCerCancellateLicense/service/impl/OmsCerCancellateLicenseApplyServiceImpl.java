@@ -105,7 +105,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		StringBuffer cerInfo = new StringBuffer();
 		if(!ListUtil.isEmpty(list)){
 			for(OmsCerCancellateLicense omsCerCancellateLicense : list){
-				cerInfo.append(Constants.CER_TYPE_NAME[omsCerCancellateLicense.getZjlx()] + ":" + omsCerCancellateLicense.getZjhm() + "、");
+				cerInfo.append(CerTypeUtil.getCnTypeLicence(omsCerCancellateLicense.getZjlx()) + ":" + omsCerCancellateLicense.getZjhm() + "、");
 			}
 		}
 		//去掉结尾的“、”号

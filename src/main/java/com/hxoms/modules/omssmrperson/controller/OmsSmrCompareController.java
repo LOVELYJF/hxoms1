@@ -3,10 +3,7 @@ package com.hxoms.modules.omssmrperson.controller;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.service.OmsSmrCompareService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +40,9 @@ public class OmsSmrCompareController {
      * @return
      */
     @PostMapping("/exportCompareIdCard")
-    public void exportCompareIdCard(String b0100, @ApiIgnore HttpServletResponse response){
+    public void exportCompareIdCard(@RequestBody String jsonParam, @ApiIgnore HttpServletResponse response){
         try{
-            smrCompareService.exportCompareIdCard(b0100, response);
+            smrCompareService.exportCompareIdCard(jsonParam, response);
         }catch (Exception e) {
             e.printStackTrace();
         }

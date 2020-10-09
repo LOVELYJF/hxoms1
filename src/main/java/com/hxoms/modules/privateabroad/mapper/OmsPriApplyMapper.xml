@@ -365,16 +365,16 @@
             rp.IDENTITY as identifyType
         from oms_pri_apply pa
         LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
-        left join oms_reg_procpersoninfo rp1 on pa.CREATE_USER = rp1.ID
-        where
-            pa.ABROAD_TIME >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
-            AND pa.A0100 = #{a0100}
-            and
+        WHERE
+				pa.ABROAD_TIME >= DATE_SUB(NOW(),INTERVAL 3 YEAR)
+				and
+				pa.A0100 = #{a0100}
+				and
 				pa.ABROAD_TIME &lt; NOW()
 				and
-				pa.ABROAD_TIME >= 29
+				pa.APPLY_STATUS >= 29
 				and
-				pa.ABROAD_TIME != 50
+				pa.APPLY_STATUS != 50
     </select>
 
 
