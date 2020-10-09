@@ -481,7 +481,6 @@ public class LeaderSupervisionUntil {
         HSSFSheet sheet0 = wb.createSheet(sheetName1); //wb.createSheet(sheetName1);
         HSSFSheet sheet1 = wb.createSheet(sheetName2);
 
-
         //计算第一工作表首页可打印的行数，因为不知道如何获取页高，暂时写死
         int firtRows = 14;
         //计算第一工作表首页外其它页面能打印的行数
@@ -492,14 +491,13 @@ public class LeaderSupervisionUntil {
             double rows = dataList.size() - firtRows;
             pages += (int) Math.floor(rows / sechondRows);
         }
+        List<Double> width1 = initialColumnWidth(wb,sheet0);
 
         //设置标题样式
         HSSFCellStyle titleStyleOne = getTitlesStyleOne(wb);
         HSSFCellStyle titleStyleTwo = getTitlesStyleTwo(wb);
         HSSFCellStyle titleStyleThree = getTitlesStyleThree(wb);
         HSSFCellStyle titleStyleFour = getTitlesStyleFour(wb);
-
-        initialColumnWidth();
 
         //创建第一行
         Row row = sheet0.createRow(0);
@@ -519,8 +517,6 @@ public class LeaderSupervisionUntil {
         CellRangeAddress regionNum2 = new CellRangeAddress(1, 1, 0, listV.size() - 1);
         sheet0.addMergedRegion(regionNum1);
         sheet0.addMergedRegion(regionNum2);
-
-        List<Double> width1 = initialColumnWidth();
 
         //创建第三行
         Row rowNum3 = sheet0.createRow(2);
@@ -585,9 +581,9 @@ public class LeaderSupervisionUntil {
         return wb;
     }
 
-    private static void PageSetting(Sheet sheet0) {
+    private static void PageSetting(HSSFSheet sheet0) {
         //第一工作表打印设置
-        PrintSetup printSetup = sheet0.getPrintSetup();
+        HSSFPrintSetup printSetup = sheet0.getPrintSetup();
         printSetup.setScale((short) 88);//缩放
         printSetup.setVResolution((short) 600);//设置打印质量
         printSetup.setHResolution((short) 600);
@@ -603,7 +599,7 @@ public class LeaderSupervisionUntil {
         sheet0.setMargin(Sheet.BottomMargin, (double) 0.7480314960629921);
     }
 
-    private static List<Double> initialColumnWidth() {
+    private static List<Double> initialColumnWidth(HSSFWorkbook wb,HSSFSheet sheet) {
         //sheet1列宽
         List<Double> width1 = new ArrayList<>();
         //excel中通列宽看到的值
@@ -624,6 +620,15 @@ public class LeaderSupervisionUntil {
         width1.add(8d);//报送单位联系人
         width1.add(8d);//联系电话
         width1.add(8.75d);//入库批号
+        HSSFFont font = wb.createFont();
+        font.setBold(false);
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short) 10);
+        for(int i=0;i<width1.size();i++){
+            CellStyle cs = sheet.getColumnStyle(i);
+            ((HSSFCellStyle) cs).setFont(font);
+            sheet.setDefaultColumnStyle(i,cs);
+        }
         //从客户样式表通过程序读取的值
 //        width1.add(1184d);//序号
 //        width1.add(1056d);//中文姓
