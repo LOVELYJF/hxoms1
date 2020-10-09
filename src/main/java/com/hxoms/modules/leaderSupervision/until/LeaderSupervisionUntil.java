@@ -2,6 +2,7 @@ package com.hxoms.modules.leaderSupervision.until;
 
 import com.github.pagehelper.util.StringUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.StringUtils;
 import com.hxoms.common.utils.BeanUtilSelf;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
@@ -673,17 +674,37 @@ public class LeaderSupervisionUntil {
     private static void SetSubmitInfo(Cell cell, B01 b01, OmsRegProcbatch batchinfo, int j) {
         String m = "";
         if (j == 11) {
-            m = b01.getOrganization_code();
+            if (b01!=null && !StringUtils.isBlank(b01.getOrganization_code())){
+                m = b01.getOrganization_code();
+            }else{
+                m = "";
+            }
         } else if (j == 12) {
-            m = batchinfo.getSubmitUname();
+            if (!StringUtils.isBlank(batchinfo.getSubmitUname())){
+                m = batchinfo.getSubmitUname();
+            }else{
+                m = "";
+            }
         } else if (j == 13) {
             m = "10";
         } else if (j == 14) {
-            m = batchinfo.getSubmitUcontacts();
+            if (!StringUtils.isBlank(batchinfo.getSubmitUcontacts())){
+                m = batchinfo.getSubmitUcontacts();
+            }else{
+                m = "";
+            }
         } else if (j == 15) {
-            m = batchinfo.getSubmitPhone();
+            if (!StringUtils.isBlank(batchinfo.getSubmitPhone())){
+                m = batchinfo.getSubmitPhone();
+            }else{
+                m = "";
+            }
         } else if (j == 16) {
-            m = batchinfo.getBatchNo();
+            if (!StringUtils.isBlank(batchinfo.getBatchNo())){
+                m = batchinfo.getBatchNo();
+            }else{
+                m = "";
+            }
         }
         cell.setCellValue(m);
     }
