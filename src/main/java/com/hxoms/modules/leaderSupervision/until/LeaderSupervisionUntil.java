@@ -544,7 +544,7 @@ public class LeaderSupervisionUntil {
                 offset += 2;
             }
         }
-        if (dataList.size() <= firtRows) {
+        if (dataList.size() < firtRows) {
             writeFoot(wb, sheet0, batchinfo, dataList.size(), pages, dataList.size(), listV.size());
         }
 
