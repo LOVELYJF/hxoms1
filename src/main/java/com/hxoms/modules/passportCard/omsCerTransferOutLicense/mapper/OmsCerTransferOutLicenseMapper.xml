@@ -97,9 +97,9 @@
 
 	<!-- 查询年份集合 -->
 	<select id="selectYearList"
-	        resultType="com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense">
+	        resultMap="BaseResultMap">
 		select
-			*
+			YEAR
 		from oms_cer_transfer_out_license
 		group by year
 	</select>
