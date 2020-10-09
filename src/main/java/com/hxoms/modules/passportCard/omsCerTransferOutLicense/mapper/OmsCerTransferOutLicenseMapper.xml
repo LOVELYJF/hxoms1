@@ -79,8 +79,10 @@
 	</select>
 
 	<!-- 查询原单位信息 -->
-	<select id="getTransferOutWorkUnitInfo" resultType="com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTransferOutLicense">
-		select * from oms_cer_transfer_out_license group by WORK_UNIT
+	<select id="getTransferOutWorkUnitInfo" resultMap="BaseResultMap">
+		select
+			WORK_UNIT
+		from oms_cer_transfer_out_license group by WORK_UNIT
 	</select>
 
 	<!-- 根据年份查询批次号 -->
