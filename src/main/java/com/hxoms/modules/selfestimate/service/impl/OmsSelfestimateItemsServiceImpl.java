@@ -194,6 +194,14 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
         paramMap.put("type", type);
         paramMap.put("applyId", applyId);
         List<OmsSelfFileVO> omsSelfFileVOS = omsSelfFileMapper.selectFileList(paramMap);
+        if (omsSelfFileVOS != null && omsSelfFileVOS.size()>0){
+            for (OmsSelfFileVO o:omsSelfFileVOS) {
+                QueryWrapper<OmsSelfestimateItems> wrapper1 = new QueryWrapper<>();
+                wrapper1.eq("SELFFILE_ID",o.getId());
+                List<OmsSelfestimateItems> omsSelfestimateItems = omsSelfestimateItemsMapper.selectList(wrapper1);
+                o.setOmsSelfestimateItems(omsSelfestimateItems);
+            }
+        }
         return omsSelfFileVOS;
     }
 
