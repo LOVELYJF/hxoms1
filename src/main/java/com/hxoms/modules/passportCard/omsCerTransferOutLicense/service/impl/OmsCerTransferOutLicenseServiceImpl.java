@@ -85,11 +85,11 @@ public class OmsCerTransferOutLicenseServiceImpl extends ServiceImpl<OmsCerTrans
 	 */
 	public List<OmsCerTransferOutLicense> getBatchByYear() {
 		List<OmsCerTransferOutLicense> list = omsCerTransferOutLicenseMapper.selectYearList();      //查询批次号的年份集合
-		if(ListUtil.isEmpty(list)){
+		if(!ListUtil.isEmpty(list)){
 			for(OmsCerTransferOutLicense omsCerTransferOutLicense : list){
 				String year = omsCerTransferOutLicense.getYear();
 				List<OmsCerTransferOutLicense> list1 = omsCerTransferOutLicenseMapper.getBatchByYear(year);   //根据年份查询对应的批次号
-				if(ListUtil.isEmpty(list1)){
+				if(!ListUtil.isEmpty(list1)){
 					omsCerTransferOutLicense.setList(list1);
 				}
 			}
