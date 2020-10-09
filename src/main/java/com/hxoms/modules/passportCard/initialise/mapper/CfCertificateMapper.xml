@@ -800,16 +800,13 @@
 		FROM
 		cf_certificate cc
 		JOIN oms_reg_procpersoninfo org ON cc.OMS_ID = org.ID
-		JOIN b01 as b  on org.RF_B0000 = b.b0111
+		JOIN b01 as b  on org.RF_B0000 = b.b0100
 		left JOIN (
 		SELECT
 		ocgt.GET_TIME as getTime,
 		ocgt.ZJHM  as hm
 		FROM
 		oms_cer_get_task AS ocgt
-		join cf_certificate cc on cc.ZJHM = ocgt.ZJHM
-		WHERE
-		ocgt.ZJHM = cc.ZJHM
 		ORDER BY
 		ocgt.GET_TIME DESC
 		LIMIT 1
