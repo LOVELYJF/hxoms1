@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.omsCerInventory.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.enums.SexEnum;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
@@ -16,10 +17,12 @@ import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
+import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
 import com.hxoms.modules.passportCard.omsCerInventory.mapper.OmsCerInventoryMapper;
 import com.hxoms.modules.passportCard.omsCerInventory.service.OmsCerInventoryService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Select;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -31,10 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <b>功能描述: 证照盘点业务层接口实现类</b>
@@ -44,7 +44,7 @@ import java.util.Map;
  * @Date: 2020/8/19 11:47
  */
 @Service
-public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
+public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMapper,OmsCerInventory> implements OmsCerInventoryService {
 
 
 	@Autowired
@@ -55,6 +55,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	private OmsCerGetTaskMapper omsCerGetTaskMapper;
 	@Autowired
 	private OmsCerExitEntryRepertoryMapper omsCerExitEntryRepertoryMapper;
+	@Autowired
+	private CfCertificateService cfCertificateService;
 	/**
 	 * <b>功能描述: （开始盘点、证照机盘点）</b>
 	 * @Param: [omsCerInventory]
@@ -77,8 +79,10 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
+		map.put("surelyWay", SurelyWayEnum.CABINET.getCode());
 		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map);       //查询正常状态且正常保管或已取出状态的证照信息
 
+		List<OmsCerInventory> cerInventoryList = new ArrayList<OmsCerInventory>();
 		//将查询结果保存到盘点表中
 		for(CfCertificate cfCertificate : list){
 			OmsCerInventory omsCerInventory1 = new OmsCerInventory();
@@ -97,19 +101,16 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			omsCerInventory1.setInventoryDate(UtilDateTime.formatCNMonth(new Date()));         //盘点年月
 			omsCerInventory1.setCreateTime(new Date());
 			omsCerInventory1.setCreateUser(UserInfoUtil.getUserInfo().getId());
-			int count = omsCerInventoryMapper.insert(omsCerInventory1);
-			if(count < 1){
-				throw new CustomMessageException("保存到证照盘点表失败");
-			}else {
-				cfCertificate.setCabinetNum("");
-				cfCertificate.setPlace("");
-				cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());           //全部将状态置为已取出
-				int count1 = cfCertificateMapper.updateById(cfCertificate);
-				if(count1 < 1){
-					throw new CustomMessageException("清空该证件的机柜位置失败");
-				}
-			}
+			cerInventoryList.add(omsCerInventory1);
+
+			//将证照机位置清空
+			cfCertificate.setCabinetNum("");
+			cfCertificate.setPlace("");
+			cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());           //全部将状态置为已取出
 		}
+
+		saveBatch(cerInventoryList);        //批量将盘点信息保存到盘点表中
+		cfCertificateService.updateBatchById(list);         //在证照信息表中清空证照机上的位置
 	}
 
 
@@ -126,38 +127,42 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			throw new CustomMessageException("参数错误");
 		}
 
-		//盘点后重新查询证照状态
+		//在盘点表查询证照主键
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
-		map.put("cardStatus", CardStatusEnum.ZC.getCode());
+		map.put("inventoryDate", UtilDateTime.formatCNMonth(new Date()));
 		//查询证照主键
 		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
+		if(idList == null || idList.size() < 1){
+			throw new CustomMessageException("该证照机还未开始盘点");
+		}
+		//查询证照信息
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
-		queryWrapper.in(!ListUtil.isEmpty(idList),"ID",idList);
+		queryWrapper.in("ID",idList);
 		List<CfCertificate> list = cfCertificateMapper.selectList(queryWrapper);
+
+		//查询证照盘点表信息
+		QueryWrapper<OmsCerInventory> queryWrapper1 = new QueryWrapper<OmsCerInventory>();
+		queryWrapper1.eq("INVENTORY_DATE", UtilDateTime.formatCNMonth(new Date()))
+				.eq("CABINET_NUM", omsCerInventory.getCabinetNum());
+		List<OmsCerInventory> list1 = omsCerInventoryMapper.selectList(queryWrapper1);
 
 		//同步盘点结果到盘点表
 		for(CfCertificate cfCertificate : list){
-			OmsCerInventory omsCerInventory1 = new OmsCerInventory();
-			omsCerInventory1.setAfterInventorySaveStatus(cfCertificate.getSaveStatus());
-			omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
-			omsCerInventory1.setPlace(cfCertificate.getPlace());
-			omsCerInventory1.setModifyTime(new Date());
-			omsCerInventory1.setModifyUser(UserInfoUtil.getUserInfo().getId());
-
-			//设置同步条件
-			String inventoryDate = UtilDateTime.formatCNMonth(new Date());
-			QueryWrapper<OmsCerInventory> wrapper = new QueryWrapper<OmsCerInventory>();
-			wrapper.eq("INVENTORY_DATE", inventoryDate)            //盘点年月
-					.eq("ZJHM", cfCertificate.getZjhm())                //证件号码
-					.eq("YXQZ", cfCertificate.getYxqz());               //有效期至
-
-			omsCerInventoryMapper.update(omsCerInventory1, wrapper);
-
+			for(OmsCerInventory omsCerInventory1 : list1){
+				if(cfCertificate.getZjhm().equals(omsCerInventory1.getZjhm())){
+					omsCerInventory1.setAfterInventorySaveStatus(cfCertificate.getSaveStatus());
+					omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
+					omsCerInventory1.setPlace(cfCertificate.getPlace());
+					omsCerInventory1.setModifyTime(new Date());
+					omsCerInventory1.setModifyUser(UserInfoUtil.getUserInfo().getId());
+				}
+			}
 		}
+		updateBatchById(list1);             //将更新后的结果保存导盘点表
 
 		//查询将盘点前后保管状态不一样的显示到界面
-		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		map.put("sameStatus","1");          //盘点前后状态是否一致（仅做xml文件的条件）
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -187,11 +192,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			for(OmsCerInventory omsCerInventory : list){
 				omsCerInventory.setModifyTime(new Date());
 				omsCerInventory.setModifyUser(UserInfoUtil.getUserInfo().getId());
-				int count = omsCerInventoryMapper.updateById(omsCerInventory);
-				if(count < 1){
-					throw new CustomMessageException("更新保存盘点结果失败");
-				}
 			}
+			updateBatchById(list);
 		}
 	}
 
@@ -205,6 +207,15 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	 * @Date: 2020/8/19 14:38
 	 */
 	public void getCerInventoryResultForCabinetOut(OmsCerInventory omsCerInventory, HttpServletResponse response) {
+		//在此处判断是否已经盘点过
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("cabinetNum", omsCerInventory.getCabinetNum());
+		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
+		if(ListUtil.isEmpty(resultList)){
+			throw new CustomMessageException("该证照柜本月未进行盘点，不能导出");
+		}
+
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
@@ -336,13 +347,16 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
-		map.put("isCounter", SurelyWayEnum.COUNTER.getCode());              //取柜台的证照
+		map.put("surelyWay", SurelyWayEnum.COUNTER.getCode());  //取柜台的证照
 		List<CfCertificate> list = cfCertificateMapper.selectOmsCerInfo(map); //查询号码范围内正常状态且正常保管或已取出状态的证照信息
+
+		List<OmsCerInventory> list1 = new ArrayList<OmsCerInventory>();
 
 		//将查询结果保存到盘点表中
 		for(CfCertificate cfCertificate : list){
 			OmsCerInventory omsCerInventory1 = new OmsCerInventory();
 			omsCerInventory1.setId(UUIDGenerator.getPrimaryKey());
+			omsCerInventory1.setCfId(cfCertificate.getId());
 			omsCerInventory1.setOmsId(cfCertificate.getOmsId());
 			omsCerInventory1.setName(cfCertificate.getName());
 			omsCerInventory1.setA0100(cfCertificate.getA0100());
@@ -357,12 +371,13 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 			omsCerInventory1.setInventoryDate(UtilDateTime.formatCNMonth(new Date()));         //盘点年月
 			omsCerInventory1.setCreateTime(new Date());
 			omsCerInventory1.setCreateUser(UserInfoUtil.getUserInfo().getId());
-			int count = omsCerInventoryMapper.insert(omsCerInventory1);
-			if(count < 1){
-				throw new CustomMessageException("保存到证照盘点表失败");
-			}
+
+			list1.add(omsCerInventory1);
 		}
 
+		saveBatch(list1);
+
+		map.put("surelyWay", null);
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 		return resultList;
@@ -380,26 +395,31 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Integer> updateCerInventoryResultForCounter(List<OmsCerInventory> list) {
 		if(!ListUtil.isEmpty(list)){
+			//查询盘点的证照信息
+			List<String> list1 = new ArrayList<String>();
+			for(OmsCerInventory omsCerInventory : list){
+				list1.add(omsCerInventory.getCfId());       //将证照主键添加到集合中
+			}
+
+			QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
+			queryWrapper.in("ID", list1);
+			List<CfCertificate> list2 = cfCertificateMapper.selectList(queryWrapper);
+
 			for(OmsCerInventory omsCerInventory : list){
 				omsCerInventory.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				omsCerInventory.setModifyTime(new Date());
-				int count = omsCerInventoryMapper.updateById(omsCerInventory);
-				if(count < 1){
-					throw new CustomMessageException("更新保存盘点结果失败");
-				}else {
-					//在证照信息表中更新柜台位置，存取状态
-					CfCertificate cfCertificate = new CfCertificate();
-					cfCertificate.setCounterNum(omsCerInventory.getCounterNum());
-					cfCertificate.setSaveStatus(omsCerInventory.getAfterInventorySaveStatus());
 
-					QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
-					queryWrapper.eq("ZJHM", omsCerInventory.getZjhm());
-					int count1 = cfCertificateMapper.update(cfCertificate, queryWrapper);
-					if(count1 < 1){
-						throw new CustomMessageException("更新到证照信息表失败");
+				//将盘点后的证照状态设置到证照信息中
+				for(CfCertificate cfCertificate : list2){
+					if(cfCertificate.getId().equals(omsCerInventory.getCfId())) {
+						cfCertificate.setSaveStatus(omsCerInventory.getAfterInventorySaveStatus());
 					}
 				}
 			}
+			updateBatchById(list);      //更新保存盘点结果
+			cfCertificateService.updateBatchById(list2);        //更新盘点后的证照状态
+		}else {
+			throw new CustomMessageException("参数错误");
 		}
 
 		//统计盘点数量
@@ -452,7 +472,9 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
-
+		if(list.size() < 1 || list == null){
+			throw new CustomMessageException("该号码区间的证照还未盘点");
+		}
 
 		if(list.size() < 1 || list == null){
 			throw new CustomMessageException("操作失败");
@@ -544,6 +566,19 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	/**
+	 * <b>功能描述: 查询盘点年月</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/10/10 14:00
+	 */
+	public List<String> getCerInventoryDate() {
+		List<String> list = omsCerInventoryMapper.selectCerInventoryDate();
+		return list;
 	}
 
 
@@ -788,6 +823,8 @@ public class OmsCerInventoryServiceImpl implements OmsCerInventoryService {
 		}
 
 	}
+
+
 
 
 }

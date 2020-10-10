@@ -851,8 +851,8 @@
 			<trim suffixOverrides="and">
 				<if test="cabinetNum != null">CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">CARD_STATUS=#{cardStatus} and </if>
-				<if test="isCounter != null">SURELY_WAY = '1' and </if>
-				<if test="1 == 1">SAVE_STATUS = '0' or SAVE_STATUS = '1' and </if>
+				<if test="surelyWay != null">SURELY_WAY=#{surelyWay} and </if>
+				<if test="1 == 1">(SAVE_STATUS = '0' or SAVE_STATUS = '1') and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
 					COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} and
 				</if>
