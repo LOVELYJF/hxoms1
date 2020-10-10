@@ -437,7 +437,7 @@
     <select id="newexitRecordsList" parameterType="java.util.List" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordModel">
         select * from oms_entryexit_record
         where 1=1
-        <if test="ids!=null">
+        <if test="ids.size>0">
             and ID in
             <foreach collection="ids" item="id" open="(" close=")" separator=",">
                 #{id}
