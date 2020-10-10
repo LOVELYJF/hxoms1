@@ -48,4 +48,14 @@ public interface OmsCerInventoryMapper extends BaseMapper<OmsCerInventory> {
 	 * @Date: 2020/9/7 15:59
 	 */
 	List<String> selectOmsCerIdList(Map<String, Object> map);
+
+
+	/**
+	 * <b>功能描述: 查询盘点年月</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/10/10 14:00
+	 */
+	List<String> selectCerInventoryDate();
 }

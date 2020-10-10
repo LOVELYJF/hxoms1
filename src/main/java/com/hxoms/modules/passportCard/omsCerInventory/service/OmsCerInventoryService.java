@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.omsCerInventory.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @Author: luoshuai
  * @Date: 2020/8/19 11:47
  */
-public interface OmsCerInventoryService {
+public interface OmsCerInventoryService extends IService<OmsCerInventory> {
 
 	/**
 	 * <b>功能描述: （开始盘点）</b>
@@ -136,4 +137,14 @@ public interface OmsCerInventoryService {
 	 * @Date: 2020/8/24 14:38
 	 */
 	void saveRepairCollectionRecord(OmsCerGetTask omsCerGetTask, String mode);
+
+
+	/**
+	 * <b>功能描述: 查询盘点年月</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/10/10 14:00
+	 */
+	List<String> getCerInventoryDate();
 }
