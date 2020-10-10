@@ -154,6 +154,8 @@
 			oms_cer_inventory
 		GROUP BY
 			INVENTORY_DATE
+		order by
+			INVENTORY_DATE
 	</select>
 
 </mapper>
