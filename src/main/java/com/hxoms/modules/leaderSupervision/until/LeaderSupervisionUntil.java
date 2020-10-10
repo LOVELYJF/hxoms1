@@ -2,6 +2,7 @@ package com.hxoms.modules.leaderSupervision.until;
 
 import com.github.pagehelper.util.StringUtil;
 import com.hxoms.common.exception.CustomMessageException;
+import com.hxoms.common.util.StringUtils;
 import com.hxoms.common.utils.BeanUtilSelf;
 import com.hxoms.common.utils.Constants;
 import com.hxoms.common.utils.StringUilt;
@@ -470,12 +471,6 @@ public class LeaderSupervisionUntil {
                                                      String sheetName1, String sheetName2, OmsRegProcbatch batchinfo,
                                                      B01 b01) throws IOException {
 
-
-//        HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream("E:\\work\\公司\\干部综合\\干综一体化\\原始需求\\出国境\\ZYF文件\\因私出国登记备案\\国家工作人员登记备案（报送单位填报）模板.xls"));
-//        // 设置 sheet 页
-//        HSSFSheet sheet0 = wb.getSheet(sheetName1); //wb.createSheet(sheetName1);
-//        HSSFSheet sheet1 = wb.getSheet(sheetName2);
-
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
         HSSFSheet sheet0 = wb.createSheet(sheetName1); //wb.createSheet(sheetName1);
@@ -491,7 +486,7 @@ public class LeaderSupervisionUntil {
             double rows = dataList.size() - firtRows;
             pages += (int) Math.floor(rows / sechondRows);
         }
-        List<Double> width1 = initialColumnWidth(wb,sheet0);
+        List<Double> width1 = initialColumnWidth(wb);
 
         //设置标题样式
         HSSFCellStyle titleStyleOne = getTitlesStyleOne(wb);
@@ -529,10 +524,10 @@ public class LeaderSupervisionUntil {
             cell = rowNum3.createCell(i);
             cell.setCellValue(listV.get(i).toString());
             cell.setCellStyle(titleStyleThree);
-            //256*width+184为网友通过散列计算出相对准确的列宽设置函数，
+            //256*width+184为网友通过散列计算出相对准确的列宽设置函数，，
             //按照256*字符数与实际有很大偏差，并且不好找规律
             //通过程序读取客户给的样式表列宽，然后设置同样的值一样存在偏差
-            sheet0.setColumnWidth(i, (int) (256*width1.get(i)+184));//width1.get(i)
+            sheet0.setColumnWidth(i, (int) (256 * width1.get(i)+ 184) );//width1.get(i)
         }
 
         //循环多少行
@@ -545,12 +540,12 @@ public class LeaderSupervisionUntil {
 
             CreateCell(dataList, nextrow, titleStyleFour, listK, b01, batchinfo, sdf, i);
             //打印第一页的页脚
-            if (firtRows == i+1) {
+            if (firtRows == i + 1) {
                 writeFoot(wb, sheet0, batchinfo, i + 1, pages, dataList.size(), listV.size());
                 offset += 2;
             }
         }
-        if (dataList.size() <= firtRows) {
+        if (dataList.size() < firtRows) {
             writeFoot(wb, sheet0, batchinfo, dataList.size(), pages, dataList.size(), listV.size());
         }
 
@@ -599,7 +594,7 @@ public class LeaderSupervisionUntil {
         sheet0.setMargin(Sheet.BottomMargin, (double) 0.7480314960629921);
     }
 
-    private static List<Double> initialColumnWidth(HSSFWorkbook wb,HSSFSheet sheet) {
+    private static List<Double> initialColumnWidth(HSSFWorkbook wb) {
         //sheet1列宽
         List<Double> width1 = new ArrayList<>();
         //excel中通列宽看到的值
@@ -621,15 +616,10 @@ public class LeaderSupervisionUntil {
         width1.add(8d);//联系电话
         width1.add(8.75d);//入库批号
 
-        HSSFFont font = wb.createFont();
-        font.setBold(false);
-        font.setFontName("宋体");
-        font.setFontHeightInPoints((short) 10);
-        int css = wb.getNumCellStyles();
-        for(int i=0;i<css;i++){
-            HSSFCellStyle cs = wb.getCellStyleAt(i);
-            cs.setFont(font);
-        }
+        //实际发现宽度与客户的一致了，但像素少列宽的字符数，通过修改列默认样式，与客户一致来纠正，
+        //通过客户提供的EXCEL文件的常规查看字体和字号来纠正
+        wb.getFontAt(0).setFontName("宋体");
+        wb.getFontAt(0).setFontHeightInPoints((short) 11);
 
         //从客户样式表通过程序读取的值
 //        width1.add(1184d);//序号
@@ -684,17 +674,37 @@ public class LeaderSupervisionUntil {
     private static void SetSubmitInfo(Cell cell, B01 b01, OmsRegProcbatch batchinfo, int j) {
         String m = "";
         if (j == 11) {
-            m = b01.getOrganization_code();
+            if (b01!=null && !StringUtils.isBlank(b01.getOrganization_code())){
+                m = b01.getOrganization_code();
+            }else{
+                m = "";
+            }
         } else if (j == 12) {
-            m = batchinfo.getSubmitUname();
+            if (!StringUtils.isBlank(batchinfo.getSubmitUname())){
+                m = batchinfo.getSubmitUname();
+            }else{
+                m = "";
+            }
         } else if (j == 13) {
             m = "10";
         } else if (j == 14) {
-            m = batchinfo.getSubmitUcontacts();
+            if (!StringUtils.isBlank(batchinfo.getSubmitUcontacts())){
+                m = batchinfo.getSubmitUcontacts();
+            }else{
+                m = "";
+            }
         } else if (j == 15) {
-            m = batchinfo.getSubmitPhone();
+            if (!StringUtils.isBlank(batchinfo.getSubmitPhone())){
+                m = batchinfo.getSubmitPhone();
+            }else{
+                m = "";
+            }
         } else if (j == 16) {
-            m = batchinfo.getBatchNo();
+            if (!StringUtils.isBlank(batchinfo.getBatchNo())){
+                m = batchinfo.getBatchNo();
+            }else{
+                m = "";
+            }
         }
         cell.setCellValue(m);
     }

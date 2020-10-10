@@ -105,9 +105,9 @@
 
 	<!-- 查询批次号的年份集合 -->
 	<select id="selectYearList"
-	        resultType="com.hxoms.modules.passportCard.omsCerApplyLendingLicense.entity.OmsCerApplyLendingLicense">
+	        resultMap="BaseResultMap">
 		select
-			*
+			YEAR
 		from oms_cer_apply_lending_license
 		group by year
 	</select>
