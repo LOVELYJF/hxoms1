@@ -31,4 +31,6 @@ public interface OmsSmrOldInfoService extends IService<OmsSmrOldInfo>{
     void exportDifferentData(String jsonParam, HttpServletResponse response);
     //差异数据纠正确认
     Result updateDifferentData(List<OmsSmrOldInfoVO> smrOldInfos);
+    //根据人员ID获取未过脱密期的
+    Result getSmrOldInfoByA0100(String A0100);
 }

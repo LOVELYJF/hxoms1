@@ -242,6 +242,14 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
             return Result.error("操作失败");
     }
 
+    @Override
+    public Result getSmrOldInfoByA0100(String A0100) {
+        if(StringUilt.stringIsNullOrEmpty(A0100)){
+            return Result.error("参数错误！");
+        }
+        return Result.success(smrOldInfoMapper.getSmrOldInfoByA0100(A0100));
+    }
+
     private boolean updateSmrPersonInfo(OmsSmrOldInfoVO smrOldInfoVOXt, OmsSmrOldInfoVO smrOldInfoVOBmj){
         //将保密局人员的涉密信息更新到系统人员的涉密信息表中
         OmsRegProcpersoninfo regProcpersoninfo = new OmsRegProcpersoninfo();
