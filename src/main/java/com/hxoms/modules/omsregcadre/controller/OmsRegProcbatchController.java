@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -49,8 +51,7 @@ public class OmsRegProcbatchController {
      * @date 2020/4/27 14:01
      */
     @PostMapping("/determineRegFinish")
-    public Result determineRegFinish(String data)
-    {
+    public Result determineRegFinish(String data) throws IOException {
         return orpbatchService.determineRegFinish(data);
     }
 
@@ -80,6 +81,27 @@ public class OmsRegProcbatchController {
     public Result getToBeConfirmed(String batchId){
 
         return orpbatchService.getToBeConfirmed(batchId);
+    }
+    /**
+     * @description: 获取待纠正登记备案记录
+     * @author:杨波
+     * @date:2020-09-30
+     *  * @param b0100 当前用户所在机构
+     * @return:com.hxoms.common.utils.Result
+     **/
+    @GetMapping("/getToBeCorrected")
+    public Result getToBeCorrected(String b0100){
+
+        return orpbatchService.getToBeCorrected(b0100);
+    }
+    /**
+     * 保存经办人纠正结果
+     * @author 杨波
+     * @date 2020/4/27 14:01
+     */
+    @PostMapping("/saveCorrected")
+    public Result saveCorrected(String data) throws IOException {
+        return orpbatchService.saveCorrected(data);
     }
 
     @GetMapping("/selectWbaByOrpbatch")

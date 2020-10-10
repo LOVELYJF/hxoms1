@@ -1,11 +1,15 @@
 package com.hxoms.common;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hxoms.common.utils.BeanUtilSelf;
+import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.StringUilt;
 import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.paramentity.SendMessageParam;
 import com.hxoms.message.message.service.MessageService;
 import com.hxoms.message.msguser.entity.MsgUser;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcbatchPerson;
 import com.hxoms.support.parameter.service.ParameterService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import com.hxoms.support.sysdict.mapper.SysDictItemMapper;
@@ -14,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +185,16 @@ public class OmsCommonUtil {
         param.setMsgUserMap(msgUserMap);
 
         messageService.sendMessage(param);
+    }
+    public static List<Object> Deserialization(String dateFormat,String data,Class<?> cls) throws IOException {
+        if (StringUilt.stringIsNullOrEmpty(data)) {
+            return new ArrayList<>();
+        }
+        ObjectMapper om = new ObjectMapper();
+        om.setDateFormat(new SimpleDateFormat(dateFormat));
+        List<Object> objects = om.readerFor(cls).readValues(data).readAll();
+
+        return objects;
     }
 }
 

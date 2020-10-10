@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.hxoms.common.OmsCommonUtil;
 import com.hxoms.common.exception.CustomMessageException;
@@ -28,12 +30,14 @@ import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTran
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.service.OmsCerTransferOutLicenseService;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.service.OrgService;
+import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.security.ssl.Debug;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -88,15 +92,14 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
     @Override
     public Result insertProcbatch(OmsRegProcbatch regProcbatch) {
-        if(regProcbatch==null)
-        {
+        if (regProcbatch == null) {
             return Result.error("参数错误！");
         }
-        if(regProcbatch.getRfB0000()==null){
+        if (regProcbatch.getRfB0000() == null) {
             return Result.error("没有设置备案机构！");
         }
         B01 b01 = orgService.selectOrgByB0111(regProcbatch.getRfB0000());
-        if(b01==null){
+        if (b01 == null) {
             return Result.error("没有找到指定的备案机构！");
         }
         UserInfo user = UserInfoUtil.getUserInfo();
@@ -123,12 +126,10 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result determineRegFinish(String data) {
-        if (StringUilt.stringIsNullOrEmpty(data)) {
-            return Result.error("数据不正确！");
-        }
+    public Result determineRegFinish(String data) throws IOException {
 
-        List<OmsRegProcbatchPerson> batchPersons = JSONArray.parseArray(data, OmsRegProcbatchPerson.class);
+        List<Object> batchPersons = OmsCommonUtil.Deserialization("yyyy.MM.dd",data,OmsRegProcbatchPerson.class);
+//        List<OmsRegProcbatchPerson> batchPersons = JSONArray.parseArray(data, OmsRegProcbatchPerson.class);
         if (batchPersons == null || batchPersons.size() == 0) {
             return Result.error("没有要确定的登记备案人员！");
         }
@@ -137,8 +138,9 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
 
         //获取本次确定登记备案人员的备案主键
         List<String> rfIds = new ArrayList<>();
-        for (OmsRegProcbatchPerson batchPerson : batchPersons
+        for (Object o : batchPersons
         ) {
+            OmsRegProcbatchPerson batchPerson = (OmsRegProcbatchPerson) o;
             rfIds.add(batchPerson.getRfId());
         }
 
@@ -159,9 +161,12 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
         //辞职、开除、解聘、挂职到期人员
         HashMap<String, OmsRegProcpersoninfo> exits = new HashMap<>();
 
+        List<OmsRegProcbatchPerson> updateBatchPersons = new ArrayList<>();
+
         //循环处理登记备案确定结果，为通过的调出人员生成转出证照任务、管理员取证记录及取证任务，为退出人员生成取证任务
-        for (OmsRegProcbatchPerson batchPerson : batchPersons
+        for (Object o : batchPersons
         ) {
+            OmsRegProcbatchPerson batchPerson = (OmsRegProcbatchPerson) o;
             if (StringUilt.stringIsNullOrEmpty(batchPerson.getErrorMsg())) continue;
 
             if ("通过".equals(batchPerson.getErrorMsg())) {
@@ -194,6 +199,7 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
             } else {
                 batchPerson.setSuccess("0");
             }
+            updateBatchPersons.add(batchPerson);
         }
         //生成证照转移记录
         GenerateCertificateTransfer(trans);
@@ -206,10 +212,12 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
             regProcpersonInfoService.updateBatchById(updates);
         }
         //保存登记备案确定结果
-        procbatchPersonService.updateBatchById(batchPersons);
+        if (updateBatchPersons.size() > 0)
+            procbatchPersonService.updateBatchById(updateBatchPersons);
 
         //判断登记备案批次是否完成
-        FinishBatch(batchPersons.get(0).getBatchId());
+        if (updateBatchPersons.size() > 0)
+            FinishBatch(updateBatchPersons.get(0).getBatchId());
 
         return Result.success();
     }
@@ -222,6 +230,8 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
      **/
     private List<CfCertificate> QueryRemovableCertificate(HashMap<String, OmsRegProcpersoninfo> regProcpersoninfos) {
 
+        if(regProcpersoninfos.size()==0)
+            return new ArrayList<>();
         //获取调出人员的所有在库证照
         QueryWrapper<CfCertificate> certificateWrapper = new QueryWrapper<CfCertificate>();
         certificateWrapper.in("OMS_ID", regProcpersoninfos.keySet());
@@ -390,20 +400,19 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
         //取当前用户所在机构联系人和联系电话作为备案单位联系人和联系电话，
         //取当前用户联系电话作为报送单位联系人和联系电话，两个单位都默认为当前用户所在单位
         OmsRegProcbatch regbatch = baseMapper.selectWbaByOrpbatch();
-        if(regbatch==null){
+        if (regbatch == null) {
             //默认取最后一个批次的设置
-            List<OmsRegProcbatch> lastBatch=regProcbatchMapper.getLastBatch();
+            List<OmsRegProcbatch> lastBatch = regProcbatchMapper.getLastBatch();
 
-            UserInfo user=UserInfoUtil.getUserInfo();
+            UserInfo user = UserInfoUtil.getUserInfo();
 
             B01 b01 = orgService.selectOrgByB0111(user.getOrgId());
 
             regbatch = new OmsRegProcbatch();
 
-            if(lastBatch.size()>0){
-                BeanUtils.copyProperties(lastBatch.get(0),regbatch);
-            }
-            else {
+            if (lastBatch.size() > 0) {
+                BeanUtils.copyProperties(lastBatch.get(0), regbatch);
+            } else {
                 regbatch.setRfUnnit(b01.getB0101());
                 regbatch.setRfUphone(b01.getPhone());
                 regbatch.setRfUcontacts(b01.getContacts());
@@ -415,7 +424,7 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
                 regbatch.setSubmitUcategory("10");
                 regbatch.setRfB0000(b01.getB0100());
             }
-            regbatch.setBatchNo((b01.getOrganization_code()==null?"":b01.getOrganization_code())+
+            regbatch.setBatchNo((b01.getOrganization_code() == null ? "" : b01.getOrganization_code()) +
                     new SimpleDateFormat("yyyyMMdd").format(new Date()));
             regbatch.setCreateDate(new Date());
             regbatch.setId(UUIDGenerator.getPrimaryKey());
@@ -443,8 +452,60 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
     }
 
     @Override
+    public Result getToBeCorrected(String b0100) {
+        if (StringUilt.stringIsNullOrEmpty(b0100)) {
+            return Result.error("参数错误！");
+        }
+        List<OmsRegProcbatchPerson> batchPersons = regbatchPersonMapper.getToBeCorrected(b0100);
+        return Result.success(batchPersons);
+    }
+
+    @Override
     public void FinishBatch(String batchId) {
         regProcbatchMapper.FinishBatch(batchId);
     }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result saveCorrected(String data) throws IOException {
 
+        List<Object> batchPersons = OmsCommonUtil.Deserialization("yyyy.MM.dd",data,OmsRegProcbatchPerson.class);
+        if (batchPersons == null || batchPersons.size() == 0) {
+            return Result.error("没有要保存的登记备案人员！");
+        }
+
+        UserInfo user = UserInfoUtil.getUserInfo();
+
+        //获取本次纠正登记备案人员的备案主键
+        List<String> rfIds = new ArrayList<>();
+        HashMap<String,OmsRegProcbatchPerson> hashMapBatchPerson=new HashMap<>();
+        for (Object o : batchPersons
+        ) {
+            OmsRegProcbatchPerson batchPerson = (OmsRegProcbatchPerson) o;
+            rfIds.add(batchPerson.getRfId());
+            hashMapBatchPerson.put(batchPerson.getRfId(),batchPerson);
+        }
+
+        //查询本次确定登记备案人员并缓存到hash表
+        QueryWrapper<OmsRegProcpersoninfo> personInfoWrapper = new QueryWrapper<OmsRegProcpersoninfo>();
+        personInfoWrapper.in("ID", rfIds);
+        List<OmsRegProcpersoninfo> personInfos = regpersonInfoMapper.selectList(personInfoWrapper);
+        List<OmsRegProcbatchPerson> updateBatchPersons=new ArrayList<>();
+        for (OmsRegProcpersoninfo personInfo:personInfos
+             ) {
+            OmsRegProcbatchPerson batchPerson = hashMapBatchPerson.get(personInfo.getId());
+            updateBatchPersons.add(batchPerson);
+
+            personInfo.setSurname(batchPerson.getSurname());
+            personInfo.setName(batchPerson.getName());
+            personInfo.setIdnumberGb(batchPerson.getIdnumberGb());
+            personInfo.setBirthDateGb(batchPerson.getBirthDateGb());
+            personInfo.setModifyTime(new Date());
+            personInfo.setModifyUser(user.getId());
+        }
+
+        regProcpersonInfoService.updateBatchById(personInfos);
+        procbatchPersonService.updateBatchById(updateBatchPersons);
+
+       return Result.success();
+    }
 }

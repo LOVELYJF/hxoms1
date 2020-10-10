@@ -17,7 +17,7 @@
     <result column="BIRTH_DATE" jdbcType="DATE" property="birthDate" />
     <result column="BIRTH_DATE_GB" jdbcType="DATE" property="birthDateGb" />
     <result column="IDNUMBER_GB" jdbcType="VARCHAR" property="idnumberGb" />
-    <result column="IDNUMBER_GA" jdbcType="INTEGER" property="idnumberGa" />
+    <result column="IDNUMBER_GA" jdbcType="VARCHAR" property="idnumberGa" />
     <result column="REGISTE_RESIDENCE_CODE" jdbcType="VARCHAR" property="registeResidenceCode" />
     <result column="REGISTE_RESIDENCE" jdbcType="VARCHAR" property="registeResidence" />
     <result column="WORK_UNIT" jdbcType="VARCHAR" property="workUnit" />
@@ -45,16 +45,9 @@
     INBOUND_FLAG,SUCCESS,ERROR_MSG
   </sql>
 
-  <select id="selectRfIds" parameterType="java.lang.String" resultType="java.lang.String">
-      select RF_ID from oms_reg_procbatch_person where BATCH_ID = #{batchId}
-  </select>
-  <select id="selectCountByBatchId" resultType="java.lang.Integer" parameterType="java.lang.String">
-      select count(1) from oms_reg_procbatch_person where CHECK_STATUS='0' and BATCH_ID=#{batchNo}
-
-  </select>
-  <select id="selectPersonByRfId" resultType="java.lang.Integer">
-      select count(1) from oms_reg_procbatch_person where BATCH_ID=#{batchNo} and RF_ID=#{id}
-
+  <select id="getToBeCorrected" resultMap="BaseResultMap" parameterType="java.lang.String">
+      select * from oms_reg_procbatch_person where SUCCESS='0' and
+      RF_ID in(select id from oms_reg_procpersoninfo where RF_B0000=#{b0100}) and ERROR_MSG&lt;&gt;'通过'
   </select>
 
   <insert id="batchinsertInfo" parameterType="list">
@@ -72,7 +65,7 @@
       (#{item.id,jdbcType=VARCHAR}, #{item.batchId,jdbcType=VARCHAR}, #{item.surname,jdbcType=VARCHAR},
       #{item.rfId,jdbcType=VARCHAR}, #{item.a0100,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR},
       #{item.sex,jdbcType=VARCHAR}, #{item.birthDate,jdbcType=DATE}, #{item.birthDateGb,jdbcType=DATE},
-      #{item.idnumberGb,jdbcType=VARCHAR}, #{item.idnumberGa,jdbcType=INTEGER}, #{item.registeResidenceCode,jdbcType=VARCHAR},
+      #{item.idnumberGb,jdbcType=VARCHAR}, #{item.idnumberGa,jdbcType=VARCHAR}, #{item.registeResidenceCode,jdbcType=VARCHAR},
       #{item.registeResidence,jdbcType=VARCHAR}, #{item.workUnit,jdbcType=VARCHAR}, #{item.post,jdbcType=VARCHAR},
       #{item.postCode,jdbcType=VARCHAR}, #{item.personManager,jdbcType=VARCHAR}, #{item.identityCode,jdbcType=VARCHAR},
       #{item.identity,jdbcType=VARCHAR}, #{item.secretLevel,jdbcType=CHAR}, #{item.decryptStartdate,jdbcType=DATE},
