@@ -376,6 +376,4 @@
 				and
 				pa.APPLY_STATUS != 50
     </select>
-
-
 </mapper>
