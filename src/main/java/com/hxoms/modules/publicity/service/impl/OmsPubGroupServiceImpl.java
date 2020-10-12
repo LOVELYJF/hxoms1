@@ -117,7 +117,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 pubApplyMapper.insertPubApplyList(applyList);
                 sendTask(pubGroupAndApplyList,String.valueOf(pubGroup.getBazt()));
             }
-            return Result.success(id);
+            return Result.success(pubGroup);
         }else{
             return Result.error("未选择备案人员");
         }
