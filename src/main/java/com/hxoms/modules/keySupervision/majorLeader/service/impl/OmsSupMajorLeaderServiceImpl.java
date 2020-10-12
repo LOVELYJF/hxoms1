@@ -221,7 +221,10 @@ public class OmsSupMajorLeaderServiceImpl extends ServiceImpl<OmsSupMajorLeaderM
 		}
 
 		saveBatch(list);
-		omsRegProcpersonInfoService1.updateBatchById(list1);
+		if(list != null && list.size() > 0){
+			omsRegProcpersonInfoService1.updateBatchById(list1);
+		}
+
 	}
 
 
