@@ -478,7 +478,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         }catch (Exception e){
             e.printStackTrace();
         }
-        return Result.success();
+        return Result.success(pubGroup);
     }
 
     @Override
