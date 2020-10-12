@@ -145,6 +145,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[1]));
 					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setResult("填写注销申请");
 					omsCerCancellateRecords.setSperatorTime(new Date());
 					omsCerCancellateRecords.setCreateTime(new Date());
 					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
@@ -236,6 +237,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[9]));     //撤销
 					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setResult("撤销注销证照申请");
 					omsCerCancellateRecords.setSperatorTime(new Date());
 					omsCerCancellateRecords.setCreateTime(new Date());
 					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
