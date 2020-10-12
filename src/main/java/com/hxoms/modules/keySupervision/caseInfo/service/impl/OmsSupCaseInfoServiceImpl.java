@@ -82,7 +82,7 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 								"PINYIN", omsSupCaseInfo.getName()))
 				.between(omsSupCaseInfo.getCaseTimeStart() != null && omsSupCaseInfo.getCaseTimeEnd() != null ,
 								"CASE_TIME",omsSupCaseInfo.getCaseTimeStart() , omsSupCaseInfo.getCaseTimeEnd())
-				.orderByDesc("CASE_TIME");
+				.orderByDesc("CREATE_TIME");
 
 		PageHelper.startPage((int) page.getCurrent(), (int) page.getSize());
 		List<OmsSupCaseInfo> resultList = omsSupCaseInfoMapper.selectList(queryWrapper);
@@ -390,14 +390,13 @@ public class OmsSupCaseInfoServiceImpl implements OmsSupCaseInfoService {
 		 }
 
 		 if(UtilDateTime.nowYear().equals(yearNum)){
-			 //根据当前年份查询数据库中的文书号数量
-			 QueryWrapper<OmsSupCaseInfo> queryWrapper = new QueryWrapper<OmsSupCaseInfo>();
-			 queryWrapper.like(yearNum != null, "CASE_DOCUMENT_NO", "[" + yearNum + "]");
-			 int resultCount = omsSupCaseInfoMapper.selectCount(queryWrapper);
-			 if(resultCount != 0){
-				 if((resultCount + 1) != num){
-					 throw new CustomMessageException("立案文书号不连续,当前文书号到" +
-							 documentNum.substring(0, documentNum.indexOf("]") + 1) + resultCount + "号");
+			 //查询文书号到多少号
+			 String documentNum1 = omsSupCaseInfoMapper.selectDocumentNum();
+			 if(!StringUtils.isBlank(documentNum1)){
+				 String number = documentNum1.substring(documentNum1.indexOf("]") + 1, documentNum1.indexOf("号"));
+				 if((Integer.parseInt(number) + 1) != num){
+					 throw new CustomMessageException("立案文书号不连续,当前文书号该到" +
+							 documentNum.substring(0, documentNum.indexOf("]") + 1) + (Integer.parseInt(number) + 1) + "号");
 				 }
 			 }else{
 				 if(num != 1){
