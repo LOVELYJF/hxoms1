@@ -5,6 +5,7 @@ import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -38,7 +39,7 @@ public class OmsPriApplyVO extends OmsPriApply{
     //原涉密信息
     private List<OmsSmrOldInfoVO> omsSmrOldInfoVOS;
     //证照信息
-    private List<CfCertificate> cfCertificates;
+    private List<CfCertificateExtend> cfCertificates;
     //约束条件
     private List<Map<String, String>> condition;
     //出入境记录列表
@@ -118,11 +119,11 @@ public class OmsPriApplyVO extends OmsPriApply{
         this.omsPriTogetherpeoples = omsPriTogetherpeoples;
     }
 
-    public List<CfCertificate> getCfCertificates() {
+    public List<CfCertificateExtend> getCfCertificates() {
         return cfCertificates;
     }
 
-    public void setCfCertificates(List<CfCertificate> cfCertificates) {
+    public void setCfCertificates(List<CfCertificateExtend> cfCertificates) {
         this.cfCertificates = cfCertificates;
     }
 

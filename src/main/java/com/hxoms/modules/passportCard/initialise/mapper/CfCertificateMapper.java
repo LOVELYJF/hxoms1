@@ -5,6 +5,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer;
@@ -250,4 +251,14 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @return
 	 */
     List<ImportInterface> queryCertificateByOmsId(String b0100);
+
+    /**
+    * @description:因出国境申请显示证照信息时用到
+    * @author:杨波
+    * @date:2020-10-12
+    *  * @param omsId 登记备案人员ID
+	 *  cardStatus 多个证照状态
+    * @return:
+    **/
+    List<CfCertificateExtend> selectByOmsId(@Param("omsId")String omsId,@Param("cardStatus")String[] cardStatus);
 }

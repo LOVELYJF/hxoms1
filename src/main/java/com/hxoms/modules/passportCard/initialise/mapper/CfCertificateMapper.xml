@@ -43,6 +43,10 @@
     <result column="UPDATER" jdbcType="VARCHAR" property="updater" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap extends="BaseResultMap" id="BaseResultMapExtend" type="com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend">
+    <result column="saveStatusName" jdbcType="VARCHAR" property="saveStatusName" />
+    <result column="cardStatusName" jdbcType="VARCHAR" property="cardStatusName" />
+  </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
@@ -936,8 +940,25 @@
 		WHERE
 			user_id = #{id}
 	</select>
-	
-	
+
+  <!--因出国境申请显示证照信息时用到-->
+	<select id="selectByOmsId" resultMap="BaseResultMapExtend">
+      select a.*,b.ITEM_NAME as saveStatusName,c.ITEM_NAME as cardStatusName from cf_certificate a
+left join sys_dict_item b on a.SAVE_STATUS=b.ITEM_CODE and b.DICT_CODE='ZZBGZT'
+left join sys_dict_item C on a.CARD_STATUS=C.ITEM_CODE and C.DICT_CODE='ZJZT'
+where 1=1
+<if test="omsId!=null and omsId!=''">
+   and OMS_ID=#{omsId}
+</if>
+      <if test="cardStatus!=null and cardStatus.length>0">
+        and CARD_STATUS in
+        <foreach close=")" collection="cardStatus" index="index" item="item" open="(" separator=",">
+          #{item}
+        </foreach>
+      </if>
+
+    </select>
+
 	<resultMap id="examineCertificateMap" type="com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes">
 		<id column="ID" jdbcType="VARCHAR" property="id" />
 		<result column="A0100" jdbcType="VARCHAR" property="a0100" />
