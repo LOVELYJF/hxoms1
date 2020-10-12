@@ -599,12 +599,33 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply(null);
+        List<Map>   users = leaderCommonQueryMapper.selectJiweiApply(null,leaderSupervisionVo.getClshsftg());
 
         PageInfo pageInfo = new PageInfo(users);
         return pageInfo;
 
     }
+
+    /**
+     * 再次征求纪委意见
+     * **/
+    @Override
+    public void updateBussinessByagainAskFor(String bussinessType, String applyId) {
+
+        String realbussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessType);
+        String updateSql = "update "+realbussinessType;
+        // 征求纪委 意见 时间 ，  选中导出的 就是 征求 过的 所以 该 字段 值 置为 1
+        String setSql = " set SCZQJWYJSJ = DATE_FORMAT(now(),'%Y.%m.%d') , SFZQJWYJ = 1 " ;
+
+        String whereCondition = " where id = '" + applyId+"'";
+
+        log.info("sql ="+updateSql+setSql+whereCondition);
+
+        SqlVo instance = SqlVo.getInstance(updateSql+setSql+whereCondition);
+        selectMapper.update(instance);
+    }
+
+
 
     // TODO  征求 纪委意见 导出
     @Transactional(rollbackFor = CustomMessageException.class)
