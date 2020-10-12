@@ -121,6 +121,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 					omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));
 					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
+					omsCerCancellateRecords.setResult("强制注销,待处领导审批");
 					omsCerCancellateRecords.setSperatorTime(new Date());
 					omsCerCancellateRecords.setCreateTime(new Date());
 					omsCerCancellateRecords.setCreateUser(UserInfoUtil.getUserInfo().getId());
@@ -205,6 +206,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
 				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));     //撤销
+				omsCerCancellateRecords.setResult("审批通过,注销完成");
 				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
 				omsCerCancellateRecords.setSperatorTime(new Date());
 				omsCerCancellateRecords.setCreateTime(new Date());
@@ -244,6 +246,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				omsCerCancellateRecords.setId(UUIDGenerator.getPrimaryKey());
 				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[5]));     //撤销
+				omsCerCancellateRecords.setResult("材料审核通过，等待处领导审批");
 				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
 				omsCerCancellateRecords.setSperatorTime(new Date());
 				omsCerCancellateRecords.setCreateTime(new Date());
@@ -327,8 +330,10 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 					omsCerCancellateRecords.setCancellateId(id);
 					if(omsCerCancellateLicense.getCldyj().equals(IsAllowEnum.ALLOW.getCode())){
 						omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[6])); //状态置为部领导审批
+						omsCerCancellateRecords.setResult("处领导审批通过");
 					}else if (omsCerCancellateLicense.getCldyj().equals(IsAllowEnum.NOT_ALLOW.getCode())){
 						omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));   //状态置为拒绝
+						omsCerCancellateRecords.setResult("处领导审批不通过");
 					}
 					omsCerCancellateRecords.setResult(omsCerCancellateLicense.getCldyjly());
 					omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
@@ -382,8 +387,10 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 			omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 			if(omsCerCancellateLicense.getBldyj().equals(IsAllowEnum.ALLOW.getCode())){
 				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[7]));   //生成注销函
+				omsCerCancellateRecords.setResult("部领导审批通过");
 			}else if (omsCerCancellateLicense.getBldyj().equals(IsAllowEnum.NOT_ALLOW.getCode())){
 				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));   //拒绝
+				omsCerCancellateRecords.setResult("部领导审批不通过");
 			}
 			omsCerCancellateRecords.setResult(omsCerCancellateLicense.getBldyjly());
 			omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
@@ -434,6 +441,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				omsCerCancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 				omsCerCancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[10]));     //撤销
 				omsCerCancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
+				omsCerCancellateRecords.setResult("公安部审批通过");
 				omsCerCancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
 				omsCerCancellateRecords.setSperatorTime(new Date());
 				omsCerCancellateRecords.setCreateTime(new Date());
@@ -514,6 +522,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 						cancellateRecords.setId(UUIDGenerator.getPrimaryKey());
 						cancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 						cancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[11]));     //撤销
+						omsCerCancellateRecords.setResult("注销完成");
 						cancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
 						cancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
 						cancellateRecords.setSperatorTime(new Date());
@@ -566,7 +575,7 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 				cancellateRecords.setId(UUIDGenerator.getPrimaryKey());
 				cancellateRecords.setCancellateId(omsCerCancellateLicense.getId());
 				cancellateRecords.setZhzxzt(String.valueOf(Constants.CANCELL_STATUS[8]));     //拒绝
-				cancellateRecords.setResult(omsCerCancellateLicense.getGatyjly());
+				cancellateRecords.setResult("公安厅审批不通过");
 				cancellateRecords.setSperator(UserInfoUtil.getUserInfo().getName());
 				cancellateRecords.setSperatorTime(new Date());
 				cancellateRecords.setCreateTime(new Date());
