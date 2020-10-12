@@ -31,6 +31,7 @@
 			( SELECT COUNTRY_ID
 			FROM oms_sensitive_maintain
 			WHERE SENSITIVE_LIMIT_ID = #{sensitiveLimitId}
+			and IS_DELETE = '0'
 			) a
 		on c.id = a.COUNTRY_ID
 		<where>
@@ -40,7 +41,6 @@
 				NAME_INTERNATIONAL_ABBR like concat('%',#{nameZh},'%')
 			</if>
 		</where>
-		order by NAME_ZH
 	</select>
 
 	<select id="selectSensitiveCountry" parameterType="java.util.Map" resultType="java.util.Map">
