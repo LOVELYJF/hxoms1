@@ -4,6 +4,7 @@ package com.hxoms.modules.passportCard.deviceInteraction.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.OmsCerDeviceInfo;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetInfo;
+import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetNotice;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.DeviceInfo;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.QrCodeInfo;
 
@@ -37,4 +38,13 @@ public interface OmsDeviceInteractionService extends IService<OmsCerDeviceInfo> 
      * @Date: 2020/10/10
      */
     List<CerGetInfo> selectCanGetCer(QrCodeInfo qrCodeInfo);
+
+    /**
+     * @Desc: 证件已领取通知
+     * @Author: wangyunquan
+     * @Param: [cerGetNotice]
+     * @Return: void
+     * @Date: 2020/10/12
+     */
+    void cerGetNotice(CerGetNotice cerGetNotice);
 }

@@ -789,7 +789,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 //数据拷贝到证照出入境导入管理表
                                 OmsCerExitEntryImportManage omsCerExitEntryImportManage=new OmsCerExitEntryImportManage();
                                 BeanUtils.copyProperties(omsEntryexitRecord,omsCerExitEntryImportManage);
-                                if(mathPeople){
+                                if(!mathPeople){
                                     //0:成功导入,1:重复导入,2:匹配失败
                                     omsCerExitEntryImportManage.setStatus(CerExitEntryImportManageEnum.PPSB.getCode());
                                     cfCertificateExport.setOmsCerExitEntryImportManage(omsCerExitEntryImportManage);
