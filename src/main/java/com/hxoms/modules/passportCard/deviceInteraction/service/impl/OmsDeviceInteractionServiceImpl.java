@@ -3,18 +3,30 @@ package com.hxoms.modules.passportCard.deviceInteraction.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.GetStatusEnum;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.ReceiveSourceEnum;
+import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.OmsCerDeviceInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.DeviceInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.QrCodeInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.StorageInfo;
+import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.*;
 import com.hxoms.modules.passportCard.deviceInteraction.mapper.OmsCerDeviceInfoMapper;
 import com.hxoms.modules.passportCard.deviceInteraction.service.OmsDeviceInteractionService;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
+import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
+import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
+import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +34,20 @@ import java.util.List;
 @Service
 public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInfoMapper, OmsCerDeviceInfo> implements OmsDeviceInteractionService {
 
-    @Autowired OmsCerDeviceInfoMapper omsCerDeviceInfoMapper;
+    @Autowired
+    private OmsCerDeviceInfoMapper omsCerDeviceInfoMapper;
+
+    @Autowired
+    private OmsCounterGetService omsCounterGetService;
+
+    @Autowired
+    private CfCertificateService cfCertificateService;
+
+    @Autowired
+    private OmsExitEntryManageService omsExitEntryManageService;
+
+    @Autowired
+    private OmsPriApplyService omsPriApplyService;
     /**
      * @Desc: 判断证件是否可存放于设备
      * @Author: wangyunquan
@@ -71,5 +96,80 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
         if(!Boolean.valueOf(omsCerDeviceInfoMapper.validateUser(qrCodeInfo)).booleanValue())
             throw new CustomMessageException("领取人与被领取人不是同单位，不能领取，请核实！");
         return omsCerDeviceInfoMapper.selectCanGetCer(qrCodeInfo);
+    }
+
+    /**
+     * @param cerGetNotice
+     * @Desc: 证件已领取通知
+     * @Author: wangyunquan
+     * @Param: [cerGetNotice]
+     * @Return: void
+     * @Date: 2020/10/12
+     */
+    @Override
+    public void cerGetNotice(CerGetNotice cerGetNotice) {
+        List<CerGetEntity> cerInfo = cerGetNotice.getCerInfo();
+        //查询领取人用户id
+        String userId=omsCerDeviceInfoMapper.selectUserId(cerGetNotice.getIdNo(),cerGetNotice.getName());
+        List<OmsCerGetTask> omsCerGetTaskList=new ArrayList<>();
+        List<CfCertificate> cfCertificateList=new ArrayList<>();
+        List<OmsCerExitEntryRepertory> omsCerExitEntryRepertoryArrayList=new ArrayList<>();
+        List<OmsPriApply> omsPriApplyList=new ArrayList<>();
+        Date currDate=new Date();
+        for (CerGetEntity cerGetEntity : cerInfo) {
+            OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
+            //已领取
+            omsCerGetTask.setId(cerGetEntity.getId());
+            omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());
+            omsCerGetTask.setGetPeople(userId);
+            omsCerGetTask.setGetTime(currDate);
+            omsCerGetTask.setUpdator(userId);
+            omsCerGetTask.setUpdateTime(currDate);
+            omsCerGetTaskList.add(omsCerGetTask);
+            //查询证件信息
+            CerInfo cerInfoExist=omsCerDeviceInfoMapper.selectCerInfo(cerGetEntity.getId());
+            //证照信息
+            CfCertificate certificate=new CfCertificate();
+            certificate.setId(cerInfoExist.getId());
+            //已取出
+            certificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
+            certificate.setCardStatus(CardStatusEnum.YLQ.getCode());
+            certificate.setUpdater(userId);
+            certificate.setUpdateTime(currDate);
+            cfCertificateList.add(certificate);
+            //出库信息
+            OmsCerExitEntryRepertory omsCerExitEntryRepertory=new OmsCerExitEntryRepertory();
+            omsCerExitEntryRepertory.setGetId(UUIDGenerator.getPrimaryKey());
+            omsCerExitEntryRepertory.setCerId(cerInfoExist.getId());
+            omsCerExitEntryRepertory.setGetId(cerGetEntity.getId());
+            omsCerExitEntryRepertory.setName(cerInfoExist.getName());
+            omsCerExitEntryRepertory.setZjlx(cerInfoExist.getZjlx());
+            omsCerExitEntryRepertory.setZjhm(cerInfoExist.getZjhm());
+            //出入库状态(0:出库,1:入库)
+            omsCerExitEntryRepertory.setStatus(InOutStatus.OUT_STATUS.getCode());
+            //存取方式(0:证照机,1:柜台)
+            omsCerExitEntryRepertory.setMode(SurelyWayEnum.CABINET.getCode());
+            omsCerExitEntryRepertory.setCabinetNum(cerInfoExist.getCabinetNum());
+            omsCerExitEntryRepertory.setPlace(cerInfoExist.getPlace());
+            omsCerExitEntryRepertory.setOperator(userId);
+            omsCerExitEntryRepertory.setOperateTime(currDate);
+            omsCerExitEntryRepertoryArrayList.add(omsCerExitEntryRepertory);
+
+            //因私申请
+            if(ReceiveSourceEnum.SOURCE_0.getCode().equals(cerInfoExist.getDateSource())){
+                OmsPriApply omsPriApply=new OmsPriApply();
+                omsPriApply.setId(cerInfoExist.getBusiId());
+                omsPriApply.setApplyStatus(Integer.parseInt(CardStatusEnum.YLQ.getCode()));
+                omsPriApplyList.add(omsPriApply);
+            }
+        }
+        if(!omsCounterGetService.updateBatchById(omsCerGetTaskList))
+            throw new CustomMessageException("证照领取更新失败!");
+        if(!cfCertificateService.updateBatchById(cfCertificateList))
+            throw new CustomMessageException("证照更新失败!");
+        if(!omsExitEntryManageService.saveBatch(omsCerExitEntryRepertoryArrayList))
+            throw new CustomMessageException("出库记录保存失败!");
+        if(!omsPriApplyList.isEmpty()&&omsPriApplyService.updateBatchById(omsPriApplyList))
+            throw new CustomMessageException("因私申请更新失败!");
     }
 }
