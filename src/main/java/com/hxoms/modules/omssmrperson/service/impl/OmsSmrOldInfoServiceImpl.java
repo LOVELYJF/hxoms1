@@ -20,7 +20,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +44,8 @@ public class OmsSmrOldInfoServiceImpl extends ServiceImpl<OmsSmrOldInfoMapper, O
 
     @Override
     public PageInfo<OmsSmrOldInfoVO> getSmrOldInfoById(Integer pageNum, Integer pageSize, String id) {
-        List<OmsSmrOldInfoVO> resultList = baseMapper.getSmrOldInfoList(id);
         PageUtil.pageHelp(pageNum, pageSize);
+        List<OmsSmrOldInfoVO> resultList = baseMapper.getSmrOldInfoList(id);
         PageInfo<OmsSmrOldInfoVO> pageInfo = new PageInfo(resultList);
         return pageInfo;
     }

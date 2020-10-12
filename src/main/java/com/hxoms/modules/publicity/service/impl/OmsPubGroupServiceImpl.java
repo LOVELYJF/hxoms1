@@ -71,8 +71,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
 
     @Override
     public PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize,Map<String,String> param) {
-        List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
         PageUtil.pageHelp(pageNum, pageSize);
+        List<OmsPubGroupPreApproval> resultList = pubGroupMapper.getPubGroupList(param);
         PageInfo<OmsPubGroupPreApproval> pageInfo = new PageInfo(resultList);
         return pageInfo;
     }
