@@ -304,7 +304,7 @@ public class OmsSupFamilyMemberServiceImpl extends ServiceImpl<A36Mapper, A36> i
             SysDictItem sysDictItem = hashMapPolitical.get(zzmm);
             if (sysDictItem != null)
                 nOmsRegProcpersonInfo.setPoliticalAfficode(sysDictItem.getItemCode());
-            nOmsRegProcpersonInfo.setPoliticalAffiname(zzmm);
+            nOmsRegProcpersonInfo.setPoliticalAffiname(sysDictItem.getItemName());
 
             //设置户口所在地代码
             String huKouLocation = a36.getHukouLocation();

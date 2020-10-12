@@ -211,7 +211,7 @@
 					</foreach>
 					and
 				</if>
-				<if test="name != null and name != ''">(a.A0101 like concat('%',#{name},'%') or a.A0102 like concat('%',#{name},'%')) and </if>
+				<if test="name != null and name != ''">(a01.A0101 like concat('%',#{name},'%') or a01.A0102 like concat('%',#{name},'%')) and </if>
 			</trim>
 		</where>
 		order by poo.a0201b ,orderindex

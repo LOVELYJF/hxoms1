@@ -15,6 +15,7 @@ import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCol
 import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjDataSourceEnum;
 import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
+import com.hxoms.modules.passportCard.deviceInteraction.service.OmsDeviceInteractionService;
 import com.hxoms.modules.passportCard.initialise.entity.*;
 import com.hxoms.modules.passportCard.initialise.entity.enums.*;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
@@ -77,6 +78,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Autowired
     private OmsCerConuterNumberMapper omsCerConuterNumberMapper;
 
+    @Autowired
+    private OmsDeviceInteractionService omsDeviceInteractionService;
     /**
      * @Desc: 初始化证照，导出存疑证照统计-导出证照查询
      * @Author: wuqingfan
@@ -900,10 +903,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             //根据登陆用户设置保管单位
             //0:干部监督处,1:省委统战部(台办)
             certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
-            //还未对接证照机接口，先默认柜台存
-            boolean locationExist=false;
+
             //通过接口查询证照机是否可以存，否则柜台存。
-            if(locationExist){
+            if(omsDeviceInteractionService.isStoreDevice(certificateGa.getSurelyUnit(),certificateGa.getZjxs())){
                 //保管方式(0:证照机,1:柜台)
                 certificateGa.setSurelyWay(SurelyWayEnum.CABINET.getCode());
             }else{

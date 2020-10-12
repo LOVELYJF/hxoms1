@@ -34,12 +34,12 @@ public class OmsRegProcbatchPerson {
     private String sex;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE",   FieldDescription="出生日期（身份证（公安））")
-    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDate;
 
     @ColumnAnnotation(FieldName = "BIRTH_DATE_GB",   FieldDescription="出生日期（干部）")
-    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date birthDateGb;
 
@@ -47,7 +47,7 @@ public class OmsRegProcbatchPerson {
     private String idnumberGb;
 
     @ColumnAnnotation(FieldName = "IDNUMBER_GA",   FieldDescription="身份证号（公安）")
-    private Integer idnumberGa;
+    private String idnumberGa;
 
     @ColumnAnnotation(FieldName = "REGISTE_RESIDENCE_CODE",   FieldDescription="户口所在地代码")
     private String registeResidenceCode;
@@ -77,12 +77,12 @@ public class OmsRegProcbatchPerson {
     private String secretLevel;
 
     @ColumnAnnotation(FieldName = "DECRYPT_STARTDATE",   FieldDescription="脱密期管理开始日期")
-    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptStartdate;
 
     @ColumnAnnotation(FieldName = "DECRYPT_ENDDATE",   FieldDescription="脱密期管理终止日期")
-    @JsonFormat(pattern = "yyyy.MM.dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date decryptEnddate;
 
@@ -178,11 +178,11 @@ public class OmsRegProcbatchPerson {
         this.idnumberGb = idnumberGb == null ? null : idnumberGb.trim();
     }
 
-    public Integer getIdnumberGa() {
+    public String getIdnumberGa() {
         return idnumberGa;
     }
 
-    public void setIdnumberGa(Integer idnumberGa) {
+    public void setIdnumberGa(String idnumberGa) {
         this.idnumberGa = idnumberGa;
     }
 

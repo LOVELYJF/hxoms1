@@ -38,7 +38,7 @@
 		select
 			oci.ID as id,
 			oci.OMS_ID as omsId,
-			cc.ID as cerId,
+			cc.ID as cfId,
 			oci.NAME as name,
 			oci.ZJLX as zjlx,
 			oci.ZJHM as zjhm,
@@ -140,8 +140,22 @@
 			<trim suffixOverrides="and">
 				<if test="cabinetNum != null">CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">CARD_STATUS=#{cardStatus} and </if>
+				<if test="surelyWay != null">SURELY_WAY=#{surelyWay} and </if>
+				<if test="inventoryDate != null">INVENTORY_DATE=#{inventoryDate} and </if>
 			</trim>
 		</where>
+	</select>
+
+	<!-- 查询盘点年月 -->
+	<select id="selectCerInventoryDate" resultType="java.lang.String">
+		SELECT
+			INVENTORY_DATE
+		FROM
+			oms_cer_inventory
+		GROUP BY
+			INVENTORY_DATE
+		order by
+			INVENTORY_DATE
 	</select>
 
 </mapper>

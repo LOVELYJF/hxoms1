@@ -904,6 +904,7 @@ public class LeaderEXportExcelService {
             batchperson1.setRfId(info.getId());
             batchperson1.setBatchId(batchinfo.getId());
             batchperson1.setSuccess("0");
+            batchperson1.setErrorMsg("通过");
             adds.add(batchperson1);
 
             info.setRfStatus("1");

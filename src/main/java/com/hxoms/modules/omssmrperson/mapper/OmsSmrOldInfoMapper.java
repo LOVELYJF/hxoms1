@@ -25,7 +25,14 @@ public interface OmsSmrOldInfoMapper extends BaseMapper<OmsSmrOldInfo> {
      * @return
      */
     List<OmsSmrOldInfoVO> getSmrOldInfoVOList(Map<String, String> paramMap);
-    List<OmsSmrOldInfoVO> getSmrOldInfoVOList1(Map<String, String> paramMap);
+    /**
+    * @description:根据人员ID获取未过脱密期的涉密信息
+    * @author:杨波
+    * @date:2020-10-10
+    *  * @param a0100 人员ID
+    * @return:
+    **/
+    List<OmsSmrOldInfoVO> getSmrOldInfoByA0100(String a0100);
 
     List<OmsSmrOldInfoVO> getConfirmPeriodList(String orgId,String name,String namePy);
     //获取涉密人员信息维护列表

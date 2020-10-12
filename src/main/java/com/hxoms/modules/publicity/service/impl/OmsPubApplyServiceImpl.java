@@ -594,7 +594,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", a0100);
-        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList1(paramMap);
+        paramMap.put("finishDate","1");
+        List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         otherPubApply.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //获取负面信息
         String result = omsConditionService.selectNegativeInfo(a0100,cgsj);

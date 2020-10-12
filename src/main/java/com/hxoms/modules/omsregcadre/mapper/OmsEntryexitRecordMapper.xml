@@ -40,7 +40,7 @@
     -->
     ID, B0000, PRIAPPLY_ID, IMPORT_TIME, IMPORT_PERSON, OGA_MODE, DATA_SOURCE, OMS_ID,
     A0100, OGE_STATUS, NAME, SEX, BIRTH_DATE, NATIONALITY, ID_TYPE, ID_NUMBER, DESTINATION, 
-    ENTRACE_EXIT, OGE_DATE, OGE_TIME, VALID_UNTIL, VISITING_TASKS, COMPARISON_RESULT
+    ENTRACE_EXIT, OGE_DATE, OGE_TIME, VALID_UNTIL, VISITING_TASKS, COMPARISON_RESULT,COMPARISON_DATE
   </sql>
 
   <insert id="insert" parameterType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord">
@@ -326,38 +326,41 @@
   </update>-->
 
   <select id="selectEntryexitRecordIPage" parameterType="com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam" resultMap="BaseResultMap">
-      select * from oms_entryexit_record where 1=1
+      select c.NAME_ZH as NATIONALITY,r.*
+      FROM oms_entryexit_record r
+      LEFT JOIN country c on r.NATIONALITY = c.ID
+      WHERE 1=1
       <if test="name!=null and name!=''">
-          AND NAME LIKE '%${name}%'
+          AND r.NAME LIKE '%${name}%'
       </if>
       <if test="dataSource!=null and dataSource!=''">
-          AND DATA_SOURCE = #{dataSource}
+          AND r.DATA_SOURCE = #{dataSource}
       </if>
       <if test="ogeStatus!=null and ogeStatus!=''">
-          AND OGE_STATUS = #{ogeStatus}
+          AND r.OGE_STATUS = #{ogeStatus}
       </if>
       <if test="ogeStartDate != null and ogeEndDate!=null">
-          and OGE_DATE &gt;= #{ogeStartDate} and OGE_DATE &lt;= #{ogeEndDate}
+          and r.OGE_DATE &gt;= #{ogeStartDate} and r.OGE_DATE &lt;= #{ogeEndDate}
       </if>
       <if test="ogeDate != null">
-          and OGE_DATE &gt;= #{ogeDate}
+          and r.OGE_DATE &gt;= #{ogeDate}
       </if>
       <if test="comparisonResult!=null and comparisonResult!=''">
-          and COMPARISON_RESULT LIKE '%${comparisonResult}%'
+          and r.COMPARISON_RESULT LIKE '%${comparisonResult}%'
       </if>
       <if test="omsId!=null and omsId!=''">
-          AND OMS_ID = #{omsId}
+          AND r.OMS_ID = #{omsId}
       </if>
       <if test="ogeStatus!=null and ogeStatus!=''">
-          AND OGE_STATUS = #{ogeStatus}
+          AND r.OGE_STATUS = #{ogeStatus}
       </if>
       <if test="ids!=null">
-          and ID in
+          and r.ID in
           <foreach collection="ids" item="id" open="(" close=")" separator=",">
               #{id}
           </foreach>
       </if>
-      order by OGE_DATE asc
+      order by r.OGE_DATE asc
   </select>
 
 
@@ -437,7 +440,7 @@
     <select id="newexitRecordsList" parameterType="java.util.List" resultType="com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordModel">
         select * from oms_entryexit_record
         where 1=1
-        <if test="ids!=null">
+        <if test="ids.size>0">
             and ID in
             <foreach collection="ids" item="id" open="(" close=")" separator=",">
                 #{id}

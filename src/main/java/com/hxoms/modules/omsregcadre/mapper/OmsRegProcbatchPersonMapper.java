@@ -7,13 +7,10 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface OmsRegProcbatchPersonMapper extends BaseMapper<OmsRegProcbatchPerson> {
-    List<String> selectRfIds(String batchId);
 
     int batchinsertInfo(@Param(value = "list")List<OmsRegProcbatchPerson> subList);
 
-    int selectCountByBatchId(String batchNo);
-
-    int selectPersonByRfId(@Param(value = "id")String id, @Param(value = "batchNo")String batchNo);
+    List<OmsRegProcbatchPerson> getToBeCorrected(@Param(value ="b0100") String b0100);
 
     List<OmsRegProcbatchPerson> getToBeConfirmed(@Param(value ="batchId") String batchId);
 }

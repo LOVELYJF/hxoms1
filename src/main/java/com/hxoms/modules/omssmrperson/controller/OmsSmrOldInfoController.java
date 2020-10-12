@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
+import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.omssmrperson.service.OmsSmrOldInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +129,18 @@ public class OmsSmrOldInfoController {
             e.printStackTrace();
             return Result.error("系统错误");
         }
+    }
+    /**
+     * @description:根据人员ID获取未过脱密期的涉密信息
+     * @author:杨波
+     * @date:2020-10-10
+     *  * @param A0100 人员ID
+     * @return:com.hxoms.common.utils.Result
+     **/
+    @GetMapping("/getSmrOldInfoByA0100")
+    public Result getSmrOldInfoByA0100(String A0100){
+
+       return smrOldInfoService.getSmrOldInfoByA0100(A0100);
     }
 }
 

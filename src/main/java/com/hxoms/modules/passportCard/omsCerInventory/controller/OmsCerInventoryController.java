@@ -126,6 +126,19 @@ public class OmsCerInventoryController extends BaseController {
 	}
 
 
+	/**
+	 * <b>功能描述: 查询盘点年月</b>
+	 * @Param: []
+	 * @Return: com.hxoms.common.utils.Result
+	 * @Author: luoshuai
+	 * @Date: 2020/10/10 14:00
+	 */
+	@GetMapping("/getCerInventoryDate")
+	public Result getCerInventoryDate(){
+		List<String> list = omsCerInventoryService.getCerInventoryDate();
+		return Result.success(list);
+	}
+
 
 	/**
 	 * <b>功能描述: 总体盘点结果统计查询</b>
