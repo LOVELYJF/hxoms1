@@ -467,6 +467,32 @@
     WHERE
         a.qr_code_id = #{qrCodeId}
     AND b.get_status = '0'
+  </select>
+  <select id="selectUserId" resultType="java.lang.String">
+    SELECT
+        user_id
+    FROM
+        cf_user
+    WHERE
+        IDNUMBER = #{idNo}
+    AND user_name = #{name}
+    AND suer_state = '1'
 
+  </select>
+  <select id="selectCerInfo" resultType="com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerInfo">
+    SELECT
+        b.id,
+        a.busi_id busiId,
+        b.name,
+        b.zjlx,
+        b.zjhm,
+        b.cabinet_num cabinetNum,
+        b.place,
+        a.date_source dateSource
+    FROM
+        oms_cer_get_task a
+    INNER JOIN cf_certificate b ON a.cer_id = b.id
+    WHERE
+        a.id=#{id}
   </select>
 </mapper>

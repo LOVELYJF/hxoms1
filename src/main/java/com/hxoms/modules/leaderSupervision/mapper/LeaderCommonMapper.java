@@ -34,7 +34,7 @@ public interface LeaderCommonMapper {
 
    List<Map> selectLeaderBatch();
    /** 征求纪委 意见 查询页面 **/
-   List<Map> selectJiweiApply(Object[] bussinessIds);
+   List<Map> selectJiweiApply(@Param("bussinessIds")Object[] bussinessIds,@Param("clshsftg") String clshsftg );
 
    /** 记录纪委 意见 查询 页面 **/
 

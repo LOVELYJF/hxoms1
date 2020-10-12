@@ -42,6 +42,8 @@ public class LeaderSupervisionVo {
 
     private String reason;
 
+    private String clshsftg; /** 征求纪委意见 查询条件 材料审核 全部all，已审核1，未审核2 **/
+
 
 
 
@@ -180,5 +182,13 @@ public class LeaderSupervisionVo {
 
     public void setLeaderBatchids(String[] leaderBatchids) {
         this.leaderBatchids = leaderBatchids;
+    }
+
+    public String getClshsftg() {
+        return clshsftg;
+    }
+
+    public void setClshsftg(String clshsftg) {
+        this.clshsftg = clshsftg;
     }
 }

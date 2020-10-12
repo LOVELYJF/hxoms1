@@ -137,6 +137,14 @@ public class  LeaderSupervisionController {
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
+    /** 再次征求纪委意见 **/
+
+    public Result againAskFor(String bussinessType,String applyId){
+
+
+      return  Result.success();
+    }
+
     /**
      *  纪委意见录入 查询页面
      * **/

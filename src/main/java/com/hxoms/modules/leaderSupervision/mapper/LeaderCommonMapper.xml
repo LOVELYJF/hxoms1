@@ -93,7 +93,7 @@
 
         DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
         "无" AS cfrw,    #出访任务
 
@@ -156,7 +156,7 @@
 
         DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-        pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
         "无" AS cfrw,    #出访任务
 
@@ -302,7 +302,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+							   (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -365,7 +365,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+							   (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -610,7 +610,7 @@
 							   pua.FMXX AS fmxx, # 负面信息
 							   pua.SFBG as sfbg, # 是否变更
 							   yesOrnO_take_advice(pua.id,pua.A0100,35) as  sfbczqjwyj,    # 是否需要征求纪委意见
-							   pua.SCZQJWYJSJ as sczqjwyjsj , # 上次 征求 时间
+		                       DATE_FORMAT(pua.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj , # 上次 征求 时间
 							   case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 							   case when pua.JWJL =1 then '同意' when pua.JWJL = 2 then '不同意'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
@@ -642,7 +642,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+	                      	(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -651,10 +651,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-		mrp.SEX NOT IN ('1', '2'),
-		'未知',
-		IF (mrp.SEX = 1, '男', '女')
-		) AS sex,# 性别
+	                       	mrp.SEX NOT IN ('1', '2'),
+		                     '未知',
+		                    IF (mrp.SEX = 1, '男', '女')
+		                      ) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -677,7 +677,7 @@
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
 							   yesOrnO_take_advice(pra.id,pra.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
-							   pra.SCZQJWYJSJ , # 上次 征求 时间
+		                       DATE_FORMAT(pra.SCZQJWYJSJ,'%Y.%m.%d') , # 上次 征求 时间
 							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 							   case when pra.JWJL =1 then '同意' when pra.JWJL = 2 then '不同意'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
@@ -708,7 +708,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+	                        	(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -764,17 +764,23 @@
 		where (temp.batchId is not null or temp.batchId !='') and temp.applyStatus in ('20','21 ')
 
 
-		<if test="array != null and array.length>0">
+		<if test="bussinessIds != null and bussinessIds.length>0">
 
 			and temp.id in
 
-			<foreach item="item" index="id" collection="array" open="("
+			<foreach item="item" index="id" collection="bussinessIds" open="("
 
 					 separator="," close=")">
 
 				#{item}
 
 			</foreach>
+
+		</if>
+
+		<if test="clshsftg!=null and clshsftg!='' and clshsftg!='all' ">
+
+			and temp.clshsftg = #{clshsftg}
 
 		</if>
 
@@ -850,7 +856,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+	                       	(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -919,7 +925,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		                       (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -954,7 +960,7 @@
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
-							   prda.SCZQJWYJSJ, # 上次 征求 时间
+		                       DATE_FORMAT(prda.SCZQJWYJSJ,'%Y.%m.%d') # 上次 征求 时间
 							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
@@ -1069,7 +1075,7 @@
 
 		DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 		"无" AS cfrw,    #出访任务
 
@@ -1289,7 +1295,7 @@
 
 		prda.DELAY_REASON as delayReason  , #延期入境原因
 
-		pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+		(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 		pra.ABROAD_REASONS as abroadReasons, # 事由
 
@@ -1708,7 +1714,7 @@
 
 			DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-			pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+			(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 			pra.ABROAD_REASONS as abrodaReasons, # 事由
 
@@ -1798,7 +1804,7 @@
 
 			DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-			pra.GO_COUNTRY AS goCountry,  #出访国家 == 目的地
+			(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
 			pra.ABROAD_REASONS as abrodaReasons, # 事由
 
@@ -1926,7 +1932,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+		                       (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS sdgj,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 							   mrp.INCUMBENCY_STATUS as incumbencyStatus, # 在职状态 1在职 2辞职 3退休 4去世 5开除 6调出 7.省管变中管 8 未匹配 9其它
@@ -2006,7 +2012,7 @@
 
 							   DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-							   pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+		                      (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS sdgj,  #出访国家 == 目的地
 
 							   "无" AS cfrw,    #出访任务
 
@@ -2180,7 +2186,7 @@
 
 										DATE_FORMAT(pra.RETURN_TIME,'%Y.%m.%d') AS returnTime, #回国时间 == 入境日期
 
-										pra.GO_COUNTRY AS sdgj,  #出访国家 == 目的地
+		                                (select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS sdgj,  #出访国家 == 目的地
 
 										"无" AS cfrw,    #出访任务
 

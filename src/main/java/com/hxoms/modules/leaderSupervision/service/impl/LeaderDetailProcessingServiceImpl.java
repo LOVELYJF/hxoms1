@@ -939,7 +939,6 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 ////
 ////             }
 //        }
-
         List listPass =   leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> "通过".equals(b.getCadresupervisionOpinion())).collect(Collectors.toList());
         List listNoPass  =     leaderSupervisionVo.getBussinessTypeAndIdVos().stream().filter((BussinessTypeAndIdVo b)-> "不通过".equals(b.getCadresupervisionOpinion())).collect(Collectors.toList());
 
