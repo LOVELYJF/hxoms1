@@ -1002,12 +1002,11 @@
 			cf.CSDD csdd,
 		    cf.OMS_ID omsId,
 			reg.rf_B0000,
-			b01.b0101
+      reg.work_unit as b0101
 		FROM
 			cf_certificate cf
 				LEFT JOIN sys_dict_item dic ON cf.zjlx = dic.item_code
 				LEFT JOIN oms_reg_procpersoninfo reg on cf.OMS_ID = reg.ID
-				LEFT JOIN b01 b01 on reg.RF_B0000 = b01.B0100
 		WHERE
 		dic.dict_code = 'ZJLX'
 		<if test="b0100!=null and b0100!=''">
