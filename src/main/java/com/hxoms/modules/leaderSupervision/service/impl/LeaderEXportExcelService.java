@@ -174,7 +174,7 @@ public class LeaderEXportExcelService {
 
         List<Map> dataList = leaderCommonQueryMapper.selectJiweiApply(
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s -> s.getBussinessId()).collect(Collectors.toList()).toArray()
-
+           ,leaderSupervisionVo.getClshsftg()
         );
 
 

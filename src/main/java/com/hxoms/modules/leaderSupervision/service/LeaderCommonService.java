@@ -46,6 +46,11 @@ public interface LeaderCommonService {
     PageInfo selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
     /**
+     * 再次征求纪委意见
+     * **/
+    void  updateBussinessByagainAskFor(String bussinessType,String applyId);
+
+    /**
      *
      * 记录 纪委意见 查询页面
      * **/
@@ -79,5 +84,10 @@ public interface LeaderCommonService {
     Map goInChuZhangApplyPage(AuditOpinionVo auditOpinionVo);
 
 
+    /**
+     * @authore:wjf
+     * @data 2020/9/28 16:25
+     * @Description:
+     ***/
 
 }
