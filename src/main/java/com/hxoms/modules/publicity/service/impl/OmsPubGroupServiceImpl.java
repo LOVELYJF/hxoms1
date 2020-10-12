@@ -152,7 +152,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         //创建所需对象
         OmsPubGroupPreApproval pubGroup = pubGroupAndApplyList.getOmsPubGroupPreApproval();
         List<OmsPubApplyVO> applyVOList = pubGroupAndApplyList.getOmsPubApplyVOList();
-        List<OmsPubApply> applyList = new ArrayList<>();
+        List<OmsPubApply> applyUpdateList = new ArrayList<>();
+        List<OmsPubApply> applyInsertList = new ArrayList<>();
         int num = applyVOList.size();
         //修改团组信息
         if(pubGroup != null){
@@ -162,11 +163,26 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 //出国人员信息
                 for(int i = 0; i < num; i++ ){
                     OmsPubApply pubApply = applyVOList.get(i);
-                    pubApply.setModifyUser(userInfo.getId());
-                    pubApply.setModifyTime(new Date());
-                    applyList.add(pubApply);
+                    for (int j = 0; j < num; j++) {
+                        if(i != j && pubApply.getProcpersonId().equals(applyVOList.get(j).getProcpersonId())){
+                            return Result.error("人员选择重复，请查证！");
+                        }
+                    }
+                    if(StringUtils.isBlank(pubApply.getId())){
+                        pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup,pubApply.getB0100());
+                        applyInsertList.add(pubApply);
+                    }else{
+                        pubApply.setModifyUser(userInfo.getId());
+                        pubApply.setModifyTime(new Date());
+                        applyUpdateList.add(pubApply);
+                    }
                 }
-                pubApplyMapper.updatePubApplyList(applyList);
+                if(applyInsertList.size() > 0){
+                    pubApplyMapper.insertPubApplyList(applyInsertList);
+                }
+                if(applyUpdateList.size() > 0){
+                    pubApplyMapper.updatePubApplyList(applyUpdateList);
+                }
             }
         }
         return Result.success();
