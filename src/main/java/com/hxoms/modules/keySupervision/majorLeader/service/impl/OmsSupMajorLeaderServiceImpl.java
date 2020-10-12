@@ -133,8 +133,6 @@ public class OmsSupMajorLeaderServiceImpl extends ServiceImpl<OmsSupMajorLeaderM
 					throw new CustomMessageException("同步到备案信息表失败");
 				}
 			}
-		}else{
-			throw new CustomMessageException("该主要领导已经存在,请不要重复添加");
 		}
 	}
 
