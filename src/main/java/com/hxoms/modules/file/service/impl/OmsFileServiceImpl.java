@@ -142,14 +142,14 @@ public class OmsFileServiceImpl implements OmsFileService {
                         throw new CustomMessageException("插入新的文件信息出错");
                     }
                 }
-                //复制文件
-                if (Constants.oms_business[1].equals(tableCode)){
-                    //因私出国
-                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + userInfo.getOrgId());
-                } else if(Constants.oms_business[2].equals(tableCode)){
-                    //延期回国
-                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
-                }
+//                //复制文件
+//                if (Constants.oms_business[1].equals(tableCode)){
+//                    //因私出国
+//                    omsFileUtils.copyFolder("yinsichuguo", "yinsichuguo" + File.separator + userInfo.getOrgId());
+//                } else if(Constants.oms_business[2].equals(tableCode)){
+//                    //延期回国
+//                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
+//                }
             }
             //重新查询
             queryWrapper.clear();

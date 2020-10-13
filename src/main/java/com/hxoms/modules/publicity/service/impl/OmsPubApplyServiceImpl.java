@@ -15,6 +15,7 @@ import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitServi
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
+import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
@@ -57,25 +58,26 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     private A36Mapper a36Mapper;
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
+
     @Override
     public List<PersonInfoVO> selectPersonListByOrg(List<String> b0100, String keyword, String type) {
         /** type 说明（1-经办人，2、管理员维护，3、因公、因私、特殊人员，4、调整期干部） */
         List<PersonInfoVO> personInfoVOS = null;
         ArrayList<String> a0165 = new ArrayList<>();
-        if("1".equals(type)){
+        if ("1".equals(type)) {
             //经办人、只能查询非省管、中管干部
             a0165.add("01");
             a0165.add("02");
-            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165,b0100,keyword);
-        }else if ("2".equals(type)){
+            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165, b0100, keyword);
+        } else if ("2".equals(type)) {
             //管理员维护：查询所有人员
-            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165, b0100,keyword);
-        }else if ("3".equals(type)){
+            personInfoVOS = omsPubApplyMapper.selectPersonListForOperator(a0165, b0100, keyword);
+        } else if ("3".equals(type)) {
             //因公、因私、特殊人员查询登记备案库人员
             personInfoVOS = omsPubApplyMapper.selectPersonListByOrg(b0100, keyword);
-        }else if ("4".equals(type)){
+        } else if ("4".equals(type)) {
             //调整期干部：查询省管干部
-            personInfoVOS = omsPubApplyMapper.selectPersonListForTZQGB(b0100,keyword);
+            personInfoVOS = omsPubApplyMapper.selectPersonListForTZQGB(b0100, keyword);
         }
         return personInfoVOS;
     }
@@ -145,9 +147,21 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertPubApply(OmsPubApply omsPubApply) {
+    public Result insertPubApply(OmsPubApply omsPubApply) {
         if (StringUtils.isBlank(omsPubApply.getA0100())) {
-            throw new CustomMessageException("请先选择申请的干部");
+            Result.error("请先选择申请的干部");
+        }
+        List<OmsPubApply> pubApplies = omsPubApplyMapper.selectExistsAbroad(omsPubApply.getProcpersonId(),
+                new SimpleDateFormat("yyyy-MM-dd").format(omsPubApply.getCgsj()));
+        if (pubApplies.size() > 0) {
+            String desc = "";
+            for (OmsPubApply pubApply : pubApplies
+            ) {
+                if (omsPubApply.getId() != null && pubApply.getId().equals(omsPubApply.getId())) continue;
+                desc += "当前申请的因公出国（境）时间段内已经存在" + pubApply.getBz() + "出国（境）申请！";
+            }
+            if (!"".equals(desc))
+                return Result.error(desc);
         }
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
@@ -167,7 +181,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //数据来源（0：填写，1：上传）
             omsPubApply.setSource("0");
             omsPubApplyMapper.insert(omsPubApply);
-        }else {
+        } else {
             //更新
             omsPubApply.setModifyUser(loginUser.getId());
             omsPubApply.setModifyTime(new Date());
@@ -175,10 +189,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         //判断校验类型
         //result = checkPersonApply(omsPubApply.getA0100(), primaryKey, "1");
-        if (StringUtils.isBlank(result)) {
-            result = omsPubApply.getId();
-        }
-        return result;
+        result = omsPubApply.getId();
+        return Result.success(result);
     }
 
     @Override
@@ -218,6 +230,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈根据id查询申请记录〉
+     *
      * @Param: [id]
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApply
      * @Author: 李逍遥
@@ -231,6 +244,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈根据id删除备案人员〉
+     *
      * @Param: [id]
      * @Return: void
      * @Author: 李逍遥
@@ -239,7 +253,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void deletePubApplyById(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
         omsPubApplyMapper.deletePubApplyById(id);
@@ -248,6 +262,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈根据条件查询备案申请列表〉
+     *
      * @Param: [omsPubApplyQueryParam]
      * @Return: com.github.pagehelper.PageInfo
      * @Author: 李逍遥
@@ -273,6 +288,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈撤销通知书文号相同的备案申请〉
+     *
      * @Param: [pwh, cxyy]
      * @Return: void
      * @Author: 李逍遥
@@ -281,14 +297,14 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealAllPubApplyByPwh(String pwh, String cxyy) {
-        if (StringUtils.isBlank(pwh) || StringUtils.isBlank(cxyy)){
+        if (StringUtils.isBlank(pwh) || StringUtils.isBlank(cxyy)) {
             throw new CustomMessageException("参数为空!");
         }
         //查询相关通知书文号的备案申请
         List<OmsPubApplyVO> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
-        if (list != null && list.size()>0){
-            omsPubApplyMapper.repealAllPubApplyByPwh(pwh,cxyy,Constants.private_business[7]);
-        }else {
+        if (list != null && list.size() > 0) {
+            omsPubApplyMapper.repealAllPubApplyByPwh(pwh, cxyy, Constants.private_business[7]);
+        } else {
             throw new CustomMessageException("该通知书文号下没有相关数据!");
         }
     }
@@ -304,18 +320,19 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealPubApplyById(String id, String cxyy) {
-        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)) {
             throw new CustomMessageException("参数为空!");
         }
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
-        if (omsPubApply != null){
-            omsPubApplyMapper.repealPubApplyById(id,cxyy,Constants.private_business[7]);
+        if (omsPubApply != null) {
+            omsPubApplyMapper.repealPubApplyById(id, cxyy, Constants.private_business[7]);
         }
     }
 
     /**
      * 功能描述: <br>
      * 〈保存台办变更后信息〉
+     *
      * @Param: [omsPubApplyChange]
      * @Return: void
      * @Author: 李逍遥
@@ -326,17 +343,17 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     public void insertPubApplyChange(OmsPubApplyChange omsPubApplyChange, List<String> ids) {
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
-        if (omsPubApplyChange == null){
+        if (omsPubApplyChange == null) {
             throw new CustomMessageException("参数为空");
         }
-        if (ids == null || ids.size() < 0){
+        if (ids == null || ids.size() < 0) {
             throw new CustomMessageException("参数为空");
         }
         // 获取备案申请表
-        for (String id: ids) {
+        for (String id : ids) {
             OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
             Integer sqzt = omsPubApply.getSqzt();
-            if (sqzt >= Constants.leader_business[0]){
+            if (sqzt >= Constants.leader_business[0]) {
                 throw new CustomMessageException("该业务已经提交干部监督处，请先撤销再重新提交!");
             }
             //保存台办变更信息、
@@ -366,15 +383,16 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈通过id获取变更前后信息〉
+     *
+     * @return
      * @Param: [pwh]
      * @Return: com.hxoms.modules.publicity.entity.OmsPubApplyChange
      * @Author: 李逍遥
      * @Date: 2020/7/6 10:08
-     * @return
      */
     @Override
     public List<OmsPubApplyChange> getPubApplyChange(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
         List<OmsPubApplyChange> omsPubApplyChange = omsPubApplyChangeMapper.selectByPrimaryPwh(id);
@@ -384,6 +402,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈添加干教因公出国备案申请〉
+     *
      * @Param: [omsPubGroupPreApproval]
      * @Return: java.lang.String
      * @Author: 李逍遥
@@ -399,7 +418,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         String result = "";
         //预审批主键
         String id = omsPubGroupPreApproval.getId();
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             //新增预审批信息
             id = UUIDGenerator.getPrimaryKey();
             omsPubGroupPreApproval.setId(id);
@@ -412,7 +431,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApproval.setSource("0");
             omsPubGroupPreApproval.setSqzt(Constants.GJ_business[0]);
             omsPubGroupPreApprovalMapper.insertSelective(omsPubGroupPreApproval);
-        }else {
+        } else {
             //更新
             //查找原有预审批内容
             OmsPubGroupPreApprovalVO selectOmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
@@ -455,8 +474,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         //将预审批人员添加到备案申请
         List<PersonInfoVO> personInfoVOS = omsPubGroupPreApproval.getPersonInfoVOS();
-        if (personInfoVOS != null && personInfoVOS.size() > 0){
-            for (PersonInfoVO personInfoVO: personInfoVOS) {
+        if (personInfoVOS != null && personInfoVOS.size() > 0) {
+            for (PersonInfoVO personInfoVO : personInfoVOS) {
                 OmsPubApply omsPubApply = new OmsPubApply();
                 //备案表中获取基本信息
                 Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(personInfoVO.getB0100(), personInfoVO.getA0100());
@@ -515,7 +534,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     result = "保存成功";
                 }
             }
-        }else {
+        } else {
             throw new CustomMessageException("参数为空!");
         }
         return result;
@@ -533,22 +552,22 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         //设置传入页码，以及每页的大小
         PageHelper.startPage(pageNum, pageSize);
-         /** 团组名称*/
+        /** 团组名称*/
         String tzmc = omsPubApplyQueryParam.getTzmc();
         /**申请状态集合 */
         List<Integer> status = omsPubApplyQueryParam.getStatus();
         /**组团单位*/
         String ztdw = omsPubApplyQueryParam.getZtdw();
-        if (StringUtils.isBlank(ztdw)){
+        if (StringUtils.isBlank(ztdw)) {
             ztdw = "省干部教育处";
         }
         /** 出国时间*/
         Date cgsj = omsPubApplyQueryParam.getCgsj();
         /** 回国时间*/
         Date hgsj = omsPubApplyQueryParam.getHgsj();
-        List<OmsPubGroupPreApprovalVO> OmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByCondition(tzmc,status,ztdw,cgsj,hgsj);
-        if (OmsPubGroupPreApproval != null && OmsPubGroupPreApproval.size()>0){
-            for (OmsPubGroupPreApprovalVO omsPubGroupPreApproval:OmsPubGroupPreApproval) {
+        List<OmsPubGroupPreApprovalVO> OmsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByCondition(tzmc, status, ztdw, cgsj, hgsj);
+        if (OmsPubGroupPreApproval != null && OmsPubGroupPreApproval.size() > 0) {
+            for (OmsPubGroupPreApprovalVO omsPubGroupPreApproval : OmsPubGroupPreApproval) {
                 String id = omsPubGroupPreApproval.getId();
                 List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
                 omsPubGroupPreApproval.setOmsPubApplyVOS(omsPubApplyVOS);
@@ -557,9 +576,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         PageInfo info = new PageInfo(OmsPubGroupPreApproval);
         return info;
     }
+
     /**
      * 功能描述: <br>
      * 〈根据ID查看干教信息〉
+     *
      * @Param: [id]
      * @Return: com.github.pagehelper.PageInfo
      * @Author: 李逍遥
@@ -567,14 +588,14 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Override
     public OmsPubGroupPreApprovalVO getPubGroupPreApprovalById(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
         OmsPubGroupPreApprovalVO omsPubGroupPreApproval = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
         if (omsPubGroupPreApproval != null) {
             List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
             omsPubGroupPreApproval.setOmsPubApplyVOS(omsPubApplyVOS);
-        }else {
+        } else {
             throw new CustomMessageException("数据为空!");
         }
         return omsPubGroupPreApproval;
@@ -583,6 +604,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈获取负面信息、家庭主要成员、单位是否接收巡视等信息〉
+     *
      * @Param: [b0100, a0100, cgsj]
      * @Return: com.hxoms.modules.publicity.entity.OtherPubApply
      * @Author: 李逍遥
@@ -594,11 +616,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("a0100", a0100);
-        paramMap.put("finishDate","1");
+        paramMap.put("finishDate", "1");
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         otherPubApply.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //获取负面信息
-        String result = omsConditionService.selectNegativeInfo(a0100,cgsj);
+        String result = omsConditionService.selectNegativeInfo(a0100, cgsj);
         otherPubApply.setFmxx(result);
         //单位接收巡视
         boolean patrolUnit = omsSupPatrolUnitService.getPatrolUnit(b0100, cgsj);
@@ -612,6 +634,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈因公备案申请步骤统计〉
+     *
      * @Param: [orgId]
      * @Return: java.util.List<com.hxoms.modules.privateabroad.entity.CountStatusResult>
      * @Author: 李逍遥
@@ -626,6 +649,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈因公下一步操作根据id更改状态〉
+     *
      * @Param: [id]
      * @Return: void
      * @Author: 李逍遥
@@ -634,24 +658,24 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updateSQZTById(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
-        if (omsPubApply == null){
+        if (omsPubApply == null) {
             throw new CustomMessageException("申请记录为空");
         }
         Integer sqzt = omsPubApply.getSqzt();
-        if (sqzt == Constants.private_business[0]){
+        if (sqzt == Constants.private_business[0]) {
             //更改为生成材料1
             sqzt = Constants.private_business[1];
-        } else if (sqzt == Constants.private_business[1]){
+        } else if (sqzt == Constants.private_business[1]) {
             //更改为打印材料清单 2
             sqzt = Constants.private_business[2];
-        }else if (sqzt == Constants.private_business[2]){
+        } else if (sqzt == Constants.private_business[2]) {
             //更改为自评 4
             sqzt = Constants.private_business[4];
-        }else if (sqzt == Constants.private_business[4]){
+        } else if (sqzt == Constants.private_business[4]) {
             //更改为业务办理
             sqzt = Constants.leader_business[0];
         }
@@ -662,6 +686,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈台办获取相同批文号的人员〉
+     *
      * @Param: [pwh]
      * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
      * @Author: 李逍遥
@@ -669,7 +694,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Override
     public List<OmsPubApplyVO> getPubApplyByPwh(String pwh) {
-        if (StringUtils.isBlank(pwh)){
+        if (StringUtils.isBlank(pwh)) {
             throw new CustomMessageException("参数为空!");
         }
         List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
@@ -679,6 +704,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈因公出国境申请列表导出〉
+     *
      * @Param: [omsPubApplyQueryParam, response]
      * @Return: void
      * @Author: 李逍遥
@@ -687,9 +713,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Override
     public void exportPubApply(OmsPubApplyQueryParam omsPubApplyQueryParam, HttpServletResponse response) {
         List<OmsPubApplyVO> list = omsPubApplyMapper.getPubAppListByCondition(omsPubApplyQueryParam);
-        if (list == null || list.size() < 1){
+        if (list == null || list.size() < 1) {
             throw new CustomMessageException("操作失败");
-        }else {
+        } else {
             /** 开始导出 */
             //创建HSSFWorkbook对象(excel的文档对象)
             HSSFWorkbook wb = new HSSFWorkbook();
@@ -698,11 +724,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //获得字体对象
             HSSFFont font = wb.createFont();
             //建立新的sheet对象（excel的表单）
-            HSSFSheet sheet=wb.createSheet("因公出国境备案申请名单");
+            HSSFSheet sheet = wb.createSheet("因公出国境备案申请名单");
             //在sheet里创建第一行，参数为行索引(excel的行)，可以是0～65535之间的任何一个
-            HSSFRow row1=sheet.createRow(0);
+            HSSFRow row1 = sheet.createRow(0);
             //创建单元格（excel的单元格，参数为列索引，可以是0～255之间的任何一个
-            HSSFCell cell=row1.createCell(0);
+            HSSFCell cell = row1.createCell(0);
             //设置标题字体大小
             font.setFontHeightInPoints((short) 16);
             //加粗
@@ -716,9 +742,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //设置标题单元格内容
             cell.setCellValue("因公出国境备案申请名单");
             //合并单元格CellRangeAddress构造参数依次表示起始行，截至行，起始列， 截至列
-            sheet.addMergedRegion(new CellRangeAddress(0,1,0,19));
+            sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 19));
             //在sheet里创建第二行
-            HSSFRow row2=sheet.createRow(2);
+            HSSFRow row2 = sheet.createRow(2);
             //创建单元格并设置单元格内容
             row2.createCell(0).setCellValue("序号");
             row2.createCell(1).setCellValue("姓名");
@@ -751,7 +777,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             style1.setAlignment(HorizontalAlignment.LEFT);
             style1.setFont(font1);
             HSSFRow row = null;
-            for(int i = 0; i < list.size(); i++){
+            for (int i = 0; i < list.size(); i++) {
                 row = sheet.createRow(i + 3);
                 row.createCell(0).setCellValue(i + 1);
                 row.createCell(1).setCellValue(list.get(i).getName());
@@ -761,11 +787,11 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 row.createCell(5).setCellValue(list.get(i).getCfrw());
                 row.createCell(6).setCellValue(list.get(i).getCgspdw());
                 String sex = list.get(i).getSex();
-                if ("1".equals(sex)){
+                if ("1".equals(sex)) {
                     row.createCell(7).setCellValue("男");
-                }else if ("2".equals(sex)){
+                } else if ("2".equals(sex)) {
                     row.createCell(7).setCellValue("女");
-                }else {
+                } else {
                     row.createCell(7).setCellValue(sex);
                 }
                 row.createCell(8).setCellValue(UtilDateTime.toDateString(list.get(i).getBirthDate()));
@@ -778,40 +804,40 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     row.createCell(12).setCellValue("否");
                 }
                 row.createCell(13).setCellValue(list.get(i).getSmdj());
-                if ("1".equals(list.get(i).getSfzyld())){
+                if ("1".equals(list.get(i).getSfzyld())) {
                     row.createCell(14).setCellValue("是");
-                }else {
+                } else {
                     row.createCell(14).setCellValue("否");
                 }
                 row.createCell(15).setCellValue(list.get(i).getFmxx());
                 String sfbg = list.get(i).getSfbg();
-                if ("1".equals(list.get(i).getSfbg())){
+                if ("1".equals(list.get(i).getSfbg())) {
                     row.createCell(16).setCellValue("是");
-                }else {
+                } else {
                     row.createCell(16).setCellValue("否");
                 }
                 Integer sfxd = list.get(i).getSfxd();
-                if (1 == list.get(i).getSfxd()){
+                if (1 == list.get(i).getSfxd()) {
                     row.createCell(17).setCellValue("是");
-                }else {
+                } else {
                     row.createCell(17).setCellValue("否");
                 }
                 Integer sqzt = list.get(i).getSqzt();
                 int i1 = Arrays.binarySearch(Constants.leader_business, sqzt);
-                if (i1 < 0 ){
+                if (i1 < 0) {
                     int i2 = Arrays.binarySearch(Constants.private_business, sqzt);
                     row.createCell(18).setCellValue(Constants.private_businessName[i2]);
-                }else {
+                } else {
                     row.createCell(18).setCellValue(Constants.leader_businessName[i1]);
                 }
                 row.createCell(19).setCellValue(list.get(i).getZzjl());
                 //设置单元格字体大小
-                for(int j = 0;j < 19;j++){
+                for (int j = 0; j < 19; j++) {
                     row.getCell(j).setCellStyle(style1);
                 }
             }
             //输出Excel文件
-            OutputStream output= null;
+            OutputStream output = null;
             try {
                 output = response.getOutputStream();
                 response.setContentType("application/vnd.ms-excel");
@@ -828,6 +854,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈更改时通过批文号模糊查询添加人员〉
+     *
      * @Param: [pwh]
      * @Return: java.util.List<com.hxoms.modules.publicity.entity.OmsPubApplyVO>
      * @Author: 李逍遥
@@ -837,25 +864,26 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     public List<OmsPubApplyVO> getPubApplyList() {
         //要把申请赴台了且未到出国日期的未撤销的全部人员查一下
         String pwh = "琼台赴";
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh,Constants.private_business[7]);
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh, Constants.private_business[7]);
         return omsPubApplyVOS;
     }
 
     /**
      * 功能描述: <br>
      * 〈上报干部监督处〉
+     *
+     * @param ids
      * @Param: [ids]
      * @Return: void
      * @Author: 李逍遥
      * @Date: 2020/8/7 9:55
-     * @param ids
      */
     @Override
     public void reportPubGroupPreApproval(List<String> ids) {
-        if (ids == null || ids.size() < 1){
+        if (ids == null || ids.size() < 1) {
             throw new CustomMessageException("参数为空!");
         }
-        for (String id:ids) {
+        for (String id : ids) {
             OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
             omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
             List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
@@ -869,6 +897,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈撤销整个干教申请〉
+     *
      * @Param: [id, cxyy]
      * @Return: void
      * @Author: 李逍遥
@@ -877,7 +906,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void repealGJ(String id, String cxyy) {
-        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)) {
             throw new CustomMessageException("参数为空!");
         }
         //获取登录用户信息
@@ -888,7 +917,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         omsPubGroupPreApprovalMapper.updateByPrimaryKeySelective(omsPubGroupPreApprovalVO);
         //更新该申请下的所有人员状态为撤销
         List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
-        for (OmsPubApplyVO omsPubApplyVO:omsPubApplyVOS) {
+        for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
             omsPubApplyVO.setSqzt(Constants.private_business[7]);
             omsPubApplyVO.setCxyy(cxyy);
             omsPubApplyVO.setModifyUser(loginUser.getId());
@@ -896,21 +925,23 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubApplyMapper.updateById(omsPubApplyVO);
         }
     }
+
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void updatePWH(String yPWH, String xPWH) {
-        if (StringUtils.isBlank(yPWH)){
+        if (StringUtils.isBlank(yPWH)) {
             throw new CustomMessageException("原通知书文号为空!");
         }
-        if (StringUtils.isBlank(xPWH)){
+        if (StringUtils.isBlank(xPWH)) {
             throw new CustomMessageException("现通知书文号为空!");
         }
-        omsPubApplyMapper.updatePWH(yPWH,xPWH);
+        omsPubApplyMapper.updatePWH(yPWH, xPWH);
     }
 
     /**
      * 功能描述: <br>
      * 〈获取台办批文号树〉
+     *
      * @Param: []
      * @Return: com.hxoms.modules.publicity.entity.PWHVO
      * @Author: 李逍遥
@@ -925,7 +956,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             PWHTreeVO PWHTreeVO2 = new PWHTreeVO();
             List<PWHVO> pwhs = new ArrayList<>();
             for (PWHTreeVO PWHTreeVO1 : PWHTreeVOS) {
-                if (year.equals(PWHTreeVO1.getYear())){
+                if (year.equals(PWHTreeVO1.getYear())) {
                     PWHTreeVO2.setYear(year);
                     PWHVO pwhvo = new PWHVO();
                     pwhvo.setPwh(PWHTreeVO1.getPwh());
@@ -941,6 +972,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     /**
      * 功能描述: <br>
      * 〈根据ID删除干教信息〉
+     *
      * @Param: [id]
      * @Return: void
      * @Author: 李逍遥
@@ -949,7 +981,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public void deletePubGroupPreApprovalById(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
         //删除预备案信息

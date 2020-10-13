@@ -215,4 +215,5 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      * @Date: 2020/9/11 11:28
      */
     List<OmsPubApplyVO> selectPubAllyByParam(@Param("omsOperatorJBYWQueryParam") OmsOperatorJBYWQueryParam omsOperatorJBYWQueryParam);
+    List<OmsPubApply> selectExistsAbroad(@Param("id") String id, @Param("cgsj") String cgsj);
 }

@@ -84,9 +84,9 @@ public class OmsPriApplyController {
      */
     @ApiOperation(value="新增或修改因私出国申请", notes="新增或修改因私出国申请")
     @PostMapping("/insertOrUpdatePriApply")
-    public Result insertOrUpdatePriApply(@RequestBody OmsPriApplyParam omsPriApplyParam) throws Exception {
-        String result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
-        return Result.success(result);
+    public Result insertOrUpdatePriApply(@RequestBody OmsPriApplyParam omsPriApplyParam) {
+        Result result = omsPriApplyService.insertOrUpdatePriApply(omsPriApplyParam);
+        return result;
     }
 
     /**

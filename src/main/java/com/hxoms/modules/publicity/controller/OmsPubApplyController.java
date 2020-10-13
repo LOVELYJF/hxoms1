@@ -112,9 +112,9 @@ public class OmsPubApplyController {
      * @date 2020/4/26 17:21
      */
     @PostMapping("/insertPubApply")
-    public Result insertPubApply(OmsPubApply omsPubApply) throws Exception {
-        String result = omsPubApplyService.insertPubApply(omsPubApply);
-        return Result.success().setMsg(result);
+    public Result insertPubApply(OmsPubApply omsPubApply) {
+        Result result = omsPubApplyService.insertPubApply(omsPubApply);
+        return result;
     }
     /**
      * 功能描述: <br>

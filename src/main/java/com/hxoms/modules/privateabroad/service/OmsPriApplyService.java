@@ -2,6 +2,7 @@ package com.hxoms.modules.privateabroad.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
@@ -32,7 +33,7 @@ public interface OmsPriApplyService extends IService<OmsPriApply> {
      * @param omsPriApplyParam  申请接收参数类
      * @return
      */
-    String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
+    Result insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam);
     /**
      * 删除申请
      * @param id 申请id
