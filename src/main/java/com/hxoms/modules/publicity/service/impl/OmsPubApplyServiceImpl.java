@@ -151,18 +151,21 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(omsPubApply.getA0100())) {
             Result.error("请先选择申请的干部");
         }
-        List<OmsPubApply> pubApplies = omsPubApplyMapper.selectExistsAbroad(omsPubApply.getProcpersonId(),
-                new SimpleDateFormat("yyyy-MM-dd").format(omsPubApply.getCgsj()));
-        if (pubApplies.size() > 0) {
-            String desc = "";
-            for (OmsPubApply pubApply : pubApplies
-            ) {
-                if (omsPubApply.getId() != null && pubApply.getId().equals(omsPubApply.getId())) continue;
-                desc += "当前申请的因公出国（境）时间段内已经存在" + pubApply.getBz() + "出国（境）申请！";
+        if(omsPubApply.getCgsj()!=null){
+            List<OmsPubApply> pubApplies = omsPubApplyMapper.selectExistsAbroad(omsPubApply.getProcpersonId(),
+                    new SimpleDateFormat("yyyy-MM-dd").format(omsPubApply.getCgsj()));
+            if (pubApplies.size() > 0) {
+                String desc = "";
+                for (OmsPubApply pubApply : pubApplies
+                ) {
+                    if (omsPubApply.getId() != null && pubApply.getId().equals(omsPubApply.getId())) continue;
+                    desc += "当前申请的因公出国（境）时间段内已经存在" + pubApply.getBz() + "出国（境）申请！";
+                }
+                if (!"".equals(desc))
+                    return Result.error(desc);
             }
-            if (!"".equals(desc))
-                return Result.error(desc);
         }
+
         //获取登录用户信息
         UserInfo loginUser = UserInfoUtil.getUserInfo();
         //返回信息

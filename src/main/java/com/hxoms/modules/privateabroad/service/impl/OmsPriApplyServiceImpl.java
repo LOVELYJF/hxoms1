@@ -126,18 +126,21 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
         OmsPriApply omsPriApply = omsPriApplyParam.getOmsPriApply();
-        List<OmsPriApply> priApplies = omsPriApplyMapper.selectExistsAbroad(omsPriApply.getProcpersonId(),
-                new SimpleDateFormat("yyyy-MM-dd").format(omsPriApply.getAbroadTime()));
-        if (priApplies.size() > 0) {
-            String desc = "";
-            for (OmsPriApply priApply : priApplies
-            ) {
-                if (omsPriApply.getId() != null && priApply.getId().equals(omsPriApply.getId())) continue;
-                desc += "当前申请的因私出国（境）时间段内已经存在" + priApply.getDescription() + "出国（境）申请！";
+        if(omsPriApply.getAbroadTime()!=null){
+            List<OmsPriApply> priApplies = omsPriApplyMapper.selectExistsAbroad(omsPriApply.getProcpersonId(),
+                    new SimpleDateFormat("yyyy-MM-dd").format(omsPriApply.getAbroadTime()));
+            if (priApplies.size() > 0) {
+                String desc = "";
+                for (OmsPriApply priApply : priApplies
+                ) {
+                    if (omsPriApply.getId() != null && priApply.getId().equals(omsPriApply.getId())) continue;
+                    desc += "当前申请的因私出国（境）时间段内已经存在" + priApply.getDescription() + "出国（境）申请！";
+                }
+                if (!"".equals(desc))
+                    return Result.error(desc);
             }
-            if (!"".equals(desc))
-                return Result.error(desc);
         }
+
         //随行人员
         List<OmsPriTogetherperson> omsPriTogetherpersonList = omsPriApplyParam.getOmsPriTogetherperson();
         if (StringUtils.isBlank(omsPriApply.getProcpersonId())) {
