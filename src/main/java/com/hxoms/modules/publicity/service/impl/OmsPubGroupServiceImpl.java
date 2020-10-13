@@ -185,7 +185,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 }
             }
         }
-        return Result.success();
+        return Result.success(pubGroup);
 
     }
 
