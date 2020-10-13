@@ -96,9 +96,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             for(int i = 0; i < num; i++ ){
                 OmsPubApply pubApply = applyVOList.get(i);
                 for (int j = 0; j < num; j++) {
-                    if(i != j && pubApply.getProcpersonId().equals(applyVOList.get(j).getProcpersonId())){
+                    if(i != j && StringUilt.equalsWithNull(pubApply.getProcpersonId(),applyVOList.get(j).getProcpersonId()))
                         return Result.error("人员选择重复，请查证！");
-                    }
                 }
                 pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup,pubApply.getB0100());
                 pubApply.setYspId(id);
@@ -185,7 +184,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 }
             }
         }
-        return Result.success();
+        return Result.success(pubGroup);
 
     }
 
@@ -204,27 +203,22 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (file == null || StringUtils.isBlank(bazt)){
             return Result.error("参数为空!");
         }
-        try {
-            //解析json数据
-            Result result = new Result();
-            result = readJsonData(file);
-            if("0".equals(result.getCode())){
-                return result;
+        //解析json数据
+        Result result = new Result();
+        result = readJsonData(file);
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
+        if(result.getCode() == 1){
+            return result;
+        }else{
+            if(StringUtils.isBlank(orgId)){
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
             }else{
-                OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
-                if(StringUtils.isBlank(orgId)){
-                    omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
-                }else{
-                    omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
-                }
-                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
-                insertPubGroup(omsPubGroupAndApplyList);
-                return Result.success(omsPubGroupAndApplyList);
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
             }
-        }catch (Exception e){
-            e.printStackTrace();
+            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
+            insertPubGroup(omsPubGroupAndApplyList);
         }
-        return Result.success();
+        return Result.success(omsPubGroupAndApplyList);
     }
 
     @Override
@@ -692,6 +686,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
         try{
             omsPubGroupPreApproval.setCgsj(sdf.parse(jsonData.get("出国时间").toString()));
+            omsPubGroupPreApproval.setHgsj(sdf.parse(jsonData.get("回国时间").toString()));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -708,22 +703,32 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         JSONArray jsonArray = (JSONArray) jsonData.get("省管干部");
         for (int i = 0; i < jsonArray.size(); i++){
             OmsPubApplyVO omsPubApplyVO = new OmsPubApplyVO();
-            omsPubApplyVO.setName(jsonArray.getJSONObject(i).get("姓名").toString());
+            String name = jsonArray.getJSONObject(i).get("姓名").toString();
+            String b0101 = jsonArray.getJSONObject(i).get("工作单位").toString();
             //根据身份证号获取人员A0100等信息
             String idCardNum = jsonArray.getJSONObject(i).get("身份证号").toString();
             if(idCardNum != null){
-                OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectPersonInfoByIdCard(idCardNum);
+                OmsRegProcpersoninfo regProcpersoninfo = regProcpersoninfoMapper.selectPersonInfoByIdCard(name,idCardNum,b0101);
                 if(regProcpersoninfo != null){
                     omsPubApplyVO.setProcpersonId(regProcpersoninfo.getId());
                     omsPubApplyVO.setA0100(regProcpersoninfo.getA0100());
                     omsPubApplyVO.setStatus(regProcpersoninfo.getIncumbencyStatus());
+                    omsPubApplyVO.setIdnumber(idCardNum);
+                    omsPubApplyVO.setName(name);
+                    omsPubApplyVO.setB0101(b0101);
+                    omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
+                    omsPubApplyVO.setZtnrzw(jsonArray.getJSONObject(i).get("在团职务").toString());
+                    omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
+                    omsPubApplyVO.setSex(regProcpersoninfo.getSex());
+                    omsPubApplyVO.setBirthDate(regProcpersoninfo.getBirthDate());
+                    omsPubApplyVO.setPoliticalAff(regProcpersoninfo.getPoliticalAffiname());
+                    omsPubApplyVO.setSflg(regProcpersoninfo.getNf());
+                    omsPubApplyVO.setSmdj(regProcpersoninfo.getSecretLevel());
+                    omsPubApplyVO.setSfzyld(regProcpersoninfo.getMainLeader());
+                    applyVOList.add(omsPubApplyVO);
+                }else{
+                    return Result.error("团组成员:"+name+",未找到对应备案信息，请检查！");
                 }
-                omsPubApplyVO.setIdnumber(idCardNum);
-                omsPubApplyVO.setB0101(jsonArray.getJSONObject(i).get("工作单位").toString());
-                omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
-                omsPubApplyVO.setZtnrzw(jsonArray.getJSONObject(i).get("在团职务").toString());
-                omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
-                applyVOList.add(omsPubApplyVO);
             }else{
                 return Result.error("身份证号为空！");
             }

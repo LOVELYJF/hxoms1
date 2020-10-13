@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.util.file.OmsFileUtils;
 import com.hxoms.common.utils.*;
-import com.hxoms.modules.file.entity.FileReplaceVO;
-import com.hxoms.modules.file.entity.OmsCreateFile;
-import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsReplaceKeywords;
+import com.hxoms.modules.file.entity.*;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
@@ -120,26 +117,51 @@ public class OmsFileServiceImpl implements OmsFileService {
                 .in("FILE_TYPE",fileType)
                 .orderByAsc("SORT_ID");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
-        if (omsFiles == null || omsFiles.size() < 1) {
-            //初始化机构文件
-            queryWrapper.clear();
-            queryWrapper.eq("TABLE_CODE", tableCode)
-                    .and(wrapper->wrapper.eq("B0100", "")
-                            .or()
-                            .isNull("B0100"))
-                    .orderByAsc("SORT_ID");
-            List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+        //初始化机构文件
+        queryWrapper.clear();
+        queryWrapper.eq("TABLE_CODE", tableCode)
+                .and(wrapper->wrapper.eq("B0100", "")
+                        .or()
+                        .isNull("B0100"))
+                .orderByAsc("SORT_ID");
+        List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+        if (omsFiles == null || omsFiles.size() < 1 || omsFiles.size() < omsFileSystem.size()) {
+
             if (omsFileSystem != null && omsFileSystem.size() > 0) {
-                //插入
-                for (OmsFile omsfile : omsFileSystem) {
-                    omsfile.setFileId(omsfile.getId());
-                    omsfile.setId(UUIDGenerator.getPrimaryKey());
-                    omsfile.setB0100(userInfo.getOrgId());
-                    omsfile.setCreateUser(userInfo.getId());
-                    omsfile.setCreateTime(new Date());
-                    int count = omsFileMapper.insert(omsfile);
-                    if(count < 1){
-                        throw new CustomMessageException("插入新的文件信息出错");
+                if (omsFiles.size() < omsFileSystem.size()){
+                    QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+                    createFile.eq("TABLE_CODE", tableCode)
+                            .eq("APPLY_ID", applyId);
+                    omsCreateFileMapper.delete(createFile);
+                    ArrayList<String> ids = new ArrayList<>();
+                    //插入
+                    for (OmsFile f : omsFiles) {
+                        ids.add(f.getFileId());
+                    }
+                    for (OmsFile omsfile : omsFileSystem) {
+                        if (!ids.contains(omsfile.getId())) {
+                            omsfile.setFileId(omsfile.getId());
+                            omsfile.setId(UUIDGenerator.getPrimaryKey());
+                            omsfile.setB0100(userInfo.getOrgId());
+                            omsfile.setCreateUser(userInfo.getId());
+                            omsfile.setCreateTime(new Date());
+                            int count = omsFileMapper.insert(omsfile);
+                            if (count < 1) {
+                                throw new CustomMessageException("插入新的文件信息出错");
+                            }
+                        }
+                    }
+                }else {
+                    for (OmsFile omsfile : omsFileSystem) {
+                            omsfile.setFileId(omsfile.getId());
+                            omsfile.setId(UUIDGenerator.getPrimaryKey());
+                            omsfile.setB0100(userInfo.getOrgId());
+                            omsfile.setCreateUser(userInfo.getId());
+                            omsfile.setCreateTime(new Date());
+                            int count = omsFileMapper.insert(omsfile);
+                            if (count < 1) {
+                                throw new CustomMessageException("插入新的文件信息出错");
+                            }
                     }
                 }
 //                //复制文件
@@ -166,7 +188,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     .eq("APPLY_ID", applyId);
             int count = omsCreateFileMapper.selectCount(createFile);
             //没有生成时生成文件
-            if (count < 1){
+            if (count < 1 ){
                 for (OmsFile omsFile : omsFiles){
                     OmsCreateFile omsCreateFile = new OmsCreateFile();
                     omsCreateFile.setFileId(omsFile.getId());
@@ -376,6 +398,153 @@ public class OmsFileServiceImpl implements OmsFileService {
         return result;
     }
 
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询〉
+     * @Param: []
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/10/12 19:34
+     */
+    @Override
+    public Map<String, Object> selectFileList() {
+        //返回结果
+        Map<String, Object> result = new HashMap<>();
+
+        /** 因公出国境 */
+        ArrayList<OmsTYFileVo> oms_pub_apply = new ArrayList<>();
+        /** 因私出国境 */
+        ArrayList<OmsTYFileVo> oms_pri_apply = new ArrayList<>();
+        /** 延期回国 */
+        ArrayList<OmsTYFileVo> oms_pri_delay_apply = new ArrayList<>();
+        /** 注销证照 */
+        ArrayList<OmsTYFileVo> oms_cer_cancellate = new ArrayList<>();
+        /** 赴台批件 */
+        ArrayList<OmsTYFileVo> oms_ftpj_apply = new ArrayList<>();
+        /** 借出证照 */
+        ArrayList<OmsTYFileVo> oms_cer_cancellate_lending = new ArrayList<>();
+        /** 证照催缴 */
+        ArrayList<OmsTYFileVo> oms_cer_certificateCollect_cpd = new ArrayList<>();
+        /** 撤销登记备案 */
+        ArrayList<OmsTYFileVo> oms_reg_revokeapply_hj = new ArrayList<>();
+        /** */
+        //查询文件
+        QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
+        queryWrapperFile.isNull("B0100");
+        List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapperFile);
+        if (omsFiles !=null && omsFiles.size()>0){
+            for (OmsFile file:omsFiles) {
+                String tableCode = file.getTableCode();
+                //因公出国境
+                if ("oms_pub_apply".equals(tableCode) || "oms_pub_apply_cadres".equals(tableCode) || "oms_pub_apply_cadres_putoncreate".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_pub_apply.add(omsTYFileVo);
+                //因私出国境
+                }else if ("oms_pri_apply".equals(tableCode) || "oms_pri_apply_cadres".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_pri_apply.add(omsTYFileVo);
+                //延期回国
+                }else if ("oms_pri_delay_apply".equals(tableCode) || "oms_pri_delay_apply_cadres".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_pri_delay_apply.add(omsTYFileVo);
+                //注销证照
+                }else if ("oms_cer_cancellate".equals(tableCode) || "oms_cer_cancellate_approval".equals(tableCode) || "oms_cer_cancellate_letter".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_cer_cancellate.add(omsTYFileVo);
+                //赴台批件
+                }else if ("oms_ftpj_apply".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_ftpj_apply.add(omsTYFileVo);
+                //借出证照
+                }else if ("oms_cer_cancellate_lending".equals(tableCode) || "oms_cer_cancellate_bill".equals(tableCode) || "oms_cer_cancellate_request".equals(tableCode) || "oms_cer_cancellate".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_cer_cancellate_lending.add(omsTYFileVo);
+                //证照催缴
+                }else if("oms_cer_certificateCollect_cpd".equals(tableCode) || "oms_cer_certificateCollect_bzh".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_cer_certificateCollect_cpd.add(omsTYFileVo);
+                //撤销登记备案
+                }else if ("oms_reg_revokeapply_hj".equals(tableCode)){
+                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
+                    //查询关键字
+                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+                    queryWrapperKeyword.eq("TYPE", tableCode)
+                            .eq("FILE_ID", file.getId());
+                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
+                    omsTYFileVo.setFile(file);
+                    oms_reg_revokeapply_hj.add(omsTYFileVo);
+                }
+            }
+        }
+        /** 因公出国境 */
+        result.put("因公出国境",oms_pub_apply);
+        /** 因私出国境 */
+        result.put("因私出国境",oms_pri_apply);
+        /** 延期回国 */
+        result.put("延期回国",oms_pri_delay_apply);
+        /** 注销证照 */
+        result.put("注销证照",oms_cer_cancellate);
+        /** 赴台批件 */
+        result.put("赴台批件",oms_ftpj_apply);
+        /** 借出证照 */
+        result.put("借出证照",oms_cer_cancellate_lending);
+        /** 证照催缴 */
+        result.put("证照催缴",oms_cer_certificateCollect_cpd);
+        /** 撤销登记备案 */
+        result.put("撤销登记备案",oms_reg_revokeapply_hj);
+        return result;
+    }
+
     @Override
     public void downloadOmsFile(AbroadFileDestailParams abroadFileDestailParams) {
         if (StringUtils.isBlank(abroadFileDestailParams.getApplyID())
@@ -457,6 +626,8 @@ public class OmsFileServiceImpl implements OmsFileService {
         replaceFile(omsFile, applyId, tableCode);
         return omsFile;
     }
+
+
 
     /**
      * 替换关键词信息准备
@@ -550,7 +721,6 @@ public class OmsFileServiceImpl implements OmsFileService {
                     o.setSecretRelatedLevel("核心涉密人员");
                 }
             }
-            fileReplaceVO.setName(omsPubApplyVO.getName());
             fileReplaceVO.setSECRET_REVIEW_DATE(omsPubApplyVO.getSECRET_REVIEW_DATE());
 
             if (omsSmrOldInfoVOS != null && omsSmrOldInfoVOS.size()>= 2){
@@ -586,13 +756,37 @@ public class OmsFileServiceImpl implements OmsFileService {
                         a.setIsAbroad("否");
                     }
                     stringBuffer.append("<tr style=\"height:72px\">");
+                    if (a.getA3604a() == null){
+                        a.setA3604a("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3604a()+"</td>");
+                    if (a.getA3601() == null){
+                        a.setA3601("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3601()+"</td>");
+                    if (a.getA3607() == null){
+                        a.setA3607("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3607()+"</td>");
+                    if (a.getA3627() == null){
+                        a.setA3627("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3627()+"</td>");
+                    if (a.getA3611() == null){
+                        a.setA3611("");
+                    }
                     stringBuffer.append("<td width=\"82\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
+                    if (a.getA3611() == null){
+                        a.setA3611("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getA3611()+"</td>");
+                    if (a.getLivePlace() == null){
+                        a.setLivePlace("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getLivePlace()+"</td>");
+                    if (a.getIsAbroad() == null){
+                        a.setIsAbroad("");
+                    }
                     stringBuffer.append("<td width=\"72\" style=\"word-break: break-all;\">"+a.getIsAbroad()+"</td>");
                     stringBuffer.append("<td width=\"142\" style=\"\">无&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; □<br/>外国国籍&nbsp;&nbsp;&nbsp;&nbsp; □<br/>永久居留资格 □<br/>长期居留许可 □</td>");
                     stringBuffer.append("</tr>");

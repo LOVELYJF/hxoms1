@@ -489,7 +489,15 @@
     </select>
 
     <select id="selectPersonInfoByIdCard" resultType="com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo">
-        select * from oms_reg_procpersoninfo where IDNUMBER_GB = #{idCard} and DATA_TYPE = '1'
+        SELECT
+            t.*
+        FROM
+            oms_reg_procpersoninfo t
+        WHERE
+            t.IDNUMBER_GB = #{idCardNum}
+            and concat(t.SURNAME,t.`NAME`) = #{name}
+            and t.PERSON_MANAGER like concat('%',#{b0101},'%')
+            and t.DATA_TYPE = '1'
     </select>
 
     <select id="selectIdnumberByType" resultType="java.lang.String" parameterType="java.lang.String">
