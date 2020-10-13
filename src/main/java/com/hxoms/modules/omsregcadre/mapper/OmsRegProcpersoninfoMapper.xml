@@ -494,7 +494,7 @@
         FROM
             oms_reg_procpersoninfo t
         WHERE
-            t.IDNUMBER_GB = #{idCard}
+            t.IDNUMBER_GB = #{idCardNum}
             and concat(t.SURNAME,t.`NAME`) = #{name}
             and t.PERSON_MANAGER like concat('%',#{b0101},'%')
             and t.DATA_TYPE = '1'
