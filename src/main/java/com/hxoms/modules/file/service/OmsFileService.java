@@ -38,4 +38,15 @@ public interface OmsFileService {
      * @param fileId 文件id
      */
     OmsFile selectFileDestailNew(String fileId, String applyId, String tableCode);
+
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询〉
+     * @Param: []
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/10/12 19:33
+     */
+    Map<String, Object> selectFileList();
+
 }
