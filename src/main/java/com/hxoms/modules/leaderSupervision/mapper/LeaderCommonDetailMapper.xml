@@ -2,6 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.leaderSupervision.mapper.LeaderCommonDetailMapper">
 
+	<resultMap id="ItemListResultMap" type="com.hxoms.modules.leaderSupervision.vo.JiWeiNoPassVo">
+		<id column="sid" jdbcType="VARCHAR" property="sid" />
+		<result column="filename" jdbcType="VARCHAR" property="filename" />
+		<collection property="items" ofType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems">
+			<id column="id" jdbcType="VARCHAR" property="id" />
+			<result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
+			<result column="CHECK_ITEM" jdbcType="VARCHAR" property="checkItem" />
+			<result column="ENABLE" jdbcType="INTEGER" property="enable" />
+		</collection>
+	</resultMap>
+
+
+
 	<select id="selectJiweiOpinionAndMaterialsCheckOpinion" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
 		SELECT
 		temp.id as id, # 业务 id
@@ -81,6 +94,15 @@
 
 
 
+	</select>
+
+	<!--自评信息维护列表-->
+	<select id="selectItemsList" parameterType="java.util.Map" resultMap="ItemListResultMap">
+		select osf.*,osi.ID as itemID,osi.SELFFILE_ID,osi.CHECK_ITEM,osi.ENABLE
+		from oms_self_file osf left join oms_selfestimate_items osi on osf.ID = osi.SELFFILE_ID
+		where 1=1
+		  and osf.CHECKFILE_ID in
+			  (select FILE_ID from oms_create_file where TABLE_CODE = #{type} and APPLY_ID = #{applyId})
 	</select>
 
 

@@ -126,6 +126,26 @@ public class FileReplaceVO {
     private String zjcfjl;
     //家庭主要成员情况
     private String jtcy;
+
+    /**
+     * 撤销登记备案函
+     * **/
+    private String  newDept; // 现单位
+
+    private String  oldDept; //原单位
+
+    private String  newJob; //在职务
+
+    private String  oldJob; // 原职务
+
+    private String  passport; // 护照
+
+    private String  prover;   // 港澳通行证明
+
+
+
+
+
     public String getName() {
         return name;
     }
@@ -480,5 +500,53 @@ public class FileReplaceVO {
 
     public void setJtcy(String jtcy) {
         this.jtcy = jtcy;
+    }
+
+    public String getNewDept() {
+        return newDept;
+    }
+
+    public void setNewDept(String newDept) {
+        this.newDept = newDept;
+    }
+
+    public String getOldDept() {
+        return oldDept;
+    }
+
+    public void setOldDept(String oldDept) {
+        this.oldDept = oldDept;
+    }
+
+    public String getNewJob() {
+        return newJob;
+    }
+
+    public void setNewJob(String newJob) {
+        this.newJob = newJob;
+    }
+
+    public String getOldJob() {
+        return oldJob;
+    }
+
+    public void setOldJob(String oldJob) {
+        this.oldJob = oldJob;
+    }
+
+    public String getPassport() {
+        return passport;
+    }
+
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+
+    public String getProver() {
+        return prover;
+    }
+
+    public void setProver(String prover) {
+        this.prover = prover;
     }
 }
