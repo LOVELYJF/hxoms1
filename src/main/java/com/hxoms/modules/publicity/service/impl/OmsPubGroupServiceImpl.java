@@ -96,9 +96,8 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             for(int i = 0; i < num; i++ ){
                 OmsPubApply pubApply = applyVOList.get(i);
                 for (int j = 0; j < num; j++) {
-                    if(i != j && pubApply.getProcpersonId().equals(applyVOList.get(j).getProcpersonId())){
+                    if(i != j && StringUilt.equalsWithNull(pubApply.getProcpersonId(),applyVOList.get(j).getProcpersonId()))
                         return Result.error("人员选择重复，请查证！");
-                    }
                 }
                 pubApply = getInsertOmsPubApply(pubApply.getProcpersonId(),pubGroup,pubApply.getB0100());
                 pubApply.setYspId(id);
@@ -204,6 +203,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (file == null || StringUtils.isBlank(bazt)){
             return Result.error("参数为空!");
         }
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
         try {
             //解析json数据
             Result result = new Result();
@@ -211,7 +211,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if("1".equals(result.getCode())){
                 return result;
             }else{
-                OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
+                omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
                 if(StringUtils.isBlank(orgId)){
                     omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
                 }else{
@@ -219,12 +219,11 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 }
                 omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
                 insertPubGroup(omsPubGroupAndApplyList);
-                return Result.success(omsPubGroupAndApplyList);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return Result.success();
+        return Result.success(omsPubGroupAndApplyList);
     }
 
     @Override
