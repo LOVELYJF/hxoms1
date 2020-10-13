@@ -13,12 +13,11 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -134,11 +133,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     /**
      * @Desc: 未上缴证照统计
      * @Author: wangyunquan
-     * @Param: []
+     * @Param: [year]
      * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
      * @Date: 2020/8/7
      */
-    List<CfCertificateInfo> selectNotProvicdeCer();
+    List<CfCertificateInfo> selectNotProvicdeCer(String year);
 
     /**
      * @Desc: 已上缴未入库统计
@@ -152,11 +151,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     /**
      * @Desc: 存疑证照统计
      * @Author: wangyunquan
-     * @Param: []
+     * @Param: [year]
      * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
      * @Date: 2020/8/7
      */
-    List<CfCertificateInfo> selectExceptionCer();
+    List<CfCertificateInfo> selectExceptionCer(String year);
 
     /**
      * <b>功能描述: 查询过期证照信息</b>

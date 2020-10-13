@@ -96,8 +96,8 @@ public class CfCertificate {
     @ApiModelProperty(value="保管状态(0:正常保管,1:已取出,2:未上缴)")
     private String saveStatus;
 
-    @ColumnAnnotation(FieldName = "CARD_STATUS",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
-    @ApiModelProperty(value="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
+    @ColumnAnnotation(FieldName = "CARD_STATUS",   FieldDescription="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,40:待领取,41:已领取)")
+    @ApiModelProperty(value="证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,40:待领取,41:已领取)")
     private String cardStatus;
 
     @ColumnAnnotation(FieldName = "SURELY_UNIT",   FieldDescription="保管单位(0:干部监督处,1:省委统战部(台办))")
@@ -145,6 +145,10 @@ public class CfCertificate {
     @ColumnAnnotation(FieldName = "REMARK",   FieldDescription="备注")
     @ApiModelProperty(value="备注")
     private String remark;
+
+    @ColumnAnnotation(FieldName = "YEAR",   FieldDescription="年度")
+    @ApiModelProperty(value="年度")
+    private String year;
 
     @ColumnAnnotation(FieldName = "IMPORT_PERSON",   FieldDescription="导入人")
     @ApiModelProperty(value="导入人")
@@ -412,6 +416,14 @@ public class CfCertificate {
 
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year == null ? null : year.trim();
     }
 
     public String getImportPerson() {
