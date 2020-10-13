@@ -5,6 +5,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer;
@@ -12,12 +13,11 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 
@@ -133,11 +133,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     /**
      * @Desc: 未上缴证照统计
      * @Author: wangyunquan
-     * @Param: []
+     * @Param: [year]
      * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
      * @Date: 2020/8/7
      */
-    List<CfCertificateInfo> selectNotProvicdeCer();
+    List<CfCertificateInfo> selectNotProvicdeCer(String year);
 
     /**
      * @Desc: 已上缴未入库统计
@@ -151,11 +151,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     /**
      * @Desc: 存疑证照统计
      * @Author: wangyunquan
-     * @Param: []
+     * @Param: [year]
      * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
      * @Date: 2020/8/7
      */
-    List<CfCertificateInfo> selectExceptionCer();
+    List<CfCertificateInfo> selectExceptionCer(String year);
 
     /**
      * <b>功能描述: 查询过期证照信息</b>
@@ -250,4 +250,14 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @return
 	 */
     List<ImportInterface> queryCertificateByOmsId(String b0100);
+
+    /**
+    * @description:因出国境申请显示证照信息时用到
+    * @author:杨波
+    * @date:2020-10-12
+    *  * @param omsId 登记备案人员ID
+	 *  cardStatus 多个证照状态
+    * @return:
+    **/
+    List<CfCertificateExtend> selectByOmsId(@Param("omsId")String omsId,@Param("cardStatus")String[] cardStatus);
 }

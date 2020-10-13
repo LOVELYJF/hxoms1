@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.deviceInteraction.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.OmsCerDeviceInfo;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetInfo;
+import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerInfo;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.QrCodeInfo;
 
 import java.util.List;
@@ -94,4 +95,21 @@ public interface OmsCerDeviceInfoMapper extends BaseMapper<OmsCerDeviceInfo> {
      */
     List<CerGetInfo> selectCanGetCer(QrCodeInfo qrCodeInfo);
 
+    /**
+     * @Desc: 查询用户id
+     * @Author: wangyunquan
+     * @Param: [idNo, name]
+     * @Return: java.lang.String
+     * @Date: 2020/10/12
+     */
+    String selectUserId(String idNo, String name);
+
+    /**
+     * @Desc: 查询证件信息
+     * @Author: wangyunquan
+     * @Param: [id]
+     * @Return: CerInfo
+     * @Date: 2020/10/12
+     */
+    CerInfo selectCerInfo(String id);
 }

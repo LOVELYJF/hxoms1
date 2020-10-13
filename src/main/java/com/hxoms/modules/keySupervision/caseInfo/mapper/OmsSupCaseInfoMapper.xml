@@ -26,5 +26,8 @@
     CASE_TIME_END, CASE_TIME_START, CASE_DOCUMENT_NO, DISCIPLINARY_ACTION, WHY_CASE,
     DISCIPLINARY_ACTION_TYPE, CREATE_USER, CREATE_TIME,DISCIPLINARY_TIME
   </sql>
+	<select id="selectDocumentNum" resultType="java.lang.String">
+      select CASE_DOCUMENT_NO from  oms_sup_case_info   order  BY CREATE_TIME desc limit 1
+    </select>
 
 </mapper>

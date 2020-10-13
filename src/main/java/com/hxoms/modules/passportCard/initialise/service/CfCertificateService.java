@@ -47,11 +47,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 初始化证照，导入公安的证照信息
     * @Author: wangyunquan
-    * @Param: [multipartFile]
+    * @Param: [multipartFile ,year]
     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface>
     * @Date: 2020/7/24
     */
-   PageBean<ImportInterface> excelToDB(MultipartFile multipartFile) throws Exception;
+   PageBean<ImportInterface> excelToDB(MultipartFile multipartFile,String year) throws Exception;
 
    /**
     * @Desc: 查询所有证照
@@ -83,11 +83,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 未上缴证照统计
     * @Author: wangyunquan
-    * @Param: [pageBean]
+    * @Param: [pageBean,year]
     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
     * @Date: 2020/8/7
     */
-   PageBean<CfCertificateInfo> selectNotProvicdeCer(PageBean pageBean);
+   PageBean<CfCertificateInfo> selectNotProvicdeCer(PageBean pageBean,String year);
 
    /**
     * @Desc: 已上缴未入库统计
@@ -101,11 +101,11 @@ public interface CfCertificateService extends IService<CfCertificate> {
    /**
     * @Desc: 存疑证照统计
     * @Author: wangyunquan
-    * @Param: [pageBean]
+    * @Param: [pageBean,year]
     * @Return: com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>
     * @Date: 2020/8/7
     */
-   PageBean<CfCertificateInfo> selectExceptionCer(PageBean pageBean);
+   PageBean<CfCertificateInfo> selectExceptionCer(PageBean pageBean,String year);
 
    /**
     * @Desc: 公安已注销证照，更新状态

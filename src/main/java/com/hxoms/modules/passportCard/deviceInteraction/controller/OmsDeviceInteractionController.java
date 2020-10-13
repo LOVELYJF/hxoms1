@@ -5,10 +5,7 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.FingerMark;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.IdentityParam;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.DeviceInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.QrCodeInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.RequestList;
+import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.*;
 import com.hxoms.modules.passportCard.deviceInteraction.service.OmsDeviceInteractionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,8 +51,8 @@ public class OmsDeviceInteractionController {
      */
     @ApiOperation(value = "验证身份证")
     @PostMapping("/verifyIdentity")
-    public Result verifyIdentity(@RequestBody @Validated IdentityParam identityParam){
-        omsCounterGetService.verifyIdentity(identityParam);
+    public Result verifyIdentity(@RequestBody @Validated SimpIdentityParam simpIdentityParam){
+        omsDeviceInteractionService.verifyIdentity(simpIdentityParam);
         return Result.success();
     }
 
@@ -79,10 +76,36 @@ public class OmsDeviceInteractionController {
      * @Return: com.hxoms.common.utils.Result<com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.FingerMark>
      * @Date: 2020/9/8
      */
-    @ApiOperation(value = "验证指纹")
+    @ApiOperation(value = "查询可领取证件")
     @PostMapping("/selectCanGetCer")
     public Result<RequestList<CerGetInfo>> selectCanGetCer(@RequestBody @Validated QrCodeInfo qrCodeInfo){
         return Result.success(omsDeviceInteractionService.selectCanGetCer(qrCodeInfo));
     }
+
+   /**
+    * @Desc: 证件已领取通知
+    * @Author: wangyunquan
+    * @Param: [cerGetNotice]
+    * @Return: com.hxoms.common.utils.Result
+    * @Date: 2020/10/12
+    */
+    @ApiOperation(value = "证件已领取通知")
+    @PostMapping("/cerGetNotice")
+    public Result cerGetNotice(@RequestBody @Validated CerGetNotice cerGetNotice){
+        omsDeviceInteractionService.cerGetNotice(cerGetNotice);
+        return Result.success();
+    }
+    /**
+     * @Desc: 通过身份证查询可入柜证件
+     * @Author: wangyunquan
+     * @Param: [cerGetNotice]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/10/12
+     */
+  /*  @ApiOperation(value = "通过身份证查询可入柜证件")
+    @PostMapping("/selectCanReturnCer")
+    public Result selectCanReturnCer(@RequestBody @Validated CerGetNotice cerGetNotice){
+        return Result.success(omsDeviceInteractionService.selectCanReturnCer(cerGetNotice));
+    }*/
 
 }

@@ -208,8 +208,8 @@ public class OmsPriApplyController {
             @ApiImplicitParam(name = "procpersonId", value = "备案人员id", required = true, dataType = "String")
     })
     @GetMapping("/selectPassportByCountry")
-    public Result selectPassportByCountry(String countries, String procpersonId){
-        List<PassportResult> result = omsPriApplyService.selectPassportByCountry(countries, procpersonId);
+    public Result selectPassportByCountry(String countries, String procpersonId,String outDate){
+        List<PassportResult> result = omsPriApplyService.selectPassportByCountry(countries, procpersonId,outDate);
         return Result.success(result);
     }
 

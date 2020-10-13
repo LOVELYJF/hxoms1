@@ -31,6 +31,8 @@
     <result column="ID_CARD_NUMBER" jdbcType="VARCHAR" property="idCardNumber" />
     <result column="msg" jdbcType="VARCHAR" property="msg" />
     <result column="data_Source" jdbcType="VARCHAR" property="dataSource" />
+      <result column="secretRelatedLevelName" jdbcType="VARCHAR" property="secretRelatedLevelName" />
+      <result column="qrSecretRelatedLevelName" jdbcType="VARCHAR" property="qrSecretRelatedLevelName" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, A0100, B0100, SECRET_RELATED_POST, SECRET_RELATED_LEVEL, SECRET_REVIEW_DATE, 
@@ -52,10 +54,14 @@
 
   <!--涉密信息列表-->
   <select id="getSmrOldInfoVOList" parameterType="java.util.Map" resultMap="ResultMapVO">
-    SELECT
+      SELECT
       t.*,
-      b.b0101 as b0101
-    FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+      b.b0101 as b0101,
+      a.ITEM_NAME as secretRelatedLevelName,
+      a.ITEM_NAME as qrSecretRelatedLevelName
+      FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+      left join sys_dict_item a on t.SECRET_RELATED_LEVEL=a.ITEM_CODE and a.DICT_CODE='SMDJ'
+      left join sys_dict_item c on t.QR_SECRET_RELATED_LEVEL=c.ITEM_CODE and c.DICT_CODE='SMDJ'
     WHERE 1=1
     <if test="a0100 != null and a0100 != ''">
         and  t.A0100 = #{a0100}
@@ -68,10 +74,14 @@
   </select>
   <!--涉密信息列表-->
   <select id="getSmrOldInfoByA0100" parameterType="java.util.Map" resultMap="ResultMapVO">
-    SELECT
-    t.*,
-    b.b0101 as b0101
-    FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+      SELECT
+      t.*,
+      b.b0101 as b0101,
+      a.ITEM_NAME as secretRelatedLevelName,
+      a.ITEM_NAME as qrSecretRelatedLevelName
+      FROM oms_smr_oldinfo t LEFT JOIN b01 b on t.B0100 = b.B0100
+      left join sys_dict_item a on t.SECRET_RELATED_LEVEL=a.ITEM_CODE and a.DICT_CODE='SMDJ'
+      left join sys_dict_item c on t.QR_SECRET_RELATED_LEVEL=c.ITEM_CODE and c.DICT_CODE='SMDJ'
     WHERE 1=1
     <if test="a0100 != null and a0100 != ''">
       and  t.A0100 = #{a0100}
