@@ -3,6 +3,7 @@ package com.hxoms.modules.omsregcadre.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
+import com.hxoms.modules.omsregcadre.entity.CancellationLetter;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordModel;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecordVO;
@@ -80,4 +81,10 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
     List<OmsEntryexitRecordModel> newexitRecordsList(List<String> ids);
 
     Map<String, Object> selectCompareInfo(String omsId,String priapplyId, String recordIds);
+
+    /**
+    * 生成撤销函
+    * **/
+
+    List<CancellationLetter>  createCancellationLetter(List<CancellationLetter> lists);
 }

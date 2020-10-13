@@ -19,6 +19,25 @@ public class OmsSmrOldInfoVO extends OmsSmrOldInfo{
     private String idCardNumber;
     private String msg;//备注
     private String dataSource;//数据来源
+    private String secretRelatedLevelName;
+    private String qrSecretRelatedLevelName;
+
+    public String getSecretRelatedLevelName() {
+        return secretRelatedLevelName;
+    }
+
+    public void setSecretRelatedLevelName(String secretRelatedLevelName) {
+        this.secretRelatedLevelName = secretRelatedLevelName;
+    }
+
+    public String getQrSecretRelatedLevelName() {
+        return qrSecretRelatedLevelName;
+    }
+
+    public void setQrSecretRelatedLevelName(String qrSecretRelatedLevelName) {
+        this.qrSecretRelatedLevelName = qrSecretRelatedLevelName;
+    }
+
 
     public String getB0101() {
         return b0101;

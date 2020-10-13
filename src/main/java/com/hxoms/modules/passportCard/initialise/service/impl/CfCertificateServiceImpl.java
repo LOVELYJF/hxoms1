@@ -9,6 +9,7 @@ import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.omsregcadre.entity.OmsEntryexitRecord;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
+import com.hxoms.modules.omsregcadre.entity.enums.LicenceIdentityEnum;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
@@ -45,7 +46,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -164,17 +164,17 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
    /**
     * @Desc: 导入公安的证照信息
     * @Author: wangyunquan
-    * @Param: [multipartFile]
+    * @Param: [multipartFile,year]
     * @Return: com.hxoms.common.utils.PageBean
     * @Date: 2020/7/24
     */
     @Override
-    public PageBean<ImportInterface> excelToDB(MultipartFile multipartFile) throws Exception {
+    public PageBean<ImportInterface> excelToDB(MultipartFile multipartFile,String year) throws Exception {
         if (multipartFile==null || multipartFile.getSize() <= 0 ) {
            throw new CustomMessageException("参数不正确");
         }
         //读取Excel数据
-        readExcel(multipartFile.getInputStream(),multipartFile.getOriginalFilename());
+        readExcel(multipartFile.getInputStream(),multipartFile.getOriginalFilename(),year);
         return selectAllCertificate(new PageBean());
     }
 
@@ -279,14 +279,14 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 未上缴证照统计
      * @Author: wangyunquan
-     * @Param: [pageBean]
+     * @Param: [pageBean,year]
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/7
      */
     @Override
-    public PageBean<CfCertificateInfo> selectNotProvicdeCer(PageBean pageBean) {
+    public PageBean<CfCertificateInfo> selectNotProvicdeCer(PageBean pageBean,String year) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
-        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectNotProvicdeCer());
+        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectNotProvicdeCer(year));
         return PageUtil.packagePage(pageInfo);
     }
 
@@ -307,14 +307,14 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑证照统计
      * @Author: wangyunquan
-     * @Param: [pageBean]
+     * @Param: [pageBean，year]
      * @Return: com.hxoms.common.utils.PageBean
      * @Date: 2020/8/7
      */
     @Override
-    public PageBean<CfCertificateInfo> selectExceptionCer(PageBean pageBean) {
+    public PageBean<CfCertificateInfo> selectExceptionCer(PageBean pageBean,String year) {
         PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
-        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectExceptionCer());
+        PageInfo<CfCertificateInfo> pageInfo=new PageInfo<CfCertificateInfo>(cfCertificateMapper.selectExceptionCer(year));
         return PageUtil.packagePage(pageInfo);
     }
 
@@ -570,12 +570,12 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 读取Excel数据
      * @Author: wangyunquan
-     * @Param: [inputStream, fileName]
+     * @Param: [inputStream, fileName, year]
      * @Return: java.lang.String
      * @Date: 2020/7/24
-     * 处理业务：1、导入（证照管理导入、正常证照导入）2、去重 3、证照验证 (已取出，待验证。若验证通过获取存储位置) 4、修改证照持有情况 5、无证照解除催缴任务
+     * 处理业务：1、导入（证照管理导入、正常证照导入）2、与数据库数据对比去重 3、证照验证 (已取出，待验证。若验证通过获取存储位置) 4、无证照修改证照持有情况 5、无证照解除催缴任务
      */
-    public void readExcel(InputStream inputStream, String fileName) throws IOException {
+    public void readExcel(InputStream inputStream, String fileName,String year) throws IOException {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         boolean isE2007 = false;
         //判断是否是excel2007格式
@@ -659,9 +659,10 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                         //获取已存在出入境记录数据
                         omsEntryexitRecordExistList=cfCertificateMapper.selectRecordExisByQua(omsRegProcpersoninfo.getId());
                     }
-                    //查询无证照信息时自动解除催缴任务
+                    //查询无证照信息时处理
                     if(noZj&&mathPeople){
                         List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
+                       //自动解除催缴任务
                         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
                             //0:手动解除,1;已上缴,2:未上缴,3:自动解除
                             cfCertificateCollection.setCjStatus(CjStatusEnum.ZDJC.getCode());
@@ -670,12 +671,15 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                             cfCertificateCollection.setUpdatetime(importDate);
                             cfCertificateExport.setCfCertificateCollection(cfCertificateCollection);
                         }
+                        //将人员证照持有情况置为无证照
+                        if(LicenceIdentityEnum.WZZ.getCode()!=omsRegProcpersoninfo.getLicenceIdentity()&&LicenceIdentityEnum.FSWGLZZ.getCode()!=omsRegProcpersoninfo.getLicenceIdentity()){
+                            omsRegProcpersoninfo.setLicenceIdentity(LicenceIdentityEnum.WZZ.getCode());
+                            cfCertificateExport.setOmsRegProcpersoninfo(omsRegProcpersoninfo);
+                        }
                         continue;
                     }
                     //存储证照有效期集合
                     Map<String,Date> idTypeInfo= new HashedMap();
-                    //存储证件持有情况
-                    Integer allHold=0;
                     for (int i = firstRow+1; i <= lastRow; i++) {
                         //获取合并单元格值
                         String regionValue=null;
@@ -708,10 +712,14 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 cfCertificate.setQfjg(row.getCell(column++).toString());
                                 cfCertificate.setQfrq(dateParse.parse(getCellValue(row.getCell(column++))));
                                 cfCertificate.setYxqz(dateParse.parse(getCellValue(row.getCell(column++))));
+                                //年度值
+                                if(!StringUtils.isBlank(year))
+                                    cfCertificate.setYear(year);
                                 idTypeInfo.put(cfCertificate.getZjlx()+cfCertificate.getZjhm(),cfCertificate.getYxqz());
                                 //数据拷贝到证照导入管理表
                                 OmsCerImportManage omsCerImportManage=new OmsCerImportManage();
                                 BeanUtils.copyProperties(cfCertificate,omsCerImportManage);
+                                omsCerImportManage.setBatchNo(BatchNo);
                                 if(!mathPeople){
                                     //0:成功导入,1:重复导入,2:匹配失败
                                     omsCerImportManage.setStatus(CerImportManageEnum.PPSB.getCode());
@@ -733,13 +741,19 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                         for (CfCertificate cfCertificateExist : cfCertificateExistList) {
                                             if(cfCertificateExist.getZjlx()==cfCertificate.getZjlx()
                                                     &&cfCertificateExist.getZjhm().equals(cfCertificate.getZjhm())){
-                                                //已取出待验证证照，此处要验证证照
-                                                if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
-                                                    validateCerInfo(cfCertificateExist,cfCertificate,false);
+                                                if(!StringUtils.isBlank(year)||(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus()))){
+                                                    //重复，如果有年度值要更新年度
+                                                    if(!StringUtils.isBlank(year)){
+                                                        cfCertificateExist.setYear(year);
+                                                    }
+                                                    //已取出待验证证照，此处要验证证照
+                                                    if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
+                                                        validateCerInfo(cfCertificateExist,cfCertificate,false);
+                                                        //设置存储方式
+                                                        setStoreMode(cfCertificateExist,userInfo);
+                                                    }
                                                     cfCertificateExist.setUpdater(userInfo.getId());
                                                     cfCertificateExist.setUpdateTime(importDate);
-                                                    //设置存储方式
-                                                    setStoreMode(cfCertificateExist,userInfo);
                                                     cfCertificateExport.setCfCertificateUpdate(cfCertificateExist);
                                                 }
                                                 flag=true;
@@ -756,10 +770,6 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                     //0:成功导入,1:重复导入,2:匹配失败
                                     omsCerImportManage.setStatus(CerImportManageEnum.CGDR.getCode());
                                     cfCertificateExport.setOmsCerImportManages(omsCerImportManage);
-                                    //证照持有情况
-                                    BigDecimal bigDecimal1=new BigDecimal(allHold);
-                                    BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
-                                    allHold=bigDecimal1.add(bigDecimal2).intValue();
                                     cfCertificateExport.setCfCertificate(cfCertificate);
                                 }
                             }else if("出入境记录".equals(regionValue)){
@@ -789,6 +799,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                 //数据拷贝到证照出入境导入管理表
                                 OmsCerExitEntryImportManage omsCerExitEntryImportManage=new OmsCerExitEntryImportManage();
                                 BeanUtils.copyProperties(omsEntryexitRecord,omsCerExitEntryImportManage);
+                                omsCerExitEntryImportManage.setBatchNo(BatchNo);
                                 if(!mathPeople){
                                     //0:成功导入,1:重复导入,2:匹配失败
                                     omsCerExitEntryImportManage.setStatus(CerExitEntryImportManageEnum.PPSB.getCode());
@@ -819,15 +830,9 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                             }
                         }
                     }
-                    //判断是否需要修改人员证照持有情况
-                    if(!StringUtils.isBlank(omsRegProcpersoninfo.getId())&&omsRegProcpersoninfo.getLicenceIdentity()<allHold){
-                        omsRegProcpersoninfo.setLicenceIdentity(allHold);
-                        cfCertificateExport.setOmsRegProcpersoninfo(omsRegProcpersoninfo);
-                    }
                     //批量提交
                     if(j+1%50==0){
                         batchSaveEntity(cfCertificateExport);
-                        cfCertificateExport=new CfCertificateExport();
                     }
                 }
                 batchSaveEntity(cfCertificateExport);

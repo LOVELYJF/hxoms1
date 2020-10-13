@@ -11,7 +11,6 @@ import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import oracle.jdbc.proxy.annotation.Post;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +91,10 @@ public class CfCertificateController {
      */
 
     @ApiOperation(value = "初始化证照，导入公安的证照信息")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
     @PostMapping("/excelToDB")
-    public Result<PageBean<ImportInterface>> personExcelToDB(@RequestParam("file") MultipartFile multipartFile) throws Exception {
-        return Result.success(cfCertificateService.excelToDB(multipartFile));
+    public Result<PageBean<ImportInterface>> personExcelToDB(@RequestParam("file") MultipartFile multipartFile,String year) throws Exception {
+        return Result.success(cfCertificateService.excelToDB(multipartFile,year));
     }
 
     /**
@@ -161,9 +161,10 @@ public class CfCertificateController {
      * @Date: 2020/8/7
      */
     @ApiOperation(value = "未上缴证照统计")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
     @GetMapping("/selectNotProvicdeCer")
-    public Result<PageBean<CfCertificateInfo>> selectNotProvicdeCer(PageBean pageBean){
-        return Result.success(cfCertificateService.selectNotProvicdeCer(pageBean));
+    public Result<PageBean<CfCertificateInfo>> selectNotProvicdeCer(PageBean pageBean,String year){
+        return Result.success(cfCertificateService.selectNotProvicdeCer(pageBean,year));
     }
 
     /**
@@ -187,9 +188,10 @@ public class CfCertificateController {
      * @Date: 2020/8/7
      */
     @ApiOperation(value = "存疑证照统计")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
     @GetMapping("/selectExceptionCer")
-    public Result<PageBean<CfCertificateInfo>> selectExceptionCer(PageBean pageBean){
-        return Result.success(cfCertificateService.selectExceptionCer(pageBean));
+    public Result<PageBean<CfCertificateInfo>> selectExceptionCer(PageBean pageBean,String year){
+        return Result.success(cfCertificateService.selectExceptionCer(pageBean,year));
     }
 
     /**

@@ -41,6 +41,9 @@ import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,7 +252,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
@@ -260,7 +263,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
                 if("sendMessageToAgent".equals(methodName)){
 
-                    setSql+= status + "= ‘" + leaderStatusName+"'";
+                    setSql+= status + "= '" + leaderStatusName+"'";
                 }else{
 
                     // 干部监督处的状态
@@ -850,6 +853,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         LeaderSupervisionUntil.throwableByParam(bussinessId,type,pass);
 
+
         String opinion ="";
 
         if("通过".equals(pass)){
@@ -886,10 +890,18 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         bussinessTypeAndIdVo.setBussinessName(type);
         bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
 
+//        String pdfFilePath =   getPdfByHtmlByChenpiDan(omsCreateFile);
+
+        //由于在某种未知的 情况 会产生多个备案表 保留最新的
+
+//        LeaderSupervisionUntil.deleteFileById(omsCreateFile.getApplyId()+userName+pdfName+".pdf",attachmentPath+File.separator+"static");
+//
+//        saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
+
         //  (1) 保存 审批记录(通过)
         leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
         //不通过
-        // (2) 修改流程状态
+
         leaderCommonService.updteBussinessApplyStatue(bussinessTypeAndIdVosNum1, Constants.leader_businessName[4]);
         // 修改 业务流程申请 最终结论 (通过)
         leaderCommonService.updateBussinessApplyRecordOpinion(bussinessTypeAndIdVosNum1,opinion,null);
@@ -902,6 +914,35 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         return omsCreateFile;
     }
 
+
+//    private String  getPdfByHtmlByChenpiDan(OmsCreateFile omsCreateFile) {
+//        //解析 html img 的src 标签
+//
+//
+//        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
+//
+//        // 要转换的 html
+//        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
+//
+//        String newHtmlStr = htmlstr.replaceAll("<br>","<br/>");
+//        // 生成 pdf的路径 +名称
+//        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//        Calendar calendar = Calendar.getInstance();
+//        String fileName = df.format(calendar.getTime())+omsCreateFile.getApplyId() +userName+pdfName+".pdf" ;
+//        log.info("文件的文件名为:" + fileName);
+//
+//
+//        String filePath = attachmentPath+File.separator+"static"+File.separator;
+//        try {
+//            FileTypeConvertUtil.html2pdf(newHtmlStr,filePath+fileName);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return filePath+fileName;
+//
+//    }
+//
 
 
 

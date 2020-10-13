@@ -96,7 +96,7 @@ public interface OmsPriApplyService extends IService<OmsPriApply> {
      * @param countries 国家id（逗号分隔）
      * @return
      */
-    List<PassportResult> selectPassportByCountry(String countries, String procpersonId);
+    List<PassportResult> selectPassportByCountry(String countries, String procpersonId,String outDate);
 
     OmsCreateFile printApproval(String applyId);
 }

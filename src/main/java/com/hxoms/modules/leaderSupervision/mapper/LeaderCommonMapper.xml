@@ -74,7 +74,7 @@
 		FROM
 		oms_pub_apply pua
 		LEFT JOIN b01 b ON pua.b0100 = b.b0100
-		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.A0100 = mrp.id
+		LEFT JOIN oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id
 		left join oms_pub_group_pre_approval pug on pua.YSP_ID = pug.id
 
         UNION
@@ -759,7 +759,6 @@
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 						) temp
 
-				#	where temp.clshsftg <![CDATA[ <> ]]> ''
 
 		where (temp.batchId is not null or temp.batchId !='') and temp.applyStatus in ('20','21 ')
 
@@ -821,7 +820,7 @@
 							   pua.FMXX AS fmxx, # 负面信息
 							   pua.SFBG as sfbg, # 是否变更
 							   case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
-							   pua.SCZQJWYJSJ as sczqjwyjsj, # 上次 征求 时间
+		                       DATE_FORMAT(pua.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
 							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
 							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
@@ -891,7 +890,7 @@
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
 							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
-							   pra.SCZQJWYJSJ, # 上次 征求 时间
+		                        DATE_FORMAT(pra.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
 							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
@@ -960,7 +959,7 @@
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   "是否变更" as sfbg, # 是否变更
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
-		                       DATE_FORMAT(prda.SCZQJWYJSJ,'%Y.%m.%d') # 上次 征求 时间
+		                       DATE_FORMAT(prda.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
 							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
@@ -2349,7 +2348,7 @@
 			   user_name userName
 		FROM
 			 cf_user
-		WHERE id=
+		WHERE user_id=
 
 			  (select CREATE_USER from ${tableCode}  where id = #{applyId} )
 
@@ -2394,7 +2393,7 @@
 
 		select CHECK_RESULT as result from oms_selfestimate_resultitem sfr
 
-	     where sfr.APPLY_ID = #{applyId}
+	     where sfr.APPLY_ID = #{applyId} and sfr.PERSON_TYPE='2'
 		group by  CHECK_RESULT
 
 

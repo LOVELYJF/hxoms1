@@ -51,8 +51,8 @@ public class OmsDeviceInteractionController {
      */
     @ApiOperation(value = "验证身份证")
     @PostMapping("/verifyIdentity")
-    public Result verifyIdentity(@RequestBody @Validated IdentityParam identityParam){
-        omsCounterGetService.verifyIdentity(identityParam);
+    public Result verifyIdentity(@RequestBody @Validated SimpIdentityParam simpIdentityParam){
+        omsDeviceInteractionService.verifyIdentity(simpIdentityParam);
         return Result.success();
     }
 
@@ -95,4 +95,17 @@ public class OmsDeviceInteractionController {
         omsDeviceInteractionService.cerGetNotice(cerGetNotice);
         return Result.success();
     }
+    /**
+     * @Desc: 通过身份证查询可入柜证件
+     * @Author: wangyunquan
+     * @Param: [cerGetNotice]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/10/12
+     */
+  /*  @ApiOperation(value = "通过身份证查询可入柜证件")
+    @PostMapping("/selectCanReturnCer")
+    public Result selectCanReturnCer(@RequestBody @Validated CerGetNotice cerGetNotice){
+        return Result.success(omsDeviceInteractionService.selectCanReturnCer(cerGetNotice));
+    }*/
+
 }

@@ -48,6 +48,12 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
 
     @Autowired
     private OmsPriApplyService omsPriApplyService;
+
+    @Override
+    public void verifyIdentity(SimpIdentityParam simpIdentityParam) {
+
+    }
+
     /**
      * @Desc: 判断证件是否可存放于设备
      * @Author: wangyunquan
@@ -160,6 +166,8 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
                 OmsPriApply omsPriApply=new OmsPriApply();
                 omsPriApply.setId(cerInfoExist.getBusiId());
                 omsPriApply.setApplyStatus(Integer.parseInt(CardStatusEnum.YLQ.getCode()));
+                omsPriApply.setModifyUser(userId);
+                omsPriApply.setModifyTime(currDate);
                 omsPriApplyList.add(omsPriApply);
             }
         }
@@ -169,7 +177,9 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
             throw new CustomMessageException("证照更新失败!");
         if(!omsExitEntryManageService.saveBatch(omsCerExitEntryRepertoryArrayList))
             throw new CustomMessageException("出库记录保存失败!");
-        if(!omsPriApplyList.isEmpty()&&omsPriApplyService.updateBatchById(omsPriApplyList))
-            throw new CustomMessageException("因私申请更新失败!");
+        if(!omsPriApplyList.isEmpty()) {
+            if (!omsPriApplyService.updateBatchById(omsPriApplyList))
+                throw new CustomMessageException("因私申请更新失败!");
+        }
     }
 }

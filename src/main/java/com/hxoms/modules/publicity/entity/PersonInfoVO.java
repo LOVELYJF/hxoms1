@@ -18,6 +18,17 @@ public class PersonInfoVO {
     private String name;
     /** 性别*/
     private String sex;
+
+    public String getSexName() {
+        return sexName;
+    }
+
+    public void setSexName(String sexName) {
+        this.sexName = sexName;
+    }
+
+    /** 性别*/
+    private String sexName;
     /** 出生日期*/
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")

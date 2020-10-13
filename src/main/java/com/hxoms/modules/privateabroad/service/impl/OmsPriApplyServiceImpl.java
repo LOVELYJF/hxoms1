@@ -15,6 +15,7 @@ import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.*;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -108,10 +109,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             //非省委管理证照
             omsPriApplyVO.setDescription("非省委管理证照");
         }else{
-            QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-            cfCertificate.eq("OMS_ID", procpersonId)
-                    .eq("CARD_STATUS", 0);
-            List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+            List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(procpersonId,new String[]{"0","4","5","6","7","8"});
             omsPriApplyVO.setCfCertificates(cfCertificates);
         }
         //约束条件
@@ -278,10 +276,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
-        QueryWrapper<CfCertificate> cfCertificate = new QueryWrapper<>();
-        cfCertificate.eq("OMS_ID", omsPriApplyVO.getProcpersonId())
-                .eq("CARD_STATUS", 0);
-        List<CfCertificate> cfCertificates = cfCertificateMapper.selectList(cfCertificate);
+        List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(omsPriApplyVO.getProcpersonId(),new String[]{"0","4","5","6","7","8"});
         omsPriApplyVO.setCfCertificates(cfCertificates);
         //国家详情
         selectCountryDestail(omsPriApplyVO);
@@ -458,13 +453,15 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     }
 
     @Override
-    public List<PassportResult> selectPassportByCountry(String countries, String procpersonId) {
+    public List<PassportResult> selectPassportByCountry(String countries, String procpersonId,String outDate) {
         if (StringUtils.isBlank(procpersonId)){
             throw new CustomMessageException("请先选择出国人员");
         }
         if (StringUtils.isBlank(procpersonId)){
             throw new CustomMessageException("请先选择国家");
         }
+        if(outDate==null)
+            outDate="出国（境）";
         List<PassportResult> result = new ArrayList<>();
         //国外
         String[] country = countries.split(",");
@@ -491,11 +488,12 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             result.add(passportResult);
         }
         QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<>();
+        boolean changeCard=false;
         for (PassportResult item : result) {
             queryWrapper.clear();
             queryWrapper.eq("OMS_ID", procpersonId)
                     .eq("ZJLX", item.getZjlx())
-                    .eq("CARD_STATUS", 0);
+                    .in("CARD_STATUS", "0","4","5","7");
             CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
             if (cfCertificate != null){
                 //半年后是否失效
@@ -503,44 +501,47 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
                 //是否失效
                 boolean flag = cfCertificate.getYxqz().before(new Date());
                 item.setNum(cfCertificate.getZjhm());
+
+                if(flag||flagSix) changeCard=true;
+
                 //护照
                 if (item.getZjlx() == 1) {
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("失效重新申领护照（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前因失效重新申领护照（" + cfCertificate.getZjhm() + "）");
                     }else if (flagSix){
                         //换发
                         item.setType(2);
-                        item.setDesc("换发护照（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前换发护照（" + cfCertificate.getZjhm() + "）");
                     }else{
-                        item.setDesc("此表只作为存档，不能申领或换发证照");
+                        item.setDesc("");
                     }
                 }else if (item.getZjlx() == 2){
                     //港澳
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("失效重新申领港澳通行证（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前因失效重新申领港澳通行证（" + cfCertificate.getZjhm() + "）");
                     }else if (flagSix){
                         //换发
                         item.setType(2);
-                        item.setDesc("换发港澳通行证（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前换发港澳通行证（" + cfCertificate.getZjhm() + "）");
                     }else{
-                        item.setDesc("此表只作为存档，不能申领或换发港澳通行证");
+                        item.setDesc("");
                     }
                 }else if (item.getZjlx() == 4){
                     //台湾
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("失效重新申领台湾通行证（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前因失效重新申领台湾通行证（" + cfCertificate.getZjhm() + "）");
                     }else if (flagSix){
                         //换发
                         item.setType(2);
-                        item.setDesc("换发台湾通行证（" + cfCertificate.getZjhm() + "）");
+                        item.setDesc("可于"+outDate+"前换发台湾通行证（" + cfCertificate.getZjhm() + "）");
                     }else{
-                        item.setDesc("此表只作为存档，不能申领或换发台湾通行证");
+                        item.setDesc("");
                     }
                 }
             }else{
@@ -549,13 +550,13 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
                 item.setType(1);
                 //护照
                 if (item.getZjlx() == 1){
-                    item.setDesc("申领护照");
+                    item.setDesc("可于"+outDate+"前申领护照");
                 }else if (item.getZjlx() == 2){
                     //港澳
-                    item.setDesc("申领港澳通行证");
+                    item.setDesc("可于"+outDate+"前申领港澳通行证");
                 }else if (item.getZjlx() == 4){
                     //台湾
-                    item.setDesc("申领台湾通行证");
+                    item.setDesc("可于"+outDate+"前申领台湾通行证");
                 }
             }
         }
