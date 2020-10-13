@@ -7,6 +7,7 @@ import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
 import com.hxoms.modules.passportCard.counterGet.entity.enums.GetStatusEnum;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.ReceiveSourceEnum;
 import com.hxoms.modules.passportCard.counterGet.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.counterGet.mapper.OmsCerGetTaskMapper;
 import com.hxoms.modules.passportCard.counterGet.service.OmsCounterGetService;
@@ -18,6 +19,8 @@ import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
+import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.sysUser.entity.CfUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,9 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
 
     @Autowired
     private OmsExitEntryManageService omsExitEntryManageService;
+
+    @Autowired
+    private OmsPriApplyService omsPriApplyService;
     /**
      * @Desc: 验证身份证
      * @Author: wangyunquan
@@ -54,6 +60,8 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
      */
     @Override
     public void verifyIdentity(IdentityParam identityParam) {
+        if(identityParam.getYxqz()==null)
+            throw new CustomMessageException("参数错误，请核实！");
         //判断证件是否过期
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -65,7 +73,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
         }
         List<CfUser> userList=omsCerGetTaskMapper.selectUserByQua(identityParam);
         if(userList.size()==0)
-            throw new CustomMessageException("系统无此人，请核实！");
+            throw new CustomMessageException("身份验证失败，请核实身份证信息！");
     }
 
     /**
@@ -160,6 +168,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
         List<OmsCerGetTask> omsCerGetTaskList=new ArrayList<>();
         List<CfCertificate> cfCertificateList=new ArrayList<>();
         List<OmsCerExitEntryRepertory> omsCerExitEntryRepertoryArrayList=new ArrayList<>();
+        List<OmsPriApply> omsPriApplyList=new ArrayList<>();
         Date date = new Date();
         for (GetConfirm getConfirm : getConfirmList) {
             OmsCerGetTask omsCerGetTask=new OmsCerGetTask();
@@ -201,6 +210,16 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             omsCerExitEntryRepertory.setOperator(userInfo.getId());
             omsCerExitEntryRepertory.setOperateTime(date);
             omsCerExitEntryRepertoryArrayList.add(omsCerExitEntryRepertory);
+
+            //因私申请
+            if(ReceiveSourceEnum.SOURCE_0.getCode().equals(omsCerGetTaskExist.getDataSource())){
+                OmsPriApply omsPriApply=new OmsPriApply();
+                omsPriApply.setId(omsCerGetTaskExist.getBusiId());
+                omsPriApply.setApplyStatus(Integer.parseInt(CardStatusEnum.YLQ.getCode()));
+                omsPriApply.setModifyUser(userInfo.getId());
+                omsPriApply.setModifyTime(date);
+                omsPriApplyList.add(omsPriApply);
+            }
         }
         if(!omsCounterGetService.updateBatchById(omsCerGetTaskList))
             throw new CustomMessageException("证照领取更新失败!");
@@ -208,6 +227,10 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             throw new CustomMessageException("证照更新失败!");
         if(!omsExitEntryManageService.saveBatch(omsCerExitEntryRepertoryArrayList))
             throw new CustomMessageException("出库记录保存失败!");
+        if(!omsPriApplyList.isEmpty()) {
+            if (!omsPriApplyService.updateBatchById(omsPriApplyList))
+                throw new CustomMessageException("因私申请更新失败!");
+        }
     }
 
     /**
