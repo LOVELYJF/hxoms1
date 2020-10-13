@@ -199,29 +199,24 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Result uploadPubGroupJson(MultipartFile file,String orgName,String orgId,String bazt) {
+    public Result uploadPubGroupJson(MultipartFile file,String orgName,String orgId,String bazt) throws IOException {
         if (file == null || StringUtils.isBlank(bazt)){
             return Result.error("参数为空!");
         }
-        OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
-        try {
-            //解析json数据
-            Result result = new Result();
-            result = readJsonData(file);
-            if(result.getCode() == 1){
-                return result;
+        //解析json数据
+        Result result = new Result();
+        result = readJsonData(file);
+        OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
+        if(result.getCode() == 1){
+            return result;
+        }else{
+            if(StringUtils.isBlank(orgId)){
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
             }else{
-                omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
-                if(StringUtils.isBlank(orgId)){
-                    omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
-                }else{
-                    omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
-                }
-                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
-                insertPubGroup(omsPubGroupAndApplyList);
+                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
             }
-        }catch (Exception e){
-            e.printStackTrace();
+            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
+            insertPubGroup(omsPubGroupAndApplyList);
         }
         return Result.success(omsPubGroupAndApplyList);
     }
@@ -691,6 +686,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
         try{
             omsPubGroupPreApproval.setCgsj(sdf.parse(jsonData.get("出国时间").toString()));
+            omsPubGroupPreApproval.setHgsj(sdf.parse(jsonData.get("回国时间").toString()));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -723,6 +719,12 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                     omsPubApplyVO.setJob(jsonArray.getJSONObject(i).get("职务").toString());
                     omsPubApplyVO.setZtnrzw(jsonArray.getJSONObject(i).get("在团职务").toString());
                     omsPubApplyVO.setZjcgqk(jsonArray.getJSONObject(i).get("最近一次因公出国信息").toString());
+                    omsPubApplyVO.setSex(regProcpersoninfo.getSex());
+                    omsPubApplyVO.setBirthDate(regProcpersoninfo.getBirthDate());
+                    omsPubApplyVO.setPoliticalAff(regProcpersoninfo.getPoliticalAffiname());
+                    omsPubApplyVO.setSflg(regProcpersoninfo.getNf());
+                    omsPubApplyVO.setSmdj(regProcpersoninfo.getSecretLevel());
+                    omsPubApplyVO.setSfzyld(regProcpersoninfo.getMainLeader());
                     applyVOList.add(omsPubApplyVO);
                 }else{
                     return Result.error("团组成员:"+name+",未找到对应备案信息，请检查！");
