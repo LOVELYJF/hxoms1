@@ -200,7 +200,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
-    public Result uploadPubGroupJson(MultipartFile file,String orgName,String orgId,String bazt) throws IOException {
+    public Result uploadPubGroupJson(MultipartFile file,String orgName,String orgId,String bazt) {
         if (file == null || StringUtils.isBlank(bazt)){
             return Result.error("参数为空!");
         }
@@ -208,7 +208,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             //解析json数据
             Result result = new Result();
             result = readJsonData(file);
-            if("0".equals(result.getCode())){
+            if("1".equals(result.getCode())){
                 return result;
             }else{
                 OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
