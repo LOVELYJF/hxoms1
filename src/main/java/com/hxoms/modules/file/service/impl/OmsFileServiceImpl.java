@@ -117,26 +117,51 @@ public class OmsFileServiceImpl implements OmsFileService {
                 .in("FILE_TYPE",fileType)
                 .orderByAsc("SORT_ID");
         List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
-        if (omsFiles == null || omsFiles.size() < 1) {
-            //初始化机构文件
-            queryWrapper.clear();
-            queryWrapper.eq("TABLE_CODE", tableCode)
-                    .and(wrapper->wrapper.eq("B0100", "")
-                            .or()
-                            .isNull("B0100"))
-                    .orderByAsc("SORT_ID");
-            List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+        //初始化机构文件
+        queryWrapper.clear();
+        queryWrapper.eq("TABLE_CODE", tableCode)
+                .and(wrapper->wrapper.eq("B0100", "")
+                        .or()
+                        .isNull("B0100"))
+                .orderByAsc("SORT_ID");
+        List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+        if (omsFiles == null || omsFiles.size() < 1 || omsFiles.size() < omsFileSystem.size()) {
+
             if (omsFileSystem != null && omsFileSystem.size() > 0) {
-                //插入
-                for (OmsFile omsfile : omsFileSystem) {
-                    omsfile.setFileId(omsfile.getId());
-                    omsfile.setId(UUIDGenerator.getPrimaryKey());
-                    omsfile.setB0100(userInfo.getOrgId());
-                    omsfile.setCreateUser(userInfo.getId());
-                    omsfile.setCreateTime(new Date());
-                    int count = omsFileMapper.insert(omsfile);
-                    if(count < 1){
-                        throw new CustomMessageException("插入新的文件信息出错");
+                if (omsFiles.size() < omsFileSystem.size()){
+                    QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+                    createFile.eq("TABLE_CODE", tableCode)
+                            .eq("APPLY_ID", applyId);
+                    omsCreateFileMapper.delete(createFile);
+                    ArrayList<String> ids = new ArrayList<>();
+                    //插入
+                    for (OmsFile f : omsFiles) {
+                        ids.add(f.getFileId());
+                    }
+                    for (OmsFile omsfile : omsFileSystem) {
+                        if (!ids.contains(omsfile.getId())) {
+                            omsfile.setFileId(omsfile.getId());
+                            omsfile.setId(UUIDGenerator.getPrimaryKey());
+                            omsfile.setB0100(userInfo.getOrgId());
+                            omsfile.setCreateUser(userInfo.getId());
+                            omsfile.setCreateTime(new Date());
+                            int count = omsFileMapper.insert(omsfile);
+                            if (count < 1) {
+                                throw new CustomMessageException("插入新的文件信息出错");
+                            }
+                        }
+                    }
+                }else {
+                    for (OmsFile omsfile : omsFileSystem) {
+                            omsfile.setFileId(omsfile.getId());
+                            omsfile.setId(UUIDGenerator.getPrimaryKey());
+                            omsfile.setB0100(userInfo.getOrgId());
+                            omsfile.setCreateUser(userInfo.getId());
+                            omsfile.setCreateTime(new Date());
+                            int count = omsFileMapper.insert(omsfile);
+                            if (count < 1) {
+                                throw new CustomMessageException("插入新的文件信息出错");
+                            }
                     }
                 }
                 //复制文件
@@ -163,7 +188,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     .eq("APPLY_ID", applyId);
             int count = omsCreateFileMapper.selectCount(createFile);
             //没有生成时生成文件
-            if (count < 1){
+            if (count < 1 ){
                 for (OmsFile omsFile : omsFiles){
                     OmsCreateFile omsCreateFile = new OmsCreateFile();
                     omsCreateFile.setFileId(omsFile.getId());
