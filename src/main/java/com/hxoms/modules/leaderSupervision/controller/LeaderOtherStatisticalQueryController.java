@@ -5,12 +5,14 @@ import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
 import com.hxoms.common.utils.StringUilt;
 import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonDetailMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
 import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.LeaderOtherStatisticalQueryService;
 import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
+import com.hxoms.modules.leaderSupervision.vo.JiWeiNoPassVo;
 import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
 import com.hxoms.modules.leaderSupervision.vo.LeaderSupervisionVo;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -54,6 +56,8 @@ public class LeaderOtherStatisticalQueryController {
     private LeaderEXportExcelService leaderEXportExcelService;
     @Autowired
     private LeaderOtherStatisticalQueryService leaderOtherStatisticalQueryService;
+    @Autowired
+    private LeaderCommonDetailMapper leaderCommonDetailMapper;
 
 
     // 代办业务管理模块 左边列表
@@ -229,6 +233,15 @@ public class LeaderOtherStatisticalQueryController {
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
+
+    /** 纪委意见查看不通过记录 **/
+    @GetMapping("/jiweiCheckNotPass")
+    public Result jiweiCheckNotPass(String type,String applyId){
+
+      List<JiWeiNoPassVo> lists =  leaderCommonDetailMapper.selectItemsList(type,applyId);
+
+        return Result.success(lists);
+    }
 
 
 

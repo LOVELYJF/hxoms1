@@ -87,8 +87,8 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
             String[] idLists = idList.split(",");
             param.put("idList",idLists);
         }
-        List<OmsRegProcpersoninfo> resultList = regProcpersoninfoMapper.getSmrPersonInfo(param);
         PageUtil.pageHelp(pageNum, pageSize);
+        List<OmsRegProcpersoninfo> resultList = regProcpersoninfoMapper.getSmrPersonInfo(param);
         PageInfo<OmsRegProcpersoninfo> pageInfo = new PageInfo(resultList);
         return pageInfo;
     }

@@ -14,6 +14,7 @@ import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepe
 import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.service.OmsExitEntryManageService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
@@ -179,6 +180,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             certificate.setId(getConfirm.getCerId());
             //已取出
             certificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
+            certificate.setCardStatus(CardStatusEnum.YLQ.getCode());
             certificate.setUpdater(userInfo.getId());
             certificate.setUpdateTime(date);
             cfCertificateList.add(certificate);
@@ -196,7 +198,7 @@ public class OmsCounterGetServiceImpl extends ServiceImpl<OmsCerGetTaskMapper, O
             //存取方式(0:证照机,1:柜台)
             omsCerExitEntryRepertory.setMode(SurelyWayEnum.COUNTER.getCode());
             omsCerExitEntryRepertory.setCounterNum(getConfirm.getCounterNum());
-            omsCerExitEntryRepertory.setOperator(userInfo.getOrgId());
+            omsCerExitEntryRepertory.setOperator(userInfo.getId());
             omsCerExitEntryRepertory.setOperateTime(date);
             omsCerExitEntryRepertoryArrayList.add(omsCerExitEntryRepertory);
         }

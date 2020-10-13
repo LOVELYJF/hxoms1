@@ -132,7 +132,7 @@ public class OmsSupDismissedServiceImpl implements OmsSupDismissedService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void removeDismissedInfo(OmsSupDismissed omsSupDismissed) {
-		if(StringUtils.isBlank(omsSupDismissed.getA0100())){
+		if(StringUtils.isBlank(omsSupDismissed.getId())){
 			throw new CustomMessageException("参数错误");
 		}
 		int count = omsSupDismissedMapper.deleteById(omsSupDismissed.getId());

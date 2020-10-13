@@ -7,12 +7,10 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagPar
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/omsRegRevokeApply")
@@ -124,6 +122,20 @@ public class OmsRegRevokeApplyController {
         } else {
             return Result.error("必传参数为空");
         }
+    }
+
+    /**
+     *
+     * 生成撤销函
+     * **/
+    @PostMapping("/createCancellationLetter")
+    public Result createCancellationLetter(@RequestBody List<CancellationLetter> lists){
+
+
+
+
+        return  Result.success();
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.hxoms.modules.privateabroad.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
@@ -13,7 +14,7 @@ import com.hxoms.modules.publicity.entity.PersonInfoVO;
 import java.util.List;
 import java.util.Map;
 
-public interface OmsPriApplyService {
+public interface OmsPriApplyService extends IService<OmsPriApply> {
     /**
      * 因私出国申请列表
      * @param omsPriApplyIPageParam  查询条件
@@ -95,7 +96,7 @@ public interface OmsPriApplyService {
      * @param countries 国家id（逗号分隔）
      * @return
      */
-    List<PassportResult> selectPassportByCountry(String countries, String procpersonId);
+    List<PassportResult> selectPassportByCountry(String countries, String procpersonId,String outDate);
 
     OmsCreateFile printApproval(String applyId);
 }

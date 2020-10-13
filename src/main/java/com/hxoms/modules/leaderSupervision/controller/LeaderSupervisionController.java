@@ -236,15 +236,16 @@ public class  LeaderSupervisionController {
     @PostMapping("/exportJiweiExcel")
     public void exportJiweiExcel(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
 
-            leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
+
 
         try {
             HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport(leaderSupervisionVo);
+            leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("纪委意见"+date+".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
