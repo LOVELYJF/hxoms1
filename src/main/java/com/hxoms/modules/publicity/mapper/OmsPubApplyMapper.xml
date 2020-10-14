@@ -433,7 +433,7 @@
         select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE_GB,b.B0101
         ,o.* from oms_pub_apply o inner join oms_reg_procpersoninfo r
         on o.PROCPERSON_ID=r.ID
-        inner join b01 b on o.b0100=b.b0100
+        left join b01 b on o.b0100=b.b0100
         where o.id=#{id}
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO" parameterType="com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam">

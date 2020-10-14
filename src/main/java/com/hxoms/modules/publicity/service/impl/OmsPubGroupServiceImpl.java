@@ -203,21 +203,28 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if (file == null || StringUtils.isBlank(bazt)){
             return Result.error("参数为空!");
         }
+
         //解析json数据
         Result result = new Result();
         result = readJsonData(file);
         OmsPubGroupAndApplyList omsPubGroupAndApplyList = (OmsPubGroupAndApplyList) result.getData();
         if(result.getCode() == 1){
             return result;
-        }else{
-            if(StringUtils.isBlank(orgId)){
-                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgName);
-            }else{
-                omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
-            }
-            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
-            insertPubGroup(omsPubGroupAndApplyList);
         }
+        if(StringUtils.isBlank(orgId)){
+            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setZtdw(orgName);
+        }else{
+            omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setB0100(orgId);
+        }
+        omsPubGroupAndApplyList.getOmsPubGroupPreApproval().setBazt(Integer.parseInt(bazt));
+        result = insertPubGroup(omsPubGroupAndApplyList);
+
+        //返回数据
+        OmsPubGroupPreApproval pubGroup = (OmsPubGroupPreApproval)result.getData() ;
+        List<OmsPubApplyVO> pubApplyVOList = pubApplyMapper.selectByYSPId(pubGroup.getId());
+        omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
+        omsPubGroupAndApplyList.setOmsPubApplyVOList(pubApplyVOList);
+
         return Result.success(omsPubGroupAndApplyList);
     }
 
