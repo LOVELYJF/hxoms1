@@ -385,6 +385,9 @@ public class Constants {
             this.index = index;
         }
     }
+    /**
+    * 撤销登记备案状态
+    **/
     public enum emRevokeRegister{
         申请("申请",1),
         受理("受理",2),

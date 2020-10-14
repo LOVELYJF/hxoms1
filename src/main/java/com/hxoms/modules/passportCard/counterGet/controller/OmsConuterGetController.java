@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 
 /**
@@ -108,7 +109,7 @@ public class OmsConuterGetController {
 
     @ApiOperation(value = "查询可领取证照")
     @GetMapping("/selectCanGetCer")
-    public Result<RequestList<CerGetTaskInfo>> selectCanGetCer(@Validated CerGetTaskQueryParam cerGetTaskQueryParam){
+    public Result<List<CerGetTaskInfo>> selectCanGetCer(@Validated CerGetTaskQueryParam cerGetTaskQueryParam){
         return Result.success(omsCounterGetService.selectCanGetCer(cerGetTaskQueryParam));
     }
 

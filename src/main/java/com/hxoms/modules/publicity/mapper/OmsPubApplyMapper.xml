@@ -1045,4 +1045,11 @@
         where
         PWH = #{yPWH,jdbcType=VARCHAR}
     </update>
+    <select id="selectExistsAbroad" resultMap="BaseResultMap">
+        select a.ID,'因公' as BZ from oms_pub_apply a
+        where a.SQZT&lt;31 AND a.PROCPERSON_ID=#{id} and a.CGSJ&lt;=#{cgsj} and a.HGSJ&gt;#{cgsj}
+        UNION
+        select a.ID,'因私' as BZ from oms_pri_apply a
+        where a.APPLY_STATUS&lt;31 AND a.PROCPERSON_ID=#{id} and a.ABROAD_TIME&lt;=#{cgsj} and a.RETURN_TIME&gt;=#{cgsj}
+    </select>
 </mapper>

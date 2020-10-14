@@ -1,43 +1,30 @@
 package com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @Desc：TODO
  * @Author: wangyunquan
- * @Date: 2020/10/12
+ * @Date: 2020/10/13
  */
-public class CerInfo {
-    private String id;
-    private String busiId;
-    private String name;
+@ApiModel(value = "证件归还集合")
+public class CerReturnEntity {
+    @ApiModelProperty(value = "证件类型（1：护照，2：港澳通行证，4：台湾通行证)")
+    @NotNull(message = "证件类型不能为空")
     private Integer zjlx;
+    @ApiModelProperty(value = "证件号码")
+    @NotBlank(message = "证件号码不能为空")
     private String zjhm;
+    @ApiModelProperty(value = "机柜编号")
+    @NotBlank(message = "机柜编号不能为空")
     private String cabinetNum;
+    @ApiModelProperty(value = "机柜位置")
+    @NotBlank(message = "机柜位置不能为空")
     private String place;
-    private String dataSource;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getBusiId() {
-        return busiId;
-    }
-
-    public void setBusiId(String busiId) {
-        this.busiId = busiId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Integer getZjlx() {
         return zjlx;
@@ -69,13 +56,5 @@ public class CerInfo {
 
     public void setPlace(String place) {
         this.place = place;
-    }
-
-    public String getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
     }
 }

@@ -2,9 +2,10 @@ package com.hxoms.modules.passportCard.deviceInteraction.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.deviceInteraction.entity.OmsCerDeviceInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerGetInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerInfo;
-import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.QrCodeInfo;
+import com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.*;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.sysUser.entity.CfUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -112,4 +113,32 @@ public interface OmsCerDeviceInfoMapper extends BaseMapper<OmsCerDeviceInfo> {
      * @Date: 2020/10/12
      */
     CerInfo selectCerInfo(String id);
+
+    /**
+     * @Desc: 查询用户信息
+     * @Author: wangyunquan
+     * @Param: [simpIdentityParam]
+     * @Return: com.hxoms.modules.sysUser.entity.CfUser
+     * @Date: 2020/10/13
+     */
+    CfUser selectUserInfo(SimpIdentityParam simpIdentityParam);
+
+    /**
+     * @Desc: 查询可入柜证件
+     * @Author: wangyunquan
+     * @Param: [cfUsers]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.SimpCerInfo>
+     * @Date: 2020/10/13
+     */
+    List<SimpCerInfo> selectCanReturnCer(CfUser cfUser);
+
+    /**
+     * @Desc: 查询证件信息
+     * @Author: wangyunquan
+     * @Param: [zjhm, zjlx]
+     * @Return: com.hxoms.modules.passportCard.initialise.entity.CfCertificate
+     * @Date: 2020/10/13
+     */
+    CfCertificate selectCerByQua(@Param("zjhm") String zjhm, @Param("zjlx") Integer zjlx,@Param("deviceSn") String deviceSn);
+
 }

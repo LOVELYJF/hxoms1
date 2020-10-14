@@ -1,5 +1,6 @@
 package com.hxoms.modules.privateabroad.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
@@ -33,11 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @desc: 因私出国境申请
- *
  * @author: lijing
  * @date: 2020-05-15
  */
@@ -68,7 +69,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
-        if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())){
+        if (!StringUtils.isBlank(omsPriApplyIPageParam.getApplyStatusString())) {
             String[] applyStatus = omsPriApplyIPageParam.getApplyStatusString().split(",");
             omsPriApplyIPageParam.setApplyStatus((Integer[]) ConvertUtils.convert(applyStatus, Integer.class));
         }
@@ -88,28 +89,28 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public OmsPriApplyVO selectPersonById(String procpersonId) {
-        if (StringUtils.isBlank(procpersonId)){
+        if (StringUtils.isBlank(procpersonId)) {
             throw new CustomMessageException("参数错误");
         }
         Map<String, String> paramMap1 = new HashMap<>();
         paramMap1.put("procpersonId", procpersonId);
         //查询用户基本信息
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPersonInfoByA0100(paramMap1);
-        if (omsPriApplyVO == null){
+        if (omsPriApplyVO == null) {
             throw new CustomMessageException("该干部未备案");
         }
         //获取涉密信息
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("a0100",omsPriApplyVO.getA0100() );
+        paramMap.put("a0100", omsPriApplyVO.getA0100());
         paramMap.put("finishDate", "1");
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
-        if (omsPriApplyVO.getPaper() != null && omsPriApplyVO.getPaper() == 16){
+        if (omsPriApplyVO.getPaper() != null && omsPriApplyVO.getPaper() == 16) {
             //非省委管理证照
             omsPriApplyVO.setDescription("非省委管理证照");
-        }else{
-            List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(procpersonId,new String[]{"0","4","5","6","7","8"});
+        } else {
+            List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(procpersonId, new String[]{"0", "4", "5", "6", "7", "8"});
             omsPriApplyVO.setCfCertificates(cfCertificates);
         }
         //约束条件
@@ -120,27 +121,42 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public String insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
+    public Result insertOrUpdatePriApply(OmsPriApplyParam omsPriApplyParam) {
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
         OmsPriApply omsPriApply = omsPriApplyParam.getOmsPriApply();
+        if(omsPriApply.getAbroadTime()!=null){
+            List<OmsPriApply> priApplies = omsPriApplyMapper.selectExistsAbroad(omsPriApply.getProcpersonId(),
+                    new SimpleDateFormat("yyyy-MM-dd").format(omsPriApply.getAbroadTime()));
+            if (priApplies.size() > 0) {
+                String desc = "";
+                for (OmsPriApply priApply : priApplies
+                ) {
+                    if (omsPriApply.getId() != null && priApply.getId().equals(omsPriApply.getId())) continue;
+                    desc += "当前申请的因私出国（境）时间段内已经存在" + priApply.getDescription() + "出国（境）申请！";
+                }
+                if (!"".equals(desc))
+                    return Result.error(desc);
+            }
+        }
+
         //随行人员
         List<OmsPriTogetherperson> omsPriTogetherpersonList = omsPriApplyParam.getOmsPriTogetherperson();
-        if (StringUtils.isBlank(omsPriApply.getProcpersonId())){
-            throw new CustomMessageException("请选择需要出国的人员");
+        if (StringUtils.isBlank(omsPriApply.getProcpersonId())) {
+            return Result.error("请选择需要出国的人员");
         }
-        if (StringUtils.isBlank(omsPriApply.getAbroadReasons())){
-            throw new CustomMessageException("出国事由不能为空");
+        if (StringUtils.isBlank(omsPriApply.getAbroadReasons())) {
+            return Result.error("出国事由不能为空");
         }
-        if (omsPriApply.getAbroadTime() == null){
-            throw new CustomMessageException("出国时间不能为空");
+        if (omsPriApply.getAbroadTime() == null) {
+            return Result.error("出国时间不能为空");
         }
-        if (omsPriApply.getReturnTime() == null){
-            throw new CustomMessageException("回国时间不能为空");
+        if (omsPriApply.getReturnTime() == null) {
+            return Result.error("回国时间不能为空");
         }
-        if(!omsPriApply.getAbroadTime().before(omsPriApply.getReturnTime())){
-            throw new CustomMessageException("出国时间不能晚于回国时间");
+        if (!omsPriApply.getAbroadTime().before(omsPriApply.getReturnTime())) {
+            return Result.error("出国时间不能晚于回国时间");
         }
         //基本信息保存
         //设置草稿状态
@@ -157,8 +173,8 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             omsPriApply.setCreateUser(userInfo.getId());
             omsPriApplyMapper.insert(omsPriApply);
         } else {
-        	  omsPriApply.setModifyTime(new Date());
-        	  omsPriApply.setModifyUser(userInfo.getId());
+            omsPriApply.setModifyTime(new Date());
+            omsPriApply.setModifyUser(userInfo.getId());
             omsPriApplyMapper.updateById(omsPriApply);
             //删除随行人员
             QueryWrapper<OmsPriTogetherperson> queryWrapper = new QueryWrapper<>();
@@ -174,21 +190,21 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             omsPriTogetherperson.setCreateTime(new Date());
             omsPriTogetherperson.setCreateUser(userInfo.getId());
             int result = omsPriTogetherpersonMapper.insert(omsPriTogetherperson);
-            if (result < 1){
+            if (result < 1) {
                 throw new CustomMessageException("申请失败");
             }
         }
-        return omsPriApply.getId();
+        return Result.success(omsPriApply.getId());
     }
 
     @Override
     public String deletePriApply(String id) {
         //只能删除未上报的
         OmsPriApply omsPriApply = omsPriApplyMapper.selectById(id);
-        if (omsPriApply.getApplyStatus() > Constants.private_business[4]){
+        if (omsPriApply.getApplyStatus() > Constants.private_business[4]) {
             throw new CustomMessageException("此申请不能删除");
         }
-        if (omsPriApplyMapper.deleteById(id) < 1){
+        if (omsPriApplyMapper.deleteById(id) < 1) {
             throw new CustomMessageException("删除失败");
         }
         return "删除成功";
@@ -196,38 +212,38 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public String updateApplyStatus(OmsPriApply omsPriApply) {
-        if (omsPriApply.getApplyStatus() != null && StringUtils.isBlank(omsPriApply.getId())){
+        if (omsPriApply.getApplyStatus() != null && StringUtils.isBlank(omsPriApply.getId())) {
             throw new CustomMessageException("参数错误");
         }
         OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(omsPriApply.getId());
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
-        if (Constants.private_business[7] == omsPriApply.getApplyStatus()){
+        if (Constants.private_business[7] == omsPriApply.getApplyStatus()) {
             //撤销
             omsAbroadApproval.setStepCode(Constants.private_business[7]);
             omsAbroadApproval.setStepName(Constants.private_businessName[7]);
-        } else if(Constants.private_business[0] == omsPriApply.getApplyStatus()){
+        } else if (Constants.private_business[0] == omsPriApply.getApplyStatus()) {
             omsAbroadApproval.setStepCode(Constants.private_business[0]);
             omsAbroadApproval.setStepName("撤回");
             //撤回
-            if (omsPriApplyDestail.getApplyStatus() > 20){
+            if (omsPriApplyDestail.getApplyStatus() > 20) {
                 throw new CustomMessageException("不能撤回");
             }
         }
         int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
-        if (updateStatus < 1){
+        if (updateStatus < 1) {
             throw new CustomMessageException("操作失败");
         }
-        if (omsPriApply.getApplyStatus() > 1 || omsPriApply.getApplyStatus() <= 5){
+        if (omsPriApply.getApplyStatus() > 1 || omsPriApply.getApplyStatus() <= 5) {
             int status = omsPriApply.getApplyStatus() - 1;
             omsAbroadApproval.setStepCode(status);
-            for (int i = 1; i < 5; i++){
-                if (Constants.private_business[i] == status){
+            for (int i = 1; i < 5; i++) {
+                if (Constants.private_business[i] == status) {
                     omsAbroadApproval.setStepName(Constants.private_businessName[i]);
                     break;
                 }
             }
-        } else if (omsPriApply.getApplyStatus() == 20){
+        } else if (omsPriApply.getApplyStatus() == 20) {
             omsAbroadApproval.setStepCode(Constants.private_business[4]);
             omsAbroadApproval.setStepName(Constants.private_businessName[4]);
         }
@@ -247,7 +263,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public List<PersonInfoVO> selectPersonByKeyword(String keyword) {
-        if (StringUtils.isBlank(keyword)){
+        if (StringUtils.isBlank(keyword)) {
             throw new CustomMessageException("参数错误");
         }
         List<PersonInfoVO> personInfoVOS = omsPriApplyMapper.selectPersonByKeyword(keyword);
@@ -256,13 +272,13 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public OmsPriApplyVO selectPriApplyById(String id) {
-        if (StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数错误");
         }
         OmsPriApplyVO omsPriApplyVO = omsPriApplyMapper.selectPriApplyById(id);
-        if ("1".equals(omsPriApplyVO.getSex())){
+        if ("1".equals(omsPriApplyVO.getSex())) {
             omsPriApplyVO.setSex("男");
-        } else if ("2".equals(omsPriApplyVO.getSex())){
+        } else if ("2".equals(omsPriApplyVO.getSex())) {
             omsPriApplyVO.setSex("女");
         }
         //随行人员
@@ -276,7 +292,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         List<OmsSmrOldInfoVO> omsSmrOldInfoVOS = omsSmrOldInfoMapper.getSmrOldInfoVOList(paramMap);
         omsPriApplyVO.setOmsSmrOldInfoVOS(omsSmrOldInfoVOS);
         //证件信息
-        List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(omsPriApplyVO.getProcpersonId(),new String[]{"0","4","5","6","7","8"});
+        List<CfCertificateExtend> cfCertificates = cfCertificateMapper.selectByOmsId(omsPriApplyVO.getProcpersonId(), new String[]{"0", "4", "5", "6", "7", "8"});
         omsPriApplyVO.setCfCertificates(cfCertificates);
         //国家详情
         selectCountryDestail(omsPriApplyVO);
@@ -285,14 +301,14 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public List<CountStatusResult> selectCountStatus(String type) {
-        if (StringUtils.isBlank(type)){
+        if (StringUtils.isBlank(type)) {
             throw new CustomMessageException("参数错误");
         }
         List<CountStatusResult> countStatusResults = null;
-        if (Constants.oms_business[1].equals(type)){
+        if (Constants.oms_business[1].equals(type)) {
             //因私出国
             countStatusResults = omsPriApplyMapper.selectCountStatus();
-        }else if (Constants.oms_business[2].equals(type)){
+        } else if (Constants.oms_business[2].equals(type)) {
             //延期出国
             countStatusResults = omsPriDelayApplyMapper.selectCountStatus();
         }
@@ -302,39 +318,39 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public String nextCreateFile(String applyId, String type) {
-        if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)){
+        if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)) {
             throw new CustomMessageException("参数错误");
         }
         OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
-        if (Constants.oms_business[1].equals(type)){
+        if (Constants.oms_business[1].equals(type)) {
             //因私
             omsAbroadApproval.setType(Constants.oms_business[1]);
             OmsPriApply omsPriApply = new OmsPriApply();
             omsPriApply.setApplyStatus(Constants.private_business[1]);
             omsPriApply.setId(applyId);
             int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
-            if (updateStatus < 1){
+            if (updateStatus < 1) {
                 throw new CustomMessageException("操作失败");
             }
-        } else if (Constants.oms_business[2].equals(type)){
+        } else if (Constants.oms_business[2].equals(type)) {
             //延期回国
             omsAbroadApproval.setType(Constants.oms_business[2]);
             OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
             omsPriDelayApply.setId(applyId);
             omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
             int updateStatus = omsPriDelayApplyMapper.updateById(omsPriDelayApply);
-            if (updateStatus < 1){
+            if (updateStatus < 1) {
                 throw new CustomMessageException("操作失败");
             }
         }
-        
+
         //查询是否存在数据
         List<OmsAbroadApproval> list = omsAbroadApprovalService.selcetByApplyIdAndStepCode(Constants.private_business[1], applyId);
-        if (list !=null ||list.size() !=0) {
-			for (OmsAbroadApproval abroadApproval : list) {
-				omsAbroadApprovalService.deleteById(abroadApproval.getId());
-			}
-		}
+        if (list != null || list.size() != 0) {
+            for (OmsAbroadApproval abroadApproval : list) {
+                omsAbroadApprovalService.deleteById(abroadApproval.getId());
+            }
+        }
         //添加步骤
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         omsAbroadApproval.setApplyId(applyId);
@@ -355,13 +371,13 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
     public String saveAbroadState(OmsPriApply omsPriApply) {
-        if(StringUtils.isBlank(omsPriApply.getId())){
+        if (StringUtils.isBlank(omsPriApply.getId())) {
             throw new CustomMessageException("参数错误");
         }
-        if (omsPriApplyMapper.selectCount((new QueryWrapper<OmsPriApply>()).eq("ID", omsPriApply.getId())) < 1){
+        if (omsPriApplyMapper.selectCount((new QueryWrapper<OmsPriApply>()).eq("ID", omsPriApply.getId())) < 1) {
             throw new CustomMessageException("该申请不存在");
         }
-        if (omsPriApplyMapper.updateById(omsPriApply) < 1){
+        if (omsPriApplyMapper.updateById(omsPriApply) < 1) {
             throw new CustomMessageException("操作失败");
         }
         //结果比对
@@ -373,11 +389,11 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     public List<Map<String, Object>> countCancelPriApply(OmsPriApplyIPageParam omsPriApplyIPageParam) {
         List<Map<String, Object>> result = new ArrayList<>();
         List<Map<String, Object>> cancelInfor = omsPriApplyMapper.selectCancelInfor(omsPriApplyIPageParam);
-        if (cancelInfor != null && cancelInfor.size() > 0){
+        if (cancelInfor != null && cancelInfor.size() > 0) {
             Map<String, String> params = new HashMap<>();
             int acount = 0, bcount = 0, ccount = 0, dcount = 0;
             int aall = 0, ball = 0, call = 0, dall = 0;
-            for (int i = 0; i<cancelInfor.size(); i++) {
+            for (int i = 0; i < cancelInfor.size(); i++) {
                 Map<String, Object> item = cancelInfor.get(i);
                 params.put("step", "a1");//审核意见之前
                 params.put("procpersonId", (String) item.get("procpersonId"));
@@ -393,9 +409,15 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
                 int d = omsPriApplyMapper.cancelCount(params);
                 item.put("d", d);
                 result.add(item);
-                acount += a; bcount += b; ccount += c; dcount += d;
-                aall += a; ball += b; call += c; dall += d;
-                if (i == cancelInfor.size()-1){
+                acount += a;
+                bcount += b;
+                ccount += c;
+                dcount += d;
+                aall += a;
+                ball += b;
+                call += c;
+                dall += d;
+                if (i == cancelInfor.size() - 1) {
                     //不同插入合计
                     Map<String, Object> count = new HashMap<>();
                     count.put("b0101", item.get("b0101"));
@@ -405,9 +427,12 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
                     count.put("c", ccount);
                     count.put("d", dcount);
                     result.add(count);
-                    acount = 0; bcount = 0; ccount = 0; dcount = 0;
-                }else{
-                    if (!item.get("b0111").equals(cancelInfor.get(i+1).get("b0111"))){
+                    acount = 0;
+                    bcount = 0;
+                    ccount = 0;
+                    dcount = 0;
+                } else {
+                    if (!item.get("b0111").equals(cancelInfor.get(i + 1).get("b0111"))) {
                         //不同插入合计
                         Map<String, Object> count = new HashMap<>();
                         count.put("b0101", item.get("b0101"));
@@ -417,7 +442,10 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
                         count.put("c", ccount);
                         count.put("d", dcount);
                         result.add(count);
-                        acount = 0; bcount = 0; ccount = 0; dcount = 0;
+                        acount = 0;
+                        bcount = 0;
+                        ccount = 0;
+                        dcount = 0;
                     }
                 }
             }
@@ -429,7 +457,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             count.put("c", call);
             count.put("d", dall);
             result.add(count);
-        }else{
+        } else {
             return result;
         }
         return result;
@@ -453,20 +481,20 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     }
 
     @Override
-    public List<PassportResult> selectPassportByCountry(String countries, String procpersonId,String outDate) {
-        if (StringUtils.isBlank(procpersonId)){
+    public List<PassportResult> selectPassportByCountry(String countries, String procpersonId, String outDate) {
+        if (StringUtils.isBlank(procpersonId)) {
             throw new CustomMessageException("请先选择出国人员");
         }
-        if (StringUtils.isBlank(procpersonId)){
+        if (StringUtils.isBlank(procpersonId)) {
             throw new CustomMessageException("请先选择国家");
         }
-        if(outDate==null)
-            outDate="出国（境）";
+        if (outDate == null)
+            outDate = "出国（境）";
         List<PassportResult> result = new ArrayList<>();
         //国外
         String[] country = countries.split(",");
         for (String item : country) {
-            if (!"179".equals(item) && !"73".equals(item) && !"115".equals(item)){
+            if (!"179".equals(item) && !"73".equals(item) && !"115".equals(item)) {
                 PassportResult passportResult = new PassportResult();
                 passportResult.setZjlx(1);
                 result.add(passportResult);
@@ -475,88 +503,88 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         }
         countries += ",";
         countries = "," + countries;
-        if (countries.indexOf(",179,") != -1){
+        if (countries.indexOf(",179,") != -1) {
             //台湾
             PassportResult passportResult = new PassportResult();
             passportResult.setZjlx(4);
             result.add(passportResult);
         }
-        if (countries.indexOf(",73,") != -1 || countries.indexOf(",115,") != -1){
+        if (countries.indexOf(",73,") != -1 || countries.indexOf(",115,") != -1) {
             //香港、澳门
             PassportResult passportResult = new PassportResult();
             passportResult.setZjlx(2);
             result.add(passportResult);
         }
         QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<>();
-        boolean changeCard=false;
+        boolean changeCard = false;
         for (PassportResult item : result) {
             queryWrapper.clear();
             queryWrapper.eq("OMS_ID", procpersonId)
                     .eq("ZJLX", item.getZjlx())
-                    .in("CARD_STATUS", "0","4","5","7");
+                    .in("CARD_STATUS", "0", "4", "5", "7");
             CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
-            if (cfCertificate != null){
+            if (cfCertificate != null) {
                 //半年后是否失效
                 boolean flagSix = (DateUtils.addMonths(new Date(), 6)).after(cfCertificate.getYxqz());
                 //是否失效
                 boolean flag = cfCertificate.getYxqz().before(new Date());
                 item.setNum(cfCertificate.getZjhm());
 
-                if(flag||flagSix) changeCard=true;
+                if (flag || flagSix) changeCard = true;
 
                 //护照
                 if (item.getZjlx() == 1) {
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("可于"+outDate+"前因失效重新申领护照（" + cfCertificate.getZjhm() + "）");
-                    }else if (flagSix){
+                        item.setDesc("可于" + outDate + "前因失效重新申领护照（" + cfCertificate.getZjhm() + "）");
+                    } else if (flagSix) {
                         //换发
                         item.setType(2);
-                        item.setDesc("可于"+outDate+"前换发护照（" + cfCertificate.getZjhm() + "）");
-                    }else{
+                        item.setDesc("可于" + outDate + "前换发护照（" + cfCertificate.getZjhm() + "）");
+                    } else {
                         item.setDesc("");
                     }
-                }else if (item.getZjlx() == 2){
+                } else if (item.getZjlx() == 2) {
                     //港澳
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("可于"+outDate+"前因失效重新申领港澳通行证（" + cfCertificate.getZjhm() + "）");
-                    }else if (flagSix){
+                        item.setDesc("可于" + outDate + "前因失效重新申领港澳通行证（" + cfCertificate.getZjhm() + "）");
+                    } else if (flagSix) {
                         //换发
                         item.setType(2);
-                        item.setDesc("可于"+outDate+"前换发港澳通行证（" + cfCertificate.getZjhm() + "）");
-                    }else{
+                        item.setDesc("可于" + outDate + "前换发港澳通行证（" + cfCertificate.getZjhm() + "）");
+                    } else {
                         item.setDesc("");
                     }
-                }else if (item.getZjlx() == 4){
+                } else if (item.getZjlx() == 4) {
                     //台湾
                     if (flag) {
                         //失效
                         item.setType(3);
-                        item.setDesc("可于"+outDate+"前因失效重新申领台湾通行证（" + cfCertificate.getZjhm() + "）");
-                    }else if (flagSix){
+                        item.setDesc("可于" + outDate + "前因失效重新申领台湾通行证（" + cfCertificate.getZjhm() + "）");
+                    } else if (flagSix) {
                         //换发
                         item.setType(2);
-                        item.setDesc("可于"+outDate+"前换发台湾通行证（" + cfCertificate.getZjhm() + "）");
-                    }else{
+                        item.setDesc("可于" + outDate + "前换发台湾通行证（" + cfCertificate.getZjhm() + "）");
+                    } else {
                         item.setDesc("");
                     }
                 }
-            }else{
+            } else {
                 item.setNum("");
                 //申领新证
                 item.setType(1);
                 //护照
-                if (item.getZjlx() == 1){
-                    item.setDesc("可于"+outDate+"前申领护照");
-                }else if (item.getZjlx() == 2){
+                if (item.getZjlx() == 1) {
+                    item.setDesc("可于" + outDate + "前申领护照");
+                } else if (item.getZjlx() == 2) {
                     //港澳
-                    item.setDesc("可于"+outDate+"前申领港澳通行证");
-                }else if (item.getZjlx() == 4){
+                    item.setDesc("可于" + outDate + "前申领港澳通行证");
+                } else if (item.getZjlx() == 4) {
                     //台湾
-                    item.setDesc("可于"+outDate+"前申领台湾通行证");
+                    item.setDesc("可于" + outDate + "前申领台湾通行证");
                 }
             }
         }
@@ -565,7 +593,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public OmsCreateFile printApproval(String applyId) {
-        if(StringUtils.isBlank(applyId)){
+        if (StringUtils.isBlank(applyId)) {
             throw new CustomMessageException("参数错误");
         }
         return omsCreateFileMapper.priApplyPrintApproval(applyId);
@@ -573,24 +601,25 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     /**
      * 申请出国国家详情
+     *
      * @param omsPriApplyVO
      */
-    private void selectCountryDestail(OmsPriApplyVO omsPriApplyVO){
+    private void selectCountryDestail(OmsPriApplyVO omsPriApplyVO) {
         //国家列表
         QueryWrapper<Country> countryQueryWrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(omsPriApplyVO.getGoCountry())){
+        if (!StringUtils.isBlank(omsPriApplyVO.getGoCountry())) {
             countryQueryWrapper.in("id", omsPriApplyVO.getGoCountry().split(","));
             List<Country> countries = countryMapper.selectList(countryQueryWrapper);
             omsPriApplyVO.setCountries(countries);
         }
         //实际去往国家
-        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())){
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealGoCountry())) {
             countryQueryWrapper.clear();
             countryQueryWrapper.in("ID", omsPriApplyVO.getRealGoCountry().split(","));
             omsPriApplyVO.setRealCountries(countryMapper.selectList(countryQueryWrapper));
         }
         //实际途径国家
-        if (!StringUtils.isBlank(omsPriApplyVO.getRealPassCountry())){
+        if (!StringUtils.isBlank(omsPriApplyVO.getRealPassCountry())) {
             countryQueryWrapper.clear();
             countryQueryWrapper.in("ID", omsPriApplyVO.getRealPassCountry().split(","));
             omsPriApplyVO.setRealPassCountries(countryMapper.selectList(countryQueryWrapper));

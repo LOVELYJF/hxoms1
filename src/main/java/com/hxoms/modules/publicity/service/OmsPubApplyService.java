@@ -1,6 +1,7 @@
 package com.hxoms.modules.publicity.service;
 
 import com.github.pagehelper.PageInfo;
+import com.hxoms.common.utils.Result;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 
@@ -31,7 +32,7 @@ public interface OmsPubApplyService {
      * @author sunqian
      * @date 2020/4/26 17:22
      */
-    String insertPubApply(OmsPubApply omsPubApply);
+    Result insertPubApply(OmsPubApply omsPubApply);
 
     /**
      *

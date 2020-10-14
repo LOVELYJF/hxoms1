@@ -824,7 +824,7 @@
 		cc.QFRQ AS qfrq,
 		cc.CSDD AS csdd,
 		b.B0100 AS b0100,
-		getTime
+        DATE_FORMAT(getTime,'%Y-%m-%d') AS getTime
 		FROM
 		cf_certificate cc
 		JOIN oms_reg_procpersoninfo org ON cc.OMS_ID = org.ID
