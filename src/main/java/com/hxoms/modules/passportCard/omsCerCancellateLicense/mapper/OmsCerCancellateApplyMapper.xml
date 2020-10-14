@@ -23,8 +23,8 @@
         b.b0100,
         b.b0101
       from oms_cer_cancellate_apply occa
-      join oms_reg_procpersoninfo org on occa.OMS_ID = org.ID
-      join b01 b on b.b0100 = org.RF_B0000
+      left join oms_reg_procpersoninfo org on occa.OMS_ID = org.ID
+      left join b01 b on b.b0100 = org.RF_B0000
       where occa.ID=#{applyId}
 
     </select>
