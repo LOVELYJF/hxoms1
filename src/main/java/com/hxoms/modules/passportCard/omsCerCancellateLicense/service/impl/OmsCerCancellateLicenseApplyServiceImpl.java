@@ -117,7 +117,7 @@ public class OmsCerCancellateLicenseApplyServiceImpl implements OmsCerCancellate
 		omsCerCancellateApply.setOmsId(list.get(0).getOmsId());
 		omsCerCancellateApply.setApplyCerInfo(applyCerInfo);
 		omsCerCancellateApply.setAppendPlace(list.get(0).getAppendPlace().equals(IsDomesticEnum.DOMESTIC_ENUM.getCode()) ? "国内" : "国外");
-		omsCerCancellateApply.setZxyy(Constants.CANCELL_REASON_NAME[Integer.parseInt(list.get(0).getZxyy())]);
+		omsCerCancellateApply.setZxyy(Constants.CANCELL_REASON_NAME[Integer.parseInt(list.get(0).getZxyy()) - 1]);
 		omsCerCancellateApply.setCreateTime(new Date());
 		omsCerCancellateApply.setCreateUser(UserInfoUtil.getUserInfo().getId());
 		int count = omsCerCancellateApplyMapper.insert(omsCerCancellateApply);

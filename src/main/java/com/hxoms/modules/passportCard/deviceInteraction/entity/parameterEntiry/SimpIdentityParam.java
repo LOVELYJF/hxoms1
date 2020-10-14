@@ -1,10 +1,10 @@
 package com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry;
 
+import com.hxoms.common.util.StringUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,8 +25,7 @@ public class SimpIdentityParam {
     @ApiModelProperty(value="身份证号",required = true)
     private String idNo;
     //有效期至
-    @NotNull(message = "有效期至不能为空")
-    @ApiModelProperty(value="有效期至",required = true)
+    @ApiModelProperty(value="有效期至")
     private Date yxqz;
 
     public String getName() {
@@ -51,7 +50,7 @@ public class SimpIdentityParam {
 
     public void setYxqz(String yxqz) throws ParseException {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        this.yxqz = simpleDateFormat.parse(yxqz);
+        this.yxqz = StringUtils.isBlank(yxqz)?null:simpleDateFormat.parse(yxqz);
     }
 
 }

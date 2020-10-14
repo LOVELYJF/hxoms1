@@ -311,6 +311,7 @@ public class OmsSmrPersonInfoServiceImpl extends ServiceImpl<OmsSmrPersonInfoMap
                         smrOldInfoVO.getFinishDate().before(new Date())) continue;
 
                 //有确认过的涉密等级，以确认过的为准
+                if(smrOldInfoVO.getSecretRelatedLevel()==null) continue;
                 int secretLevel = Integer.parseInt(smrOldInfoVO.getSecretRelatedLevel());
                 if (StringUilt.stringIsNullOrEmpty(smrOldInfoVO.getQrSecretRelatedLevel()) == false)
                     secretLevel = Integer.parseInt(smrOldInfoVO.getQrSecretRelatedLevel());

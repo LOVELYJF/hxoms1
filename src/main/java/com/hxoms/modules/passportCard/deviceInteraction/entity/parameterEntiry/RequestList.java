@@ -19,6 +19,10 @@ public class RequestList<T> {
     @ApiModelProperty(value = "数据集合信息",required = true)
     private List<T> list;
 
+    public RequestList(List<T> list) {
+        this.list = list;
+    }
+
     public List<T> getList() {
         return list;
     }

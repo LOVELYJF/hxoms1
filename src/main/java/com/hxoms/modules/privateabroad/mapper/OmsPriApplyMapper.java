@@ -91,4 +91,14 @@ public interface OmsPriApplyMapper extends BaseMapper<OmsPriApply>{
      * @Date: 2020/9/9 16:42
      */
     List<OmsPriApplyVO> selectPriListBy3Year(@Param("a0100") String a0100);
+
+    /**
+    * @description:检查登记备案人员在该出国时间是否存在出国境申请
+    * @author:杨波
+    * @date:2020-10-13
+    *  * @param 登记备案人员ID
+     *  cgsj 出国境时间
+    * @return:
+    **/
+    List<OmsPriApply> selectExistsAbroad(@Param("id") String id,@Param("cgsj") String cgsj);
 }

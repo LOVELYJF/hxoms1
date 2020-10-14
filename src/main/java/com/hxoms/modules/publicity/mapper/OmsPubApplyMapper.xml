@@ -433,7 +433,7 @@
         select concat(r.SURNAME,r.name) as "NAME",r.SEX,r.BIRTH_DATE_GB,b.B0101
         ,o.* from oms_pub_apply o inner join oms_reg_procpersoninfo r
         on o.PROCPERSON_ID=r.ID
-        inner join b01 b on o.b0100=b.b0100
+        left join b01 b on o.b0100=b.b0100
         where o.id=#{id}
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO" parameterType="com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam">
@@ -1045,4 +1045,11 @@
         where
         PWH = #{yPWH,jdbcType=VARCHAR}
     </update>
+    <select id="selectExistsAbroad" resultMap="BaseResultMap">
+        select a.ID,'因公' as BZ from oms_pub_apply a
+        where a.SQZT&lt;31 AND a.PROCPERSON_ID=#{id} and a.CGSJ&lt;=#{cgsj} and a.HGSJ&gt;#{cgsj}
+        UNION
+        select a.ID,'因私' as BZ from oms_pri_apply a
+        where a.APPLY_STATUS&lt;31 AND a.PROCPERSON_ID=#{id} and a.ABROAD_TIME&lt;=#{cgsj} and a.RETURN_TIME&gt;=#{cgsj}
+    </select>
 </mapper>

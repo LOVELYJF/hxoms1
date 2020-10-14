@@ -228,6 +228,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
                 //按证件解除催缴
                 //0:手动解除,1;已上缴,2:未上缴,3:自动解除
                 cfCertificateCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
+                cfCertificateCollection.setRealReturnDate(date);
                 cfCertificateCollection.setUpdator(userInfo.getId());
                 cfCertificateCollection.setUpdatetime(date);
                 cfCertificateCollectionMapper.updateById(cfCertificateCollection);
@@ -239,6 +240,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
         //按人员解除催缴证件类型和证件号码为空的催缴任务
         if(!isExist&&cfCerCollection!=null){
             cfCerCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
+            cfCerCollection.setRealReturnDate(date);
             cfCerCollection.setUpdator(userInfo.getId());
             cfCerCollection.setUpdatetime(date);
             cfCertificateCollectionMapper.updateById(cfCerCollection);
