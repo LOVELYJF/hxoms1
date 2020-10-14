@@ -57,8 +57,8 @@
 			org.RF_B0000 as rfB0000
 		from
 			oms_cer_inventory oci
-		join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
-		join cf_certificate cc on cc.ZJHM = oci.ZJHM
+		left join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
+		left join cf_certificate cc on cc.ZJHM = oci.ZJHM
 		<where>
 			<trim suffixOverrides="and">
 				<if test="cabinetNum != null">oci.CABINET_NUM=#{cabinetNum} and </if>
@@ -115,7 +115,7 @@
 			org.post as post
 		from
 			oms_cer_inventory oci
-		join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
+		left join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
