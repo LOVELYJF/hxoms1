@@ -467,6 +467,7 @@
     INNER JOIN cf_certificate c ON b.cer_id = c.id
     WHERE
         a.qr_code_id = #{qrCodeId}
+    AND c.CABINET_NUM = #{deviceSn}
     AND b.get_status = '0'
   </select>
   <select id="selectUserId" resultType="java.lang.String">

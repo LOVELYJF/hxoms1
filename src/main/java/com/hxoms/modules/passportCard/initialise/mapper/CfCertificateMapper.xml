@@ -668,7 +668,8 @@
 		POLITICAL_AFFINAME politicalAffiname,
 		(select item_name from sys_dict_item where dict_code='ZZZT' and item_code=INCUMBENCY_STATUS) incumbencyStatus,
 		WORK_UNIT workUnit,
-		POST post
+		POST post,
+        LICENCE_IDENTITY licenceIdentity
 		FROM
 		oms_reg_procpersoninfo
 		<choose>

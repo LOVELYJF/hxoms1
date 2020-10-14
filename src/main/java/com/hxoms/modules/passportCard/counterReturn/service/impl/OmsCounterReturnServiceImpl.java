@@ -5,8 +5,6 @@ import com.hxoms.common.util.PingYinUtil;
 import com.hxoms.common.utils.UUIDGenerator;
 import com.hxoms.common.utils.UserInfo;
 import com.hxoms.common.utils.UserInfoUtil;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
@@ -31,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -53,9 +50,6 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
 
     @Autowired
     private CfCertificateCollectionMapper cfCertificateCollectionMapper;
-
-    @Autowired
-    private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
 
     @Autowired
     private OmsCerExitEntryRepertoryMapper omsCerExitEntryRepertoryMapper;
@@ -141,7 +135,7 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
 
     /**
      * @Desc: 1、归还处理：①修改证照状态 ② 将柜台号置为已使用 ③解除催缴 ④保存入库记录
-     *        2、新增处理：①新增证照 ② 将柜台号置为已使用 ③解除催缴 ④修改人员的证件持有情况
+     *        2、新增处理：①新增证照 ② 将柜台号置为已使用 ③解除催缴
      * @Author: wangyunquan
      * @Param: [cfCertificate]
      * @Return: void
@@ -200,15 +194,6 @@ public class OmsCounterReturnServiceImpl implements OmsCounterReturnService {
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
                 throw new CustomMessageException("保存失败！");
-            //修改人员证件持有情况
-            OmsRegProcpersoninfo regProcpersoninfo = omsRegProcpersoninfoMapper.selectById(returnCerInfo.getOmsId());
-            OmsRegProcpersoninfo omsRegProcper=new OmsRegProcpersoninfo();
-            omsRegProcper.setId(regProcpersoninfo.getId());
-            BigDecimal bigDecimal1=new BigDecimal(regProcpersoninfo.getLicenceIdentity());
-            BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
-            omsRegProcper.setLicenceIdentity(bigDecimal1.add(bigDecimal2).intValue());
-            if(omsRegProcpersoninfoMapper.updateById(omsRegProcper)==0)
-                throw new CustomMessageException("人员的证件持有情况更新失败！");
         }
         //将柜台号码置为已使用
         if(!StringUtils.isBlank(returnCerInfo.getCounterNumId())){

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -156,7 +155,7 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
     }
 
     /**
-     * @Desc: 对新录入证件处理，1、保存 2、修改证件持有情况 3、解除催缴任务
+     * @Desc: 对新录入证件处理，1、保存  2、解除催缴任务
      * @Author: wangyunquan
      * @Param: [userInfo, cfCertificate, omsRegProcpersoninfo]
      * @Return: void
@@ -175,14 +174,6 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
                 throw new CustomMessageException("保存失败！");
-            //修改人员证件持有情况
-            OmsRegProcpersoninfo omsRegProcper=new OmsRegProcpersoninfo();
-            omsRegProcper.setId(omsRegProcpersoninfo.getId());
-            BigDecimal bigDecimal1=new BigDecimal(omsRegProcpersoninfo.getLicenceIdentity());
-            BigDecimal bigDecimal2=new BigDecimal(cfCertificate.getZjlx());
-            omsRegProcper.setLicenceIdentity(bigDecimal1.add(bigDecimal2).intValue());
-            if(omsRegProcpersoninfoMapper.updateById(omsRegProcper)==0)
-                throw new CustomMessageException("人员的证件持有情况更新失败！");
             //取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
             List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
             boolean isExist=false;
