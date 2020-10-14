@@ -5,11 +5,12 @@
 	<resultMap id="ItemListResultMap" type="com.hxoms.modules.leaderSupervision.vo.JiWeiNoPassVo">
 		<id column="sid" jdbcType="VARCHAR" property="sid" />
 		<result column="filename" jdbcType="VARCHAR" property="filename" />
-		<collection property="items" ofType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateItems">
-			<id column="id" jdbcType="VARCHAR" property="id" />
-			<result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
+		<result column="clshsftgOpinion" jdbcType="VARCHAR" property="clshsftgOpinion" />
+
+		<collection property="items" javaType="java.util.ArrayList" ofType="com.hxoms.modules.leaderSupervision.vo.OmsSelfestimateItemsVo">
+
 			<result column="CHECK_ITEM" jdbcType="VARCHAR" property="checkItem" />
-			<result column="ENABLE" jdbcType="INTEGER" property="enable" />
+			<result column="checkResult" jdbcType="INTEGER" property="checkResult" />
 		</collection>
 	</resultMap>
 
@@ -98,11 +99,28 @@
 
 	<!--自评信息维护列表-->
 	<select id="selectItemsList" parameterType="java.util.Map" resultMap="ItemListResultMap">
-		select osf.*,osi.ID as itemID,osi.SELFFILE_ID,osi.CHECK_ITEM,osi.ENABLE
-		from oms_self_file osf left join oms_selfestimate_items osi on osf.ID = osi.SELFFILE_ID
-		where 1=1
-		  and osf.CHECKFILE_ID in
-			  (select FILE_ID from oms_create_file where TABLE_CODE = #{type} and APPLY_ID = #{applyId})
+
+
+     select
+			osf.id as sid,
+			osf.FILENAME as fileName,
+			osi.CHECK_ITEM,
+			osr.check_Result as checkResult,
+			(select temp.clshsftg_Opinion as clshsftgOpinion from (
+
+																  select clshsftg_Opinion,id from oms_pub_apply
+
+																  union ALL
+
+																  select clshsftg_Opinion, id  from oms_pri_apply
+
+																  union ALL
+																  select clshsftg_Opinion,id from oms_pri_delay_apply
+																  )temp where  id=#{applyId}) as clshsftgOpinion
+      from oms_selfestimate_resultitem osr
+							 left join oms_selfestimate_items osi on osr.CHECK_ID =osi.id
+							 left join oms_self_file osf on osi.SELFFILE_ID =osf.id
+		where osr.APPLY_ID=#{applyId} and osr.PERSON_TYPE ='2'
 	</select>
 
 

@@ -94,10 +94,10 @@ public class LeaderQueryconditions {
     /**
      *业务 处理 材料审核 的 (最后一个) 下一步 触发的事件
      * **/
-    @PostMapping("/selectLeaderBatchStatus")
-    public Result materialReviewNextStep(String applyId,String tableCode){
+    @GetMapping("/materialReviewNextStep")
+    public Result materialReviewNextStep(String applyId,String tableCode,String clshsftgOpinion){
 
-        leaderDetailProcessingService.materialReviewNextStep(applyId,tableCode);
+        leaderDetailProcessingService.materialReviewNextStep(applyId,tableCode,clshsftgOpinion);
 
         return Result.success();
 

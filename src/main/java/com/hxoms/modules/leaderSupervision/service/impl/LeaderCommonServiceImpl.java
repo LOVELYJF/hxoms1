@@ -612,6 +612,8 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
     @Override
     public void updateBussinessByagainAskFor(String bussinessType, String applyId) {
 
+
+
         String realbussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(bussinessType);
         String updateSql = "update "+realbussinessType;
         // 征求纪委 意见 时间 ，  选中导出的 就是 征求 过的 所以 该 字段 值 置为 1

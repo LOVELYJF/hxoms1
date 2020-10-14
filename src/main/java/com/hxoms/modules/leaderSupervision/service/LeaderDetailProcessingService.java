@@ -51,7 +51,7 @@ public interface LeaderDetailProcessingService {
      *业务 处理 材料审核 的 (最后一个) 下一步 触发的事件
      * **/
 
-    void materialReviewNextStep(String applyId,String tableCode);
+    void materialReviewNextStep(String applyId,String tableCode,String clshsftgOpinion);
 
     /**
      * 纪委意见 按批次上传附件

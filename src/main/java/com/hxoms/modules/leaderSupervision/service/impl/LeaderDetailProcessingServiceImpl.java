@@ -137,9 +137,10 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     // 业务 处理 材料审核 的 下一步 触发的事件
-    public void materialReviewNextStep(String applyId,String tableCode){
+    public void materialReviewNextStep(String applyId,String tableCode,String clshsftgOpinion){
 
-     // TODO 保存自评
+     // 保存材料审核结论
+
 
     //修改 业务流程 材料审核 以及 修改流程状态  查询的 时候 少了个 自评 的 来源 经办人，还是 干部监督处
       List<Map> lists =  leaderCommonMapper.selectMaterialReview(applyId);
@@ -153,11 +154,11 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
        // 通过
      }else if(lists.size()==1 &&lists.get(0).get("result")=="1"){
 
-         updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"1","clshsftg");
+         updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"1","clshsftg",clshsftgOpinion);
 
      }else{
        // 不通过
-         updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"2","clshsftg");
+         updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"2","clshsftg",clshsftgOpinion);
 
      }
 
@@ -286,14 +287,14 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     // TODO  修改业务流程 记录 审批 意见
-    public String getUpdateRecordOpinionSql(String busessId,String bussinesType,String opinion,String recordFlow){
+    public String getUpdateRecordOpinionSql(String busessId,String bussinesType,String opinion,String recordFlow,String clshsftgOpinion){
 
 
         String updateSql = "update "+bussinesType;
 
         String setSql = " set  " ;
 
-        String whereCondition = " where id = " + busessId;
+        String whereCondition = " where id = '" + busessId+"'";
 
         String realOpinion ="";
 
@@ -301,7 +302,14 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
         if("clshsftg".equals(recordFlow)){   // 材料审核是否通过
 
-            setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion ;
+            if(!StringUilt.stringIsNullOrEmpty(clshsftgOpinion)){
+
+                setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion +", clshsftg_Opinion= '"+clshsftgOpinion+"'";
+
+            }else{
+                setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion ;
+
+            }
 
             // FINAL_CONCLUSION
 
@@ -890,13 +898,13 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         bussinessTypeAndIdVo.setBussinessName(type);
         bussinessTypeAndIdVosNum1.add(bussinessTypeAndIdVo);
 
-//        String pdfFilePath =   getPdfByHtmlByChenpiDan(omsCreateFile);
+        String pdfFilePath =   getPdfByHtmlByChenpiDan(omsCreateFile);
 
         //由于在某种未知的 情况 会产生多个备案表 保留最新的
 
-//        LeaderSupervisionUntil.deleteFileById(omsCreateFile.getApplyId()+userName+pdfName+".pdf",attachmentPath+File.separator+"static");
-//
-//        saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
+      //  LeaderSupervisionUntil.deleteFileById(omsCreateFile.getApplyId()+userName+pdfName+".pdf",attachmentPath+File.separator+"static");
+
+        saveAttachmentByPutonRecord(omsCreateFile.getApplyId(),pdfFilePath,Constants.leader_business[Constants.leader_business.length-2],Constants.leader_businessName[Constants.leader_businessName.length-2]);
 
         //  (1) 保存 审批记录(通过)
         leaderCommonService.saveAbroadApprovalByBussinessId(bussinessTypeAndIdVosNum1,pass, Constants.leader_businessName[3], Constants.leader_business[3],null);
@@ -915,34 +923,34 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
 
-//    private String  getPdfByHtmlByChenpiDan(OmsCreateFile omsCreateFile) {
-//        //解析 html img 的src 标签
-//
-//
-//        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
-//
-//        // 要转换的 html
-//        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
-//
-//        String newHtmlStr = htmlstr.replaceAll("<br>","<br/>");
-//        // 生成 pdf的路径 +名称
-//        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-//        Calendar calendar = Calendar.getInstance();
-//        String fileName = df.format(calendar.getTime())+omsCreateFile.getApplyId() +userName+pdfName+".pdf" ;
-//        log.info("文件的文件名为:" + fileName);
-//
-//
-//        String filePath = attachmentPath+File.separator+"static"+File.separator;
-//        try {
-//            FileTypeConvertUtil.html2pdf(newHtmlStr,filePath+fileName);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return filePath+fileName;
-//
-//    }
-//
+    private String  getPdfByHtmlByChenpiDan(OmsCreateFile omsCreateFile) {
+        //解析 html img 的src 标签
+
+
+        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
+
+        // 要转换的 html
+        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
+
+        String newHtmlStr = htmlstr.replaceAll("<br>","<br/>");
+        // 生成 pdf的路径 +名称
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar calendar = Calendar.getInstance();
+        String fileName = df.format(calendar.getTime())+omsCreateFile.getApplyId() +pdfName+".pdf" ;
+        log.info("文件的文件名为:" + fileName);
+
+
+        String filePath = attachmentPath+File.separator+"static"+File.separator;
+        try {
+            FileTypeConvertUtil.html2pdf(newHtmlStr,filePath+fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return filePath+fileName;
+
+    }
+
 
 
 
