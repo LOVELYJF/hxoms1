@@ -296,6 +296,10 @@ public class OmsPriApply {
     @ApiModelProperty(value="最终结论")
     private String zzjl;
 
+    @ColumnAnnotation(FieldName = "clshsftg_Opinion",   FieldDescription="材料审核审批结论")
+    @ApiModelProperty(value="材料审核审批结论")
+    private String clshsftgOpinion;
+
     public String getId() {
         return id;
     }
@@ -806,5 +810,13 @@ public class OmsPriApply {
 
     public void setZzjl(String zzjl) {
         this.zzjl = zzjl == null ? null : zzjl.trim();
+    }
+
+    public String getClshsftgOpinion() {
+        return clshsftgOpinion;
+    }
+
+    public void setClshsftgOpinion(String clshsftgOpinion) {
+        this.clshsftgOpinion = clshsftgOpinion;
     }
 }

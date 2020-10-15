@@ -4,12 +4,14 @@ package com.hxoms.modules.omsregcadre.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
+import com.hxoms.modules.omsregcadre.entity.CancellationLetter;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
 import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapproval;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 
 import java.text.ParseException;
+import java.util.List;
 
 public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
 
@@ -28,4 +30,10 @@ public interface OmsRegRevokeApplyService extends IService<OmsRegRevokeapply> {
     Result updateApplyStatusByCLD(String status,String applyIds);
 
     Object deleteRevokeRegPerson(String id);
+
+    /**
+     * 生成撤销函
+     * **/
+
+    List<CancellationLetter> createCancellationLetter(List<CancellationLetter> lists);
 }

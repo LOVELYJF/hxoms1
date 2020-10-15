@@ -49,7 +49,7 @@
 			org.SEX as sex
 		from
 			oms_cer_apply_lending_license ocall
-		join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
+		left join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="sqjczt != null">ocall.sqjczt=#{sqjczt} and </if>
@@ -90,8 +90,8 @@
 			cc.CSRQ as csrq		#出生日期
 		from
 			oms_cer_apply_lending_license ocall
-		join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
-		join cf_certificate cc on cc.ZJHM = ocall.ZJHM
+		left join oms_reg_procpersoninfo org on ocall.OMS_ID = org.ID
+		left join cf_certificate cc on cc.ZJHM = ocall.ZJHM
 		<where>
 			<trim suffixOverrides="and">
 				<if test="1 == 1">ocall.IS_COMMIT='1' and </if>

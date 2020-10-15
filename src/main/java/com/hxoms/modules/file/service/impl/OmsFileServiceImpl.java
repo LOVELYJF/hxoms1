@@ -112,6 +112,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 //            throw new CustomMessageException("数据异常");
 //        }
         QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
+        List<OmsFile> omsFiles1 = new ArrayList<>();
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("B0100", userInfo.getOrgId())
                 .in("FILE_TYPE",fileType)
@@ -139,29 +140,29 @@ public class OmsFileServiceImpl implements OmsFileService {
                         ids.add(f.getFileId());
                     }
                     for (OmsFile omsfile : omsFileSystem) {
-                        if (!ids.contains(omsfile.getId())) {
-                            omsfile.setFileId(omsfile.getId());
-                            omsfile.setId(UUIDGenerator.getPrimaryKey());
-                            omsfile.setB0100(userInfo.getOrgId());
-                            omsfile.setCreateUser(userInfo.getId());
-                            omsfile.setCreateTime(new Date());
-                            int count = omsFileMapper.insert(omsfile);
-                            if (count < 1) {
-                                throw new CustomMessageException("插入新的文件信息出错");
+                        if (omsfile.getIsTymb() == 0){
+                            if (!ids.contains(omsfile.getId())) {
+                                queryWrapper.clear();
+                                queryWrapper.eq("TABLE_CODE", tableCode)
+                                        .eq("B0100",userInfo.getOrgId())
+                                        .eq("FILE_ID",omsfile.getId())
+                                        .in("FILE_TYPE",fileType)
+                                        .orderByAsc("SORT_ID");
+                                OmsFile f = omsFileMapper.selectOne(queryWrapper);
+                                if (f == null){
+                                    omsfile.setFileId(omsfile.getId());
+                                    omsfile.setId(UUIDGenerator.getPrimaryKey());
+                                    omsfile.setB0100(userInfo.getOrgId());
+                                    omsfile.setCreateUser(userInfo.getId());
+                                    omsfile.setCreateTime(new Date());
+                                    omsfile.setIsTymb(0);
+                                    int count = omsFileMapper.insert(omsfile);
+                                    if (count < 1) {
+                                        throw new CustomMessageException("插入新的文件信息出错");
+                                    }
+                                }
                             }
                         }
-                    }
-                }else {
-                    for (OmsFile omsfile : omsFileSystem) {
-                            omsfile.setFileId(omsfile.getId());
-                            omsfile.setId(UUIDGenerator.getPrimaryKey());
-                            omsfile.setB0100(userInfo.getOrgId());
-                            omsfile.setCreateUser(userInfo.getId());
-                            omsfile.setCreateTime(new Date());
-                            int count = omsFileMapper.insert(omsfile);
-                            if (count < 1) {
-                                throw new CustomMessageException("插入新的文件信息出错");
-                            }
                     }
                 }
 //                //复制文件
@@ -173,6 +174,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 //                    omsFileUtils.copyFolder("yanqihuiguo", "yanqihuiguo" + File.separator + userInfo.getOrgId());
 //                }
             }
+
             //重新查询
             queryWrapper.clear();
             queryWrapper.eq("TABLE_CODE", tableCode)
@@ -180,6 +182,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                     .in("FILE_TYPE",fileType)
                     .orderByAsc("SORT_ID");
             omsFiles = omsFileMapper.selectList(queryWrapper);
+
         }
         //生成文件
         if (!StringUtils.isBlank(applyId)){
@@ -187,9 +190,43 @@ public class OmsFileServiceImpl implements OmsFileService {
             createFile.eq("TABLE_CODE", tableCode)
                     .eq("APPLY_ID", applyId);
             int count = omsCreateFileMapper.selectCount(createFile);
+            //判断是否使用系统通用模板
+
+            queryWrapper.clear();
+            queryWrapper.eq("TABLE_CODE", tableCode)
+                    .eq("IS_TYMB",1)
+                    .and(wrapper->wrapper.eq("B0100", "")
+                            .or()
+                            .isNull("B0100"))
+                    .orderByAsc("SORT_ID");
+            List<OmsFile> omsFileSystem1 = omsFileMapper.selectList(queryWrapper);
+            if (omsFileSystem1 != null && omsFileSystem1.size()>0){
+                ArrayList<String> fileIDs = new ArrayList<>();
+                for (OmsFile f:omsFileSystem1) {
+                    fileIDs.add(f.getId());
+                    omsFiles1.add(f);
+                }
+                if (fileIDs != null && fileIDs.size()>0){
+                    for (OmsFile f:omsFileSystem) {
+                        if (!fileIDs.contains(f.getId())){
+                            queryWrapper.clear();
+                            queryWrapper.eq("TABLE_CODE", tableCode)
+                                    .eq("B0100",userInfo.getOrgId())
+                                    .eq("FILE_ID",f.getFileId())
+                                    .in("FILE_TYPE",fileType)
+                                    .orderByAsc("SORT_ID");
+                            OmsFile omsFile = omsFileMapper.selectOne(queryWrapper);
+                            omsFiles1.add(omsFile);
+                        }
+                    }
+                }
+
+            }else {
+                omsFiles1 = omsFiles;
+            }
             //没有生成时生成文件
             if (count < 1 ){
-                for (OmsFile omsFile : omsFiles){
+                for (OmsFile omsFile : omsFiles1){
                     OmsCreateFile omsCreateFile = new OmsCreateFile();
                     omsCreateFile.setFileId(omsFile.getId());
                     omsCreateFile.setApplyId(applyId);
@@ -217,7 +254,7 @@ public class OmsFileServiceImpl implements OmsFileService {
                 }
             }
         }
-        return omsFiles;
+        return omsFiles1;
     }
 
     private String getFrontContent(String applyId, String fileName) {
@@ -353,16 +390,28 @@ public class OmsFileServiceImpl implements OmsFileService {
         //查询文件
         QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
         queryWrapperFile.eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
-                .eq("B0100", userInfo.getOrgId())
                 .eq("ID", abroadFileDestailParams.getFileId());
         OmsFile omsFile = omsFileMapper.selectOne(queryWrapperFile);
+        if (omsFile.getIsTymb() == 0){
+            queryWrapperFile.clear();
+            queryWrapperFile.eq("TABLE_CODE", abroadFileDestailParams.getTableCode())
+                    .eq("B0100", userInfo.getOrgId())
+                    .eq("ID", abroadFileDestailParams.getFileId());
+            omsFile = omsFileMapper.selectOne(queryWrapperFile);
+        }
         if (omsFile == null){
             throw new CustomMessageException("文件不存在");
         }
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("TYPE", abroadFileDestailParams.getTableCode())
-                .eq("FILE_ID", omsFile.getFileId());
+        if (omsFile.getIsTymb() == 0){
+            queryWrapperKeyword.eq("TYPE", abroadFileDestailParams.getTableCode())
+                    .eq("FILE_ID", omsFile.getFileId());
+        }else if (omsFile.getIsTymb() == 1){
+            queryWrapperKeyword.eq("TYPE", abroadFileDestailParams.getTableCode())
+                    .eq("FILE_ID", omsFile.getId());
+        }
+
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         if ("1".equals(abroadFileDestailParams.getIsEdit())){
@@ -412,21 +461,21 @@ public class OmsFileServiceImpl implements OmsFileService {
         Map<String, Object> result = new HashMap<>();
 
         /** 因公出国境 */
-        ArrayList<OmsTYFileVo> oms_pub_apply = new ArrayList<>();
+        List<OmsFile> oms_pub_apply = new ArrayList<>();
         /** 因私出国境 */
-        ArrayList<OmsTYFileVo> oms_pri_apply = new ArrayList<>();
+        List<OmsFile> oms_pri_apply = new ArrayList<>();
         /** 延期回国 */
-        ArrayList<OmsTYFileVo> oms_pri_delay_apply = new ArrayList<>();
+        List<OmsFile> oms_pri_delay_apply = new ArrayList<>();
         /** 注销证照 */
-        ArrayList<OmsTYFileVo> oms_cer_cancellate = new ArrayList<>();
+        List<OmsFile> oms_cer_cancellate = new ArrayList<>();
         /** 赴台批件 */
-        ArrayList<OmsTYFileVo> oms_ftpj_apply = new ArrayList<>();
+        List<OmsFile> oms_ftpj_apply = new ArrayList<>();
         /** 借出证照 */
-        ArrayList<OmsTYFileVo> oms_cer_cancellate_lending = new ArrayList<>();
+        List<OmsFile> oms_cer_cancellate_lending = new ArrayList<>();
         /** 证照催缴 */
-        ArrayList<OmsTYFileVo> oms_cer_certificateCollect_cpd = new ArrayList<>();
+        List<OmsFile> oms_cer_certificateCollect_cpd = new ArrayList<>();
         /** 撤销登记备案 */
-        ArrayList<OmsTYFileVo> oms_reg_revokeapply_hj = new ArrayList<>();
+        List<OmsFile> oms_reg_revokeapply_hj = new ArrayList<>();
         /** */
         //查询文件
         QueryWrapper<OmsFile> queryWrapperFile = new QueryWrapper<>();
@@ -437,92 +486,28 @@ public class OmsFileServiceImpl implements OmsFileService {
                 String tableCode = file.getTableCode();
                 //因公出国境
                 if ("oms_pub_apply".equals(tableCode) || "oms_pub_apply_cadres".equals(tableCode) || "oms_pub_apply_cadres_putoncreate".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_pub_apply.add(omsTYFileVo);
+                    oms_pub_apply.add(file);
                 //因私出国境
                 }else if ("oms_pri_apply".equals(tableCode) || "oms_pri_apply_cadres".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_pri_apply.add(omsTYFileVo);
+                    oms_pri_apply.add(file);
                 //延期回国
                 }else if ("oms_pri_delay_apply".equals(tableCode) || "oms_pri_delay_apply_cadres".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_pri_delay_apply.add(omsTYFileVo);
+                    oms_pri_delay_apply.add(file);
                 //注销证照
                 }else if ("oms_cer_cancellate".equals(tableCode) || "oms_cer_cancellate_approval".equals(tableCode) || "oms_cer_cancellate_letter".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_cer_cancellate.add(omsTYFileVo);
+                    oms_cer_cancellate.add(file);
                 //赴台批件
                 }else if ("oms_ftpj_apply".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_ftpj_apply.add(omsTYFileVo);
+                    oms_ftpj_apply.add(file);
                 //借出证照
                 }else if ("oms_cer_cancellate_lending".equals(tableCode) || "oms_cer_cancellate_bill".equals(tableCode) || "oms_cer_cancellate_request".equals(tableCode) || "oms_cer_cancellate".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_cer_cancellate_lending.add(omsTYFileVo);
+                    oms_cer_cancellate_lending.add(file);
                 //证照催缴
                 }else if("oms_cer_certificateCollect_cpd".equals(tableCode) || "oms_cer_certificateCollect_bzh".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_cer_certificateCollect_cpd.add(omsTYFileVo);
+                    oms_cer_certificateCollect_cpd.add(file);
                 //撤销登记备案
                 }else if ("oms_reg_revokeapply_hj".equals(tableCode)){
-                    OmsTYFileVo omsTYFileVo = new OmsTYFileVo();
-                    //查询关键字
-                    QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-                    queryWrapperKeyword.eq("TYPE", tableCode)
-                            .eq("FILE_ID", file.getId());
-                    List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
-                    omsTYFileVo.setOmsReplaceKeywordList(omsReplaceKeywordList);
-                    omsTYFileVo.setFile(file);
-                    oms_reg_revokeapply_hj.add(omsTYFileVo);
+                    oms_reg_revokeapply_hj.add(file);
                 }
             }
         }
@@ -543,6 +528,30 @@ public class OmsFileServiceImpl implements OmsFileService {
         /** 撤销登记备案 */
         result.put("撤销登记备案",oms_reg_revokeapply_hj);
         return result;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询关键字〉
+     * @Param: [broadFileDestailParams]
+     * @Return: java.util.List<com.hxoms.modules.file.entity.OmsReplaceKeywords>
+     * @Author: 李逍遥
+     * @Date: 2020/10/14 11:31
+     */
+    @Override
+    public List<OmsReplaceKeywords> selectReplaceKeywords(AbroadFileDestailParams broadFileDestailParams) {
+
+        if (StringUtils.isBlank(broadFileDestailParams.getFileId())){
+            throw new CustomMessageException("参数为空");
+        }
+        //查询关键字
+        QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
+            queryWrapperKeyword.eq("TYPE", broadFileDestailParams.getTableCode())
+                    .eq("FILE_ID", broadFileDestailParams.getFileId());
+        List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
+
+
+        return omsReplaceKeywordList;
     }
 
     @Override
@@ -638,8 +647,14 @@ public class OmsFileServiceImpl implements OmsFileService {
     public void replaceFile(OmsFile omsFile, String applyId, String tableCode){
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("TYPE", tableCode)
-                .eq("FILE_ID", omsFile.getFileId());
+        if (omsFile.getIsTymb() == 0){
+            queryWrapperKeyword.eq("TYPE", tableCode)
+                    .eq("FILE_ID", omsFile.getFileId());
+        }else if (omsFile.getIsTymb() == 1){
+            queryWrapperKeyword.eq("TYPE", tableCode)
+                    .eq("FILE_ID", omsFile.getId());
+        }
+
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         //替换关键词

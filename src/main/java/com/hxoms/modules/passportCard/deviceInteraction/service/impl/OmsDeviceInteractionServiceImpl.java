@@ -138,7 +138,7 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
     public List<CerGetInfo> selectCanGetCer(QrCodeInfo qrCodeInfo) {
         //校验领取人与二维码打印者是否属同一家单位
         if(!Boolean.valueOf(omsCerDeviceInfoMapper.validateUser(qrCodeInfo)).booleanValue())
-            throw new CustomMessageException("领取人与被领取人不是同单位，不能领取，请核实！");
+            throw new CustomMessageException("证件领取与打印二维码者不是同单位，不能操作领取，请核实！");
         return omsCerDeviceInfoMapper.selectCanGetCer(qrCodeInfo);
     }
 

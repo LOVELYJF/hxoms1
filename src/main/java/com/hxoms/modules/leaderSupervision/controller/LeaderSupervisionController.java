@@ -138,10 +138,9 @@ public class  LeaderSupervisionController {
     }
 
     /** 再次征求纪委意见 **/
-
+    @GetMapping("/againAskFor")
     public Result againAskFor(String bussinessType,String applyId){
-
-
+          leaderCommonService.updateBussinessByagainAskFor(bussinessType,applyId);
       return  Result.success();
     }
 

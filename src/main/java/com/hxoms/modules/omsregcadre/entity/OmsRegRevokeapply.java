@@ -115,7 +115,7 @@ public class OmsRegRevokeapply {
     @ColumnAnnotation(FieldName = "CURRENT_ORG",   FieldDescription="现工作单位")
     private String currentOrg;
 
-    @ColumnAnnotation(FieldName = "CURRENT_Post",   FieldDescription="现职务")
+    @ColumnAnnotation(FieldName = "CURRENT_POST",   FieldDescription="现职务")
     private String currentPost;
 
     public String getId() {

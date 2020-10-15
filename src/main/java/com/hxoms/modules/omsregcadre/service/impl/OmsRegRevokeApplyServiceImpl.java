@@ -5,13 +5,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
+import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.general.select.entity.SqlVo;
 import com.hxoms.general.select.mapper.SelectMapper;
+import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
+import com.hxoms.modules.file.mapper.OmsFileMapper;
+import com.hxoms.modules.file.service.OmsCreateFileService;
+import com.hxoms.modules.file.service.impl.OmsFileServiceImpl;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
+import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
+import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
+import com.hxoms.support.b01.entity.B01;
+import com.hxoms.support.b01.mapper.B01Mapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +44,19 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
     private OmsRegRevokeapprovalMapper regRevokeApprovalMapper;
     @Autowired
     private SelectMapper selectMapper;
+    @Autowired
+    private OmsFileMapper omsFileMapper;
+    @Autowired
+    private B01Mapper b01Mapper;
+    @Autowired
+    private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
+
+    @Autowired
+    private OmsFileServiceImpl omsFileServiceImpl;
+
+    private final static String[] types ={"辞职","开除"};
 
     @Override
     public PageInfo<OmsRegRevokeapply> queryRevokeApplyList(OmsRegRevokeApplyIPagParam revokeApplyIPagParam) {
@@ -309,6 +334,112 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
         SqlVo instance = SqlVo.getInstance(sql);
         selectMapper.delete(instance);
         return baseMapper.deleteById(id);
+    }
+
+
+    /**
+     * 生成撤销函
+     * @param lists
+     * @return
+     */
+    @Override
+    public List<CancellationLetter> createCancellationLetter(List<CancellationLetter> lists) {
+
+        if(lists!=null && lists.size()>0){
+
+            for(CancellationLetter cancellationLetter : lists){
+
+                String tableCode =cancellationLetter.getTableCode();
+                String fileShortname = cancellationLetter.getFileType();
+                String applyId  =cancellationLetter.getId();
+                // 在职状态
+                String exitType  = cancellationLetter.getExitType();
+                //登录用户信息
+                UserInfo userInfo = UserInfoUtil.getUserInfo();
+                //查询机构信息
+                B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
+                if (b01 == null){
+                    throw new CustomMessageException("数据异常");
+                }
+                QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("TABLE_CODE", tableCode)
+                        .eq("B0100", b01.getB0100())
+                        .eq("FILE_SHORTNAME",fileShortname)
+                        .orderByAsc("SORT_ID");
+                List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
+                if (omsFiles == null || omsFiles.size() < 1) {
+                    //初始化机构文件
+                    queryWrapper.clear();
+                    queryWrapper.eq("TABLE_CODE", tableCode)
+                            .eq("FILE_SHORTNAME",fileShortname)
+                            .and(wrapper->wrapper.eq("B0100", "")
+                                    .or()
+                                    .isNull("B0100"))
+                            .orderByAsc("SORT_ID");
+                    List<OmsFile> omsFileSystem = omsFileMapper.selectList(queryWrapper);
+                    if (omsFileSystem != null && omsFileSystem.size() > 0) {
+                        //插入
+                        for (OmsFile omsfile : omsFileSystem) {
+                            omsfile.setFileId(omsfile.getId());
+                            omsfile.setId(UUIDGenerator.getPrimaryKey());
+                            omsfile.setB0100(b01.getB0100());
+                            omsfile.setCreateUser(userInfo.getId());
+                            omsfile.setCreateTime(new Date());
+                            omsFileMapper.insert(omsfile);
+                        }
+                    }
+                    queryWrapper.clear();
+                    //重新查询
+                    queryWrapper.eq("TABLE_CODE", tableCode)
+                            .eq("B0100", b01.getB0100())
+                            .eq("FILE_SHORTNAME",fileShortname)
+                            .orderByAsc("SORT_ID");
+                    omsFiles = omsFileMapper.selectList(queryWrapper);
+                }
+                cancellationLetter.setOmsFiles(omsFiles);
+                //生成文件
+                if (!StringUtils.isBlank(applyId)){
+                    QueryWrapper<OmsCreateFile> createFile = new QueryWrapper<>();
+                    createFile.eq("TABLE_CODE", tableCode)
+                            .eq("APPLY_ID", applyId);
+                    int count = omsCreateFileMapper.selectCount(createFile);
+                    //没有生成时生成文件
+                    if (count < 1){
+                        for (OmsFile omsFile : omsFiles){
+                            OmsCreateFile omsCreateFile = new OmsCreateFile();
+                            omsCreateFile.setFileId(omsFile.getId());
+                            omsCreateFile.setApplyId(applyId);
+                            omsCreateFile.setFileName(omsFile.getFileName());
+                            omsCreateFile.setFileShortname(omsFile.getFileShortname());
+                            omsCreateFile.setFileType(omsFile.getFileType());
+                            omsCreateFile.setTableCode(omsFile.getTableCode());
+                            omsCreateFile.setIsEdit(omsFile.getIsEdit());
+                            omsCreateFile.setSealDesc(omsFile.getSealDesc());
+                            omsCreateFile.setIsfileList(omsFile.getIsfileList());
+                            omsCreateFile.setSortId(omsFile.getSortId());
+                            omsCreateFile.setPrintNum(omsFile.getPrintNum());
+                            //替换关键词
+                            omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode);
+                            if(Arrays.asList(types).indexOf(exitType)!=-1){
+                                omsCreateFile.setFrontContent(omsFile.getFrontContent().replaceAll("在本单位已登记备案","已退出满三年"));
+                            }else{
+                                omsCreateFile.setFrontContent(omsFile.getFrontContent());
+
+                            }
+                            omsCreateFile.setFrontContent(omsFile.getFrontContent());
+                            omsCreateFile.setBankContent(omsFile.getBankContent());
+                            omsCreateFileService.insertOrUpdate(omsCreateFile);
+                        }
+                    }
+                }
+
+
+            }
+        }else{
+            throw new CustomMessageException("参数 为空，请仔细检查");
+        }
+        return lists;
+
     }
 
 }

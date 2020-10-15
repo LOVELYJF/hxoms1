@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.initialise.entity.parameterEntity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -52,6 +53,9 @@ public class RegProcpersoninfo {
 
     @ApiModelProperty(value="职务")
     private String post;
+
+    @JsonIgnore
+    private String licenceIdentity;
 
     public String getId() {
         return id;
@@ -155,5 +159,13 @@ public class RegProcpersoninfo {
 
     public void setPost(String post) {
         this.post = post;
+    }
+
+    public String getLicenceIdentity() {
+        return licenceIdentity;
+    }
+
+    public void setLicenceIdentity(String licenceIdentity) {
+        this.licenceIdentity = licenceIdentity;
     }
 }

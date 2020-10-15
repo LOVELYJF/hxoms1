@@ -1,6 +1,7 @@
 package com.hxoms.modules.file.service;
 
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.OmsReplaceKeywords;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import java.util.List;
 import java.util.Map;
@@ -49,4 +50,13 @@ public interface OmsFileService {
      */
     Map<String, Object> selectFileList();
 
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询关键字〉
+     * @Param: [broadFileDestailParams]
+     * @Return: java.util.List<com.hxoms.modules.file.entity.OmsReplaceKeywords>
+     * @Author: 李逍遥
+     * @Date: 2020/10/14 11:27
+     */
+    List<OmsReplaceKeywords> selectReplaceKeywords(AbroadFileDestailParams broadFileDestailParams);
 }

@@ -107,8 +107,8 @@
 			occl.CREATE_USER as createUser,  #创建人
 			occl.CREATE_TIME as createTime  #创建时间
 		from oms_cer_cancellate_license occl
-		join cf_certificate cc on occl.OMS_ID = cc.OMS_ID
-		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
+		left join cf_certificate cc on occl.OMS_ID = cc.OMS_ID
+		left join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
 
 		<where>
 			<trim suffixOverrides="and">

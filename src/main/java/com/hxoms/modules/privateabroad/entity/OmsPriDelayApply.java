@@ -5,6 +5,8 @@ import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @TableAnnotation(TableName = "oms_pri_delay_apply", TableDescription="延期回国申请")
@@ -57,7 +59,7 @@ public class OmsPriDelayApply {
     @ColumnAnnotation(FieldName = "MODIFY_USER",   FieldDescription="修改人")
     private String modifyUser;
 
-    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "leader_batch_id",   FieldDescription="干部监督处批次id")
     private String leaderBatchId;
 
     @ColumnAnnotation(FieldName = "CLSHSFTG",   FieldDescription="材料审核是否通过")
@@ -79,6 +81,10 @@ public class OmsPriDelayApply {
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date sczqjwyjsj;
+
+    @ColumnAnnotation(FieldName = "clshsftg_Opinion",   FieldDescription="材料审核审批结论")
+    @ApiModelProperty(value="材料审核审批结论")
+    private String clshsftgOpinion;
 
     public String getId() {
         return id;
@@ -238,5 +244,13 @@ public class OmsPriDelayApply {
 
     public void setSczqjwyjsj(Date sczqjwyjsj) {
         this.sczqjwyjsj = sczqjwyjsj;
+    }
+
+    public String getClshsftgOpinion() {
+        return clshsftgOpinion;
+    }
+
+    public void setClshsftgOpinion(String clshsftgOpinion) {
+        this.clshsftgOpinion = clshsftgOpinion;
     }
 }
