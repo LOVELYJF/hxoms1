@@ -1,8 +1,11 @@
 package com.hxoms.modules.omsregcadre.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.util.Date;
@@ -22,6 +25,9 @@ public class OmsRegProcbatch {
      * 创建时间
      */
     @ColumnAnnotation(FieldName = "CREATE_DATE",  FieldDescription="创建时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="创建时间")
     private Date createDate;
 
     /**
@@ -92,6 +98,9 @@ public class OmsRegProcbatch {
      * 报送时间
      */
     @ColumnAnnotation(FieldName = "SUBMIT_TIME",  FieldDescription="报送时间")
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @ApiModelProperty(value="报送时间")
     private Date submitTime;
 
     /**

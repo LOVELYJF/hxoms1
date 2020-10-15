@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
+import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ import java.util.List;
 public class OmsRegRevokeApplyController {
     @Autowired
     private OmsRegRevokeApplyService revokeApplyService;
+    @Autowired
+    private OmsEntryexitRecordService omsEntryexitRecordService;
+
+
 
     /**
      * 查询申请撤销登记备案列表
@@ -131,10 +136,8 @@ public class OmsRegRevokeApplyController {
     @PostMapping("/createCancellationLetter")
     public Result createCancellationLetter(@RequestBody List<CancellationLetter> lists){
 
-
-
-
-        return  Result.success();
+        List<CancellationLetter> listss =  revokeApplyService.createCancellationLetter(lists);
+        return  Result.success(listss);
 
     }
 

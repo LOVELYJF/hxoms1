@@ -902,7 +902,7 @@ public class LeaderEXportExcelService {
             BeanUtils.copyProperties(info, batchperson1);
             batchperson1.setId(UUIDGenerator.getPrimaryKey());
             batchperson1.setRfId(info.getId());
-            batchperson1.setBatchId(batchinfo.getId());
+            batchperson1.setBatchId(batchinfo.getBatchNo());
             batchperson1.setSuccess("0");
             batchperson1.setErrorMsg("通过");
             adds.add(batchperson1);

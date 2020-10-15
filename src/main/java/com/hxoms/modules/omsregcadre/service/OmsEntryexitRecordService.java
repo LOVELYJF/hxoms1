@@ -82,9 +82,4 @@ public interface OmsEntryexitRecordService extends IService<OmsEntryexitRecord> 
 
     Map<String, Object> selectCompareInfo(String omsId,String priapplyId, String recordIds);
 
-    /**
-    * 生成撤销函
-    * **/
-
-    List<CancellationLetter>  createCancellationLetter(List<CancellationLetter> lists);
 }
