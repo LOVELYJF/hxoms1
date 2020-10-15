@@ -499,15 +499,15 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑处理，以公安信息为准
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: void
      * @Date: 2020/8/10
      */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public void updateCerForGaInfoIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
+    public void updateCerForGaInfoIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx) {
         CfCertificate cfCertificate=new CfCertificate();
-        BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
+        BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
         cfCertificate.setSaveStatus(SaveStatusEnum.WSQ.getCode());
         cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());

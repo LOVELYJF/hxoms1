@@ -239,14 +239,14 @@ public class CfCertificateController {
     /**
      * @Desc: 存疑处理，以公安信息为准。
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "存疑处理，以公安信息为准，置为未上缴")
     @PostMapping("/updateCerForGaInfoIsRight")
-    public Result updateCerForGaInfoIsRight(@RequestBody @Validated  QureyDealRequestInfo qureyDealRequestInfo){
-        cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfo);
+    public Result updateCerForGaInfoIsRight(@RequestBody @Validated  QureyDealRequestInfoEx qureyDealRequestInfoEx){
+        cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfoEx);
         return Result.success();
     }
     /**
