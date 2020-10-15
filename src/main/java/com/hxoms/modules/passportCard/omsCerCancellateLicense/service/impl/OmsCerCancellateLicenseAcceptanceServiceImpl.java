@@ -307,9 +307,11 @@ public class OmsCerCancellateLicenseAcceptanceServiceImpl implements OmsCerCance
 		if(!StringUtils.isBlank(omsCerCancellateLicense.getCldyj())){
 			if(omsCerCancellateLicense.getCldyj().equals(IsAllowEnum.ALLOW.getCode())){
 				//通过
+				map.put("cldyj",IsAllowEnum.ALLOW.getCode());
 				map.put("zhzxzt", String.valueOf(Constants.CANCELL_STATUS[6]));   //状态置为部领导审批
 			}else if(omsCerCancellateLicense.getCldyj().equals(IsAllowEnum.NOT_ALLOW.getCode())){
 				//不通过
+				map.put("cldyj",IsAllowEnum.NOT_ALLOW.getCode());
 				map.put("zhzxzt", String.valueOf(Constants.CANCELL_STATUS[8]));   //状态置为拒绝
 			}
 
