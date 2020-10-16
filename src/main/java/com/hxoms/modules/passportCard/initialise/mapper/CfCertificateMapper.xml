@@ -918,12 +918,11 @@
 
 	<!-- 查询证照机柜子集合 -->
 	<select id="getCerLicenseMachine" resultType="java.lang.String">
-    select
+     select
         distinct CABINET_NUM
-    from
+     from
         cf_certificate
-    where IFNULL(CABINET_NUM,null)
-    group by CABINET_NUM
+     where CABINET_NUM is not null
   </select>
 
 	<!-- 存取记录 -->

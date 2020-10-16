@@ -148,14 +148,11 @@
 
 	<!-- 查询盘点年月 -->
 	<select id="selectCerInventoryDate" resultType="java.lang.String">
-		SELECT
-			INVENTORY_DATE
-		FROM
-			oms_cer_inventory
-		GROUP BY
-			INVENTORY_DATE
-		order by
-			INVENTORY_DATE
+		select
+        	distinct INVENTORY_DATE
+    	from
+        	oms_cer_inventory
+   		where INVENTORY_DATE is not null
 	</select>
 
 </mapper>
