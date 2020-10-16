@@ -796,6 +796,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		QueryWrapper<CfCertificate> queryWrapper = new QueryWrapper<CfCertificate>();
 		queryWrapper.eq("ZJHM", omsCerGetTask.getZjhm());
 		CfCertificate cfCertificate = cfCertificateMapper.selectOne(queryWrapper);
+		//在证照信息表中将证照保管状态改成已取出
+		cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
+		int count2 = cfCertificateMapper.updateById(cfCertificate);
+		if(count2 < 1){
+			throw new CustomMessageException("设置证照取出状态失败");
+		}
 		omsCerGetTask.setCerId(cfCertificate.getId());
 		omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_1.getCode());    //任务表中状态置为已领取
 		omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_6.getCode());
