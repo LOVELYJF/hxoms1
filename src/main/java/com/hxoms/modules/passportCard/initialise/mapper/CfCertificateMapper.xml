@@ -919,10 +919,10 @@
 	<!-- 查询证照机柜子集合 -->
 	<select id="getCerLicenseMachine" resultType="java.lang.String">
     select
-        CABINET_NUM
+        distinct CABINET_NUM
     from
         cf_certificate
-    where CABINET_NUM is not null
+    where IFNULL(CABINET_NUM,null)
     group by CABINET_NUM
   </select>
 
