@@ -742,7 +742,34 @@
 	</select>
 
 
-	<!-- 注销申请查询证件 -->
+  <!--根据年度查询导入证照信息存疑、未上缴-->
+  <select id="selectAllExceptionInfo" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord" parameterType="java.lang.String">
+      select a.*,b.*
+      FROM cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+      LEFT JOIN cf_certificate_collection c ON a.id=c.cer_id
+      WHERE a.SAVE_STATUS = '2'
+      AND a.CARD_STATUS = '5'
+      AND c.CJ_STATUS is null
+      <if test="year!=null and year !=''">
+        AND a.year=#{year}
+      </if>
+
+    union
+
+      select a.*,b.*
+      FROM cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+      WHERE a.SAVE_STATUS = '1'
+      AND a.CARD_STATUS in ('3','5')
+      <if test="year!=null and year !=''">
+        AND a.year=#{year}
+      </if>
+  </select>
+
+
+
+  <!-- 注销申请查询证件 -->
 	<select id="getCancellateLicense" resultType="java.util.Map">
 		select
 		cc.ID as id,

@@ -6,6 +6,7 @@ import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer;
@@ -99,8 +100,7 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Return: java.util.List<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface>
      * @Date: 2020/8/4
      */
-    List<ImportInterface> selectAllCertificate();
-
+	List<ImportInterface> selectAllCertificate();
     /**
      * @Desc: 查询证照信息
      * @Author: wangyunquan
@@ -260,4 +260,11 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
     * @return:
     **/
     List<CfCertificateExtend> selectByOmsId(@Param("omsId")String omsId,@Param("cardStatus")String[] cardStatus);
+
+	/**
+	 * 根据年度查询导入证照信息存疑、未上缴
+	 * @param year
+	 * @return
+	 */
+	List<CfCertificateHistoryRecord> selectAllExceptionInfo(String year);
 }

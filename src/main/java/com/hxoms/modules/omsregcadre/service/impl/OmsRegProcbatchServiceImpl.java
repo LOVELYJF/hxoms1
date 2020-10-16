@@ -30,13 +30,10 @@ import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTran
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.service.OmsCerTransferOutLicenseService;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.service.OrgService;
-import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.ssl.Debug;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
