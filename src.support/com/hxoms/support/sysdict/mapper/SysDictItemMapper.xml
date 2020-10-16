@@ -147,8 +147,6 @@
     <select id="selectFamilyMemberRelationship" resultMap="BaseResultMap">
         select * from sys_dict_item
         where dict_code = 'GB4761'
-        and item_code
-        in ('丈夫','妻子','儿子','女儿','长子','长女','次子','次女','三子','三女','四子','四女','五子','五女')
     </select>
 
     <!-- 查询政治面貌集合 -->
