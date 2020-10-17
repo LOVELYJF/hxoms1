@@ -71,20 +71,6 @@ public class OmsFileController {
         return Result.success(result);
     }
 
-    /**
-     * 功能描述: <br>
-     * 〈通用模板查询〉
-     *
-     * @Param: []
-     * @Return: com.hxoms.common.utils.Result
-     * @Author: 李逍遥
-     * @Date: 2020/10/12 19:31
-     */
-    @GetMapping("/selectFileList")
-    public Result selectFileList() {
-        Map<String, Object> result = omsFileService.selectFileList();
-        return Result.success(result);
-    }
 
     /**
      * 文件类型下载

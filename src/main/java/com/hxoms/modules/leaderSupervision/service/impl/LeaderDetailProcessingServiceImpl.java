@@ -133,7 +133,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
 
     // 业务 处理 材料审核 的 下一步 触发的事件
-    public void materialReviewNextStep(String applyId, String tableCode) {
+    public void materialReviewNextStep(String applyId, String tableCode,String clshsftgOpinion) {
 
         // TODO 保存自评
 
@@ -144,10 +144,13 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             throw new CustomMessageException("数据异常，请 联系开发人员");
             // 通过
         } else if (lists.size() == 1 && lists.get(0).get("result") == "1") {
-            updateBussinessCheck = getUpdateRecordOpinionSql(applyId, tableCode, "1", "clshsftg");
-        } else {
+
+            updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"1","clshsftg",clshsftgOpinion);
+
+        }else{
             // 不通过
-            updateBussinessCheck = getUpdateRecordOpinionSql(applyId, tableCode, "2", "clshsftg");
+            updateBussinessCheck=  getUpdateRecordOpinionSql(applyId,tableCode,"2","clshsftg",clshsftgOpinion);
+
         }
 
         if (updateBussinessCheck != null && updateBussinessCheck.length() > 0) {
@@ -250,7 +253,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     }
 
     // TODO  修改业务流程 记录 审批 意见
-    public String getUpdateRecordOpinionSql(String busessId, String bussinesType, String opinion, String recordFlow) {
+    public String getUpdateRecordOpinionSql(String busessId, String bussinesType, String opinion, String recordFlow,String clshsftgOpinion) {
 
         String updateSql = "update " + bussinesType;
         String setSql = " set  ";
@@ -259,7 +262,14 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         // TODO 最终结论 后面覆盖 前面
         if ("clshsftg".equals(recordFlow)) {   // 材料审核是否通过
 
-            setSql += " CLSHSFTG " + " = " + opinion + ", zzjl = " + opinion;
+            if(!StringUilt.stringIsNullOrEmpty(clshsftgOpinion)){
+
+                setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion +", clshsftg_Opinion= '"+clshsftgOpinion+"'";
+
+            }else{
+                setSql+= " CLSHSFTG " + " = " + opinion+", zzjl = " + opinion ;
+
+            }
             return updateSql + setSql + whereCondition;
         } else if ("jwjl".equals(recordFlow)) {  //  纪委结论
 
@@ -1222,5 +1232,32 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
             throw new CustomMessageException("参数错误，请仔细检查");
         }
         return null;
+    }
+    private String  getPdfByHtmlByChenpiDan(OmsCreateFile omsCreateFile) {
+        //解析 html img 的src 标签
+
+
+        String contentStr = HtmlUtils.replaceTag(omsCreateFile.getFrontContent(),"src",ueditorRealImgUrl);
+
+        // 要转换的 html
+        String htmlstr =LeaderSupervisionUntil.prefixPdfStyle +contentStr+LeaderSupervisionUntil.suffixPdfStyle;
+
+        String newHtmlStr = htmlstr.replaceAll("<br>","<br/>");
+        // 生成 pdf的路径 +名称
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar calendar = Calendar.getInstance();
+        String fileName = df.format(calendar.getTime())+omsCreateFile.getApplyId() +pdfName+".pdf" ;
+        log.info("文件的文件名为:" + fileName);
+
+
+        String filePath = attachmentPath+File.separator+"static"+File.separator;
+        try {
+            FileTypeConvertUtil.html2pdf(newHtmlStr,filePath+fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return filePath+fileName;
+
     }
 }

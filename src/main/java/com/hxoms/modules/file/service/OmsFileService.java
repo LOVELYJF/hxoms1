@@ -56,15 +56,6 @@ public interface OmsFileService {
     OmsCreateFile selectFileDestailNew(String fileId);
 
     /**
-     * 功能描述: <br>
-     * 〈通用模板查询〉
-     * @Param: []
-     * @Return: java.util.Map<java.lang.String,java.lang.Object>
-     * @Author: 李逍遥
-     * @Date: 2020/10/12 19:33
-     */
-    Map<String, Object> selectFileList();
-    /**
      * @description:返回其它材料列表，其它材料也允许按非涉密、涉密、核心涉密、挂职来设置在哪种条件下需要
      * @author:杨波
      * @date:2020-10-15
