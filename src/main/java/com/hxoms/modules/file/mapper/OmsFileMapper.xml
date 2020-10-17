@@ -19,6 +19,10 @@
     <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
+    <result column="IS_TYMB" jdbcType="INTEGER" property="isTymb" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+    <result column="IS_TEMPLATE" jdbcType="INTEGER" property="isTemplate" />
+    <result column="IS_DEFAULT" jdbcType="INTEGER" property="isDefault" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.file.entity.OmsFile">
     <result column="FRONT_CONTENT" jdbcType="LONGVARCHAR" property="frontContent" />
@@ -31,7 +35,7 @@
   <sql id="Base_Column_List">
     ID, FILE_ID, B0100, FILE_NAME, FILE_SHORTNAME, FILE_TYPE, TABLE_CODE, IS_EDIT, SEAL_DESC, 
     RUN_SQL, PRINT_NUM, ISFILE_LIST, CREATE_TIME, CREATE_USER, MODIFY_TIME, MODIFY_USER, 
-    SORT_ID
+    SORT_ID,IS_TYMB,IS_DELETED,IS_TEMPLATE,IS_DEFAULT
   </sql>
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT

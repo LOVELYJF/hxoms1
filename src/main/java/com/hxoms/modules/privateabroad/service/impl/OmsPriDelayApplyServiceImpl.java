@@ -69,7 +69,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if (StringUtils.isBlank(omsPriDelayApply.getId())){
             //添加
-            omsPriDelayApply.setApplyStatus(Constants.private_business[0]);
+            omsPriDelayApply.setApplyStatus(Constants.emPrivateGoAbroad.草稿.getIndex());
             omsPriDelayApply.setId(UUIDGenerator.getPrimaryKey());
             omsPriDelayApply.setCreateUser(userInfo.getId());
             omsPriDelayApply.setCreateTime(new Date());
@@ -78,7 +78,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
             }
         }else{
             //更新
-            omsPriDelayApply.setApplyStatus(Constants.private_business[0]);
+            omsPriDelayApply.setApplyStatus(Constants.emPrivateGoAbroad.草稿.getIndex());
             omsPriDelayApply.setModifyUser(userInfo.getId());
             omsPriDelayApply.setModifyTime(new Date());
             if (omsPriDelayApplyMapper.updateById(omsPriDelayApply) < 1){
@@ -104,23 +104,26 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         omsAbroadApproval.setApplyId(omsPriDelayApply.getId());
         if (omsPriDelayApply.getApplyStatus() > 1 || omsPriDelayApply.getApplyStatus() <= 5){
-            for (int i = 0; i < Constants.private_business.length; i++){
-                int status = omsPriDelayApply.getApplyStatus() - 1;
-                omsAbroadApproval.setStepCode(status);
-                if (i == status){
-                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
-                    break;
-                }
-            }
+            int status = omsPriDelayApply.getApplyStatus();
+            omsAbroadApproval.setStepCode(status);
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.getNameByIndex(status));
+//            for (int i = 0; i < Constants.private_business.length; i++){
+//                int status = omsPriDelayApply.getApplyStatus() - 1;
+//                omsAbroadApproval.setStepCode(status);
+//                if (i == status){
+//                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
+//                    break;
+//                }
+//            }
         } else if (omsPriDelayApply.getApplyStatus() == 20){
-            omsAbroadApproval.setStepCode(Constants.private_business[4]);
-            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
-        } else if (Constants.private_business[7] == omsPriDelayApply.getApplyStatus()){
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.自评.getIndex());
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.自评.getName());
+        } else if (Constants.emPrivateGoAbroad.撤销.getIndex() == omsPriDelayApply.getApplyStatus()){
             //撤销
-            omsAbroadApproval.setStepCode(Constants.private_business[7]);
-            omsAbroadApproval.setStepName(Constants.private_businessName[7]);
-        } else if(Constants.private_business[0] == omsPriDelayApply.getApplyStatus()){
-            omsAbroadApproval.setStepCode(Constants.private_business[0]);
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.撤销.getIndex());
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.撤销.getName());
+        } else if(Constants.emPrivateGoAbroad.草稿.getIndex() == omsPriDelayApply.getApplyStatus()){
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.草稿.getIndex());
             omsAbroadApproval.setStepName("撤回");
         }
         omsAbroadApproval.setApprovalTime(new Date());
@@ -139,7 +142,7 @@ public class OmsPriDelayApplyServiceImpl implements OmsPriDelayApplyService {
         //只能删除草稿状态的
         QueryWrapper<OmsPriDelayApply> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        queryWrapper.eq("applyStatus", Constants.private_business[0]);  //草稿
+        queryWrapper.eq("applyStatus", Constants.emPrivateGoAbroad.草稿.getIndex());  //草稿
         int count = omsPriDelayApplyMapper.selectCount(queryWrapper);
         if (count == 0){
             throw new CustomMessageException("只能删除草稿");

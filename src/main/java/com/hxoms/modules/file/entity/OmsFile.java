@@ -34,7 +34,7 @@ public class OmsFile {
     @ApiModelProperty(value = "文件简称")
     private String fileShortname;
 
-    @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="文件类别（1系统 2非涉密人员 3涉密人员 4涉密人员（重要，一般不是本单位））")
+    @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="使用人员（1所有人员 2非涉密人员 3涉密人员 4脱密期人员 5主要领导 6挂职干部 7核心涉密 8用户自定义）")
     @ApiModelProperty(value = "文件类别")
     private String fileType;
 
@@ -86,6 +86,22 @@ public class OmsFile {
     @ColumnAnnotation(FieldName = "BANK_CONTENT",   FieldDescription="可编辑文件（反面，第二页）")
     @ApiModelProperty(value = "可编辑文件（反面，第二页）")
     private String bankContent;
+
+    @ColumnAnnotation(FieldName = "IS_TYMB",   FieldDescription="是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
+    @ApiModelProperty(value = "是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
+    private Integer isTymb;
+
+    @ColumnAnnotation(FieldName = "IS_DELETED",   FieldDescription="是否删除（1删除0否）")
+    @ApiModelProperty(value = "是否删除（1删除0否）")
+    private Integer isDeleted;
+
+    @ColumnAnnotation(FieldName = "IS_TEMPLATE",   FieldDescription="是否带模板（默认1，0不需要模板，只是用户提供纸质件，特指其它材料）")
+    @ApiModelProperty(value = "是否带模板（默认1，0不需要模板，只是用户提供纸质件，特指其它材料）")
+    private Integer isTemplate;
+
+    @ColumnAnnotation(FieldName = "IS_DEFAULT",   FieldDescription="是否默认勾选（只针对非模板材料）")
+    @ApiModelProperty(value = "是否默认勾选（只针对非模板材料）")
+    private Integer isDefault;
 
     public String getId() {
         return id;
@@ -237,5 +253,37 @@ public class OmsFile {
 
     public void setBankContent(String bankContent) {
         this.bankContent = bankContent == null ? null : bankContent.trim();
+    }
+
+    public Integer getIsTymb() {
+        return isTymb;
+    }
+
+    public void setIsTymb(Integer isTymb) {
+        this.isTymb = isTymb;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Integer getIsTemplate() {
+        return isTemplate;
+    }
+
+    public void setIsTemplate(Integer isTemplate) {
+        this.isTemplate = isTemplate;
+    }
+
+    public Integer getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Integer isDefault) {
+        this.isDefault = isDefault;
     }
 }

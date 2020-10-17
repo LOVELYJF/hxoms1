@@ -225,14 +225,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
         int sqzt=Integer.parseInt(urgeParameterVO.getSqzt());
         //申请状态为已办结、待领证、已领证、撤销情况，不能办理催办业务。
         if(sqzt>=28){
-            String sqztName=null;
-            List<Integer> leader_business = Arrays.stream(Constants.leader_business).boxed().collect(Collectors.toList());
-            List<Integer> private_business = Arrays.stream(Constants.private_business).boxed().collect(Collectors.toList());
-            if(leader_business.contains(sqzt)){
-                sqztName=Constants.leader_businessName[leader_business.indexOf(sqzt)];
-            }else if(private_business.contains(sqzt)){
-                sqztName=Constants.private_businessName[private_business.indexOf(sqzt)];
-            }
+            String sqztName=Constants.emPrivateGoAbroad.getNameByIndex(sqzt);
             throw new CustomMessageException("备案申请状态为："+sqztName+"，无法办理催办业务！");
         }
         //获取模板
@@ -254,7 +247,7 @@ public class OmsPubTaskSuperviceServiceImpl implements OmsPubTaskSuperviseServic
             throw new CustomMessageException("参数为空，请核实！");
         UrgeParameterVO urgeParameterVO = omsPubTaskSuperviseMapper.selectById(urgeBusiness.getId());
         int sqzt=Integer.parseInt(urgeParameterVO.getSqzt());
-        if (Arrays.asList(Constants.leader_business).contains(sqzt)) {
+        if (sqzt>=Constants.emPrivateGoAbroad.业务受理.getIndex()) {
             //干部监督处处理
             preAndRecMessage(urgeParameterVO.getOrgId(), urgeBusiness.getMsgContent(),"5","1");
         } else {

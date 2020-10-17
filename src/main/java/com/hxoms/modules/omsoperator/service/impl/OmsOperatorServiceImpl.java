@@ -626,11 +626,11 @@ public class OmsOperatorServiceImpl implements OmsOperatorService {
         /**撤销登记备案*/
         List<OmsRegRevokeapply> omsRegRevokeapplies = operatorHandoverMapper.selectOmsRegRevokeapplyByStatusAndName(user.getUserId(), "2");
         /**因公出国境*/
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByStatusAndName(user.getUserId(), Constants.leader_business[9]);
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectPubAllyByStatusAndName(user.getUserId(), Constants.emPrivateGoAbroad.待领证.getIndex());
         /**因私出国境*/
-        List<OmsPriApplyVO> omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByStatusAndName(user.getUserId(), Constants.leader_business[9]);
+        List<OmsPriApplyVO> omsPriApplyVOS = operatorHandoverMapper.selectOmsPriApplyByStatusAndName(user.getUserId(), Constants.emPrivateGoAbroad.待领证.getIndex());
         /** 延期回国*/
-        List<OmsPriDelayVO> omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByStatusAndName(user.getUserId(),Constants.leader_business[9]);
+        List<OmsPriDelayVO> omsPriDelayVOS = operatorHandoverMapper.selectOmsPriDelayApplyByStatusAndName(user.getUserId(),Constants.emPrivateGoAbroad.待领证.getIndex());
         if ((omsCerGetTasks != null && omsCerGetTasks.size() > 0)  || (omsCerCancellateLicenses != null && omsCerCancellateLicenses.size() > 0) ||
                 (omsRegRevokeapplies != null && omsRegRevokeapplies.size() > 0  ) || (omsPubApplyVOS != null && omsPubApplyVOS.size() > 0 ) ||
                 (omsPriApplyVOS != null && omsPriApplyVOS.size() > 0 ) || (omsPriDelayVOS != null && omsPriDelayVOS.size() > 0)){

@@ -39,9 +39,6 @@ public class  LeaderSupervisionController {
     @Autowired
     private LeaderDetailProcessingService leaderDetailProcessingService;
 
-
-
-
     /**
      *  选择业务人员 页面 （LeaderSupervisionVo） 有批次 待办业务管理 的 办理 业务
      *
@@ -49,7 +46,7 @@ public class  LeaderSupervisionController {
     @GetMapping("/selectBusinessUser")
     public Result selectBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
-        PageInfo pageInfo = leaderCommonService.selectBusinessUser(leaderSupervisionVo, Constants.leader_business[0]);
+        PageInfo pageInfo = leaderCommonService.selectBusinessUser(leaderSupervisionVo, Constants.emPrivateGoAbroad.业务受理.getIndex());
 
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
@@ -61,9 +58,7 @@ public class  LeaderSupervisionController {
     @GetMapping("/createBatchPage")
     public Result createBatchPage( ){
 
-
        Map dataMap =  leaderCommonService.createBacthByUsers();
-
         return Result.success(dataMap);
     }
 
@@ -88,8 +83,6 @@ public class  LeaderSupervisionController {
     }
 
 
-
-
     /**
     * 材料审核 人员名单
     * **/
@@ -97,7 +90,6 @@ public class  LeaderSupervisionController {
     public Result selectMaterialReviewBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectMaterialReviewBusinessUser(leaderSupervisionVo);
-
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
@@ -107,11 +99,8 @@ public class  LeaderSupervisionController {
     @PostMapping("/leaderBatchAddApplyUser")
     public Result leaderBatchAddApplyUser(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
-
         leaderCommonService.leaderBatchAddApplyUser(leaderSupervisionVo);
-
         return Result.success();
-
     }
     /**
      * 通知经办人重新递交备案函
@@ -120,9 +109,7 @@ public class  LeaderSupervisionController {
     public Result sendMessageToAgent(String applyId,String tableCode){
 
         leaderDetailProcessingService.sendMessageToAgent(applyId,tableCode);
-
         return Result.success();
-
     }
 
     /**
@@ -133,14 +120,12 @@ public class  LeaderSupervisionController {
     public Result selectjiweiBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo = leaderCommonService.selectjiweiBusinessUser(leaderSupervisionVo);
-
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
     /** 再次征求纪委意见 **/
 
     public Result againAskFor(String bussinessType,String applyId){
-
 
       return  Result.success();
     }
@@ -151,25 +136,9 @@ public class  LeaderSupervisionController {
     @GetMapping("/selectjiweiWriteBusinessUser")
     public Result selectjiweiWriteBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
-
         PageInfo pageInfo =  leaderCommonService.selectjiweiWriteBusinessUser(leaderSupervisionVo);
-
         return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
-
-
-//    /**
-//     *
-//     *  TODO 点击 纪委意见记录 触发的 事件
-//     * **/
-//    @PostMapping("/clickJieweiOpinion")
-//     public Result  clickJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
-//
-//         leaderCommonService.clickJieweiOpinion(omsJiweiOpinionVo);
-//
-//         return Result.success();
-//     }
-
 
     /**
      *  录入口头纪委意见
@@ -178,7 +147,6 @@ public class  LeaderSupervisionController {
     public Result saveJieweiOpinion(@RequestBody OmsJiweiOpinionVo omsJiweiOpinionVo){
 
         leaderCommonService.saveJieweiOpinion(omsJiweiOpinionVo);
-
         return Result.success();
     }
 
@@ -189,7 +157,6 @@ public class  LeaderSupervisionController {
     public Result selectOffictJiiweiOpinionRelevanceLeaderBatch(){
 
         List lists= leaderCommonService.selectOffictJiiweiOpinionRelevanceLeaderBatch();
-
         return Result.success(lists);
     }
 
@@ -200,10 +167,8 @@ public class  LeaderSupervisionController {
     public Result selectChuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo){
 
         PageInfo pageInfo =  leaderCommonService.selectChuZhangBusinessUser(leaderSupervisionVo);
-
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
-
 
     /**
      *  因公出国境管理 导出
@@ -236,8 +201,6 @@ public class  LeaderSupervisionController {
     @PostMapping("/exportJiweiExcel")
     public void exportJiweiExcel(@RequestBody LeaderSupervisionVo leaderSupervisionVo , HttpServletResponse response){
 
-
-
         try {
             HSSFWorkbook wb = leaderEXportExcelService.jiweiApplyExport(leaderSupervisionVo);
             leaderCommonService.updateBussinessFiledsByJiweiExport(leaderSupervisionVo);
@@ -261,13 +224,5 @@ public class  LeaderSupervisionController {
     public void testsql(){
 
         leaderEXportExcelService.test();
-
     }
-
-
-
-
-
-
-
 }

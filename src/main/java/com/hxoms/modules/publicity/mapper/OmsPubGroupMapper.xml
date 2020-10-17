@@ -49,9 +49,17 @@
         <if test="orgName != null and orgName != ''">
            and t.ZTDW like concat('%',#{orgName},'%')
         </if>
-        <if test="status != null and status != ''">
-           and t.SQZT in ${status}
-        </if>
+        <!--<if test="status != null and status != ''">-->
+           <!--and t.SQZT in ${status}-->
+        <!--</if>-->
+        <choose>
+            <when test="status != null and status != ''">
+                and t.SQZT = ${status}
+            </when>
+            <otherwise>
+                and t.SQZT in ('1','2','3')
+            </otherwise>
+        </choose>
         <if test="startDate != null and startDate != ''">
            and t.CGSJ >= #{startDate}
         </if>

@@ -102,18 +102,16 @@ public class OmsSelfestimateItemsController {
      * @return
      * @param type 因公 因私  延期回国
      * @param applyId 申请id
-     * @param personType 操作人类型（经办人  干部监督处）
      * @throws Exception
      */
     @ApiOperation(value="下一步（生成材料）", notes="下一步（生成材料）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", value = "类型（因公 因私 延期回国）", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "personType", value = "操作人类型（经办人  干部监督处）", required = true, dataType = "String"),
             @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String")
     })
     @GetMapping("/selectFileList")
-    public Result selectFileList(String type, String applyId, String personType) throws Exception {
-        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectFileList(type, applyId, personType);
+    public Result selectFileList(String type, String applyId) throws Exception {
+        List<OmsSelfFileVO> omsSelfFileVOS = omsSelfestimateItemsService.selectFileList(type, applyId);
         return Result.success(omsSelfFileVOS);
     }
 
@@ -150,19 +148,17 @@ public class OmsSelfestimateItemsController {
      * @return
      * @param selffileId 自评id
      * @param applyId 申请id
-     * @param personType 操作人类型（经办人  干部监督处）
      * @throws Exception
      */
     @ApiOperation(value="自评结果项列表", notes="自评结果项列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", value = "类型（因公 因私 延期回国）", required = true, dataType = "String"),
             @ApiImplicitParam(name = "selffileId", value = "自评材料清单id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "personType", value = "操作人类型（经办人  干部监督处）", required = true, dataType = "String"),
             @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String")
     })
     @GetMapping("/selectFileItemsList")
-    public Result selectFileItemsList(String type, String selffileId, String applyId, String personType) throws Exception {
-        OmsSelfFileVO omsSelfFileVO = omsSelfestimateItemsService.selectFileItemsList(type, selffileId, applyId, personType);
+    public Result selectFileItemsList(String type, String selffileId, String applyId) throws Exception {
+        OmsSelfFileVO omsSelfFileVO = omsSelfestimateItemsService.selectFileItemsList(type, selffileId, applyId);
         return Result.success(omsSelfFileVO);
     }
 }

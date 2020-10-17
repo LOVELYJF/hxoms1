@@ -21,16 +21,13 @@
 
   <!--查询结果子集列表-->
   <select id="selectItemResultList" parameterType="java.util.Map" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
-      select o1.ID as checkId, o1.CHECK_ITEM as checkItem,
-      (select o2.ID as id from oms_selfestimate_resultitem o2
-      where 1=1 and o2.CHECK_ID=o1.ID and o2.APPLY_ID = #{applyId} and o2.PERSON_TYPE = #{personType}) as id,
-      (select o2.APPLY_ID as applyId from oms_selfestimate_resultitem o2
-      where 1=1 and o2.CHECK_ID=o1.ID and o2.APPLY_ID = #{applyId} and o2.PERSON_TYPE = #{personType}) as applyId,
-             ifnull((select o2.CHECK_RESULT as checkResult from oms_selfestimate_resultitem o2
-                     where 1=1 and o2.CHECK_ID=o1.ID and o2.APPLY_ID = #{applyId} and o2.PERSON_TYPE = #{personType}),0) as checkResult,
-      (select o2.DESCRIPTION as description from oms_selfestimate_resultitem o2
-      where 1=1 and o2.CHECK_ID=o1.ID and o2.APPLY_ID = #{applyId} and o2.PERSON_TYPE = #{personType}) as description
-      FROM oms_selfestimate_items o1
-      WHERE 1=1 and o1.ENABLE = 1 and o1.SELFFILE_ID = #{selffileId}
+
+select a.ID AS checkId,a.CHECK_ITEM AS checkItem,b.id,b.APPLY_ID as applyId,
+ifnull(b.CHECK_RESULT,0) AS checkResult,b.DESCRIPTION AS description
+from oms_selfestimate_items a
+left JOIN (select id,CHECK_ID,APPLY_ID,CHECK_RESULT,DESCRIPTION from
+oms_selfestimate_resultitem where APPLY_ID = #{applyId} and PERSON_TYPE = #{personType}) b on a.ID=b.CHECK_ID
+where a.ENABLE = 1 AND a.SELFFILE_ID = #{selffileId}
+
   </select>
 </mapper>

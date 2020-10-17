@@ -165,21 +165,12 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
 
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public List<OmsSelfFileVO> selectFileList(String type, String applyId, String personType) {
+    public List<OmsSelfFileVO> selectFileList(String type, String applyId ) {
         if (StringUtils.isEmpty(type) || StringUtils.isBlank(applyId)){
             throw new CustomMessageException("参数错误");
         }
         //登录用户信息
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        //查询机构信息
-//        B01 b01 = b01Mapper.selectOrgByB0111(userInfo.getOrgId());
-
-
-//        UserInfo userInfo = UserInfoUtil.getUserInfo();
-//        userInfo.setId("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
-//        B01 b01 = new B01();
-//        b01.setB0100("cd3ffb59-d5ba-1038-bdaa-c2ae22a0bcce");
-
 
         //查询自评项目是否初始化
         QueryWrapper<OmsSelfFile> wrapper = new QueryWrapper<>();
@@ -224,12 +215,13 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
     }
 
     @Override
-    public OmsSelfFileVO selectFileItemsList(String type, String selffileId, String applyId, String personType) {
+    public OmsSelfFileVO selectFileItemsList(String type, String selffileId, String applyId) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsSelfFileVO omsSelfFileVO = new OmsSelfFileVO();
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("selffileId", selffileId);
         paramsMap.put("applyId", applyId);
-        paramsMap.put("personType", personType);
+        paramsMap.put("personType", userInfo.getUserType());
         List<OmsSelfestimateResultitemVO> omsSelfestimateResultitems = omsSelfestimateResultitemMapper.selectItemResultList(paramsMap);
         omsSelfFileVO.setOmsSelfestimateResultitems(omsSelfestimateResultitems);
         //查询出国人所在单位

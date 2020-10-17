@@ -182,7 +182,7 @@ public interface OmsPubApplyService {
      * @Author: 李逍遥
      * @Date: 2020/7/28 9:48
      */
-    void updateSQZTById(String id);
+    void updateSQZTById(String id,String currentStep);
 
     /**
      * 功能描述: <br>

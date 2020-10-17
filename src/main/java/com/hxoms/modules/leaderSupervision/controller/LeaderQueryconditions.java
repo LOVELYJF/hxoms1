@@ -113,7 +113,8 @@ public class LeaderQueryconditions {
     @PostMapping("/officialJiweiOpinion")
     public Result officialJiweiOpinion(@RequestParam("file") MultipartFile[] files,String[] leaderBatchIds, HttpServletRequest request){
 
-        leaderDetailProcessingService.fileUpload(files,leaderBatchIds,"干部监督处",Constants.leader_business[2],Constants.leader_businessName[2],request);
+        leaderDetailProcessingService.fileUpload(files,leaderBatchIds,"干部监督处",
+                Constants.emPrivateGoAbroad.记录意见.getIndex(),Constants.emPrivateGoAbroad.记录意见.getName(),request);
 
         return Result.success();
     }

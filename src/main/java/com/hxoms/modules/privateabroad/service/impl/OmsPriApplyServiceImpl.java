@@ -160,7 +160,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         }
         //基本信息保存
         //设置草稿状态
-        omsPriApply.setApplyStatus(Constants.private_business[0]);
+        omsPriApply.setApplyStatus(Constants.emPrivateGoAbroad.草稿.getIndex());
         omsPriApply.setIsEntrust(0);
         //归还证照时间(回国后十天)
         Date revertLicenceTime = DateUtils.addDays(omsPriApply.getReturnTime(), 10);
@@ -201,7 +201,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     public String deletePriApply(String id) {
         //只能删除未上报的
         OmsPriApply omsPriApply = omsPriApplyMapper.selectById(id);
-        if (omsPriApply.getApplyStatus() > Constants.private_business[4]) {
+        if (omsPriApply.getApplyStatus() > Constants.emPrivateGoAbroad.自评.getIndex()) {
             throw new CustomMessageException("此申请不能删除");
         }
         if (omsPriApplyMapper.deleteById(id) < 1) {
@@ -218,12 +218,12 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(omsPriApply.getId());
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
-        if (Constants.private_business[7] == omsPriApply.getApplyStatus()) {
+        if (Constants.emPrivateGoAbroad.撤销.getIndex() == omsPriApply.getApplyStatus()) {
             //撤销
-            omsAbroadApproval.setStepCode(Constants.private_business[7]);
-            omsAbroadApproval.setStepName(Constants.private_businessName[7]);
-        } else if (Constants.private_business[0] == omsPriApply.getApplyStatus()) {
-            omsAbroadApproval.setStepCode(Constants.private_business[0]);
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.撤销.getIndex());
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.撤销.getName());
+        } else if (Constants.emPrivateGoAbroad.草稿.getIndex() == omsPriApply.getApplyStatus()) {
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.草稿.getIndex());
             omsAbroadApproval.setStepName("撤回");
             //撤回
             if (omsPriApplyDestail.getApplyStatus() > 20) {
@@ -235,17 +235,22 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             throw new CustomMessageException("操作失败");
         }
         if (omsPriApply.getApplyStatus() > 1 || omsPriApply.getApplyStatus() <= 5) {
-            int status = omsPriApply.getApplyStatus() - 1;
+            int status = omsPriApply.getApplyStatus();
             omsAbroadApproval.setStepCode(status);
-            for (int i = 1; i < 5; i++) {
-                if (Constants.private_business[i] == status) {
-                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
-                    break;
-                }
-            }
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.getNameByIndex(status));
+//            int status = omsPriApply.getApplyStatus() - 1;
+//            omsAbroadApproval.setStepCode(status);
+//            for (int i = 1; i < 5; i++) {
+//                if (Constants.private_business[i] == status) {
+//                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
+//                    break;
+//                }
+//            }
         } else if (omsPriApply.getApplyStatus() == 20) {
-            omsAbroadApproval.setStepCode(Constants.private_business[4]);
-            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
+//            omsAbroadApproval.setStepCode(Constants.private_business[4]);
+//            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
+            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.自评.getIndex());
+            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.自评.getName());
         }
 
         //添加步骤
@@ -326,7 +331,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             //因私
             omsAbroadApproval.setType(Constants.oms_business[1]);
             OmsPriApply omsPriApply = new OmsPriApply();
-            omsPriApply.setApplyStatus(Constants.private_business[1]);
+            omsPriApply.setApplyStatus(Constants.emPrivateGoAbroad.生成材料.getIndex());
             omsPriApply.setId(applyId);
             int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
             if (updateStatus < 1) {
@@ -337,7 +342,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             omsAbroadApproval.setType(Constants.oms_business[2]);
             OmsPriDelayApply omsPriDelayApply = new OmsPriDelayApply();
             omsPriDelayApply.setId(applyId);
-            omsPriDelayApply.setApplyStatus(Constants.private_business[1]);
+            omsPriDelayApply.setApplyStatus(Constants.emPrivateGoAbroad.生成材料.getIndex());
             int updateStatus = omsPriDelayApplyMapper.updateById(omsPriDelayApply);
             if (updateStatus < 1) {
                 throw new CustomMessageException("操作失败");
@@ -345,7 +350,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         }
 
         //查询是否存在数据
-        List<OmsAbroadApproval> list = omsAbroadApprovalService.selcetByApplyIdAndStepCode(Constants.private_business[1], applyId);
+        List<OmsAbroadApproval> list = omsAbroadApprovalService.selcetByApplyIdAndStepCode(Constants.emPrivateGoAbroad.生成材料.getIndex(), applyId);
         if (list != null || list.size() != 0) {
             for (OmsAbroadApproval abroadApproval : list) {
                 omsAbroadApprovalService.deleteById(abroadApproval.getId());
@@ -354,8 +359,8 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         //添加步骤
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         omsAbroadApproval.setApplyId(applyId);
-        omsAbroadApproval.setStepCode(Constants.private_business[1]);
-        omsAbroadApproval.setStepName(Constants.private_businessName[1]);
+        omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.生成材料.getIndex());
+        omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.生成材料.getName());
         omsAbroadApproval.setApprovalTime(new Date());
         omsAbroadApproval.setApprovalUser(userInfo.getId());
         omsAbroadApproval.setSubmitTime(new Date());

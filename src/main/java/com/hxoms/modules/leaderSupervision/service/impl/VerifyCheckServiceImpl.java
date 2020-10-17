@@ -45,72 +45,50 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
         if("pass".equals(leaderSupervisionVo.getIspass())){
 
             //  (1) 保存 审批记录(通过)
-            leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"通过", Constants.leader_businessName[5], Constants.leader_business[5],null);
+            leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"通过",
+                    Constants.emPrivateGoAbroad.部领导审批.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),null);
             // 修改最终结论
             leaderCommonService.updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"1",null);
 
 
         }else if("nopass".equals(leaderSupervisionVo.getIspass())){
 
-            leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"不通过", Constants.leader_businessName[5], Constants.leader_business[5],leaderSupervisionVo.getReason());
-
+            leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"不通过",
+                    Constants.emPrivateGoAbroad.部领导审批.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),leaderSupervisionVo.getReason());
             leaderCommonService.updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"2",null);
-
         }
 
-
         //  修改 业务流程状态 (第二步) 修改 为  处领导审批
-        updteBussinessApplyStatueByverify(leaderSupervisionVo.getBussinessTypeAndIdVos(), Constants.leader_businessName[8],leaderSupervisionVo.getIspass());
+        updteBussinessApplyStatueByverify(leaderSupervisionVo.getBussinessTypeAndIdVos(),
+                Constants.emPrivateGoAbroad.已办结.getName(),leaderSupervisionVo.getIspass());
 
         leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-
-                Constants.leader_business[28]);
-
-
-
-
-
+                Constants.emPrivateGoAbroad.已办结.getIndex());
     }
 
 
     public void updteBussinessApplyStatueByverify(List<BussinessTypeAndIdVo> businessTypeAndIdAndOnJobVos, String leaderStatusName,String ispass){
 
-
         for(int i=0;i<businessTypeAndIdAndOnJobVos.size();i++){
 
-//            String ispass = businessTypeAndIdAndOnJobVos.get(i).getCadresupervisionOpinion();
-//            String incumbencyStatus = businessTypeAndIdAndOnJobVos.get(i).getIncumbencyStatus();
             String bussinessType =  LeaderSupervisionUntil.selectorBussinessTypeByName(businessTypeAndIdAndOnJobVos.get(i).getBussinessName());
-
-
             String updateApplyStatusSql =   getUpdateStatusSql(businessTypeAndIdAndOnJobVos.get(i).getBussinessId(),bussinessType,leaderStatusName,ispass);
-
             log.info("修改业务 流程的 sql ="+updateApplyStatusSql);
-
 
             if(updateApplyStatusSql.length()>0){
 
                 SqlVo instance = SqlVo.getInstance(updateApplyStatusSql);
                 selectMapper.update(instance);
-
-
             }
-
-
         }
-
-
     }
 
     public String getUpdateStatusSql(String busessId,String bussinesType,String leaderStatusName,String ispass){
 
         String updateSql = "update "+bussinesType;
-
         String setSql = " set  " ;
-
         String whereCondition = " where id = '" + busessId+"'";
-
 
         for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
 
@@ -123,34 +101,18 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
                     // 同意到  生成 备案表
                     if("pass".equals(ispass)){
 
-                        setSql+= status + "=" + Constants.leader_business[8];
-
+                        setSql+= status + "=" + Constants.emPrivateGoAbroad.已办结.getIndex();
                         return  updateSql+setSql+whereCondition;
-
                     }
                     // 不同意 到 已完结 流程走完
                     else if("nopass".equals(ispass)){
 
-
-                        setSql+= status + "=" + Constants.leader_business[Constants.leader_business.length-1];;
-
+                        setSql+= status + "=" + Constants.emPrivateGoAbroad.已办结.getIndex();
                         return  updateSql+setSql+whereCondition;
-
-
                     }
-
-
-
                 }
-
-
-
-
             }
-
         }
-
-        //   return  updateSql+setSql+whereCondition;
 
         return null;
     }

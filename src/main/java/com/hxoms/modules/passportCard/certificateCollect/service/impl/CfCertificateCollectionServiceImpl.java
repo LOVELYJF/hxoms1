@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.*;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.keySupervision.suspendApproval.entity.OmsSupSuspendUnit;
@@ -35,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificateCollectionMapper,CfCertificateCollection> implements CfCertificateCollectionService {
+public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificateCollectionMapper, CfCertificateCollection> implements CfCertificateCollectionService {
 
     @Autowired
     private CfCertificateCollectionMapper cfCertificateCollectionMapper;
@@ -57,6 +58,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
 
     @Autowired
     private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
+
     /**
      * @Desc: 生成催缴任务
      * @Author: wangyunquan
@@ -64,34 +68,34 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      * @Return: void
      * @Date: 2020/8/11
      */
-    public void createCjTask(List<CfCertificateCollection> cfCertificateCollectionList){
-        if(cfCertificateCollectionList==null||cfCertificateCollectionList.size()==0)
+    public void createCjTask(List<CfCertificateCollection> cfCertificateCollectionList) {
+        if (cfCertificateCollectionList == null || cfCertificateCollectionList.size() == 0)
             throw new CustomMessageException("参数为空，请核实！");
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        if(userInfo==null)
+        if (userInfo == null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        List<CfCertificateCollection> cfCerList=new ArrayList<>();
+        List<CfCertificateCollection> cfCerList = new ArrayList<>();
         for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
             cfCertificateCollection.setId(UUIDGenerator.getPrimaryKey());
             //0:登记备案,1:因私出国(境),2:证照借出,3:撤销出国申请
-            if(CjDataSourceEnum.DJBA.getCode().equals(cfCertificateCollection.getDataSource())){
+            if (CjDataSourceEnum.DJBA.getCode().equals(cfCertificateCollection.getDataSource())) {
                 Date date = new Date();
                 cfCertificateCollection.setHappenDate(date);
-                cfCertificateCollection.setReturnDate(PubUtils.calDate(date,10));
+                cfCertificateCollection.setReturnDate(PubUtils.calDate(date, 10));
             }
             //0:解除,1;已上缴,2:未上缴
             cfCertificateCollection.setCjStatus(CjStatusEnum.WSJ.getCode());
             cfCertificateCollection.setCreatetime(new Date());
             cfCertificateCollection.setCreator(userInfo.getId());
             cfCerList.add(cfCertificateCollection);
-            if(cfCerList.size()/1000==0){
-                if(!saveBatch(cfCerList,cfCerList.size()))
+            if (cfCerList.size() / 1000 == 0) {
+                if (!saveBatch(cfCerList, cfCerList.size()))
                     new CustomMessageException("生成催缴任务失败！");
                 cfCerList.clear();
             }
         }
-        if(cfCerList.size()>0){
-            if(!saveBatch(cfCerList,cfCerList.size()))
+        if (cfCerList.size() > 0) {
+            if (!saveBatch(cfCerList, cfCerList.size()))
                 new CustomMessageException("生成催缴任务失败！");
             cfCerList.clear();
         }
@@ -108,8 +112,8 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public PageBean<CfCertificateCjInfo> selectCerCjApply(PageBean pageBean, CfCertificateCjQueryParam cfCertificateCjQueryParam) {
-        PageHelper.startPage(pageBean.getPageNum(),pageBean.getPageSize());
-        PageInfo<CfCertificateCjInfo> pageInfo=new PageInfo<CfCertificateCjInfo>(cfCertificateCollectionMapper.selectCerCjApply(cfCertificateCjQueryParam));
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        PageInfo<CfCertificateCjInfo> pageInfo = new PageInfo<CfCertificateCjInfo>(cfCertificateCollectionMapper.selectCerCjApply(cfCertificateCjQueryParam));
         return PageUtil.packagePage(pageInfo);
     }
 
@@ -134,13 +138,13 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public CfCertificateCjByPhone selectCerCjInfoByOrgan(String rfB0000) {
-        if(StringUtils.isBlank(rfB0000))
+        if (StringUtils.isBlank(rfB0000))
             throw new CustomMessageException("请求参数不正确，请核实！");
-        List<HandlerInfo> handlerList=cfCertificateCollectionMapper.selectHandlerByOrgan(rfB0000);
-        if(handlerList==null||handlerList.size()==0)
+        List<HandlerInfo> handlerList = cfCertificateCollectionMapper.selectHandlerByOrgan(rfB0000);
+        if (handlerList == null || handlerList.size() == 0)
             throw new CustomMessageException("该机构下无经办人，请核实！");
-        List<CfCertificatePhoneCjInfo> cfCertificatePhoneCjInfoList=cfCertificateCollectionMapper.selectCerCjInfoByOrgan(rfB0000);
-        CfCertificateCjByPhone cfCertificateCjByPhone=new CfCertificateCjByPhone();
+        List<CfCertificatePhoneCjInfo> cfCertificatePhoneCjInfoList = cfCertificateCollectionMapper.selectCerCjInfoByOrgan(rfB0000);
+        CfCertificateCjByPhone cfCertificateCjByPhone = new CfCertificateCjByPhone();
         cfCertificateCjByPhone.setHandlerList(handlerList);
         cfCertificateCjByPhone.setCfCertificatePhoneCjInfoList(cfCertificatePhoneCjInfoList);
         return cfCertificateCjByPhone;
@@ -155,7 +159,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public PhoneContent createPhoneContent(List<CjContentParam> cjContentParamList) {
-        PhoneContent phoneContent=new PhoneContent();
+        PhoneContent phoneContent = new PhoneContent();
         phoneContent.setContent(createCjcontent(cjContentParamList));
         return phoneContent;
     }
@@ -171,38 +175,38 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertCerCjResult(List<CfCertificateCollectionRequestEx> cerCollectionRequestExList) {
-        if(cerCollectionRequestExList==null||cerCollectionRequestExList.size()==0)
+        if (cerCollectionRequestExList == null || cerCollectionRequestExList.size() == 0)
             throw new CustomMessageException("请求参数不正确，请核实！");
-        List<CfCertificateCollectionRequest> cfCertificateCollectionRequestList=new ArrayList<>();
-        List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
-        Date date=new Date();
+        List<CfCertificateCollectionRequest> cfCertificateCollectionRequestList = new ArrayList<>();
+        List<CfCertificateCollection> cfCertificateCollectionList = new ArrayList<>();
+        Date date = new Date();
         for (CfCertificateCollectionRequestEx cfCertificateCollectionRequestEx : cerCollectionRequestExList) {
 
-            CfCertificateCollectionRequest cfCertificateCollectionRequest=new CfCertificateCollectionRequest();
-            BeanUtils.copyProperties(cfCertificateCollectionRequestEx,cfCertificateCollectionRequest);
+            CfCertificateCollectionRequest cfCertificateCollectionRequest = new CfCertificateCollectionRequest();
+            BeanUtils.copyProperties(cfCertificateCollectionRequestEx, cfCertificateCollectionRequest);
             cfCertificateCollectionRequest.setId(UUIDGenerator.getPrimaryKey());
             cfCertificateCollectionRequestList.add(cfCertificateCollectionRequest);
 
-            CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
+            CfCertificateCollection cfCertificateCollection = new CfCertificateCollection();
             cfCertificateCollection.setId(cfCertificateCollectionRequestEx.getCerCjId());
             cfCertificateCollection.setCjWay(cfCertificateCollectionRequestEx.getCjWay());
             String allCjResult = cfCertificateCollectionRequestEx.getAllCjResult();
-            StringBuffer stringBuffer=new StringBuffer();
-            if(!StringUtils.isBlank(allCjResult)){
+            StringBuffer stringBuffer = new StringBuffer();
+            if (!StringUtils.isBlank(allCjResult)) {
                 stringBuffer.append(allCjResult);
                 stringBuffer.append("\r\n");
             }
             String cjWay = CjWayEnum.DHCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "电话催缴：" : CjWayEnum.DXCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "短信催缴：" : cfCertificateCollectionRequestEx.getCjWay();
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-            if(!StringUtils.isBlank(cfCertificateCollectionRequestEx.getCjResult()))
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+            if (!StringUtils.isBlank(cfCertificateCollectionRequestEx.getCjResult()))
                 cfCertificateCollection.setCjResult(stringBuffer.append(simpleDateFormat.format(date)).append(cfCertificateCollectionRequestEx.getCjPerson()).append(cjWay).append(cfCertificateCollectionRequestEx.getCjResult()).toString());
             cfCertificateCollection.setUpdator(cfCertificateCollectionRequestEx.getCjPerson());
             cfCertificateCollection.setUpdatetime(cfCertificateCollectionRequestEx.getCjTime());
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
-        if(!CfCertificateCollectionRequestService.saveBatch(cfCertificateCollectionRequestList))
+        if (!CfCertificateCollectionRequestService.saveBatch(cfCertificateCollectionRequestList))
             throw new CustomMessageException("催缴记录保存失败！");
-        if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
+        if (!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
             throw new CustomMessageException("催缴任务表更新失败！");
     }
 
@@ -215,18 +219,18 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public void updateCerCjResult(List<SaveCjResult> saveCjResultList) {
-        if(saveCjResultList.size()==0)
+        if (saveCjResultList.size() == 0)
             throw new CustomMessageException("请求参数不正确，请核实！");
-        List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
-        Date date=new Date();
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        List<CfCertificateCollection> cfCertificateCollectionList = new ArrayList<>();
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         for (SaveCjResult saveCjResult : saveCjResultList) {
-            if(StringUtils.isBlank(saveCjResult.getCjResultAdd()))
+            if (StringUtils.isBlank(saveCjResult.getCjResultAdd()))
                 throw new CustomMessageException("未填写催缴结果，请核实！");
-            CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
+            CfCertificateCollection cfCertificateCollection = new CfCertificateCollection();
             cfCertificateCollection.setId(saveCjResult.getId());
-            StringBuffer stringBuffer=new StringBuffer();
-            if(!StringUtils.isBlank(saveCjResult.getCjResult())){
+            StringBuffer stringBuffer = new StringBuffer();
+            if (!StringUtils.isBlank(saveCjResult.getCjResult())) {
                 stringBuffer.append(saveCjResult.getCjResult());
                 stringBuffer.append("\r\n");
             }
@@ -235,7 +239,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             cfCertificateCollection.setUpdatetime(date);
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
-        if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
+        if (!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
             throw new CustomMessageException("保存催缴结果失败！");
     }
 
@@ -249,17 +253,17 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateCerCjForRemove(List<RemoveCjApply> removeCjApplyList) {
-        if(removeCjApplyList==null||removeCjApplyList.size()==0)
+        if (removeCjApplyList == null || removeCjApplyList.size() == 0)
             throw new CustomMessageException("请求参数不正确，请核实！");
-        List<CfCertificateCollection> cfCertificateCollectionList=new ArrayList<>();
+        List<CfCertificateCollection> cfCertificateCollectionList = new ArrayList<>();
         for (RemoveCjApply removeCjApply : removeCjApplyList) {
-            CfCertificateCollection cfCertificateCollection=new CfCertificateCollection();
-            if(!CjStatusEnum.WSJ.getCode().equals(removeCjApply.getCjStatus()))
+            CfCertificateCollection cfCertificateCollection = new CfCertificateCollection();
+            if (!CjStatusEnum.WSJ.getCode().equals(removeCjApply.getCjStatus()))
                 throw new CustomMessageException("只能解除未上缴的任务，请核实！");
-            BeanUtils.copyProperties(removeCjApply,cfCertificateCollection);
+            BeanUtils.copyProperties(removeCjApply, cfCertificateCollection);
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
-        if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
+        if (!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
             throw new CustomMessageException("更新数据失败！");
     }
 
@@ -272,19 +276,19 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public List<ExportSMSCjInfo> getExportSMSCjList(List<SMSCjInfo> smsCjInfoList) {
-        List<ExportSMSCjInfo> exportSMSCjInfoList=new ArrayList<>();
+        List<ExportSMSCjInfo> exportSMSCjInfoList = new ArrayList<>();
         for (SMSCjInfo sMSCjInfo : smsCjInfoList) {
-            ExportSMSCjInfo exportSMSCjInfo=new ExportSMSCjInfo();
+            ExportSMSCjInfo exportSMSCjInfo = new ExportSMSCjInfo();
             exportSMSCjInfo.setRfB0000(sMSCjInfo.getRfB0000());
             exportSMSCjInfo.setWorkUnit(sMSCjInfo.getWorkUnit());
-            List<CjContentParam> cjContentParamList=new ArrayList<>();
+            List<CjContentParam> cjContentParamList = new ArrayList<>();
             for (SMSCjPersonInfo smsCjPersonInfo : sMSCjInfo.getSmsCjPersonInfoList()) {
-                CjContentParam cjContentParam=new CjContentParam();
-                BeanUtils.copyProperties(smsCjPersonInfo,cjContentParam);
+                CjContentParam cjContentParam = new CjContentParam();
+                BeanUtils.copyProperties(smsCjPersonInfo, cjContentParam);
                 cjContentParamList.add(cjContentParam);
             }
             exportSMSCjInfo.setSmsInfo(createCjcontent(cjContentParamList));
-            List<HandlerInfo> handlerList=cfCertificateCollectionMapper.selectHandlerByOrgan(sMSCjInfo.getRfB0000());
+            List<HandlerInfo> handlerList = cfCertificateCollectionMapper.selectHandlerByOrgan(sMSCjInfo.getRfB0000());
             exportSMSCjInfo.setHandlerInfoList(handlerList);
             exportSMSCjInfoList.add(exportSMSCjInfo);
         }
@@ -302,14 +306,14 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     @Transactional(rollbackFor = Exception.class)
     public void exportSMSCjList(ExportRequestPara exportRequestPara, ServletOutputStream outputStream) throws IOException {
         List<ExportSMSCjInfo> exportSMSCjInfoList = exportRequestPara.getExportSMSCjInfoList();
-        if(exportSMSCjInfoList==null||exportSMSCjInfoList.size()==0)
+        if (exportSMSCjInfoList == null || exportSMSCjInfoList.size() == 0)
             throw new CustomMessageException("无数据导出，请核实！");
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        if(userInfo==null)
+        if (userInfo == null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        List<List<String>> values=new LinkedList<>();
-        Date date=new Date();
-        for(ExportSMSCjInfo exportSMSCjInfo: exportSMSCjInfoList){
+        List<List<String>> values = new LinkedList<>();
+        Date date = new Date();
+        for (ExportSMSCjInfo exportSMSCjInfo : exportSMSCjInfoList) {
             //根据机构编码查询数据，并生成对应短信催缴记录。
             String rfB0000 = exportSMSCjInfo.getRfB0000();
             String smsInfo = exportSMSCjInfo.getSmsInfo();
@@ -318,11 +322,11 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             String userId = handlerInfo.getUserId();
             String userName = handlerInfo.getUserName();
             String userMobile = handlerInfo.getUserMobile();
-            List<CfCertificateCollectionRequest>  cfCertificateCollectionRequestList=cfCertificateCollectionMapper.selectCjInfoByOrgan(rfB0000);
-            List<CfCertificateCollectionRequest>  cfCertificateCollectionRequestExis=new ArrayList<>();
+            List<CfCertificateCollectionRequest> cfCertificateCollectionRequestList = cfCertificateCollectionMapper.selectCjInfoByOrgan(rfB0000);
+            List<CfCertificateCollectionRequest> cfCertificateCollectionRequestExis = new ArrayList<>();
             for (CfCertificateCollectionRequest cfCertificateCollectionRequest : cfCertificateCollectionRequestList) {
                 //核实发送名单
-                if(smsInfo.contains(cfCertificateCollectionRequest.getZjhm())){
+                if (smsInfo.contains(cfCertificateCollectionRequest.getZjhm())) {
                     cfCertificateCollectionRequest.setId(UUIDGenerator.getPrimaryKey());
                     //0:电话催缴,1:短信催缴
                     cfCertificateCollectionRequest.setCjWay(CjWayEnum.DXCJ.getCode());
@@ -337,7 +341,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             }
             //保存催缴记录
             CfCertificateCollectionRequestService.saveBatch(cfCertificateCollectionRequestExis);
-            List<String> value=new LinkedList<>();
+            List<String> value = new LinkedList<>();
             value.add(exportSMSCjInfo.getWorkUnit());
             value.add(userName);
             value.add(userMobile);
@@ -359,12 +363,12 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     public void sendCjNotice(List<SendNotice> sendNotices) {
         for (SendNotice sendNotice : sendNotices) {
             //获取催缴内容
-            String CjNoticeContent=createCjcontent(sendNotice.getCjContentParamList());
+            String CjNoticeContent = createCjcontent(sendNotice.getCjContentParamList());
             try {
-                omsPubTaskSuperviseService.preAndRecMessage(sendNotice.getRfB0000(),CjNoticeContent,"6","1");
+                omsPubTaskSuperviseService.preAndRecMessage(sendNotice.getRfB0000(), CjNoticeContent, "6", "1");
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new CustomMessageException("发通知失败，原因："+e.getMessage());
+                throw new CustomMessageException("发通知失败，原因：" + e.getMessage());
             }
         }
     }
@@ -378,19 +382,19 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public void insertSuspendUnit(SupSuspendUnitApply supSuspendUnitApply) {
-        if(supSuspendUnitApply==null)
+        if (supSuspendUnitApply == null)
             throw new CustomMessageException("请求参数不正确，请核实！");
         UserInfo userInfo = UserInfoUtil.getUserInfo();
-        if(userInfo==null)
+        if (userInfo == null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        OmsSupSuspendUnit omsSupSuspendUnit=new OmsSupSuspendUnit();
-        BeanUtils.copyProperties(supSuspendUnitApply,omsSupSuspendUnit);
+        OmsSupSuspendUnit omsSupSuspendUnit = new OmsSupSuspendUnit();
+        BeanUtils.copyProperties(supSuspendUnitApply, omsSupSuspendUnit);
         omsSupSuspendUnit.setId(UUIDGenerator.getPrimaryKey());
         omsSupSuspendUnit.setStatus(ApprovalStatusEnum.NOT_ALLOW_APPROVAL.getCode());
         omsSupSuspendUnit.setCreateUser(userInfo.getId());
         omsSupSuspendUnit.setCreateTime(new Date());
         int result = omsSupSuspendUnitMapper.insert(omsSupSuspendUnit);
-        if(result==0)
+        if (result == 0)
             throw new CustomMessageException("保存失败！");
     }
 
@@ -403,11 +407,11 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public List<PrintFile> createFileListByCode(List<FileQuery> fileQueryList) {
-        List<PrintFile> printFileList=new ArrayList<>();
+        List<PrintFile> printFileList = new ArrayList<>();
         for (FileQuery fileQuery : fileQueryList) {
-            PrintFile printFile=new PrintFile();
-            List<com.hxoms.modules.file.entity.OmsFile> omsFileList = omsFileService.selectFileListByCode(fileQuery.getTableCode(), fileQuery.getProcpersonId(), fileQuery.getApplyId());
-            BeanUtils.copyProperties(omsFileList.get(0),printFile);
+            PrintFile printFile = new PrintFile();
+            List<com.hxoms.modules.file.entity.OmsCreateFile> omsFileList = omsFileService.selectFileListByCode(fileQuery.getTableCode(), fileQuery.getProcpersonId(), fileQuery.getApplyId());
+            BeanUtils.copyProperties(omsFileList.get(0), printFile);
             printFile.setApplyId(fileQuery.getApplyId());
             printFileList.add(printFile);
         }
@@ -423,32 +427,32 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public PrintFileDetail selectFileDestail(FileDestailParams fileDestailParams) {
-        AbroadFileDestailParams abroadFileDestailParams=new AbroadFileDestailParams();
-        BeanUtils.copyProperties(fileDestailParams,abroadFileDestailParams);
-        Map<String, Object> detailMap = omsFileService.selectFileDestail(abroadFileDestailParams);
-        PrintFileDetail printFileDetail=new PrintFileDetail();
-        com.hxoms.modules.file.entity.OmsFile omsFile= (com.hxoms.modules.file.entity.OmsFile) detailMap.get("omsFile");
-        OmsFile targetOmsFile=new OmsFile();
-        if(omsFile!=null){
-            BeanUtils.copyProperties(omsFile,targetOmsFile);
-            printFileDetail.setOmsFile(targetOmsFile);
-        }
-        com.hxoms.modules.file.entity.OmsCreateFile omsCreateFile= (com.hxoms.modules.file.entity.OmsCreateFile) detailMap.get("omsCreateFile");
-        OmsCreateFile targetOmsCreateFile=new OmsCreateFile();
-        if(omsCreateFile!=null){
-            BeanUtils.copyProperties(omsCreateFile,targetOmsCreateFile);
-            printFileDetail.setOmsCreateFile(targetOmsCreateFile);
-        }
-        List<com.hxoms.modules.file.entity.OmsReplaceKeywords>  omsReplaceKeywordsList= (List<com.hxoms.modules.file.entity.OmsReplaceKeywords>) detailMap.get("omsReplaceKeywordList");
-        if(omsReplaceKeywordsList!=null){
-            List<OmsReplaceKeywords> targetOmsReplaceKeywordsList=new ArrayList<>();
-            for (com.hxoms.modules.file.entity.OmsReplaceKeywords SourceOmsReplaceKeywords : omsReplaceKeywordsList) {
-                OmsReplaceKeywords targetOmsReplaceKeywords=new OmsReplaceKeywords();
-                BeanUtils.copyProperties(SourceOmsReplaceKeywords,targetOmsReplaceKeywords);
-                targetOmsReplaceKeywordsList.add(targetOmsReplaceKeywords);
-            }
-            printFileDetail.setOmsReplaceKeywordsList(targetOmsReplaceKeywordsList);
-        }
+        AbroadFileDestailParams abroadFileDestailParams = new AbroadFileDestailParams();
+        BeanUtils.copyProperties(fileDestailParams, abroadFileDestailParams);
+//        Map<String, Object> detailMap = omsFileService.selectFileDestail(abroadFileDestailParams);
+        PrintFileDetail printFileDetail = new PrintFileDetail();
+//        com.hxoms.modules.file.entity.OmsFile omsFile= (com.hxoms.modules.file.entity.OmsFile) detailMap.get("omsFile");
+//        OmsFile targetOmsFile=new OmsFile();
+//        if(omsFile!=null){
+//            BeanUtils.copyProperties(omsFile,targetOmsFile);
+//            printFileDetail.setOmsFile(targetOmsFile);
+//        }
+//        com.hxoms.modules.file.entity.OmsCreateFile omsCreateFile= (com.hxoms.modules.file.entity.OmsCreateFile) detailMap.get("omsCreateFile");
+//        OmsCreateFile targetOmsCreateFile=new OmsCreateFile();
+//        if(omsCreateFile!=null){
+//            BeanUtils.copyProperties(omsCreateFile,targetOmsCreateFile);
+//            printFileDetail.setOmsCreateFile(targetOmsCreateFile);
+//        }
+//        List<com.hxoms.modules.file.entity.OmsReplaceKeywords>  omsReplaceKeywordsList= (List<com.hxoms.modules.file.entity.OmsReplaceKeywords>) detailMap.get("omsReplaceKeywordList");
+//        if(omsReplaceKeywordsList!=null){
+//            List<OmsReplaceKeywords> targetOmsReplaceKeywordsList=new ArrayList<>();
+//            for (com.hxoms.modules.file.entity.OmsReplaceKeywords SourceOmsReplaceKeywords : omsReplaceKeywordsList) {
+//                OmsReplaceKeywords targetOmsReplaceKeywords=new OmsReplaceKeywords();
+//                BeanUtils.copyProperties(SourceOmsReplaceKeywords,targetOmsReplaceKeywords);
+//                targetOmsReplaceKeywordsList.add(targetOmsReplaceKeywords);
+//            }
+//            printFileDetail.setOmsReplaceKeywordsList(targetOmsReplaceKeywordsList);
+//        }
         return printFileDetail;
     }
 
@@ -461,8 +465,8 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public void saveTextOmsFile(OmsFile omsFile) {
-        com.hxoms.modules.file.entity.OmsFile SourceOmsFile=new com.hxoms.modules.file.entity.OmsFile ();
-        BeanUtils.copyProperties(omsFile,SourceOmsFile);
+        com.hxoms.modules.file.entity.OmsFile SourceOmsFile = new com.hxoms.modules.file.entity.OmsFile();
+        BeanUtils.copyProperties(omsFile, SourceOmsFile);
         String result = omsFileService.saveTextOmsFile(SourceOmsFile);
     }
 
@@ -476,9 +480,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public void insertOrUpdate(OmsCreateFile omsCreateFile) {
-        com.hxoms.modules.file.entity.OmsCreateFile sourceOmsCreateFile1=new com.hxoms.modules.file.entity.OmsCreateFile();
-        BeanUtils.copyProperties(omsCreateFile,sourceOmsCreateFile1);
-        omsCreateFileService.insertOrUpdate(sourceOmsCreateFile1);
+        com.hxoms.modules.file.entity.OmsCreateFile sourceOmsCreateFile1 = new com.hxoms.modules.file.entity.OmsCreateFile();
+        BeanUtils.copyProperties(omsCreateFile, sourceOmsCreateFile1);
+        omsCreateFileService.InsertOrUpdate(sourceOmsCreateFile1);
     }
 
     /**
@@ -490,9 +494,14 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      */
     @Override
     public OmsFile selectFileDestailNew(PrintFile printFile) {
-        com.hxoms.modules.file.entity.OmsFile omsFile = omsFileService.selectFileDestailNew(printFile.getId(), printFile.getApplyId(), printFile.getTableCode());
-        OmsFile targetOmsFile=new OmsFile();
-        BeanUtils.copyProperties(omsFile,targetOmsFile);
+//        AbroadFileDestailParams broadFileDestailParams=new AbroadFileDestailParams();
+//        broadFileDestailParams.setApplyID(printFile.getApplyId());
+//        broadFileDestailParams.setFileId(printFile.getId());
+//        broadFileDestailParams.setTableCode(printFile.getTableCode());
+//        broadFileDestailParams.setIsEdit("0");
+        com.hxoms.modules.file.entity.OmsCreateFile omsFile = omsFileService.selectFileDestailNew(printFile.getId());
+        OmsFile targetOmsFile = new OmsFile();
+        BeanUtils.copyProperties(omsFile, targetOmsFile);
         return targetOmsFile;
     }
 
@@ -504,8 +513,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      * @Date: 2020/9/9
      */
     private String createCjcontent(List<CjContentParam> cjContentParamList) {
-        return createCjcontent(cjContentParamList,false);
+        return createCjcontent(cjContentParamList, false);
     }
+
     /**
      * @Desc: 生成催缴内容
      * @Author: wangyunquan
@@ -513,33 +523,33 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
      * @Return: java.lang.String
      * @Date: 2020/9/3
      */
-    private String createCjcontent(List<CjContentParam> cjContentParamList,boolean sendCjNotice) {
-        StringBuffer allStr=new StringBuffer();
+    private String createCjcontent(List<CjContentParam> cjContentParamList, boolean sendCjNotice) {
+        StringBuffer allStr = new StringBuffer();
         //逾期未上缴
-        Integer over=10000;
-        Map<Integer,String> map=new HashedMap();
-        Date date=new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat( "yyyy.MM.dd");
+        Integer over = 10000;
+        Map<Integer, String> map = new HashedMap();
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
         for (CjContentParam cjContentParam : cjContentParamList) {
-            int dateDiff= PubUtils.calDateDiff(formatter.format(cjContentParam.getReturnDate()),formatter.format(date));
-            StringBuffer partStr=new StringBuffer();
+            int dateDiff = PubUtils.calDateDiff(formatter.format(cjContentParam.getReturnDate()), formatter.format(date));
+            StringBuffer partStr = new StringBuffer();
             //张三的护照（E9435）
-            partStr.append(cjContentParam.getName()).append("的").append(cjContentParam.getZjlxName()).append("（"+ cjContentParam.getZjhm()+"）");
+            partStr.append(cjContentParam.getName()).append("的").append(cjContentParam.getZjlxName()).append("（" + cjContentParam.getZjhm() + "）");
             String value = map.get(dateDiff);
-            Integer key=0;
-            if(dateDiff>=0){
-                key=dateDiff;
-            }else{
+            Integer key = 0;
+            if (dateDiff >= 0) {
+                key = dateDiff;
+            } else {
                 //逾期未上缴
-                key=over;
+                key = over;
             }
-            if(map.containsKey(key)){
-                map.put(key,value+"、"+partStr.toString());
-            }else{
-                map.put(key,partStr.toString());
+            if (map.containsKey(key)) {
+                map.put(key, value + "、" + partStr.toString());
+            } else {
+                map.put(key, partStr.toString());
             }
         }
-        if(!map.isEmpty()){
+        if (!map.isEmpty()) {
             Map<Integer, String> sortMap = new TreeMap<Integer, String>(
                     new Comparator<Integer>() {
                         @Override
@@ -552,14 +562,14 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             //贵单位张三的护照（E9435）还有3天逾期，王五的护照（E9545）、马六的台湾通行证（38445）逾期未上缴，请尽快上缴。
             allStr.append("贵单位");
             for (Integer integer : sortMap.keySet()) {
-                if(integer!=over){
-                    allStr.append(sortMap.get(integer)).append("还有"+integer).append("天逾期，");
-                }else{
+                if (integer != over) {
+                    allStr.append(sortMap.get(integer)).append("还有" + integer).append("天逾期，");
+                } else {
                     allStr.append(sortMap.get(over)).append("逾期未上缴，");
                 }
             }
             allStr.append("请尽快上缴。");
-            if(sendCjNotice)
+            if (sendCjNotice)
                 allStr.append("如果不及时上缴，会暂停出国境申报业务。");
         }
         return allStr.toString();

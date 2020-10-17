@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @ApiModel(value = "生成材料")
 @TableAnnotation(TableName = "oms_create_file", TableDescription="生成材料")
-public class OmsCreateFile {
+public class OmsCreateFile implements Comparable<OmsCreateFile> {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
     @ApiModelProperty(value = "主键")
@@ -90,6 +90,10 @@ public class OmsCreateFile {
     @ColumnAnnotation(FieldName = "BANK_CONTENT",   FieldDescription="可编辑文件（反面，第二页）")
     @ApiModelProperty(value = "可编辑文件（反面，第二页）")
     private String bankContent;
+
+    @ColumnAnnotation(FieldName = "IS_TEMPLATE",   FieldDescription="是否带模板（默认1，0不需要模板，只是用户提供纸质件，特指其它材料）")
+    @ApiModelProperty(value = "是否带模板（默认1，0不需要模板，只是用户提供纸质件，特指其它材料）")
+    private Integer isTemplate;
 
     public String getId() {
         return id;
@@ -249,5 +253,18 @@ public class OmsCreateFile {
 
     public void setBankContent(String bankContent) {
         this.bankContent = bankContent == null ? null : bankContent.trim();
+    }
+
+    public Integer getIsTemplate() {
+        return isTemplate;
+    }
+
+    public void setIsTemplate(Integer isTemplate) {
+        this.isTemplate = isTemplate;
+    }
+
+    @Override
+    public int compareTo(OmsCreateFile o) {
+        return this.sortId-o.getSortId();
     }
 }

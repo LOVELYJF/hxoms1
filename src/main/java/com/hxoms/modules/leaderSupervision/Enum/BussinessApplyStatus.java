@@ -8,17 +8,10 @@ import com.hxoms.common.utils.Constants;
  * @Description:
  ***/
 public enum BussinessApplyStatus {
+    pubBussinessStatus("oms_pub_apply","SQZT",Constants.emPrivateGoAbroad.业务受理.getIndex() ),//Constants.leader_business[0]
 
-//    pubBussinessStatus("oms_pub_apply","SQZT", Constants.public_business[Constants.public_business.length-1]),
-//
-//    priBussinessStatus("oms_pri_apply","APPLY_STATUS",Constants.private_business[4]),
-//    delBussinessStatus("oms_pri_delay_apply","APPLY_STATUS",Constants.delayed_business[4]);
-
-
-    pubBussinessStatus("oms_pub_apply","SQZT", Constants.leader_business[0]),
-
-    priBussinessStatus("oms_pri_apply","APPLY_STATUS", Constants.leader_business[0]),
-    delBussinessStatus("oms_pri_delay_apply","APPLY_STATUS", Constants.leader_business[0]);
+    priBussinessStatus("oms_pri_apply","APPLY_STATUS", Constants.emPrivateGoAbroad.业务受理.getIndex()),
+    delBussinessStatus("oms_pri_delay_apply","APPLY_STATUS", Constants.emPrivateGoAbroad.业务受理.getIndex());
 
     private String tableName;
 
@@ -27,17 +20,11 @@ public enum BussinessApplyStatus {
     private int    leaderNeedInitializeStatus;
 
 
-
-
     BussinessApplyStatus(String tableName,String applySatus,int leaderNeedInitializeStatus){
         this.tableName = tableName;
-
         this.applySatus = applySatus;
-
         this.leaderNeedInitializeStatus = leaderNeedInitializeStatus;
-
     }
-
 
     public String getTableName() {
         return tableName;

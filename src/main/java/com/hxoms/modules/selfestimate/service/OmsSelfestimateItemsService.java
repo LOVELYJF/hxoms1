@@ -48,7 +48,7 @@ public interface OmsSelfestimateItemsService {
      * @param applyId 申请id
      * @param personType 操作人类型（经办人  干部监督处）
      */
-    List<OmsSelfFileVO> selectFileList(String type, String applyId, String personType);
+    List<OmsSelfFileVO> selectFileList(String type, String applyId);
 
     /**
      * 添加文件列表
@@ -69,7 +69,6 @@ public interface OmsSelfestimateItemsService {
      * @return
      * @param applyId 自评id
      * @param applyId 申请id
-     * @param personType 操作人类型（经办人  干部监督处）
      */
-    OmsSelfFileVO selectFileItemsList(String type, String selffileId, String applyId, String personType);
+    OmsSelfFileVO selectFileItemsList(String type, String selffileId, String applyId);
 }

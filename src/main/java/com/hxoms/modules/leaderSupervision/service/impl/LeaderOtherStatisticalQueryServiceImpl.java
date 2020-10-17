@@ -71,9 +71,9 @@ public class LeaderOtherStatisticalQueryServiceImpl implements LeaderOtherStatis
 
 //      int a = Constants.leader_business[Constants.leader_business.length-1];
       // 待处理 列表
-      map.put("pendingList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) < Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
+      map.put("pendingList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) < Constants.emPrivateGoAbroad.已办结.getIndex()).collect(Collectors.toList()));//Constants.leader_business[Constants.leader_business.length - 1]
       // 已处理列表
-      map.put("pendedList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) == Constants.leader_business[Constants.leader_business.length - 1]).collect(Collectors.toList()));
+      map.put("pendedList", lists.stream().filter((Map m) -> Integer.valueOf(m.get("status").toString()) ==  Constants.emPrivateGoAbroad.已办结.getIndex()).collect(Collectors.toList()));
 
 
       return map;
@@ -159,31 +159,19 @@ public class LeaderOtherStatisticalQueryServiceImpl implements LeaderOtherStatis
    public String getUpdateStatusSql(String busessId,String bussinesType){
 
       String updateSql = "update "+bussinesType;
-
       String setSql = " set  " ;
-
       String whereCondition = " where id = '" + busessId+"'";
 
-
       for(BussinessApplyStatus applyStatus  : BussinessApplyStatus.values()){
-
          if(bussinesType.indexOf(applyStatus.getTableName())!=-1){
-
             String status =  applyStatus.getApplySatus();
             // 干部监督处的状态
-            setSql+= status + "=" + Constants.private_business[Constants.private_business.length-1];
-
+            setSql+= status + "=" +  applyStatus.getLeaderNeedInitializeStatus();//Constants.private_business[Constants.private_business.length-1];
             setSql+= ", leader_batch_id = '' ";
             break;
-
-
          }
-
       }
-
       return  updateSql+setSql+whereCondition;
-
-
    }
 
 

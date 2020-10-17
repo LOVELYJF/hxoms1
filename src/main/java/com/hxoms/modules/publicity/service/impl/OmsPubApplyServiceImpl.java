@@ -23,6 +23,7 @@ import com.hxoms.modules.publicity.mapper.OmsPubGroupPreApprovalMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.service.OrgService;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -151,7 +152,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(omsPubApply.getA0100())) {
             Result.error("请先选择申请的干部");
         }
-        if(omsPubApply.getCgsj()!=null){
+        if (omsPubApply.getCgsj() != null) {
             List<OmsPubApply> pubApplies = omsPubApplyMapper.selectExistsAbroad(omsPubApply.getProcpersonId(),
                     new SimpleDateFormat("yyyy-MM-dd").format(omsPubApply.getCgsj()));
             if (pubApplies.size() > 0) {
@@ -178,7 +179,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             //创建时间
             omsPubApply.setCreateTime(new Date());
             //申请状态
-            omsPubApply.setSqzt(Constants.private_business[1]);
+            omsPubApply.setSqzt(Constants.emPrivateGoAbroad.生成材料.getIndex());//Constants.private_business[1]
             //是否下达(1-是,0-否)
             omsPubApply.setSfxd(1);
             //数据来源（0：填写，1：上传）
@@ -306,7 +307,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //查询相关通知书文号的备案申请
         List<OmsPubApplyVO> list = omsPubApplyMapper.selectPubApplyListByPwh(pwh);
         if (list != null && list.size() > 0) {
-            omsPubApplyMapper.repealAllPubApplyByPwh(pwh, cxyy, Constants.private_business[7]);
+            omsPubApplyMapper.repealAllPubApplyByPwh(pwh, cxyy, Constants.emPrivateGoAbroad.撤销.getIndex());//Constants.private_business[7]
         } else {
             throw new CustomMessageException("该通知书文号下没有相关数据!");
         }
@@ -328,7 +329,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
         if (omsPubApply != null) {
-            omsPubApplyMapper.repealPubApplyById(id, cxyy, Constants.private_business[7]);
+            omsPubApplyMapper.repealPubApplyById(id, cxyy, Constants.emPrivateGoAbroad.撤销.getIndex());//Constants.private_business[7]
         }
     }
 
@@ -356,7 +357,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         for (String id : ids) {
             OmsPubApply omsPubApply = omsPubApplyMapper.selectById(id);
             Integer sqzt = omsPubApply.getSqzt();
-            if (sqzt >= Constants.leader_business[0]) {
+            if (sqzt >= Constants.emPrivateGoAbroad.业务受理.getIndex()) {
                 throw new CustomMessageException("该业务已经提交干部监督处，请先撤销再重新提交!");
             }
             //保存台办变更信息、
@@ -660,7 +661,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
      */
     @Transactional(rollbackFor = CustomMessageException.class)
     @Override
-    public void updateSQZTById(String id) {
+    public void updateSQZTById(String id, String currentStep) {
         if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
@@ -669,18 +670,48 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             throw new CustomMessageException("申请记录为空");
         }
         Integer sqzt = omsPubApply.getSqzt();
-        if (sqzt == Constants.private_business[0]) {
-            //更改为生成材料1
-            sqzt = Constants.private_business[1];
-        } else if (sqzt == Constants.private_business[1]) {
-            //更改为打印材料清单 2
-            sqzt = Constants.private_business[2];
-        } else if (sqzt == Constants.private_business[2]) {
-            //更改为自评 4
-            sqzt = Constants.private_business[4];
-        } else if (sqzt == Constants.private_business[4]) {
-            //更改为业务办理
-            sqzt = Constants.leader_business[0];
+        Integer cStep = Integer.parseInt(currentStep);
+        if (cStep != sqzt) return;
+
+        if (sqzt == Constants.emPublicGoAbroad.预备案填写中.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.草稿.getIndex();
+        } else if (sqzt == Constants.emPublicGoAbroad.草稿.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.生成材料.getIndex();
+        } else if (sqzt == Constants.emPublicGoAbroad.生成材料.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.打印材料清单.getIndex();
+        } else if (sqzt == Constants.emPublicGoAbroad.打印材料清单.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.自评.getIndex();
+        } else if (sqzt == Constants.emPublicGoAbroad.自评.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.业务受理.getIndex();
+        } else if (sqzt == Constants.emPublicGoAbroad.业务受理.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.征求意见.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.征求意见.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.记录意见.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.记录意见.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.做出审核意见.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.做出审核意见.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.处领导审批.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.处领导审批.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.部领导审批.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.部领导审批.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.核实批件.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.核实批件.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.制作备案表.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.制作备案表.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.已办结.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.已办结.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.待领证.getIndex();
+        }
+        if (sqzt == Constants.emPublicGoAbroad.待领证.getIndex()) {
+            sqzt = Constants.emPublicGoAbroad.已领证.getIndex();
         }
         omsPubApply.setSqzt(sqzt);
         omsPubApplyMapper.updateById(omsPubApply);
@@ -826,13 +857,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                     row.createCell(17).setCellValue("否");
                 }
                 Integer sqzt = list.get(i).getSqzt();
-                int i1 = Arrays.binarySearch(Constants.leader_business, sqzt);
-                if (i1 < 0) {
-                    int i2 = Arrays.binarySearch(Constants.private_business, sqzt);
-                    row.createCell(18).setCellValue(Constants.private_businessName[i2]);
-                } else {
-                    row.createCell(18).setCellValue(Constants.leader_businessName[i1]);
-                }
+                row.createCell(18).setCellValue(Constants.emPrivateGoAbroad.getNameByIndex(sqzt));
+
                 row.createCell(19).setCellValue(list.get(i).getZzjl());
                 //设置单元格字体大小
                 for (int j = 0; j < 19; j++) {
@@ -867,7 +893,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     public List<OmsPubApplyVO> getPubApplyList() {
         //要把申请赴台了且未到出国日期的未撤销的全部人员查一下
         String pwh = "琼台赴";
-        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh, Constants.private_business[7]);
+        //原来取的是private_bussiness[7]
+        List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.getPubApplyList(pwh, Constants.emPrivateGoAbroad.撤销.getIndex());
         return omsPubApplyVOS;
     }
 
@@ -891,7 +918,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
             omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
             List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
             for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-                omsPubApplyVO.setSqzt(Constants.leader_business[0]);
+                omsPubApplyVO.setSqzt(Constants.emPrivateGoAbroad.业务受理.getIndex());//Constants.leader_business[0]
                 omsPubApplyMapper.updateById(omsPubApplyVO);
             }
         }
@@ -921,7 +948,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         //更新该申请下的所有人员状态为撤销
         List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
         for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
-            omsPubApplyVO.setSqzt(Constants.private_business[7]);
+            omsPubApplyVO.setSqzt(Constants.emPrivateGoAbroad.撤销.getIndex());//Constants.private_business[7]
             omsPubApplyVO.setCxyy(cxyy);
             omsPubApplyVO.setModifyUser(loginUser.getId());
             omsPubApplyVO.setModifyTime(new Date());

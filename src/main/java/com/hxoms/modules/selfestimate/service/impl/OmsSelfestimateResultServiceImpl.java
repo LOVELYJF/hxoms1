@@ -48,6 +48,7 @@ public class OmsSelfestimateResultServiceImpl implements OmsSelfestimateResultSe
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //处理自评项结果
         for (OmsSelfestimateResultitem omsSelfestimateResultitem : omsSelfestimateResultitems) {
+            omsSelfestimateResultitem.setPersonType(userInfo.getUserType());
             if (StringUtils.isBlank(omsSelfestimateResultitem.getId())) {
                 //新增
                 omsSelfestimateResultitem.setId(UUIDGenerator.getPrimaryKey());

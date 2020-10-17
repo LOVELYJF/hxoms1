@@ -17,12 +17,8 @@ public interface OmsCreateFileService {
      * @return
      */
     List<OmsCreateFile> selectCreateFileList(String tableCode, String applyId);
-    /**
-     * 保存或者更新
-     *
-     */
-    OmsCreateFile insertOrUpdate(OmsCreateFile omsCreateFile);
 
+    OmsCreateFile InsertOrUpdate(OmsCreateFile omsCreateFile);
     /**
      * 批量删除生成文件
      * @param tableCode

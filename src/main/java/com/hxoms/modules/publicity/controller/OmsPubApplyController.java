@@ -5,11 +5,13 @@ import com.hxoms.common.utils.Result;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
+import org.apache.poi.util.ArrayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +91,14 @@ public class OmsPubApplyController {
      */
     @GetMapping("/getPubAppListByCondition")
     public Result getPubAppListByCondition(OmsPubApplyQueryParam omsPubApplyQueryParam){
+        if(omsPubApplyQueryParam.getStatus()==null||omsPubApplyQueryParam.getStatus().size()==0){
+            List<Integer> status = new ArrayList<>();
+            status.add(1);status.add(2);status.add(3);status.add(4);status.add(5);
+            status.add(20);status.add(21);status.add(22);status.add(23);status.add(24);
+            status.add(25);status.add(26);status.add(27);status.add(28);status.add(29);
+            omsPubApplyQueryParam.setStatus(status);
+        }
+
         PageInfo info = omsPubApplyService.getPubAppListByCondition(omsPubApplyQueryParam);
         return Result.success(info);
     }
@@ -124,9 +134,9 @@ public class OmsPubApplyController {
      * @Author: 李逍遥
      * @Date: 2020/7/28 9:47
      */
-    @PostMapping("/updateSQZTById")
-    public Result updateSQZTById(String id){
-        omsPubApplyService.updateSQZTById(id);
+    @GetMapping("/updateSQZTById")
+    public Result updateSQZTById(String id,String currentStep){
+        omsPubApplyService.updateSQZTById(id,currentStep);
         return Result.success();
     }
 

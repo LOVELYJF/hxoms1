@@ -208,31 +208,6 @@ public class Constants {
      * 0-草稿，1-征求意见，2-下达任务，3-撤销
      */
     public static int[] GJ_business = {0, 1, 2, 3};
-    /**
-     * 因私 业务 (签字盖章弃用)
-     */
-    public static int[] private_business = {1, 2, 3, 4, 5, 40, 41, 50, 0};
-    /**
-     * 因私 业务 状态名称
-     */
-    public static String[] private_businessName = {"草稿", "生成材料", "打印材料清单", "签字盖章", "自评", "待领证", "已领证", "撤销", "预备案填写中"};
-
-    /**
-     * 干部监督处业务
-     * <p>
-     * 数字 从 20 开始
-     */
-
-
-    public static int[] leader_business = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
-
-
-    /**
-     * 干部监督处业务 状态名称
-     */
-
-    public static String[] leader_businessName = {"业务办理", "征求意见", "记录意见", "做出" +
-            "审核意见", "处领导审批", "部领导审批", "上传批文", "核实批件", "制作备案表", "已办结"};
 
     /**
      * 干部监督处 批次 (主)状态
@@ -384,6 +359,19 @@ public class Constants {
         public void setIndex(int index) {
             this.index = index;
         }
+        /**
+         * 根据Index获取去Name
+         * @param index
+         * @return
+         */
+        public static String getNameByIndex(int index){
+            for(emIncumbencyStatus platformFree:emIncumbencyStatus.values()){
+                if(index==(platformFree.getIndex())){
+                    return platformFree.getName();
+                }
+            }
+            return  null;
+        }
     }
     /**
     * 撤销登记备案状态
@@ -415,6 +403,133 @@ public class Constants {
         }
         public void setIndex(int index) {
             this.index = index;
+        }
+        /**
+         * 根据Index获取去Name
+         * @param index
+         * @return
+         */
+        public static String getNameByIndex(int index){
+            for(emRevokeRegister platformFree:emRevokeRegister.values()){
+                if(index==(platformFree.getIndex())){
+                    return platformFree.getName();
+                }
+            }
+            return  null;
+        }
+    }
+
+    /**
+    * @description:因公出国境状态枚举
+    * @author:杨波
+    * @date:2020-10-16
+    **/
+    public enum emPublicGoAbroad{
+        预备案填写中("预备案填写中",0),
+        草稿("草稿",1),
+        生成材料("生成材料",2),
+        打印材料清单("打印材料清单",3),
+        签字盖章("签字盖章",4),
+        自评("自评",5),
+        业务受理("业务受理",20),
+        征求意见("征求意见",21),
+        记录意见("记录意见",22),
+        做出审核意见("做出审核意见",23),
+        处领导审批("处领导审批",24),
+        部领导审批("部领导审批",25),
+        核实批件("核实批件",26),
+        制作备案表("制作备案表",27),
+        已办结("已办结",28),
+        待领证("待领证",29),
+        已领证("已领证",30),
+        撤销("撤销",31);
+
+        private emPublicGoAbroad(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+        private String name;
+        private int index;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getIndex() {
+            return index;
+        }
+        public void setIndex(int index) {
+            this.index = index;
+        }
+        /**
+         * 根据Index获取去Name
+         * @param index
+         * @return
+         */
+        public static String getNameByIndex(int index){
+            for(emPublicGoAbroad platformFree:emPublicGoAbroad.values()){
+                if(index==(platformFree.getIndex())){
+                    return platformFree.getName();
+                }
+            }
+            return  null;
+        }
+    }
+    /**
+     * @description:因私出国境状态枚举
+     * @author:杨波
+     * @date:2020-10-16
+     **/
+    public enum emPrivateGoAbroad{
+        草稿("草稿",1),
+        生成材料("生成材料",2),
+        打印材料清单("打印材料清单",3),
+        签字盖章("签字盖章",4),
+        自评("自评",5),
+        业务受理("业务受理",20),
+        征求意见("征求意见",21),
+        记录意见("记录意见",22),
+        做出审核意见("做出审核意见",23),
+        处领导审批("处领导审批",24),
+        部领导审批("部领导审批",25),
+        核实批件("核实批件",26),
+        制作备案表("制作备案表",27),
+        已办结("已办结",28),
+        待领证("待领证",29),
+        已领证("已领证",30),
+        撤销("撤销",31);
+
+        private emPrivateGoAbroad(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+        private String name;
+        private int index;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getIndex() {
+            return index;
+        }
+        public void setIndex(int index) {
+            this.index = index;
+        }
+        /**
+         * 根据Index获取去Name
+         * @param index
+         * @return
+         */
+        public static String getNameByIndex(int index){
+            for(emPrivateGoAbroad platformFree:emPrivateGoAbroad.values()){
+                if(index==(platformFree.getIndex())){
+                    return platformFree.getName();
+                }
+            }
+            return  null;
         }
     }
 }

@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -251,7 +252,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(applyVOList.size() > 0){
             for (int i = 0; i < applyVOList.size(); i++) {
                 if(personId.equals(applyVOList.get(i).getProcpersonId())
-                        && Constants.private_business[7] != applyVOList.get(i).getSqzt()){
+                        && Constants.emPublicGoAbroad.制作备案表.getIndex() != applyVOList.get(i).getSqzt()){
                     msg = "当前团组已经存在该人员，请不要重复添加！";
                     return Result.error(msg);
                 }
@@ -267,7 +268,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setCfrw(pubGroup.getCfrw());
         pubApply.setCfsy(pubGroup.getCfsy());
         if(Constants.PUB_GROUP_STATUS_CODE[1] != pubGroup.getSqzt()){
-            pubApply.setSqzt(Constants.private_business[0]);
+            pubApply.setSqzt(Constants.emPublicGoAbroad.草稿.getIndex());
             pubApply.setSfzb(Constants.IS_YES);
             pubApply.setSfxd(IS_ASSIGN);
         }
@@ -287,7 +288,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubApply pubApply = pubApplyMapper.selectById(id);
         if(StringUtils.isBlank(pubApply.getJdcjl()) || Constants.IS_NOT.equals(pubApply.getJdcjl())){
             //撤销人员
-            pubApplyMapper.repealPubApplyById(id,cxyy, Constants.private_business[7]);
+            pubApplyMapper.repealPubApplyById(id,cxyy, Constants.emPublicGoAbroad.撤销.getIndex());
         }else{
             msg.append("干部监督处已审核完成，不能变更该人员，请先撤消原申请后重新发起新的申请!");
             return Result.error(msg.toString());
@@ -296,6 +297,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result backoutGroup(String id,String cxyy) {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(cxyy)){
             return Result.error("参数为空!");
@@ -313,7 +315,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         List<OmsPubApply> applylist = pubGroupMapper.getPubApplyByYspId(id);
         if(applylist.size()>0){
             for (int i = 0; i < applylist.size(); i++) {
-                pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),cxyy, Constants.private_business[7]);
+                pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),cxyy, Constants.emPublicGoAbroad.撤销.getIndex());
             }
         }
         return Result.success();
@@ -336,7 +338,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if(applylist.size()>0){
                 for (int i = 0; i < applylist.size(); i++) {
                     if(pubGroup.getCxyy().equals(applylist.get(i).getCxyy())){
-                        pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),null, Constants.private_business[0]);
+                        pubApplyMapper.repealPubApplyById(applylist.get(i).getId(),null, Constants.emPublicGoAbroad.草稿.getIndex());
                     }
                 }
             }
@@ -386,10 +388,10 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         if(applyVOList.size() > 0){
             for (int i = 0; i < applyVOList.size(); i++) {
                 OmsPubApplyVO applyVO = applyVOList.get(i);
-                if(Constants.private_business[7] == applyVO.getSqzt()){
+                if(Constants.emPublicGoAbroad.撤销.getIndex() == applyVO.getSqzt()){
                     applyVO.setApplyStatus("撤销");
                 }
-                if(Constants.private_business[7] != applyVO.getSqzt() && Constants.IS_YES.equals(applyVO.getSfzb())){
+                if(Constants.emPublicGoAbroad.撤销.getIndex() != applyVO.getSqzt() && Constants.IS_YES.equals(applyVO.getSfzb())){
                     applyVO.setApplyStatus("增补");
                 }
             }
@@ -434,7 +436,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
             if(Constants.IS_NOT.equals(pubGroup.getSource())){
                 pubGroup.setBazt(Integer.parseInt(bazt));
                 for (int i = 0; i < applyVOList.size(); i++) {
-                    if(Constants.private_business[7] != applyVOList.get(i).getSqzt()){
+                    if(Constants.emPublicGoAbroad.撤销.getIndex() != applyVOList.get(i).getSqzt()){
                         if(!StringUtils.isBlank(getCheckResult(applyVOList.get(i).getA0100(),Constants.oms_business[0])) &&
                             Constants.IS_NOT.equals(applyVOList.get(i).getSftsry())){
                             msg.append("姓名：'");
@@ -442,7 +444,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                             msg.append("',校验结果不通过,不能进行下一步操作,请检查!");
                             return Result.error(msg.toString());
                         }
-                        applyVOList.get(i).setSqzt(Constants.private_business[0]);
+                        applyVOList.get(i).setSqzt(Constants.emPublicGoAbroad.草稿.getIndex());
                         applyVOList.get(i).setSfxd(IS_ASSIGN);
                     }
                 }
@@ -457,7 +459,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                         msg.append("',校验结果不通过,不能进行下一步操作,请检查!");
                         return Result.error(msg.toString());
                     }
-                    applyVOList.get(i).setSqzt(Constants.private_business[0]);
+                    applyVOList.get(i).setSqzt(Constants.emPublicGoAbroad.草稿.getIndex());
                     applyVOList.get(i).setSfxd(IS_ASSIGN);
                 }
             }
@@ -481,7 +483,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         OmsPubGroupPreApproval pubGroup = new OmsPubGroupPreApproval();
         List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(id);
         for (int i = 0; i < applyVOList.size(); i++) {
-            if(Constants.private_business[7] != applyVOList.get(i).getSqzt()){
+            if(Constants.emPublicGoAbroad.撤销.getIndex() != applyVOList.get(i).getSqzt()){
                 if(StringUtils.isBlank(applyVOList.get(i).getZzjl())){
                     msg = "还未审核完毕，不能进行下一步操作！";
                     return Result.error(msg);
@@ -491,7 +493,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                         return Result.error(msg);
                     }
                 }
-                applyVOList.get(i).setSqzt(Constants.leader_business[6]);
+                applyVOList.get(i).setSqzt(Constants.emPublicGoAbroad.已领证.getIndex());
             }
         }
         //修改流转状态
@@ -525,7 +527,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
                 OmsPubGroupAndApplyList omsPubGroupAndApplyList = new OmsPubGroupAndApplyList();
                 List<OmsPubApplyVO> applyVOList = pubApplyMapper.selectByYSPId(id);
                 for (int i = 0; i < applyVOList.size(); i++) {
-                    applyVOList.get(i).setSqzt(Constants.leader_business[7]);
+                    applyVOList.get(i).setSqzt(Constants.emPublicGoAbroad.制作备案表.getIndex());
                 }
                 omsPubGroupAndApplyList.setOmsPubApplyVOList(applyVOList);
                 omsPubGroupAndApplyList.setOmsPubGroupPreApproval(pubGroup);
@@ -593,7 +595,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         int temp = 0;//如果人员完结则+1
         if(size > 0){
             for (int i = 0; i < size; i++) {
-                if(Constants.leader_business[Constants.leader_business.length-1] == applyVOList.get(i).getSqzt()){
+                if(Constants.emPublicGoAbroad.已办结.getIndex() == applyVOList.get(i).getSqzt()){
                     temp += 1;
                 }
             }
@@ -784,12 +786,13 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         String fmxx = omsConditionService.selectNegativeInfo(pubApply.getA0100(),pubGroup.getCgsj());
         pubApply.setFmxx(fmxx);
         pubApply.setSfysp(Constants.IS_YES);
-        pubApply.setSqzt(Constants.private_business[Constants.private_business.length-1]);
+        pubApply.setSqzt(Constants.emPublicGoAbroad.草稿.getIndex());
         pubApply.setSfxd(IS_NOT_ASSIGN);
         pubApply.setSfbg(Constants.IS_NOT);
         pubApply.setSfzb(Constants.IS_NOT);
         pubApply.setSftsry(Constants.IS_NOT);
         pubApply.setDwjsxs(Constants.IS_NOT);
+        pubApply.setSfxd(1);
         pubApply.setSource(pubGroup.getSource());
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());

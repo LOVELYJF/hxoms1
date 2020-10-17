@@ -1,7 +1,11 @@
 package com.hxoms.modules.file.controller;
 
 import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.StringUilt;
+import com.hxoms.common.utils.UUIDGenerator;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,6 +33,8 @@ public class OmsCreateFileController {
 
     @Autowired
     private OmsCreateFileService omsCreateFileService;
+    @Autowired
+    private OmsCreateFileMapper omsCreateFileMapper;
 
     /**
      * 生成文件列表
@@ -53,8 +60,8 @@ public class OmsCreateFileController {
     @ApiOperation(value="保存或者更新", notes="保存或者更新")
     @PostMapping("/insertOrUpdate")
     public Result insertOrUpdate(OmsCreateFile omsCreateFile){
-        OmsCreateFile result = omsCreateFileService.insertOrUpdate(omsCreateFile);
-        return Result.success(result);
+        omsCreateFile = omsCreateFileService.InsertOrUpdate(omsCreateFile);
+        return Result.success(omsCreateFile);
     }
 
     /**

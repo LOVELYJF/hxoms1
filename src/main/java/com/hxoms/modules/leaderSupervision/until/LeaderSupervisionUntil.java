@@ -120,10 +120,6 @@ public class LeaderSupervisionUntil {
 
     public final static String suffixPdfStyle = "</body>\n" + "</html>";
 
-    // 缓存 因私状态
-    private static Map<String, String> mappri = new HashMap<String, String>();
-
-
     // 生成批次号的方法
 
     /***
@@ -224,14 +220,10 @@ public class LeaderSupervisionUntil {
                     }
 
                 }
-
             }
         } else {
-
             throw new CustomMessageException("所传的参数为空，请仔细检查");
-
         }
-
     }
 
     // 返回 申请业务 类型
@@ -243,15 +235,12 @@ public class LeaderSupervisionUntil {
             if (bussinessType.contains(bussinessName)) {
 
                 return Constants.oms_business[i];
-
             }
 
             i++;
 
         }
-
         return null;
-
     }
 
 
@@ -268,28 +257,14 @@ public class LeaderSupervisionUntil {
 
                 return i;
             }
-
-
         }
-
         return null;
-
     }
 
     public static String getBatchIdByBuessinessId(String buessinessId, String tableName) {
 
-
         return " select leader_batch_id as batchId from " + tableName + "where id =" + buessinessId;
-
-
     }
-
-//    public Map getMapByLeaderSupervisionVo(LeaderSupervisionVo leaderSupervisionVo){
-//
-//        Map map = new HashMap();
-//
-//
-//    }
 
     /**
      * 根据 纪委意见 修改流程状态
@@ -298,11 +273,8 @@ public class LeaderSupervisionUntil {
     public static String updateBussinessStatusByJiweiFlow(String busessId, String bussinesType, String leaderStatusName, String bussinessName) {
 
         String updateSql = "update " + bussinesType;
-
         String setSql = " set  ";
-
         String whereCondition = " where id = '" + busessId + "'";
-
 
         for (BussinessApplyStatus applyStatus : BussinessApplyStatus.values()) {
 
@@ -312,35 +284,26 @@ public class LeaderSupervisionUntil {
 
                     String status = applyStatus.getApplySatus();
                     // 干部监督处的状态
-                    setSql += status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName, leaderStatusName)];
+                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName);
 
                     break;
                 } else if ("干教".equals(bussinessName)) {
 
                     String status = applyStatus.getApplySatus();
                     // 如果 是 干 教 流程 到纪委征求意见，状态置为 已办结
-                    setSql += status + "=" + Constants.leader_business[Constants.leader_business.length - 1];
+                    setSql += status + "=" +  Constants.emPrivateGoAbroad.已办结.getIndex();//Constants.leader_business[Constants.leader_business.length - 1];
 
                     break;
-
-
                 }
-
-
             }
-
         }
 
         return updateSql + setSql + whereCondition;
-
-
     }
 
 
     //导出 数据 类型 为 list<Map>
-
     public static HSSFWorkbook exportExcelByListMap(List listK, List listV, List<Map> dataList, String sheetName) {
-
 
         HSSFWorkbook wb = new HSSFWorkbook();
         // 设置 sheet 页
@@ -354,7 +317,6 @@ public class LeaderSupervisionUntil {
         HSSFCellStyle cellStyle = getCellStyle(wb);
 
         for (HSSFSheet sheet : sheetList) {
-
 
             //创建第一行
             Row row = sheet.createRow(0);
@@ -402,7 +364,7 @@ public class LeaderSupervisionUntil {
                         // 如果 该列是 申请状态进行转化
                         if ("applystatus".equals(s)) {
 
-                            k = getK(k, "因私");
+                            k = Constants.emPrivateGoAbroad.getNameByIndex(Integer.parseInt(k)) ;//getK(k, "因私");
                         }
 
                         cell2.setCellValue(k);
@@ -415,56 +377,12 @@ public class LeaderSupervisionUntil {
                         cell2.setCellStyle(cellStyle);
                         int currWidth = sheet.getColumnWidth(j);
                         autoSizeColumnOne(j, m, sheet, currWidth);
-
                     }
                 }
             }
-
-
         }
 
         return wb;
-    }
-
-
-    public static String getK(String k, String bussinessType) {
-
-
-        if ("因私".equals(bussinessType)) {
-
-            // 当两者 状态 不一致 的重新 把新的状态 写到 缓存中
-            if (mappri.size() != (Constants.private_business.length + Constants.leader_business.length)) {
-                mappri.clear();
-
-                for (int i = 0; i < Constants.private_business.length; i++) {
-
-                    //获取 状态  获取 状态 对应的值
-                    mappri.put(String.valueOf(Constants.private_business[i]), Constants.private_businessName[i]);
-
-                }
-
-                for (int j = 0; j < Constants.leader_business.length; j++) {
-
-                    mappri.put(String.valueOf(Constants.leader_business[j]), Constants.leader_businessName[j]);
-
-
-                }
-
-                return mappri.get(k);
-
-            } else {
-
-
-                return mappri.get(k);
-
-
-            }
-
-
-        }
-
-        return null;
-
     }
 
     public static HSSFWorkbook exportRfInfoByListMap(List listK, List listE, List listV, List<OmsRegProcpersoninfoVO> dataList,
@@ -983,53 +901,28 @@ public class LeaderSupervisionUntil {
     public static String getUpdateStatusByJieWei(String busessId, String bussinesType, String leaderStatusName, String bussinessName) {
 
         String updateSql = "update " + bussinesType;
-
         String setSql = " set  ";
-
         String whereCondition = " where id = '" + busessId + "'";
-
 
         for (BussinessApplyStatus applyStatus : BussinessApplyStatus.values()) {
 
             if (bussinesType.indexOf(applyStatus.getTableName()) != -1) {
-
                 String status = applyStatus.getApplySatus();
-
                 if ("干教".equals(bussinessName)) {
                     // todo 干教 流程 到征求纪委意见 就走完了 将状态 置为 已完结
-
-                    setSql += status + "=" + Constants.leader_business[Constants.leader_business.length - 1];
-
-
+                    setSql += status + "=" + Constants.emPrivateGoAbroad.已办结.getIndex();//Constants.leader_business[Constants.leader_business.length - 1];
                 } else {
-
                     // 干部监督处的状态
-                    setSql += status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName, leaderStatusName)];
-
-
+                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName);
                 }
-
-                // 干部监督处的状态
-//                setSql+= status + "=" + Constants.leader_business[LeaderSupervisionUntil.getIndexByArray(Constants.leader_businessName,leaderStatusName)];
-
                 break;
-
-
             }
-
         }
 
         return updateSql + setSql + whereCondition;
-
-
     }
 
-
     public static void main(String[] args) {
-
-
-//        deleteFileById();
-
 
     }
 
