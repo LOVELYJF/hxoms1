@@ -668,7 +668,8 @@
 		POLITICAL_AFFINAME politicalAffiname,
 		(select item_name from sys_dict_item where dict_code='ZZZT' and item_code=INCUMBENCY_STATUS) incumbencyStatus,
 		WORK_UNIT workUnit,
-		POST post
+		POST post,
+        LICENCE_IDENTITY licenceIdentity
 		FROM
 		oms_reg_procpersoninfo
 		<choose>
@@ -741,7 +742,34 @@
 	</select>
 
 
-	<!-- 注销申请查询证件 -->
+  <!--根据年度查询导入证照信息存疑、未上缴-->
+  <select id="selectAllExceptionInfo" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord" parameterType="java.lang.String">
+      select a.*,b.*
+      FROM cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+      LEFT JOIN cf_certificate_collection c ON a.id=c.cer_id
+      WHERE a.SAVE_STATUS = '2'
+      AND a.CARD_STATUS = '5'
+      AND c.CJ_STATUS is null
+      <if test="year!=null and year !=''">
+        AND a.year=#{year}
+      </if>
+
+    union
+
+      select a.*,b.*
+      FROM cf_certificate a
+      INNER JOIN oms_reg_procpersoninfo b ON a.OMS_ID = b.ID
+      WHERE a.SAVE_STATUS = '1'
+      AND a.CARD_STATUS in ('3','5')
+      <if test="year!=null and year !=''">
+        AND a.year=#{year}
+      </if>
+  </select>
+
+
+
+  <!-- 注销申请查询证件 -->
 	<select id="getCancellateLicense" resultType="java.util.Map">
 		select
 		cc.ID as id,
@@ -762,7 +790,7 @@
 		cc.QFRQ as qfrq,
 		cc.CSDD as csdd
 		from cf_certificate cc
-		join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
+		left join oms_reg_procpersoninfo orp on cc.OMS_ID = orp.ID
 		<where>
 			<trim suffixOverrides="and">
                 <if test="1 == 1">cc.ZJLX in (1,2,4) and </if>
@@ -793,7 +821,7 @@
 		org.BIRTH_DATE_GB as birthDateGb
 		from
 		cf_certificate cc
-		join oms_reg_procpersoninfo org on cc.OMS_ID=org.ID
+        left join oms_reg_procpersoninfo org on cc.OMS_ID=org.ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="a0100 != null">cc.a0100=#{a0100} and </if>
@@ -824,11 +852,11 @@
 		cc.QFRQ AS qfrq,
 		cc.CSDD AS csdd,
 		b.B0100 AS b0100,
-		getTime
+        DATE_FORMAT(getTime,'%Y-%m-%d') AS getTime
 		FROM
 		cf_certificate cc
-		JOIN oms_reg_procpersoninfo org ON cc.OMS_ID = org.ID
-		JOIN b01 as b  on org.RF_B0000 = b.b0100
+        left JOIN oms_reg_procpersoninfo org ON cc.OMS_ID = org.ID
+        left JOIN b01 as b  on org.RF_B0000 = b.b0100
 		left JOIN (
 		SELECT
 		ocgt.GET_TIME as getTime,
@@ -890,12 +918,11 @@
 
 	<!-- 查询证照机柜子集合 -->
 	<select id="getCerLicenseMachine" resultType="java.lang.String">
-    select
-        CABINET_NUM
-    from
+     select
+        distinct CABINET_NUM
+     from
         cf_certificate
-    where CABINET_NUM is not null
-    group by CABINET_NUM
+     where CABINET_NUM is not null
   </select>
 
 	<!-- 存取记录 -->
@@ -918,9 +945,9 @@
 
 		from
 			oms_cer_exit_entry_repertory oce
-		join oms_cer_get_task ocgt
+		left join oms_cer_get_task ocgt
 			on ocgt.ID = oce.GET_ID
-		join oms_reg_procpersoninfo org
+		left join oms_reg_procpersoninfo org
 			on org.ID = ocgt.OMS_ID
 		where oce.ZJHM=#{zjhm}
 		order by

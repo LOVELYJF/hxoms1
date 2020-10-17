@@ -349,7 +349,7 @@
           user_state='1'
       AND user_name = #{name}
       AND IDNUMBER = #{idNo}
-      <if test="yxqz!=null and yxqz!=''">
+      <if test="yxqz!=null">
         AND CARD_EXPIRY_DATE = #{yxqz}
       </if>
   </select>

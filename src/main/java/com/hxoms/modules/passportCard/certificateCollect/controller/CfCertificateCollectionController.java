@@ -191,7 +191,7 @@ public class CfCertificateCollectionController {
     @ApiOperation(value = "催缴记录查询")
     @ApiImplicitParam(value = "主键id",name = "id",required = true,paramType = "query")
     @GetMapping("/selectCjRecord")
-    public Result<RequestList<CjRecord>> selectCjRecord(@NotBlank(message = "id不能为空") String id){
+    public Result<List<CjRecord>> selectCjRecord(@NotBlank(message = "id不能为空") String id){
         return Result.success(cfCertificateCollectionRequestService.selectCjRecord(id));
     }
 

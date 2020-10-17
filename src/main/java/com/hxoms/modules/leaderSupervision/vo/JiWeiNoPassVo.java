@@ -15,7 +15,9 @@ public class JiWeiNoPassVo {
 
     private String filename;// 材料名称
 
-    private List<OmsSelfestimateItems> items; //干部监督处 自评
+    private List<OmsSelfestimateItemsVo> items; //干部监督处 自评
+
+    private String clshsftgOpinion;
 
     public String getSid() {
         return sid;
@@ -33,11 +35,19 @@ public class JiWeiNoPassVo {
         this.filename = filename;
     }
 
-    public List<OmsSelfestimateItems> getItems() {
+    public List<OmsSelfestimateItemsVo> getItems() {
         return items;
     }
 
-    public void setItems(List<OmsSelfestimateItems> items) {
+    public void setItems(List<OmsSelfestimateItemsVo> items) {
         this.items = items;
+    }
+
+    public String getClshsftgOpinion() {
+        return clshsftgOpinion;
+    }
+
+    public void setClshsftgOpinion(String clshsftgOpinion) {
+        this.clshsftgOpinion = clshsftgOpinion;
     }
 }

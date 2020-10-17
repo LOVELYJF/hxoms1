@@ -30,13 +30,10 @@ import com.hxoms.modules.passportCard.omsCerTransferOutLicense.entity.OmsCerTran
 import com.hxoms.modules.passportCard.omsCerTransferOutLicense.service.OmsCerTransferOutLicenseService;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.service.OrgService;
-import org.apache.logging.log4j.core.config.json.JsonConfiguration;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.ssl.Debug;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -75,12 +72,12 @@ public class OmsRegProcbatchServiceImpl extends ServiceImpl<OmsRegProcbatchMappe
     public Object startOmsReg(OmsRegProcbatch regProcbatch) {
         QueryWrapper<OmsRegProcbatch> queryWrapper = new QueryWrapper<OmsRegProcbatch>();
         Map<String, Object> map = new HashMap<String, Object>();
-        //status 未备案0，已备案1，已确认2，
+        //status 未备案0，未完成  1，已完成
         queryWrapper.eq("STATUS", "0");
         //查询是否有未备案批次
         int count = baseMapper.selectCount(queryWrapper);
         if (count > 0) {
-            throw new CustomMessageException("已经存在未确定备案完成的批次不能启动新的批次");
+            throw new CustomMessageException("已经存在未完成的批次不能启动新的批次");
         } else {
             UserInfo user = UserInfoUtil.getUserInfo();
             regProcbatch.setRfUcontacts(user.getUserName());

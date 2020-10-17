@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.initialise.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -237,6 +238,15 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         }
         CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
         if(certificateGa!=null){
+            //验证通过，修改人员证件持有情况
+            if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())&&regProcpersoninfoList.size()==1){
+                RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
+                OmsRegProcpersoninfo omsRegProcpersoninfo=new OmsRegProcpersoninfo();
+                omsRegProcpersoninfo.setId(omsRegProcpersoninfo.getId());
+                omsRegProcpersoninfo.setLicenceIdentity(PubUtils.calLicenceIdentity(omsRegProcpersoninfo.getLicenceIdentity(),certificateGa.getZjlx()));
+                if(!omsRegProcpersonInfoService.updateById(omsRegProcpersoninfo))
+                    throw new CustomMessageException("登记备案信息更新失败！");
+            }
             ValidateCerInfo validateCerInfoReturn = new ValidateCerInfo();
             BeanUtils.copyProperties(certificateGa,validateCerInfoReturn);
             cfCertificateValidate.setValidateCerInfo(validateCerInfoReturn);
@@ -490,15 +500,15 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     /**
      * @Desc: 存疑处理，以公安信息为准
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: void
      * @Date: 2020/8/10
      */
     @Override
     @Transactional(rollbackFor=Exception.class)
-    public void updateCerForGaInfoIsRight(QureyDealRequestInfo qureyDealRequestInfo) {
+    public void updateCerForGaInfoIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx) {
         CfCertificate cfCertificate=new CfCertificate();
-        BeanUtils.copyProperties(qureyDealRequestInfo,cfCertificate);
+        BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
         cfCertificate.setSaveStatus(SaveStatusEnum.WSQ.getCode());
         cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
@@ -749,8 +759,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                                                     //已取出待验证证照，此处要验证证照
                                                     if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
                                                         validateCerInfo(cfCertificateExist,cfCertificate,false);
-                                                        //设置存储方式
+                                                        //验证通过，设置存储方式
                                                         setStoreMode(cfCertificateExist,userInfo);
+                                                        //验证通过，修改人员证件持有情况
+                                                        if(CardStatusEnum.YYZ.getCode().equals(cfCertificateExist.getCardStatus())){
+                                                            omsRegProcpersoninfo.setLicenceIdentity(PubUtils.calLicenceIdentity(omsRegProcpersoninfo.getLicenceIdentity(),cfCertificateExist.getZjlx()));
+                                                            cfCertificateExport.setOmsRegProcpersoninfo(omsRegProcpersoninfo);
+                                                        }
                                                     }
                                                     cfCertificateExist.setUpdater(userInfo.getId());
                                                     cfCertificateExist.setUpdateTime(importDate);
@@ -903,12 +918,11 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
      * @Date: 2020/9/18
      */
     private void setStoreMode(CfCertificate certificateGa,UserInfo userInfo) {
+        //根据登陆用户设置保管单位
+        //0:干部监督处,1:省委统战部(台办)
+        certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
         //验证通过，通过接口获取证照存储位置
         if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())){
-            //根据登陆用户设置保管单位
-            //0:干部监督处,1:省委统战部(台办)
-            certificateGa.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
-
             //通过接口查询证照机是否可以存，否则柜台存。
             if(omsDeviceInteractionService.isStoreDevice(certificateGa.getSurelyUnit(),certificateGa.getZjxs())){
                 //保管方式(0:证照机,1:柜台)

@@ -60,8 +60,8 @@
 			cc.CSDD as csdd      #出生地
 		from
 			oms_cer_transfer_out_license octol
-		join cf_certificate cc on octol.zjhm = cc.zjhm
-		join oms_reg_procpersoninfo org on octol.OMS_ID = org.ID
+		left join cf_certificate cc on octol.zjhm = cc.zjhm
+		left join oms_reg_procpersoninfo org on octol.OMS_ID = org.ID
 		<where>
 			<trim suffixOverrides="and">
 				<if test="zjlx != null">octol.zjlx=#{zjlx} and </if>
@@ -81,8 +81,9 @@
 	<!-- 查询原单位信息 -->
 	<select id="getTransferOutWorkUnitInfo" resultMap="BaseResultMap">
 		select
-			WORK_UNIT
-		from oms_cer_transfer_out_license group by WORK_UNIT
+			distinct WORK_UNIT
+		from oms_cer_transfer_out_license
+		where WORK_UNIT is not null
 	</select>
 
 	<!-- 根据年份查询批次号 -->

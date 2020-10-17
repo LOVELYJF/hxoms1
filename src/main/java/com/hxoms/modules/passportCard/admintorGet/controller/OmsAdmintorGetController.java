@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 
 /**
@@ -54,7 +55,7 @@ public class OmsAdmintorGetController {
     @ApiOperation(value = "查询人员证照")
     @ApiImplicitParam(value = "备案表id",name = "omsId",required = true,paramType = "query")
     @GetMapping("/selectInfoByName")
-    public Result<RequestList<PersonInfo>> selectInfoByOmsId(@NotBlank(message = "omsId不能为空") String omsId){
+    public Result<List<PersonInfo>> selectInfoByOmsId(@NotBlank(message = "omsId不能为空") String omsId){
         return Result.success(omsAdmintorGetService.selectInfoByOmsId(omsId));
     }
 

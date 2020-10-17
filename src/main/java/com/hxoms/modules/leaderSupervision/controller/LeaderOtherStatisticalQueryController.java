@@ -236,9 +236,9 @@ public class LeaderOtherStatisticalQueryController {
 
     /** 纪委意见查看不通过记录 **/
     @GetMapping("/jiweiCheckNotPass")
-    public Result jiweiCheckNotPass(String type,String applyId){
+    public Result jiweiCheckNotPass(String applyId){
 
-      List<JiWeiNoPassVo> lists =  leaderCommonDetailMapper.selectItemsList(type,applyId);
+      List<JiWeiNoPassVo> lists =  leaderCommonDetailMapper.selectItemsList(applyId);
 
         return Result.success(lists);
     }

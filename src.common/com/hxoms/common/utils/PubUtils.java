@@ -1,10 +1,15 @@
 package com.hxoms.common.utils;
 
+import com.hxoms.modules.omsregcadre.entity.enums.LicenceIdentityEnum;
+
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,5 +76,57 @@ public class PubUtils {
             e.printStackTrace();
         }
         return l.intValue();
+    }
+    /**
+     * @Desc: 计算证照持有情况
+     * @Author: wangyunquan
+     * @Param: [oldLicenceIdentityValue：库里值, newLicenceIdentityValue：新增]
+     * @Return: java.lang.Integer
+     * @Date: 2020/10/14
+     */
+    public static Integer calLicenceIdentity(Integer oldLicenceIdentityValue,Integer newLicenceIdentityValue){
+        if(newLicenceIdentityValue>0){
+            if(LicenceIdentityEnum.CXZ.getCode().equals(oldLicenceIdentityValue)||LicenceIdentityEnum.WZZ.getCode().equals(oldLicenceIdentityValue)){
+                return newLicenceIdentityValue;
+            }else if(LicenceIdentityEnum.FSWGLZZ.getCode().equals(oldLicenceIdentityValue)){
+                return oldLicenceIdentityValue;
+            }else {
+                List<String>  binaryList=new LinkedList<>();
+                char[] oldLicenceIdentityBina = fillZero(Integer.toBinaryString(oldLicenceIdentityValue)).toCharArray();
+                char[] newLicenceIdentityBina = fillZero(Integer.toBinaryString(newLicenceIdentityValue)).toCharArray();
+                for (int i=0;i<Integer.SIZE;i++){
+                    if(oldLicenceIdentityBina[i]==newLicenceIdentityBina[i]&&oldLicenceIdentityBina[i]=='1')
+                        return oldLicenceIdentityValue;
+                }
+                return calValueAdd(oldLicenceIdentityValue,newLicenceIdentityValue);
+            }
+        }
+         return oldLicenceIdentityValue;
+    }
+
+    /**
+     * @Desc: 二进制值高位补0
+     * @Author: wangyunquan
+     * @Param: [value]
+     * @Return: java.lang.String
+     * @Date: 2020/10/14
+     */
+    public static String fillZero(String value){
+        while (value.length()<Integer.SIZE){
+            value="0"+value;
+        }
+        return value;
+    }
+    /**
+     * @Desc: 计算Integer类型相加
+     * @Author: wangyunquan
+     * @Param: [value, value1]
+     * @Return: java.lang.Integer
+     * @Date: 2020/10/14
+     */
+    public static Integer calValueAdd(Integer value, Integer value1){
+        BigDecimal bigDecimal=new BigDecimal(value);
+        BigDecimal bigDecimal1=new BigDecimal(value1);
+        return bigDecimal.add(bigDecimal1).intValue();
     }
 }

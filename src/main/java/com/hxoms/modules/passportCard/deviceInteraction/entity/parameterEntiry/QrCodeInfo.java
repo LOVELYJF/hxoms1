@@ -21,6 +21,9 @@ public class QrCodeInfo {
     @ApiModelProperty(value = "身份证号码",required =true)
     @NotBlank(message = "身份证号码不能为空")
     private String idNo;
+    @ApiModelProperty(value = "设备编号",required =true)
+    @NotBlank(message = "设备编号不能为空")
+    private String deviceSn;
 
     public String getQrCodeId() {
         return qrCodeId;
@@ -44,5 +47,13 @@ public class QrCodeInfo {
 
     public void setIdNo(String idNo) {
         this.idNo = idNo;
+    }
+
+    public String getDeviceSn() {
+        return deviceSn;
+    }
+
+    public void setDeviceSn(String deviceSn) {
+        this.deviceSn = deviceSn;
     }
 }

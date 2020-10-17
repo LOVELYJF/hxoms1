@@ -435,6 +435,7 @@
               WHERE
                   IDNUMBER = #{idNo}
               AND user_name = #{name}
+              AND user_state='1'
           ) = (
               SELECT
                   b.org_id
@@ -466,6 +467,7 @@
     INNER JOIN cf_certificate c ON b.cer_id = c.id
     WHERE
         a.qr_code_id = #{qrCodeId}
+    AND c.CABINET_NUM = #{deviceSn}
     AND b.get_status = '0'
   </select>
   <select id="selectUserId" resultType="java.lang.String">
@@ -476,7 +478,7 @@
     WHERE
         IDNUMBER = #{idNo}
     AND user_name = #{name}
-    AND suer_state = '1'
+    AND user_state = '1'
 
   </select>
   <select id="selectCerInfo" resultType="com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.CerInfo">
@@ -488,11 +490,80 @@
         b.zjhm,
         b.cabinet_num cabinetNum,
         b.place,
-        a.date_source dateSource
+        a.data_source dataSource
     FROM
         oms_cer_get_task a
     INNER JOIN cf_certificate b ON a.cer_id = b.id
     WHERE
         a.id=#{id}
+  </select>
+
+  <select id="selectUserInfo" resultType="com.hxoms.modules.sysUser.entity.CfUser">
+    SELECT
+    user_type userType,
+    org_id orgId
+    FROM
+    cf_user
+    WHERE
+    user_state='1'
+    AND user_name = #{name}
+    AND IDNUMBER = #{idNo}
+    AND CARD_EXPIRY_DATE = #{yxqz}
+  </select>
+
+  <select id="selectCanReturnCer" resultType="com.hxoms.modules.passportCard.deviceInteraction.entity.parameterEntiry.SimpCerInfo">
+    <if test="userType!=null">
+      <if test="userType=='5'.toString()">
+        SELECT
+        zjhm,
+        csrq,
+        yxqz
+        FROM
+        cf_certificate
+        WHERE
+        save_status = '1'
+        AND card_status IN ('4', '6', '41')
+      </if>
+      <if test="userType=='10'.toString()">
+        SELECT
+        zjhm,
+        csrq,
+        yxqz
+        FROM
+        cf_certificate
+        WHERE
+        save_status = '1'
+        AND card_status IN ('4', '6', '41')
+        AND zjlx = 4
+      </if>
+      <if test="userType=='6'.toString()">
+        SELECT
+          b.zjhm,
+          b.csrq,
+          b.yxqz
+        FROM
+            oms_cer_get_task a
+        INNER JOIN cf_certificate b ON a.cer_id = b.id
+        WHERE
+        a.rf_b0000 = #{orgId}
+        AND a.get_status = '1'
+        AND a.data_source NOT IN ('1', '3', '4', '5')
+      </if>
+    </if>
+  </select>
+
+  <select id="selectCerByQua" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
+    SELECT
+        id,
+        name,
+        zjhm,
+        zjlx,
+        oms_id omsId,
+        (select surely_Unit  from oms_cer_device_info where device_sn=#{deviceSn}) surelyUnit
+    FROM
+        cf_certificate
+    WHERE
+        zjhm =#{zjhm}
+    AND zjlx=#{zjlx}
   </select>
 </mapper>

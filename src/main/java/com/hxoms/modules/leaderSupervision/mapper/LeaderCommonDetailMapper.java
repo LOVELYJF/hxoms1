@@ -20,5 +20,5 @@ public interface LeaderCommonDetailMapper {
    * @param
    * @return
    */
-  List<JiWeiNoPassVo> selectItemsList(@Param("type")String type,@Param("applyId")String applyId);
+  List<JiWeiNoPassVo> selectItemsList(@Param("applyId")String applyId);
 }

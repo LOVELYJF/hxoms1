@@ -262,7 +262,7 @@ public class OmsPubApply {
     @ApiModelProperty(value="是否下达（0-否，1-是）")
     private Integer sfxd;
 
-    @ColumnAnnotation(FieldName = "LEADER_BATCH_ID",   FieldDescription="")
+    @ColumnAnnotation(FieldName = "LEADER_BATCH_ID",   FieldDescription="干部监督处批次id")
     @ApiModelProperty(value="")
     private String leaderBatchId;
 
@@ -289,6 +289,10 @@ public class OmsPubApply {
     @ColumnAnnotation(FieldName = "IS_HXPZWJ",   FieldDescription="是否需要上级领导批准文件（0-否，1-是）")
     @ApiModelProperty(value="是否需要上级领导批准文件（0-否，1-是）")
     private Integer isHxpzwj;
+
+    @ColumnAnnotation(FieldName = "clshsftg_Opinion",   FieldDescription="材料审核审批结论")
+    @ApiModelProperty(value="材料审核审批结论")
+    private String clshsftgOpinion;
 
     public String getId() {
         return id;
@@ -800,5 +804,13 @@ public class OmsPubApply {
 
     public void setIsHxpzwj(Integer isHxpzwj) {
         this.isHxpzwj = isHxpzwj;
+    }
+
+    public String getClshsftgOpinion() {
+        return clshsftgOpinion;
+    }
+
+    public void setClshsftgOpinion(String clshsftgOpinion) {
+        this.clshsftgOpinion = clshsftgOpinion;
     }
 }

@@ -68,8 +68,8 @@
 		pua.SFZYLD as sfzyld,  # 主要领导
 		pua.FMXX AS fmxx, # 负面信息
 		case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-		case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-		case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+		case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+		case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '未通过' END as clshsftg, # 材料审核
 		case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
 		FROM
 		oms_pub_apply pua
@@ -129,8 +129,8 @@
         pra.NEGATIVE_INFO fmxx, # 负面信息
 
         case when pra.SFZQJWYJ ='1' then '是' when (pra.SFZQJWYJ is null or pra.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-        case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-        case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+        case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+        case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '无' else '未通过' END as clshsftg, # 材料审核
         '无'  as sfbg        # 是否变更
 
         FROM
@@ -192,8 +192,8 @@
         pra.NEGATIVE_INFO fmxx, # 负面信息
 
         case when prda.SFZQJWYJ ='1' then '是' when (prda.SFZQJWYJ is null or prda.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-        case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-        case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+        case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+        case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '无' else '未通过' END as clshsftg, # 材料审核
         '无'  as sfbg        # 是否变更
         FROM
         oms_pri_delay_apply  prda
@@ -275,8 +275,8 @@
 							   pua.SFZYLD as sfzyld,  # 主要领导
 							   pua.FMXX AS fmxx, # 负面信息
 							   case when pua.SFZQJWYJ ='1' then '是' when (pua.SFZQJWYJ is null or pua.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-							   case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-							   case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   case when pua.JWJL ='1' then '通过' when (pua.JWJL is null or pua.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+							   case when pua.CLSHSFTG ='1' then '通过'  when  (pua.CLSHSFTG is null or pua.CLSHSFTG ='') then '未审核' else '未通过' END as clshsftg, # 材料审核
 							   case when pua.SFBG =1 then '是' else '否' end  as sfbg     # 是否变更
 						FROM
 							 oms_pub_apply pua
@@ -337,8 +337,8 @@
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   case when pra.SFZQJWYJ ='1' then '是' when (pra.SFZQJWYJ is null or pra.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-							   case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-							   case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   case when pra.JWJL ='1' then '通过' when (pra.JWJL is null or pra.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+							   case when pra.CLSHSFTG ='1' then '通过'  when  (pra.CLSHSFTG is null or pra.CLSHSFTG ='') then '未审核' else '未通过' END as clshsftg, # 材料审核
 							   '无'  as sfbg        # 是否变更
 						FROM
 							 oms_pri_apply pra
@@ -400,8 +400,8 @@
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
 							   case when prda.SFZQJWYJ ='1' then '是' when (prda.SFZQJWYJ is null or prda.SFZQJWYJ ='') then '无'  else '否'  END  as sfzqjwyj, # 征求纪委意见
-							   case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '不通过' END  as jwjl, # 纪委意见
-							   case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '无' else '不通过' END as clshsftg, # 材料审核
+							   case when prda.JWJL ='1' then '通过' when (prda.JWJL is null or prda.JWJL ='' ) then '无'  else '未通过' END  as jwjl, # 纪委意见
+							   case when prda.CLSHSFTG ='1' then '通过'  when  (prda.CLSHSFTG is null or prda.CLSHSFTG ='') then '未审核' else '未通过' END as clshsftg, # 材料审核
 							   '无'  as sfbg        # 是否变更
 
 						FROM
@@ -412,7 +412,7 @@
 								 LEFT JOIN oms_reg_procpersoninfo mrp ON prda.PROCPERSON_ID = mrp.id
 						) temp
 		# 业务受理 或 征求纪委意见 或 纪委意见填写
-		where applyStatus IN ('20','21','22')
+		where applyStatus IN ('20','21','22')  and clshsftg = '未审核'
 
 	</select>
 
@@ -584,6 +584,7 @@
 							   pua.id AS id,   # 业务id
 							   pua.leader_batch_id as batchId, # 批次id
 							   pua.SQZT   as applyStatus,    # 业务 流程状态
+		                       'oms_pub_apply' as type, # 类型 表名
 							   b.b0101 AS department,  # "部门名称"
 	                           concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 							   DATE_FORMAT(pua.CGSJ,'%Y.%m.%d') AS abroadTime,  # 出国时间 == 出境日期
@@ -615,7 +616,7 @@
 							   case when pua.JWJL =1 then '同意' when pua.JWJL = 2 then '不同意'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
-							   case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
+							   case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '未通过' else '' end
 								AS clshsftg # 材料审核是否通过
 
 
@@ -631,7 +632,8 @@
 
 							   pra.leader_batch_id as batchId, # 批次id
 
-							   pra.APPLY_STATUS as applyStatus,
+		      				   pra.APPLY_STATUS as applyStatus,
+	                          'oms_pri_apply' as type, # 类型 表名
 							   b.b0101 AS department, 	# "部门名称"
 
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
@@ -682,7 +684,7 @@
 							   case when pra.JWJL =1 then '同意' when pra.JWJL = 2 then '不同意'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
-							   case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
+							   case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '未通过' else '' end
 								AS clshsftg # 材料审核是否通过
 
 						FROM
@@ -699,6 +701,7 @@
 							   prda.leader_batch_id as batchId, # 批次id
 
 							   prda.APPLY_STATUS as applyStatus,
+		                       'oms_pri_delay_apply' as type, # 类型 表名
 							   b.b0101 AS department, 	# "部门名称"
 
 							   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
@@ -717,10 +720,10 @@
 							   "无" AS cgspdw,  # 审批单位
 
 							   IF (
-		mrp.SEX NOT IN ('1', '2'),
-		'未知',
-		IF (mrp.SEX = 1, '男', '女')
-		) AS sex,# 性别
+		                       mrp.SEX NOT IN ('1', '2'),
+		                     '未知',
+	                       	  IF (mrp.SEX = 1, '男', '女')
+		                      ) AS sex,# 性别
 
 							   DATE_FORMAT(mrp.BIRTH_DATE,'%Y.%m.%d') AS birthDate,  # 从登记备案库中 去的 人员出生日期
 
@@ -748,7 +751,7 @@
 							   case when prda.JWJL =1 then '同意' when prda.JWJL = 2 then '不同意'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
 
-							   case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
+							   case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '未通过' else '' end
 								AS clshsftg # 材料审核是否通过
 
 						FROM
@@ -821,14 +824,14 @@
 							   pua.SFBG as sfbg, # 是否变更
 							   case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
 		                       DATE_FORMAT(pua.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
-							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl # 书面纪委意见
 
-								--          case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
+								--          case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '未通过' else '' end
 								--          AS clshsftg # 材料审核是否通过
 
 
@@ -891,14 +894,14 @@
 							   "是否变更" as sfbg, # 是否变更
 							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 		                        DATE_FORMAT(pra.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
-							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl # 书面纪委意见
 
-								--           case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
+								--           case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '未通过' else '' end
 								--           AS clshsftg # 材料审核是否通过
 
 						FROM
@@ -960,14 +963,14 @@
 							   "是否变更" as sfbg, # 是否变更
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
 		                       DATE_FORMAT(prda.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
-							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
+							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '未通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl # 书面纪委意见
 								--
-								--           case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
+								--           case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '未通过' else '' end
 								--           AS clshsftg # 材料审核是否通过
 
 						FROM
@@ -1106,18 +1109,18 @@
 		pra.IS_LEADERS as sfzyld , # 主要领导
 
 		pra.NEGATIVE_INFO fmxx, # 负面信息
-		case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
-		case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+		case pra.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+		case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 		AS jwjl, # 纪委意见 结论
-		case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+		case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 		as verbaljwjl, # 口头纪委意见
-		case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+		case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 		as officaljwjl, # 书面纪委意见
-		-- 	case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+		-- 	case pra.JDCJL   when  1 then '通过' when 2 then '未通过' else '暂无数据' end as jdcjl , # 监督处审核意见
 		opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 		opinionTemp.chulingdaoOpinion, # 处领导意见
 		opinionTemp.bulingdaoOpinion,  # 部领导意见
-		CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl  # 最终结论
+		CASE pra.ZZJL    when 1 then '通过'  when 2 then '未通过' when 3 then '不回复' else  '暂无数据' end as zzjl  # 最终结论
 		FROM
 		oms_pri_apply pra
 		LEFT JOIN b01 b ON pra.b0100 = b.b0100
@@ -1211,7 +1214,7 @@
 		opinionTemp.cadresupervisionOpinion as  cadresupervisionOpinion, # 干部监督处意见
 		opinionTemp.cadresupervisionOpinion as  chulingdaoOpinion, # 处领导意见
 		opinionTemp.bulingdaoOpinion as  bulingdaoOpinion, # 部领导意见
-		CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过'  else  '暂无数据' end as zzjl  # 最终结论
+		CASE pua.ZZJL    when 1 then '通过'  when 2 then '未通过'  else  '暂无数据' end as zzjl  # 最终结论
 
 
 		FROM
@@ -1628,15 +1631,15 @@
 		   pua.CFRW AS cfrw,  #  出访任务
 		   "因公" AS businessType,  # 申请类型
 		   pua.CGSPDW AS cgspdw, # 审批单位
-		   case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '不通过' else '' end
+		   case when pua.CLSHSFTG =1 then '通过' when pua.CLSHSFTG = 2 then '未通过' else '' end
 		   AS clshsftg, # 材料审核是否通过
-		   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  else '' end
+		   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  else '' end
 		   AS jwjl, # 纪委意见 结论
-		   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+		   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 		   as verbaljwjl, # 口头纪委意见
-		   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+		   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 		   as officaljwjl, # 书面纪委意见
-		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
+		   (case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '未通过'  else  '暂无数据'  end )  as auditOpinion, # 干部监督处 意见
 		   IF (
 			   mrp.SEX NOT IN ('1', '2'),
 			   '未知',
@@ -1719,15 +1722,15 @@
 
 
 
-			case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '不通过' else '' end
+			case when pra.CLSHSFTG =1 then '通过' when pra.CLSHSFTG = 2 then '未通过' else '' end
 			AS clshsftg, # 材料审核是否通过
 			case when pra.JWJL =1 then '同意' when pra.JWJL = 2 then '不同意'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 			AS jwjl, # 纪委结论
-			case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+			case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 			as verbaljwjl, # 口头纪委意见
-			case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+			case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 			as officaljwjl, # 书面纪委意见
-			(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
+			(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '未通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
 
 
 
@@ -1809,15 +1812,15 @@
 
 
 
-			case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '不通过' else '' end
+			case when prda.CLSHSFTG =1 then '通过' when prda.CLSHSFTG = 2 then '未通过' else '' end
 			AS clshsftg, # 材料审核是否通过
 			case when prda.JWJL =1 then '同意' when prda.JWJL = 2 then '不同意'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 			AS jwjl, # 纪委结论
-			case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+			case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 			as verbaljwjl, # 口头纪委意见
-			case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+			case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 			as officaljwjl, # 书面纪委意见
-			(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '不通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
+			(case aba.APPROVAL_RESULT when 1 then '通过' when 2 then '未通过' else '暂无数据' end )  as auditOpinion, # 干部监督处 意见
 
 
 
@@ -1887,18 +1890,18 @@
 							   mrp.IDENTITY AS identity, #身份类别
 							   pua.SFZYLD as sfzyld,  # 主要领导
 							   pua.FMXX AS fmxx, # 负面信息
-							   case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
-							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+							   case pua.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+							   case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl, # 书面纪委意见
-								-- 	case pua.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+								-- 	case pua.JDCJL   when  1 then '通过' when 2 then '未通过' else '暂无数据' end as jdcjl , # 监督处审核意见
 							   opinionTemp.cadresupervisionOpinion as cadresupervisionOpinion , # 干部监督处意见
 							   opinionTemp.chulingdaoOpinion as chulingdaoOpinion, # 处领导意见
 							   opinionTemp.bulingdaoOpinion as bulingdaoOpinion,  # 部领导意见
-							   CASE pua.ZZJL   when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+							   CASE pua.ZZJL   when 1 then '通过'  when 2 then '未通过' else  '暂无数据' end as zzjl,  # 最终结论
 							   pua.SFBG as sfbg # 是否变更
 						FROM
 							 oms_pub_apply pua
@@ -1965,18 +1968,18 @@
 							   pra.IS_LEADERS as sfzyld, # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
-							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+							   case pra.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl, # 书面纪委意见
-								-- 	case pra.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+								-- 	case pra.JDCJL   when  1 then '通过' when 2 then '未通过' else '暂无数据' end as jdcjl , # 监督处审核意见
 							   opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 							   opinionTemp.chulingdaoOpinion, # 处领导意见
 							   opinionTemp.bulingdaoOpinion,  # 部领导意见
-							   CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl,  # 最终结论
+							   CASE pra.ZZJL    when 1 then '通过'  when 2 then '未通过' when 3 then '不回复' else  '暂无数据' end as zzjl,  # 最终结论
 							   "无" as sfbg # 是否变更
 
 						FROM
@@ -2046,18 +2049,18 @@
 							   pra.IS_LEADERS as sfzyld , # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   case prda.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
-							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '不通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
+							   case prda.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '未通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
-							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+							   case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+							   case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl, # 书面纪委意见
-								-- 		case prda.JDCJL   when  1 then '通过' when 2 then '不通过' else '暂无数据' end as jdcjl , # 监督处审核意见
+								-- 		case prda.JDCJL   when  1 then '通过' when 2 then '未通过' else '暂无数据' end as jdcjl , # 监督处审核意见
 							   opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 							   opinionTemp.chulingdaoOpinion, # 处领导意见
 							   opinionTemp.bulingdaoOpinion,  # 部领导意见
-							   CASE prda.ZZJL    when 1 then '通过'  when 2 then '不通过' when 3 then '不回复' else  '暂无数据' end as zzjl,  # 最终结论
+							   CASE prda.ZZJL    when 1 then '通过'  when 2 then '未通过' when 3 then '不回复' else  '暂无数据' end as zzjl,  # 最终结论
 							   "无" as sfbg # 是否变更
 						FROM
 							 oms_pri_delay_apply  prda
@@ -2139,19 +2142,19 @@
 										mrp.IDENTITY AS identity, #身份类别
 										pua.SFZYLD as sfzyld,  # 主要领导
 										pua.FMXX AS fmxx, # 负面信息
-										case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+										case pua.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
 										case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj,  # 是否已征求纪委意见
 
-										case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+										case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 								         AS jwjl, # 纪委意见 结论
-										case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+										case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								         as verbaljwjl, # 口头纪委意见
-										case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+										case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								         as officaljwjl, # 书面纪委意见
 										opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 										opinionTemp.chulingdaoOpinion, # 处领导意见
 										opinionTemp.bulingdaoOpinion,  # 部领导意见
-										CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+										CASE pua.ZZJL    when 1 then '通过'  when 2 then '未通过' else  '暂无数据' end as zzjl,  # 最终结论
 										pua.SFBG as sfbg # 是否变更
 						FROM
 							 oms_pub_apply pua
@@ -2217,19 +2220,19 @@
 										pra.IS_LEADERS as sfzyld, # 主要领导
 
 										pra.NEGATIVE_INFO fmxx, # 负面信息
-										case pra.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+										case pra.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
 										case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj,  # 是否已征求纪委意见
 
-										case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '不通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
+										case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
 								AS jwjl, # 纪委意见 结论
-										case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+										case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 								as verbaljwjl, # 口头纪委意见
-										case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+										case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 								as officaljwjl, # 书面纪委意见
 										opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 										opinionTemp.chulingdaoOpinion, # 处领导意见
 										opinionTemp.bulingdaoOpinion,  # 部领导意见
-										CASE pra.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+										CASE pra.ZZJL    when 1 then '通过'  when 2 then '未通过' else  '暂无数据' end as zzjl,  # 最终结论
 										"是否变更" as sfbg # 是否变更
 
 						FROM
@@ -2372,7 +2375,7 @@
 				 SELECT
 						sf.id,
 						sf.fileName,
-						GROUP_CONCAT( concat(si.check_item,":",if(sfr.CHECK_RESULT=0,'不通过','通过'))) as content
+						GROUP_CONCAT( concat(si.check_item,":",if(sfr.CHECK_RESULT=0,'未通过','通过'))) as content
 
 				 FROM
 					  oms_selfestimate_items si
@@ -2503,19 +2506,19 @@
 						mrp.IDENTITY AS identity, #身份类别
 						pua.SFZYLD as sfzyld,  # 主要领导
 						pua.FMXX AS fmxx, # 负面信息
-						case pua.CLSHSFTG when 1 then '通过' when 2 then '不通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
+						case pua.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg, # 材料审核是否通过
 						case when pua.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj,  # 是否已征求纪委意见
 
-						case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '不通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
+						case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end
 				        AS jwjl, # 纪委意见 结论
-						case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '不通过'  when jio.feedback_verdict=3 then '不回复' else '' END
+						case when jio.feedback_verdict = 1 then '通过' when jio.feedback_verdict = 2 then '未通过'  when jio.feedback_verdict=3 then '不回复' else '' END
 			            as verbaljwjl, # 口头纪委意见
-						case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '不通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
+						case when jio.official_feedback_verdict = 1 then '通过' when jio.official_feedback_verdict = 2 then '未通过'  when jio.official_feedback_verdict=3 then '不回复' else '' END
 			         	as officaljwjl, # 书面纪委意见
 						opinionTemp.cadresupervisionOpinion , # 干部监督处意见
 						opinionTemp.chulingdaoOpinion, # 处领导意见
 						opinionTemp.bulingdaoOpinion,  # 部领导意见
-						CASE pua.ZZJL    when 1 then '通过'  when 2 then '不通过' else  '暂无数据' end as zzjl,  # 最终结论
+						CASE pua.ZZJL    when 1 then '通过'  when 2 then '未通过' else  '暂无数据' end as zzjl,  # 最终结论
 						pua.SFBG as sfbg # 是否变更
 		FROM
 			 oms_pub_apply pua

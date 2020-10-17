@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
+import com.hxoms.modules.passportCard.initialise.service.CfCertificateHistoryRecordService;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateService;
 import com.hxoms.support.sysdict.entity.SysDictItem;
 import io.swagger.annotations.Api;
@@ -32,6 +34,8 @@ public class CfCertificateController {
 
     @Autowired
     private CfCertificateService cfCertificateService;
+    @Autowired
+    private CfCertificateHistoryRecordService cfHistoryRecordService;
 
 
     /**
@@ -239,14 +243,14 @@ public class CfCertificateController {
     /**
      * @Desc: 存疑处理，以公安信息为准。
      * @Author: wangyunquan
-     * @Param: [qureyDealRequestInfo]
+     * @Param: [qureyDealRequestInfoEx]
      * @Return: com.hxoms.common.utils.Result
      * @Date: 2020/8/10
      */
     @ApiOperation(value = "存疑处理，以公安信息为准，置为未上缴")
     @PostMapping("/updateCerForGaInfoIsRight")
-    public Result updateCerForGaInfoIsRight(@RequestBody @Validated  QureyDealRequestInfo qureyDealRequestInfo){
-        cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfo);
+    public Result updateCerForGaInfoIsRight(@RequestBody @Validated  QureyDealRequestInfoEx qureyDealRequestInfoEx){
+        cfCertificateService.updateCerForGaInfoIsRight(qureyDealRequestInfoEx);
         return Result.success();
     }
     /**
@@ -342,5 +346,47 @@ public class CfCertificateController {
     public Result getCfCertificateSaveWay(){
         List<SysDictItem> list = cfCertificateService.getCfCertificateSaveWay();
         return Result.success(list);
+    }
+
+    /**
+     * 根据年度查询对应证照信息并保存对比结果到记录表中
+     * @param year
+     * @author lijiaojiao
+     * @return
+     */
+    @ApiOperation(value = "年度查询对应证照信息并保存对比结果到记录表中")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
+    @GetMapping("/saveCfCertificateHistoryRecord")
+    public Result saveCfCertificateHistoryRecord(String year){
+        cfHistoryRecordService.saveCfCertificateHistoryRecord(year);
+        return  Result.success();
+    }
+
+    /**
+     * 根据年度查询证照历史记录表中的未上缴证照统计
+     * @param year
+     * @author lijiaojiao
+     * @return
+     */
+    @ApiOperation(value = "未上缴证照统计")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
+    @GetMapping("/selectNotProvicdeCerRecord")
+    public Result<PageBean<CfCertificateHistoryRecord>> selectNotProvicdeCerRecord(PageBean pageBean,String year){
+        return Result.success(cfHistoryRecordService.selectNotProvicdeCerRecord(pageBean,year));
+    }
+
+
+    /**
+     * @Desc: 历史记录表中的存疑证照统计
+     * @Author: lijiaojiao
+     * @Param: [pageBean]
+     * @Return: com.hxoms.common.utils.Result<com.hxoms.common.utils.PageBean<com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo>>
+     * @Date: 2020/8/7
+     */
+    @ApiOperation(value = "存疑证照统计")
+    @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
+    @GetMapping("/selectExceptionCerRecord")
+    public Result<PageBean<CfCertificateHistoryRecord>> selectExceptionCerRecord(PageBean pageBean,String year){
+        return Result.success(cfHistoryRecordService.selectExceptionCerRecord(pageBean,year));
     }
 }

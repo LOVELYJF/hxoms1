@@ -86,6 +86,19 @@ public class OmsFileController {
     }
 
     /**
+     * 功能描述: <br>
+     * 〈通用模板查询关键字〉
+     * @Param: [broadFileDestailParams]
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/10/14 11:24
+     */
+    @GetMapping("/selectReplaceKeywords")
+    public Result selectReplaceKeywords (AbroadFileDestailParams broadFileDestailParams){
+        List<OmsReplaceKeywords> omsReplaceKeywords= omsFileService.selectReplaceKeywords(broadFileDestailParams);
+        return Result.success(omsReplaceKeywords);
+    }
+    /**
      * 文件类型下载
      */
     @ApiIgnore

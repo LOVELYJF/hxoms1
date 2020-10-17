@@ -4,34 +4,34 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
 import com.hxoms.common.hxannotation.TableAnnotation;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@ApiModel(value = "系统材料清单")
+import java.util.Date;
+
 @TableAnnotation(TableName = "oms_file", TableDescription="系统材料清单")
+@ApiModel(value = "系统材料清单")
 public class OmsFile {
     @IdAnnotation
     @ColumnAnnotation(FieldName = "ID",   FieldDescription="主键")
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value="主键")
     private String id;
 
     @ColumnAnnotation(FieldName = "FILE_ID",   FieldDescription="文件ID（初始化文件为空）")
-    @ApiModelProperty(value = "文件ID")
+    @ApiModelProperty(value="文件ID（初始化文件为空）")
     private String fileId;
 
     @ColumnAnnotation(FieldName = "B0100",   FieldDescription="机构ID（初始化文件为空）")
-    @ApiModelProperty(value = "机构ID")
+    @ApiModelProperty(value="机构ID（初始化文件为空）")
     private String b0100;
 
     @ColumnAnnotation(FieldName = "FILE_NAME",   FieldDescription="文件名称")
-    @ApiModelProperty(value = "文件名称")
+    @ApiModelProperty(value="文件名称")
     private String fileName;
 
     @ColumnAnnotation(FieldName = "FILE_SHORTNAME",   FieldDescription="文件简称")
-    @ApiModelProperty(value = "文件简称")
+    @ApiModelProperty(value="文件简称")
     private String fileShortname;
 
     @ColumnAnnotation(FieldName = "FILE_TYPE",   FieldDescription="使用人员（1所有人员 2非涉密人员 3涉密人员 4脱密期人员 5主要领导 6挂职干部 7核心涉密 8用户自定义）")
@@ -39,14 +39,15 @@ public class OmsFile {
     private String fileType;
 
     @ColumnAnnotation(FieldName = "TABLE_CODE",   FieldDescription="关联模块(因公、因私、延期回国)")
-    @ApiModelProperty(value = "关联模块")
+    @ApiModelProperty(value="关联模块(因公、因私、延期回国)")
     private String tableCode;
 
     @ColumnAnnotation(FieldName = "IS_EDIT",   FieldDescription="是否可编辑（1文件 2单页单面 3双页 4双面单页）")
-    @ApiModelProperty(value = "是否可编辑（1文件 2单页单面 3双页 4双面单页）")
+    @ApiModelProperty(value="是否可编辑（1文件 2单页单面 3双页 4双面单页）")
     private String isEdit;
 
     @ColumnAnnotation(FieldName = "SEAL_DESC",   FieldDescription="签字盖章描述")
+    @ApiModelProperty(value="签字盖章描述")
     private String sealDesc;
 
     @ColumnAnnotation(FieldName = "RUN_SQL",   FieldDescription="执行sql")
@@ -80,11 +81,11 @@ public class OmsFile {
     private Integer sortId;
 
     @ColumnAnnotation(FieldName = "FRONT_CONTENT",   FieldDescription="可编辑文件（正面，第一页）")
-    @ApiModelProperty(value = "可编辑文件（正面，第一页）")
+    @ApiModelProperty(value="可编辑文件（正面，第一页）")
     private String frontContent;
 
     @ColumnAnnotation(FieldName = "BANK_CONTENT",   FieldDescription="可编辑文件（反面，第二页）")
-    @ApiModelProperty(value = "可编辑文件（反面，第二页）")
+    @ApiModelProperty(value="可编辑文件（反面，第二页）")
     private String bankContent;
 
     @ColumnAnnotation(FieldName = "IS_TYMB",   FieldDescription="是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
