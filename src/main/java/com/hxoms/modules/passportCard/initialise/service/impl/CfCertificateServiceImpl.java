@@ -217,6 +217,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             //证照验证
             validateCerInfo(certificateGa,cfCertificate,true);
             certificateGa.setSaveStatus(SaveStatusEnum.YQC.getCode());
+            certificateGa.setXplx(cfCertificate.getXplx());
             certificateGa.setZjxs(cfCertificate.getZjxs());
             certificateGa.setUpdater(userInfo.getId());
             certificateGa.setUpdateTime(new Date());
@@ -242,8 +243,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())&&regProcpersoninfoList.size()==1){
                 RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
                 OmsRegProcpersoninfo omsRegProcpersoninfo=new OmsRegProcpersoninfo();
-                omsRegProcpersoninfo.setId(omsRegProcpersoninfo.getId());
-                omsRegProcpersoninfo.setLicenceIdentity(PubUtils.calLicenceIdentity(omsRegProcpersoninfo.getLicenceIdentity(),certificateGa.getZjlx()));
+                omsRegProcpersoninfo.setId(regProcpersoninfo.getId());
+                omsRegProcpersoninfo.setLicenceIdentity(PubUtils.calLicenceIdentity(regProcpersoninfo.getLicenceIdentity(),certificateGa.getZjlx()));
                 if(!omsRegProcpersonInfoService.updateById(omsRegProcpersoninfo))
                     throw new CustomMessageException("登记备案信息更新失败！");
             }
@@ -564,8 +565,8 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
                 throw new CustomMessageException("公安或证照的"+unit+"为空，验证失败，请核实！");
             if(!valueExist.equals(value)){
                 //格式不能修改，耶稣说的。
-                stringBuffer.append("公安"+unit+"：").append(flag?valueExist:value).append("and").append("证照"+unit+"：").append(flag?value:valueExist);
-                stringBuffer.append("or");
+                stringBuffer.append("公安"+unit+"：").append(flag?valueExist:value).append("or").append("证照"+unit+"：").append(flag?value:valueExist);
+                stringBuffer.append("and");
             }
         }
         if(StringUtils.isBlank(stringBuffer.toString())){
@@ -574,7 +575,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         }else{
             //验证失败
             certificateExist.setCardStatus(CardStatusEnum.YZSB.getCode());
-            certificateExist.setExceptionMessage(stringBuffer.substring(0,stringBuffer.length()-2));
+            certificateExist.setExceptionMessage(stringBuffer.substring(0,stringBuffer.toString().lastIndexOf("and")));
         }
     }
     /**

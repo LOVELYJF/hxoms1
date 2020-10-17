@@ -14,7 +14,7 @@ import java.util.Date;
  * @Author: wangyunquan
  * @Date: 2020/8/29
  */
-@ApiModel(value = "证照验证参数")
+@ApiModel(value = "初始化证照验证参数")
 public class ValidateCerInfo {
 
     @NotBlank(message = "姓名不能为空")

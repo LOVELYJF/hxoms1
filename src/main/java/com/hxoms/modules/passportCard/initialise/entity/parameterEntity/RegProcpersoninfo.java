@@ -55,7 +55,7 @@ public class RegProcpersoninfo {
     private String post;
 
     @JsonIgnore
-    private String licenceIdentity;
+    private Integer licenceIdentity;
 
     public String getId() {
         return id;
@@ -161,11 +161,11 @@ public class RegProcpersoninfo {
         this.post = post;
     }
 
-    public String getLicenceIdentity() {
+    public Integer getLicenceIdentity() {
         return licenceIdentity;
     }
 
-    public void setLicenceIdentity(String licenceIdentity) {
+    public void setLicenceIdentity(Integer licenceIdentity) {
         this.licenceIdentity = licenceIdentity;
     }
 }

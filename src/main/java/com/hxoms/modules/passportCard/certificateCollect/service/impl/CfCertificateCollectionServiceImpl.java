@@ -190,11 +190,10 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             CfCertificateCollection cfCertificateCollection = new CfCertificateCollection();
             cfCertificateCollection.setId(cfCertificateCollectionRequestEx.getCerCjId());
             cfCertificateCollection.setCjWay(cfCertificateCollectionRequestEx.getCjWay());
-            String allCjResult = cfCertificateCollectionRequestEx.getAllCjResult();
             StringBuffer stringBuffer = new StringBuffer();
-            if (!StringUtils.isBlank(allCjResult)) {
-                stringBuffer.append(allCjResult);
-                stringBuffer.append("\r\n");
+            if (!StringUtils.isBlank(cfCertificateCollectionRequestEx.getAllCjResult())) {
+                stringBuffer.append(cfCertificateCollectionRequestEx.getAllCjResult());
+                stringBuffer.append("、");
             }
             String cjWay = CjWayEnum.DHCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "电话催缴：" : CjWayEnum.DXCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "短信催缴：" : cfCertificateCollectionRequestEx.getCjWay();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
