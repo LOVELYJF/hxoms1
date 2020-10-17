@@ -89,20 +89,21 @@
 	<!-- 根据年份查询批次号 -->
 	<select id="getBatchByYear" resultMap="BaseResultMap">
 		select 
-			<include refid="Base_Column_List"></include>
+			distinct YEAR ,BATCH_NUM
 		from oms_cer_transfer_out_license
 		<where>
-			<if test="year !=  null">YEAR like concat(#{year},'%')</if>
+			<if test="year !=  null">BATCH_NUM like concat(#{year},'%')</if>
 		</where>
+
 	</select>
 
 	<!-- 查询年份集合 -->
 	<select id="selectYearList"
 	        resultMap="BaseResultMap">
 		select
-			YEAR
+			distinct YEAR
 		from oms_cer_transfer_out_license
-		group by year
+		where YEAR is not null
 	</select>
 
 </mapper>
