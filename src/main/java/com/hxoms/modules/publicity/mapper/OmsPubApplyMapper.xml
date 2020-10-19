@@ -616,30 +616,28 @@
     </select>
     <select id="selectPersonListForTZQGB" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
         SELECT
-            a.a0101 AS NAME,
-            a.a0184 AS idnumber,
-            a.a0100 AS a0100,
-            a.A0104 AS sex,
-            a.A0107 AS birthDate,
-            a.a0192a AS job,
-            b.b0111 AS b0111,
-            b.b0101 AS b0101,
-            b.b0100 AS b0100,
-            `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS `POLITICAL_AFFI`,
-            `GETDICTITEM` ( '01', `a`.`a0117`, '0' ) AS `NATION`
+            CONCAT(org.SURNAME,org.NAME) AS NAME,
+            org.IDNUMBER_GB AS idnumber,
+            org.A0100 AS a0100,
+            if(org.sex = '1', '男','女') as sex,
+
+            org.BIRTH_DATE_GB AS birthDate,
+            org.POST AS job,
+            org.RF_B0000 AS b0111,
+            org.WORK_UNIT AS b0101,
+            org.RF_B0000 AS b0100,
+            org.POLITICAL_AFFINAME,
+            org.NATION_NAME AS `NATION`
         FROM
-            a01 a
-            JOIN a02 a2 ON a2.a0100 = a.a0100 and a2.A0255='1'
-        AND a2.a0281 = 'true' and a2.A0279='1'
-            JOIN b01 b ON a2.a0201b = b.b0100
+            oms_reg_procpersoninfo org
         WHERE
-            a.a0165 = '02'
+            org.IDENTITY_CODE = '1'
         <if test="keyword != null and keyword != ''">
-            and (a.a0101 like CONCAT('%',#{keyword},'%')
-            or  a.a0102 like CONCAT('%',#{keyword},'%'))
+            and (CONCAT(org.SURNAME,org.NAME) like CONCAT('%',#{keyword},'%')
+            or  org.py like CONCAT('%',#{keyword},'%'))
         </if>
         <if test="b0100 != null and b0100.size>0">
-            and b.b0100 in
+            and org.RF_B0000 in
             <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
                 #{b0100}
             </foreach>
