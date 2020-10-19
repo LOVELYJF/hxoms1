@@ -3,8 +3,10 @@ package com.hxoms.modules.file.service;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.file.entity.OmsFile;
+import com.hxoms.modules.file.entity.OmsTYMBVO;
 import com.hxoms.modules.file.entity.OtherMaterial;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
+
 import java.util.List;
 import java.util.Map;
 
@@ -74,4 +76,15 @@ public interface OmsFileService {
      * @return:com.hxoms.modules.file.entity.OmsCreateFile
      **/
     OmsCreateFile createFile(OmsFile omsFile,String applyId);
+
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询〉
+     * @Param: []
+     * @Return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: 李逍遥
+     * @Date: 2020/10/12 19:33
+     * @return
+     */
+    List<OmsTYMBVO> selectFileList();
 }
