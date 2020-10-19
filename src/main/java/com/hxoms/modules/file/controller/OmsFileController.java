@@ -3,11 +3,14 @@ package com.hxoms.modules.file.controller;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.file.entity.OmsFile;
-import com.hxoms.modules.file.entity.OmsReplaceKeywords;
+import com.hxoms.modules.file.entity.OmsTYMBVO;
 import com.hxoms.modules.file.entity.OtherMaterial;
 import com.hxoms.modules.file.entity.paramentity.AbroadFileDestailParams;
 import com.hxoms.modules.file.service.OmsFileService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -112,6 +115,20 @@ public class OmsFileController {
     public Result selectFileDestailNew(String fileId) {
         OmsCreateFile omsFile = omsFileService.selectFileDestailNew(fileId);
         return Result.success(omsFile);
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈通用模板查询〉
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/10/12 19:31
+     */
+    @GetMapping("/selectFileList")
+    public Result selectFileList(){
+        List<OmsTYMBVO> result =omsFileService.selectFileList();
+        return Result.success(result);
     }
 
 }
