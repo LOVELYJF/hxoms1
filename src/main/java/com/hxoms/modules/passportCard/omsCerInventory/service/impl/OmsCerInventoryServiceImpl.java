@@ -603,7 +603,11 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 	 */
 	public Map<String,Object> GetCerInventoryResult(List<String> list,OmsCerInventory omsCerInventory) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("list", list);
+		if(list == null || list.size() < 1){
+			map.put("list", null);
+		} else {
+			map.put("list", list);
+		}
 		map.put("sameStatus", "1");
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
