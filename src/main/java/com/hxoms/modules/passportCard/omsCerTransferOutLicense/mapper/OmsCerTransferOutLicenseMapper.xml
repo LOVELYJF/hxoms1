@@ -64,6 +64,7 @@
 		left join oms_reg_procpersoninfo org on octol.OMS_ID = org.ID
 		<where>
 			<trim suffixOverrides="and">
+				<if test="b0100 != null">octol.B0100=#{b0100} and </if>
 				<if test="zjlx != null">octol.zjlx=#{zjlx} and </if>
 				<if test="batchNum != null">octol.BATCH_NUM=#{batchNum} and </if>
 				<if test="handoverStartQueryTime != null and handoverEndQueryTime != null">
@@ -73,6 +74,7 @@
 					(octol.EXIT_TIME between #{exitStartQueryTime} and #{exitEndQueryTime}) and
 				</if>
 				<if test="name != null">(octol.name like concat('%',#{name},'%')) and</if>
+				<if test="1 == 1">octol.EXIT_TIME > NOW()</if>
 			</trim>
 		</where>
 		order by octol.WORK_UNIT
@@ -81,7 +83,7 @@
 	<!-- 查询原单位信息 -->
 	<select id="getTransferOutWorkUnitInfo" resultMap="BaseResultMap">
 		select
-			distinct WORK_UNIT
+			distinct b0100, WORK_UNIT
 		from oms_cer_transfer_out_license
 		where WORK_UNIT is not null
 	</select>
