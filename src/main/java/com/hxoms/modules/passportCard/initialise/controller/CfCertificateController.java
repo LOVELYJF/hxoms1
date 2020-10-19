@@ -356,7 +356,7 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "年度查询对应证照信息并保存对比结果到记录表中")
     @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
-    @GetMapping("/saveCfCertificateHistoryRecord")
+    @PostMapping("/saveCfCertificateHistoryRecord")
     public Result saveCfCertificateHistoryRecord(String year){
         cfHistoryRecordService.saveCfCertificateHistoryRecord(year);
         return  Result.success();
