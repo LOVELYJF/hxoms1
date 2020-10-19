@@ -63,13 +63,11 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsCreateFileService omsCreateFileService;
 
     /**
-     * @description:返回需要生成的材料列表，自动根据模板设置返回通用或机构自定义模板，自动根据关键字替换生成材料，
-     * 重新根据业务数据获取需要的材料，将业务数据变化后不再需要的已经生成过的材料删除
-     * @author:杨波
-     * @date:2020-10-15
-     *  * @param tableCode 业务类型
      * @param procpersonId 备案人员id
-     * @param applyId 业务主键
+     * @param applyId      业务主键
+     * @description:返回需要生成的材料列表，自动根据模板设置返回通用或机构自定义模板，自动根据关键字替换生成材料， 重新根据业务数据获取需要的材料，将业务数据变化后不再需要的已经生成过的材料删除
+     * @author:杨波
+     * @date:2020-10-15 * @param tableCode 业务类型
      * @return:java.util.List<com.hxoms.modules.file.entity.OmsCreateFile>
      **/
     @Transactional(rollbackFor = CustomMessageException.class)
@@ -78,7 +76,11 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         List<OmsFile> omsFiles = getTemplate(tableCode, procpersonId, applyId, 1);
         List<OmsCreateFile> omsCreateFiles = getCreateFiles(omsFiles, tableCode, applyId, 1);
+        OmsPubApplyVO omsPubApply = null;
 
+        if (Constants.oms_business[0].equals(tableCode)) {
+            omsPubApply = omsPubApplyService.selectPubApplyById(applyId);
+        }
         //没有生成时生成文件
         for (OmsFile omsFile : omsFiles) {
             OmsCreateFile omsCreateFile = omsCreateFiles.stream().filter((m) -> m.getFileId().equals(omsFile.getId())).findFirst().orElse(null);
@@ -86,7 +88,7 @@ public class OmsFileServiceImpl implements OmsFileService {
 
             omsCreateFile = createFile(omsFile, applyId);
             //替换关键词
-            replaceFile(omsFile, applyId, tableCode);
+            replaceFile(omsFile, applyId, tableCode, omsPubApply);
             if ("近三年出国（境）记录表".equals(omsFile.getFileShortname()) && omsFile.getTableCode().equals(Constants.oms_business[0])) {
                 String frontContent = getFrontContent(applyId, "近三年出国（境）记录表");
                 omsFile.setFrontContent(frontContent);
@@ -172,7 +174,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         //不允许自定义时使用通用模板
         for (OmsFile omsfile : omsFileSystem) {
             //用户是否自定义该模板
-            OmsFile omsSelfFile = omsFiles.stream().filter((m) -> m.getFileId()!=null &&m.getFileId().equals(omsfile.getId())).findFirst().orElse(null);
+            OmsFile omsSelfFile = omsFiles.stream().filter((m) -> m.getFileId() != null && m.getFileId().equals(omsfile.getId())).findFirst().orElse(null);
 
             //用户没有自定义该模板
             if (null == omsSelfFile) {
@@ -350,12 +352,11 @@ public class OmsFileServiceImpl implements OmsFileService {
     }
 
     /**
+     * @param procpersonId 备案人员
+     * @param applyId      业务主主键
      * @description:返回其它材料列表，其它材料也允许按非涉密、涉密、核心涉密、挂职来设置在哪种条件下需要
      * @author:杨波
-     * @date:2020-10-15
-     *  * @param tableCode 业务类型（因公、因私等）
-     * @param procpersonId 备案人员
-     * @param applyId 业务主主键
+     * @date:2020-10-15 * @param tableCode 业务类型（因公、因私等）
      * @return:java.util.List<com.hxoms.modules.file.entity.OtherMaterial>
      **/
     @Override
@@ -375,8 +376,8 @@ public class OmsFileServiceImpl implements OmsFileService {
             OmsCreateFile omsCreateFile = omsCreateFiles.stream().filter((m) -> m.getFileId().equals(omsFile.getId())).findFirst().orElse(null);
             if (omsCreateFile != null)
                 om.setIsRequired(1);
-            else if(omsFile.getIsDefault()==1){
-                omsCreateFile = createFile(omsFile,applyId);
+            else if (omsFile.getIsDefault() == 1) {
+                omsCreateFile = createFile(omsFile, applyId);
                 omsCreateFileMapper.insert(omsCreateFile);
             }
             oms.add(om);
@@ -386,11 +387,10 @@ public class OmsFileServiceImpl implements OmsFileService {
     }
 
     /**
+     * @param applyId 业务主键
      * @description:根据模板文件创建用户文件，不自动生成模板内容
      * @author:杨波
-     * @date:2020-10-15
-     *  * @param omsFile 模板文件
-     * @param applyId 业务主键
+     * @date:2020-10-15 * @param omsFile 模板文件
      * @return:com.hxoms.modules.file.entity.OmsCreateFile
      **/
     @Override
@@ -491,13 +491,12 @@ public class OmsFileServiceImpl implements OmsFileService {
     public Result saveOtherFile(String id, String applyId, Integer isRequired) {
         OmsFile omsFile = omsFileMapper.selectById(id);
         QueryWrapper<OmsCreateFile> queryWrapper = new QueryWrapper<>();
-        OmsCreateFile omsCreateFile = queryWrapper.eq("APPLY_ID",applyId).eq("FILE_ID",id).getEntity();
+        OmsCreateFile omsCreateFile = queryWrapper.eq("APPLY_ID", applyId).eq("FILE_ID", id).getEntity();
 
-        if(isRequired.equals(1) && omsCreateFile==null){
-            omsCreateFile = createFile(omsFile,applyId);
+        if (isRequired.equals(1) && omsCreateFile == null) {
+            omsCreateFile = createFile(omsFile, applyId);
             omsCreateFileMapper.insert(omsCreateFile);
-        }
-        else if(isRequired.equals(0) && omsCreateFile!=null){
+        } else if (isRequired.equals(0) && omsCreateFile != null) {
             omsCreateFileMapper.deleteById(omsCreateFile.getId());
         }
         return Result.success();
@@ -510,7 +509,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         OmsCreateFile omsCreateFile = omsCreateFileMapper.selectById(fileId);
         OmsFile omsFile = omsFileMapper.selectById(omsCreateFile.getFileId());
-        replaceFile(omsFile, omsCreateFile.getApplyId(), omsFile.getTableCode());
+        replaceFile(omsFile, omsCreateFile.getApplyId(), omsFile.getTableCode(),null);
         omsCreateFile.setFrontContent(omsFile.getFrontContent());
         omsCreateFile.setBankContent(omsFile.getBankContent());
         omsCreateFileMapper.updateById(omsCreateFile);
@@ -525,7 +524,7 @@ public class OmsFileServiceImpl implements OmsFileService {
      * @param applyId
      * @param tableCode
      */
-    public void replaceFile(OmsFile omsFile, String applyId, String tableCode) {
+    public void replaceFile(OmsFile omsFile, String applyId, String tableCode, OmsPubApplyVO omsPubApply) {
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
         queryWrapperKeyword.eq("TYPE", tableCode)
@@ -539,13 +538,19 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         FileReplaceVO fileReplaceVO = omsFileMapper.handleSql(omsFile.getRunSql());
         if (tableCode.equals(Constants.oms_business[0])) {
+            if (omsPubApply == null) {
+                omsPubApply = omsPubApplyService.selectPubApplyById(applyId);
+            }
             //设置随同人员姓名
             String stName = null;
             //从团组预备案表查
             stName = omsPubApplyMapper.getStNameForGroup(applyId);
             if (StringUtils.isBlank(stName)) {
                 //查询申请表
-                stName = omsPubApplyMapper.getStNameForPub(applyId);
+                if (omsPubApply.getPwh().startsWith("琼台赴字")) {
+                    stName = omsPubApplyMapper.getStNameForTaiWanPub(applyId);
+                } else
+                    stName = omsPubApplyMapper.getStNameForPub(applyId);
                 fileReplaceVO.setStName(stName);
             } else {
                 fileReplaceVO.setStName(stName);

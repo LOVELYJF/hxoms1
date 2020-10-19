@@ -419,7 +419,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             omsCreateFile.setSortId(omsFile.getSortId());
                             omsCreateFile.setPrintNum(omsFile.getPrintNum());
                             //替换关键词
-                            omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode);
+                            omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode,null);
                             if(Arrays.asList(types).indexOf(exitType)!=-1){
                                 omsCreateFile.setFrontContent(omsFile.getFrontContent().replaceAll("在本单位已登记备案","已退出满三年"));
                             }else{

@@ -603,7 +603,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                             OmsCreateFile omsCreateFile = omsFileServiceImpl.createFile(omsFile, applyId);
 
                             //替换关键词
-                            omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode);
+                            omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode,null);
                             omsCreateFile.setFrontContent(omsFile.getFrontContent());
                             omsCreateFile.setBankContent(omsFile.getBankContent());
                             omsCreateFileMapper.insert(omsCreateFile);

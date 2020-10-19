@@ -197,6 +197,14 @@ public interface OmsPubApplyMapper extends BaseMapper<OmsPubApply> {
      */
     String getStNameForPub(@Param("a0100") String a0100);
     /**
+    * @description:获取赴台申请表负责人姓名
+    * @author:杨波
+    * @date:2020-10-19
+    *  * @param applyId 因公申请主键
+    * @return:
+    **/
+    String getStNameForTaiWanPub(@Param("applyId") String applyId);
+    /**
      * 功能描述: <br>
      * 〈查询该干部近3年的出国记录〉
      * @Param: [a0100]

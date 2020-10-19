@@ -653,16 +653,15 @@
         </if>
     </select>
     <select id="getStNameForGroup" resultType="java.lang.String">
-        SELECT
-            opg.TZFZR
-        FROM oms_pub_group_pre_approval opg
-        LEFT JOIN oms_pub_apply opa ON
-	        opg.id = opa.YSP_ID
-	    <where>
+        SELECT opg.TZFZR FROM
+        (SELECT * FROM oms_pub_apply opa
+        <where>
             <if test="a0100 != null and a0100 != ''">
                 and opa.ID = #{a0100}
             </if>
         </where>
+        ) opa
+        LEFT JOIN oms_pub_group_pre_approval opg ON opg.id = opa.YSP_ID
     </select>
     <select id="getStNameForPub" resultType="java.lang.String">
         SELECT
@@ -687,6 +686,32 @@
             <if test="a0100 != null and a0100 !=''">
                 opa.ID = #{a0100}
             </if>
+        LIMIT 1
+    </select>
+    <select id="getStNameForTaiWanPub" resultType="java.lang.String">
+        SELECT
+        CONCAT( IFNULL( orp.SURNAME, '' ), IFNULL( orp.NAME, '' ) ) AS NAME
+        FROM
+        oms_pub_apply opa,
+        (
+        SELECT
+        *
+        FROM
+        oms_pub_apply o1
+        WHERE
+        o1.zypwh IN ( SELECT zypwh FROM oms_pub_apply WHERE
+        <if test="applyId != null and applyId != ''">
+            ID = #{applyId}
+        </if>
+        )
+        AND o1.ZTNRZW = '团长'
+        ) p
+        LEFT JOIN oms_reg_procpersoninfo orp ON p.PROCPERSON_ID = orp.ID
+        WHERE
+        <if test="applyId != null and applyId !=''">
+            opa.ID = #{applyId}
+        </if>
+        LIMIT 1
     </select>
     <select id="selectBasePerson" resultType="java.util.Map">
             SELECT DISTINCT
