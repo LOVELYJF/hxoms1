@@ -95,6 +95,10 @@ public class OmsCreateFile implements Comparable<OmsCreateFile> {
     @ApiModelProperty(value = "是否带模板（默认1，0不需要模板，只是用户提供纸质件，特指其它材料）")
     private Integer isTemplate;
 
+    @ColumnAnnotation(FieldName = "IS_TYMB",   FieldDescription="是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
+    @ApiModelProperty(value = "是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
+    private Integer isTymb;
+
     public String getId() {
         return id;
     }
@@ -261,6 +265,14 @@ public class OmsCreateFile implements Comparable<OmsCreateFile> {
 
     public void setIsTemplate(Integer isTemplate) {
         this.isTemplate = isTemplate;
+    }
+
+    public Integer getIsTymb() {
+        return isTymb;
+    }
+
+    public void setIsTymb(Integer isTymb) {
+        this.isTymb = isTymb;
     }
 
     @Override
