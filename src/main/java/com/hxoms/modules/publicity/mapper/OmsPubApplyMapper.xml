@@ -437,21 +437,14 @@
         where o.id=#{id}
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO" parameterType="com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam">
-        select
-        oms_pub_apply.*
-        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
-        ,oms_reg_procpersoninfo.SEX as sex
-        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
-        ,oms_reg_procpersoninfo.NATION_NAME
-        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
-        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
-
-        ,oms_reg_procpersoninfo.SECRET_LEVEL AS SECRET_LEVEL
-        ,op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
-        ,oms_reg_procpersoninfo.NF AS NF
-        from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
-        LEFT JOIN oms_smr_personinfo op ON oms_reg_procpersoninfo.id = op.PROC_PERSON_ID
+        select oms_pub_apply.* ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME" ,oms_reg_procpersoninfo.SEX as sex ,
+        oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate ,oms_reg_procpersoninfo.NATION_NAME ,oms_reg_procpersoninfo.POLITICAL_AFFINAME ,
+        oms_reg_procpersoninfo.WORK_UNIT as b0101 ,
+        oms_reg_procpersoninfo.SECRET_LEVEL AS SECRET_LEVEL ,(select SECRET_REVIEW_DATE from oms_smr_oldinfo
+        where PROC_PERSON_ID=oms_reg_procpersoninfo.id and (QR_FINISH_DATE is NULL or QR_FINISH_DATE>current_date)
+        ORDER BY SECRET_REVIEW_DATE desc LIMIT 1) AS SECRET_REVIEW_DATE ,
+        oms_reg_procpersoninfo.NF AS NF
+        from oms_pub_apply left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         where oms_pub_apply.SFXD = '1'
             <if test="omsPubApplyQueryParam.applyId != null and omsPubApplyQueryParam.applyId != ''">
                 and oms_pub_apply.ID = #{omsPubApplyQueryParam.applyId}
