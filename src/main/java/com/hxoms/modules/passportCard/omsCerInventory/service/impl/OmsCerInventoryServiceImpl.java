@@ -147,7 +147,8 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		//查询证照盘点表信息
 		QueryWrapper<OmsCerInventory> queryWrapper1 = new QueryWrapper<OmsCerInventory>();
 		queryWrapper1.eq("INVENTORY_DATE", UtilDateTime.formatCNMonth(new Date()))
-				.eq("CABINET_NUM", omsCerInventory.getCabinetNum());
+				.eq("CABINET_NUM", omsCerInventory.getCabinetNum())
+				.eq("DATA_WAY", SurelyWayEnum.CABINET.getCode());
 		List<OmsCerInventory> list1 = omsCerInventoryMapper.selectList(queryWrapper1);
 
 		//同步盘点结果到盘点表
@@ -155,8 +156,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 			for(OmsCerInventory omsCerInventory1 : list1){
 				if(cfCertificate.getZjhm().equals(omsCerInventory1.getZjhm())){
 					omsCerInventory1.setAfterInventorySaveStatus(cfCertificate.getSaveStatus());
-					omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
-					omsCerInventory1.setPlace(cfCertificate.getPlace());
+					if (!StringUtils.isBlank(cfCertificate.getCabinetNum())){
+						omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
+					}
+					if (!StringUtils.isBlank(cfCertificate.getPlace())){
+						omsCerInventory1.setPlace(cfCertificate.getPlace());
+					}
 					omsCerInventory1.setModifyTime(new Date());
 					omsCerInventory1.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				}
