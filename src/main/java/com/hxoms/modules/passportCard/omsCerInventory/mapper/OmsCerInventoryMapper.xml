@@ -128,15 +128,18 @@
 			<trim suffixOverrides="and">
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
 				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
-				<if test="counterStartQuery != null and counterEndQuery != null">
-					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
-				</if>
-				<if test="list != null">oci.CABINET_NUM in
-					<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
-						#{item}
-					</foreach>
-					)and
-				</if>
+				<trim suffixOverrides="or">
+					<if test="counterStartQuery != null and counterEndQuery != null">
+						((oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) or
+					</if>
+					<if test="list != null">oci.CABINET_NUM in
+						<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+							#{item}
+						</foreach>
+						)or
+					</if>
+				</trim>
+				and
 			</trim>
 		</where>
 	</select>
