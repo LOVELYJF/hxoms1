@@ -127,6 +127,18 @@ public class CfCertificateController {
     public Result<PageBean<ImportInterface>> queryCertificateByOmsId(PageBean pageBean,String b0100) throws Exception {
         return Result.success(cfCertificateService.queryCertificateByOmsId(pageBean,b0100));
     }
+    /**
+     * @Desc: 查询证照个数
+     * @Author: wangyunquan
+     * @Param: [validateCerInfoParam]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/4
+     */
+    @ApiOperation(value = "查询证照个数")
+    @GetMapping("/selectCerCount")
+    public Result<CerTotalCount> selectCerCount(){
+        return Result.success(cfCertificateService.selectCerCount());
+    }
 
     /**
      * @Desc: 验证证照信息

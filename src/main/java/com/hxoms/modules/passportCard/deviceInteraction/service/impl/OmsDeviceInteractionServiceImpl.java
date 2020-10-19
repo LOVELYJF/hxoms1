@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,6 +73,7 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
      * @Return: java.lang.String
      * @Date: 2020/10/10
      */
+    @Override
     public boolean isStoreDevice(String surelyUnit,String zjxs){
         if(StringUtils.isBlank(surelyUnit)||StringUtils.isBlank(zjxs))
             throw  new CustomMessageException("参数错误，请核实！");
@@ -150,6 +152,7 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
      * @Date: 2020/10/12
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cerGetNotice(CerGetNotice cerGetNotice) {
         List<CerGetEntity> cerInfo = cerGetNotice.getCerInfo();
         //查询领取人用户id
@@ -254,6 +257,7 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
      * @Date: 2020/10/13
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cerReturnNotice(CerReturnInfo cerReturnInfo) {
         List<CerReturnEntity> cerInfo = cerReturnInfo.getCerInfo();
         //查询领取人用户id
@@ -325,7 +329,9 @@ public class OmsDeviceInteractionServiceImpl extends ServiceImpl<OmsCerDeviceInf
             throw new CustomMessageException("证照更新失败!");
         if(!omsExitEntryManageService.saveBatch(omsCerExitEntryRepertoryList))
             throw new CustomMessageException("出库记录保存失败!");
-        if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
-            throw new CustomMessageException("证照催缴更新失败!");
+        if(cfCertificateCollectionList.size()>0){
+            if(!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
+                throw new CustomMessageException("证照催缴更新失败!");
+        }
     }
 }

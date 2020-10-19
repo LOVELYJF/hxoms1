@@ -50,6 +50,7 @@ public class CerManageInfo {
     //证件号码
     @ApiModelProperty(value = "证件号码")
     private String zjhm;
+
     //有效期至
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @JsonFormat(pattern = "yyyy.MM.dd",timezone="GMT+8")
@@ -58,6 +59,9 @@ public class CerManageInfo {
     //管理单位
     @ApiModelProperty(value = "管理单位")
     private String surelyUnit;
+    //管理单位
+    @ApiModelProperty(value = "管理单位名称")
+    private String surelyUnitName;
     //证照状态
     @ApiModelProperty(value = "证照状态(0:正常,1:过期,2:注销,3:验证失败,4:已验证,5:待验证,6:借出,7:待领取,8:已领取)")
     private String cardStatus;
@@ -101,7 +105,7 @@ public class CerManageInfo {
     private String csdd;
     //存疑信息
     @ApiModelProperty(value="存疑信息")
-    private String exceprionMessqge;
+    private String exceptionMessage;
 
     public String getId() {
         return id;
@@ -231,6 +235,14 @@ public class CerManageInfo {
         this.surelyUnit = surelyUnit;
     }
 
+    public String getSurelyUnitName() {
+        return surelyUnitName;
+    }
+
+    public void setSurelyUnitName(String surelyUnitName) {
+        this.surelyUnitName = surelyUnitName;
+    }
+
     public String getCardStatus() {
         return cardStatus;
     }
@@ -335,11 +347,11 @@ public class CerManageInfo {
         this.csdd = csdd;
     }
 
-    public String getExceprionMessqge() {
-        return exceprionMessqge;
+    public String getExceptionMessage() {
+        return exceptionMessage;
     }
 
-    public void setExceprionMessqge(String exceprionMessqge) {
-        this.exceprionMessqge = exceprionMessqge;
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
     }
 }

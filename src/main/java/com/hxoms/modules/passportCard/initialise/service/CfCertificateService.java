@@ -63,6 +63,14 @@ public interface CfCertificateService extends IService<CfCertificate> {
    PageBean<ImportInterface> selectAllCertificate(PageBean pageBean);
 
    /**
+    * @Desc: 查询证件个数
+    * @Author: wangyunquan
+    * @Param: []
+    * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CerTotalCount
+    * @Date: 2020/10/19
+    */
+   CerTotalCount selectCerCount();
+   /**
     * @Desc: 验证证照信息
     * @Author: wangyunquan
     * @Param: [validateCerInfoParam]
@@ -205,4 +213,6 @@ public interface CfCertificateService extends IService<CfCertificate> {
 
 
    PageBean queryCertificateByOmsId(PageBean pageBean, String b0100);
+
+
 }
