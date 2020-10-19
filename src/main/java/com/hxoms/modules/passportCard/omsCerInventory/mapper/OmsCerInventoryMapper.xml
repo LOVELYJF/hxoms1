@@ -130,13 +130,20 @@
 				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<trim suffixOverrides="or">
 					<if test="counterStartQuery != null and counterEndQuery != null">
-						((oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) or
+						<choose>
+							<when test="list != null and list != ''">
+								(
+							</when>
+						</choose>
+						(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) or
 					</if>
-					<if test="list != null">oci.CABINET_NUM in
-						<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
-							#{item}
-						</foreach>
-						)or
+					<if test="list != null and list != ''">oci.CABINET_NUM=#{list}
+						<choose>
+							<when test="counterStartQuery != null and counterEndQuery != null">
+								)
+							</when>
+						</choose>
+						or
 					</if>
 				</trim>
 				and
