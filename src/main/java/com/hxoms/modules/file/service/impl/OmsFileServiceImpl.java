@@ -412,6 +412,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         omsCreateFile.setIsTemplate(omsFile.getIsTemplate());
         omsCreateFile.setCreateUser(UserInfoUtil.getUserId());
         omsCreateFile.setCreateTime(new Date());
+        omsCreateFile.setIsTymb(omsFile.getIsTymb());
         return omsCreateFile;
     }
 

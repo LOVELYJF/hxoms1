@@ -437,21 +437,14 @@
         where o.id=#{id}
     </select>
     <select id="getPubAppListByCondition" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO" parameterType="com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam">
-        select
-        oms_pub_apply.*
-        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
-        ,oms_reg_procpersoninfo.SEX as sex
-        ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
-        ,oms_reg_procpersoninfo.NATION_NAME
-        ,oms_reg_procpersoninfo.POLITICAL_AFFINAME
-        ,oms_reg_procpersoninfo.WORK_UNIT as b0101
-
-        ,oms_reg_procpersoninfo.SECRET_LEVEL AS SECRET_LEVEL
-        ,op.SECRET_REVIEW_DATE AS SECRET_REVIEW_DATE
-        ,oms_reg_procpersoninfo.NF AS NF
-        from oms_pub_apply
-        left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
-        LEFT JOIN oms_smr_personinfo op ON oms_reg_procpersoninfo.id = op.PROC_PERSON_ID
+        select oms_pub_apply.* ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME" ,oms_reg_procpersoninfo.SEX as sex ,
+        oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate ,oms_reg_procpersoninfo.NATION_NAME ,oms_reg_procpersoninfo.POLITICAL_AFFINAME ,
+        oms_reg_procpersoninfo.WORK_UNIT as b0101 ,
+        oms_reg_procpersoninfo.SECRET_LEVEL AS SECRET_LEVEL ,(select SECRET_REVIEW_DATE from oms_smr_oldinfo
+        where PROC_PERSON_ID=oms_reg_procpersoninfo.id and (QR_FINISH_DATE is NULL or QR_FINISH_DATE>current_date)
+        ORDER BY SECRET_REVIEW_DATE desc LIMIT 1) AS SECRET_REVIEW_DATE ,
+        oms_reg_procpersoninfo.NF AS NF
+        from oms_pub_apply left join oms_reg_procpersoninfo on oms_pub_apply.PROCPERSON_ID=oms_reg_procpersoninfo.ID
         where oms_pub_apply.SFXD = '1'
             <if test="omsPubApplyQueryParam.applyId != null and omsPubApplyQueryParam.applyId != ''">
                 and oms_pub_apply.ID = #{omsPubApplyQueryParam.applyId}
@@ -623,30 +616,27 @@
     </select>
     <select id="selectPersonListForTZQGB" resultType="com.hxoms.modules.publicity.entity.PersonInfoVO">
         SELECT
-            a.a0101 AS NAME,
-            a.a0184 AS idnumber,
-            a.a0100 AS a0100,
-            a.A0104 AS sex,
-            a.A0107 AS birthDate,
-            a.a0192a AS job,
-            b.b0111 AS b0111,
-            b.b0101 AS b0101,
-            b.b0100 AS b0100,
-            `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS `POLITICAL_AFFI`,
-            `GETDICTITEM` ( '01', `a`.`a0117`, '0' ) AS `NATION`
+            CONCAT(org.SURNAME,org.NAME) AS NAME,
+            org.IDNUMBER_GB AS idnumber,
+            org.A0100 AS a0100,
+            if(org.sex = '1', '男','女') as sex,
+            org.BIRTH_DATE_GB AS birthDate,
+            org.POST AS job,
+            org.RF_B0000 AS b0111,
+            org.WORK_UNIT AS b0101,
+            org.RF_B0000 AS b0100,
+            org.POLITICAL_AFFINAME as POLITICAL_AFFI,
+            org.NATION_NAME AS `NATION`
         FROM
-            a01 a
-            JOIN a02 a2 ON a2.a0100 = a.a0100 and a2.A0255='1'
-        AND a2.a0281 = 'true' and a2.A0279='1'
-            JOIN b01 b ON a2.a0201b = b.b0100
+            oms_reg_procpersoninfo org
         WHERE
-            a.a0165 = '02'
+            org.IDENTITY_CODE = '1'
         <if test="keyword != null and keyword != ''">
-            and (a.a0101 like CONCAT('%',#{keyword},'%')
-            or  a.a0102 like CONCAT('%',#{keyword},'%'))
+            and (CONCAT(org.SURNAME,org.NAME) like CONCAT('%',#{keyword},'%')
+            or  org.py like CONCAT('%',#{keyword},'%'))
         </if>
         <if test="b0100 != null and b0100.size>0">
-            and b.b0100 in
+            and org.RF_B0000 in
             <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
                 #{b0100}
             </foreach>

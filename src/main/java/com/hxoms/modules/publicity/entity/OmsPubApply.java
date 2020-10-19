@@ -278,8 +278,8 @@ public class OmsPubApply {
     @ApiModelProperty(value="备注")
     private String bz;
 
-    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：上传）")
-    @ApiModelProperty(value="数据来源（0：填写，1：上传）")
+    @ColumnAnnotation(FieldName = "SOURCE",   FieldDescription="数据来源（0：填写，1：下达）")
+    @ApiModelProperty(value="数据来源（0：填写，1：下达）")
     private String source;
 
     @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书（0-否，1-是）")

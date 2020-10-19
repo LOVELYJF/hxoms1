@@ -800,7 +800,7 @@ public class OmsPubGroupServiceImpl extends ServiceImpl<OmsPubGroupMapper, OmsPu
         pubApply.setSftsry(Constants.IS_NOT);
         pubApply.setDwjsxs(Constants.IS_NOT);
         pubApply.setSfxd(1);
-        pubApply.setSource(pubGroup.getSource());
+        pubApply.setSource("1");
         pubApply.setCreateUser(userInfo.getId());
         pubApply.setCreateTime(new Date());
         return pubApply;

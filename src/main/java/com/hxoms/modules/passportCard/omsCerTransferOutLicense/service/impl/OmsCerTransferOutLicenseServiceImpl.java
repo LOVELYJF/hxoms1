@@ -47,6 +47,7 @@ public class OmsCerTransferOutLicenseServiceImpl extends ServiceImpl<OmsCerTrans
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("name", omsCerTransferOutLicense.getName());
 		map.put("zjlx", omsCerTransferOutLicense.getZjlx());
+		map.put("b0100", omsCerTransferOutLicense.getB0100());
 		map.put("BATCH_NUM", omsCerTransferOutLicense.getBatchNum());       //批次号
 		map.put("handoverStartQueryTime", omsCerTransferOutLicense.getHandoverStartQueryTime());
 		map.put("handoverEndQueryTime", omsCerTransferOutLicense.getHandoverEndQueryTime());

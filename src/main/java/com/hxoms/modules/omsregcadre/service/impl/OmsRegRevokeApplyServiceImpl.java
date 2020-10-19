@@ -406,18 +406,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                     //没有生成时生成文件
                     if (count < 1){
                         for (OmsFile omsFile : omsFiles){
-                            OmsCreateFile omsCreateFile = new OmsCreateFile();
-                            omsCreateFile.setFileId(omsFile.getId());
-                            omsCreateFile.setApplyId(applyId);
-                            omsCreateFile.setFileName(omsFile.getFileName());
-                            omsCreateFile.setFileShortname(omsFile.getFileShortname());
-                            omsCreateFile.setFileType(omsFile.getFileType());
-                            omsCreateFile.setTableCode(omsFile.getTableCode());
-                            omsCreateFile.setIsEdit(omsFile.getIsEdit());
-                            omsCreateFile.setSealDesc(omsFile.getSealDesc());
-                            omsCreateFile.setIsfileList(omsFile.getIsfileList());
-                            omsCreateFile.setSortId(omsFile.getSortId());
-                            omsCreateFile.setPrintNum(omsFile.getPrintNum());
+                            OmsCreateFile omsCreateFile = omsFileServiceImpl.createFile(omsFile,applyId);// new OmsCreateFile();
                             //替换关键词
                             omsFileServiceImpl.replaceFile(omsFile, applyId, tableCode,null);
                             if(Arrays.asList(types).indexOf(exitType)!=-1){
