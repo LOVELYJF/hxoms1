@@ -620,13 +620,12 @@
             org.IDNUMBER_GB AS idnumber,
             org.A0100 AS a0100,
             if(org.sex = '1', '男','女') as sex,
-
             org.BIRTH_DATE_GB AS birthDate,
             org.POST AS job,
             org.RF_B0000 AS b0111,
             org.WORK_UNIT AS b0101,
             org.RF_B0000 AS b0100,
-            org.POLITICAL_AFFINAME,
+            org.POLITICAL_AFFINAME as POLITICAL_AFFI,
             org.NATION_NAME AS `NATION`
         FROM
             oms_reg_procpersoninfo org
