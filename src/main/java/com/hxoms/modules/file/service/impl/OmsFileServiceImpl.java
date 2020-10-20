@@ -658,7 +658,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         if (isLeaders == null)
             isLeaders = omsRegProcpersoninfo.getMainLeader();
         lqgz = omsRegProcpersoninfo.getLqgz();
-        if (level == 0 && com.hxoms.common.util.StringUtils.isNullOrEmpty(omsRegProcpersoninfo.getSecretLevel()))
+        if (level == 0 && com.hxoms.common.util.StringUtils.isNullOrEmpty(omsRegProcpersoninfo.getSecretLevel())==false)
             level = Integer.parseInt(omsRegProcpersoninfo.getSecretLevel());
 
 
