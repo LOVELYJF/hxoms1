@@ -10,7 +10,6 @@ import com.hxoms.modules.file.entity.paramentity.SecretLevelAndFileType;
 import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.mapper.OmsFileMapper;
 import com.hxoms.modules.file.mapper.OmsReplaceKeywordsMapper;
-import com.hxoms.modules.file.service.OmsCreateFileService;
 import com.hxoms.modules.file.service.OmsFileService;
 import com.hxoms.modules.keySupervision.familyMember.entity.A36;
 import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
@@ -60,10 +59,6 @@ public class OmsFileServiceImpl implements OmsFileService {
     private OmsCreateFileMapper omsCreateFileMapper;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
-    @Autowired
-    private B01Mapper b01Mapper;
-    @Autowired
-    private OmsCreateFileService omsCreateFileService;
 
     /**
      * @param procpersonId 备案人员id
@@ -320,18 +315,32 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapperFile.eq("ID", fileTemplateId);
         OmsFile omsFile = omsFileMapper.selectOne(queryWrapperFile);
 
-        if (omsFile.getIsTymb() == 0) {
+        //查找是否存在自定义
+        if (StringUilt.stringIsNullOrEmpty(omsFile.getFileId())) {
             queryWrapperFile.clear();
             queryWrapperFile.eq("FILE_ID", fileTemplateId);
             queryWrapperFile.eq("B0100", userInfo.getOrgId());
-            omsFile = omsFileMapper.selectOne(queryWrapperFile);
+            OmsFile omsCustomFile = omsFileMapper.selectOne(queryWrapperFile);
+            if (omsCustomFile != null)
+                omsFile = omsCustomFile;
+            else {
+                //变成机构定制模板保存
+                omsFile.setFileId(omsFile.getId());
+                omsFile.setB0100(userInfo.getOrgId());
+                omsFile.setId(UUIDGenerator.getPrimaryKey());
+                omsFile.setCreateTime(new Date());
+                omsFile.setCreateUser(userInfo.getId());
+                omsFileMapper.insert(omsFile);
+            }
         }
+
         if (omsFile == null) {
             throw new CustomMessageException("文件不存在");
         }
+
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("FILE_ID", omsFile.getFileId() == null ? omsFile.getId() : omsFile.getFileId());
+        queryWrapperKeyword.eq("FILE_ID", StringUilt.stringIsNullOrEmpty(omsFile.getFileId()) ? omsFile.getId() : omsFile.getFileId());
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         result.put("omsFile", omsFile);
@@ -403,22 +412,15 @@ public class OmsFileServiceImpl implements OmsFileService {
     public OmsCreateFile createFile(OmsFile omsFile, String applyId) {
 
         OmsCreateFile omsCreateFile = new OmsCreateFile();
+
         omsCreateFile.setId(UUIDGenerator.getPrimaryKey());
-        omsCreateFile.setFileId(omsFile.getId());
         omsCreateFile.setApplyId(applyId);
-        omsCreateFile.setFileName(omsFile.getFileName());
-        omsCreateFile.setFileShortname(omsFile.getFileShortname());
-        omsCreateFile.setFileType(omsFile.getFileType());
-        omsCreateFile.setTableCode(omsFile.getTableCode());
-        omsCreateFile.setIsEdit(omsFile.getIsEdit());
-        omsCreateFile.setSealDesc(omsFile.getSealDesc());
-        omsCreateFile.setIsfileList(omsFile.getIsfileList());
-        omsCreateFile.setSortId(omsFile.getSortId());
-        omsCreateFile.setPrintNum(omsFile.getPrintNum());
-        omsCreateFile.setIsTemplate(omsFile.getIsTemplate());
+
+        CopyFileProperty(omsCreateFile, omsFile);
+
         omsCreateFile.setCreateUser(UserInfoUtil.getUserId());
         omsCreateFile.setCreateTime(new Date());
-        omsCreateFile.setIsTymb(omsFile.getIsTymb());
+
         return omsCreateFile;
     }
 
@@ -428,7 +430,7 @@ public class OmsFileServiceImpl implements OmsFileService {
      *
      * @return
      * @Param: []
-     * @Return: java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               java.lang.Object>
+     * @Return: java.util.Map<java.lang.String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               java.lang.Object>
      * @Author: 李逍遥
      * @Date: 2020/10/12 19:34
      */
@@ -792,13 +794,51 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         OmsCreateFile omsCreateFile = omsCreateFileMapper.selectById(fileId);
         OmsFile omsFile = omsFileMapper.selectById(omsCreateFile.getFileId());
+
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+
+        if(StringUilt.stringIsNullOrEmpty(omsFile.getFileId())){
+            //本单位自定义模板
+            QueryWrapper<OmsFile> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("TABLE_CODE",  omsFile.getTableCode())
+                    .eq("B0100", userInfo.getOrgId())
+                    .in("FILE_ID", omsFile.getId())
+                    .orderByAsc("SORT_ID");
+
+            List<OmsFile> omsFiles = omsFileMapper.selectList(queryWrapper);
+            if(omsFiles!=null&&omsFiles.size()>0)
+                omsFile=omsFiles.get(0);
+        }
+
         replaceFile(omsFile, omsCreateFile.getApplyId(), omsFile.getTableCode(), null);
+
+        CopyFileProperty(omsCreateFile, omsFile);
         omsCreateFile.setFrontContent(omsFile.getFrontContent());
         omsCreateFile.setBankContent(omsFile.getBankContent());
+
         omsCreateFileMapper.updateById(omsCreateFile);
+
         return omsCreateFile;
     }
 
+    private void CopyFileProperty(OmsCreateFile omsCreateFile, OmsFile omsFile) {
+        if (StringUilt.stringIsNullOrEmpty(omsFile.getFileId()))
+            omsCreateFile.setGenerateMethod(1);
+        else
+            omsCreateFile.setGenerateMethod(0);
+        omsCreateFile.setFileId(omsFile.getId());
+        omsCreateFile.setIsTymb(omsFile.getIsTymb());
+        omsCreateFile.setIsTemplate(omsFile.getIsTemplate());
+        omsCreateFile.setPrintNum(omsFile.getPrintNum());
+        omsCreateFile.setSortId(omsFile.getSortId());
+        omsCreateFile.setFileName(omsFile.getFileName());
+        omsCreateFile.setFileShortname(omsFile.getFileShortname());
+        omsCreateFile.setTableCode(omsFile.getTableCode());
+        omsCreateFile.setFileType(omsFile.getFileType());
+        omsCreateFile.setIsEdit(omsFile.getIsEdit());
+        omsCreateFile.setSealDesc(omsFile.getSealDesc());
+        omsCreateFile.setIsfileList(omsFile.getIsfileList());
+    }
 
     /**
      * 替换关键词信息准备

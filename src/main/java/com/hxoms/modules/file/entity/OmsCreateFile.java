@@ -99,6 +99,10 @@ public class OmsCreateFile implements Comparable<OmsCreateFile> {
     @ApiModelProperty(value = "是否使用通用模板（1-使用通用模板；0-使用自定义模板）")
     private Integer isTymb;
 
+    @ColumnAnnotation(FieldName = "GENERATE_METHOD",   FieldDescription="生成方式（1-通用模板生成；0-自定义模板生成）")
+    @ApiModelProperty(value = "生成方式（1-通用模板生成；0-自定义模板生成）")
+    private Integer generateMethod;
+
     public String getId() {
         return id;
     }
@@ -278,5 +282,13 @@ public class OmsCreateFile implements Comparable<OmsCreateFile> {
     @Override
     public int compareTo(OmsCreateFile o) {
         return this.sortId-o.getSortId();
+    }
+
+    public Integer getGenerateMethod() {
+        return generateMethod;
+    }
+
+    public void setGenerateMethod(Integer generateMethod) {
+        this.generateMethod = generateMethod;
     }
 }

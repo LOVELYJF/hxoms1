@@ -38,7 +38,7 @@ public class OmsAbroadApprovalServiceImpl implements OmsAbroadApprovalService {
         QueryWrapper<OmsAbroadApproval> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("APPLY_ID", applyId)
                 .eq("TYPE", type)
-                .orderByDesc("STEP_CODE");
+                .orderByDesc("APPROVAL_TIME");
         List<OmsAbroadApproval> omsAbroadApprovals = omsAbroadApprovalMapper.selectList(queryWrapper);
         //查询经办人和审批人
         for (OmsAbroadApproval omsAbroadApproval : omsAbroadApprovals){

@@ -91,15 +91,16 @@ public class OmsPriApplyController {
 
     /**
      * 修改因私出国申请状态
-     * @param omsPriApply 申请id
+     * @param id 申请id
+     * @param currentStep 当前步骤
      * @return
      * @throws Exception
      */
     @ApiOperation(value="修改因私出国申请状态", notes="修改因私出国申请状态")
-    @PostMapping("/updateApplyStatus")
-    public Result updateApplyStatus(OmsPriApply omsPriApply) throws Exception {
-        String result = omsPriApplyService.updateApplyStatus(omsPriApply);
-        return Result.success().setMsg(result);
+    @GetMapping("/updateApplyStatus")
+    public Result updateApplyStatus(String id, String currentStep) {
+        Result result = omsPriApplyService.updateApplyStatus(id,currentStep);
+        return (result);
     }
 
     /**

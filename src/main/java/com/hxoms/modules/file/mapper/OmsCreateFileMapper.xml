@@ -22,6 +22,7 @@
     <result column="SORT_ID" jdbcType="INTEGER" property="sortId" />
     <result column="IS_TEMPLATE" jdbcType="INTEGER" property="isTemplate" />
     <result column="IS_TYMB" jdbcType="INTEGER" property="isTymb" />
+    <result column="GENERATE_METHOD" jdbcType="INTEGER" property="generateMethod" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hxoms.modules.file.entity.OmsCreateFile">
     <result column="FRONT_CONTENT" jdbcType="LONGVARCHAR" property="frontContent" />
@@ -30,7 +31,7 @@
   <sql id="Base_Column_List">
     ID, FILE_ID, APPLY_ID, FILE_NAME, FILE_SHORTNAME, FILE_TYPE, TABLE_CODE, IS_EDIT, 
     SEAL_DESC, IS_SEALHANDLE, CHECK_ADVICES, PRINT_NUM, ISFILE_LIST, CREATE_TIME, CREATE_USER, 
-    MODIFY_TIME, MODIFY_USER, SORT_ID,IS_TEMPLATE,IS_TYMB
+    MODIFY_TIME, MODIFY_USER, SORT_ID,IS_TEMPLATE,IS_TYMB,GENERATE_METHOD
   </sql>
   <sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT

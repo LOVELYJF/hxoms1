@@ -16,6 +16,7 @@ import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
+import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
@@ -59,6 +60,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
     private A36Mapper a36Mapper;
     @Autowired
     private OmsSmrOldInfoMapper omsSmrOldInfoMapper;
+    @Autowired
+    private OmsPriApplyService omsPriApplyService;
 
     @Override
     public List<PersonInfoVO> selectPersonListByOrg(List<String> b0100, String keyword, String type) {
@@ -707,6 +710,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         }
         omsPubApply.setSqzt(sqzt);
         omsPubApplyMapper.updateById(omsPubApply);
+
+        omsPriApplyService.WriteApprovalStep(id,cStep,Constants.emPublicGoAbroad.getNameByIndex(cStep),
+                "1","通过",Constants.oms_business[0]);
     }
 
     /**

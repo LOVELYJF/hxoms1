@@ -126,7 +126,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         //基本信息
         OmsPriApply omsPriApply = omsPriApplyParam.getOmsPriApply();
-        if(omsPriApply.getAbroadTime()!=null){
+        if (omsPriApply.getAbroadTime() != null) {
             List<OmsPriApply> priApplies = omsPriApplyMapper.selectExistsAbroad(omsPriApply.getProcpersonId(),
                     new SimpleDateFormat("yyyy-MM-dd").format(omsPriApply.getAbroadTime()));
             if (priApplies.size() > 0) {
@@ -211,59 +211,63 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     }
 
     @Override
-    public String updateApplyStatus(OmsPriApply omsPriApply) {
-        if (omsPriApply.getApplyStatus() != null && StringUtils.isBlank(omsPriApply.getId())) {
-            throw new CustomMessageException("参数错误");
+    public Result updateApplyStatus(String id, String currentStep) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(currentStep)) {
+            return Result.error("参数错误");
         }
-        OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(omsPriApply.getId());
-        UserInfo userInfo = UserInfoUtil.getUserInfo();
-        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
-        if (Constants.emPrivateGoAbroad.撤销.getIndex() == omsPriApply.getApplyStatus()) {
-            //撤销
-            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.撤销.getIndex());
-            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.撤销.getName());
-        } else if (Constants.emPrivateGoAbroad.草稿.getIndex() == omsPriApply.getApplyStatus()) {
-            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.草稿.getIndex());
-            omsAbroadApproval.setStepName("撤回");
-            //撤回
-            if (omsPriApplyDestail.getApplyStatus() > 20) {
-                throw new CustomMessageException("不能撤回");
-            }
-        }
-        int updateStatus = omsPriApplyMapper.updateById(omsPriApply);
-        if (updateStatus < 1) {
-            throw new CustomMessageException("操作失败");
-        }
-        if (omsPriApply.getApplyStatus() > 1 || omsPriApply.getApplyStatus() <= 5) {
-            int status = omsPriApply.getApplyStatus();
-            omsAbroadApproval.setStepCode(status);
-            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.getNameByIndex(status));
-//            int status = omsPriApply.getApplyStatus() - 1;
-//            omsAbroadApproval.setStepCode(status);
-//            for (int i = 1; i < 5; i++) {
-//                if (Constants.private_business[i] == status) {
-//                    omsAbroadApproval.setStepName(Constants.private_businessName[i]);
-//                    break;
-//                }
-//            }
-        } else if (omsPriApply.getApplyStatus() == 20) {
-//            omsAbroadApproval.setStepCode(Constants.private_business[4]);
-//            omsAbroadApproval.setStepName(Constants.private_businessName[4]);
-            omsAbroadApproval.setStepCode(Constants.emPrivateGoAbroad.自评.getIndex());
-            omsAbroadApproval.setStepName(Constants.emPrivateGoAbroad.自评.getName());
+        OmsPriApply omsPriApplyDestail = omsPriApplyMapper.selectById(id);
+        if (omsPriApplyDestail == null) {
+            return Result.error("申请记录为空");
         }
 
-        //添加步骤
-        omsAbroadApproval.setApplyId(omsPriApply.getId());
-        omsAbroadApproval.setApprovalTime(new Date());
-        omsAbroadApproval.setApprovalUser(userInfo.getId());
-        omsAbroadApproval.setSubmitTime(new Date());
-        omsAbroadApproval.setSubmitUser(userInfo.getId());
-        omsAbroadApproval.setApprovalResult("1");
-        omsAbroadApproval.setApprovalAdvice("通过");
-        omsAbroadApproval.setType(Constants.oms_business[1]);
-        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
-        return "操作成功";
+        Integer sqzt = omsPriApplyDestail.getApplyStatus();
+        Integer cStep = Integer.parseInt(currentStep);
+        if (cStep != sqzt) return Result.success();
+
+        if (sqzt == Constants.emPrivateGoAbroad.草稿.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.生成材料.getIndex();
+        } else if (sqzt == Constants.emPrivateGoAbroad.生成材料.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.打印材料清单.getIndex();
+        } else if (sqzt == Constants.emPrivateGoAbroad.打印材料清单.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.自评.getIndex();
+        } else if (sqzt == Constants.emPrivateGoAbroad.自评.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.业务受理.getIndex();
+        } else if (sqzt == Constants.emPrivateGoAbroad.业务受理.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.征求意见.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.征求意见.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.记录意见.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.记录意见.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.做出审核意见.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.做出审核意见.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.处领导审批.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.处领导审批.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.部领导审批.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.部领导审批.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.核实批件.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.核实批件.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.制作备案表.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.制作备案表.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.已办结.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.已办结.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.待领证.getIndex();
+        }
+        if (sqzt == Constants.emPrivateGoAbroad.待领证.getIndex()) {
+            sqzt = Constants.emPrivateGoAbroad.已领证.getIndex();
+        }
+        omsPriApplyDestail.setApplyStatus(sqzt);
+        omsPriApplyMapper.updateById(omsPriApplyDestail);
+
+        WriteApprovalStep(id,cStep,Constants.emPrivateGoAbroad.getNameByIndex(cStep),"1",
+                "通过",Constants.oms_business[1]);
+        return Result.success();
     }
 
     @Override
@@ -602,6 +606,24 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
             throw new CustomMessageException("参数错误");
         }
         return omsCreateFileMapper.priApplyPrintApproval(applyId);
+    }
+
+    @Override
+    public void WriteApprovalStep(String applyId, Integer stepCode, String stepName,
+                                  String approvalResult,String approvalOpinion,String businessType) {
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
+        omsAbroadApproval.setStepCode(stepCode);
+        omsAbroadApproval.setStepName(stepName);
+        omsAbroadApproval.setApplyId(applyId);
+        omsAbroadApproval.setApprovalTime(new Date());
+        omsAbroadApproval.setApprovalUser(userInfo.getUserName());
+        omsAbroadApproval.setApprovalResult(approvalResult);
+        omsAbroadApproval.setApprovalAdvice(approvalOpinion);
+        omsAbroadApproval.setType(businessType);
+        omsAbroadApproval.setCreateTime(new Date());
+        omsAbroadApproval.setCreateUser(userInfo.getId());
+        omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
     }
 
     /**
