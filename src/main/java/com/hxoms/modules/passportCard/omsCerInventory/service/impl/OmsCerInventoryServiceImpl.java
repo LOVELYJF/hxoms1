@@ -596,18 +596,14 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 
 	/**
 	 * <b>功能描述: 总体盘点结果统计查询</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	public Map<String,Object> GetCerInventoryResult(List<String> list,OmsCerInventory omsCerInventory) {
+	public Map<String,Object> GetCerInventoryResult(String list,OmsCerInventory omsCerInventory) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		if(list == null || list.size() < 1){
-			map.put("list", null);
-		} else {
-			map.put("list", list);
-		}
+		map.put("list", list);
 		map.put("sameStatus", "1");
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
@@ -652,12 +648,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 
 	/**
 	 * <b>功能描述: 总体查询导出盘点结果</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	public void getCerInventoryResultOut(List<String> list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
+	public void getCerInventoryResultOut(String list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list", list);
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());

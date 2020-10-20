@@ -10,10 +10,7 @@ import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryReco
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateSeeRes;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportExceptionCer;
 import com.hxoms.modules.passportCard.initialise.entity.exportExcel.ExportNotProvicdeCer;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.ImportInterface;
-import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.RegProcpersoninfo;
+import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -267,4 +264,13 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @return
 	 */
 	List<CfCertificateHistoryRecord> selectAllExceptionInfo(String year);
+
+	/**
+	 * @Desc: 查询证件个数
+	 * @Author: wangyunquan
+	 * @Param: []
+	 * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CerTotalCount
+	 * @Date: 2020/10/19
+	 */
+    CerTotalCount selectCerCount();
 }

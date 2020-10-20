@@ -71,6 +71,7 @@
     <result column="JDCJL" jdbcType="CHAR" property="jdcjl" />
     <result column="JWJL" jdbcType="CHAR" property="jwjl" />
     <result column="ZZJL" jdbcType="CHAR" property="zzjl" />
+      <result column="clshsftg_opinion" jdbcType="VARCHAR" property="clshsftgOpinion"></result>
   </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapVO" type="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
         <result column="name" jdbcType="VARCHAR" property="name" />
@@ -95,7 +96,7 @@
     IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO, 
     PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON, IS_ENTRUST, 
     REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID, leader_batch_id, 
-    SCZQJWYJSJ, CLSHSFTG, JDCJL, JWJL, ZZJL
+    SCZQJWYJSJ, CLSHSFTG, JDCJL, JWJL, ZZJL,clshsftg_opinion
   </sql>
 
 

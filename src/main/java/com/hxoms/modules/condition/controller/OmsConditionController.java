@@ -41,8 +41,8 @@ public class OmsConditionController {
             @ApiImplicitParam(name = "type", value = "类型（因公，因私，延期回国）", required = true, dataType = "String")
     })
     @GetMapping("/checkCondition")
-    public Result checkCondition(String applyId, String type){
-        List<Map<String, String>> result = omsConditionService.checkCondition(applyId, type);
+    public Result checkCondition(String applyId, String type,String operType){
+        List<Map<String, String>> result = omsConditionService.checkCondition(applyId, type,operType);
         return Result.success(result);
     }
 

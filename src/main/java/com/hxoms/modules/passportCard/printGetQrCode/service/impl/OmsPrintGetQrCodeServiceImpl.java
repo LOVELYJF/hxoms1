@@ -68,12 +68,9 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
         if(createQrCodeApplyList.size()>0){
             HttpServletRequest request = DomainObjectUtil.getRequest();
             String qrCodeId= UUIDGenerator.getPrimaryKey();
-            //生成二维码URL
-            StringBuffer stringBuffer=new StringBuffer("http://"+request.getLocalAddr()+":"+request.getServerPort()+"/conuterGet/selectCanGetCer");
-            stringBuffer.append("?").append("operatId=").append(userInfo.getId()).append("&qrCodeId=").append(qrCodeId);
             ByteArrayOutputStream bs=new ByteArrayOutputStream();
             try {
-                QrCodeCreateUtil.createQrCode(bs,stringBuffer.toString(),190,imgFormat);
+                QrCodeCreateUtil.createQrCode(bs,qrCodeId,190,imgFormat);
                 enCodeStr = base64Pre+Base64.encode(bs.toByteArray());
             } catch (WriterException|IOException e) {
                 e.printStackTrace();
@@ -88,7 +85,6 @@ public class OmsPrintGetQrCodeServiceImpl extends ServiceImpl<OmsCerPrintQrCodeM
                 BeanUtils.copyProperties(createQrCodeApply,omsCerPrintQrCode);
                 omsCerPrintQrCode.setId(UUIDGenerator.getPrimaryKey());
                 omsCerPrintQrCode.setQrCodeId(qrCodeId);
-                omsCerPrintQrCode.setQrUrl(stringBuffer.toString());
                 omsCerPrintQrCode.setQrCode(enCodeStr);
                 omsCerPrintQrCode.setOperator(userInfo.getId());
                 omsCerPrintQrCode.setOperateTime(new Date());

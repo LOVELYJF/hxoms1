@@ -61,7 +61,19 @@ public class OmsPubGroupController {
             return Result.error("系统错误");
         }
     }
-
+    /**
+     * 添加填写的团体预备案申请信息
+     * @param pubGroupAndApplyList(集合实体类)
+     */
+    @PostMapping("/insertWritePubGroup")
+    public Result insertWritePubGroup(@RequestBody OmsPubGroupAndApplyList pubGroupAndApplyList) {
+        try {
+            return pubGroupService.insertWritePubGroup(pubGroupAndApplyList);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("系统错误");
+        }
+    }
     /**
      * 修改团体预备案申请信息
      * @param pubGroupAndApplyList(集合实体类)

@@ -21,6 +21,8 @@ public interface OmsPubGroupService extends IService<OmsPubGroupPreApproval>{
     PageInfo<OmsPubGroupPreApproval> getPubGroupList(Integer pageNum, Integer pageSize, Map<String, String> param) throws ParseException;
     //添加团体预备案申请信息
     Result insertPubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList) throws Exception;
+    //添加手工填写团体预备案申请信息，校验未通过时，删除已经保存的团组及申请
+    Result insertWritePubGroup(OmsPubGroupAndApplyList pubGroupAndApplyList)throws Exception;
     //获取备案步骤任务数
     Result updateTimeTask(OmsPubGroupAndApplyList pubGroupAndApplyList, String bgyy);
     //修改团体预备案申请信息

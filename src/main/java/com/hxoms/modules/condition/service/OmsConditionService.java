@@ -11,7 +11,7 @@ public interface OmsConditionService {
      * @param type 类型（因公，因私，延期回国）
      * @return
      */
-    List<Map<String, String>> checkCondition(String applyId, String type);
+    List<Map<String, String>> checkCondition(String applyId, String type,String operType);
     /**
      * 检查约束条件(选择人员)
      * @param procpersonId 备案人员id

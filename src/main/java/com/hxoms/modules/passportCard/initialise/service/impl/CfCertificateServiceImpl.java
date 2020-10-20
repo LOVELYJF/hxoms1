@@ -194,6 +194,18 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     }
 
     /**
+     * @Desc: 查询证件个数
+     * @Author: wangyunquan
+     * @Param: []
+     * @Return: com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CerTotalCount
+     * @Date: 2020/10/19
+     */
+    @Override
+    public CerTotalCount selectCerCount() {
+        return cfCertificateMapper.selectCerCount();
+    }
+
+    /**
      * @Desc: 验证证照信息
      * @Author: wangyunquan
      * @Param: [validateCerInfoParam]
@@ -485,11 +497,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         if(userInfo==null)
             throw new CustomMessageException("获取登陆用户信息失败");
         CfCertificate cfCertificate=new CfCertificate();
+        Date currDate = new Date();
         BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
         cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
         cfCertificate.setCardStatus(CardStatusEnum.YYZ.getCode());
+        cfCertificate.setExceptionSolvedate(currDate);
         cfCertificate.setUpdater(userInfo.getId());
-        cfCertificate.setUpdateTime(new Date());
+        cfCertificate.setUpdateTime(currDate);
         cfCertificate.setZjxs(cfCertificateMapper.selectById(cfCertificate.getId()).getZjxs());
         //通过接口获取证照存储位置，优先选择证照机存储，否则柜台存储。
         setStoreMode(cfCertificate,userInfo);
@@ -509,11 +523,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Transactional(rollbackFor=Exception.class)
     public void updateCerForGaInfoIsRight(QureyDealRequestInfoEx qureyDealRequestInfoEx) {
         CfCertificate cfCertificate=new CfCertificate();
+        Date currDate = new Date();
         BeanUtils.copyProperties(qureyDealRequestInfoEx,cfCertificate);
         cfCertificate.setSaveStatus(SaveStatusEnum.WSQ.getCode());
         cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
+        cfCertificate.setExceptionSolvedate(currDate);
         cfCertificate.setUpdater(cfCertificate.getExceptionHandler());
-        cfCertificate.setUpdateTime(new Date());
+        cfCertificate.setUpdateTime(currDate);
         int result = cfCertificateMapper.updateById(cfCertificate);
         if(result==0)
             throw new CustomMessageException("处理失败！");

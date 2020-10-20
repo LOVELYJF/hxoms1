@@ -55,12 +55,12 @@ public class OmsConditionServiceImpl implements OmsConditionService {
 	private OmsPubApplyMapper omsPubApplyMapper;
 
 	@Override
-	public List<Map<String, String>> checkCondition(String applyId, String type) {
+	public List<Map<String, String>> checkCondition(String applyId, String type,String operType) {
 		if (StringUtils.isBlank(applyId) || StringUtils.isBlank(type)) {
 			throw new CustomMessageException("参数错误");
 		}
 		ConditionReplaceVO conditionReplaceVO = getConditionReplaceInfo(applyId, type);
-		return checkApply(conditionReplaceVO, Constants.OMS_CONDITION_CHECKTYPE[1], type);
+		return checkApply(conditionReplaceVO, operType, type);
 	}
 
 	@Override

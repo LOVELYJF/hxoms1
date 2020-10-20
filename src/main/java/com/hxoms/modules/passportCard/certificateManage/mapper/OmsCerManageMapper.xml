@@ -37,6 +37,7 @@
         a.zjhm,
         a.yxqz,
         a.surely_Unit surelyUnit,
+    if(a.surely_Unit='0','干部监督处',if(a.surely_Unit='1','省委统战部(台办)',a.surely_Unit)) surelyUnitName,
         a.card_Status cardStatus,
     (
     SELECT
@@ -82,31 +83,31 @@
         cf_certificate a
     INNER JOIN oms_reg_procpersoninfo b ON a.oms_id = b.id
     <where>
-      <if test="name!=null">
+      <if test="name!=null and name!=''">
         a.name=#{name}
       </if>
-      <if test="rfB0000!=null">
+      <if test="rfB0000!=null and rfB0000!=''">
         AND b.rf_B0000=#{rfB0000}
       </if>
       <if test="zjlx!=null">
         AND a.zjlx=#{zjlx}
       </if>
-      <if test="zjhm!=null">
+      <if test="zjhm!=null and zjhm!=''">
         AND a.zjhm=#{zjhm}
       </if>
       <if test="yxqz!=null">
         AND a.yxqz=#{yxqz}
       </if>
-      <if test="saveStatus!=null">
+      <if test="saveStatus!=null and saveStatus!=''">
         AND a.save_Status=#{saveStatus}
       </if>
-      <if test="cardStatus!=null">
+      <if test="cardStatus!=null and cardStatus!=''">
         AND a.card_Status=#{cardStatus}
       </if>
-      <if test="zjxs!=null">
+      <if test="zjxs!=null and zjxs!=''">
         AND a.zjxs=#{zjxs}
       </if>
-      <if test="xplx!=null">
+      <if test="xplx!=null and xplx!=''">
         AND a.xplx=#{xplx}
       </if>
 

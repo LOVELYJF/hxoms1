@@ -33,10 +33,10 @@ public interface OmsAdmintorGetService extends IService<OmsCerAdmintorGetApply> 
      * @Desc: 查询人员证照
      * @Author: wangyunquan
      * @Param: [omsId]
-     * @Return: java.util.List<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo>
-     * @Date: 2020/9/14
+     * @Return: com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonLicenceInfo
+     * @Date: 2020/10/19
      */
-    List<PersonInfo> selectInfoByOmsId(String omsId);
+    PersonLicenceInfo selectInfoByOmsId(String omsId);
 
     /**
      * @Desc: 打印二维码
