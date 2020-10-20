@@ -223,6 +223,7 @@
     c.operate_time operateTime,
     d.get_time getTime,
     a.surely_Unit surelyUnit,
+    if(a.surely_Unit='0','干部监督处',if(a.surely_Unit='1','省委统战部(台办)',a.surely_Unit)) surelyUnitName,
     a.card_Status cardStatus,
     (
     SELECT
@@ -267,35 +268,58 @@
     INNER JOIN oms_reg_procpersoninfo b ON a.oms_id = b.id
     LEFT JOIN OMS_CER_GET_TASK d ON c.id=d.busi_id
     <where>
-      <if test="name!=null">
+      <if test="name!=null and name!=''">
         a.name in <foreach close=")" collection="nameList" item="item" open="(" separator=",">
         #{item}
       </foreach>
       </if>
-      <if test="rfB0000!=null">
+      <if test="rfB0000!=null and rfB0000!=''">
         AND b.rf_B0000=#{rfB0000}
       </if>
       <if test="zjlx!=null">
         AND a.zjlx=#{zjlx}
       </if>
-      <if test="zjhm!=null">
+      <if test="zjhm!=null and zjhm!=''">
         AND a.zjhm=#{zjhm}
       </if>
-      <if test="cardStatus!=null">
+      <if test="cardStatus!=null and cardStatus!=''">
         AND a.card_Status=#{cardStatus}
       </if>
-      <if test="operator!=null">
-        AND d.operator=#{operator}
+      <if test="operator!=null and operator!=''">
+        AND (select user_Name from cf_user where user_id=c.operator)=#{operator}
       </if>
       <if test="operateStartTime!=null">
-        AND d.operateTime &gt;= #{operateStartTime}
+        AND DATE_FORMAT(c.operate_Time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{operateStartTime},'%Y-%m-%d')
       </if>
       <if test="operateEndTime!=null">
-        AND d.operateTime &lt;= #{operateEndTime}
+        AND DATE_FORMAT(c.operate_Time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{operateStartTime},'%Y-%m-%d')
       </if>
     </where>
   </select>
-  <select id="selectInfoByOmsId" resultType="com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo">
+  <select id="selectPersonInfoByOmsId" resultType="com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo">
+    SELECT
+    a.id omsId,
+    CONCAT(a.surname, a.name) name,
+    if(a.sex='1','男',if(a.sex='2','女',a.sex)) sex,
+    a.BIRTH_DATE birthDate,
+    a.INCUMBENCY_STATUS incumbencyStatus,
+    (
+      SELECT
+        item.item_name
+      FROM
+      sys_dict_item item
+      WHERE
+      item.dict_code = 'ZZZT'
+      AND a.incumbency_status= item.item_code
+      ) incumbencyStatusName,
+    a.WORK_UNIT workUnit,
+    a.post
+    FROM
+    oms_reg_procpersoninfo a
+    WHERE
+    a.id = #{omsId}
+  </select>
+  <select id="selectCerInfoByOmsId" resultType="com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.CerInfo">
     SELECT
     a.id omsId,
     CONCAT(a.surname, a.name) name,
@@ -320,7 +344,7 @@
     b.zjhm
     FROM
     oms_reg_procpersoninfo a
-    INNER JOIN cf_certificate b ON a.id = b.oms_id
+    LEFT JOIN cf_certificate b ON a.id = b.oms_id
     WHERE
     a.id = #{omsId}
     AND b.save_status = '0'

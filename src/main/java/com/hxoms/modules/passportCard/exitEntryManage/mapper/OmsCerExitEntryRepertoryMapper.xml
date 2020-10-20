@@ -233,7 +233,7 @@
           if(a.status='0','取出',if(a.status='1','归还',a.status)) statusName,
           a.MODE mode,
           if(a.mode='0','证照机',if(a.mode='1','柜台',a.mode)) modeName,
-          CASE a.STATUS
+          (select user_name from cf_user where user_id =(CASE a.STATUS
           WHEN '0' THEN
           (
           SELECT
@@ -247,13 +247,13 @@
           a.operator
           ELSE
           NULL
-          END  operator,
+          END))  operator,
           a.OPERATE_TIME operateTime
       FROM
           oms_cer_exit_entry_repertory a
       WHERE a.zjlx=#{zjlx}
       AND a.zjhm=#{zjhm}
-      <if test="status!=null">
+      <if test="status!=null and status!='' and status!='2'.toString()">
         AND a.status=#{status}
       </if>
 

@@ -330,7 +330,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("FILE_ID", omsFile.getFileId());
+        queryWrapperKeyword.eq("FILE_ID", omsFile.getFileId()==null ? omsFile.getId() : omsFile.getFileId());
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         result.put("omsFile", omsFile);

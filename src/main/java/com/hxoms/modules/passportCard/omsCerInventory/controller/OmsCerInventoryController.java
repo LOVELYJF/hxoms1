@@ -142,13 +142,13 @@ public class OmsCerInventoryController extends BaseController {
 
 	/**
 	 * <b>功能描述: 总体盘点结果统计查询</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
 	@PostMapping("/GetCerInventoryResult")
-	public Result GetCerInventoryResult(@RequestParam(value = "list",required = true) List<String> list, OmsCerInventory omsCerInventory){
+	public Result GetCerInventoryResult(String list, OmsCerInventory omsCerInventory){
 		Map<String,Object> map = omsCerInventoryService.GetCerInventoryResult(list,omsCerInventory);
 		return Result.success(map);
 	}
@@ -156,13 +156,13 @@ public class OmsCerInventoryController extends BaseController {
 
 	/**
 	 * <b>功能描述: 总体查询导出盘点结果</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
 	@PostMapping("/getCerInventoryResultOut")
-	public void getCerInventoryResultOut(@RequestParam(value = "list",required = true) List<String> list, OmsCerInventory omsCerInventory){
+	public void getCerInventoryResultOut(String list, OmsCerInventory omsCerInventory){
 		omsCerInventoryService.getCerInventoryResultOut(list,omsCerInventory,response);
 	}
 

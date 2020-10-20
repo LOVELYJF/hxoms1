@@ -71,6 +71,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("cabinetNum", omsCerInventory.getCabinetNum());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		result.put("dataWay", SurelyWayEnum.CABINET.getCode());
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(!ListUtil.isEmpty(resultList)){
 			throw new CustomMessageException("本月该证照柜已经完成盘点，查询请点击统计盘点结果");
@@ -95,6 +96,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 			omsCerInventory1.setZjlx(String.valueOf(cfCertificate.getZjlx()));
 			omsCerInventory1.setZjhm(cfCertificate.getZjhm());
 			omsCerInventory1.setYxqz(cfCertificate.getYxqz());
+			omsCerInventory1.setDataWay(SurelyWayEnum.CABINET.getCode());
 			omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
 			omsCerInventory1.setCardStatus(cfCertificate.getCardStatus());
 			omsCerInventory1.setBeforeInventorySaveStatus(cfCertificate.getSaveStatus());
@@ -131,6 +133,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("inventoryDate", UtilDateTime.formatCNMonth(new Date()));
+		map.put("dataWay", SurelyWayEnum.CABINET.getCode());
 		//查询证照主键
 		List<String> idList = omsCerInventoryMapper.selectOmsCerIdList(map);
 		if(idList == null || idList.size() < 1){
@@ -144,7 +147,8 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		//查询证照盘点表信息
 		QueryWrapper<OmsCerInventory> queryWrapper1 = new QueryWrapper<OmsCerInventory>();
 		queryWrapper1.eq("INVENTORY_DATE", UtilDateTime.formatCNMonth(new Date()))
-				.eq("CABINET_NUM", omsCerInventory.getCabinetNum());
+				.eq("CABINET_NUM", omsCerInventory.getCabinetNum())
+				.eq("DATA_WAY", SurelyWayEnum.CABINET.getCode());
 		List<OmsCerInventory> list1 = omsCerInventoryMapper.selectList(queryWrapper1);
 
 		//同步盘点结果到盘点表
@@ -152,8 +156,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 			for(OmsCerInventory omsCerInventory1 : list1){
 				if(cfCertificate.getZjhm().equals(omsCerInventory1.getZjhm())){
 					omsCerInventory1.setAfterInventorySaveStatus(cfCertificate.getSaveStatus());
-					omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
-					omsCerInventory1.setPlace(cfCertificate.getPlace());
+					if (!StringUtils.isBlank(cfCertificate.getCabinetNum())){
+						omsCerInventory1.setCabinetNum(cfCertificate.getCabinetNum());
+					}
+					if (!StringUtils.isBlank(cfCertificate.getPlace())){
+						omsCerInventory1.setPlace(cfCertificate.getPlace());
+					}
 					omsCerInventory1.setModifyTime(new Date());
 					omsCerInventory1.setModifyUser(UserInfoUtil.getUserInfo().getId());
 				}
@@ -173,7 +181,8 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		map1.put("cabinetNum",omsCerInventory.getCabinetNum());
 		String inventoryDate = UtilDateTime.formatCNMonth(new Date());
 		map1.put("inventoryDate",inventoryDate);
-		Map<String, Integer> resultmap = omsCerInventoryMapper.getCerInventoryStatisticsNum(map);
+		map1.put("dataWay", SurelyWayEnum.CABINET.getCode());
+		Map<String, Integer> resultmap = omsCerInventoryMapper.getCerInventoryStatisticsNum(map1);
 
 		inventoryResult.put("resultMap", resultmap);            //将盘点统计数量显示到页面
 		return inventoryResult;
@@ -211,6 +220,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("cabinetNum", omsCerInventory.getCabinetNum());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
+		result.put("dataWay", SurelyWayEnum.CABINET.getCode());
 		List<Map<String,Object>>  resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(ListUtil.isEmpty(resultList)){
 			throw new CustomMessageException("该证照柜本月未进行盘点，不能导出");
@@ -219,6 +229,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("cabinetNum", omsCerInventory.getCabinetNum());
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
+		map.put("dataWay", SurelyWayEnum.CABINET.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 
@@ -337,6 +348,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		result.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		result.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		result.put("cardStatus", CardStatusEnum.ZC.getCode());
+		result.put("dataWay", SurelyWayEnum.COUNTER.getCode());
 		List<Map<String,Object>>  inventoryList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(result);
 		if(inventoryList.size() > 0){
 			return inventoryList;
@@ -364,6 +376,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 			omsCerInventory1.setZjlx(String.valueOf(cfCertificate.getZjlx()));
 			omsCerInventory1.setZjhm(cfCertificate.getZjhm());
 			omsCerInventory1.setYxqz(cfCertificate.getYxqz());
+			omsCerInventory1.setDataWay(SurelyWayEnum.COUNTER.getCode());
 			omsCerInventory1.setCardStatus(cfCertificate.getCardStatus());
 			omsCerInventory1.setCounterNum(cfCertificate.getCounterNum());
 			omsCerInventory1.setBeforeInventorySaveStatus(cfCertificate.getSaveStatus());
@@ -378,6 +391,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		saveBatch(list1);
 
 		map.put("surelyWay", null);
+		map.put("dataWay", SurelyWayEnum.COUNTER.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> resultList = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 		return resultList;
@@ -425,10 +439,8 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		//统计盘点数量
 		Integer beforeNormal = 0;
 		Integer beforeTakeOut = 0;
-		Integer beforeTotal = 0;
 		Integer afterNormal = 0;
 		Integer afterTakeOut = 0;
-		Integer afterTotal = 0;
 
 		for(OmsCerInventory omsCerInventory : list){
 			if(omsCerInventory.getBeforeInventorySaveStatus().equals(SaveStatusEnum.ZCBG.getCode())){
@@ -443,16 +455,14 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 				afterTakeOut++;
 			}
 		}
-		beforeTotal = beforeNormal + beforeTakeOut;
-		afterTotal = afterNormal + afterTakeOut;
 
 		Map<String,Integer> map = new HashMap<String,Integer>();
 		map.put("beforeNormal",beforeNormal);
 		map.put("beforeTakeOut",beforeTakeOut);
-		map.put("beforeTotal",beforeTotal);
+		map.put("beforeTotal",beforeNormal + beforeTakeOut);
 		map.put("afterNormal",afterNormal);
 		map.put("afterTakeOut",afterTakeOut);
-		map.put("afterTotal",afterTotal);
+		map.put("afterTotal",afterNormal + afterTakeOut);
 		return map;
 	}
 
@@ -470,6 +480,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
 		map.put("cardStatus", CardStatusEnum.ZC.getCode());
+		map.put("dataWay", SurelyWayEnum.COUNTER.getCode());
 		map.put("inventoryDate",UtilDateTime.formatCNMonth(new Date()));
 		List<Map<String,Object>> list = omsCerInventoryMapper.selectCerInventoryResultForCabinet(map);
 		if(list.size() < 1 || list == null){
@@ -585,12 +596,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 
 	/**
 	 * <b>功能描述: 总体盘点结果统计查询</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	public Map<String,Object> GetCerInventoryResult(List<String> list,OmsCerInventory omsCerInventory) {
+	public Map<String,Object> GetCerInventoryResult(String list,OmsCerInventory omsCerInventory) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list", list);
 		map.put("sameStatus", "1");
@@ -602,12 +613,13 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		//统计盘点数量
 		Integer beforeNormal = 0;
 		Integer beforeTakeOut = 0;
-		Integer beforeTotal = 0;
 		Integer afterNormal = 0;
 		Integer afterTakeOut = 0;
-		Integer afterTotal = 0;
 
-		for(Map<String,Object> map1 : resultList){
+		map.put("sameStatus", null);
+		List<Map<String,Object>> resultList1 = omsCerInventoryMapper.GetCerInventoryResult(map);
+
+		for(Map<String,Object> map1 : resultList1){
 			if(map1.get("beforeInventorySaveStatus").toString().equals(SaveStatusEnum.ZCBG.getCode())){
 				beforeNormal++;
 			}else if(map1.get("beforeInventorySaveStatus").toString().equals(SaveStatusEnum.YQC.getCode())){
@@ -620,16 +632,14 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 				afterTakeOut++;
 			}
 		}
-		beforeTotal = beforeNormal + beforeTakeOut;
-		afterTotal = afterNormal + afterTakeOut;
 
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		resultMap.put("beforeNormal",beforeNormal);
 		resultMap.put("beforeTakeOut",beforeTakeOut);
-		resultMap.put("beforeTotal",beforeTotal);
+		resultMap.put("beforeTotal",beforeNormal + beforeTakeOut);
 		resultMap.put("afterNormal",afterNormal);
 		resultMap.put("afterTakeOut",afterTakeOut);
-		resultMap.put("afterTotal",afterTotal);
+		resultMap.put("afterTotal",afterNormal + afterTakeOut);
 		resultMap.put("resultList",resultList);
 
 		return resultMap;
@@ -638,12 +648,12 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 
 	/**
 	 * <b>功能描述: 总体查询导出盘点结果</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	public void getCerInventoryResultOut(List<String> list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
+	public void getCerInventoryResultOut(String list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list", list);
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());

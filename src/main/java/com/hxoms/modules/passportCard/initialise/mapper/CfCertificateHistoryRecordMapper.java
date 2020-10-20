@@ -10,4 +10,6 @@ public interface CfCertificateHistoryRecordMapper extends BaseMapper<CfCertifica
     List<CfCertificateHistoryRecord> selectNotProvicdeCerRecord(String year);
 
     List<CfCertificateHistoryRecord> selectExceptionCerRecord(String year);
+
+    List<String> selectHistoryIds(String year);
 }

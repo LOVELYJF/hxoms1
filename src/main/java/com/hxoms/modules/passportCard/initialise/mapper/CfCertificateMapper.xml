@@ -922,7 +922,7 @@
         distinct CABINET_NUM
      from
         cf_certificate
-     where CABINET_NUM is not null
+     where CABINET_NUM is not null and CABINET_NUM <![CDATA[<>]]> '';
   </select>
 
 	<!-- 存取记录 -->
@@ -1166,6 +1166,24 @@ where 1=1
 		</if>
 
 	</select>
-
+    <select id="selectCerCount" resultType="com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CerTotalCount">
+    SELECT
+        (
+            SELECT
+                count(1)
+            FROM
+                cf_certificate
+        ) totalCount,
+        (
+            SELECT
+                count(1)
+            FROM
+                cf_certificate
+            WHERE
+                CARD_STATUS = '5'
+        ) noValiCount
+    FROM
+        DUAL
+    </select>
 
 </mapper>

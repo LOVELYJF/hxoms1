@@ -73,12 +73,15 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
      * @Desc: 查询人员证照
      * @Author: wangyunquan
      * @Param: [omsId]
-     * @Return: java.util.List<com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonInfo>
+     * @Return: com.hxoms.modules.passportCard.admintorGet.entity.parameterEntiry.PersonLicenceInfo
      * @Date: 2020/9/14
      */
     @Override
-    public List<PersonInfo> selectInfoByOmsId(String omsId) {
-        return omsCerAdmintorGetApplyMapper.selectInfoByOmsId(omsId);
+    public PersonLicenceInfo selectInfoByOmsId(String omsId) {
+        PersonLicenceInfo personLicenceInfo=new PersonLicenceInfo();
+        personLicenceInfo.setPersonInfo(omsCerAdmintorGetApplyMapper.selectPersonInfoByOmsId(omsId));
+        personLicenceInfo.setCerInfoList(omsCerAdmintorGetApplyMapper.selectCerInfoByOmsId(omsId));
+        return personLicenceInfo;
     }
 
     /**
@@ -125,6 +128,7 @@ public class OmsAdmintorGetServiceImpl extends ServiceImpl<OmsCerAdmintorGetAppl
             omsCerGetTask.setZjhm(omsCerAdmintorGetApply.getZjhm());
             omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_0.getCode());
             omsCerGetTask.setDataSource(ReceiveSourceEnum.SOURCE_4.getCode());
+            omsCerGetTask.setHappenDate(omsCerAdmintorGetApply.getOperateTime());
             omsCerGetTask.setCreator(omsCerAdmintorGetApply.getOperator());
             omsCerGetTask.setCreateTime(date);
             omsCerGetTaskList.add(omsCerGetTask);

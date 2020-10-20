@@ -50,6 +50,9 @@ public class OmsCerInventory {
     @ColumnAnnotation(FieldName = "AFTER_INVENTORY_SAVE_STATUS",   FieldDescription="盘点后证照保管状态(0:正常保管,1:已取出,2:未上缴)")
     private String afterInventorySaveStatus;
 
+    @ColumnAnnotation(FieldName = "DATA_WAY",   FieldDescription="盘点的数据来源(0:证照机,1:柜台)")
+    private String dataWay;
+
     @ColumnAnnotation(FieldName = "CABINET_NUM",   FieldDescription="机柜编号")
     private String cabinetNum;
 
@@ -182,6 +185,14 @@ public class OmsCerInventory {
 
     public void setAfterInventorySaveStatus(String afterInventorySaveStatus) {
         this.afterInventorySaveStatus = afterInventorySaveStatus == null ? null : afterInventorySaveStatus.trim();
+    }
+
+    public String getDataWay() {
+        return dataWay;
+    }
+
+    public void setDataWay(String dataWay) {
+        this.dataWay = dataWay == null ? null : dataWay.trim();
     }
 
     public String getCabinetNum() {

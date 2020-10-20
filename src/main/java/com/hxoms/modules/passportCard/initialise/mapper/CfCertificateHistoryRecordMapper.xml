@@ -102,8 +102,12 @@
     a.SAVE_STATUS = '1'
     AND a.CARD_STATUS in ('3','5')
     <if test="year!=null and year !=''">
-      AND a.year=#{year}
+      AND a.YEAR=#{year}
     </if>
+  </select>
+
+  <select id="selectHistoryIds" resultType="java.lang.String">
+    select id from cf_certificate_history_record where YEAR=#{year}
   </select>
 
 

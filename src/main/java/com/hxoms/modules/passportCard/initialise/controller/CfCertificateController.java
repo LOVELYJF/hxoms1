@@ -127,6 +127,18 @@ public class CfCertificateController {
     public Result<PageBean<ImportInterface>> queryCertificateByOmsId(PageBean pageBean,String b0100) throws Exception {
         return Result.success(cfCertificateService.queryCertificateByOmsId(pageBean,b0100));
     }
+    /**
+     * @Desc: 查询证照个数
+     * @Author: wangyunquan
+     * @Param: [validateCerInfoParam]
+     * @Return: com.hxoms.common.utils.Result
+     * @Date: 2020/8/4
+     */
+    @ApiOperation(value = "查询证照个数")
+    @GetMapping("/selectCerCount")
+    public Result<CerTotalCount> selectCerCount(){
+        return Result.success(cfCertificateService.selectCerCount());
+    }
 
     /**
      * @Desc: 验证证照信息
@@ -356,7 +368,7 @@ public class CfCertificateController {
      */
     @ApiOperation(value = "年度查询对应证照信息并保存对比结果到记录表中")
     @ApiImplicitParam(value = "年度",name = "year",dataType = "String",paramType = "query")
-    @GetMapping("/saveCfCertificateHistoryRecord")
+    @PostMapping("/saveCfCertificateHistoryRecord")
     public Result saveCfCertificateHistoryRecord(String year){
         cfHistoryRecordService.saveCfCertificateHistoryRecord(year);
         return  Result.success();

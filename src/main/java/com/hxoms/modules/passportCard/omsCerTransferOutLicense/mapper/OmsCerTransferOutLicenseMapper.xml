@@ -85,7 +85,7 @@
 		select
 			distinct b0100, WORK_UNIT
 		from oms_cer_transfer_out_license
-		where WORK_UNIT is not null
+		where WORK_UNIT is not null  and WORK_UNIT <![CDATA[<>]]> ''
 	</select>
 
 	<!-- 根据年份查询批次号 -->
@@ -94,7 +94,7 @@
 			distinct YEAR ,BATCH_NUM
 		from oms_cer_transfer_out_license
 		<where>
-			<if test="year !=  null">BATCH_NUM like concat(#{year},'%')</if>
+			<if test="year !=  null">BATCH_NUM like concat(#{year},'%') and YEAR <![CDATA[<>]]> ''</if>
 		</where>
 
 	</select>
@@ -105,7 +105,7 @@
 		select
 			distinct YEAR
 		from oms_cer_transfer_out_license
-		where YEAR is not null
+		where YEAR is not null and YEAR <![CDATA[<>]]> ''
 	</select>
 
 </mapper>

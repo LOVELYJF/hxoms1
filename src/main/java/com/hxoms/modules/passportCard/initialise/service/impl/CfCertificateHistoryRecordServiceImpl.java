@@ -10,9 +10,11 @@ import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertif
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateHistoryRecordMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateHistoryRecordService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class CfCertificateHistoryRecordServiceImpl extends ServiceImpl<CfCertificateHistoryRecordMapper,CfCertificateHistoryRecord> implements CfCertificateHistoryRecordService {
@@ -24,11 +26,20 @@ public class CfCertificateHistoryRecordServiceImpl extends ServiceImpl<CfCertifi
     @Override
     public void saveCfCertificateHistoryRecord(String year) {
         List<CfCertificateHistoryRecord> list = cfCertificateMapper.selectAllExceptionInfo(year);
-        saveBatch(list,100);
+        if (list.size()>0) {
+            List<String> ids = baseMapper.selectHistoryIds(year);
+            for (int i = 0; i < list.size(); i++) {
+                if (ids!=null && ids.contains(list.get(i).getId())) {
+                    list.remove(i);
+                    i++;
+                }
+            }
+            saveBatch(list,100);
+        }
     }
 
     /**
-     * @Desc: 未上缴证照统计
+         * @Desc: 未上缴证照统计
      * @Author: lijiaojiao
      * @Param: [pageBean,year]
      * @Return: com.hxoms.common.utils.PageBean

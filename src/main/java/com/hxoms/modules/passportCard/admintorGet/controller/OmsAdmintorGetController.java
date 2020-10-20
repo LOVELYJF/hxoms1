@@ -55,7 +55,7 @@ public class OmsAdmintorGetController {
     @ApiOperation(value = "查询人员证照")
     @ApiImplicitParam(value = "备案表id",name = "omsId",required = true,paramType = "query")
     @GetMapping("/selectInfoByName")
-    public Result<List<PersonInfo>> selectInfoByOmsId(@NotBlank(message = "omsId不能为空") String omsId){
+    public Result<PersonLicenceInfo> selectInfoByOmsId(@NotBlank(message = "omsId不能为空") String omsId){
         return Result.success(omsAdmintorGetService.selectInfoByOmsId(omsId));
     }
 

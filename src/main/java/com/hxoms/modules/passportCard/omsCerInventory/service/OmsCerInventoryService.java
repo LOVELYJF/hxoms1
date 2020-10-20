@@ -91,22 +91,22 @@ public interface OmsCerInventoryService extends IService<OmsCerInventory> {
 
 	/**
 	 * <b>功能描述: 总体盘点结果统计查询</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	Map<String,Object> GetCerInventoryResult(List<String> list,OmsCerInventory omsCerInventory);
+	Map<String,Object> GetCerInventoryResult(String list,OmsCerInventory omsCerInventory);
 
 
 	/**
 	 * <b>功能描述: 总体查询导出盘点结果</b>
-	 * @Param: [omsCerInventory]
+	 * @Param: [omsCerInventory,list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	void getCerInventoryResultOut(List<String> list, OmsCerInventory omsCerInventory, HttpServletResponse response);
+	void getCerInventoryResultOut(String list, OmsCerInventory omsCerInventory, HttpServletResponse response);
 
 
 	/**

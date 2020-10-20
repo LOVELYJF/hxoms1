@@ -92,12 +92,16 @@ public class AdmintorGetCerInfo {
     //证照状态
     @ApiModelProperty(value = "证照状态")
     private String cardStatus;
+
+    //证照状态
+    @ApiModelProperty(value = "证照状态名称")
+    private String cardStatusName;
     //保管状态
     @ApiModelProperty(value = "保管状态")
     private String saveStatus;
 
     //保管状态
-    @ApiModelProperty(value = "保管状态")
+    @ApiModelProperty(value = "保管状态名称")
     private String saveStatusName;
     //保管方式
     @ApiModelProperty(value = "保管方式")
@@ -332,6 +336,14 @@ public class AdmintorGetCerInfo {
 
     public void setCardStatus(String cardStatus) {
         this.cardStatus = cardStatus;
+    }
+
+    public String getCardStatusName() {
+        return cardStatusName;
+    }
+
+    public void setCardStatusName(String cardStatusName) {
+        this.cardStatusName = cardStatusName;
     }
 
     public String getSaveStatus() {

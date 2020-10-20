@@ -15,6 +15,7 @@
 		<result column="BEFORE_INVENTORY_SAVE_STATUS" jdbcType="CHAR" property="beforeInventorySaveStatus" />
 		<result column="AFTER_INVENTORY_SAVE_STATUS" jdbcType="CHAR" property="afterInventorySaveStatus" />
 		<result column="CABINET_NUM" jdbcType="VARCHAR" property="cabinetNum" />
+		<result column="DATA_WAY" jdbcType="CHAR" property="dataWay" />
 		<result column="PLACE" jdbcType="VARCHAR" property="place" />
 		<result column="COUNTER_NUM" jdbcType="INTEGER" property="counterNum" />
 		<result column="COUNTER_START_QUERY" jdbcType="INTEGER" property="counterStartQuery" />
@@ -29,7 +30,7 @@
 	<sql id="Base_Column_List">
     ID, OMS_ID, CF_ID, NAME, A0100, CSRQ, ZJLX, ZJHM, YXQZ, CARD_STATUS, BEFORE_INVENTORY_SAVE_STATUS,
     AFTER_INVENTORY_SAVE_STATUS, CABINET_NUM, PLACE, COUNTER_NUM, COUNTER_START_QUERY, 
-    COUNTER_END_QUERY, INVENTORY_RESULT, INVENTORY_DATE, CREATE_USER, CREATE_TIME, MODIFY_USER, 
+    COUNTER_END_QUERY, DATA_WAY, INVENTORY_RESULT, INVENTORY_DATE, CREATE_USER, CREATE_TIME, MODIFY_USER,
     MODIFY_TIME
   </sql>
 
@@ -63,6 +64,7 @@
 			<trim suffixOverrides="and">
 				<if test="cabinetNum != null">oci.CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">oci.CARD_STATUS=#{cardStatus} and </if>
+				<if test="dataWay != null">oci.DATA_WAY=#{dataWay} and </if>
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
 				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<if test="counterStartQuery != null and counterEndQuery != null">
@@ -77,20 +79,26 @@
 		select t1.beforeNormal,t2.beforeTakeOut,t3.beforeTotal,t4.afterNormal,t5.afterTakeOut,t6.afterTotal from
 		  (select count(*) beforeNormal from oms_cer_inventory where BEFORE_INVENTORY_SAVE_STATUS = '0'
 		  	and CABINET_NUM=#{cabinetNum}
-		  	and INVENTORY_DATE=#{inventoryDate}) t1,
+		  	and INVENTORY_DATE=#{inventoryDate}
+		  	and DATA_WAY=#{dataWay}) t1,
 		  (select count(*) beforeTakeOut from oms_cer_inventory where BEFORE_INVENTORY_SAVE_STATUS = '1'
 		   and CABINET_NUM=#{cabinetNum}
-		   and INVENTORY_DATE=#{inventoryDate}) t2,
+		   and INVENTORY_DATE=#{inventoryDate}
+		   and DATA_WAY=#{dataWay}) t2,
 		  (select count(*) beforeTotal from oms_cer_inventory where CABINET_NUM=#{cabinetNum}
-		   and INVENTORY_DATE=#{inventoryDate}) t3,
+		   and INVENTORY_DATE=#{inventoryDate}
+		   and DATA_WAY=#{dataWay}) t3,
 		  (select count(*) afterNormal from oms_cer_inventory where AFTER_INVENTORY_SAVE_STATUS = '0'
 		   and CABINET_NUM=#{cabinetNum}
-		   and INVENTORY_DATE=#{inventoryDate}) t4,
+		   and INVENTORY_DATE=#{inventoryDate}
+		   and DATA_WAY=#{dataWay}) t4,
 		  (select count(*) afterTakeOut from oms_cer_inventory where AFTER_INVENTORY_SAVE_STATUS = '1'
 		   and CABINET_NUM=#{cabinetNum}
-		   and INVENTORY_DATE=#{inventoryDate}) t5,
+		   and INVENTORY_DATE=#{inventoryDate}
+		   and DATA_WAY=#{dataWay}) t5,
 		  (select count(*) afterTotal from oms_cer_inventory where CABINET_NUM=#{cabinetNum}
-		   and INVENTORY_DATE=#{inventoryDate}) t6
+		   and INVENTORY_DATE=#{inventoryDate}
+		   and DATA_WAY=#{dataWay}) t6
 	</select>
 
 	<!-- 总体盘点结果统计查询 -->
@@ -120,15 +128,25 @@
 			<trim suffixOverrides="and">
 				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
 				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
-				<if test="counterStartQuery != null and counterEndQuery != null">
-					(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery} or
-				</if>
-				<if test="list != null">oci.CABINET_NUM in
-					<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
-						#{item}
-					</foreach>
-					)and
-				</if>
+				<trim suffixOverrides="or">
+					<if test="counterStartQuery != null and counterEndQuery != null">
+						<choose>
+							<when test="list != null and list != ''">
+								(
+							</when>
+						</choose>
+						(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) or
+					</if>
+					<if test="list != null and list != ''">oci.CABINET_NUM=#{list}
+						<choose>
+							<when test="counterStartQuery != null and counterEndQuery != null">
+								)
+							</when>
+						</choose>
+						or
+					</if>
+				</trim>
+				and
 			</trim>
 		</where>
 	</select>
@@ -141,6 +159,7 @@
 				<if test="cabinetNum != null">CABINET_NUM=#{cabinetNum} and </if>
 				<if test="cardStatus != null">CARD_STATUS=#{cardStatus} and </if>
 				<if test="surelyWay != null">SURELY_WAY=#{surelyWay} and </if>
+				<if test="dataWay != null">DATA_WAY=#{dataWay} and </if>
 				<if test="inventoryDate != null">INVENTORY_DATE=#{inventoryDate} and </if>
 			</trim>
 		</where>

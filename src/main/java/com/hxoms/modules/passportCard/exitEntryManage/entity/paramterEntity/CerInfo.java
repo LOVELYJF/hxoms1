@@ -23,7 +23,7 @@ public class CerInfo {
     @ApiModelProperty(value = "证件号码", required = true)
     private String zjhm;
     //状态
-    @ApiModelProperty(value = "状态(0:取出,1:归还)")
+    @ApiModelProperty(value = "状态(0:取出,1:归还,2:全选)")
     private String status;
 
     //WQF ADD 导出查询使用

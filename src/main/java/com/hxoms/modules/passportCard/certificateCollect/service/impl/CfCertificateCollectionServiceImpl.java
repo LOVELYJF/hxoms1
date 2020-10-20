@@ -177,6 +177,9 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     public void insertCerCjResult(List<CfCertificateCollectionRequestEx> cerCollectionRequestExList) {
         if (cerCollectionRequestExList == null || cerCollectionRequestExList.size() == 0)
             throw new CustomMessageException("请求参数不正确，请核实！");
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        if(userInfo==null)
+            throw new CustomMessageException("获取登陆用户信息失败！");
         List<CfCertificateCollectionRequest> cfCertificateCollectionRequestList = new ArrayList<>();
         List<CfCertificateCollection> cfCertificateCollectionList = new ArrayList<>();
         Date date = new Date();
@@ -198,7 +201,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             String cjWay = CjWayEnum.DHCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "电话催缴：" : CjWayEnum.DXCJ.getCode().equals(cfCertificateCollectionRequestEx.getCjWay()) ? "短信催缴：" : cfCertificateCollectionRequestEx.getCjWay();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
             if (!StringUtils.isBlank(cfCertificateCollectionRequestEx.getCjResult()))
-                cfCertificateCollection.setCjResult(stringBuffer.append(simpleDateFormat.format(date)).append(cfCertificateCollectionRequestEx.getCjPerson()).append(cjWay).append(cfCertificateCollectionRequestEx.getCjResult()).toString());
+                cfCertificateCollection.setCjResult(stringBuffer.append(simpleDateFormat.format(date)).append(userInfo.getUserName()).append(cjWay).append(cfCertificateCollectionRequestEx.getCjResult()).toString());
             cfCertificateCollection.setUpdator(cfCertificateCollectionRequestEx.getCjPerson());
             cfCertificateCollection.setUpdatetime(cfCertificateCollectionRequestEx.getCjTime());
             cfCertificateCollectionList.add(cfCertificateCollection);
@@ -231,7 +234,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             StringBuffer stringBuffer = new StringBuffer();
             if (!StringUtils.isBlank(saveCjResult.getCjResult())) {
                 stringBuffer.append(saveCjResult.getCjResult());
-                stringBuffer.append("\r\n");
+                stringBuffer.append("、");
             }
             cfCertificateCollection.setCjResult(stringBuffer.append(simpleDateFormat.format(date)).append(saveCjResult.getUserName()).append("短信催缴：").append(saveCjResult.getCjResultAdd()).toString());
             cfCertificateCollection.setUpdator(saveCjResult.getUserId());
@@ -260,6 +263,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
             if (!CjStatusEnum.WSJ.getCode().equals(removeCjApply.getCjStatus()))
                 throw new CustomMessageException("只能解除未上缴的任务，请核实！");
             BeanUtils.copyProperties(removeCjApply, cfCertificateCollection);
+            cfCertificateCollection.setCjStatus(CjStatusEnum.SDJC.getCode());
             cfCertificateCollectionList.add(cfCertificateCollection);
         }
         if (!cfCertificateCollectionService.updateBatchById(cfCertificateCollectionList))
