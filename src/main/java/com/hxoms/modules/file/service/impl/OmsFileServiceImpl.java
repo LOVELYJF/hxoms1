@@ -80,7 +80,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         //取涉密等级、可用模板类型等信息
         SecretLevelAndFileType level = getSecretLevelAndFileType(tableCode, procpersonId, applyId);
 
-        List<OmsFile> omsFiles = getTemplate(tableCode, procpersonId, applyId, 1,level);
+        List<OmsFile> omsFiles = getTemplate(tableCode, procpersonId, applyId, 1, level);
         List<OmsCreateFile> omsCreateFiles = getCreateFiles(omsFiles, tableCode, applyId, 1);
         OmsPubApplyVO omsPubApply = null;
 
@@ -186,8 +186,9 @@ public class OmsFileServiceImpl implements OmsFileService {
         if (omsCreateFiles == null) omsCreateFiles = new ArrayList<>();
 
         //删除因为身份变化不再需要的文件
-        for (OmsCreateFile omsCreateFile : omsCreateFiles
+        for (int i = omsCreateFiles.size() - 1; i >= 0; i--
         ) {
+            OmsCreateFile omsCreateFile = omsCreateFiles.get(i);
             OmsFile omsFile = omsFiles.stream().filter((m) -> m.getId().equals(omsCreateFile.getFileId())).findFirst().orElse(null);
             if (omsFile == null) {
                 QueryWrapper<OmsCreateFile> cfWrapper = new QueryWrapper<>();
@@ -330,7 +331,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         }
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("FILE_ID", omsFile.getFileId()==null ? omsFile.getId() : omsFile.getFileId());
+        queryWrapperKeyword.eq("FILE_ID", omsFile.getFileId() == null ? omsFile.getId() : omsFile.getFileId());
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         result.put("omsFile", omsFile);
@@ -352,7 +353,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         //取涉密等级、可用模板类型等信息
         SecretLevelAndFileType level = getSecretLevelAndFileType(tableCode, procpersonId, applyId);
 
-        List<OmsFile> omsFiles = getTemplate(tableCode, procpersonId, applyId, 0,level);
+        List<OmsFile> omsFiles = getTemplate(tableCode, procpersonId, applyId, 0, level);
         List<OmsCreateFile> omsCreateFiles = getCreateFiles(omsFiles, tableCode, applyId, 0);
 
         List<OtherMaterial> oms = new ArrayList<>();
@@ -427,7 +428,7 @@ public class OmsFileServiceImpl implements OmsFileService {
      *
      * @return
      * @Param: []
-     * @Return: java.util.Map<java.lang.String                                                               ,                                                               java.lang.Object>
+     * @Return: java.util.Map<java.lang.String                                                                                                                               ,                                                                                                                               java.lang.Object>
      * @Author: 李逍遥
      * @Date: 2020/10/12 19:34
      */
@@ -646,19 +647,20 @@ public class OmsFileServiceImpl implements OmsFileService {
             OmsPriDelayApply omsPriDelayApply = omsPriDelayApplyService.selectDelayApplyById(applyId);
             OmsPriApply omsPriApply = omsPriApplyMapper.selectById(omsPriDelayApply.getApplyId());
             isLeaders = omsPriApply.getIsLeaders();
-            ceclassificaEndtime = omsPriApply.getDeclassificaEndtime();
+            if (omsPriApply.getDeclassificaEndtime() != null)
+                ceclassificaEndtime = omsPriApply.getDeclassificaEndtime();
             if (!com.hxoms.common.util.StringUtils.isNullOrEmpty(omsPriApply.getClassificationLevel()))
                 level = Integer.parseInt(omsPriApply.getClassificationLevel());
 
         }
 
         OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersoninfoMapper.selectById(procpersonId);
-        if (ceclassificaEndtime == null)
+        if (null != omsRegProcpersoninfo.getDecryptEnddate() && ceclassificaEndtime == null)
             ceclassificaEndtime = omsRegProcpersoninfo.getDecryptEnddate();
-        if (isLeaders == null)
+        if (null != omsRegProcpersoninfo.getMainLeader() && isLeaders == null)
             isLeaders = omsRegProcpersoninfo.getMainLeader();
         lqgz = omsRegProcpersoninfo.getLqgz();
-        if (level == 0 && com.hxoms.common.util.StringUtils.isNullOrEmpty(omsRegProcpersoninfo.getSecretLevel())==false)
+        if (level == 0 && com.hxoms.common.util.StringUtils.isNullOrEmpty(omsRegProcpersoninfo.getSecretLevel()) == false)
             level = Integer.parseInt(omsRegProcpersoninfo.getSecretLevel());
 
 
@@ -671,7 +673,7 @@ public class OmsFileServiceImpl implements OmsFileService {
             if (ceclassificaEndtime != null && ceclassificaEndtime.after(new Date())) {
                 fileType.add("4");//在胶密期人员使用的人文件
             }
-            if(level==3){
+            if (level == 3) {
                 fileType.add("7");
             }
         }
