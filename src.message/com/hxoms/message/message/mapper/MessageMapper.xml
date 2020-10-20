@@ -250,6 +250,18 @@
     from m_message
     where id = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="getDBMessageList" resultType="com.hxoms.message.message.entity.Message">
+    SELECT *
+    FROM m_message m
+    where m.feather = '1' AND m.msg_status = '0'
+    <if test="ids != null and ids.size >0 ">
+      and m.handle_user_id in
+      <foreach collection="ids" item="ids" separator="," open="(" close=")">
+        #{ids}
+      </foreach>
+    </if>
+
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from m_message
     where id = #{id,jdbcType=VARCHAR}

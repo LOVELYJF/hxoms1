@@ -3,6 +3,10 @@ package com.hxoms.modules.roadPage.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Constants;
+import com.hxoms.common.utils.UserInfo;
+import com.hxoms.common.utils.UserInfoUtil;
+import com.hxoms.message.message.entity.Message;
+import com.hxoms.message.message.mapper.MessageMapper;
 import com.hxoms.modules.keySupervision.majorLeader.entity.OmsSupMajorLeader;
 import com.hxoms.modules.keySupervision.majorLeader.mapper.OmsSupMajorLeaderMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
@@ -11,6 +15,7 @@ import com.hxoms.modules.roadPage.entity.PersonnelPageParam;
 import com.hxoms.modules.roadPage.mapper.CertificateStatisticsMapper;
 import com.hxoms.modules.roadPage.service.CertificateStatisticsService;
 import com.hxoms.modules.roster.mapper.SysRosterMapper;
+import com.hxoms.modules.sysUser.mapper.CfUserMapper;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +35,12 @@ public class CertificateStatisticsImpl implements CertificateStatisticsService {
 
     @Autowired
     private OmsSupMajorLeaderMapper omsSupMajorLeaderMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
+
+    @Autowired
+    private CfUserMapper cfUserMapper;
 
     @Override
     public List<Map<String, Object>> getLicenceStatistic() {
@@ -141,5 +152,31 @@ public class CertificateStatisticsImpl implements CertificateStatisticsService {
                 break;
         }
         return object;
+    }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取待办任务〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.message.message.entity.Message>
+     * @Author: 李逍遥
+     * @Date: 2020/10/19 20:18
+     */
+    @Override
+    public List<Message> getDBMessageList() {
+        //获取登录用户信息
+        UserInfo loginUser = UserInfoUtil.getUserInfo();
+        //查询用户所在组的id
+        String id = cfUserMapper.getUg_id(loginUser.getId());
+        //封装id集合
+        List<String> ids = new ArrayList<>();
+        if (loginUser != null ){
+            ids.add(loginUser.getId());
+            ids.add(loginUser.getOrgId());
+            ids.add(id);
+        }
+        //查询所有需要处理的且未处理的信息
+        List<Message> messages = messageMapper.getDBMessageList(ids);
+        return messages;
     }
 }

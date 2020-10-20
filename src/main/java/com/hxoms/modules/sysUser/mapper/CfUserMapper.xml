@@ -224,6 +224,12 @@
         </if>
 
     </select>
+    <select id="getUg_id" resultType="java.lang.String">
+      select
+      cu.ug_id
+      FROM cf_usergroup_user cu
+      WHERE cu.user_id = #{id}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbg.generated
