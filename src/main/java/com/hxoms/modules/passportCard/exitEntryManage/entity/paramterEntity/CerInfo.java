@@ -26,8 +26,6 @@ public class CerInfo {
     @ApiModelProperty(value = "状态(0:取出,1:归还,2:全选)")
     private String status;
 
-    //WQF ADD 导出查询使用
-    private List<String> ids;
 
     public Integer getZjlx() {
         return zjlx;
@@ -53,11 +51,4 @@ public class CerInfo {
         this.status = status;
     }
 
-    public List<String> getIds() {
-        return ids;
-    }
-
-    public void setIds(List<String> ids) {
-        this.ids = ids;
-    }
 }
