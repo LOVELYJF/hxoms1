@@ -161,7 +161,7 @@ public class OmsPubApplyController {
      * @Author: 李逍遥
      * @Date: 2020/6/28 11:59
      */
-    @PostMapping("/deletePubApplyById")
+    @GetMapping("/deletePubApplyById")
     public Result deletePubApplyById(String id){
         omsPubApplyService.deletePubApplyById(id);
         return Result.success();

@@ -255,5 +255,14 @@ public interface OmsPubApplyService {
      */
     List<PWHTreeVO> getPWHList();
 
-
+    /**
+    * @description:选择指定时间段内已经存的因公因私出国境申请
+    * @author:杨波
+    * @date:2020-10-19
+    *  * @param id 登记备案表主键
+     *  * @param appId 申请主键
+     *  * @param  cgsj 出国境时间
+    * @return:
+    **/
+    String selectExistsAbroad(String id,String appId, Date cgsj);
 }
