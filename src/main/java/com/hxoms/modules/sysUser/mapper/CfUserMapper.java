@@ -130,4 +130,14 @@ public interface CfUserMapper {
      * @Date: 2020/8/14 10:48
      */
     List<CfUser> getOperatorByB0100(@Param("b0100") String b0100,@Param("userType") String userType);
+
+    /**
+     * 功能描述: <br>
+     * 〈查询用户所在组的id〉
+     * @Param: [id]
+     * @Return: java.lang.String
+     * @Author: 李逍遥
+     * @Date: 2020/10/19 21:09
+     */
+    String getUg_id(@Param("id") String id);
 }

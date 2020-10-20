@@ -2,6 +2,7 @@ package com.hxoms.message.message.mapper;
 
 import com.hxoms.message.message.entity.Message;
 import com.hxoms.message.message.entity.MessageCustom;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -57,4 +58,15 @@ public interface MessageMapper {
      * @date: 2019/6/10
      */
     MessageCustom selectMsgCustomById(Map<String, Object> keyword);
+
+    /**
+     * 功能描述: <br>
+     * 〈获取待办任务〉
+     * @Param: []
+     * @Return: java.util.List<com.hxoms.message.message.entity.Message>
+     * @Author: 李逍遥
+     * @Date: 2020/10/19 20:18
+     * @param ids
+     */
+    List<Message> getDBMessageList(@Param("ids") List<String> ids);
 }

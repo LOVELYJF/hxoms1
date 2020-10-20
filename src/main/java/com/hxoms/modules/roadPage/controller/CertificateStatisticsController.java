@@ -1,6 +1,7 @@
 package com.hxoms.modules.roadPage.controller;
 
 import com.hxoms.common.utils.Result;
+import com.hxoms.message.message.entity.Message;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificatePageParam;
 import com.hxoms.modules.roadPage.entity.PersonnelPageParam;
 import com.hxoms.modules.roadPage.service.CertificateStatisticsService;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -55,4 +58,19 @@ public class CertificateStatisticsController {
 
         return Result.success(certificateStatisticsService.getPersonnelRoster(plpageParam));
     }
+
+    /**
+     * 功能描述: <br>
+     * 〈获取待办任务〉
+     * @Param: []
+     * @Return: com.hxoms.common.utils.Result
+     * @Author: 李逍遥
+     * @Date: 2020/10/19 19:51
+     */
+    @GetMapping("/getDBMessageList")
+    public Result getDBMessageList(){
+        List<Message> messages = certificateStatisticsService.getDBMessageList();
+        return Result.success(messages);
+    }
+
 }
