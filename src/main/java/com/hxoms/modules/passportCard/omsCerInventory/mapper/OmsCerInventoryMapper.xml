@@ -146,7 +146,6 @@
 						or
 					</if>
 				</trim>
-				and
 			</trim>
 		</where>
 	</select>
