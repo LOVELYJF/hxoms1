@@ -126,8 +126,8 @@ public class OmsEducationDataController {
 	 * @param request
 	 * @param response
 	 */
-	@RequestMapping(value = "downloadPlanFile")
-	public void downloadPlanFile(@RequestBody List<String> filepathList,
+	@GetMapping(value = "downloadPlanFile")
+	public void downloadPlanFile(@RequestParam(value = "filepathList", required = false) List<String> filepathList,
 	                             HttpServletRequest request,HttpServletResponse response){
 		omsEducationDataService.downloadPlanFile(filepathList,request,response);
 	}

@@ -60,9 +60,10 @@ public class FileUploadTool {
 		omsSensitiveEducateData.setId(UUIDGenerator.getPrimaryKey());
 		omsSensitiveEducateData.setCountryId(countryId);
 
+
 		FileEntity entity = new FileEntity();
 		boolean bflag = false;
-		String fileName = multipartFile.getOriginalFilename().toString();
+		String fileName = multipartFile.getOriginalFilename();
 
 		//资料类别
 		String suffix = fileName.substring(fileName.indexOf("."), fileName.length());
@@ -94,7 +95,7 @@ public class FileUploadTool {
 		if (multipartFile.getSize() != 0 && !multipartFile.isEmpty()) {
 			bflag = true;
 			// 判断文件大小
-			if (multipartFile.getSize() <= upload_maxsize) {
+			if (multipartFile.getSize() >= upload_maxsize) {
 				bflag = true;
 				// 文件类型判断
 				if (this.checkFileType(fileName)) {
@@ -133,7 +134,7 @@ public class FileUploadTool {
 			//资料路径
 			omsSensitiveEducateData.setFilePath(logoRealPathDir + "/" + omsSensitiveEducateData.getDataName() + fileEnd);
 			//上传时间，上传人
-			omsSensitiveEducateData.setUploadPeople(UserInfoUtil.getUserInfo().getId());
+			omsSensitiveEducateData.setUploadPeople(UserInfoUtil.getUserInfo().getName());
 			omsSensitiveEducateData.setUploadTime(new Date());
 			omsSensitiveEducateDataMapper.insert(omsSensitiveEducateData);
 
@@ -1085,8 +1086,8 @@ public class FileUploadTool {
 	 * @Author: luoshuai
 	 * @Date: 2020/9/15 20:10
 	 */
-	public HttpServletResponse downLoadBatch(List<String> filepathList, HttpServletRequest request, HttpServletResponse response) {
-		if(filepathList == null || filepathList.size() < 1){
+	public HttpServletResponse downLoadBatch(List<String> list, HttpServletRequest request, HttpServletResponse response) {
+		if(list == null || list.size() < 1){
 			throw new CustomMessageException("未选择要下载的文件资料");
 		}
 
@@ -1125,7 +1126,7 @@ public class FileUploadTool {
 		//循环将文件写入压缩流
 		DataOutputStream os = null;
 
-		for (String filePath : filepathList) {
+		for (String filePath : list) {
 			//文件路径
 			File file = new File(filePath);
 			if (!file.exists()) {
