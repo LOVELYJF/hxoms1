@@ -169,7 +169,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 
 
 	/**
-	 * <b>功能描述: 打印呈批单</b>
+	 * <b>功能描述: 打印呈批单按钮</b>
 	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
@@ -184,7 +184,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 
 		List<OmsCerApplyLendingLicense> resultList = new ArrayList<OmsCerApplyLendingLicense>();
 		resultList.add(list.get(0));
-		//判断选择的是否是同一个人
+		//判断选择的是否是同一个人（去掉重复的人员姓名，用于在模板也展示人员姓名）
 		String omsId = list.get(0).getOmsId();
 		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
@@ -198,7 +198,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 
 
 	/**
-	 * <b>功能描述: 打印请示表</b>
+	 * <b>功能描述: 打印请示表按钮</b>
 	 * @Param: [list]
 	 * @Return: com.hxoms.common.utils.Result
 	 * @Author: luoshuai
@@ -213,7 +213,7 @@ public class OmsCerApplyLendingLicenseApprovalServiceImpl implements OmsCerApply
 
 		List<OmsCerApplyLendingLicense> resultList = new ArrayList<OmsCerApplyLendingLicense>();
 		resultList.add(list.get(0));
-		//判断选择的是否是同一个人
+		//判断选择的是否是同一个人（去掉重复的人员姓名，用于在模板也展示人员姓名）
 		String omsId = list.get(0).getOmsId();
 		for(OmsCerApplyLendingLicense omsCerApplyLendingLicense : list){
 			if(!omsCerApplyLendingLicense.getOmsId().equals(omsId)){
