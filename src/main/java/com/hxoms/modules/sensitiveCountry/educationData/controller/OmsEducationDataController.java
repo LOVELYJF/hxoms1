@@ -1,7 +1,10 @@
 package com.hxoms.modules.sensitiveCountry.educationData.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.FileUploadTool;
 import com.hxoms.common.utils.Result;
+import com.hxoms.common.utils.UserInfoUtil;
 import com.hxoms.modules.sensitiveCountry.educationData.entity.FileEntity;
 import com.hxoms.modules.sensitiveCountry.educationData.entity.OmsSensitiveEducateData;
 import com.hxoms.modules.sensitiveCountry.educationData.service.OmsEducationDataService;
@@ -14,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <b>行前教育资料模块控制器</b>
@@ -51,8 +55,8 @@ public class OmsEducationDataController {
 	 * @Date: 2020/9/15 8:59
 	 */
 	@GetMapping("/getSensitiveCountryEducateData")
-	public Result getSensitiveCountryEducateData(String countryId){
-		List<OmsSensitiveEducateData> list = omsEducationDataService.getSensitiveCountryEducateData(countryId);
+	public Result getSensitiveCountryEducateData(Page<OmsSensitiveEducateData> page, String countryId){
+		PageInfo<OmsSensitiveEducateData> list = omsEducationDataService.getSensitiveCountryEducateData(page,countryId);
 		return Result.success(list);
 	}
 
@@ -81,7 +85,8 @@ public class OmsEducationDataController {
 	 */
 	@PostMapping(value = "/uploadFile")
 	public Result upload(@RequestParam(value = "file", required = false) MultipartFile multipartFile,
-	                           HttpServletRequest request, ModelMap map,String countryId) {
+	                     HttpServletRequest request, Map map, String countryId) {
+		String a = UserInfoUtil.getUserInfo().getUserName();
 		String message = "";
 		FileEntity entity = new FileEntity();
 		try {
@@ -122,7 +127,7 @@ public class OmsEducationDataController {
 	 * @param response
 	 */
 	@RequestMapping(value = "downloadPlanFile")
-	public void downloadPlanFile(@RequestParam(value = "filePathList",required = false) List<String> filepathList,
+	public void downloadPlanFile(@RequestBody List<String> filepathList,
 	                             HttpServletRequest request,HttpServletResponse response){
 		omsEducationDataService.downloadPlanFile(filepathList,request,response);
 	}

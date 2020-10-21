@@ -1,30 +1,26 @@
 package com.hxoms.modules.sensitiveCountry.educationData.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.FileUploadTool;
 import com.hxoms.common.utils.UUIDGenerator;
-import com.hxoms.common.utils.UtilDateTime;
-import com.hxoms.modules.country.entity.Country;
 import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.sensitiveCountry.educationData.entity.OmsSensitiveEducateData;
 import com.hxoms.modules.sensitiveCountry.educationData.mapper.OmsSensitiveEducateDataMapper;
 import com.hxoms.modules.sensitiveCountry.educationData.service.OmsEducationDataService;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.mapper.OmsSensitiveLimitMapper;
-import javafx.scene.chart.XYChart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * <b>行前教育资料模块控制器</b>
@@ -56,7 +52,7 @@ public class OmsEducationDataServiceImpl implements OmsEducationDataService {
 		List<OmsSensitiveLimit> list = omsSensitiveLimitMapper.selectOmsSensitiveLimit(map);
 
 		for(OmsSensitiveLimit omsSensitiveLimit : list){
-			List<Country> countryList = countryMapper.selectCountryInfo(omsSensitiveLimit.getId());
+			List<Map<String,Object>> countryList = countryMapper.selectCountryInfo(omsSensitiveLimit.getId());
 			if(countryList != null && countryList.size() > 0){
 				omsSensitiveLimit.setList(countryList);
 			}
@@ -66,7 +62,7 @@ public class OmsEducationDataServiceImpl implements OmsEducationDataService {
 		omsSensitiveLimit.setItemName("已撤销国家");
 		omsSensitiveLimit.setShortName("已撤销国家");
 		//查询已撤销的国家信息
-		List<Country> list1 = countryMapper.selectOmsSensitiveCountry();
+		List<Map<String,Object>> list1 = countryMapper.selectOmsSensitiveCountry();
 		omsSensitiveLimit.setList(list1);
 		list.add(omsSensitiveLimit);
 		return list;
@@ -80,15 +76,17 @@ public class OmsEducationDataServiceImpl implements OmsEducationDataService {
 	 * @Author: luoshuai
 	 * @Date: 2020/9/15 8:59
 	 */
-	public List<OmsSensitiveEducateData> getSensitiveCountryEducateData(String countryId) {
+	public PageInfo<OmsSensitiveEducateData> getSensitiveCountryEducateData(Page<OmsSensitiveEducateData> page, String countryId) {
 		QueryWrapper<OmsSensitiveEducateData> queryWrapper = new QueryWrapper<OmsSensitiveEducateData>();
 		if (countryId == null || countryId == "") {
 			throw new CustomMessageException("参数错误");
 		}
 		queryWrapper.eq("COUNTRY_ID",countryId)
 					.orderByDesc("UPLOAD_TIME");
+		PageHelper.startPage((int)page.getCurrent(), (int)page.getSize());
 		List<OmsSensitiveEducateData> list = omsSensitiveEducateDataMapper.selectList(queryWrapper);
-		return list;
+		PageInfo<OmsSensitiveEducateData> pageInfo = new PageInfo<OmsSensitiveEducateData>(list);
+		return pageInfo;
 	}
 
 
