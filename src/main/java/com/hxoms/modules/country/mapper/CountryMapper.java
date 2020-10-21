@@ -53,7 +53,7 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 * @Author: luoshuai
 	 * @Date: 2020/9/14 9:13
 	 */
-	List<Country> selectCountryInfo(String id);
+	List<Map<String,Object>> selectCountryInfo(String id);
 
 	/**
 	 * <b>功能描述: 查询已撤销国家信息</b>
@@ -62,5 +62,5 @@ public interface CountryMapper extends BaseMapper<Country> {
 	 * @Author: luoshuai
 	 * @Date: 2020/9/14 9:27
 	 */
-	List<Country> selectOmsSensitiveCountry();
+	List<Map<String,Object>> selectOmsSensitiveCountry();
 }

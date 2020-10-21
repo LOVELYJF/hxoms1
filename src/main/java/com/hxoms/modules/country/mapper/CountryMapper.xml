@@ -64,9 +64,17 @@
 	</select>
 
 	<!-- 在敏感信息中查询国家信息 -->
-	<select id="selectCountryInfo" resultType="com.hxoms.modules.country.entity.Country">
+	<select id="selectCountryInfo" resultType="java.util.Map">
 		select
-		<include refid="Base_Column_List"></include>
+			ID as id,
+			NAME_EN as nameEn,
+			NAME_ZH as itemName,
+			NAME_INTERNATIONAL_ABBR as nameInternationalAbbr,
+			COUNTRY_PHONE_CODE as countryPhoneCode,
+			ZONE as zone,
+			ZONE_ALIAS as zoneAlias,
+		    LAT as lat,
+		    LON as lon
 		from
 		country
 		join oms_sensitive_maintain osm on osm.COUNTRY_ID = ID
@@ -74,9 +82,17 @@
 	</select>
 
 	<!-- 查询已撤销国家信息 -->
-	<select id="selectOmsSensitiveCountry" resultType="com.hxoms.modules.country.entity.Country">
+	<select id="selectOmsSensitiveCountry" resultType="java.util.Map">
 		select	distinct
-			<include refid="Base_Column_List"></include>
+			ID as id,
+			NAME_EN as nameEn,
+			NAME_ZH as itemName,
+			NAME_INTERNATIONAL_ABBR as nameInternationalAbbr,
+			COUNTRY_PHONE_CODE as countryPhoneCode,
+			ZONE as zone,
+			ZONE_ALIAS as zoneAlias,
+		    LAT as lat,
+		    LON as lon
 		from country
 		join oms_sensitive_maintain osm on osm.COUNTRY_ID = ID
 		where IS_DELETE = '1'

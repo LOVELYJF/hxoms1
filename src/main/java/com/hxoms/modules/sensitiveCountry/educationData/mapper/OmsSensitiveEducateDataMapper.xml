@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.sensitiveCountry.educationData.mapper.OmsSensitiveEducateDataMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.sensitiveCountry.educationData.entity.OmsSensitiveEducateData">
-    <id column="ID" jdbcType="VARCHAR" property="id" />
-    <result column="COUNTRY_ID" jdbcType="VARCHAR" property="countryId" />
-    <result column="DATA_TYPE" jdbcType="VARCHAR" property="dataType" />
-    <result column="DATA_NAME" jdbcType="VARCHAR" property="dataName" />
-    <result column="DATA_SIZE" jdbcType="VARCHAR" property="dataSize" />
-    <result column="FILE_PATH" jdbcType="VARCHAR" property="filePath" />
-    <result column="UPLOAD_TIME" jdbcType="TIMESTAMP" property="uploadTime" />
-    <result column="UPLOAD_PEOPLE" jdbcType="VARCHAR" property="uploadPeople" />
-  </resultMap>
-  <sql id="Base_Column_List">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.sensitiveCountry.educationData.entity.OmsSensitiveEducateData">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="COUNTRY_ID" jdbcType="VARCHAR" property="countryId" />
+		<result column="DATA_TYPE" jdbcType="VARCHAR" property="dataType" />
+		<result column="DATA_NAME" jdbcType="VARCHAR" property="dataName" />
+		<result column="DATA_SIZE" jdbcType="VARCHAR" property="dataSize" />
+		<result column="FILE_PATH" jdbcType="VARCHAR" property="filePath" />
+		<result column="UPLOAD_TIME" jdbcType="TIMESTAMP" property="uploadTime" />
+		<result column="UPLOAD_PEOPLE" jdbcType="VARCHAR" property="uploadPeople" />
+	</resultMap>
+	<sql id="Base_Column_List">
     ID, COUNTRY_ID, DATA_TYPE, DATA_NAME, DATA_SIZE, FILE_PATH, UPLOAD_TIME, UPLOAD_PEOPLE
   </sql>
+	<select id="selectFilepathList" resultType="java.lang.String">
+		select FILE_PATH from oms_sensitive_educate_data
+		<where>
+			<trim suffixOverrides="and">
+				<if test="filepathList != null">ID in
+					<foreach collection="filepathList" item="item" separator="," open="(" close=")">
+						#{item}
+					</foreach>
+					and
+				</if>
+			</trim>
+		</where>
+	</select>
+
 
 </mapper>

@@ -303,7 +303,7 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
 
                 String status =  applyStatus.getApplySatus();
                // 干部监督处的状态
-                setSql+= status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName);
+                setSql+= status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName).getIndex();
                 break;
             }
         }

@@ -3,8 +3,10 @@ package com.hxoms.modules.passportCard.exitEntryManage.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepertory;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfo;
+import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfoExport;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerInfo;
 import com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -75,4 +77,13 @@ public interface OmsCerExitEntryRepertoryMapper extends BaseMapper<OmsCerExitEnt
      * @Date: 2020/8/17
      */
     List<ExitEntrySignInfo> selectSignById(String id);
+
+    /**
+     * @Desc: 出入库记录导出
+     * @Author: wangyunquan
+     * @Param: [ids]
+     * @Return: java.util.List<com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfoExport>
+     * @Date: 2020/10/20
+     */
+    List<CerExitEntryInfoExport> exitEntryRecordExport(@Param("ids") List<String> ids);
 }

@@ -230,7 +230,7 @@
           a.id,
           a.GET_ID getId,
           a.STATUS status,
-          if(a.status='0','取出',if(a.status='1','归还',a.status)) statusName,
+          if(a.status='0','领取',if(a.status='1','归还',a.status)) statusName,
           a.MODE mode,
           if(a.mode='0','证照机',if(a.mode='1','柜台',a.mode)) modeName,
           (select user_name from cf_user where user_id =(CASE a.STATUS
@@ -253,18 +253,12 @@
           oms_cer_exit_entry_repertory a
       WHERE a.zjlx=#{zjlx}
       AND a.zjhm=#{zjhm}
-      <if test="status!=null and status!='' and status!='2'.toString()">
-        AND a.status=#{status}
+      <if test="status!='2'.toString()">
+      AND a.status=#{status}
       </if>
-
-    <!--WQF ADD 勾选查询使用-->
-    <if test="ids!=null">
-      AND a.id in
-      <foreach close=")" collection="ids" index="index" item="item" open="(" separator=",">
-        #{item}
-      </foreach>
-    </if>
-
+      <if test="status=='2'.toString()">
+        AND a.status in ('0','1')
+      </if>
   </select>
   <select id="selectSignById" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.ExitEntrySignInfo">
     SELECT
@@ -287,5 +281,40 @@
     WHERE
         b.id = #{id}
     AND date_format(b.get_time, '%Y-%m-%d') = date_format(c.get_time, '%Y-%m-%d')
+  </select>
+  <select id="exitEntryRecordExport" resultType="com.hxoms.modules.passportCard.exitEntryManage.entity.paramterEntity.CerExitEntryInfoExport">
+    SELECT
+      c.work_unit workUnit,
+      concat(c.surname,c.name) name,
+     (SELECT item.item_name FROM sys_dict_item item WHERE item.dict_code = 'ZJLX' AND b.zjlx= item.item_code) zjlxName,
+      b.zjhm,
+      if(a.status='0','领取',if(a.status='1','归还',a.status)) statusName,
+      if(a.mode='0','证照机',if(a.mode='1','柜台',a.mode)) modeName,
+      (select user_name from cf_user where user_id =(CASE a.STATUS
+      WHEN '0' THEN
+      (
+      SELECT
+      get_people
+      FROM
+      oms_cer_get_task
+      WHERE
+      id = a.get_id
+      )
+      WHEN '1' THEN
+      a.operator
+      ELSE
+      NULL
+      END))  operator,
+      a.OPERATE_TIME operateTime
+      FROM
+      oms_cer_exit_entry_repertory a
+      inner join cf_certificate b on a.cer_id=b.id
+      inner join oms_reg_procpersoninfo c on b.oms_id=c.id
+      WHERE
+      <!--WQF ADD 勾选查询使用-->
+         a.id in
+        <foreach close=")" collection="ids" index="index" item="item" open="(" separator=",">
+          #{item}
+        </foreach>
   </select>
 </mapper>

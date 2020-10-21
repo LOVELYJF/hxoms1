@@ -1,5 +1,6 @@
 package com.hxoms.modules.omsregcadre.entity;
 
+import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.file.entity.OmsFile;
 
 import java.util.List;
@@ -21,8 +22,11 @@ public class CancellationLetter {
 
     private String fileType;
 
+    private String fileTemplateId;
+
     private List<OmsFile>  omsFiles;
 
+    private OmsCreateFile omsCreateFile;
 
     public String getId() {
         return id;
@@ -70,5 +74,21 @@ public class CancellationLetter {
 
     public void setOmsFiles(List<OmsFile> omsFiles) {
         this.omsFiles = omsFiles;
+    }
+
+    public String getFileTemplateId() {
+        return fileTemplateId;
+    }
+
+    public void setFileTemplateId(String fileTemplateId) {
+        this.fileTemplateId = fileTemplateId;
+    }
+
+    public OmsCreateFile getOmsCreateFile() {
+        return omsCreateFile;
+    }
+
+    public void setOmsCreateFile(OmsCreateFile omsCreateFile) {
+        this.omsCreateFile = omsCreateFile;
     }
 }

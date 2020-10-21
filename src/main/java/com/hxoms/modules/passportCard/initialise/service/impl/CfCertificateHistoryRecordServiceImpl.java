@@ -67,4 +67,14 @@ public class CfCertificateHistoryRecordServiceImpl extends ServiceImpl<CfCertifi
         return PageUtil.packagePage(pageInfo);
     }
 
+    @Override
+    public List<CfCertificateHistoryRecord> selectNotProvicdeCerRecords(String year) {
+        return cfCertificateHistoryRecordMapper.selectNotProvicdeCerRecord(year);
+    }
+
+
+    @Override
+    public List<CfCertificateHistoryRecord> selectExceptionCerRecords(String year) {
+        return cfCertificateHistoryRecordMapper.selectExceptionCerRecord(year);
+    }
 }

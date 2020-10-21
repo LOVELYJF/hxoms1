@@ -1,5 +1,8 @@
 package com.hxoms.modules.sensitiveCountry.educationData.service;
 
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.hxoms.modules.sensitiveCountry.educationData.entity.OmsSensitiveEducateData;
 import com.hxoms.modules.sensitiveCountry.sensitiveLimited.entity.OmsSensitiveLimit;
 
@@ -31,7 +34,7 @@ public interface OmsEducationDataService {
 	 * @Author: luoshuai
 	 * @Date: 2020/9/15 8:59
 	 */
-	List<OmsSensitiveEducateData> getSensitiveCountryEducateData(String countryId);
+	PageInfo<OmsSensitiveEducateData> getSensitiveCountryEducateData(Page<OmsSensitiveEducateData> page, String countryId);
 
 
 	/**

@@ -44,7 +44,7 @@ public class PersonInfoVO {
     /** 状态*/
     private String status;
     /** 政治面貌*/
-    private String POLITICAL_AFFI;
+    private String POLITICALAFFI;
     /** 民族*/
     private String NATION;
     /** 身份证号*/
@@ -54,7 +54,7 @@ public class PersonInfoVO {
     /** 核心涉密人员年审*/
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date SECRET_REVIEW_DATE;
+    private Date SECRETREVIEWDATE;
 
     public String getA0100() {
         return a0100;
@@ -120,13 +120,6 @@ public class PersonInfoVO {
         this.status = status;
     }
 
-    public String getPOLITICAL_AFFI() {
-        return POLITICAL_AFFI;
-    }
-
-    public void setPOLITICAL_AFFI(String POLITICAL_AFFI) {
-        this.POLITICAL_AFFI = POLITICAL_AFFI;
-    }
 
     public String getNATION() {
         return NATION;
@@ -160,11 +153,20 @@ public class PersonInfoVO {
         this.procpersonId = procpersonId;
     }
 
-    public Date getSECRET_REVIEW_DATE() {
-        return SECRET_REVIEW_DATE;
+
+    public String getPOLITICALAFFI() {
+        return POLITICALAFFI;
     }
 
-    public void setSECRET_REVIEW_DATE(Date SECRET_REVIEW_DATE) {
-        this.SECRET_REVIEW_DATE = SECRET_REVIEW_DATE;
+    public void setPOLITICALAFFI(String POLITICALAFFI) {
+        this.POLITICALAFFI = POLITICALAFFI;
+    }
+
+    public Date getSECRETREVIEWDATE() {
+        return SECRETREVIEWDATE;
+    }
+
+    public void setSECRETREVIEWDATE(Date SECRETREVIEWDATE) {
+        this.SECRETREVIEWDATE = SECRETREVIEWDATE;
     }
 }

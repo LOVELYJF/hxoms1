@@ -44,20 +44,9 @@ public class OmsExitEntryManageServiceImpl extends ServiceImpl<OmsCerExitEntryRe
         if (ids == null || ids.size() < 1) {
             throw new CustomMessageException("操作失败！");
         }
-        CerInfo param=new CerInfo();
-        param.setIds(ids);
-        List<CerExitEntryInfo> getList=omsCerExitEntryRepertoryMapper.selectExitEntryRecord(param);
-       List<CerExitEntryInfoExport> exports=new ArrayList<>();
-        CerExitEntryInfoExport vo=null;
-       if (getList.size()>0){
-           for (CerExitEntryInfo info:getList){
-               vo=new CerExitEntryInfoExport();
-               BeanUtils.copyProperties(info,vo);
-               exports.add(vo);
-           }
-       }
+        List<CerExitEntryInfoExport> getList=omsCerExitEntryRepertoryMapper.exitEntryRecordExport(ids);
 
-        String[] headers="序号,进出方式,存取日期,存取人,存取方式".split(",");
+        String[] headers="序号,单位,姓名,证件类型,证件号码,进出方式,存取日期,存取人,存取方式".split(",");
         ExportExcelUtil.exportNotTitleExcel("出入库记录",headers,(List) getList,response);
     }
 
