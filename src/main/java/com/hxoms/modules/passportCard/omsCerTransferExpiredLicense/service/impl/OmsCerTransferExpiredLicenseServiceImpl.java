@@ -177,7 +177,7 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 				row.createCell(14).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("qfrq")));
 				row.createCell(15).setCellValue((String) list1.get(i).get("csdd"));
 				if(list1.get(i).get("getTime") != null){
-					row.createCell(16).setCellValue(UtilDateTime.formatCNDate((Date)list1.get(i).get("getTime")));
+					row.createCell(16).setCellValue((String)list1.get(i).get("getTime"));
 				}else {
 					row.createCell(16).setCellValue("");
 				}
