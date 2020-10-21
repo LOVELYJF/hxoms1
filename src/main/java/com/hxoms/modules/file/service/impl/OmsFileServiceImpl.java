@@ -27,7 +27,6 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OtherPubApply;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
-import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,6 +131,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("IS_TEMPLATE", isTemplate)
                 .eq("B0100", userInfo.getOrgId())
+                .eq("IS_DELETED",0)
                 .in("FILE_TYPE", level.getFileType())
                 .orderByAsc("SORT_ID");
 
@@ -143,6 +143,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapper.clear();
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("IS_TEMPLATE", isTemplate)
+                .eq("IS_DELETED",0)
                 .in("FILE_TYPE", level.getFileType())
                 .and(wrapper -> wrapper.eq("B0100", "")
                         .or()
@@ -340,7 +341,8 @@ public class OmsFileServiceImpl implements OmsFileService {
 
         //查询关键字
         QueryWrapper<OmsReplaceKeywords> queryWrapperKeyword = new QueryWrapper<>();
-        queryWrapperKeyword.eq("FILE_ID", StringUilt.stringIsNullOrEmpty(omsFile.getFileId()) ? omsFile.getId() : omsFile.getFileId());
+        queryWrapperKeyword.eq("FILE_ID", StringUilt.stringIsNullOrEmpty(omsFile.getFileId()) ? omsFile.getId() : omsFile.getFileId())
+        .eq("ENABLE",1);
         List<OmsReplaceKeywords> omsReplaceKeywordList = omsReplaceKeywordsMapper.selectList(queryWrapperKeyword);
 
         result.put("omsFile", omsFile);

@@ -101,4 +101,13 @@ public interface OmsCerGetTaskMapper extends BaseMapper<OmsCerGetTask> {
      * @Date: 2020/9/8
      */
     String selectUserIsExist(CerGetTaskQueryParam cerGetTaskQueryParam);
+
+    /**
+     * @description:根据业务主键删除取证任务
+     * @author:杨波
+     * @date:2020-10-21
+     *  * @param ids
+     * @return:
+     **/
+    void deleteTaskByBusinessId(String businessId);
 }

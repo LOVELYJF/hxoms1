@@ -1,6 +1,5 @@
 package com.hxoms.modules.privateabroad.service.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
@@ -12,11 +11,21 @@ import com.hxoms.modules.country.mapper.CountryMapper;
 import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.file.mapper.OmsCreateFileMapper;
 import com.hxoms.modules.file.service.OmsCreateFileService;
+import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
+import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
+import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
+import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjDataSourceEnum;
+import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
+import com.hxoms.modules.passportCard.counterGet.entity.OmsCerGetTask;
+import com.hxoms.modules.passportCard.counterGet.entity.enums.GetStatusEnum;
+import com.hxoms.modules.passportCard.counterGet.service.OmsCerGetTaskService;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateExtend;
+import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
+import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.privateabroad.entity.*;
 import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
@@ -66,6 +75,12 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
     private OmsEntryexitRecordService omsEntryexitRecordService;
     @Autowired
     private OmsCreateFileMapper omsCreateFileMapper;
+    @Autowired
+    private OmsRegProcpersonInfoService omsRegProcpersonInfoService;
+    @Autowired
+    private CfCertificateCollectionService cfCertificateCollectionService;
+    @Autowired
+    private OmsCerGetTaskService omsCerGetTaskService;
 
     @Override
     public PageInfo<OmsPriApplyVO> selectOmsPriApplyIPage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
@@ -265,8 +280,8 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         omsPriApplyDestail.setApplyStatus(sqzt);
         omsPriApplyMapper.updateById(omsPriApplyDestail);
 
-        WriteApprovalStep(id,cStep,Constants.emPrivateGoAbroad.getNameByIndex(cStep),"1",
-                "通过",Constants.oms_business[1]);
+        WriteApprovalStep(id, cStep, Constants.emPrivateGoAbroad.getNameByIndex(cStep), "1",
+                "通过", Constants.oms_business[1]);
         return Result.success();
     }
 
@@ -610,7 +625,7 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
 
     @Override
     public void WriteApprovalStep(String applyId, Integer stepCode, String stepName,
-                                  String approvalResult,String approvalOpinion,String businessType) {
+                                  String approvalResult, String approvalOpinion, String businessType) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         OmsAbroadApproval omsAbroadApproval = new OmsAbroadApproval();
         omsAbroadApproval.setStepCode(stepCode);
@@ -624,6 +639,160 @@ public class OmsPriApplyServiceImpl extends ServiceImpl<OmsPriApplyMapper, OmsPr
         omsAbroadApproval.setCreateTime(new Date());
         omsAbroadApproval.setCreateUser(userInfo.getId());
         omsAbroadApprovalService.insertOmsAbroadApproval(omsAbroadApproval);
+    }
+
+    @Override
+    public Result recallApply(String applyId) {
+        OmsPriApply omsPriApply = omsPriApplyMapper.selectPriApplyById(applyId);
+        if (omsPriApply == null)
+            return Result.error("该因私出国（境）申请不存在！");
+        if (omsPriApply.getApplyStatus() != 20)
+            return Result.error("只有受理状态的申请才能撤回！");
+
+        omsPriApply.setApplyStatus(Constants.emPrivateGoAbroad.草稿.getIndex());
+        omsPriApplyMapper.updateById(omsPriApply);
+
+        WriteApprovalStep(applyId,Constants.emPrivateGoAbroad.草稿.getIndex(),
+                Constants.emPrivateGoAbroad.草稿.getName(),"1",
+                "",Constants.oms_business[1]);
+        return Result.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result cancelApply(OmsPriApply omsPriApply) {
+        OmsPriApply priApply = omsPriApplyMapper.selectPriApplyById(omsPriApply.getId());
+        if (priApply == null)
+            return Result.error("该因私出国（境）申请不存在！");
+        if (priApply.getApplyStatus() == Constants.emPrivateGoAbroad.撤销.getIndex())
+            return Result.error("该申请已经撤消！");
+
+        priApply.setApplyStatus(Constants.emPrivateGoAbroad.撤销.getIndex());
+        priApply.setCancelReason(omsPriApply.getCancelReason());
+        priApply.setModifyTime(new Date());
+        priApply.setModifyUser(UserInfoUtil.getUserId());
+        omsPriApplyMapper.updateById(priApply);
+
+        //建立催缴任务
+        List<CfCertificate> certificates = getPriApplyCertificates(priApply);
+        if (certificates != null)
+            GenerateCJ(certificates, priApply);
+
+        //取消证照领取任务
+        omsCerGetTaskService.deleteTaskByBusinessId(priApply.getId());
+
+        //将待领取或已领取证照置为正常保管
+        if (certificates != null) {
+            for (CfCertificate cfCertificate : certificates
+            ) {
+                if (!cfCertificate.getSaveStatus().equals(SaveStatusEnum.YQC.getCode()) &&
+                        !cfCertificate.getCardStatus().equals(CardStatusEnum.DLQ.getCode())) continue;
+
+                cfCertificate.setSaveStatus(SaveStatusEnum.ZCBG.getCode());
+                cfCertificate.setCardStatus(CardStatusEnum.ZC.getCode());
+
+                cfCertificateMapper.updateById(cfCertificate);
+            }
+        }
+
+        WriteApprovalStep(priApply.getId(),Constants.emPrivateGoAbroad.撤销.getIndex(),
+                Constants.emPrivateGoAbroad.撤销.getName(),"1",
+                priApply.getCancelReason(),Constants.oms_business[1]);
+        return Result.success();
+    }
+
+    /**
+     * @description:获取因私出国境申请涉及的证照
+     * @author:杨波
+     * @date:2020-10-21 * @param priApply 因私出国境申请
+     * @return:java.util.List<com.hxoms.modules.passportCard.initialise.entity.CfCertificate>
+     **/
+    @Override
+    public List<CfCertificate> getPriApplyCertificates(OmsPriApply priApply) {
+
+        List<String> cerIds = new ArrayList<>();
+        if (!StringUilt.stringIsNullOrEmpty(priApply.getTaiwanPassportNum()))
+            cerIds.add(priApply.getTaiwanPassportNum());
+        if (!StringUilt.stringIsNullOrEmpty(priApply.getPassportNum()))
+            cerIds.add(priApply.getPassportNum());
+        if (!StringUilt.stringIsNullOrEmpty(priApply.getHongkongandmacaoPassportNum()))
+            cerIds.add(priApply.getHongkongandmacaoPassportNum());
+
+        List<CfCertificate> certificates = null;
+        if (cerIds.size() > 0) {
+            QueryWrapper<CfCertificate> certificateQueryWrapper = new QueryWrapper<>();
+            certificateQueryWrapper.in(("id"), cerIds);
+            certificates = cfCertificateMapper.selectList(certificateQueryWrapper);
+        }
+        return certificates;
+    }
+
+    /**
+     * @param omsPriApply 因私出国境申请
+     * @description:为因私出国境申请涉及证照创建催缴任务
+     * @author:杨波
+     * @date:2020-10-21 * @param certificates 因私出国境申请涉及证照
+     * @return:void
+     **/
+    public void GenerateCJ(List<CfCertificate> certificates, OmsPriApply omsPriApply) {
+
+        List<CfCertificateCollection> cfCertificateCollectionList = new ArrayList<>();
+        OmsRegProcpersoninfo omsRegProcpersoninfo = omsRegProcpersonInfoService.getById(omsPriApply.getProcpersonId());
+        for (CfCertificate cfCertificate : certificates) {
+            if (cfCertificate.getSaveStatus() == null) continue;
+            //非取出状态不产生催缴
+            if (Integer.parseInt(cfCertificate.getSaveStatus()) != Constants.CER_SAVE_STATUS[1]) continue;
+
+            CfCertificateCollection cfCertificateCollection = new CfCertificateCollection();
+            cfCertificateCollection.setDataSource(CjDataSourceEnum.YSCG.getCode());
+            cfCertificateCollection.setCerId(cfCertificate.getId());
+            cfCertificateCollection.setHappenDate(new Date());
+            cfCertificateCollection.setOmsId(cfCertificate.getOmsId());
+            cfCertificateCollection.setBusiId(omsPriApply.getId());
+            cfCertificateCollection.setName(cfCertificate.getName());
+            cfCertificateCollection.setRfB0000(omsPriApply.getB0100());
+            cfCertificateCollection.setWorkUnit(omsRegProcpersoninfo.getWorkUnit());
+            cfCertificateCollection.setZjlx(cfCertificate.getZjlx());
+            cfCertificateCollection.setZjhm(cfCertificate.getZjhm());
+            cfCertificateCollectionList.add(cfCertificateCollection);
+        }
+        if (cfCertificateCollectionList.size() > 0) {
+            cfCertificateCollectionService.createCjTask(cfCertificateCollectionList);
+        }
+    }
+
+    @Override
+    public void GenerateCerGetTask(List<CfCertificate> certificates, OmsPriApply omsPriApply) {
+        List<OmsCerGetTask> omsCerGetTasks = new ArrayList<>();
+        for (CfCertificate cfCertificate : certificates) {
+            if (cfCertificate.getSaveStatus() == null) continue;
+            if (cfCertificate.getCardStatus() == null) continue;
+
+            if (Integer.parseInt(cfCertificate.getSaveStatus()) != Constants.CER_SAVE_STATUS[0])//正常保管
+                continue;
+            if (!cfCertificate.getCardStatus().equals(CardStatusEnum.ZC.getCode()) //正常
+            )
+                continue;
+
+            OmsCerGetTask omsCerGetTask = new OmsCerGetTask();
+            omsCerGetTask.setHappenDate(omsPriApply.getAbroadTime());
+            omsCerGetTask.setZjlx(cfCertificate.getZjlx());
+            omsCerGetTask.setZjhm(cfCertificate.getZjhm());
+            omsCerGetTask.setRfB0000(omsPriApply.getB0100());
+            omsCerGetTask.setOmsId(cfCertificate.getOmsId());
+            omsCerGetTask.setName(cfCertificate.getName());
+            omsCerGetTask.setBusiId(omsPriApply.getId());
+            omsCerGetTask.setDataSource(CjDataSourceEnum.YSCG.getCode());
+            omsCerGetTask.setGetStatus(GetStatusEnum.STATUS_ENUM_0.getCode());
+            omsCerGetTask.setCreator(UserInfoUtil.getUserId());
+            omsCerGetTask.setCreateTime(new Date());
+            omsCerGetTask.setCerId(cfCertificate.getId());
+            omsCerGetTask.setId(UUIDGenerator.getPrimaryKey());
+            omsCerGetTasks.add(omsCerGetTask);
+        }
+        if (omsCerGetTasks.size() > 0) {
+            omsCerGetTaskService.saveBatch(omsCerGetTasks);
+        }
     }
 
     /**

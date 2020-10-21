@@ -25,7 +25,7 @@ public interface OmsFileService {
     List<OmsCreateFile> selectFileListByCode(String tableCode, String procpersonId, String applyId);
 
     /**
-     * 根据材料类别、模板ID返回材料模板
+     * 根据模板ID返回材料模板及关键字
      *
      */
     Map<String, Object> selectFileTemplate(String fileTemplateId);
