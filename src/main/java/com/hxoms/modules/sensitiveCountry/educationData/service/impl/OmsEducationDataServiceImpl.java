@@ -133,7 +133,8 @@ public class OmsEducationDataServiceImpl implements OmsEducationDataService {
 	 * @param response
 	 */
 	public HttpServletResponse downloadPlanFile(List<String> filepathList, HttpServletRequest request, HttpServletResponse response) {
-		HttpServletResponse response1 = fileUploadTool.downLoadBatch(filepathList,request,response);
+		List<String> list = omsSensitiveEducateDataMapper.selectFilepathList(filepathList);
+		HttpServletResponse response1 = fileUploadTool.downLoadBatch(list,request,response);
 		return response1;
 	}
 
