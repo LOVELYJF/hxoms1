@@ -315,10 +315,10 @@
                orp.POST as job,
                orp.RF_B0000 as b0111,
                orp.WORK_UNIT as b0101,
-               orp.POLITICAL_AFFINAME as POLITICAL_AFFI,
+               orp.POLITICAL_AFFINAME as POLITICALAFFI,
                orp.NATION_NAME as NATION,
                orp.INCUMBENCY_STATUS as status,
-               op.SECRET_REVIEW_DATE as SECRET_REVIEW_DATE,
+               op.SECRET_REVIEW_DATE as SECRETREVIEWDATE,
                b.b0100 as b0100
         from oms_reg_procpersoninfo orp
         LEFT JOIN b01 b ON b.b0100 = orp.RF_B0000
@@ -588,8 +588,8 @@
             b.b0111 AS b0111,
             b.b0101 AS b0101,
             b.b0100 AS b0100,
-            `GETDICTITEM` ( '07', `a`.`a0141`, '0' ) AS `POLITICAL_AFFI`,
-            `GETDICTITEM` ( '01', `a`.`a0117`, '0' ) AS `NATION`
+            GETDICTITEM ( '07', a.a0141, '0' ) AS POLITICALAFFI,
+            GETDICTITEM ( '01', a.a0117, '0' ) AS NATION
         FROM
             a01 a
             JOIN a02 a2 ON a2.a0100 = a.a0100 and a2.A0255='1'
@@ -625,8 +625,8 @@
             org.RF_B0000 AS b0111,
             org.WORK_UNIT AS b0101,
             org.RF_B0000 AS b0100,
-            org.POLITICAL_AFFINAME as POLITICAL_AFFI,
-            org.NATION_NAME AS `NATION`
+            org.POLITICAL_AFFINAME as POLITICALAFFI,
+            org.NATION_NAME AS NATION
         FROM
             oms_reg_procpersoninfo org
         WHERE
