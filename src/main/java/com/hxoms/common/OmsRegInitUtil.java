@@ -19,7 +19,7 @@ public class OmsRegInitUtil {
         public static int czyear = 3;
 
         //退休的，撤销的条件为退休后40年（可调整）的期限
-        public static int txyear = 40;
+        public static int txyear = 3;
 
         /**
          * 在原有日期基础上加几年或者几天

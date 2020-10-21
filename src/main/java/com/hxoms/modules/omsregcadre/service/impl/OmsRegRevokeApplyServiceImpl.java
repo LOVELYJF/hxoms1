@@ -2,7 +2,6 @@ package com.hxoms.modules.omsregcadre.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.OmsRegInitUtil;
 import com.hxoms.common.exception.CustomMessageException;
@@ -19,18 +18,14 @@ import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 import com.hxoms.modules.omsregcadre.mapper.*;
 import com.hxoms.modules.omsregcadre.service.OmsRegRevokeApplyService;
-import com.hxoms.modules.passportCard.omsCerCancellateLicense.mapper.OmsCerCancellateLicenseMapper;
-import com.hxoms.modules.privateabroad.mapper.OmsPriDelayApplyMapper;
 import com.hxoms.support.b01.entity.B01;
 import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jws.soap.SOAPBinding;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -418,14 +413,15 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             omsCreateFile.setFrontContent(omsFile.getFrontContent());
                             omsCreateFile.setBankContent(omsFile.getBankContent());
                             omsCreateFileService.InsertOrUpdate(omsCreateFile);
+                            cancellationLetter.setOmsCreateFile(omsCreateFile);
                         }
+                    }else{
+                        cancellationLetter.setOmsCreateFile(omsCreateFileMapper.selectList(createFile).get(0));
                     }
                 }
-
-
             }
         }else{
-            throw new CustomMessageException("参数 为空，请仔细检查");
+            throw new CustomMessageException("参数为空，请仔细检查");
         }
         return lists;
 
