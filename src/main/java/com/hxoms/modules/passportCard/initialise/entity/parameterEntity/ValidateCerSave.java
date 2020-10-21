@@ -87,6 +87,7 @@ public class ValidateCerSave {
     @ApiModelProperty(value="身份证号码",required = true)
     private String a0184;
 
+
     public String getName() {
         return name;
     }

@@ -273,4 +273,13 @@ public interface CfCertificateMapper extends BaseMapper<CfCertificate>{
 	 * @Date: 2020/10/19
 	 */
     CerTotalCount selectCerCount();
+
+    /**
+     * @Desc: 通过证件类型和号码查询证件状态
+     * @Author: wangyunquan
+     * @Param: [cfCertificate]
+     * @Return: com.hxoms.modules.passportCard.initialise.entity.CfCertificate
+     * @Date: 2020/10/21
+     */
+	CfCertificate selectCerStatusInfo(CfCertificate cfCertificate);
 }
