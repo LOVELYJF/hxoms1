@@ -111,4 +111,6 @@ public interface LeaderCommonMapper {
    /**生成备案表 查询列表 **/
 
    List<Map> createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,@Param("bussinessIds") Object[] bussinessIds);
+
+
 }

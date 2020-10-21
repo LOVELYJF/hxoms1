@@ -72,6 +72,7 @@
 		'因公' AS type,
 		concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
 		'人员备案表'  as fileType,
+		'317' as fileTemplateId,
 		"oms_pub_apply_cadres_putoncreate" AS tableCode
 		FROM
 		oms_pub_apply pua

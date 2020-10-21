@@ -46,7 +46,7 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
 
             //  (1) 保存 审批记录(通过)
             leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"通过",
-                    Constants.emPrivateGoAbroad.部领导审批.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),null);
+                    Constants.emPrivateGoAbroad.核实批件.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),null);
             // 修改最终结论
             leaderCommonService.updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"1",null);
 
@@ -54,17 +54,21 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
         }else if("nopass".equals(leaderSupervisionVo.getIspass())){
 
             leaderCommonService.saveAbroadApprovalByBussinessId(leaderSupervisionVo.getBussinessTypeAndIdVos(),"不通过",
-                    Constants.emPrivateGoAbroad.部领导审批.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),leaderSupervisionVo.getReason());
+                    Constants.emPrivateGoAbroad.核实批件.getName(), Constants.emPrivateGoAbroad.部领导审批.getIndex(),leaderSupervisionVo.getReason());
             leaderCommonService.updateBussinessApplyRecordOpinion(leaderSupervisionVo.getBussinessTypeAndIdVos(),"2",null);
         }
 
         //  修改 业务流程状态 (第二步) 修改 为  处领导审批
         updteBussinessApplyStatueByverify(leaderSupervisionVo.getBussinessTypeAndIdVos(),
-                Constants.emPrivateGoAbroad.已办结.getName(),leaderSupervisionVo.getIspass());
+                Constants.emPrivateGoAbroad.制作备案表.getName(),leaderSupervisionVo.getIspass());
 
         leaderCommonService.selectBatchIdAndisOrNotUpateBatchStatus(
                 leaderSupervisionVo.getBussinessTypeAndIdVos().stream().map(s-> s.getBussinessId()).collect(Collectors.toList()),
-                Constants.emPrivateGoAbroad.已办结.getIndex());
+                Constants.emPrivateGoAbroad.制作备案表.getIndex());
+
+
+
+
     }
 
 
@@ -101,7 +105,7 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
                     // 同意到  生成 备案表
                     if("pass".equals(ispass)){
 
-                        setSql+= status + "=" + Constants.emPrivateGoAbroad.已办结.getIndex();
+                        setSql+= status + "=" + Constants.emPrivateGoAbroad.制作备案表.getIndex();
                         return  updateSql+setSql+whereCondition;
                     }
                     // 不同意 到 已完结 流程走完
@@ -116,4 +120,8 @@ public class VerifyCheckServiceImpl implements VerifyCheckService {
 
         return null;
     }
+
+
+
+
 }

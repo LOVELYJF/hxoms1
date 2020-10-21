@@ -913,7 +913,7 @@ public class LeaderSupervisionUntil {
                     setSql += status + "=" + Constants.emPrivateGoAbroad.已办结.getIndex();//Constants.leader_business[Constants.leader_business.length - 1];
                 } else {
                     // 干部监督处的状态
-                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName);
+                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName).getIndex();
                 }
                 break;
             }

@@ -23,6 +23,7 @@ import com.hxoms.modules.leaderSupervision.Enum.BussinessApplyStatus;
 import com.hxoms.modules.leaderSupervision.entity.AttachmentAskforjiwei;
 import com.hxoms.modules.leaderSupervision.entity.OmsAttachment;
 import com.hxoms.modules.leaderSupervision.entity.OmsLeaderBatch;
+import com.hxoms.modules.leaderSupervision.entity.OmsPutonrecords;
 import com.hxoms.modules.leaderSupervision.mapper.*;
 import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.until.FileTypeConvertUtil;
@@ -102,6 +103,10 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     private OmsFileServiceImpl omsFileServiceImpl;
     @Autowired
     private OmsRegProcpersoninfoMapper omsRegProcpersoninfoMapper;
+
+    @Autowired
+    private OmsPutonrecordsMapper omsPutonrecordsMapper;
+
 
 
     @Value("${omsAttachment.baseDir}")
@@ -607,7 +612,13 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                             omsCreateFile.setFrontContent(omsFile.getFrontContent());
                             omsCreateFile.setBankContent(omsFile.getBankContent());
                             omsCreateFileMapper.insert(omsCreateFile);
+                            map.put("omsCreateFile",omsCreateFile);
                         }
+                    }else{
+
+                        map.put("omsCreateFile",omsCreateFileMapper.selectList(createFile).get(0));
+
+
                     }
                 }
             }
@@ -843,7 +854,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
 
                     String status = applyStatus.getApplySatus();
                     // 干部监督处的状态
-                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName) + 1;
+                    setSql += status + "=" + Constants.emPrivateGoAbroad.valueOf(leaderStatusName).getIndex() + 1;
 
                     //   break;
                     return updateSql + setSql + whereCondition;
@@ -1258,6 +1269,21 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         }
 
         return filePath+fileName;
+
+    }
+
+
+    // 保存 备案表记录
+    public void saveOmsPutonrecords(){
+
+        //登录用户信息
+        UserInfo userInfo = UserInfoUtil.getUserInfo();
+        OmsPutonrecords omsPutonrecords = new OmsPutonrecords();
+        omsPutonrecords.setId(UUIDGenerator.getPrimaryKey());
+        omsPutonrecords.setOrgName(userInfo.getOrgName());
+        omsPutonrecords.setCreateDate(new Date());
+        omsPutonrecords.setUserName(userInfo.getUserName());
+        omsPutonrecordsMapper.insert(omsPutonrecords);
 
     }
 }

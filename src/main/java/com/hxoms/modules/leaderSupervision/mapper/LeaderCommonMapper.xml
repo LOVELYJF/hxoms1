@@ -1299,7 +1299,7 @@
 
 		(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
-		pra.ABROAD_REASONS as abroadReasons, # 事由
+		(select item_name from sys_dict_item  where dict_code = 'YSCGLY' and item_code =pra.ABROAD_REASONS) as abrodaReasons, # 事由
 
 		"无" AS cfrw,    #出访任务
 
@@ -1718,7 +1718,9 @@
 
 			(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
-			pra.ABROAD_REASONS as abrodaReasons, # 事由
+			(select item_name from sys_dict_item  where dict_code = 'YSCGLY' and item_code =pra.ABROAD_REASONS) as abrodaReasons, # 事由
+
+
 
 
 
@@ -1808,7 +1810,7 @@
 
 			(select GROUP_CONCAT(c.NAME_ZH) from country c where FIND_IN_SET(id,pra.GO_COUNTRY)) AS goCountry,  #出访国家 == 目的地
 
-			pra.ABROAD_REASONS as abrodaReasons, # 事由
+			(select item_name from sys_dict_item  where dict_code = 'YSCGLY' and item_code =pra.ABROAD_REASONS) as abrodaReasons, # 事由
 
 
 
@@ -2083,6 +2085,12 @@
 		where applyStatus = '24'
 
 
+		<if test="userName !=null and userName !='' ">
+
+			and ( temp.userName like concat('%',#{userName},'%') )
+
+		</if>
+
         <if test="leaderBatchids != null and leaderBatchids.length>0">
 
             and temp.batchId in
@@ -2281,6 +2289,8 @@
 		SELECT
 			   pua.id AS id,   # 业务id
 			   pua.leader_batch_id as batchId, # 批次id
+		     (select att.id from oms_attachment att where att.bussinessId =gpa.id and att.bussiness_occure_stpet='3' and att.bussiness_occure_stpet_name='上传批文') as attId,
+
 		       '因公' AS businessType,  # 申请类型
 			   b.b0101 AS department,  # "部门名称"
 			   concat(mrp.SURNAME,mrp.name) AS userName, # 人员名称
@@ -2319,7 +2329,7 @@
 								   min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as bulingdaoOpinion # '部领导意见'
 							from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
 
-		where    pua.SQZT = '27'
+		where    pua.SQZT = '26'
 
 	  <if test="tzid !=null and tzid !='' ">
 
@@ -2335,7 +2345,7 @@
 		  oms_pub_apply pua
 		  LEFT JOIN oms_pub_group_pre_approval gpa ON pua.YSP_ID = gpa.id
 
-		  WHERE pua.sqzt ='27'
+		  WHERE pua.sqzt ='26'
 		  )
 
 	  </if>
@@ -2448,23 +2458,23 @@
 						(select min(gpa.id) from oms_pub_apply pua
 													 LEFT JOIN oms_pub_group_pre_approval gpa ON pua.YSP_ID = gpa.id
 
-						 WHERE pua.sqzt ='27'
+						 WHERE pua.sqzt ='26'
 						) as selected
 		FROM
 			 oms_pub_apply pua
 				 LEFT JOIN oms_pub_group_pre_approval gpa ON pua.YSP_ID = gpa.id
 
 
-		WHERE pua.sqzt ='27'
+		WHERE pua.sqzt ='26'
 
 	</select>
 
 	<select id="selectDefaultId" resultType="java.util.LinkedHashMap">
 
-		select min(gpa.id)  as defaultId  from oms_pub_apply pua
+		select (select a.id  from oms_attachment a where a.bussinessId = min(gpa.id) and a.bussiness_occure_stpet='3' and a.bussiness_occure_stpet_name='上传批文' )  as defaultId  from oms_pub_apply pua
 									LEFT JOIN oms_pub_group_pre_approval gpa ON pua.YSP_ID = gpa.id
 
-		WHERE pua.sqzt ='27'
+		WHERE pua.sqzt ='26'
 	</select>
 
     <select id="createPutOnRecordList" resultType="java.util.LinkedHashMap">
@@ -2476,7 +2486,7 @@
 						pua.SQZT   as applyStatus,    # 业务 流程状态
 						pua.PROCPERSON_ID as procpersonId , #登记备案人员id
                         "人员备案表" as fileType, # 模板类型
-		                "28" as bussinessOccureStpet,
+		                "27" as bussinessOccureStpet,
 		                "制作备案表" as bussinessOccureStpetName,
 						"oms_pub_apply_cadres" as tableCode,
 						b.b0101 AS department,  # "部门名称"
@@ -2534,7 +2544,7 @@
 								   min( case when aba.STEP_CODE = 25 then aba.APPROVAL_RESULT else '暂无答复'  end)  as bulingdaoOpinion # '部领导意见'
 							from oms_abroad_approval aba  group by aba.apply_id) opinionTemp  on pua.id = opinionTemp.applyId
 
-		where    pua.SQZT = '28'
+		where    pua.SQZT = '27'
 
 		<if test="bussinessIds != null and bussinessIds.length>0">
 

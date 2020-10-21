@@ -102,7 +102,7 @@ public class VerifyCheckController {
     }
 
     @PostMapping("/verifyCheckApprove")
-    public Result verifyCheckApprove(LeaderSupervisionVo leaderSupervisionVo){
+    public Result verifyCheckApprove(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
 
 
         verifyCheckService.verifyCheckApprove(leaderSupervisionVo);

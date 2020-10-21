@@ -36,6 +36,8 @@ public interface LeaderCommonService {
     /** 部长审批页面 **/
     PageInfo selectBuZhangBusinessUser(LeaderSupervisionVo leaderSupervisionVo);
 
+    /** 批件核实页面 **/
+
     PageInfo selectInstructionsVerify(LeaderSupervisionVo leaderSupervisionVo);
 
     /**
