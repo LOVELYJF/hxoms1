@@ -465,11 +465,11 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
         return lists;
     }
 
-    public Map downloadAttachmentById(String id) {
+    public Map downloadAttachmentById(String bId) {
 
         Map map = new HashMap();
 
-        OmsAttachment omsAttachment = omsAttachmentMapper.selectById(id);
+        OmsAttachment omsAttachment = omsAttachmentMapper.getAttachmentByBussinessId(bId);
         try {
             map.put("array", LeaderSupervisionUntil.downloadFile(omsAttachment.getUrl()));
         } catch (IOException e) {
