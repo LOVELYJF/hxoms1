@@ -918,6 +918,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         for (String id : ids) {
             OmsPubGroupPreApprovalVO omsPubGroupPreApprovalVO = omsPubGroupPreApprovalMapper.selectByPrimaryKey(id);
             omsPubGroupPreApprovalVO.setSqzt(Constants.GJ_business[1]);
+            omsPubGroupPreApprovalMapper.updateByPrimaryKeySelective(omsPubGroupPreApprovalVO);
             List<OmsPubApplyVO> omsPubApplyVOS = omsPubApplyMapper.selectByYSPId(id);
             for (OmsPubApplyVO omsPubApplyVO : omsPubApplyVOS) {
                 omsPubApplyVO.setSqzt(Constants.emPrivateGoAbroad.业务受理.getIndex());//Constants.leader_business[0]

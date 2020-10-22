@@ -325,6 +325,7 @@
         LEFT JOIN oms_smr_personinfo op
         ON orp.id = op.PROC_PERSON_ID
         <where>
+            <if test="1 == 1">and orp.a0100 is not null</if>
             <if test="b0100 != null and b0100.size>0">
                 and b.b0100 in
                 <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
@@ -501,8 +502,8 @@
     <select id="selectByYSPId" resultType="com.hxoms.modules.publicity.entity.OmsPubApplyVO">
         select
         oms_pub_apply.*
-        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as "NAME"
-        ,oms_reg_procpersoninfo.SEX
+        ,concat(oms_reg_procpersoninfo.surname,oms_reg_procpersoninfo.name) as name
+        ,oms_reg_procpersoninfo.sex
         ,oms_reg_procpersoninfo.BIRTH_DATE_GB as birthDate
         ,oms_reg_procpersoninfo.NATION_CODE
         ,oms_reg_procpersoninfo.POLITICAL_AFFINAME as politicalAff
