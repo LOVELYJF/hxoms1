@@ -13,6 +13,7 @@ import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepe
 import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
@@ -835,6 +836,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		OmsCerExitEntryRepertory omsCerExitEntryRepertory = new OmsCerExitEntryRepertory();
 		omsCerExitEntryRepertory.setId(UUIDGenerator.getPrimaryKey());
 		omsCerExitEntryRepertory.setGetId(omsCerGetTask.getId());
+		omsCerExitEntryRepertory.setCerId(omsCerGetTask.getCerId());
 		omsCerExitEntryRepertory.setName(omsCerGetTask.getName());
 		omsCerExitEntryRepertory.setZjhm(omsCerGetTask.getZjhm());
 		omsCerExitEntryRepertory.setZjlx(omsCerGetTask.getZjlx());
