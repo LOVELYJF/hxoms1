@@ -23,4 +23,14 @@ public interface OmsFileMapper extends BaseMapper<OmsFile> {
      * @return
      */
     FileReplaceVO handleSql(String runSql);
+
+
+	/**
+	 * <b>功能描述: 自评页面查询文件列表</b>
+	 * @Param:
+	 * @Return:
+	 * @Author: luoshuai
+	 * @Date: 2020/10/21 20:04
+	 */
+	List<OmsFile> selectFileListForSelf(Map<String, Object> map);
 }

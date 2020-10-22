@@ -697,6 +697,40 @@ public class OmsFileServiceImpl implements OmsFileService {
         return secretLevelAndFileType;
     }
 
+
+    /**
+     * <b>功能描述: 自评页面查询文件列表</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/21 20:04
+     */
+    public List<OmsFile> selectFileListForSelf(OmsFile omsFile) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("tableCode", omsFile.getTableCode());
+        map.put("isDelete", omsFile.getIsDeleted());
+        List<OmsFile> list = omsFileMapper.selectFileListForSelf(map);
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 自评页面维护页面添加文件</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/22 10:04
+     */
+    public void updateFileListForSelf(OmsFile omsFile) {
+        if (StringUtils.isBlank(omsFile.getId()) || omsFile.getIsDeleted() == null) {
+            throw new CustomMessageException("参数错误");
+        }
+        int count = omsFileMapper.updateById(omsFile);
+        if (count < 1){
+            throw new CustomMessageException("操作失败");
+        }
+    }
+
     @Override
     public void downloadOmsFile(AbroadFileDestailParams abroadFileDestailParams) {
         if (StringUtils.isBlank(abroadFileDestailParams.getApplyID())

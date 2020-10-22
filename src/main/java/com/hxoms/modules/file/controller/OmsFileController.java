@@ -131,4 +131,32 @@ public class OmsFileController {
         return Result.success(result);
     }
 
+
+     /**
+     * <b>功能描述: 自评页面查询文件列表</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/21 20:04
+     */
+     @GetMapping("/selectFileListForSelf")
+    public Result selectFileListForSelf(OmsFile omsFile){
+        List<OmsFile> list = omsFileService.selectFileListForSelf(omsFile);
+        return Result.success(list);
+    }
+
+
+
+    /**
+     * <b>功能描述: 自评页面维护页面添加文件</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/22 10:04
+     */
+    @PostMapping("/updateFileListForSelf")
+    public Result updateFileListForSelf(OmsFile omsFile) {
+        omsFileService.updateFileListForSelf(omsFile);
+        return Result.success().setData("aaa");
+    }
 }
