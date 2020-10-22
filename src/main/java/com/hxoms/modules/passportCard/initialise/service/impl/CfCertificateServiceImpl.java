@@ -216,6 +216,7 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
     @Transactional(rollbackFor = Exception.class)
     public CfCertificateValidate validateCerInfo(ValidateCerInfo validateCerInfo) {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
+        CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
         CfCertificate cfCertificate=new CfCertificate();
@@ -224,8 +225,13 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             throw new CustomMessageException("参数不正确");
         //通过证件类型、证件号码查询
         CfCertificate certificateGa=cfCertificateMapper.selectCertificateInfo(cfCertificate);
+        //获取备案人员信息
+        List<RegProcpersoninfo> regProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
         //数据库存在证照，则验证证照
         if(certificateGa!=null){
+            //校验证件状态
+            if(!SaveStatusEnum.WSQ.getCode().equals(certificateGa.getSaveStatus()))
+                throw new CustomMessageException("证件当前状态，不能操作此业务，请核实！");
             //证照验证
             validateCerInfo(certificateGa,cfCertificate,true);
             certificateGa.setSaveStatus(SaveStatusEnum.YQC.getCode());
@@ -238,30 +244,37 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
             if(cfCertificateMapper.updateById(certificateGa)==0)
                 throw new CustomMessageException("证照验证保存失败！");
             certificateGa=cfCertificateMapper.selectById(certificateGa.getId());
-        }
-        //获取备案人员信息
-        List<RegProcpersoninfo> regProcpersoninfoList=cfCertificateMapper.selectRegPerson(certificateGa!=null?certificateGa.getOmsId():null,cfCertificate.getName(),cfCertificate.getCsrq());
-        //判断是否需要做新增处理
-        if(certificateGa==null&&regProcpersoninfoList.size()==1){
-            RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
-            cfCertificate.setOmsId(regProcpersoninfo.getId());
-            cfCertificate.setA0100(regProcpersoninfo.getA0100());
-            cfCertificate.setA0184(regProcpersoninfo.getIdnumberGb());
-            insertCertificate(cfCertificate);
-        }
-        CfCertificateValidate cfCertificateValidate=new CfCertificateValidate();
-        if(certificateGa!=null){
-            //验证通过，修改人员证件持有情况
-            if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())&&regProcpersoninfoList.size()==1){
+            if(CardStatusEnum.YYZ.getCode().equals(certificateGa.getCardStatus())){
+                //验证通过，修改人员证件持有情况
                 RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
                 OmsRegProcpersoninfo omsRegProcpersoninfo=new OmsRegProcpersoninfo();
                 omsRegProcpersoninfo.setId(regProcpersoninfo.getId());
                 omsRegProcpersoninfo.setLicenceIdentity(PubUtils.calLicenceIdentity(regProcpersoninfo.getLicenceIdentity(),certificateGa.getZjlx()));
                 if(!omsRegProcpersonInfoService.updateById(omsRegProcpersoninfo))
                     throw new CustomMessageException("登记备案信息更新失败！");
+                ValidateCerInfo validateCerInfoReturn = new ValidateCerInfo();
+                BeanUtils.copyProperties(certificateGa,validateCerInfoReturn);
+                cfCertificateValidate.setValidateCerInfo(validateCerInfoReturn);
+                cfCertificateValidate.setMessage("证件验证成功，请及时操作入柜！");
+            }else{
+                cfCertificateValidate.setMessage("证件验证失败，请及时操作存疑处理！");
+            }
+        }else{
+            //判断是否需要做新增处理
+            cfCertificate.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
+            if(regProcpersoninfoList.size()==1){
+                RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
+                cfCertificate.setOmsId(regProcpersoninfo.getId());
+                cfCertificate.setA0100(regProcpersoninfo.getA0100());
+                cfCertificate.setA0184(regProcpersoninfo.getIdnumberGb());
+                insertCertificate(cfCertificate);
+                cfCertificateValidate.setMessage("此证件为新增处理，请及时导入出入境数据验证！");
+            }else{
+                cfCertificateValidate.setMessage("请关联干部并点击保存，做新增处理！");
             }
             ValidateCerInfo validateCerInfoReturn = new ValidateCerInfo();
-            BeanUtils.copyProperties(certificateGa,validateCerInfoReturn);
+            validateCerInfoReturn.setSurelyUnit(cfCertificate.getSurelyUnit());
+            validateCerInfoReturn.setZjxs(cfCertificate.getZjxs());
             cfCertificateValidate.setValidateCerInfo(validateCerInfoReturn);
         }
         cfCertificateValidate.setRegProcpersoninfoList(regProcpersoninfoList);
@@ -281,22 +294,32 @@ public class CfCertificateServiceImpl extends ServiceImpl<CfCertificateMapper,Cf
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败！");
-        if(cfCertificate==null)
-            throw new CustomMessageException("参数不能为空，请核实！");
-        if(StringUtils.isBlank(cfCertificate.getOmsId()))
-            throw new CustomMessageException("未关联登记备案人员，请核实！");
         cfCertificate.setId(UUIDGenerator.getPrimaryKey());
         cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
         //已取出
         cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
         //待验证
         cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
+        cfCertificate.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
         //异常原因不能修改，耶稣说的。
         cfCertificate.setExceptionMessage("公安无对应证照数据");
         cfCertificate.setUpdater(userInfo.getId());
         cfCertificate.setUpdateTime(new Date());
-        if(cfCertificateMapper.insert(cfCertificate)==0)
-            throw new CustomMessageException("保存失败！");
+        //校验若已新增，并且状态为已取出、待验证做更新处理，否则不允许操作
+        //通过证件类型、证件号码查询
+        CfCertificate certificateExist=cfCertificateMapper.selectCerStatusInfo(cfCertificate);
+        if(certificateExist!=null){
+            if(SaveStatusEnum.YQC.getCode().equals(certificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(certificateExist.getCardStatus())){
+                cfCertificate.setId(certificateExist.getId());
+                if(cfCertificateMapper.updateById(cfCertificate)==0)
+                    throw new CustomMessageException("更新失败！");
+            }else{
+                throw new CustomMessageException("证件已新增，不能重复操作，请核实！");
+            }
+        }else{
+            if(cfCertificateMapper.insert(cfCertificate)==0)
+                throw new CustomMessageException("保存失败！");
+        }
     }
 
     /**

@@ -420,4 +420,9 @@
     AND IDNUMBER = #{idNo}
     AND user_id = #{operatId}
   </select>
+  <select id="deleteTaskByBusinessId" >
+
+    update oms_cer_get_task set GET_STATUS=2
+    where BUSI_ID=#{ businessId}
+  </select>
 </mapper>

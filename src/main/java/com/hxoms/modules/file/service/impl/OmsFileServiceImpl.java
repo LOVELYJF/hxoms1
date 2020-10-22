@@ -27,7 +27,6 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyVO;
 import com.hxoms.modules.publicity.entity.OtherPubApply;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
-import com.hxoms.support.b01.mapper.B01Mapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,6 +131,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("IS_TEMPLATE", isTemplate)
                 .eq("B0100", userInfo.getOrgId())
+                .eq("IS_DELETED",0)
                 .in("FILE_TYPE", level.getFileType())
                 .orderByAsc("SORT_ID");
 
@@ -143,6 +143,7 @@ public class OmsFileServiceImpl implements OmsFileService {
         queryWrapper.clear();
         queryWrapper.eq("TABLE_CODE", tableCode)
                 .eq("IS_TEMPLATE", isTemplate)
+                .eq("IS_DELETED",0)
                 .in("FILE_TYPE", level.getFileType())
                 .and(wrapper -> wrapper.eq("B0100", "")
                         .or()
@@ -694,6 +695,40 @@ public class OmsFileServiceImpl implements OmsFileService {
         secretLevelAndFileType.setIsLeader(isLeaders);
         secretLevelAndFileType.setLqgz(lqgz);
         return secretLevelAndFileType;
+    }
+
+
+    /**
+     * <b>功能描述: 自评页面查询文件列表</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/21 20:04
+     */
+    public List<OmsFile> selectFileListForSelf(OmsFile omsFile) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("tableCode", omsFile.getTableCode());
+        map.put("isDelete", omsFile.getIsDeleted());
+        List<OmsFile> list = omsFileMapper.selectFileListForSelf(map);
+        return list;
+    }
+
+
+    /**
+     * <b>功能描述: 自评页面维护页面添加文件</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/22 10:04
+     */
+    public void updateFileListForSelf(OmsFile omsFile) {
+        if (StringUtils.isBlank(omsFile.getId()) || omsFile.getIsDeleted() == null) {
+            throw new CustomMessageException("参数错误");
+        }
+        int count = omsFileMapper.updateById(omsFile);
+        if (count < 1){
+            throw new CustomMessageException("操作失败");
+        }
     }
 
     @Override

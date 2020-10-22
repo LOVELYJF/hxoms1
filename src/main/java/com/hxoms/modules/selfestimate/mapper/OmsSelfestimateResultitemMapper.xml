@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hxoms.modules.selfestimate.mapper.OmsSelfestimateResultitemMapper">
-  <resultMap id="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem">
-    <id column="ID" jdbcType="VARCHAR" property="id" />
-    <result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
-    <result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
-    <result column="CHECK_ID" jdbcType="VARCHAR" property="checkId" />
-    <result column="CHECK_RESULT" jdbcType="INTEGER" property="checkResult" />
-    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
-    <result column="PERSON_TYPE" jdbcType="VARCHAR" property="personType" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
-    <result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
-  </resultMap>
-  <sql id="Base_Column_List">
+	<resultMap id="BaseResultMap" type="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitem">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="SELFFILE_ID" jdbcType="VARCHAR" property="selffileId" />
+		<result column="APPLY_ID" jdbcType="VARCHAR" property="applyId" />
+		<result column="CHECK_ID" jdbcType="VARCHAR" property="checkId" />
+		<result column="CHECK_RESULT" jdbcType="INTEGER" property="checkResult" />
+		<result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+		<result column="PERSON_TYPE" jdbcType="VARCHAR" property="personType" />
+		<result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
+		<result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="MODIFY_USER" jdbcType="VARCHAR" property="modifyUser" />
+	</resultMap>
+	<sql id="Base_Column_List">
     ID, SELFFILE_ID, APPLY_ID, CHECK_ID, CHECK_RESULT, DESCRIPTION, PERSON_TYPE, CREATE_TIME, 
     CREATE_USER, MODIFY_TIME, MODIFY_USER
   </sql>
 
-  <!--查询结果子集列表-->
-  <select id="selectItemResultList" parameterType="java.util.Map" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
+	<!--查询结果子集列表-->
+	<select id="selectItemResultList" parameterType="java.util.Map" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
+	    SELECT
+	        a.ID AS checkId,
+	        a.SELFFILE_ID AS selffileId,
+	        a.CHECK_ITEM AS checkItem,
+	        b.id,
+	        b.APPLY_ID AS applyId,
+	        ifnull( b.CHECK_RESULT, 0 ) AS checkResult,
+	        b.DESCRIPTION AS description
+	    FROM
+	        oms_selfestimate_items a
+	        LEFT JOIN (
+	        SELECT
+	            id,
+	            CHECK_ID,
+	            APPLY_ID,
+	            CHECK_RESULT,
+	            DESCRIPTION
+	        FROM
+	            oms_selfestimate_resultitem
+	        WHERE
+	            APPLY_ID = #{applyId} and PERSON_TYPE = #{personType}) b on a.ID=b.CHECK_ID
 
-select a.ID AS checkId,a.CHECK_ITEM AS checkItem,b.id,b.APPLY_ID as applyId,
-ifnull(b.CHECK_RESULT,0) AS checkResult,b.DESCRIPTION AS description
-from oms_selfestimate_items a
-left JOIN (select id,CHECK_ID,APPLY_ID,CHECK_RESULT,DESCRIPTION from
-oms_selfestimate_resultitem where APPLY_ID = #{applyId} and PERSON_TYPE = #{personType}) b on a.ID=b.CHECK_ID
-where a.ENABLE = 1 AND a.SELFFILE_ID = #{selffileId}
-
+	        WHERE
+	        a.ENABLE = 1
+	        AND a.SELFFILE_ID = #{selffileId}
   </select>
 </mapper>
