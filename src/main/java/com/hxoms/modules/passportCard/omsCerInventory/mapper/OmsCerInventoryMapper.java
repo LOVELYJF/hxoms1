@@ -3,6 +3,7 @@ package com.hxoms.modules.passportCard.omsCerInventory.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hxoms.modules.passportCard.omsCerInventory.entity.OmsCerInventory;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public interface OmsCerInventoryMapper extends BaseMapper<OmsCerInventory> {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/20 14:38
 	 */
-	List<Map<String, Object>> GetCerInventoryResult(Map<String, Object> map);
+	List<Map<String, Object>> GetCerInventoryResult(@Param("cabinetList") List<String> cabinetList, @Param("map") Map<String, Object> map);
 
 
 	/**
