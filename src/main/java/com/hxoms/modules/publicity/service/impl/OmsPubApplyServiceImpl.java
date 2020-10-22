@@ -15,7 +15,6 @@ import com.hxoms.modules.keySupervision.patrolUnit.service.OmsSupPatrolUnitServi
 import com.hxoms.modules.omssmrperson.entity.OmsSmrOldInfoVO;
 import com.hxoms.modules.omssmrperson.mapper.OmsSmrOldInfoMapper;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
-import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.service.OmsPriApplyService;
 import com.hxoms.modules.publicity.entity.*;
 import com.hxoms.modules.publicity.mapper.OmsPubApplyChangeMapper;
@@ -24,7 +23,6 @@ import com.hxoms.modules.publicity.mapper.OmsPubGroupPreApprovalMapper;
 import com.hxoms.modules.publicity.service.OmsPubApplyService;
 import com.hxoms.support.b01.entity.B01Tree;
 import com.hxoms.support.b01.service.OrgService;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -88,6 +86,9 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
 
     @Override
     public OmsPubApplyVO selectPubApplyPersonInfo(String b0100, String a0100) {
+        if (StringUtils.isBlank(b0100) || StringUtils.isBlank(a0100)){
+            throw new CustomMessageException("参数为空!");
+        }
         OmsPubApplyVO omsPubApply = new OmsPubApplyVO();
         //备案表中获取基本信息
         Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(b0100, a0100);
