@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -19,7 +20,8 @@ public class CerAndPerson {
     //登记备案人员信息
     @ApiModelProperty(value = "登记备案人员信息")
     private List<RegProcpersoninfo> regProcpersoninfoList;
-
+    @JsonIgnore
+    private String message;
     public ReadCerInfo getReadCerInfo() {
         return readCerInfo;
     }
@@ -34,5 +36,13 @@ public class CerAndPerson {
 
     public void setRegProcpersoninfoList(List<RegProcpersoninfo> regProcpersoninfoList) {
         this.regProcpersoninfoList = regProcpersoninfoList;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

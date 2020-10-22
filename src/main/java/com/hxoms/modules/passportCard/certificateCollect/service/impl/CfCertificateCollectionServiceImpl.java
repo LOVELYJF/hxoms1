@@ -21,6 +21,7 @@ import com.hxoms.modules.passportCard.certificateCollect.entity.parameterEntity.
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionRequestService;
 import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
+import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.publicity.taskSupervise.service.OmsPubTaskSuperviseService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,7 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
     @Autowired
     private OmsCreateFileService omsCreateFileService;
     @Autowired
-    private OmsCreateFileMapper omsCreateFileMapper;
+    private CfCertificateMapper cfCertificateMapper;
 
     /**
      * @Desc: 生成催缴任务
@@ -506,6 +507,42 @@ public class CfCertificateCollectionServiceImpl extends ServiceImpl<CfCertificat
         OmsFile targetOmsFile = new OmsFile();
         BeanUtils.copyProperties(omsFile, targetOmsFile);
         return targetOmsFile;
+    }
+
+    /**
+     * @Desc: 解除催缴
+     * @Author: wangyunquan
+     * @Param: [omsId, zjlx, zjhm, userId]
+     * @Return: void
+     * @Date: 2020/10/22
+     */
+    @Override
+    public void removeCj(String omsId, Integer zjlx, String zjhm,String userId) {
+        //取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
+        List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsId);
+        boolean isExist=false;
+        Date currDate=new Date();
+        CfCertificateCollection cfCerCollection=null;
+        for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
+            if(zjlx.equals(cfCertificateCollection.getZjlx())&&zjhm.equals(cfCertificateCollection.getZjhm())){
+                //按证件解除催缴
+                //0:手动解除,1;已上缴,2:未上缴,3:自动解除
+                cfCertificateCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
+                cfCertificateCollection.setUpdator(userId);
+                cfCertificateCollection.setUpdatetime(currDate);
+                cfCertificateCollectionMapper.updateById(cfCertificateCollection);
+                isExist=true;
+            }
+            if(cfCertificateCollection.getZjlx()==null&& StringUtils.isBlank(cfCertificateCollection.getZjhm()))
+                cfCerCollection=cfCertificateCollection;
+        }
+        //按人员解除催缴证件类型和证件号码为空的催缴任务
+        if(!isExist&&cfCerCollection!=null){
+            cfCerCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
+            cfCerCollection.setUpdator(userId);
+            cfCerCollection.setUpdatetime(currDate);
+            cfCertificateCollectionMapper.updateById(cfCerCollection);
+        }
     }
 
     /**

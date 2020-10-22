@@ -123,9 +123,9 @@
     </where>
   </select>
 
-  <select id="selectIsExist" resultType="java.lang.String">
+  <select id="selectIsExist" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
     SELECT
-        1 from cf_certificate
+        id,save_status saveStatus,card_status cardStatus from cf_certificate
     WHERE
         zjlx = #{zjlx}
     AND zjhm = #{zjhm}
