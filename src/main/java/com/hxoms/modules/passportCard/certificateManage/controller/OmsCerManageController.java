@@ -70,7 +70,8 @@ public class OmsCerManageController {
     @ApiOperation(value = "新领证照录入")
     @PostMapping("/insertCertificate")
     public Result<CerAndPerson> insertCertificate(@RequestBody @Validated ReadCerInfo readCerInfo){
-        return Result.success(omsCerManageService.insertCertificate(readCerInfo));
+        CerAndPerson cerAndPerson = omsCerManageService.insertCertificate(readCerInfo);
+        return Result.success(cerAndPerson).setMsg(cerAndPerson.getMessage());
     }
 
     /**
