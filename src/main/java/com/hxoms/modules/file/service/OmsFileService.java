@@ -25,7 +25,7 @@ public interface OmsFileService {
     List<OmsCreateFile> selectFileListByCode(String tableCode, String procpersonId, String applyId);
 
     /**
-     * 根据材料类别、模板ID返回材料模板
+     * 根据模板ID返回材料模板及关键字
      *
      */
     Map<String, Object> selectFileTemplate(String fileTemplateId);
@@ -90,4 +90,23 @@ public interface OmsFileService {
     List<OmsTYMBVO> selectFileList();
 
     SecretLevelAndFileType getSecretLevelAndFileType(String tableCode, String procpersonId, String applyId);
+
+    /**
+     * <b>功能描述: 自评页面查询文件列表</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/21 20:04
+     */
+	List<OmsFile> selectFileListForSelf(OmsFile omsFile);
+
+
+    /**
+     * <b>功能描述: 自评页面维护页面添加文件</b>
+     * @Param:
+     * @Return:
+     * @Author: luoshuai
+     * @Date: 2020/10/22 10:04
+     */
+    void updateFileListForSelf(OmsFile omsFile);
 }

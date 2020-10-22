@@ -135,7 +135,6 @@ public class OmsRegRevokeApplyController {
      * **/
     @PostMapping("/createCancellationLetter")
     public Result createCancellationLetter(@RequestBody List<CancellationLetter> lists){
-
         List<CancellationLetter> listss =  revokeApplyService.createCancellationLetter(lists);
         return  Result.success(listss);
 

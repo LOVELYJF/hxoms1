@@ -226,4 +226,16 @@ public class OmsPriApplyController {
         OmsCreateFile omsCreateFile = omsPriApplyService.printApproval(applyId);
         return Result.success(omsCreateFile);
     }
+    @ApiOperation(value="撤回申请", notes="撤回申请")
+    @ApiImplicitParam(name = "applyId", value = "申请id", required = true, dataType = "String")
+    @GetMapping("/recallApply")
+    public Result recallApply(String applyId) {
+        return omsPriApplyService.recallApply(applyId);
+    }
+    @ApiOperation(value="撤消因私出国（境）申请", notes="撤消因私出国（境）申请")
+    @ApiImplicitParam(name = "omsPriApply", value = "申请", required = true, dataType = "OmsPriApply")
+    @PostMapping("/cancelApply")
+    public Result cancelApply(OmsPriApply omsPriApply) {
+        return omsPriApplyService.cancelApply(omsPriApply);
+    }
 }

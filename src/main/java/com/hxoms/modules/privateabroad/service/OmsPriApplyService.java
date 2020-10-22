@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
 import com.hxoms.modules.file.entity.OmsCreateFile;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
 import com.hxoms.modules.privateabroad.entity.CountStatusResult;
 import com.hxoms.modules.privateabroad.entity.OmsPriApply;
 import com.hxoms.modules.privateabroad.entity.OmsPriApplyVO;
@@ -136,4 +137,42 @@ public interface OmsPriApplyService extends IService<OmsPriApply> {
      **/
     void WriteApprovalStep(String applyId, Integer stepCode, String stepName,
                            String approvalResult, String approvalOpinion, String businessType);
+
+    /**
+    * @description: 撤回还未征求意见的申请
+    * @author:杨波
+    * @date:2020-10-21
+    *  * @param applyId 业务表主键
+    * @return:
+    **/
+    Result recallApply(String applyId);
+
+    /**
+    * @description:撤销因私出国境申请
+    * @author:杨波
+    * @date:2020-10-21
+    *  * @param omsPriApply 申请
+    * @return:
+    **/
+    Result cancelApply(OmsPriApply omsPriApply);
+
+    /**
+    * @description:获取本申请使用的证照
+    * @author:杨波
+    * @date:2020-10-21
+    *  * @param null
+    * @return:
+    **/
+    List<CfCertificate> getPriApplyCertificates(OmsPriApply priApply );
+
+    /**
+    * @description:根据证照创建证照领取任务
+    * @author:杨波
+    * @date:2020-10-21
+    *  * @param certificates 证照列表
+     *  * @param omsPriApply 因私出国境申请
+    * @return:
+    **/
+    void GenerateCerGetTask(List<CfCertificate> certificates,OmsPriApply omsPriApply);
+
 }

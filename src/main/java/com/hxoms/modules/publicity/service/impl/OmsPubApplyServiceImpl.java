@@ -256,6 +256,7 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
         if (StringUtils.isBlank(id)) {
             throw new CustomMessageException("参数为空!");
         }
+
         omsPubApplyMapper.deletePubApplyById(id);
     }
 

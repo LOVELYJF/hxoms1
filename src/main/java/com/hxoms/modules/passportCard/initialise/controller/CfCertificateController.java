@@ -150,7 +150,8 @@ public class CfCertificateController {
     @ApiOperation(value = "验证证照信息")
     @PostMapping("/validateCerInfo")
     public Result<CfCertificateValidate> validateCerInfo(@RequestBody @Validated ValidateCerInfo validateCerInfo){
-        return Result.success(cfCertificateService.validateCerInfo(validateCerInfo));
+        CfCertificateValidate cfCertificateValidate = cfCertificateService.validateCerInfo(validateCerInfo);
+        return Result.success(cfCertificateValidate).setMsg(cfCertificateValidate.getMessage());
     }
 
     /**

@@ -13,6 +13,8 @@ import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagPa
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
+import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
+import com.hxoms.modules.passportCard.initialise.service.CfCertificateHistoryRecordService;
 import io.swagger.annotations.ApiOperation;
 import oracle.jdbc.proxy.annotation.Post;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -40,10 +42,10 @@ public class OmsRegExportController {
     private OmsRegProcpersonInfoService mrpinfoService;
 
     @Autowired
-    private OmsRegProcbatchService orpbatchService;
+    private OmsEntryexitRecordService entryexitRecordService;
 
     @Autowired
-    private OmsEntryexitRecordService entryexitRecordService;
+    private CfCertificateHistoryRecordService cfHistoryRecordService;
 
     /**
      * 导出备案大检查列表信息
@@ -80,7 +82,7 @@ public class OmsRegExportController {
 
 
     /**
-     * 导入出入境记录
+     * 导出出入境记录
      * @param ids
      * @throws IOException
      */
@@ -143,6 +145,41 @@ public class OmsRegExportController {
         }
     }
 
+
+    /**
+     * 导出证照比对历史记录
+     * @param type
+     * @throws IOException
+     */
+    @PostMapping("/exportZzHistoryInfo")
+    public void  exportZzHistoryInfo(String type,String year){
+        HttpServletResponse response = DomainObjectUtil.getResponse();
+        String content = "导出年度问题证照记录";
+        String fileName ="";
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<CfCertificateHistoryRecord> entryexitRecordsList = new ArrayList<>();
+        try {
+            if (type.equals("1")){
+                entryexitRecordsList = cfHistoryRecordService.selectNotProvicdeCerRecords(year);
+                fileName = UtilDateTime.nowDate()+"导出"+year+"年度未上缴证照记录";
+            }else{
+                entryexitRecordsList = cfHistoryRecordService.selectExceptionCerRecords(year);
+                fileName = UtilDateTime.nowDate()+"导出"+year+"年度存疑证照记录";
+            }
+            //设置输出的格式
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.addHeader("Content-Disposition","attachment;filename="
+                    + URLEncoder.encode(fileName + ".xlsx", "utf-8"));
+            EasyExcel.write(response.getOutputStream(), CfCertificateHistoryRecordModel.class)
+                    .sheet("模板")
+                    .doWrite(entryexitRecordsList);
+        } catch (IOException e) {
+            resultMap.put("code", "2");
+            resultMap.put("msg", "操作失败");
+            e.printStackTrace();
+        }
+    }
 }
 
 

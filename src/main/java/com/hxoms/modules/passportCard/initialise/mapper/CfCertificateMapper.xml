@@ -591,7 +591,10 @@
             qfjg,
             qfrq,
             csdd,
-            yxqz
+            yxqz,
+            zjxs,
+            save_status saveStatus,
+            card_status cardStatus
         FROM
             cf_certificate
         WHERE
@@ -647,7 +650,8 @@
         QFJG qfjg,
         QFRQ qfrq,
         CSDD csdd,
-        YXQZ yxqz
+        YXQZ yxqz,
+        save_status saveStatus
         FROM
         cf_certificate
       WHERE
@@ -700,9 +704,10 @@
         a.zjhm zjhm,
         a.yxqz yxqz,
         if(a.SURELY_UNIT='0','干部监督处',if(a.SURELY_UNIT='1','省委统战部(台办)',a.SURELY_UNIT)) surelyUnit,
-        a.SURELY_WAY surelyWay,
+        if(a.SURELY_WAY='0','证照机',if(a.SURELY_WAY='1','柜台',a.SURELY_UNIT)) surelyWay,
         a.CABINET_NUM cabinetNum,
         a.PLACE place,
+        a.COUNTER_NUM counterNum,
         a.CSRQ csrq,
         a.qfjg qfjg,
         a.QFRQ qfrq,
@@ -1185,5 +1190,15 @@ where 1=1
     FROM
         DUAL
     </select>
-
+  <select id="selectCerStatusInfo" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
+    SELECT
+      	id,
+        save_status saveStatus,
+        card_status cardStatus
+        FROM
+        cf_certificate
+      WHERE
+      ZJLX = #{zjlx}
+      AND ZJHM = #{zjhm}
+  </select>
 </mapper>

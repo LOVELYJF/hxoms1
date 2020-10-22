@@ -62,6 +62,9 @@ public class CfCertificateInfo {
     //位置
     @ApiModelProperty(value = "位置")
     private String place;
+    //柜台编号
+    @ApiModelProperty(value = "柜台编号")
+    private String counterNum;
     //出生日期
     @JsonFormat(pattern = "yyyy.MM.dd", timezone = "GMT+8")
     @ApiModelProperty(value = "出生日期")
@@ -213,6 +216,14 @@ public class CfCertificateInfo {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    public String getCounterNum() {
+        return counterNum;
+    }
+
+    public void setCounterNum(String counterNum) {
+        this.counterNum = counterNum;
     }
 
     public Date getCsrq() {

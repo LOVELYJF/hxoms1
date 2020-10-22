@@ -1,5 +1,6 @@
 package com.hxoms.modules.passportCard.initialise.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hxoms.common.hxannotation.ColumnAnnotation;
 import com.hxoms.common.hxannotation.IdAnnotation;
@@ -169,6 +170,22 @@ public class CfCertificateHistoryRecord {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     @ApiModelProperty(value="修改时间")
     private Date updateTime;
+
+    @ApiModelProperty(value="单位")
+    @TableField(exist = false)
+    private String workUnit;
+
+    @ApiModelProperty(value="任职状态")
+    @TableField(exist = false)
+    private String incumbencyStatus;
+
+    @ApiModelProperty(value="职务")
+    @TableField(exist = false)
+    private String post;
+
+    @ApiModelProperty(value = "证件类型")
+    @TableField(exist = false)
+    private String zjlxName;
 
     public String getId() {
         return id;
@@ -456,5 +473,37 @@ public class CfCertificateHistoryRecord {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getWorkUnit() {
+        return workUnit;
+    }
+
+    public void setWorkUnit(String workUnit) {
+        this.workUnit = workUnit;
+    }
+
+    public String getIncumbencyStatus() {
+        return incumbencyStatus;
+    }
+
+    public void setIncumbencyStatus(String incumbencyStatus) {
+        this.incumbencyStatus = incumbencyStatus;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public String getZjlxName() {
+        return zjlxName;
+    }
+
+    public void setZjlxName(String zjlxName) {
+        this.zjlxName = zjlxName;
     }
 }
