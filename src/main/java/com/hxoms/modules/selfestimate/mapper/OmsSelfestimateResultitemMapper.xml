@@ -22,7 +22,7 @@
   <!--查询结果子集列表-->
   <select id="selectItemResultList" parameterType="java.util.Map" resultType="com.hxoms.modules.selfestimate.entity.OmsSelfestimateResultitemVO">
 
-select a.ID AS checkId,a.CHECK_ITEM AS checkItem,b.id,b.APPLY_ID as applyId,
+select a.ID AS checkId,a.SELFFILE_ID AS selffileId,a.CHECK_ITEM AS checkItem,b.id,b.APPLY_ID as applyId,
 ifnull(b.CHECK_RESULT,0) AS checkResult,b.DESCRIPTION AS description
 from oms_selfestimate_items a
 left JOIN (select id,CHECK_ID,APPLY_ID,CHECK_RESULT,DESCRIPTION from
