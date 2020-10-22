@@ -1,6 +1,7 @@
 package com.hxoms.modules.passportCard.initialise.service;
 
 import com.hxoms.common.utils.PageBean;
+import com.hxoms.modules.omsregcadre.entity.CfCertificateHistoryRecordModel;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface CfCertificateHistoryRecordService {
      */
     PageBean<CfCertificateHistoryRecord> selectExceptionCerRecord(PageBean pageBean, String year);
 
-    List<CfCertificateHistoryRecord> selectNotProvicdeCerRecords(String year);
+    List<CfCertificateHistoryRecordModel> selectNotProvicdeCerRecords(String year);
 
-    List<CfCertificateHistoryRecord> selectExceptionCerRecords(String year);
+    List<CfCertificateHistoryRecordModel> selectExceptionCerRecords(String year);
 }

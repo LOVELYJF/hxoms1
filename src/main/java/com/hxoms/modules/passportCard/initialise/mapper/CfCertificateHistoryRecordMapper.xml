@@ -110,5 +110,26 @@
     select id from cf_certificate_history_record where YEAR=#{year}
   </select>
 
+  <select id="selectNotProvicdeCerRecords" resultType="com.hxoms.modules.omsregcadre.entity.CfCertificateHistoryRecordModel">
+    <include refid="commonSql" />
+    LEFT JOIN cf_certificate_collection c ON a.id=c.cer_id
+    WHERE
+    a.SAVE_STATUS = '2'
+    AND a.CARD_STATUS = '5'
+    <if test="year!=null and year !=''">
+      AND a.year=#{year}
+    </if>
+    AND c.CJ_STATUS is null
+  </select>
+
+  <select id="selectExceptionCerRecords" resultType="com.hxoms.modules.omsregcadre.entity.CfCertificateHistoryRecordModel">
+    <include refid="commonSql" />
+    WHERE
+    a.SAVE_STATUS = '1'
+    AND a.CARD_STATUS in ('3','5')
+    <if test="year!=null and year !=''">
+      AND a.YEAR=#{year}
+    </if>
+  </select>
 
 </mapper>

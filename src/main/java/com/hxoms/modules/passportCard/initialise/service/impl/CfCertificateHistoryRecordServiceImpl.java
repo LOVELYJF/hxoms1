@@ -5,16 +5,15 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.PageBean;
 import com.hxoms.common.utils.PageUtil;
+import com.hxoms.modules.omsregcadre.entity.CfCertificateHistoryRecordModel;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
 import com.hxoms.modules.passportCard.initialise.entity.parameterEntity.CfCertificateInfo;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateHistoryRecordMapper;
 import com.hxoms.modules.passportCard.initialise.mapper.CfCertificateMapper;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateHistoryRecordService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 @Service
 public class CfCertificateHistoryRecordServiceImpl extends ServiceImpl<CfCertificateHistoryRecordMapper,CfCertificateHistoryRecord> implements CfCertificateHistoryRecordService {
@@ -68,13 +67,13 @@ public class CfCertificateHistoryRecordServiceImpl extends ServiceImpl<CfCertifi
     }
 
     @Override
-    public List<CfCertificateHistoryRecord> selectNotProvicdeCerRecords(String year) {
-        return cfCertificateHistoryRecordMapper.selectNotProvicdeCerRecord(year);
+    public List<CfCertificateHistoryRecordModel> selectNotProvicdeCerRecords(String year) {
+        return cfCertificateHistoryRecordMapper.selectNotProvicdeCerRecords(year);
     }
 
 
     @Override
-    public List<CfCertificateHistoryRecord> selectExceptionCerRecords(String year) {
-        return cfCertificateHistoryRecordMapper.selectExceptionCerRecord(year);
+    public List<CfCertificateHistoryRecordModel> selectExceptionCerRecords(String year) {
+        return cfCertificateHistoryRecordMapper.selectExceptionCerRecords(year);
     }
 }

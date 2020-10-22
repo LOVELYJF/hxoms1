@@ -1,9 +1,11 @@
 package com.hxoms.modules.omsregcadre.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import java.util.Date;
+import com.alibaba.excel.metadata.BaseRowModel;
+import org.springframework.format.annotation.DateTimeFormat;
 
-public class CfCertificateHistoryRecordModel {
+import java.util.Date;
+public class CfCertificateHistoryRecordModel extends BaseRowModel {
 
     @ExcelProperty(value = "姓名", index = 0)
     private String name;
@@ -27,18 +29,21 @@ public class CfCertificateHistoryRecordModel {
     private String zjhm;
 
     @ExcelProperty(value = "有效期至", index = 7)
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private String yxqz;
 
     @ExcelProperty(value = "管理单位", index = 8)
     private String surelyUnit;
 
     @ExcelProperty(value = "出生日期", index = 9)
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private Date csrq;
 
     @ExcelProperty(value = "签发单位", index = 10)
     private String qfjg;
 
     @ExcelProperty(value = "签发日期", index = 11)
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     private String qfrq;
 
     @ExcelProperty(value = "出生地点", index = 12)

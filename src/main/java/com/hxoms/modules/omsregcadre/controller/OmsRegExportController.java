@@ -1,34 +1,19 @@
 package com.hxoms.modules.omsregcadre.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.fastjson.JSON;
+
 import com.hxoms.common.utils.*;
-import com.hxoms.modules.leaderSupervision.until.LeaderSupervisionUntil;
 import com.hxoms.modules.omsregcadre.entity.*;
-import com.hxoms.modules.omsregcadre.entity.paramentity.OmsEntryexitRecordIPagParam;
 import com.hxoms.modules.omsregcadre.service.OmsEntryexitRecordService;
-import com.hxoms.modules.omsregcadre.service.OmsRegProcbatchService;
 import com.hxoms.modules.omsregcadre.service.OmsRegProcpersonInfoService;
-import com.hxoms.modules.passportCard.initialise.entity.CfCertificateHistoryRecord;
 import com.hxoms.modules.passportCard.initialise.service.CfCertificateHistoryRecordService;
 import io.swagger.annotations.ApiOperation;
-import oracle.jdbc.proxy.annotation.Post;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,12 +137,14 @@ public class OmsRegExportController {
      * @throws IOException
      */
     @PostMapping("/exportZzHistoryInfo")
-    public void  exportZzHistoryInfo(String type,String year){
+    @Transactional(rollbackFor=Exception.class)
+    @ApiOperation(value = "导出证照比对历史记录", notes = "export", produces = "application/octet-stream")
+    public void exportZzHistoryInfo(String year,String type){
         HttpServletResponse response = DomainObjectUtil.getResponse();
         String content = "导出年度问题证照记录";
         String fileName ="";
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        List<CfCertificateHistoryRecord> entryexitRecordsList = new ArrayList<>();
+        List<CfCertificateHistoryRecordModel> entryexitRecordsList = new ArrayList<>();
         try {
             if (type.equals("1")){
                 entryexitRecordsList = cfHistoryRecordService.selectNotProvicdeCerRecords(year);
