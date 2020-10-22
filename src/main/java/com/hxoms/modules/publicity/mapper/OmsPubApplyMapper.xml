@@ -325,6 +325,7 @@
         LEFT JOIN oms_smr_personinfo op
         ON orp.id = op.PROC_PERSON_ID
         <where>
+            <if test="1 == 1">and orp.a0100 is not null</if>
             <if test="b0100 != null and b0100.size>0">
                 and b.b0100 in
                 <foreach collection="b0100" item="b0100" separator="," open="(" close=")">
