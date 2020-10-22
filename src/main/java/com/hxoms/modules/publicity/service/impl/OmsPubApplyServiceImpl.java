@@ -482,6 +482,8 @@ public class OmsPubApplyServiceImpl implements OmsPubApplyService {
                 Map<String, Object> personInfo = omsPubApplyMapper.selectBasePersonInfo(personInfoVO.getB0100(), personInfoVO.getA0100());
                 //主键
                 omsPubApply.setId(UUIDGenerator.getPrimaryKey());
+                //设置备案id
+                omsPubApply.setProcpersonId(personInfoVO.getProcpersonId());
                 //A0100
                 omsPubApply.setA0100(personInfoVO.getA0100());
                 //B0100
