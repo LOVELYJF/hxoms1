@@ -238,10 +238,6 @@ public class OmsPriApply {
     @ApiModelProperty(value="撤销原因")
     private String cancelReason;
 
-    @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书")
-    @ApiModelProperty(value="是否需要委托书")
-    private Integer isEntrust;
-
     @ColumnAnnotation(FieldName = "REMARKS",   FieldDescription="备注")
     @ApiModelProperty(value="备注")
     private String remarks;
@@ -706,14 +702,6 @@ public class OmsPriApply {
 
     public void setCancelReason(String cancelReason) {
         this.cancelReason = cancelReason == null ? null : cancelReason.trim();
-    }
-
-    public Integer getIsEntrust() {
-        return isEntrust;
-    }
-
-    public void setIsEntrust(Integer isEntrust) {
-        this.isEntrust = isEntrust;
     }
 
     public String getRemarks() {

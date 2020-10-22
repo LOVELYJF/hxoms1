@@ -58,7 +58,6 @@
     <result column="IS_COMPARISON" jdbcType="CHAR" property="isComparison" />
     <result column="APPLY_STATUS" jdbcType="INTEGER" property="applyStatus" />
     <result column="CANCEL_REASON" jdbcType="VARCHAR" property="cancelReason" />
-    <result column="IS_ENTRUST" jdbcType="INTEGER" property="isEntrust" />
     <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
     <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -94,7 +93,7 @@
     SFZQJWYJ, PASSPORT, PASSPORT_NUM, HONGKONGANDMACAO_PASSPORT, HONGKONGANDMACAO_PASSPORT_NUM, 
     MACAO_VISA, HONGKONG_VISA, TAIWAN_PASSPORT, TAIWAN_PASSPORT_NUM, TAIWAN_VISA, IS_LUOGUAN, 
     IS_SPOUSEANDCHILDREN_SUPERVISE, IS_LEADERS, IS_SPECIALLY_APPROVED, NEGATIVE_INFO, 
-    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON, IS_ENTRUST, 
+    PASSPORT_TERM, FUNDS_SOURCE, IS_COMPARISON, APPLY_STATUS, CANCEL_REASON,
     REMARKS, CREATE_USER, CREATE_TIME, MODIFY_USER, MODIFY_TIME, SORT_ID, leader_batch_id, 
     SCZQJWYJSJ, CLSHSFTG, JDCJL, JWJL, ZZJL,clshsftg_opinion
   </sql>

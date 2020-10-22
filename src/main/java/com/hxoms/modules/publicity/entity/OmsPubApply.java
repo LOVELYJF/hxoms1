@@ -282,13 +282,9 @@ public class OmsPubApply {
     @ApiModelProperty(value="数据来源（0：填写，1：下达）")
     private String source;
 
-    @ColumnAnnotation(FieldName = "IS_ENTRUST",   FieldDescription="是否需要委托书（0-否，1-是）")
-    @ApiModelProperty(value="是否需要委托书（0-否，1-是）")
-    private Integer isEntrust;
-
-    @ColumnAnnotation(FieldName = "IS_HXPZWJ",   FieldDescription="是否需要上级领导批准文件（0-否，1-是）")
-    @ApiModelProperty(value="是否需要上级领导批准文件（0-否，1-是）")
-    private Integer isHxpzwj;
+    @ColumnAnnotation(FieldName = "APPROVAL_UNIT",   FieldDescription="审批单位")
+    @ApiModelProperty(value="审批单位")
+    private String approvalUnit;
 
     @ColumnAnnotation(FieldName = "clshsftg_Opinion",   FieldDescription="材料审核审批结论")
     @ApiModelProperty(value="材料审核审批结论")
@@ -790,20 +786,12 @@ public class OmsPubApply {
         this.source = source == null ? null : source.trim();
     }
 
-    public Integer getIsEntrust() {
-        return isEntrust;
+    public String getApprovalUnit() {
+        return approvalUnit;
     }
 
-    public void setIsEntrust(Integer isEntrust) {
-        this.isEntrust = isEntrust;
-    }
-
-    public Integer getIsHxpzwj() {
-        return isHxpzwj;
-    }
-
-    public void setIsHxpzwj(Integer isHxpzwj) {
-        this.isHxpzwj = isHxpzwj;
+    public void setApprovalUnit(String approvalUnit) {
+        this.approvalUnit = approvalUnit;
     }
 
     public String getClshsftgOpinion() {

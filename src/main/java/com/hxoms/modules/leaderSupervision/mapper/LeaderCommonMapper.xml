@@ -495,7 +495,7 @@
 
 
 
-	<select id="selectBusinessFlowWithASNum" parameterType="java.lang.String" resultType="com.hxoms.common.LowerKeyMapTest">
+	<select id="selectBusinessFlowWithASNum" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
 
 		SELECT
 			   CONCAT("第",
