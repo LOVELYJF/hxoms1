@@ -241,6 +241,7 @@ public class OmsSelfestimateItemsServiceImpl implements OmsSelfestimateItemsServ
             B01 b01 = omsCerCancellateApplyMapper.getB0100ByApplyId(applyId);
             omsSelfFileVO.setB0100(b01.getB0100());
             omsSelfFileVO.setB0101(b01.getB0101());
+            b0100 = b01.getB0100();
         }
         //主要领导
         QueryWrapper<OmsSupMajorLeader> wrapper = new QueryWrapper<>();

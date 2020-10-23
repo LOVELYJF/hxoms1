@@ -3,14 +3,9 @@ package com.hxoms.modules.leaderSupervision.controller;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.exception.CustomMessageException;
 import com.hxoms.common.utils.Result;
-import com.hxoms.common.utils.StringUilt;
-import com.hxoms.modules.file.entity.OmsCreateFile;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonDetailMapper;
 import com.hxoms.modules.leaderSupervision.mapper.LeaderCommonMapper;
-import com.hxoms.modules.leaderSupervision.service.LeaderCommonService;
-import com.hxoms.modules.leaderSupervision.service.LeaderDetailProcessingService;
 import com.hxoms.modules.leaderSupervision.service.LeaderOtherStatisticalQueryService;
-import com.hxoms.modules.leaderSupervision.service.VerifyCheckService;
 import com.hxoms.modules.leaderSupervision.service.impl.LeaderEXportExcelService;
 import com.hxoms.modules.leaderSupervision.vo.JiWeiNoPassVo;
 import com.hxoms.modules.leaderSupervision.vo.JiweiStatisticsVo;
@@ -20,8 +15,6 @@ import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -35,22 +28,14 @@ import java.util.*;
 /**
  * @authore:wjf
  * @data 2020/9/3 11:36
- * @Description:  干部监督处 流程 以外的统计查询功能
+ * @Description: 干部监督处 流程 以外的统计查询功能
  ***/
 @RestController
 @RequestMapping("/leaderOtherStatisticalQuery")
 public class LeaderOtherStatisticalQueryController {
 
     @Autowired
-    private LeaderCommonService leaderCommonService;
-    @Autowired
     private LeaderCommonMapper leaderCommonMapper;
-
-    @Autowired
-    private VerifyCheckService verifyCheckService;
-
-    @Autowired
-    private LeaderDetailProcessingService leaderDetailProcessingService;
 
     @Autowired
     private LeaderEXportExcelService leaderEXportExcelService;
@@ -62,53 +47,48 @@ public class LeaderOtherStatisticalQueryController {
 
     // 代办业务管理模块 左边列表
     @GetMapping("/selectLeaderBussinessProcess")
-    public Result selectLeaderBussinessProcess(){
+    public Result selectLeaderBussinessProcess() {
 
         List<Map> businessFlowWithASNum = leaderCommonMapper.selectBusinessFlowWithASNum();
 
-
         return Result.success(businessFlowWithASNum);
-
     }
 
     // 批次列表 横向
     @GetMapping("/selectBatchlist")
-    public Result  selectBatchlist(){
+    public Result selectBatchlist(String name, Date beginDate,
+                                  Date endDate,String acceptUser,
+                                  String masterStatus) {
 
+        List<Map> lists = leaderCommonMapper.selectLeaderBatch(name,beginDate,endDate,acceptUser,masterStatus);
 
-        List<Map>  lists  =  leaderCommonMapper.selectLeaderBatch();
-
-
-       return Result.success(lists);
-
+        return Result.success(lists);
     }
 
     //批次列表 纵向
     @GetMapping("/selectBatchlistShapePortrait")
-    public Result selectBatchlistShapePortrait(){
+    public Result selectBatchlistShapePortrait() {
 
-      Map map =  leaderOtherStatisticalQueryService.selectBatchlistShapePortrait();
+        Map map = leaderOtherStatisticalQueryService.selectBatchlistShapePortrait();
 
-      return Result.success(map);
+        return Result.success(map);
     }
 
-
     /**
-     *登记备案导出
-     *
-     * **/
+     * 登记备案导出
+     **/
 
     @PostMapping("/exportRfInfo")
-    public void exportRfInfo(HttpServletResponse response,@RequestBody String idStr) throws IOException {
+    public void exportRfInfo(HttpServletResponse response, @RequestBody String idStr) throws IOException {
         try {
-            if("null".equals(idStr))
-                idStr=null;
+            if ("null".equals(idStr))
+                idStr = null;
             HSSFWorkbook wb = leaderEXportExcelService.exportRfInfo(idStr);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("登记备案信息"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("登记备案信息" + date + ".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
@@ -117,8 +97,8 @@ public class LeaderOtherStatisticalQueryController {
             e.printStackTrace();
             response.setStatus(500);
             ServletOutputStream out = response.getOutputStream();
-            OutputStreamWriter ow=new OutputStreamWriter(out,"UTF-8");
-            String msg="导出失败，原因："+e.getMessage();
+            OutputStreamWriter ow = new OutputStreamWriter(out, "UTF-8");
+            String msg = "导出失败，原因：" + e.getMessage();
             ow.write(msg);
             ow.flush();
             ow.close();
@@ -127,73 +107,82 @@ public class LeaderOtherStatisticalQueryController {
         }
     }
 
-
-    /** 查询因私出国境申请管理**/
+    /**
+     * 查询因私出国境申请管理
+     **/
 
     @GetMapping("/selectAllOmsPriApplyManange")
-    public Result selectAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam){
+    public Result selectAllOmsPriApplyManange(OmsPriApplyIPageParam omsPriApplyIPageParam) {
 
-      PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPriApplyManange(omsPriApplyIPageParam);
-
+        PageInfo pageInfo = leaderOtherStatisticalQueryService.selectAllOmsPriApplyManange(omsPriApplyIPageParam);
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
-    /**因私出国境申请管理 导出 **/
+    /**
+     * 因私出国境申请管理 导出
+     **/
 
     @PostMapping("/exportAllOmsPriApplyManange")
-    public void exportAllOmsPriApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
+    public void exportAllOmsPriApplyManange(HttpServletResponse response, OmsPriApplyIPageParam omsPriApplyIPageParam) {
         try {
             HSSFWorkbook wb = leaderEXportExcelService.exportAllOmsPriApplyManange(omsPriApplyIPageParam);
             String date = new SimpleDateFormat("yyyy-MM-dd")
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理" + date + ".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+            throw new CustomMessageException("导出失败，原因：" + e.getMessage());
         }
     }
 
-    /** 因公出国境申请管理 ***/
+    /**
+     * 因公出国境申请管理
+     ***/
     @GetMapping("/selectAllOmsPubApplyManange")
-    public Result selectAllOmsPubApplyManange(OmsPubApplyQueryParam omsPubApplyQueryParam){
+    public Result selectAllOmsPubApplyManange(OmsPubApplyQueryParam omsPubApplyQueryParam) {
 
-        PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPubApplyManange(omsPubApplyQueryParam);
+        PageInfo pageInfo = leaderOtherStatisticalQueryService.selectAllOmsPubApplyManange(omsPubApplyQueryParam);
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
-    /** 因公出国境申请管理 终止备案功能 **/
+    /**
+     * 因公出国境申请管理 终止备案功能
+     **/
     @PostMapping("/terminationPutOnRecords")
-    public Result terminationPutOnRecords(@RequestBody LeaderSupervisionVo leaderSupervisionVo){
-
+    public Result terminationPutOnRecords(@RequestBody LeaderSupervisionVo leaderSupervisionVo) {
 
         leaderOtherStatisticalQueryService.terminationPutOnRecords(leaderSupervisionVo);
 
         return Result.success();
     }
 
-    /** 延期出国境(申请)管理 **/
+    /**
+     * 延期出国境(申请)管理
+     **/
 
     @GetMapping("/selectOmsDelayApplyIPage")
-    public Result selectAllOmsPriDelayApplyManage(OmsPriApplyIPageParam omsPriApplyIPageParam){
+    public Result selectAllOmsPriDelayApplyManage(OmsPriApplyIPageParam omsPriApplyIPageParam) {
 
-        PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectAllOmsPriDelayApplyManage(omsPriApplyIPageParam);
+        PageInfo pageInfo = leaderOtherStatisticalQueryService.selectAllOmsPriDelayApplyManage(omsPriApplyIPageParam);
 
         return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
 
     }
 
-    /** 延期出国境(申请)管理 导出 **/
+    /**
+     * 延期出国境(申请)管理 导出
+     **/
 
     @PostMapping("/exportAllOmsPriDelayApplyManange")
-    public void exportAllOmsPriDelayApplyManange(HttpServletResponse response,OmsPriApplyIPageParam omsPriApplyIPageParam){
+    public void exportAllOmsPriDelayApplyManange(HttpServletResponse response, OmsPriApplyIPageParam omsPriApplyIPageParam) {
 
         try {
             HSSFWorkbook wb = leaderEXportExcelService.exportAllOmsPriDelayApplyManange(omsPriApplyIPageParam);
@@ -201,49 +190,52 @@ public class LeaderOtherStatisticalQueryController {
                     .format(new Date());
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/vnd.ms-excel");
-            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理"+date+".xls", "utf-8")));
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", URLEncoder.encode("因公出国境管理" + date + ".xls", "utf-8")));
             ServletOutputStream out = response.getOutputStream();
             wb.write(out);
             out.flush();
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new CustomMessageException("导出失败，原因："+e.getMessage());
+            throw new CustomMessageException("导出失败，原因：" + e.getMessage());
         }
 
     }
 
-    /** 征求纪委意见 统计查询**/
+    /**
+     * 征求纪委意见 统计查询
+     **/
     @GetMapping("/jiweiOpionStatisticsQuery")
-    public Result jiweiOpionStatisticsQuery(JiweiStatisticsVo JiweiStatisticsVo){
+    public Result jiweiOpionStatisticsQuery(JiweiStatisticsVo JiweiStatisticsVo) {
 
-      List<Map> lists =    leaderCommonMapper.selectjieweiOpinionCase(JiweiStatisticsVo);
+        List<Map> lists = leaderCommonMapper.selectjieweiOpinionCase(JiweiStatisticsVo);
 
         return Result.success(lists);
     }
 
 
-    /**征求纪委意见 明细查询 **/
+    /**
+     * 征求纪委意见 明细查询
+     **/
     @GetMapping("/jiweiOpionDetailStatisticsQuery")
-    public Result jiweiOpionDetailStatisticsQuery(JiweiStatisticsVo jiweiStatisticsVo){
+    public Result jiweiOpionDetailStatisticsQuery(JiweiStatisticsVo jiweiStatisticsVo) {
 
 //         Thread t = new Thread();
-      PageInfo pageInfo =  leaderOtherStatisticalQueryService.selectjieweiOpinionDetail(jiweiStatisticsVo);
+        PageInfo pageInfo = leaderOtherStatisticalQueryService.selectjieweiOpinionDetail(jiweiStatisticsVo);
 
-        return  Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
+        return Result.success(pageInfo.getList()).setTotal(pageInfo.getTotal());
     }
 
 
-    /** 纪委意见查看不通过记录 **/
+    /**
+     * 纪委意见查看不通过记录
+     **/
     @GetMapping("/jiweiCheckNotPass")
-    public Result jiweiCheckNotPass(String applyId){
+    public Result jiweiCheckNotPass(String applyId) {
 
-      List<JiWeiNoPassVo> lists =  leaderCommonDetailMapper.selectItemsList(applyId);
+        List<JiWeiNoPassVo> lists = leaderCommonDetailMapper.selectItemsList(applyId);
 
         return Result.success(lists);
     }
-
-
-
 
 }

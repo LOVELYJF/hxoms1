@@ -7,6 +7,7 @@ import com.hxoms.modules.privateabroad.entity.paramentity.OmsPriApplyIPageParam;
 import com.hxoms.modules.publicity.entity.OmsPubApplyQueryParam;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,9 @@ public interface LeaderCommonMapper {
 
    /** 查询批次 **/
 
-   List<Map> selectLeaderBatch();
+   List<Map> selectLeaderBatch(@Param(value = "name") String name, @Param(value = "beginDate") Date beginDate,
+                               @Param(value = "endDate") Date endDate,@Param(value = "acceptUser") String acceptUser,
+                               @Param(value = "masterStatus") String masterStatus);
    /** 征求纪委 意见 查询页面 **/
    List<Map> selectJiweiApply(@Param("bussinessIds")Object[] bussinessIds,@Param("clshsftg") String clshsftg );
 

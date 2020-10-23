@@ -53,6 +53,7 @@
       m.finish_time,
       m.msg_status,
       m.is_top,
+      m.create_time,
       mt.name as typeName
     from
       m_message m
@@ -63,6 +64,9 @@
         mu.receive_user_id = #{userId,jdbcType=VARCHAR}
     <if test="msgStatus == 0">
       and (mu.isreaded=0 or (m.feather = '1' and msg_status=0))
+    </if>
+    <if test="msgStatus == 1">
+      and (mu.isreaded=1 or (m.feather = '1' and msg_status=1))
     </if>
       /*消息分类*/
       <if test="typeId != null and typeId != ''">

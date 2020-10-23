@@ -600,4 +600,23 @@
         </if>
           order by b.sortid,c.orderindex
     </select>
+
+    <!--查询重点管理人员-->
+    <select id="selectImportantManagePerson" resultMap="BaseResultMap">
+        SELECT *
+        FROM oms_reg_procpersoninfo
+        WHERE NF= '1'
+           or REPLYOPINION = '1'
+           or A0100 in (select A0100
+                        from oms_sup_case_info
+                        where DISCIPLINARY_ACTION = '0')
+           or A0100 in (select A0100
+                        from oms_sup_disciplinary
+                        where DISCIPLINARY_END_TIME &gt;= now())
+           or A0100 in (SELECT A0100
+                        from oms_sup_violation_discipline
+                        where VIOLATION_END_TIME &gt;= now())
+           or A0100 in (select A0100
+                        from oms_sup_dismissed)
+    </select>
 </mapper>
