@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxoms.modules.roadPage.mapper.HomePageMapper">
+
+    <!--已出国-->
+    <select id="selectCountGoAbroad" resultType="java.lang.Integer">
+        SELECT count( 0 )
+        FROM oms_pri_apply
+        WHERE
+        ( APPLY_STATUS IN ( 28, 30 ) AND RETURN_TIME &gt;= now( ) and ABROAD_TIME &lt; now())
+        OR
+        (
+          APPLY_STATUS IN ( 28, 30 )
+          AND RETURN_TIME &lt; now( )
+          AND
+          (
+            SELECT count( 0 )
+            FROM oms_pri_delay_apply
+            WHERE APPLY_STATUS IN ( 28, 30 )
+              AND APPLY_ID = oms_pri_apply.id
+              AND ESTIMATE_RETURNTIME &lt;= now( )
+          ) &gt; 0
+        )
+        AND ( IS_ABROAD IS NOT NULL AND IS_ABROAD != '' )
+    </select>
+    <!--已超期-->
+    <select id="selectCountTimeOut" resultType="java.lang.Integer">
+        SELECT count(0)
+        from oms_pri_apply
+        where APPLY_STATUS in (28,30)
+        AND RETURN_TIME &lt; now()
+        AND ( IS_ABROAD IS NOT NULL AND IS_ABROAD != '' )
+        AND
+        (
+          SELECT count(0)
+          from oms_pri_delay_apply
+          where APPLY_ID = oms_pri_apply.id
+             and ESTIMATE_RETURNTIME &gt;= now()
+        ) = 0
+    </select>
+    <!--已回国未归还证照-->
+    <select id="selectCountNoGiveBack" resultType="java.lang.Integer">
+        SELECT count( 0 )
+        FROM oms_pri_apply
+        WHERE APPLY_STATUS IN ( 28, 30 )
+        AND REVERT_LICENCE_TIME &lt; now( )
+        AND
+        (
+          SELECT count( 0 ) FROM oms_pri_delay_apply
+          WHERE APPLY_ID = oms_pri_apply.id AND ESTIMATE_RETURNTIME &gt;= now( )
+        ) = 0
+        AND
+        (
+          SELECT count( 0 ) FROM cf_certificate
+          WHERE OMS_ID = oms_pri_apply.PROCPERSON_ID AND SAVE_STATUS = 1
+            AND ID NOT IN
+            (
+              SELECT CER_ID FROM
+                (
+                   SELECT CER_ID, DATA_SOURCE FROM oms_cer_get_task WHERE ZJLX = '4' ORDER BY GET_TIME DESC LIMIT 1
+                ) a
+              WHERE a.DATA_SOURCE = '0'
+            )
+            AND SAVE_STATUS = '1'
+        )  &gt; 0
+    </select>
+
+
+    <!--已出国列表-->
+    <select id="selectGoAbroadList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        WHERE
+            ( pa.APPLY_STATUS IN ( 28, 30 ) AND pa.RETURN_TIME &gt;= now( ) and pa.ABROAD_TIME &lt; now())
+           OR
+                (
+                        pa.APPLY_STATUS IN ( 28, 30 )
+                        AND pa.RETURN_TIME &lt; now( )
+                        AND
+                        (
+                            SELECT count( 0 )
+                            FROM oms_pri_delay_apply
+                            WHERE APPLY_STATUS IN ( 28, 30 )
+                              AND APPLY_ID = pa.id
+                              AND ESTIMATE_RETURNTIME &lt;= now( )
+                        ) &gt; 0
+                    )
+                AND ( pa.IS_ABROAD IS NOT NULL AND pa.IS_ABROAD != '' )
+    </select>
+    <!--已超期列表-->
+    <select id="selectTimeOutList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        where pa.APPLY_STATUS in (28,30)
+          AND pa.RETURN_TIME &lt; now()
+          AND ( pa.IS_ABROAD IS NOT NULL AND pa.IS_ABROAD != '' )
+          AND
+                (
+                    SELECT count(0)
+                    from oms_pri_delay_apply
+                    where APPLY_ID = pa.id
+                      and ESTIMATE_RETURNTIME >= now()
+                ) = 0
+    </select>
+    <!--已回国未归还证照列表-->
+    <select id="selectNoGiveBackList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        WHERE pa.APPLY_STATUS IN ( 28, 30 )
+          AND pa.REVERT_LICENCE_TIME &lt; now( )
+          AND
+                (
+                    SELECT count( 0 ) FROM oms_pri_delay_apply
+                    WHERE APPLY_ID = pa.id AND ESTIMATE_RETURNTIME &gt;= now( )
+                ) = 0
+          AND
+                (
+                    SELECT count( 0 ) FROM cf_certificate
+                    WHERE OMS_ID = pa.PROCPERSON_ID AND SAVE_STATUS = 1
+                      AND ID NOT IN
+                          (
+                              SELECT CER_ID FROM
+                                  (
+                                      SELECT CER_ID, DATA_SOURCE FROM oms_cer_get_task WHERE ZJLX = '4' ORDER BY GET_TIME DESC LIMIT 1
+                                  ) a
+                              WHERE a.DATA_SOURCE = '0'
+                          )
+                      AND SAVE_STATUS = '1'
+                )  &gt; 0
+    </select>
+    <!--征求意见概况-->
+    <select id="selectSeekAdviceCount" resultType="java.util.Map">
+        select sum(wait) as wait,sum(already) as already
+        from
+            (
+                SELECT count(case when APPLY_STATUS in (21,22) then 1 else null end) as wait, count(case when APPLY_STATUS in (23,24,25,26,27) then 1 else null end) as already
+                from oms_pri_apply
+                union all
+                SELECT count(case when SQZT in (21,22) then 1 else null end) as wait, count(case when SQZT in (23,24,25,26,27) then 1 else null end) as already
+                from oms_pub_apply
+            ) a
+    </select>
+
+    <!--征求意见概况详情-->
+    <select id="selectSeekAdviceDestail" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.ABROAD_TIME as abroadTime,pa.RETURN_TIME as returnTime,pa.NEGATIVE_INFO as negativeInfo,
+        (SELECT item_name FROM sys_dict_item WHERE dict_code='YSCGLY' and  item_code = pa.ABROAD_REASONS) as abroadReasons,
+               pa.APPLY_STATUS as applyStatus,
+              (select GROUP_CONCAT(NAME_ZH) from country where id in (pa.GO_COUNTRY)) as goCountry,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        where 1=1
+        <if test="type != null and type == 1">
+            and APPLY_STATUS in (21,22)
+        </if>
+        <if test="type != null and type == 2">
+            and APPLY_STATUS in (23,24,25,26,27)
+        </if>
+        union all
+        SELECT pa.CGSJ as abroadTime,pa.HGSJ as returnTime,pa.FMXX as negativeInfo,
+        pa.CFSY as abroadReason,pa.SQZT as applyStatus,
+        pa.SDGJ as goCountry,
+        CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+        rp.SEX as sex,
+        rp.BIRTH_DATE_GB as birthDate,
+        rp.WORK_UNIT as b0101,
+        rp.IDENTITY as identifyType
+        from oms_pub_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        where 1=1
+        <if test="type != null and type == 1">
+            and SQZT in (21,22)
+        </if>
+        <if test="type != null and type == 2">
+            and SQZT in (23,24,25,26,27)
+        </if>
+    </select>
+    <!--超出回国时间10天内，未申请延期-->
+    <select id="selectPoliceCountDelay" resultType="java.lang.Integer">
+        SELECT count(0)
+        from oms_pri_apply
+        where APPLY_STATUS in (28,30)
+          AND RETURN_TIME &lt; date_add(now(), interval 10 day)
+          AND RETURN_TIME &gt; now()
+          AND ( IS_ABROAD IS NOT NULL AND IS_ABROAD != '' )
+          AND
+                (
+                    SELECT count(0)
+                    from oms_pri_delay_apply
+                    where APPLY_ID = oms_pri_apply.id
+                      and ESTIMATE_RETURNTIME &gt;= now()
+                ) = 0
+    </select>
+    <!--超出回国日期10天内，未归还证照-->
+    <select id="selectPoliceCountReturnCadre" resultType="java.lang.Integer">
+        SELECT count( 0 )
+        FROM oms_pri_apply
+        WHERE APPLY_STATUS IN ( 28, 30 )
+          AND RETURN_TIME &lt; date_add(now(), interval 10 day)
+          AND RETURN_TIME &gt; now()
+          AND REVERT_LICENCE_TIME &lt; now( )
+          AND
+                (
+                    SELECT count( 0 ) FROM oms_pri_delay_apply
+                    WHERE APPLY_ID = oms_pri_apply.id AND ESTIMATE_RETURNTIME &gt;= now( )
+                ) = 0
+          AND
+                (
+                    SELECT count( 0 ) FROM cf_certificate
+                    WHERE OMS_ID = oms_pri_apply.PROCPERSON_ID AND SAVE_STATUS = 1
+                      AND ID NOT IN
+                          (
+                              SELECT CER_ID FROM
+                                  (
+                                      SELECT CER_ID, DATA_SOURCE FROM oms_cer_get_task WHERE ZJLX = '4' ORDER BY GET_TIME DESC LIMIT 1
+                                  ) a
+                              WHERE a.DATA_SOURCE = '0'
+                          )
+                      AND SAVE_STATUS = '1'
+                )  &gt; 0
+    </select>
+
+    <!--实际目的地与申请审批目的地不一致-->
+    <select id="selectPoliceDifferentCountry" statementType="CALLABLE" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        {call selectPoliceDifferentCountry()}
+    </select>
+
+    <!--核心涉密人员出国人数-->
+    <select id="selectCountCorePerson" resultType="java.lang.Integer">
+        select COUNT(0) from oms_pri_apply where CLASSIFICATION_LEVEL='3'
+    </select>
+
+    <!--超出回国时间10天内，未申请延期详情-->
+    <select id="selectPoliceDelayList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        where pa.APPLY_STATUS in (28,30)
+          AND pa.RETURN_TIME &lt; date_add(now(), interval 10 day)
+          AND pa.RETURN_TIME &gt; now()
+          AND ( pa.IS_ABROAD IS NOT NULL AND pa.IS_ABROAD != '' )
+          AND
+                (
+                    SELECT count(0)
+                    from oms_pri_delay_apply
+                    where APPLY_ID = pa.id
+                      and ESTIMATE_RETURNTIME &gt;= now()
+                ) = 0
+    </select>
+    <!--超出回国日期10天内，未归还证照-->
+    <select id="selectPoliceReturnCadreList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        SELECT pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        WHERE pa.APPLY_STATUS IN ( 28, 30 )
+          AND pa.RETURN_TIME &lt; date_add(now(), interval 10 day)
+          AND pa.RETURN_TIME &gt; now()
+          AND pa.REVERT_LICENCE_TIME &lt; now( )
+          AND
+                (
+                    SELECT count( 0 ) FROM oms_pri_delay_apply
+                    WHERE APPLY_ID = pa.id AND ESTIMATE_RETURNTIME &gt;= now( )
+                ) = 0
+          AND
+                (
+                    SELECT count( 0 ) FROM cf_certificate
+                    WHERE OMS_ID = pa.PROCPERSON_ID AND SAVE_STATUS = 1
+                      AND ID NOT IN
+                          (
+                              SELECT CER_ID FROM
+                                  (
+                                      SELECT CER_ID, DATA_SOURCE FROM oms_cer_get_task WHERE ZJLX = '4' ORDER BY GET_TIME DESC LIMIT 1
+                                  ) a
+                              WHERE a.DATA_SOURCE = '0'
+                          )
+                      AND SAVE_STATUS = '1'
+                )  &gt; 0
+    </select>
+    <!--核心涉密人员出国人数-->
+    <select id="selectCorePersonList" resultType="com.hxoms.modules.privateabroad.entity.OmsPriApplyVO">
+        select pa.*,
+               CONCAT(IFNULL(rp.SURNAME,''),IFNULL(rp.NAME,'')) as name,
+               rp.SEX as sex,
+               rp.BIRTH_DATE_GB as birthDate,
+               rp.WORK_UNIT as b0101,
+               rp.IDENTITY as identifyType
+        from oms_pri_apply pa
+        LEFT JOIN oms_reg_procpersoninfo rp on pa.PROCPERSON_ID = rp.ID
+        where pa.CLASSIFICATION_LEVEL='3'
+    </select>
+
+    <!--证照1到入境时间2超期统计-->
+    <select id="selectCertificateLendCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(0) from
+        cf_certificate a
+        LEFT JOIN oms_cer_get_task b on a.ID=b.CER_ID
+        LEFT JOIN oms_pri_apply c on b.BUSI_ID=c.ID
+        where a.SAVE_STATUS='1' and b.DATA_SOURCE=0 and c.RETURN_TIME &lt; NOW()
+        <if test="type!=null and type='1'">
+            and REVERT_LICENCE_TIME &gt; NOW()
+        </if>
+        <if test="type!=null and type='2'">
+            and REVERT_LICENCE_TIME &lt; NOW()
+        </if>
+    </select>
+    <!--证照1到入境时间2超期统计-->
+    <select id="selectCertificateLendList" parameterType="java.lang.String" resultType="com.hxoms.modules.passportCard.initialise.entity.CfCertificate">
+        select a.* from
+        cf_certificate a
+        LEFT JOIN oms_cer_get_task b on a.ID=b.CER_ID
+        LEFT JOIN oms_pri_apply c on b.BUSI_ID=c.ID
+        where a.SAVE_STATUS='1' and b.DATA_SOURCE=0 and c.RETURN_TIME &lt; NOW()
+        <if test="type!=null and type==1">
+            and REVERT_LICENCE_TIME &gt; NOW()
+        </if>
+        <if test="type!=null and type==2">
+            and REVERT_LICENCE_TIME &lt; NOW()
+        </if>
+    </select>
+</mapper>

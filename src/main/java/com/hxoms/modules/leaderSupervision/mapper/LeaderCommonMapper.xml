@@ -498,18 +498,18 @@
 	<select id="selectBusinessFlowWithASNum" parameterType="java.lang.String" resultType="java.util.LinkedHashMap">
 
 		SELECT
-			   CONCAT("第",
-					  case num
-						  when 1 then '一'
-						  when 2 then '二'
-						  when 3 then '三'
-						  when 4 then '四'
-						  when 5 then '五'
-						  when 6 then '六'
-						  when 7 then '七'
-						  when 8 then '八'
+			   CONCAT('第',
+					  case
+						  when num=1 then '一'
+						  when num=2 then '二'
+						  when num=3 then '三'
+						  when num=4 then '四'
+						  when num=5 then '五'
+						  when num=6 then '六'
+						  when num=7 then '七'
+						  when num=8 then '八'
 						  else '' end,
-					  '步.',statusName,' (',nums,')'
+					  '步.',statusName,' (',cast(nums as char),')'
 					   )  as context
 		from(
 

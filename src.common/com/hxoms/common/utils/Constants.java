@@ -532,4 +532,61 @@ public class Constants {
             return  null;
         }
     }
+
+    /**
+     * 涉密等级
+     **/
+    public enum emSecretLevel{
+        非涉密("非涉密",0),
+        一般("一般",1),
+        重要("重要",2),
+        核心("核心",3);
+
+        private emSecretLevel(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+        private String name;
+        private int index;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getIndex() {
+            return index;
+        }
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
+
+    /**
+     * 证件类型
+     **/
+    public enum emCertificate{
+        护照("护照",1),
+        港澳通行证("港澳通行证",2),
+        台湾通行证("台湾通行证",4);
+
+        private emCertificate(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+        private String name;
+        private int index;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getIndex() {
+            return index;
+        }
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
 }
