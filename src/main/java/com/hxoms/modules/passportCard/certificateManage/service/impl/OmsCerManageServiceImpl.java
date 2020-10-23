@@ -11,6 +11,7 @@ import com.hxoms.modules.omsregcadre.mapper.OmsRegProcpersoninfoMapper;
 import com.hxoms.modules.passportCard.certificateCollect.entity.CfCertificateCollection;
 import com.hxoms.modules.passportCard.certificateCollect.entity.enums.CjStatusEnum;
 import com.hxoms.modules.passportCard.certificateCollect.mapper.CfCertificateCollectionMapper;
+import com.hxoms.modules.passportCard.certificateCollect.service.CfCertificateCollectionService;
 import com.hxoms.modules.passportCard.certificateManage.entity.parameterEntity.*;
 import com.hxoms.modules.passportCard.certificateManage.mapper.OmsCerManageMapper;
 import com.hxoms.modules.passportCard.certificateManage.service.OmsCerManageService;
@@ -48,6 +49,9 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
 
     @Autowired
     private CfCertificateCollectionMapper cfCertificateCollectionMapper;
+
+    @Autowired
+    private CfCertificateCollectionService cfCertificateCollectionService;
 
     /**
      * @Desc: 证照管理-证照信息管理-导出
@@ -103,30 +107,39 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
         UserInfo userInfo = UserInfoUtil.getUserInfo();
         if(userInfo==null)
             throw new CustomMessageException("查询登陆用户信息失败，请核实！");
-        String exist=omsCerManageMapper.selectIsExist(readCerInfo.getZjlx(),readCerInfo.getZjhm());
-        if(exist!=null)
-            throw new CustomMessageException("系统已存在此证照，不能执行新增操作！");
+        CerAndPerson cerAndPerson=new CerAndPerson();
+        CfCertificate cfCertificateExist=omsCerManageMapper.selectIsExist(readCerInfo.getZjlx(),readCerInfo.getZjhm());
         CfCertificate cfCertificate=new CfCertificate();
         BeanUtils.copyProperties(readCerInfo,cfCertificate);
+        //获取备案人员信息
+        List<RegProcpersoninfo> regProcpersoninfoList=omsCerManageMapper.selectRegPerson(cfCertificate.getName(),cfCertificate.getCsrq());
+        if(cfCertificateExist!=null){
+            if(SaveStatusEnum.WSQ.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
+                throw new CustomMessageException("证件为待验证状态，不能操作新增，请执行验证处理！");
+            }else if(SaveStatusEnum.YQC.getCode().equals(cfCertificateExist.getSaveStatus())&&CardStatusEnum.DYZ.getCode().equals(cfCertificateExist.getCardStatus())){
+                throw new CustomMessageException("证件已新增，不能重复操作，请核实！");
+            }else{
+                throw new CustomMessageException("证件当前状态，不能操作此业务，请核实！");
+            }
+        }
         //根据登陆用户设置保管单位
         //0:干部监督处,1:省委统战部(台办)
         cfCertificate.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
         readCerInfo.setSurelyUnit(cfCertificate.getSurelyUnit());
-        //获取备案人员信息
-        List<RegProcpersoninfo> regProcpersoninfoList=omsCerManageMapper.selectRegPerson(cfCertificate.getName(),cfCertificate.getCsrq());
         if(regProcpersoninfoList.size()==1){
             RegProcpersoninfo regProcpersoninfo = regProcpersoninfoList.get(0);
             OmsRegProcpersoninfo omsRegProcpersoninfo=new OmsRegProcpersoninfo();
             omsRegProcpersoninfo.setId(regProcpersoninfo.getId());
             omsRegProcpersoninfo.setLicenceIdentity(regProcpersoninfo.getLicenceIdentity());
-
             cfCertificate.setOmsId(regProcpersoninfo.getId());
             cfCertificate.setA0100(regProcpersoninfo.getA0100());
             cfCertificate.setA0184(regProcpersoninfo.getIdnumberGb());
             //处理新证照
-            dealNewCer(userInfo, cfCertificate, omsRegProcpersoninfo);
+            dealNewCer(userInfo.getId(), cfCertificate, omsRegProcpersoninfo);
+            cerAndPerson.setMessage("证件新增成功，请及时导入出入境数据验证！");
+        }else{
+            cerAndPerson.setMessage("请关联干部并点击保存，做新增处理！");
         }
-        CerAndPerson cerAndPerson=new CerAndPerson();
         cerAndPerson.setReadCerInfo(readCerInfo);
         cerAndPerson.setRegProcpersoninfoList(regProcpersoninfoList);
         return cerAndPerson;
@@ -150,19 +163,21 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
         //根据登陆用户设置保管单位
         //0:干部监督处,1:省委统战部(台办)
         cfCertificate.setSurelyUnit(cfCertificateMapper.selectUserType(userInfo.getId()));
-
-        dealNewCer(userInfo,cfCertificate,regProcpersoninfo);
+        CfCertificate cfCertificateExist=omsCerManageMapper.selectIsExist(cerInfoSave.getZjlx(),cerInfoSave.getZjhm());
+        if(cfCertificateExist!=null)
+            throw new CustomMessageException("证件已新增，不能重复操作，请核实！");
+        dealNewCer(userInfo.getId(),cfCertificate,regProcpersoninfo);
     }
 
     /**
      * @Desc: 对新录入证件处理，1、保存  2、解除催缴任务
      * @Author: wangyunquan
-     * @Param: [userInfo, cfCertificate, omsRegProcpersoninfo]
+     * @Param: [userId, cfCertificate, omsRegProcpersoninfo]
      * @Return: void
      * @Date: 2020/9/9
      */
     @Transactional(rollbackFor = Exception.class)
-    public void dealNewCer(UserInfo userInfo, CfCertificate cfCertificate, OmsRegProcpersoninfo omsRegProcpersoninfo) {
+    public void dealNewCer(String userId, CfCertificate cfCertificate, OmsRegProcpersoninfo omsRegProcpersoninfo) {
         try {
             cfCertificate.setId(UUIDGenerator.getPrimaryKey());
             cfCertificate.setPy(PingYinUtil.getFirstSpell(cfCertificate.getName()));
@@ -170,35 +185,11 @@ public class OmsCerManageServiceImpl implements OmsCerManageService {
             cfCertificate.setSaveStatus(SaveStatusEnum.YQC.getCode());
             //待验证
             cfCertificate.setCardStatus(CardStatusEnum.DYZ.getCode());
-            cfCertificate.setUpdater(userInfo.getId());
+            cfCertificate.setUpdater(userId);
             cfCertificate.setUpdateTime(new Date());
             if(cfCertificateMapper.insert(cfCertificate)==0)
                 throw new CustomMessageException("保存失败！");
-            //取消催缴任务,查询证件是否存在催缴，不存在则按人员解除催缴证件类型和证件号码为空的催缴任务
-            List<CfCertificateCollection> cfCertificateCollectionList = cfCertificateMapper.selectCjTask(omsRegProcpersoninfo.getId());
-            boolean isExist=false;
-            Date date=new Date();
-            CfCertificateCollection cfCerCollection=null;
-            for (CfCertificateCollection cfCertificateCollection : cfCertificateCollectionList) {
-                if(cfCertificate.getZjlx().equals(cfCertificateCollection.getZjlx())&&cfCertificate.getZjhm().equals(cfCertificateCollection.getZjhm())){
-                    //按证件解除催缴
-                    //0:手动解除,1;已上缴,2:未上缴,3:自动解除
-                    cfCertificateCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
-                    cfCertificateCollection.setUpdator(userInfo.getId());
-                    cfCertificateCollection.setUpdatetime(date);
-                    cfCertificateCollectionMapper.updateById(cfCertificateCollection);
-                    isExist=true;
-                }
-                if(cfCertificateCollection.getZjlx()==null&& StringUtils.isBlank(cfCertificateCollection.getZjhm()))
-                    cfCerCollection=cfCertificateCollection;
-            }
-            //按人员解除催缴证件类型和证件号码为空的催缴任务
-            if(!isExist&&cfCerCollection!=null){
-                cfCerCollection.setCjStatus(CjStatusEnum.YSJ.getCode());
-                cfCerCollection.setUpdator(userInfo.getId());
-                cfCerCollection.setUpdatetime(date);
-                cfCertificateCollectionMapper.updateById(cfCerCollection);
-            }
+            cfCertificateCollectionService.removeCj(omsRegProcpersoninfo.getId(),cfCertificate.getZjlx(),cfCertificate.getZjhm(),userId);
         } catch (Exception e) {
             e.printStackTrace();
             throw new CustomMessageException(e.getMessage());

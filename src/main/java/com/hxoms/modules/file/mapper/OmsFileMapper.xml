@@ -40,15 +40,6 @@
 	<sql id="Blob_Column_List">
     FRONT_CONTENT, BANK_CONTENT
   </sql>
-	<!--签字盖章列表-->
-	<select id="selectSealHandleList" parameterType="java.util.Map" resultMap="ResultMapVO">
-		select
-		<include refid="Base_Column_List" />,
-		(select count(0) from oms_sealhandle_records where FILE_ID = ofe.ID and APPLY_ID = #{applyId}) as isHandle,
-		(select IS_ENTRUST from oms_pri_apply where id = #{applyId} ) as isEntrust
-		from oms_file ofe
-		where B0100 = #{b0100} and TABLE_CODE = #{tableCode}
-	</select>
 
 	<!--关键词替换数据查询-->
 	<select id="handleSql" resultType="com.hxoms.modules.file.entity.FileReplaceVO">

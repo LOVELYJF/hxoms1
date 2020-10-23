@@ -13,6 +13,7 @@ import com.hxoms.modules.passportCard.exitEntryManage.entity.OmsCerExitEntryRepe
 import com.hxoms.modules.passportCard.exitEntryManage.entity.enums.InOutStatus;
 import com.hxoms.modules.passportCard.exitEntryManage.mapper.OmsCerExitEntryRepertoryMapper;
 import com.hxoms.modules.passportCard.initialise.entity.CfCertificate;
+import com.hxoms.modules.passportCard.initialise.entity.OmsCerExitEntryImportManage;
 import com.hxoms.modules.passportCard.initialise.entity.enums.CardStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SaveStatusEnum;
 import com.hxoms.modules.passportCard.initialise.entity.enums.SurelyWayEnum;
@@ -602,13 +603,18 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 	 * @Date: 2020/8/20 14:38
 	 */
 	public Map<String,Object> GetCerInventoryResult(String list,OmsCerInventory omsCerInventory) {
+		List<String> cabinetList = new ArrayList<>();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("list", list);
+		if (StringUtils.isBlank(list)){
+			cabinetList = this.getCerLicenseMachine();
+		} else {
+			cabinetList.add(list);
+		}
 		map.put("sameStatus", "1");
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
-		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
+		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(cabinetList, map);
 
 		//统计盘点数量
 		Integer beforeNormal = 0;
@@ -617,7 +623,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		Integer afterTakeOut = 0;
 
 		map.put("sameStatus", null);
-		List<Map<String,Object>> resultList1 = omsCerInventoryMapper.GetCerInventoryResult(map);
+		List<Map<String,Object>> resultList1 = omsCerInventoryMapper.GetCerInventoryResult(cabinetList,map);
 
 		for(Map<String,Object> map1 : resultList1){
 			if(map1.get("beforeInventorySaveStatus").toString().equals(SaveStatusEnum.ZCBG.getCode())){
@@ -654,12 +660,17 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 	 * @Date: 2020/8/20 14:38
 	 */
 	public void getCerInventoryResultOut(String list, OmsCerInventory omsCerInventory, HttpServletResponse response) {
+		List<String> cabinetList = new ArrayList<>();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("list", list);
+		if (StringUtils.isBlank(list)){
+			cabinetList = this.getCerLicenseMachine();
+		} else {
+			cabinetList.add(list);
+		}
 		map.put("inventoryDate", omsCerInventory.getInventoryDate());
 		map.put("counterStartQuery", omsCerInventory.getCounterStartQuery());
 		map.put("counterEndQuery", omsCerInventory.getCounterEndQuery());
-		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(map);
+		List<Map<String,Object>> resultList = omsCerInventoryMapper.GetCerInventoryResult(cabinetList,map);
 
 
 		if(resultList.size() < 1 || resultList == null){
@@ -825,6 +836,7 @@ public class OmsCerInventoryServiceImpl extends ServiceImpl<OmsCerInventoryMappe
 		OmsCerExitEntryRepertory omsCerExitEntryRepertory = new OmsCerExitEntryRepertory();
 		omsCerExitEntryRepertory.setId(UUIDGenerator.getPrimaryKey());
 		omsCerExitEntryRepertory.setGetId(omsCerGetTask.getId());
+		omsCerExitEntryRepertory.setCerId(omsCerGetTask.getCerId());
 		omsCerExitEntryRepertory.setName(omsCerGetTask.getName());
 		omsCerExitEntryRepertory.setZjhm(omsCerGetTask.getZjhm());
 		omsCerExitEntryRepertory.setZjlx(omsCerGetTask.getZjlx());

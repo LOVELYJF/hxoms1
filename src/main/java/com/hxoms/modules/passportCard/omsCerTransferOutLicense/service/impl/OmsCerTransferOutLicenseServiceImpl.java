@@ -48,7 +48,7 @@ public class OmsCerTransferOutLicenseServiceImpl extends ServiceImpl<OmsCerTrans
 		map.put("name", omsCerTransferOutLicense.getName());
 		map.put("zjlx", omsCerTransferOutLicense.getZjlx());
 		map.put("b0100", omsCerTransferOutLicense.getB0100());
-		map.put("BATCH_NUM", omsCerTransferOutLicense.getBatchNum());       //批次号
+		map.put("batchNum", omsCerTransferOutLicense.getBatchNum());       //批次号
 		map.put("handoverStartQueryTime", omsCerTransferOutLicense.getHandoverStartQueryTime());
 		map.put("handoverEndQueryTime", omsCerTransferOutLicense.getHandoverEndQueryTime());
 		map.put("exitStartQueryTime", omsCerTransferOutLicense.getExitStartQueryTime());

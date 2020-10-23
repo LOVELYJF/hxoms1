@@ -166,4 +166,13 @@ public interface CfCertificateCollectionService extends IService<CfCertificateCo
      * @Date: 2020/9/14
      */
     OmsFile selectFileDestailNew(PrintFile printFile);
+
+    /**
+     * @Desc: 解除催缴
+     * @Author: wangyunquan
+     * @Param: [omsId, zjlx, zjhm, userId]
+     * @Return: void
+     * @Date: 2020/10/22
+     */
+    void removeCj (String omsId,Integer zjlx,String zjhm,String userId);
 }

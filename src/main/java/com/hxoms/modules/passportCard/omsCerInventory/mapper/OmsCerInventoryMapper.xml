@@ -102,7 +102,7 @@
 	</select>
 
 	<!-- 总体盘点结果统计查询 -->
-	<select id="GetCerInventoryResult" resultType="java.util.Map">
+	<select id="GetCerInventoryResult"  resultType="java.util.Map">
 		select
 			oci.ID as id,
 			oci.OMS_ID as omsId,
@@ -113,6 +113,7 @@
 			oci.CARD_STATUS as cardStatus,
 			oci.BEFORE_INVENTORY_SAVE_STATUS as beforeInventorySaveStatus,
 			oci.AFTER_INVENTORY_SAVE_STATUS as afterInventorySaveStatus,
+			oci.INVENTORY_DATE as inventoryDate,
 			oci.CABINET_NUM as cabinetNum,
 			oci.PLACE as place,
 			oci.COUNTER_NUM as counterNum,
@@ -126,20 +127,23 @@
 		left join oms_reg_procpersoninfo org on oci.OMS_ID = org.ID
 		<where>
 			<trim suffixOverrides="and">
-				<if test="inventoryDate != null">oci.INVENTORY_DATE=#{inventoryDate} and </if>
-				<if test="sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
+				<if test="map.inventoryDate != null">oci.INVENTORY_DATE=#{map.inventoryDate} and </if>
+				<if test="map.sameStatus != null">(oci.BEFORE_INVENTORY_SAVE_STATUS != oci.AFTER_INVENTORY_SAVE_STATUS) and </if>
 				<trim suffixOverrides="or">
-					<if test="counterStartQuery != null and counterEndQuery != null">
+					<if test="map.counterStartQuery != null and map.counterEndQuery != null">
 						<choose>
-							<when test="list != null and list != ''">
+							<when test="cabinetList != null and cabinetList.size >0 ">
 								(
 							</when>
 						</choose>
-						(oci.COUNTER_NUM between #{counterStartQuery} and #{counterEndQuery}) or
+						(oci.COUNTER_NUM between #{map.counterStartQuery} and #{map.counterEndQuery}) or
 					</if>
-					<if test="list != null and list != ''">oci.CABINET_NUM=#{list}
+					<if test="cabinetList != null and cabinetList.size > 0">oci.CABINET_NUM in
+						<foreach collection="cabinetList" item="item" index="index" separator="," open="(" close=")">
+							#{item}
+						</foreach>
 						<choose>
-							<when test="counterStartQuery != null and counterEndQuery != null">
+							<when test="map.counterStartQuery != null and map.counterEndQuery != null">
 								)
 							</when>
 						</choose>
