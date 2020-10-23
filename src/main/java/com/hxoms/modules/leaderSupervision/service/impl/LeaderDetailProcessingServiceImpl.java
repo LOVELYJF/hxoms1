@@ -504,15 +504,33 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
                 String materialsCheck = (String) map.get("materialsCheck");
                 String jiweiopion = (String) map.get("jiweiopion");
                 String id = (String) map.get("id");
+                String type = (String) map.get("type");
                 if ("1".equals(materialsCheck) && "1".equals(jiweiopion)) {
 
                     passList.add(id);
                     map.put("fileType", "呈批单");
                     map.put("pass", "通过");
+                    if("因公".equals(type)){
+                        map.put("fileTemplateId","311");
+                    }else if("因私".equals(type)){
+                        map.put("fileTemplateId","313");
+                    }else if("延期".equals(type)){
+
+                        map.put("fileTemplateId","315");
+                    }
+
                 } else {
                     notpassList.add(id);
                     map.put("fileType", "请示表");
                     map.put("pass", "不通过");
+                    if("因公".equals(type)){
+                        map.put("fileTemplateId","312");
+                    }else if("因私".equals(type)){
+                        map.put("fileTemplateId","314");
+                    }else if("延期".equals(type)){
+
+                        map.put("fileTemplateId","316");
+                    }
                 }
             }
         }

@@ -859,11 +859,12 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                     // 是否重要领导
                     + " case when pua.SFZYLD = 1 then '是' else '否' end as sfzyld, "
                     // 是否裸官
-                    +  " \t case when  pua.SFLG=1 then '是' else '否' end as isLuoguan,"
+                    +  "  case when  pua.SFLG=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
-                    +" pua.JWJL as jwjl, "
+                    +" case when pua.JWJL =1 then '通过' when pua.JWJL = 2 then '未通过'  when pua.JWJL=3 then '不回复'  when pua.JWJL=4 then '反复'  else '' end" +
+                      "     AS jwjl, "
                     // 材料审核结论
-                    + " pua.CLSHSFTG as clshsftg "
+                    + " case pua.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg,"
                     + " from oms_pub_apply  pua " +
                       " left join  oms_reg_procpersoninfo mrp ON pua.PROCPERSON_ID = mrp.id " +
                       "where pua.id = '"+bussinessId+"'";
@@ -887,9 +888,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                     // 是否裸官
                     +  " \t case when pra.IS_LUOGUAN=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
-                    +" pra.JWJL as jwjl, "
+                    +" case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end AS jwjl , "
                     // 材料审核结论
-                    + " pra.CLSHSFTG as clshsftg "
+                    + " case pra.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg "
                     + " from oms_pri_apply pra" +
                       "  left join  oms_reg_procpersoninfo mrp ON pra.PROCPERSON_ID = mrp.id   " +
                      "where pra.id =  '" + bussinessId+"'";
@@ -915,9 +916,9 @@ public class LeaderCommonServiceImpl implements LeaderCommonService {
                      // 是否裸官
                      +  " \t case when pra.IS_LUOGUAN=1 then '是' else '否' end as isLuoguan,"
                     // 纪委结论
-                    +" pda.JWJL as jwjl "
+                    +" case when pda.JWJL =1 then '通过' when pda.JWJL = 2 then '未通过'  when pda.JWJL=3 then '不回复'  when pda.JWJL=4 then '反复'  else '' end AS jwjl , "
                     // 材料审核结论
-                    + " pda.CLSHSFTG as clshsftg " +
+                    + "case pda.CLSHSFTG when 1 then '通过' when 2 then '未通过' else '暂无数据' end as clshsftg " +
                     "   from  oms_pri_delay_apply pda left join oms_pri_apply pra on pda.APPLY_ID = pra.id "
                     +  "  left join  oms_reg_procpersoninfo mrp ON pda.PROCPERSON_ID = mrp.a0100 "
                     + "  where pda.id = '" + bussinessId+"'" ;
