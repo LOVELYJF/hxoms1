@@ -119,7 +119,7 @@ public class OmsCerTransferOutLicenseServiceImpl extends ServiceImpl<OmsCerTrans
 			e.printStackTrace();
 		}
 		omsCerTransferOutLicense.setYear(year);
-		omsCerTransferOutLicense.setTransferor(UserInfoUtil.getUserInfo().getName());
+		omsCerTransferOutLicense.setTransferor(UserInfoUtil.getUserInfo().getUserName());
 		omsCerTransferOutLicense.setModifyTime(new Date());
 		omsCerTransferOutLicense.setModifyUser(UserInfoUtil.getUserInfo().getId());
 		QueryWrapper<OmsCerTransferOutLicense> queryWrapper = new QueryWrapper<OmsCerTransferOutLicense>();
