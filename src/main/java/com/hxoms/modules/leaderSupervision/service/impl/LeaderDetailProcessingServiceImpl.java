@@ -306,7 +306,7 @@ public class LeaderDetailProcessingServiceImpl implements LeaderDetailProcessing
     public PageInfo selectOmsLeaderBatch(LeaderSupervisionVo leaderSupervisionVo) {
 
         PageUtil.pageHelp(leaderSupervisionVo.getPageNum(), leaderSupervisionVo.getPageSize());
-        List<Map> lists = leaderCommonMapper.selectLeaderBatch();
+        List<Map> lists = leaderCommonMapper.selectLeaderBatch("",null,null,"","");
         PageInfo pageInfo = new PageInfo(lists);
         return pageInfo;
     }
