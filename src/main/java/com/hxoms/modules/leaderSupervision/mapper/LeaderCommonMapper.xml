@@ -677,7 +677,7 @@
 							   pra.IS_LEADERS as sfzyld, # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   "是否变更" as sfbg, # 是否变更
+							   "无" as sfbg, # 是否变更
 							   yesOrnO_take_advice(pra.id,pra.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
 		                       DATE_FORMAT(pra.SCZQJWYJSJ,'%Y.%m.%d') , # 上次 征求 时间
 							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
@@ -744,7 +744,7 @@
 							   pra.IS_LEADERS as sfzyld , # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   "是否变更" as sfbg, # 是否变更
+							   "无" as sfbg, # 是否变更
 							   yesOrnO_take_advice(prda.id,prda.A0100,35) as SFZQJWYJ ,    # 是否需要征求纪委意见
 							   prda.SCZQJWYJSJ, # 上次 征求 时间
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
@@ -891,7 +891,7 @@
 							   pra.IS_LEADERS as sfzyld, # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   "是否变更" as sfbg, # 是否变更
+							   "无" as sfbg, # 是否变更
 							   case when pra.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见
 		                        DATE_FORMAT(pra.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
 							   case when pra.JWJL =1 then '通过' when pra.JWJL = 2 then '未通过'  when pra.JWJL=3 then '不回复'  when pra.JWJL=4 then '反复'  else '' end
@@ -960,7 +960,7 @@
 							   pra.IS_LEADERS as sfzyld , # 主要领导
 
 							   pra.NEGATIVE_INFO fmxx, # 负面信息
-							   "是否变更" as sfbg, # 是否变更
+							   "无" as sfbg, # 是否变更
 							   case when prda.SFZQJWYJ =1 then '是' else '否' end as  sfzqjiwyj , # 是否已征求纪委意见,    # 是否需要征求纪委意见
 		                       DATE_FORMAT(prda.SCZQJWYJSJ,'%Y.%m.%d') as sczqjwyjsj, # 上次 征求 时间
 							   case when prda.JWJL =1 then '通过' when prda.JWJL = 2 then '未通过'  when prda.JWJL=3 then '不回复'  when prda.JWJL=4 then '反复'  else '' end
