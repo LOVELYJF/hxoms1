@@ -23,7 +23,7 @@ public class JiweiStatisticsVo {
 
     @JsonFormat(pattern = "yyyy.MM.dd")
     @DateTimeFormat(pattern = "yyyy.MM.dd")
-    private Date endDate; /** 征求纪委 介绍时间 **/
+    private Date endDate; /** 征求纪委 征求时间 **/
 
     private String jiWeiType; /** 1 同意  2 不同意  3 不回复  **/
 
@@ -31,6 +31,15 @@ public class JiweiStatisticsVo {
     private String bussinessType; /** 因公 因私 **/
 
 
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date abroadTimeBeginDate;
+
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    private Date abroadTimeEndDate;
+
+    private String userName;
 
 
 
@@ -84,5 +93,29 @@ public class JiweiStatisticsVo {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Date getAbroadTimeBeginDate() {
+        return abroadTimeBeginDate;
+    }
+
+    public void setAbroadTimeBeginDate(Date abroadTimeBeginDate) {
+        this.abroadTimeBeginDate = abroadTimeBeginDate;
+    }
+
+    public Date getAbroadTimeEndDate() {
+        return abroadTimeEndDate;
+    }
+
+    public void setAbroadTimeEndDate(Date abroadTimeEndDate) {
+        this.abroadTimeEndDate = abroadTimeEndDate;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

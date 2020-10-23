@@ -115,5 +115,8 @@ public interface LeaderCommonMapper {
 
    List<Map> createPutOnRecordList(LeaderSupervisionVo leaderSupervisionVo,@Param("bussinessIds") Object[] bussinessIds);
 
+   /** 纪委不回复 意见 **/
+
+   List<Map> jiweiNotrespondOpinion(JiweiStatisticsVo jiweiStatisticsVo);
 
 }
