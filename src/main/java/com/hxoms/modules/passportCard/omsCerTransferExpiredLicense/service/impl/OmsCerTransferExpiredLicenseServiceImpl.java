@@ -66,10 +66,11 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 * @Author: luoshuai
 	 * @Date: 2020/8/17 14:16
 	 */
-	public Page<Map<String, Object>> getTransferExpiredLicenseInfo(Page<Map<String,Object>> page, List<String> list, Date expiredQueryStartTime,
+	public Page<Map<String, Object>> getTransferExpiredLicenseInfo(Page<Map<String,Object>> page, List<String> list, List<String> idList, Date expiredQueryStartTime,
 	                                                               Date expiredQueryEndTime, CfCertificate cfCertificate) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list",list);
+		map.put("idList", idList);
 		map.put("expiredQueryStartTime",expiredQueryStartTime);
 		map.put("expiredQueryEndTime",expiredQueryEndTime);
 		map.put("zjlx", cfCertificate.getZjlx());
@@ -91,9 +92,10 @@ public class OmsCerTransferExpiredLicenseServiceImpl implements OmsCerTransferEx
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 14:16
 	 */
-	public void getTransferExpiredLicenseOut(List<String> list, Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate, HttpServletResponse response) {
+	public void getTransferExpiredLicenseOut(List<String> list,List<String> idList, Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate, HttpServletResponse response) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("list",list);
+		map.put("idList",idList);
 		map.put("expiredQueryStartTime",expiredQueryStartTime);
 		map.put("expiredQueryEndTime",expiredQueryEndTime);
 		map.put("zjlx", cfCertificate.getZjlx());

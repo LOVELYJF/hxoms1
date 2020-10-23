@@ -880,6 +880,12 @@
 					</foreach>
 					and
 				</if>
+              <if test="idList != null">cc.ID in
+                <foreach close=")" collection="idList" index="index" item="item" open="(" separator=",">
+                  #{item}
+                </foreach>
+                and
+              </if>
 				<if test="zjlx != null">cc.ZJLX=#{zjlx} and </if>
 				<if test="1==1">cc.CARD_STATUS='1' and </if>
 				<if test="saveStatus != null">cc.SAVE_STATUS=#{saveStatus} and </if>

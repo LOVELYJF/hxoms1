@@ -24,7 +24,7 @@ public interface OmsCerTransferExpiredLicenseService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/17 14:16
 	 */
-	Page<Map<String, Object>> getTransferExpiredLicenseInfo(Page<Map<String,Object>> page, List<String> list, Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate);
+	Page<Map<String, Object>> getTransferExpiredLicenseInfo(Page<Map<String,Object>> page, List<String> list, List<String> idList,Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate);
 
 
 	/**
@@ -34,7 +34,7 @@ public interface OmsCerTransferExpiredLicenseService {
 	 * @Author: luoshuai
 	 * @Date: 2020/8/18 14:16
 	 */
-	void getTransferExpiredLicenseOut(List<String> list, Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate, HttpServletResponse response);
+	void getTransferExpiredLicenseOut(List<String> list, List<String> idList,Date expiredQueryStartTime, Date expiredQueryEndTime, CfCertificate cfCertificate, HttpServletResponse response);
 
 
 	/**
