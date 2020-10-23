@@ -39,10 +39,11 @@ public class OmsCerTransferExpiredLicenseController extends BaseController {
 		@GetMapping("/getTransferExpiredLicenseInfo")
 		public Result getTransferExpiredLicenseInfo(Page<Map<String,Object>> page,
 													@RequestParam(value = "list",required = false) List<String> list,
+													@RequestParam(value = "idList",required = false) List<String> idList,
 		                                            @DateTimeFormat(pattern = "yyyy.MM.dd") Date expiredQueryStartTime,
 		                                            @DateTimeFormat(pattern = "yyyy.MM.dd") Date expiredQueryEndTime,
 		                                            CfCertificate cfCertificate){
-			page = omsCerTransferExpiredLicenseService.getTransferExpiredLicenseInfo(page,list,expiredQueryStartTime,expiredQueryEndTime,cfCertificate);
+			page = omsCerTransferExpiredLicenseService.getTransferExpiredLicenseInfo(page,list,idList,expiredQueryStartTime,expiredQueryEndTime,cfCertificate);
 			return Result.success(page);
 		}
 
@@ -57,10 +58,11 @@ public class OmsCerTransferExpiredLicenseController extends BaseController {
 	 */
 	@PostMapping("/getTransferExpiredLicenseOut")
 	public void getTransferExpiredLicenseOut(@RequestParam(value = "list",required = false) List<String> list,
+	                                         @RequestParam(value = "idList",required = false) List<String> idList,
 	                                         @DateTimeFormat(pattern = "yyyy.MM.dd") Date expiredQueryStartTime,
 	                                         @DateTimeFormat(pattern = "yyyy.MM.dd") Date expiredQueryEndTime,
 	                                         CfCertificate cfCertificate){
-		omsCerTransferExpiredLicenseService.getTransferExpiredLicenseOut(list,expiredQueryStartTime,expiredQueryEndTime,cfCertificate,response);
+		omsCerTransferExpiredLicenseService.getTransferExpiredLicenseOut(list,idList,expiredQueryStartTime,expiredQueryEndTime,cfCertificate,response);
 
 	}
 

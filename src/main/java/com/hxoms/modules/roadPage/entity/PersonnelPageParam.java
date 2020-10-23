@@ -7,8 +7,8 @@ public class PersonnelPageParam {
     private Integer pageNum;
     @ApiModelProperty("分页结束")
     private Integer pageSize;
-    @ApiModelProperty("人员情况标识：0人员情况 1全省经办人 2重点管理人员 3一把手 4纪委不回复意见人员 5退休人员 6核心涉密人员")
-    private Integer orderIndex=0;
+    @ApiModelProperty("人员情况标识: 1全省经办人 2重点管理人员 3一把手 4纪委不回复意见人员 5退休人员 6核心涉密人员")
+    private Integer orderIndex=1;
     @ApiModelProperty("人员情况名称：全省经办人,重点管理人员,一把手,纪委不回复意见人员,退休人员,核心涉密人员")
     private String nodeName;
 

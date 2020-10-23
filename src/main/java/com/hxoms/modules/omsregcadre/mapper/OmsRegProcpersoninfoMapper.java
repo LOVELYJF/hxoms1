@@ -61,7 +61,11 @@ public interface OmsRegProcpersoninfoMapper extends BaseMapper<OmsRegProcpersoni
      */
     List<OmsRegProcpersoninfo> queryProvinceCadresList(OmsRegProcpersoninfoIPagParam personInfoIPagParam);
 
-
+    /**
+     * 查询重点管理人员
+     * @return
+     */
+    List<OmsRegProcpersoninfo> selectImportantManagePerson();
 }
 
 

@@ -4,10 +4,7 @@ package com.hxoms.modules.omsregcadre.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.hxoms.common.utils.Result;
-import com.hxoms.modules.omsregcadre.entity.CancellationLetter;
-import com.hxoms.modules.omsregcadre.entity.OmsRegProcpersoninfo;
-import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapply;
-import com.hxoms.modules.omsregcadre.entity.OmsRegRevokeapproval;
+import com.hxoms.modules.omsregcadre.entity.*;
 import com.hxoms.modules.omsregcadre.entity.paramentity.OmsRegRevokeApplyIPagParam;
 
 import java.text.ParseException;
