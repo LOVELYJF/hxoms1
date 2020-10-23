@@ -412,7 +412,7 @@ public class OmsRegRevokeApplyServiceImpl extends ServiceImpl<OmsRegRevokeApplyM
                             }
                             omsCreateFile.setFrontContent(omsFile.getFrontContent());
                             omsCreateFile.setBankContent(omsFile.getBankContent());
-                            omsCreateFileService.InsertOrUpdate(omsCreateFile);
+                            omsCreateFileMapper.insert(omsCreateFile);
                             cancellationLetter.setOmsCreateFile(omsCreateFile);
                         }
                     }else{

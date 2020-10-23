@@ -6,7 +6,7 @@ import com.hxoms.modules.file.entity.OmsFile;
 import java.util.List;
 
 /**
- * @authore:wjf
+ * @authore:ljj
  * @data 2020/10/12 16:35
  * @Description:
  ***/
@@ -68,20 +68,20 @@ public class CancellationLetter {
         this.fileType = fileType;
     }
 
-    public List<OmsFile> getOmsFiles() {
-        return omsFiles;
-    }
-
-    public void setOmsFiles(List<OmsFile> omsFiles) {
-        this.omsFiles = omsFiles;
-    }
-
     public String getFileTemplateId() {
         return fileTemplateId;
     }
 
     public void setFileTemplateId(String fileTemplateId) {
         this.fileTemplateId = fileTemplateId;
+    }
+
+    public List<OmsFile> getOmsFiles() {
+        return omsFiles;
+    }
+
+    public void setOmsFiles(List<OmsFile> omsFiles) {
+        this.omsFiles = omsFiles;
     }
 
     public OmsCreateFile getOmsCreateFile() {
